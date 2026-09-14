@@ -42,12 +42,16 @@ context: |
     SideStore with its automatic 7-day resign, not manual Xcode reinstalls
     (which would wipe local data and Keychain items every week instead of
     just re-signing the same binary in place). A free Personal Team CANNOT
-    use App Groups, Push Notifications, iCloud or HealthKit. This rules out
-    a shared file container between the app and its widget/Control
-    extensions — the architecture must not depend on one. Keychain Sharing
-    is a separate capability from App Groups and is plausibly available on
-    a free team, but this is unverified and must be spiked early, not
-    assumed. Revisit paying $99/yr once the free-tier ceiling is felt in
+    use App Groups, Push Notifications, iCloud or HealthKit. **Confirmed
+    2026-09-14: a custom Keychain Sharing group is blocked too** —
+    `errSecMissingEntitlement` (-34018) on a live device test, on both the
+    write and read side. This rules out any shared state at all (file
+    container or Keychain) between the app and its widget/Control
+    extensions — every process bootstraps its own Garmin login
+    independently (see add-garmin-auth-and-sync design.md D3/D4). Also
+    confirmed: AltStore enforces a ~10-new-App-ID-per-week quota (every
+    app and every extension consumes one) — pace new targets accordingly.
+    Revisit paying $99/yr once the free-tier ceiling is felt in
     practice (most likely: push-based widget updates, or App-Group-shared
     local storage becoming worth the friction).
   - The owner has no Mac (confirmed 2026-09-14). Xcode is macOS-only and
