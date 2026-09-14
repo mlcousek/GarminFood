@@ -15,6 +15,15 @@
 # AltStore rather than paid-account Xcode automatic signing? Both targets
 # below declare the same access group. GarminFoodWidget/KeychainCheckWidget.swift
 # is the observable result — add the widget to the Home Screen and look at it.
+#
+# `packages.GarminKit` (added in add-garmin-auth-and-sync tasks 7-11) is the
+# local Swift package holding OAuth1 signing, token management, the browser
+# bootstrap, and the per-process outbox/reconciliation logic — see
+# ios/GarminKit/. It's declared as a dependency of the GarminFood app target
+# only, for now: this phase is about the package existing and building on
+# its own, not about wiring it into ContentView.swift or removing the
+# Keychain spike code (KeychainSpike.swift) above — that's a later phase's
+# job. The widget extension target is intentionally left untouched here.
 
 name: GarminFood
 
@@ -22,6 +31,10 @@ options:
   bundleIdPrefix: com.mlcousek
   deploymentTarget:
     iOS: "17.0"
+
+packages:
+  GarminKit:
+    path: GarminKit
 
 settings:
   base:
@@ -55,6 +68,7 @@ targets:
     dependencies:
       - target: GarminFoodWidgetExtension
         embed: true
+      - package: GarminKit
     scheme:
       testTargets: []
       gatherCoverageData: false

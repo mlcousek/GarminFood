@@ -52,6 +52,14 @@ jobs:
           xcodebuild -version
           swift --version
 
+      - name: Run GarminKit unit tests
+        # Pure logic (OAuth1 signing, outbox, reconciliation) -- no simulator
+        # or signing needed, and it's the fastest possible signal on the
+        # package by itself before it's even part of the app build.
+        run: |
+          cd GarminKit
+          swift test
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
