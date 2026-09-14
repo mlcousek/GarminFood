@@ -103,6 +103,12 @@ While probing the read route, real logged food was found on the account for the 
 - Connect+ nutrition tracking is **already active and in use** on this account, most likely confirming task 1.1's entitlement question without needing to check the subscription screen separately.
 - The `usersummary-service/usersummary/daily` route's `consumedKilocalories` field was `null` even while this real data existed — **that field is not fed by the nutrition-service data at all**. Any surface that reads "today's consumed calories" must read `dailyNutritionContent.calories` from `food/logs/{date}`, never `consumedKilocalories` from the legacy summary route.
 
+## Barcode scanning has poor Czech coverage (owner-confirmed, 2026-09-14)
+
+Tried directly in the Garmin Connect app's own native barcode scanner: a Czech product barcode was **not recognized**. This is independent of whether `GET /nutrition-service/food/search/barCode` works as an API route — if Garmin's own first-party client can't resolve a Czech barcode, the underlying database (FatSecret + Garmin's own catalog) simply doesn't have the coverage, and building a client-side barcode feature on top of it would mostly hit dead ends for this project's primary use case.
+
+**Consequence:** barcode scanning is deprioritized in `add-food-log-core` (see that change's design.md D3) — not removed, since it may still work for non-Czech/international packaged goods, but it should not be treated as a reliable primary entry path the way text search is (`rohlik` → 13 real Czech results, confirmed working). Owner decision, 2026-09-14: do not spend further effort probing or testing the barcode route for now.
+
 ## What remains genuinely unconfirmed
 
 1. The exact JSON body Content-Type and field spelling/order for `createFoodLogEntry`.

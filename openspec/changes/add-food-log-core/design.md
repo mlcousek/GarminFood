@@ -25,9 +25,11 @@ Garmin's search response includes `isFavorite`/`isRecent` per result, but those 
 
 The first time a food is logged, the user picks which of Garmin's `nutritionContents` entries applies (100g vs. one medium banana vs. one small banana). That choice — `(foodId, servingId, numberOfUnits)` — is cached locally and reused as the default the next time that same food is picked, cutting the flow by one screen for repeat entries. It remains editable; the cache is a default, not a constraint.
 
-### D3 — Barcode-to-food resolution normalises UPC-A to EAN-13
+### D3 — Barcode scanning is deprioritized: Garmin's own barcode coverage fails for Czech products
 
-VisionKit's `VNBarcodeSymbology` has no UPC-A case — a UPC-A barcode is returned as `.ean13` with a leading zero. Since Garmin's search is text-based, not barcode-based (no barcode-lookup route has been found — see `establish-garmin-nutrition-contract` task 2), a scanned code is first tried as a direct search term, and on no match the leading zero is stripped and retried, matching how UPC-A/EAN-13 equivalence actually works. If Garmin never exposes a real barcode-to-food route, the fallback is offering to create a custom food pre-filled with nothing but the scanned code as a note.
+`GET /nutrition-service/food/search/barCode?barCode={ean}` does exist (found and confirmed reachable by `establish-garmin-nutrition-contract`) — this is no longer a route-discovery problem. It is a **data coverage** problem instead, confirmed directly by the owner (2026-09-14): a Czech product barcode was not recognized by the Garmin Connect app's own native, first-party barcode scanner. If Garmin's own client can't resolve it, this project's barcode feature would mostly hit dead ends for its primary user.
+
+Consequence: barcode scanning drops from "core flow" to "build only if it turns out useful for non-Czech/imported packaged goods." It is not removed from the plan (VisionKit's `DataScannerViewController` work and UPC-A/EAN-13 normalisation — `VNBarcodeSymbology` has no UPC-A case, it's reported as `.ean13` with a leading zero — remain valid if revisited), but it no longer blocks anything else, and no further live probing of the barcode route is planned for now (owner decision). Text search remains the confirmed-reliable path for Czech foods (`rohlik` → 13 real results). If a scanned barcode fails to resolve, the fallback remains offering custom-food creation pre-filled with the scanned code as a note.
 
 ### D4 — Custom foods store the same shape Garmin expects, from the start
 

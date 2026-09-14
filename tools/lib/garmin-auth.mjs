@@ -8,8 +8,11 @@
  * *uses* a token someone else already obtained.
  */
 import { readFileSync, existsSync } from 'fs';
-import { join, resolve } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { createHmac, randomBytes } from 'crypto';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const CONNECTAPI = 'https://connectapi.garmin.com';
 export const CONNECTWEB = 'https://connect.garmin.com';
@@ -33,7 +36,9 @@ export function loadTokens() {
         throw new Error(`GARMIN_TOKENS points at ${explicit} but it has no .oauth1`);
     }
 
-    const vault = process.env.VAULT_ROOT || resolve(process.cwd(), '..', 'Jirkas_world');
+    // Relative to this file's own location, not the invoking shell's cwd —
+    // so it resolves the same way regardless of where a script is run from.
+    const vault = process.env.VAULT_ROOT || join(__dirname, '..', '..', '..', 'Jirkas_world');
     const candidates = [
         join(vault, 'scripts', '.garmin-tokens.json'),
         join(vault, '.obsidian', 'plugins', 'garmin-health-sync', 'data.json'),
