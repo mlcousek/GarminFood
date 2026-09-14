@@ -14,8 +14,9 @@
 # (unresolved on fastlane's own tracker since 2017) -- free-tier signing
 # runs through a private Xcode-GUI-only flow with no API surface to drive
 # from CI. See add-garmin-auth-and-sync design.md D9's revision. Signing
-# happens locally instead, via Sideloadly on the owner's Windows machine,
-# with the owner's Apple ID typed directly into Sideloadly's own window --
+# happens locally instead, via AltServer for Windows + AltStore on the
+# device (same tool used for the ongoing 7-day resign cycle -- see D8),
+# with the owner's Apple ID typed directly into AltServer's own window --
 # it never exists as a secret anywhere in this project's infrastructure.
 
 name: Build iOS app
@@ -82,7 +83,7 @@ jobs:
 
       - name: Package the archive as an unsigned .ipa
         # An .ipa is just Payload/<AppName>.app zipped up. Signing happens
-        # locally on the owner's Windows machine via Sideloadly, never here
+        # locally via AltServer/AltStore on the owner's Windows machine, never here
         # -- see the header comment above and design.md D9.
         run: |
           set -e
