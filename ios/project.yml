@@ -1,0 +1,84 @@
+# XcodeGen manifest — the source of truth for the Xcode project structure.
+#
+# Why this exists instead of a committed .xcodeproj: the owner has no Mac
+# (see openspec/config.yaml and add-garmin-auth-and-sync design.md D9), so
+# nobody can open Xcode to fix a malformed hand-edited project.pbxproj if
+# something goes subtly wrong. A YAML manifest is something an AI agent (or
+# a human in any text editor) can safely author and review, and XcodeGen
+# deterministically turns it into a valid .xcodeproj on every CI run —
+# see .github/workflows/build.yml, which installs XcodeGen and runs
+# `xcodegen generate` immediately before `xcodebuild`.
+#
+# Task 6.4 added a widget extension here, purely to answer one empirical
+# question: does Keychain Sharing (the `keychain-access-groups` entitlement)
+# actually get granted between two targets on a FREE Apple ID, signed by
+# AltStore rather than paid-account Xcode automatic signing? Both targets
+# below declare the same access group. GarminFoodWidget/KeychainCheckWidget.swift
+# is the observable result — add the widget to the Home Screen and look at it.
+
+name: GarminFood
+
+options:
+  bundleIdPrefix: com.mlcousek
+  deploymentTarget:
+    iOS: "17.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: "" # signing happens locally via AltStore, not in CI — see D9
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  GarminFood:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: GarminFood
+      - path: Shared
+    info:
+      path: GarminFood/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    entitlements:
+      path: GarminFood/GarminFood.entitlements
+      properties:
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)com.mlcousek.garminfood.shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mlcousek.garminfood
+        TARGETED_DEVICE_FAMILY: "1" # iPhone only, for now
+    dependencies:
+      - target: GarminFoodWidgetExtension
+        embed: true
+    scheme:
+      testTargets: []
+      gatherCoverageData: false
+
+  GarminFoodWidgetExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: GarminFoodWidget
+      - path: Shared
+    info:
+      path: GarminFoodWidget/Info.plist
+      properties:
+        CFBundleDisplayName: GarminFood Widget
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: GarminFoodWidget/GarminFoodWidget.entitlements
+      properties:
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)com.mlcousek.garminfood.shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mlcousek.garminfood.widget
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: true

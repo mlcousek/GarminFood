@@ -50,6 +50,24 @@ context: |
     assumed. Revisit paying $99/yr once the free-tier ceiling is felt in
     practice (most likely: push-based widget updates, or App-Group-shared
     local storage becoming worth the friction).
+  - The owner has no Mac (confirmed 2026-09-14). Xcode is macOS-only and
+    cannot be substituted — this is an unavoidable Apple platform reality,
+    not a preference. The build step therefore runs on GitHub Actions'
+    hosted macOS runners rather than locally. This repository is public,
+    which makes macOS runner minutes free and unlimited (GitHub's 10x
+    minute multiplier only affects private-repo quotas). Deployment to a
+    physical iPhone happens via AltServer for Windows (or Sideloadly),
+    both of which sideload a built .ipa from a Windows machine without
+    ever needing a Mac. Combined with the free-tier decision above, the
+    whole loop -- write code, build, sign, install, use -- runs at $0 and
+    without owning Apple hardware beyond an iPhone. Trade-off, stated
+    plainly: no local Xcode means no SwiftUI live previews, no interactive
+    debugger, no Instruments profiling -- iteration is edit-push-wait-for-
+    CI-sideload, not edit-and-immediately-see. Code-signing a free Apple ID
+    headlessly in CI (no interactive Xcode ever touches this account) is
+    also less traveled than the Xcode-GUI-assisted path and needs its own
+    spike, not an assumption that it "just works" the way it does when a
+    human clicks through Xcode's automatic-signing UI once.
 
   ## Ground truth established by probing (2026-09-14)
 

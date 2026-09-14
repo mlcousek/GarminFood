@@ -32,10 +32,10 @@
     {
       "operation": "foodSearchAutocomplete",
       "method": "GET",
-      "path": "/nutrition-service/food/search/autocomplete/",
+      "path": "/nutrition-service/food/search/autocomplete/?searchExpression={term}",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client (classes9.dex). Not yet exercised live -- exact query param and trailing-slash requirement unconfirmed."
+      "observedStatus": 400,
+      "notes": "Confirmed param name via 400 body: 'getAutocompleteSuggestions.arg0' searchExpression query parameter must be provided -- same param name as foodSearch. Not yet tested with a real term."
     },
     {
       "operation": "foodSearchByBarcode",
@@ -50,8 +50,8 @@
       "method": "POST",
       "path": "/nutrition-service/food/search/image-recognition",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Write-shaped (image upload), not exercised. Out of scope for this project's MVP -- app's own VisionKit barcode scan covers the barcode case; AI photo recognition is a stretch goal."
+      "observedStatus": 404,
+      "notes": "GET returned 404 (expected -- this is POST-shaped, per the write-request nature of an image upload). Not exercised as POST. Out of scope for this project's MVP -- app's own VisionKit barcode scan covers the barcode case, and barcode scanning itself was deprioritized 2026-09-14 (see garmin-food-log-contract.md) after the owner found Garmin's own native scanner doesn't recognize Czech barcodes. AI photo recognition is lower priority still."
     },
     {
       "operation": "dailyFoodLog",
@@ -66,64 +66,64 @@
       "method": "GET",
       "path": "/nutrition-service/meals/{date}",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Likely an alternate/lighter view of the same day's meals as dailyFoodLog's mealDetails. Not yet exercised live."
+      "observedStatus": 200,
+      "notes": "Confirmed live via probe-garmin-nutrition.mjs. Response shape not yet inspected in detail -- likely an alternate/lighter view of the same day's meals as dailyFoodLog's mealDetails."
     },
     {
       "operation": "recentFoods",
       "method": "GET",
       "path": "/nutrition-service/food/recent/{asOfDate}",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Not yet exercised live."
+      "observedStatus": 200,
+      "notes": "Confirmed live via probe-garmin-nutrition.mjs. Response shape not yet inspected in detail -- a strong candidate for the food-catalog capability's quick-pick/recents list, straight from Garmin rather than locally derived."
     },
     {
       "operation": "favoriteFoods",
       "method": "GET",
       "path": "/nutrition-service/favorite/food",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Sibling write routes: POST /nutrition-service/favorite/food, DELETE /nutrition-service/favorite/food/{foodId}, GET/POST /nutrition-service/favorite/meal."
+      "observedStatus": 405,
+      "notes": "Route exists but GET is not the right method (405 Method Not Allowed) -- unlike every other 'list' route here, this one likely requires POST with a body, or the list lives under a different path (e.g. plain /nutrition-service/favorite). Needs a follow-up probe, not a dead end. Sibling write routes: POST /nutrition-service/favorite/food, DELETE /nutrition-service/favorite/food/{foodId}, GET/POST /nutrition-service/favorite/meal."
     },
     {
       "operation": "customFoodServingUnits",
       "method": "GET",
       "path": "/nutrition-service/metadata/customFoodServingUnits",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Needed to build a valid custom-food creation payload -- see food-catalog capability D4."
+      "observedStatus": 200,
+      "notes": "Confirmed live via probe-garmin-nutrition.mjs. Needed to build a valid custom-food creation payload -- see food-catalog capability D4."
     },
     {
       "operation": "countriesAndLanguages",
       "method": "GET",
       "path": "/nutrition-service/metadata/countriesAndLanguages",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Not yet exercised."
+      "observedStatus": 200,
+      "notes": "Confirmed live via probe-garmin-nutrition.mjs."
     },
     {
       "operation": "nutritionSettings",
       "method": "GET",
       "path": "/nutrition-service/settings/{date}",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client (also seen as /nutrition-service/settings/{calendarDate}). dailyFoodLog already inlines goals per-day, so this route's exact purpose beyond that is unconfirmed -- possibly the editable goal-setting screen, distinct from the computed/adjusted goals shown in the log."
+      "observedStatus": 200,
+      "notes": "Confirmed live via probe-garmin-nutrition.mjs (also seen as /nutrition-service/settings/{calendarDate}). dailyFoodLog already inlines goals per-day, so this route's exact purpose beyond that is unconfirmed -- possibly the editable goal-setting screen, distinct from the computed/adjusted goals shown in the log."
     },
     {
       "operation": "nutritionCurrentStatus",
       "method": "GET",
       "path": "/nutrition-service/user/nutritionCurrentStatus",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Candidate for a cheaper 'just the running total' read than the full dailyFoodLog payload -- worth trying before defaulting every widget refresh to the heavier route."
+      "observedStatus": 200,
+      "notes": "Confirmed live via probe-garmin-nutrition.mjs. Candidate for a cheaper 'just the running total' read than the full dailyFoodLog payload -- worth inspecting its response shape before defaulting every widget refresh to the heavier route."
     },
     {
       "operation": "calorieSummaryDaily",
       "method": "GET",
-      "path": "/nutrition-service/calorie/summary/daily",
+      "path": "/nutrition-service/calorie/summary/daily?startDate={date}&endDate={date}",
       "lastVerified": "2026-09-14",
-      "observedStatus": null,
-      "notes": "String literal found in decompiled client. Sibling: /nutrition-service/calorie/summary/weekly. Unconfirmed whether this differs meaningfully from dailyNutritionContent inside dailyFoodLog."
+      "observedStatus": 200,
+      "notes": "Confirmed live with a real date range. Accepts a MULTI-DAY range in one call -- more efficient than calling dailyFoodLog once per day for a trend view. Response: { startDate, endDate, caloriesBurned, mealNutritionContents: [], dailyNutritionContents: [{ mealDate, nutritionContent?: { calories, carbs, fat, protein, otherCalories, caloriesPercentage }, nutritionGoals?: { calories, adjustedCalories, carbs, adjustedCarbs, fat, adjustedFat, protein, adjustedProtein } }], averageNutritionContents: {} }. Days with no logged food omit nutritionContent/nutritionGoals entirely (bare { mealDate }) rather than returning zeros -- treat a missing key as 'nothing logged', not an error. nutritionGoals values cross-checked exactly against dailyFoodLog's dailyNutritionGoals for the same day (2300/3128/316/430/64/87/115/156) -- consistent between routes. Sibling: /nutrition-service/calorie/summary/weekly, same param shape presumed, not tested."
     }
   ],
   "write": [

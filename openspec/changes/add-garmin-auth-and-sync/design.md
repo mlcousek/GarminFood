@@ -92,6 +92,26 @@ AltStore or SideStore resign the *same installed binary* in place on a schedule,
 
 *Consequence:* the setup task in this change is "install via SideStore" up front, not "reinstall via Xcode every week" — the latter is a plausible-sounding trap that silently breaks D2 through D6.
 
+### D9 — Build on GitHub Actions' macOS runners; the owner has no Mac
+
+Xcode is macOS-only. That is a fact about the platform, not a preference, and no amount of clever tooling changes it — Swift *language* tooling exists cross-platform, but WidgetKit, AppIntents, SwiftUI's iOS target, and Apple's code-signing toolchain do not run outside macOS. Since the owner has no Mac (confirmed 2026-09-14), the build step moves to CI: a `.github/workflows/build.yml` running on a `macos-latest` GitHub-hosted runner does `xcodebuild`/`xcodebuild -exportArchive`, producing a signed `.ipa` as a workflow artifact.
+
+This is normally a paid convenience (macOS runner minutes carry a 10x multiplier against a private repo's included quota) but this repository is public, and **GitHub Actions is free and unlimited on public repositories, macOS runners included**. The cost genuinely is $0, provided the repo stays public — worth stating as a real constraint this decision depends on, not an incidental detail.
+
+The resulting `.ipa` is sideloaded from the owner's Windows machine. Combined with D8, the full loop — write, build, sign, install, use — never requires macOS hardware the owner owns or rents.
+
+*What this costs in practice, stated plainly:* no SwiftUI live previews, no interactive debugger, no Instruments profiling. Iteration is edit → push → wait for a CI build (macOS runners are slower to provision than a local build) → download the artifact → sideload → test on the phone. This is real friction for UI-heavy work like widget layout, and it is accepted deliberately rather than glossed over.
+
+**Revised after research (2026-09-14): CI does not sign anything.** The original plan here was to code-sign a free Apple ID headlessly inside CI, treated as an open spike. Research settled it, and the answer is not "yes with effort" — it is "no, and stop trying." `fastlane`'s `cert`/`sigh` tools, the standard way to automate Apple certificate and provisioning-profile management, have never supported free/personal-team Apple IDs; this is a specifically-requested, unresolved limitation on fastlane's own issue tracker dating back to 2017 and still open. The reason is structural, not a missing feature: a free Apple ID has no access to the Apple Developer Portal's certificate/profile management surface at all — that surface is gated on a paid Developer Program membership. Xcode's free-tier "automatic signing" works through a separate, private, GUI-only flow, not through anything `fastlane`, `spaceship`, or a CI script can drive.
+
+So the design changes to match how every free-tier sideloading tool (AltStore, SideStore, Sideloadly, iSign Loader) actually works: **signing happens locally, once, using the owner's Apple ID typed directly into a purpose-built local tool — never in CI, never as a GitHub secret, never seen by anyone building this project.**
+
+- CI archives with signing fully disabled (`CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO`, `archive` action, not `build`), extracts the `.app` from the resulting `.xcarchive`, repackages it as an unsigned `.ipa` (an `.app` inside a `Payload/` folder, zipped), and uploads it as a workflow artifact.
+- The owner downloads that unsigned `.ipa` and installs it via **AltServer for Windows + AltStore on the device** — the same tool D8 already commits to for the ongoing 7-day resign cycle, so this is one tool for the whole lifecycle, not two. One-time: AltServer installs the AltStore app onto the phone (Apple ID entered into AltServer, going straight to Apple's servers). From then on, AltStore on the device installs the custom `.ipa` directly (via the Files app), and AltServer auto-refreshes it every 7 days over Wi-Fi without needing a USB replug. Sideloadly (USB, drag-and-drop) and iSign Loader (portable, zero-install, USB-only, manual replug every 7 days) remain documented fallbacks if AltServer/AltStore gives trouble.
+- The 7-day resign cycle (D8) is the same tool's job thereafter, using the same locally-held credential, never CI's.
+
+This is strictly better than the original plan, not just a fallback: the Apple ID never exists as a secret anywhere in this project's infrastructure at all.
+
 ## Risks / Trade-offs
 
 - **Cloudflare may extend bot protection to the exchange endpoint** → then even the OAuth1→OAuth2 exchange fails and no on-device design works. Mitigation: none technical. The fallback is the Cronometer bridge from the previous change's D4. This is the single biggest existential risk and it is outside our control.

@@ -1,0 +1,106 @@
+# Build the iOS app on GitHub's hosted macOS runners.
+#
+# Why this exists: the owner has no Mac (see openspec/config.yaml and
+# add-garmin-auth-and-sync design.md D9). Xcode only runs on macOS, so this
+# repo's build step lives in CI instead of on a local machine. This repo is
+# public, so macOS runner minutes are free and unlimited — the usual 10x
+# minute-multiplier only applies to private-repo quotas.
+#
+# This is task 6.1 (Simulator build, proves the basic loop works) and 6.2
+# (an unsigned device archive, packaged as an unsigned .ipa artifact).
+#
+# CI does NOT sign anything, and this is deliberate, not an unfinished spike:
+# fastlane's cert/sigh have never supported free/personal-team Apple IDs
+# (unresolved on fastlane's own tracker since 2017) -- free-tier signing
+# runs through a private Xcode-GUI-only flow with no API surface to drive
+# from CI. See add-garmin-auth-and-sync design.md D9's revision. Signing
+# happens locally instead, via AltServer for Windows + AltStore on the
+# device (same tool used for the ongoing 7-day resign cycle -- see D8),
+# with the owner's Apple ID typed directly into AltServer's own window --
+# it never exists as a secret anywhere in this project's infrastructure.
+
+name: Build iOS app
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "ios/**"
+      - ".github/workflows/build.yml"
+  pull_request:
+    paths:
+      - "ios/**"
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ios
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Show Xcode + Swift versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project from project.yml
+        run: xcodegen generate
+
+      - name: List available iOS Simulators
+        run: xcrun simctl list devices available | grep -i iphone | head -5
+
+      - name: Build for iOS Simulator (no code signing needed)
+        run: |
+          xcodebuild build \
+            -project GarminFood.xcodeproj \
+            -scheme GarminFood \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Archive for a real device, unsigned
+        run: |
+          xcodebuild archive \
+            -project GarminFood.xcodeproj \
+            -scheme GarminFood \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/GarminFood.xcarchive \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package the archive as an unsigned .ipa
+        # An .ipa is just Payload/<AppName>.app zipped up. Signing happens
+        # locally via AltServer/AltStore on the owner's Windows machine, never here
+        # -- see the header comment above and design.md D9.
+        run: |
+          set -e
+          APP_PATH="build/GarminFood.xcarchive/Products/Applications/GarminFood.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "::error::Expected app bundle not found at $APP_PATH"
+            find build/GarminFood.xcarchive -maxdepth 4
+            exit 1
+          fi
+          mkdir -p build/Payload
+          cp -R "$APP_PATH" build/Payload/
+          cd build && zip -r -q GarminFood-unsigned.ipa Payload
+          cd .. && ls -la build/GarminFood-unsigned.ipa
+
+      - name: Upload unsigned .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GarminFood-unsigned-ipa
+          path: ios/build/GarminFood-unsigned.ipa
+          retention-days: 14
