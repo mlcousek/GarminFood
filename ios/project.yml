@@ -1,0 +1,51 @@
+# XcodeGen manifest — the source of truth for the Xcode project structure.
+#
+# Why this exists instead of a committed .xcodeproj: the owner has no Mac
+# (see openspec/config.yaml and add-garmin-auth-and-sync design.md D9), so
+# nobody can open Xcode to fix a malformed hand-edited project.pbxproj if
+# something goes subtly wrong. A YAML manifest is something an AI agent (or
+# a human in any text editor) can safely author and review, and XcodeGen
+# deterministically turns it into a valid .xcodeproj on every CI run —
+# see .github/workflows/build.yml, which installs XcodeGen and runs
+# `xcodegen generate` immediately before `xcodebuild`.
+#
+# This is intentionally minimal — a single app target, no widget extension,
+# no Control, no entitlements yet. Its only job (task 6.1) is proving the
+# build-in-CI loop works at all before anything Garmin-specific depends on
+# it. Later targets (widget extension, Control, App Group / Keychain Sharing
+# entitlements) get added here as further tasks land, not by hand-editing a
+# generated .xcodeproj.
+
+name: GarminFood
+
+options:
+  bundleIdPrefix: com.mlcousek
+  deploymentTarget:
+    iOS: "17.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: "" # filled in by CI once a free Apple ID is wired up (task 6.2)
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  GarminFood:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: GarminFood
+    info:
+      path: GarminFood/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mlcousek.garminfood
+        TARGETED_DEVICE_FAMILY: "1" # iPhone only, for now
+    scheme:
+      testTargets: []
+      gatherCoverageData: false

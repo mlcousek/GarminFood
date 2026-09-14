@@ -1,0 +1,62 @@
+# Build the iOS app on GitHub's hosted macOS runners.
+#
+# Why this exists: the owner has no Mac (see openspec/config.yaml and
+# add-garmin-auth-and-sync design.md D9). Xcode only runs on macOS, so this
+# repo's build step lives in CI instead of on a local machine. This repo is
+# public, so macOS runner minutes are free and unlimited — the usual 10x
+# minute-multiplier only applies to private-repo quotas.
+#
+# This is task 6.1: prove the basic loop (generate project -> build) works
+# at all, on a Simulator destination that needs no code signing. Signing a
+# FREE Apple ID headlessly, entirely from CI, is task 6.2 — a separate,
+# harder problem, deliberately not conflated with this one.
+
+name: Build iOS app
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "ios/**"
+      - ".github/workflows/build.yml"
+  pull_request:
+    paths:
+      - "ios/**"
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ios
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Show Xcode + Swift versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project from project.yml
+        run: xcodegen generate
+
+      - name: List available iOS Simulators
+        run: xcrun simctl list devices available | grep -i iphone | head -5
+
+      - name: Build for iOS Simulator (no code signing needed)
+        run: |
+          xcodebuild build \
+            -project GarminFood.xcodeproj \
+            -scheme GarminFood \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
