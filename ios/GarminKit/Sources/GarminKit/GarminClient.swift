@@ -81,6 +81,39 @@ public struct GarminClient: Sendable {
         }
     }
 
+    /// GET `/nutrition-service/food/search/barCode?barCode={ean}`.
+    ///
+    /// Added for `add-food-log-core`'s (deprioritized, per that change's
+    /// design.md D3) barcode-scanning feature. Route CONFIRMED to exist
+    /// 2026-09-14 (a no-param request 400s naming the right parameter), but
+    /// the SUCCESS payload shape is UNCONFIRMED -- every real-looking EAN-13
+    /// tried so far 404'd ("no product for this barcode", not "route
+    /// missing"). Modeled as a single `FoodSearchResult` (the same shape one
+    /// entry of `searchFood`'s `results` array uses) since a barcode lookup
+    /// is conceptually "find the one food this code identifies" -- if
+    /// Garmin's real response turns out to wrap this differently (e.g.
+    /// `{ result: {...} }` or a bare `results: [...]` array like the text
+    /// search), this decode will fail and surface as
+    /// `GarminClientError.decodingFailed`, not silently return the wrong
+    /// thing.
+    ///
+    /// Returns `nil` on 404, matching `dailyFoodLog`'s convention: no
+    /// product for this barcode is missing DATA, not a broken credential or
+    /// a broken route.
+    public func searchFoodByBarcode(ean: String) async throws -> FoodSearchResult? {
+        let (data, response) = try await get(
+            path: "/nutrition-service/food/search/barCode",
+            query: [URLQueryItem(name: "barCode", value: ean)]
+        )
+        if response.statusCode == 404 { return nil }
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(FoodSearchResult.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
     // MARK: - Writes (documented, not yet confirmed by a real write)
 
     /// POST `/nutrition-service/food/logs`.

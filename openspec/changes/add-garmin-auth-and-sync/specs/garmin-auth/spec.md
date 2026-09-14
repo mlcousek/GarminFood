@@ -33,21 +33,20 @@ The app SHALL sign an OAuth1 request with the stored long-lived token and exchan
 - **WHEN** the cached OAuth2 access token has more than five minutes of validity remaining
 - **THEN** no exchange request is sent
 
-### Requirement: Concurrent refresh from multiple processes does not corrupt the token
+### Requirement: Concurrent refresh within a single process does not duplicate the exchange
 
-When credential sharing across processes is enabled, the system SHALL ensure at most one process performs the OAuth1-to-OAuth2 exchange at a time, using the atomicity of a Keychain item insertion as the coordination mechanism, so that the app and an extension refreshing simultaneously do not race.
+**Revised 2026-09-14**: task 6.4 confirmed (`errSecMissingEntitlement`/-34018, live device test) that no shared Keychain group exists on this account — there is no cross-process credential to coordinate in the first place, so the original cross-process lock design does not apply. Within a single process, the system SHALL ensure at most one in-flight OAuth1-to-OAuth2 exchange at a time, so that concurrent callers awaiting an access token do not each independently trigger a redundant exchange.
 
-#### Scenario: App and extension refresh at the same moment
+#### Scenario: Two concurrent callers need a token at once
 
-- **WHEN** the app and the widget extension both detect an expired access token within the same second
-- **THEN** exactly one of them performs the exchange
-- **AND** the other re-reads the Keychain and finds a valid token without exchanging again
+- **WHEN** two callers within the same process request an access token while the cached one is expired, within the same moment
+- **THEN** only one OAuth1-to-OAuth2 exchange is performed
+- **AND** both callers receive the resulting token
 
-#### Scenario: A refresh lock is abandoned mid-flight
+#### Scenario: Two different processes refresh independently
 
-- **WHEN** a process holding the refresh lock is terminated before completing the exchange
-- **THEN** the lock is treated as stale after a short timeout
-- **AND** a subsequent process is able to acquire it and refresh
+- **WHEN** the app and a widget extension each hold their own OAuth1 token from their own independent bootstrap and both need to refresh
+- **THEN** each refreshes using its own credential, and neither refresh affects the other
 
 ### Requirement: Expired long-lived credentials produce a loud, actionable state
 
@@ -64,17 +63,16 @@ The OAuth1 token SHALL be treated as expired when the exchange endpoint returns 
 - **WHEN** an API call fails for a reason other than 401
 - **THEN** the failure is not presented as "sign in again"
 
-### Requirement: Credential sharing across processes degrades without breaking the app
+### Requirement: Each process bootstraps its own credential independently
 
-Because the app ships on a free Apple Developer account (owner decision, 2026-09-14), Keychain Sharing between the app and its extensions is not guaranteed to be available. The system SHALL detect at build/setup time whether shared credential access works, and SHALL fall back to independent per-process credential bootstrap when it does not, rather than leaving any process permanently unauthenticated.
+**Revised 2026-09-14, settled by a live device test**: Keychain Sharing between the app and its extensions is confirmed unavailable on this free Apple Developer account (`errSecMissingEntitlement`/-34018) — not a possibility to detect at runtime, a fixed fact of this account. The system SHALL have each process (app, widget extension, Control) present its own "Connect Garmin" bootstrap independently, and SHALL NOT attempt to read another process's stored token.
 
-#### Scenario: Shared Keychain access group is available
+#### Scenario: An extension needs to authenticate
 
-- **WHEN** the app and its extensions can read a Keychain item written by another process in the same access group
-- **THEN** one bootstrap in the app authenticates the widget and Control extensions as well
+- **WHEN** an extension has no Garmin token of its own
+- **THEN** it presents its own "Connect Garmin" bootstrap, independent of the app's authentication state
 
-#### Scenario: Shared Keychain access group is not available
+#### Scenario: The app's own authentication is unaffected by an extension's state
 
-- **WHEN** an extension cannot read the app's stored token
-- **THEN** the extension presents its own "Connect Garmin" bootstrap independently
-- **AND** the app continues to function normally once the app's own bootstrap has completed
+- **WHEN** the app has already completed its own bootstrap
+- **THEN** it functions normally regardless of whether any extension has completed its own separate bootstrap
