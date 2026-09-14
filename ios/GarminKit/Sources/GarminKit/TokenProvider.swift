@@ -171,8 +171,26 @@ public actor TokenProvider {
 
     private var cachedOAuth2: GarminOAuth2Token?
 
+    /// `KeychainStore` is an internal implementation detail (a thin
+    /// `SecItem*` wrapper) and deliberately isn't part of the public API --
+    /// exposing it as a public default-argument type is what CI's first
+    /// build caught (an internal type can't appear in a public signature).
+    /// Real callers always want the real Keychain; test injection uses the
+    /// internal initializer below instead.
     public init(
-        keychain: KeychainStore = KeychainStore(),
+        urlSession: URLSession = .shared,
+        baseURL: String = GarminAPI.connectAPI
+    ) {
+        self.keychain = KeychainStore()
+        self.urlSession = urlSession
+        self.baseURL = baseURL
+    }
+
+    /// Test-only seam for injecting a `KeychainStore` pointed at a
+    /// different service name, so tests don't touch the app's real
+    /// Keychain entries. Not public -- `@testable import` reaches it.
+    init(
+        keychain: KeychainStore,
         urlSession: URLSession = .shared,
         baseURL: String = GarminAPI.connectAPI
     ) {
