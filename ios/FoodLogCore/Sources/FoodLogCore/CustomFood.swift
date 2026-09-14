@@ -29,7 +29,10 @@
 
 import Foundation
 
-public struct CustomFoodDraft: Codable, Sendable, Equatable, Identifiable {
+// `Hashable` for the same reason as `Food` (see Food.swift) -- so the app
+// layer can navigate to a confirm screen keyed on either a `Food` or a
+// `CustomFoodDraft` via a single `Hashable` enum, without a wrapper type.
+public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifiable {
     /// The single implicit serving every custom food has today (one
     /// hand-entered unit/quantity/macro set, no serving picker needed).
     /// Shared with `LogEntryCoordinator` so usage-history/serving-default

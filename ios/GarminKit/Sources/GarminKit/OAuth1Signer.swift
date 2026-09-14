@@ -84,7 +84,7 @@ enum OAuth1PercentEncoding {
 /// be able to `catch GarminAuthError.longLivedTokenExpired` by name (which
 /// is exactly what `GarminAuthState.report(_:)` does from within this same
 /// package, and what app-layer code is free to do too).
-public enum GarminAuthError: Error, Equatable {
+public enum GarminAuthError: Error, Equatable, Sendable {
     /// The consumer-key bootstrap fetch (`thegarth.s3.amazonaws.com/oauth_consumer.json`)
     /// failed or returned an unparseable body.
     case consumerKeyFetchFailed(statusCode: Int?)

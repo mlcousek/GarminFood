@@ -25,7 +25,7 @@
 import Foundation
 import GarminKit
 
-public enum FoodSource: String, Codable, Sendable, Equatable {
+public enum FoodSource: String, Codable, Sendable, Equatable, Hashable {
     case garmin = "GARMIN"
     case fatSecret = "FATSECRET"
     case custom = "CUSTOM"
@@ -47,7 +47,7 @@ public enum FoodSource: String, Codable, Sendable, Equatable {
 /// Mirrors `GarminKit.NutritionContent` field-for-field (task 12.2's "full
 /// macro/micro breakdown") but as a value this package owns, so a custom
 /// food's hand-entered serving can be represented identically (design.md D4).
-public struct Serving: Codable, Sendable, Equatable, Identifiable {
+public struct Serving: Codable, Sendable, Equatable, Hashable, Identifiable {
     public let id: String
     public let unit: String
     public let numberOfUnits: Double
@@ -155,7 +155,10 @@ public struct Serving: Codable, Sendable, Equatable, Identifiable {
 /// locally-created custom food (`source == .custom`), both represented
 /// identically per design.md D4 so the rest of the app doesn't need to
 /// special-case which kind it's showing.
-public struct Food: Codable, Sendable, Equatable, Identifiable {
+// `Hashable` so the app layer can use `Food` directly with SwiftUI's
+// `navigationDestination(item:)`/`NavigationLink(value:)` APIs without a
+// wrapper type.
+public struct Food: Codable, Sendable, Equatable, Hashable, Identifiable {
     public let id: String
     public let name: String
     public let brandName: String?

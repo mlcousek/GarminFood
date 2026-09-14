@@ -19,11 +19,24 @@
 # `packages.GarminKit` (added in add-garmin-auth-and-sync tasks 7-11) is the
 # local Swift package holding OAuth1 signing, token management, the browser
 # bootstrap, and the per-process outbox/reconciliation logic — see
-# ios/GarminKit/. It's declared as a dependency of the GarminFood app target
-# only, for now: this phase is about the package existing and building on
-# its own, not about wiring it into ContentView.swift or removing the
-# Keychain spike code (KeychainSpike.swift) above — that's a later phase's
-# job. The widget extension target is intentionally left untouched here.
+# ios/GarminKit/.
+#
+# `packages.FoodLogCore` (added in add-food-log-core, tasks 12-16) is the
+# local Swift package holding the food-catalog/log-entry DOMAIN layer --
+# catalog search adaptation, usage-history ranking, serving-default memory,
+# custom foods, meal-type defaulting, and the confirm-and-log orchestration.
+# It depends on GarminKit (see FoodLogCore/Package.swift) and is, in turn,
+# the only non-UI dependency GarminFood's own SwiftUI views need beyond
+# GarminKit itself -- see openspec/config.yaml's "clear module boundaries:
+# UI / domain logic / GarminKit networking kept separate" principle. Both
+# packages are declared as dependencies of the GarminFood app target only;
+# the widget extension target is intentionally left untouched.
+#
+# `GarminFood/Info.plist`'s `NSCameraUsageDescription` (task 14.3) backs the
+# VisionKit `DataScannerViewController` barcode-scanning feature -- see
+# ios/GarminFood/Catalog/BarcodeScanner.swift. Barcode scanning itself is
+# deprioritized (design.md D3) but still requires this key to present the
+# camera permission prompt at all.
 
 name: GarminFood
 
@@ -35,6 +48,8 @@ options:
 packages:
   GarminKit:
     path: GarminKit
+  FoodLogCore:
+    path: FoodLogCore
 
 settings:
   base:
@@ -56,6 +71,7 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        NSCameraUsageDescription: "GarminFood uses the camera to scan a product barcode and look it up in Garmin's food database."
     entitlements:
       path: GarminFood/GarminFood.entitlements
       properties:
@@ -69,6 +85,7 @@ targets:
       - target: GarminFoodWidgetExtension
         embed: true
       - package: GarminKit
+      - package: FoodLogCore
     scheme:
       testTargets: []
       gatherCoverageData: false

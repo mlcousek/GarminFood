@@ -63,6 +63,38 @@ final class FoodCatalogSearchTests: XCTestCase {
         XCTAssertEqual(callCount, 0)
     }
 
+    /// Task 12.3: "Verify Czech-language search terms return usable results
+    /// as part of test coverage (`rohlik`, `chleba`, `tvaroh`) -- confirmed
+    /// reachable 2026-09-14, but pin it with a test rather than trusting the
+    /// one-off probe forever." This pins the DECODING side (a Czech-shaped
+    /// response adapts into usable `Food` values) with a fixture matching
+    /// the confirmed real response shape from docs/garmin-routes.json --
+    /// it cannot re-verify Garmin's server still returns results for these
+    /// terms without a live network call, which this test suite deliberately
+    /// never makes (see this file's header).
+    func testCzechLanguageSearchTermsProduceUsableFoods() async throws {
+        for term in ["rohlik", "chleba", "tvaroh"] {
+            let json = """
+            {
+              "results": [
+                {
+                  "foodMetaData": { "foodId": "cz-\(term)", "foodName": "\(term)", "source": "FATSECRET", "regionCode": "CZ", "languageCode": "cs" },
+                  "nutritionContents": [ { "servingId": "s1", "servingUnit": "g", "numberOfUnits": 100, "calories": 250 } ]
+                }
+              ],
+              "moreDataAvailable": false
+            }
+            """
+            let searcher = FakeSearcher(json: json)
+            let catalog = FoodCatalogSearch(searcher: searcher)
+
+            let foods = try await catalog.search(term: term)
+
+            XCTAssertEqual(foods.count, 1, "expected a usable result for Czech term '\(term)'")
+            XCTAssertEqual(foods.first?.name, term)
+        }
+    }
+
     func testSuccessfulSearchBackFillsTheDurableFoodCache() async throws {
         let searcher = FakeSearcher(json: rohlikResponseJSON)
         let cacheURL = FileManager.default.temporaryDirectory.appendingPathComponent("foodlogcore-foodcache-test-\(UUID().uuidString).json")

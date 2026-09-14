@@ -205,6 +205,15 @@ public actor Outbox {
     public let maxAttempts: Int
     private let backoffBase: TimeInterval
     private let backoffCap: TimeInterval
+    /// Reentrancy guard (R1). An actor's own methods can still interleave
+    /// across `await` suspension points -- two overlapping `drain()` calls
+    /// (e.g. a foreground drain racing a `BGAppRefreshTask` drain) would
+    /// otherwise both read the same `.pending` entries before either has
+    /// written a `.sent`/`.failed` state back, and both would attempt
+    /// delivery of the same entry. Checked and set at the very top of
+    /// `drain()`, cleared unconditionally (including on early return) via
+    /// `defer`.
+    private var isDraining = false
 
     /// The initializer every real caller (app, widget extension, Control)
     /// uses. `processName` becomes part of this process's own outbox file
@@ -317,6 +326,15 @@ public actor Outbox {
         now: Date = Date(),
         randomJitter: @Sendable () -> Double = { Double.random(in: 0..<1) }
     ) async -> DrainResult {
+        // R1: a drain already in flight on this actor wins; a second,
+        // overlapping caller gets an immediate, harmless no-op result
+        // instead of interleaving with the first and double-delivering.
+        guard !isDraining else {
+            return DrainResult(delivered: [], failed: [], stoppedDueToRateLimit: false, authOutcome: .none)
+        }
+        isDraining = true
+        defer { isDraining = false }
+
         var delivered: [OutboxEntry] = []
         var failed: [OutboxEntry] = []
         var stoppedDueToRateLimit = false
@@ -350,7 +368,13 @@ public actor Outbox {
                 break
             } catch {
                 entry.attemptCount += 1
-                entry.lastError = String(describing: error)
+                // Truncated to 300 chars, matching
+                // `TokenProvider.refreshAccessToken`'s convention (R8) --
+                // an untruncated error description has no bound (some
+                // wrapped errors embed full response bodies) and this field
+                // is rewritten into the whole-array `OutboxStore.persist()`
+                // on every attempt.
+                entry.lastError = String(String(describing: error).prefix(300))
                 if entry.attemptCount >= maxAttempts {
                     entry.state = .failed
                     try? await store.update(entry)

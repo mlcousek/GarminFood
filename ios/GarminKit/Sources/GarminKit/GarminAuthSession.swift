@@ -103,6 +103,9 @@ public enum GarminBootstrapError: Error {
     case sessionFailed(Error)
     case exchangeFailed(statusCode: Int?, body: String?)
     case malformedExchangeResponse
+    /// The exchange request URL failed to construct (R3) -- mirrors
+    /// `GarminClientError.invalidURL`'s role in `GarminClient.authorizedRequest`.
+    case invalidExchangeURL
 }
 
 /// Runs the browser-based bootstrap (or the manual-ticket-paste fallback)
@@ -115,6 +118,12 @@ public final class GarminAuthSession: NSObject {
     private let tokenProvider: TokenProvider
     private let urlSession: URLSession
     private let baseURL: String
+    /// Optional (R5): when supplied, a successful bootstrap automatically
+    /// calls `markAuthenticated()` on it, so callers don't have to remember
+    /// to wire that up themselves. `nil` by default for flexibility/
+    /// testability -- unit tests exercising just the ticket-exchange logic
+    /// don't need a real `GarminAuthState` in play.
+    private let authState: GarminAuthState?
 
     /// Held for the lifetime of an in-flight sign-in so
     /// `ASWebAuthenticationSession` isn't deallocated mid-flow.
@@ -123,11 +132,13 @@ public final class GarminAuthSession: NSObject {
     public init(
         tokenProvider: TokenProvider = .shared,
         urlSession: URLSession = .shared,
-        baseURL: String = GarminAPI.connectAPI
+        baseURL: String = GarminAPI.connectAPI,
+        authState: GarminAuthState? = nil
     ) {
         self.tokenProvider = tokenProvider
         self.urlSession = urlSession
         self.baseURL = baseURL
+        self.authState = authState
     }
 
     /// Presents Garmin's sign-in page inside `ASWebAuthenticationSession`.
@@ -236,7 +247,12 @@ public final class GarminAuthSession: NSObject {
     private func exchangeTicket(_ ticket: String) async throws -> GarminOAuth1Token {
         let consumer = try await OAuth1Signer.fetchConsumer(session: urlSession)
 
-        var components = URLComponents(string: baseURL + GarminSSOEndpoints.preauthorizedPath)!
+        // R3: matches the safe pattern already used in
+        // `GarminClient.authorizedRequest` -- a malformed `baseURL` must
+        // throw, not crash the process.
+        guard var components = URLComponents(string: baseURL + GarminSSOEndpoints.preauthorizedPath) else {
+            throw GarminBootstrapError.invalidExchangeURL
+        }
         components.queryItems = [
             URLQueryItem(name: "ticket", value: ticket),
             URLQueryItem(name: "login-url", value: "https://sso.garmin.com/sso/embed"),
@@ -298,6 +314,12 @@ public final class GarminAuthSession: NSObject {
 
         let token = GarminOAuth1Token(oauthToken: oauthToken, oauthTokenSecret: oauthTokenSecret)
         try await tokenProvider.storeOAuth1Token(token)
+        // R5: nothing else wires a successful bootstrap back to
+        // `GarminAuthState` -- without this, a real successful reconnect
+        // still leaves the UI stuck showing "sign in again". Both types are
+        // `@MainActor`, so this is a same-actor synchronous call, not a
+        // cross-actor `await`.
+        authState?.markAuthenticated()
         return token
     }
 }

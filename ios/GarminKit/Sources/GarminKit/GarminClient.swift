@@ -16,7 +16,7 @@
 
 import Foundation
 
-public enum GarminClientError: Error {
+public enum GarminClientError: Error, Sendable {
     case invalidURL
     case noHTTPResponse
     case unauthorized(body: String?)
@@ -166,25 +166,62 @@ public struct GarminClient: Sendable {
     }
 
     private func get(path: String, query: [URLQueryItem]) async throws -> (Data, HTTPURLResponse) {
-        let request = try await authorizedRequest(method: "GET", path: path, query: query)
-        return try await send(request)
+        try await send { try await self.authorizedRequest(method: "GET", path: path, query: query) }
     }
 
     private func post(path: String, body: some Encodable) async throws -> (Data, HTTPURLResponse) {
-        var request = try await authorizedRequest(method: "POST", path: path)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try Self.encoder.encode(body)
-        return try await send(request)
+        try await send {
+            var request = try await self.authorizedRequest(method: "POST", path: path)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try Self.encoder.encode(body)
+            return request
+        }
     }
 
     private func delete(path: String, body: some Encodable) async throws -> (Data, HTTPURLResponse) {
-        var request = try await authorizedRequest(method: "DELETE", path: path)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try Self.encoder.encode(body)
-        return try await send(request)
+        try await send {
+            var request = try await self.authorizedRequest(method: "DELETE", path: path)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try Self.encoder.encode(body)
+            return request
+        }
     }
 
-    private func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+    /// Builds and sends a request via `requestBuilder`, retrying exactly
+    /// once with a forced-fresh OAuth2 token if the FIRST attempt comes back
+    /// 401 (R6).
+    ///
+    /// A 401 from a data route (as opposed to the OAuth1->OAuth2 exchange
+    /// route itself, which `TokenProvider.refreshAccessToken` handles on its
+    /// own terms) has no single confirmed cause -- the write routes in
+    /// particular are explicitly DOCUMENTED-BUT-UNCONFIRMED (see this file's
+    /// header) and could plausibly 401 for a reason other than "the cached
+    /// OAuth2 token happened to expire between mint and use". Forcing one
+    /// fresh exchange and retrying once costs nothing on the (expected to be
+    /// common) happy path, and gives a real chance of recovery before an
+    /// outbox entry burns one of its bounded retry attempts or an app-layer
+    /// read call gives up.
+    ///
+    /// `requestBuilder` is re-invoked (not just re-signed) for the retry so
+    /// it picks up whatever fresh token `tokenProvider.accessToken()` now
+    /// has cached -- `refreshAccessToken()` below populates that cache, so
+    /// this does not trigger a second network exchange.
+    ///
+    /// If the long-lived OAuth1 token itself is dead, `refreshAccessToken()`
+    /// throws `GarminAuthError.longLivedTokenExpired` here and that
+    /// propagates straight through, same as any other token error from
+    /// `authorizedRequest`.
+    private func send(_ requestBuilder: () async throws -> URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let request = try await requestBuilder()
+        let (data, http) = try await perform(request)
+        guard http.statusCode == 401 else { return (data, http) }
+
+        _ = try await tokenProvider.refreshAccessToken()
+        let retryRequest = try await requestBuilder()
+        return try await perform(retryRequest)
+    }
+
+    private func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         let (data, response) = try await urlSession.data(for: request)
         guard let http = response as? HTTPURLResponse else {
             throw GarminClientError.noHTTPResponse

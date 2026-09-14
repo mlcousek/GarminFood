@@ -180,6 +180,51 @@ final class ReconciliationTests: XCTestCase {
         XCTAssertEqual(actuallyDeleted, ["log-b"])
     }
 
+    func testGenuinelyDuplicateLocalEntriesBothSurviveReconciliation() async throws {
+        // Two DISTINCT local entries that happen to share the exact same
+        // match key (date, mealType, foodId, servingId, numberOfUnits) --
+        // e.g. the user genuinely logged the same snack twice. Both were
+        // delivered, so Garmin's re-read legitimately shows two matching
+        // entries (B1). Resolving these independently (the pre-fix
+        // behavior) had each of the two per-entry resolutions independently
+        // see "2 Garmin matches" and each try to delete the second copy down
+        // to 1 -- net-deleting one of the two real entries. Grouped
+        // resolution must instead see "2 locally expected, 2 found" and
+        // confirm both without deleting anything.
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-a", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-b", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:05:00Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+        let storeURL = FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-reconcile-\(UUID().uuidString).json")
+        let outbox = Outbox(store: OutboxStore(fileURL: storeURL))
+        let reconciliation = Reconciliation(outbox: outbox)
+
+        let firstEntry = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0)
+        let secondEntry = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0)
+        var sentFirst = firstEntry
+        sentFirst.state = .sent
+        var sentSecond = secondEntry
+        sentSecond.state = .sent
+        try await outbox.requeue(sentFirst)
+        try await outbox.requeue(sentSecond)
+
+        let outcomes = await reconciliation.reconcile(delivered: [sentFirst, sentSecond], using: client)
+
+        XCTAssertEqual(outcomes.count, 2)
+        var confirmedLogIds: Set<String> = []
+        for outcome in outcomes {
+            guard case .confirmed(let logId?) = outcome.verdict else {
+                return XCTFail("both genuinely-distinct duplicates must be confirmed (with a non-nil logId), not treated as an excess duplicate to delete; got \(outcome.verdict)")
+            }
+            confirmedLogIds.insert(logId)
+        }
+        XCTAssertEqual(confirmedLogIds, Set(["log-a", "log-b"]), "each entry should be confirmed against one of the two real Garmin copies")
+
+        let actuallyDeleted = await client.deletedLogIds
+        XCTAssertTrue(actuallyDeleted.isEmpty, "neither of two genuinely-distinct local entries sharing a match key may be deleted from Garmin")
+    }
+
     func testReconcileConfirmsASingleMatch() async throws {
         let log = makeLog([LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "log-1", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "t")])
         let client = FakeReconcilingClient(log: log)

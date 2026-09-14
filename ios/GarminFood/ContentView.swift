@@ -1,42 +1,41 @@
 // ContentView.swift
 //
-// Placeholder UI. Gets replaced by the real food-log flow once
-// add-food-log-core lands — this exists only so the app has something to
-// show and something for `xcodebuild` to actually compile.
+// The app's real root screen (add-food-log-core, tasks 12-16) -- replaces
+// the earlier hello-world/Keychain-spike-adjacent placeholder (task 6.1).
+// Hosts the food catalog as the primary screen, a loud auth banner
+// (add-garmin-auth-and-sync task 11.1) above it, and triggers a best-effort
+// outbox drain on foreground (task 9.5's foreground half -- see
+// AppEnvironment.refreshOnForeground()'s doc comment for what's
+// deliberately NOT done yet, i.e. BGAppRefreshTask registration).
 //
-// Also carries task 6.4's write half of the Keychain-sharing spike: on
-// appear, it writes a fresh timestamped value to the shared Keychain group.
-// The widget extension (GarminFoodWidget/KeychainCheckWidget.swift) tries to
-// read it back — add that widget to the Home Screen to see the result.
+// The Keychain-sharing spike itself (ios/Shared/KeychainSpike.swift,
+// GarminFoodWidget/KeychainCheckWidget.swift) is untouched and still exists
+// as its own files -- this view simply no longer triggers it, since its
+// finding is already settled and recorded (openspec/config.yaml's Hard
+// Constraints: confirmed 2026-09-14, `errSecMissingEntitlement`).
 
 import SwiftUI
 
+@MainActor
 struct ContentView: View {
-    @State private var writeStatus: String = "…"
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var environment = AppEnvironment()
 
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "fork.knife.circle")
-                .font(.system(size: 48))
-            Text("GarminFood")
-                .font(.title)
-            Text("Build pipeline check — task 6.1")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            Divider()
-            Text("Keychain write (task 6.4): \(writeStatus)")
-                .font(.caption)
-                .multilineTextAlignment(.center)
-            Text("Add the Keychain Spike widget to your Home Screen to see whether the extension can read it.")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+        NavigationStack {
+            FoodCatalogView()
+                .safeAreaInset(edge: .top) {
+                    AuthBannerView()
+                        .padding(.top, Theme.Spacing.xs)
+                }
         }
-        .padding()
-        .onAppear {
-            let value = "written-by-app-\(Int(Date().timeIntervalSince1970))"
-            let status = KeychainSpike.write(value)
-            writeStatus = status == errSecSuccess ? "OK (\(value))" : "FAILED (status \(status))"
+        .environment(environment)
+        .task {
+            await environment.refreshOnForeground()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else { return }
+            Task { await environment.refreshOnForeground() }
         }
     }
 }

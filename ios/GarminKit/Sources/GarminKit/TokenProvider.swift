@@ -88,7 +88,7 @@ private struct GarminOAuth2ExchangeResponse: Decodable {
 
 // MARK: - Keychain storage
 
-enum GarminKeychainError: Error {
+enum GarminKeychainError: Error, Sendable {
     case writeFailed(status: OSStatus)
     case readFailed(status: OSStatus)
 }

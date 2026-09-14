@@ -60,6 +60,17 @@ jobs:
           cd GarminKit
           swift test
 
+      - name: Run FoodLogCore unit tests
+        # Pure domain logic (quick-pick ranking, serving-default memory,
+        # meal-type-from-time-of-day defaulting, catalog search adaptation,
+        # barcode normalisation, the confirm-and-log coordinator) -- same
+        # rationale as the GarminKit step above. This package depends on
+        # GarminKit via a local path dependency (FoodLogCore/Package.swift),
+        # which SwiftPM resolves automatically.
+        run: |
+          cd FoodLogCore
+          swift test
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
