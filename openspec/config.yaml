@@ -1,0 +1,105 @@
+schema: spec-driven
+
+context: |
+  GarminFood — a personal iOS app for logging food in two taps and having it
+  land in Garmin Connect.
+
+  ## Why this project exists
+
+  Garmin shipped native nutrition tracking in Connect+ in January 2026, but it
+  is buried several taps deep inside the Connect app and has no iOS widget. The
+  goal is Yazio-grade entry speed (lock screen, Control Center, Siri) with
+  Garmin Connect as the system of record, so consumed calories sit next to
+  burned calories in the same place as every other metric.
+
+  ## Owner context
+
+  Single user, single Garmin account, iPhone + Apple Watch, Czech-speaking
+  (food search must work for Czech products, not just US ones). Already runs a
+  substantial Obsidian vault with a working Garmin sync pipeline in Node
+  (scripts/lib/garmin.mjs) that this project deliberately reuses rather than
+  reinvents.
+
+  ## Hard constraints
+
+  - Garmin has NO public write API for nutrition. The Health API is read-only
+    for partners; nutrition writes are not offered at all. Everything here
+    rides Garmin's private mobile API (connectapi.garmin.com), which is
+    undocumented, unversioned, and outside Garmin's terms of use. This is
+    personal-use interop with the owner's own account and own data.
+  - Garmin put its SSO login endpoints behind Cloudflare bot protection in
+    March 2026. Scripted login is dead; `garth` was deprecated the same month.
+    Tokens can only be obtained through a real browser session. Any design that
+    assumes username/password login is already broken.
+  - The OAuth1 token lasts roughly one year and is the only thing that can mint
+    OAuth2 access tokens. Losing it means a manual re-bootstrap, not a crash
+    loop. Treat re-bootstrap as a normal, expected maintenance event.
+  - Private-API routes change without notice. Every endpoint this project
+    depends on must be recorded with the date it was last observed working, so
+    a future failure can be told apart from a mistaken URL.
+  - No paid Apple Developer Program membership for now (owner's decision,
+    2026-09-14): ship on a free Personal Team, distributed via AltStore/
+    SideStore with its automatic 7-day resign, not manual Xcode reinstalls
+    (which would wipe local data and Keychain items every week instead of
+    just re-signing the same binary in place). A free Personal Team CANNOT
+    use App Groups, Push Notifications, iCloud or HealthKit. This rules out
+    a shared file container between the app and its widget/Control
+    extensions — the architecture must not depend on one. Keychain Sharing
+    is a separate capability from App Groups and is plausibly available on
+    a free team, but this is unverified and must be spiked early, not
+    assumed. Revisit paying $99/yr once the free-tier ceiling is felt in
+    practice (most likely: push-based widget updates, or App-Group-shared
+    local storage becoming worth the friction).
+
+  ## Ground truth established by probing (2026-09-14)
+
+  Run against the owner's live account, read-only, with the existing OAuth1
+  token. These are observations, not assumptions:
+
+  - Auth works. OAuth1 -> OAuth2 exchange at
+    POST /oauth-service/oauth/exchange/user/2.0 returns a ~24h access token.
+  - GET /nutrition-service/food/search?searchExpression=<term> returns 200 with
+    real data. Garmin's food database is FatSecret-backed. Results carry
+    foodId, foodName, foodType, source, regionCode, languageCode, several
+    nutritionContents entries (servingId, servingUnit, numberOfUnits, calories,
+    carbs, protein, fat, fiber, sugar, saturatedFat, cholesterol, sodium,
+    potassium, vitaminA, vitaminC, calcium, iron), plus isFavorite, isRecent,
+    servingQty and logTimestamp.
+  - Czech terms return results (`rohlik` -> 13 hits), so the database is not
+    US-only. regionCode/languageCode are NOT accepted as query parameters.
+  - GET /usersummary-service/usersummary/daily?calendarDate=<d> exposes
+    consumedKilocalories and remainingKilocalories. Currently null — nothing
+    has ever been logged on this account. This is the field the whole project
+    is trying to populate.
+  - The food-LOG read and write routes are still unknown. Every guessed path
+    (/food/log/date/{d}, /diary/{d}, /food/favorite, /food/recent, ...) returns
+    404. Note this means the vault's existing getNutritionLog() has been
+    silently returning null into its catch block since the day it was written.
+
+  ## Conventions
+
+  - Local-first. A food entry is saved to the device store and shown to the
+    user before any network call. Garmin is a sync target, never a blocking
+    dependency. The UI must never wait on connectapi.garmin.com.
+  - Every Garmin route is recorded in one place with its last-verified date and
+    observed status codes. Undocumented guesses do not ship.
+  - Failures degrade, they do not crash — except auth failure, which must be
+    loud and actionable ("sign in again"), because silent auth failure is how
+    the vault's nutrition sync went unnoticed.
+  - Rate limiting is respected: honour Retry-After, back off exponentially, and
+    treat 429 as "stop and resume later", not "retry harder".
+
+rules:
+  proposal:
+    - Always include a "## Non-goals" section naming which other change owns excluded work.
+    - State "**Depends on**:" and "**Unblocks**:" in "## Impact" so ordering is explicit.
+  specs:
+    - Requirements describe observable behaviour, not implementation detail.
+    - Any requirement that depends on an undocumented Garmin route must name the route and its last-verified date.
+    - A scenario that cannot fail is not a scenario.
+  design:
+    - Record what was probed, what answered, and on what date — evidence over assertion.
+    - Name the fallback for every private-API dependency, because they will break.
+  tasks:
+    - A task that probes a live endpoint must record the observed status code and payload shape.
+    - Never include a task that writes to the Garmin account before the write contract is documented.
