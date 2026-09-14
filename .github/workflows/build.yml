@@ -6,10 +6,17 @@
 # public, so macOS runner minutes are free and unlimited — the usual 10x
 # minute-multiplier only applies to private-repo quotas.
 #
-# This is task 6.1: prove the basic loop (generate project -> build) works
-# at all, on a Simulator destination that needs no code signing. Signing a
-# FREE Apple ID headlessly, entirely from CI, is task 6.2 — a separate,
-# harder problem, deliberately not conflated with this one.
+# This is task 6.1 (Simulator build, proves the basic loop works) and 6.2
+# (an unsigned device archive, packaged as an unsigned .ipa artifact).
+#
+# CI does NOT sign anything, and this is deliberate, not an unfinished spike:
+# fastlane's cert/sigh have never supported free/personal-team Apple IDs
+# (unresolved on fastlane's own tracker since 2017) -- free-tier signing
+# runs through a private Xcode-GUI-only flow with no API surface to drive
+# from CI. See add-garmin-auth-and-sync design.md D9's revision. Signing
+# happens locally instead, via Sideloadly on the owner's Windows machine,
+# with the owner's Apple ID typed directly into Sideloadly's own window --
+# it never exists as a secret anywhere in this project's infrastructure.
 
 name: Build iOS app
 
@@ -60,3 +67,39 @@ jobs:
             -scheme GarminFood \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Archive for a real device, unsigned
+        run: |
+          xcodebuild archive \
+            -project GarminFood.xcodeproj \
+            -scheme GarminFood \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/GarminFood.xcarchive \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package the archive as an unsigned .ipa
+        # An .ipa is just Payload/<AppName>.app zipped up. Signing happens
+        # locally on the owner's Windows machine via Sideloadly, never here
+        # -- see the header comment above and design.md D9.
+        run: |
+          set -e
+          APP_PATH="build/GarminFood.xcarchive/Products/Applications/GarminFood.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "::error::Expected app bundle not found at $APP_PATH"
+            find build/GarminFood.xcarchive -maxdepth 4
+            exit 1
+          fi
+          mkdir -p build/Payload
+          cp -R "$APP_PATH" build/Payload/
+          cd build && zip -r -q GarminFood-unsigned.ipa Payload
+          cd .. && ls -la build/GarminFood-unsigned.ipa
+
+      - name: Upload unsigned .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GarminFood-unsigned-ipa
+          path: ios/build/GarminFood-unsigned.ipa
+          retention-days: 14

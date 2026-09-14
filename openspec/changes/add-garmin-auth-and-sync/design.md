@@ -98,11 +98,19 @@ Xcode is macOS-only. That is a fact about the platform, not a preference, and no
 
 This is normally a paid convenience (macOS runner minutes carry a 10x multiplier against a private repo's included quota) but this repository is public, and **GitHub Actions is free and unlimited on public repositories, macOS runners included**. The cost genuinely is $0, provided the repo stays public — worth stating as a real constraint this decision depends on, not an incidental detail.
 
-The resulting `.ipa` is sideloaded from the owner's Windows machine via AltServer for Windows (or Sideloadly), both of which install and 7-day-resign against a free Apple ID without ever touching a Mac. Combined with D8, the full loop — write, build, sign, install, use — never requires macOS hardware the owner owns or rents.
+The resulting `.ipa` is sideloaded from the owner's Windows machine. Combined with D8, the full loop — write, build, sign, install, use — never requires macOS hardware the owner owns or rents.
 
 *What this costs in practice, stated plainly:* no SwiftUI live previews, no interactive debugger, no Instruments profiling. Iteration is edit → push → wait for a CI build (macOS runners are slower to provision than a local build) → download the artifact → sideload → test on the phone. This is real friction for UI-heavy work like widget layout, and it is accepted deliberately rather than glossed over.
 
-*What still needs a spike, not an assumption:* headless code-signing with a **free** Apple ID inside CI. Apple's automatic-signing convenience is largely an Xcode-GUI feature — a human clicking through Xcode once against a given Apple ID does some of the certificate/profile bootstrapping implicitly. Doing this entirely from a CI script, with no human ever opening Xcode against this account, is less-traveled territory than the paid-account + `fastlane match` pattern most CI guides assume. Task 6.0 in this change exists to find out whether it works cleanly or needs a one-time manual Xcode step (which would then require borrowing a Mac once, not owning one).
+**Revised after research (2026-09-14): CI does not sign anything.** The original plan here was to code-sign a free Apple ID headlessly inside CI, treated as an open spike. Research settled it, and the answer is not "yes with effort" — it is "no, and stop trying." `fastlane`'s `cert`/`sigh` tools, the standard way to automate Apple certificate and provisioning-profile management, have never supported free/personal-team Apple IDs; this is a specifically-requested, unresolved limitation on fastlane's own issue tracker dating back to 2017 and still open. The reason is structural, not a missing feature: a free Apple ID has no access to the Apple Developer Portal's certificate/profile management surface at all — that surface is gated on a paid Developer Program membership. Xcode's free-tier "automatic signing" works through a separate, private, GUI-only flow, not through anything `fastlane`, `spaceship`, or a CI script can drive.
+
+So the design changes to match how every free-tier sideloading tool (AltStore, SideStore, Sideloadly) actually works: **signing happens locally, once, using the owner's Apple ID typed directly into a purpose-built local tool — never in CI, never as a GitHub secret, never seen by anyone building this project.**
+
+- CI archives with signing fully disabled (`CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO`, `archive` action, not `build`), extracts the `.app` from the resulting `.xcarchive`, repackages it as an unsigned `.ipa` (an `.app` inside a `Payload/` folder, zipped), and uploads it as a workflow artifact.
+- The owner downloads that unsigned `.ipa` and opens it in **Sideloadly** on their Windows machine. Sideloadly signs it with a free-tier certificate it generates against the owner's own Apple ID — entered into Sideloadly's own window, going straight to Apple's servers — and installs it onto the iPhone over USB.
+- The 7-day resign cycle (D8) is Sideloadly/SideStore's job thereafter, using the same locally-held credential, never CI's.
+
+This is strictly better than the original plan, not just a fallback: the Apple ID never exists as a secret anywhere in this project's infrastructure at all.
 
 ## Risks / Trade-offs
 
