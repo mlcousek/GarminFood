@@ -32,10 +32,10 @@
     {
       "operation": "foodSearchAutocomplete",
       "method": "GET",
-      "path": "/nutrition-service/food/search/autocomplete/",
+      "path": "/nutrition-service/food/search/autocomplete/?searchExpression={term}",
       "lastVerified": "2026-09-14",
       "observedStatus": 400,
-      "notes": "Route exists (confirmed via probe-garmin-nutrition.mjs) but needs a query param -- exact param name not yet elicited from the 400 body. Try the same 'searchExpression' name foodSearch uses."
+      "notes": "Confirmed param name via 400 body: 'getAutocompleteSuggestions.arg0' searchExpression query parameter must be provided -- same param name as foodSearch. Not yet tested with a real term."
     },
     {
       "operation": "foodSearchByBarcode",
@@ -120,10 +120,10 @@
     {
       "operation": "calorieSummaryDaily",
       "method": "GET",
-      "path": "/nutrition-service/calorie/summary/daily",
+      "path": "/nutrition-service/calorie/summary/daily?startDate={date}&endDate={date}",
       "lastVerified": "2026-09-14",
-      "observedStatus": 400,
-      "notes": "Route exists but needs query params (400, exact params not yet elicited). Sibling: /nutrition-service/calorie/summary/weekly. Unconfirmed whether this differs meaningfully from dailyNutritionContent inside dailyFoodLog."
+      "observedStatus": 200,
+      "notes": "Confirmed live with a real date range. Accepts a MULTI-DAY range in one call -- more efficient than calling dailyFoodLog once per day for a trend view. Response: { startDate, endDate, caloriesBurned, mealNutritionContents: [], dailyNutritionContents: [{ mealDate, nutritionContent?: { calories, carbs, fat, protein, otherCalories, caloriesPercentage }, nutritionGoals?: { calories, adjustedCalories, carbs, adjustedCarbs, fat, adjustedFat, protein, adjustedProtein } }], averageNutritionContents: {} }. Days with no logged food omit nutritionContent/nutritionGoals entirely (bare { mealDate }) rather than returning zeros -- treat a missing key as 'nothing logged', not an error. nutritionGoals values cross-checked exactly against dailyFoodLog's dailyNutritionGoals for the same day (2300/3128/316/430/64/87/115/156) -- consistent between routes. Sibling: /nutrition-service/calorie/summary/weekly, same param shape presumed, not tested."
     }
   ],
   "write": [
