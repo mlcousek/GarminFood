@@ -1,10 +1,13 @@
-## 6. Free-tier project skeleton and the Keychain-sharing spike
+## 6. Mac-less build pipeline, free-tier project skeleton, and the Keychain-sharing spike
 
-- [ ] 6.1 **Spike, before anything else.** Create a throwaway app + widget extension pair on a free Apple Personal Team. Add the Keychain Sharing capability (`keychain-access-groups` entitlement) to both targets with a common group name. Write an item from the app, read it from the extension. Record the result — this decides whether D3's shared-token design or its degraded fallback is what gets built.
-- [ ] 6.2 Install SideStore (or AltStore) and confirm it can install and silently resign the throwaway app without deleting it. Confirm a value written before a resign is still present after — this is what makes the 7-day cycle safe for Keychain and local data instead of destructive.
-- [ ] 6.3 Create the real Xcode project with three targets: app, widget extension, and Control (the Control may live in the widget extension bundle).
-- [ ] 6.4 Apply 6.1's result: register the shared Keychain access group across all targets if the spike succeeded, or scaffold independent per-extension bootstrap if it did not.
-- [ ] 6.5 Create the `GarminKit` local Swift package. It must not import UIKit or SwiftUI, so both the app and extensions can depend on it.
+- [ ] 6.1 **Spike, before anything else — the build pipeline itself.** Create a minimal throwaway Xcode project (single target, "hello world") in this repo, add a `.github/workflows/build.yml` running on `macos-latest`, and get `xcodebuild` to compile it in CI. This confirms the basic Mac-less loop before any real feature work depends on it — the repo is public, so this costs nothing (design.md D9).
+- [ ] 6.2 **Spike.** Extend 6.1's CI job to code-sign and export a `.ipa` using a **free** Apple ID with no paid Developer Program membership, entirely from the CI script — no interactive Xcode session against this Apple ID at any point. This is the least-traveled part of the whole plan (most CI guides assume a paid account + `fastlane match`). Record exactly what worked; if headless signing on a free account turns out to be a dead end, the fallback is a one-time manual export from a borrowed Mac, not owning one.
+- [ ] 6.3 Download the signed `.ipa` artifact from the Actions run and sideload it onto the iPhone from the Windows machine using AltServer for Windows (or Sideloadly). Confirm the app installs and opens.
+- [ ] 6.4 Create a throwaway app + widget extension pair (still via the CI pipeline from 6.1-6.3, not local Xcode). Add the Keychain Sharing capability (`keychain-access-groups` entitlement) to both targets with a common group name. Write an item from the app, read it from the extension. Record the result — this decides whether D3's shared-token design or its degraded fallback is what gets built.
+- [ ] 6.5 Install SideStore (or AltStore) and confirm it can install and silently resign the throwaway app without deleting it. Confirm a value written before a resign is still present after — this is what makes the 7-day cycle safe for Keychain and local data instead of destructive.
+- [ ] 6.6 Create the real Xcode project with three targets: app, widget extension, and Control (the Control may live in the widget extension bundle). Wire it into the CI workflow from 6.1.
+- [ ] 6.7 Apply 6.4's result: register the shared Keychain access group across all targets if the spike succeeded, or scaffold independent per-extension bootstrap if it did not.
+- [ ] 6.8 Create the `GarminKit` local Swift package. It must not import UIKit or SwiftUI, so both the app and extensions can depend on it.
 
 ## 7. OAuth1 signing and token exchange
 

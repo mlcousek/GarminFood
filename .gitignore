@@ -1,4 +1,5 @@
 node_modules/
+.serena/
 
 # Defensive: none of the tools currently write credential files into this
 # repo, but if that ever changes, these patterns should catch it before a

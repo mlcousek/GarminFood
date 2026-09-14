@@ -92,6 +92,18 @@ AltStore or SideStore resign the *same installed binary* in place on a schedule,
 
 *Consequence:* the setup task in this change is "install via SideStore" up front, not "reinstall via Xcode every week" — the latter is a plausible-sounding trap that silently breaks D2 through D6.
 
+### D9 — Build on GitHub Actions' macOS runners; the owner has no Mac
+
+Xcode is macOS-only. That is a fact about the platform, not a preference, and no amount of clever tooling changes it — Swift *language* tooling exists cross-platform, but WidgetKit, AppIntents, SwiftUI's iOS target, and Apple's code-signing toolchain do not run outside macOS. Since the owner has no Mac (confirmed 2026-09-14), the build step moves to CI: a `.github/workflows/build.yml` running on a `macos-latest` GitHub-hosted runner does `xcodebuild`/`xcodebuild -exportArchive`, producing a signed `.ipa` as a workflow artifact.
+
+This is normally a paid convenience (macOS runner minutes carry a 10x multiplier against a private repo's included quota) but this repository is public, and **GitHub Actions is free and unlimited on public repositories, macOS runners included**. The cost genuinely is $0, provided the repo stays public — worth stating as a real constraint this decision depends on, not an incidental detail.
+
+The resulting `.ipa` is sideloaded from the owner's Windows machine via AltServer for Windows (or Sideloadly), both of which install and 7-day-resign against a free Apple ID without ever touching a Mac. Combined with D8, the full loop — write, build, sign, install, use — never requires macOS hardware the owner owns or rents.
+
+*What this costs in practice, stated plainly:* no SwiftUI live previews, no interactive debugger, no Instruments profiling. Iteration is edit → push → wait for a CI build (macOS runners are slower to provision than a local build) → download the artifact → sideload → test on the phone. This is real friction for UI-heavy work like widget layout, and it is accepted deliberately rather than glossed over.
+
+*What still needs a spike, not an assumption:* headless code-signing with a **free** Apple ID inside CI. Apple's automatic-signing convenience is largely an Xcode-GUI feature — a human clicking through Xcode once against a given Apple ID does some of the certificate/profile bootstrapping implicitly. Doing this entirely from a CI script, with no human ever opening Xcode against this account, is less-traveled territory than the paid-account + `fastlane match` pattern most CI guides assume. Task 6.0 in this change exists to find out whether it works cleanly or needs a one-time manual Xcode step (which would then require borrowing a Mac once, not owning one).
+
 ## Risks / Trade-offs
 
 - **Cloudflare may extend bot protection to the exchange endpoint** → then even the OAuth1→OAuth2 exchange fails and no on-device design works. Mitigation: none technical. The fallback is the Cronometer bridge from the previous change's D4. This is the single biggest existential risk and it is outside our control.
