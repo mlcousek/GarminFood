@@ -126,7 +126,8 @@ No task in this change writes to the account. The first write happens in `add-ga
 
 ## Open Questions
 
-1. **Does this account have Connect+?** Unresolved by probing. Settled by task 1.4.
-2. **Is the food log per-day or per-entry addressable?** `logTimestamp` on search results hints at per-entry. Settled by D1.
-3. **What is the meal-type enumeration?** The vault's speculative parser guesses `mealName` with underscores (`BREAKFAST`, `MORNING_SNACK`?). Unconfirmed.
-4. **Can a custom food be created via API?** Matters for Czech foods missing from FatSecret. If not, the fallback is logging a generic food with an adjusted serving quantity.
+1. **Does this account have Connect+?** Not directly confirmed via Settings, but strongly implied: `GET /nutrition-service/food/logs/{date}` returned real, current-day logged food. See task 1.1.
+2. **Is the food log per-day or per-entry addressable?** **Answered.** Per-entry: each `loggedFoods` item carries its own `logId`, and `DELETE /nutrition-service/food/logs` takes a list of `logIds`. The per-day route (`food/logs/{date}`) is a read aggregation, not the entry's identity.
+3. **What is the meal-type enumeration?** **Partially answered.** Confirmed live values: `BREAKFAST`, `LUNCH`, `SNACKS`. `DINNER` presumed but not yet observed on this account.
+4. **Can a custom food be created via API?** **Likely yes.** `POST /nutrition-service/customFood` and `PUT/DELETE /nutrition-service/customFood/{customFoodUuid}` were found in the decompiled client (string literals only — not yet exercised live). If it turns out not to work, the fallback remains logging a generic food with an adjusted serving quantity.
+5. **What does the actual write route look like?** **Answered — this was the whole point of D1.** `POST /nutrition-service/food/logs`, found by downloading and scanning the Garmin Connect Android client (v5.29) rather than continuing to guess paths. Full detail in `docs/garmin-routes.json` and `docs/garmin-food-log-contract.md`. Field order within the request body remains unconfirmed (dex string pools are alphabetically sorted, destroying source order), and the first real write is still a deliberate, human-supervised step — not something decided by decompilation alone.

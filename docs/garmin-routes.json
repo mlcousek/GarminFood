@@ -1,0 +1,192 @@
+{
+  "$schema": "one entry per logical Garmin Connect operation this project depends on. method+path from live probing or from decompiling the Garmin Connect Android client (v5.29, 2026-09). lastVerified is when the status below was actually observed. observedStatus is what came back, not what is hoped for.",
+  "lastFullSweep": "2026-09-14",
+  "auth": [
+    {
+      "operation": "exchangeOAuth1ForOAuth2",
+      "method": "POST",
+      "path": "/oauth-service/oauth/exchange/user/2.0",
+      "base": "connectapi.garmin.com",
+      "lastVerified": "2026-09-14",
+      "observedStatus": 200,
+      "notes": "OAuth1-signed request, returns an OAuth2 access token valid ~24h (observed expires_in=88227s). This is the only working auth path since Garmin blocked scripted SSO login behind Cloudflare in March 2026 -- see garth's deprecation. Verified by live use in tools/lib/garmin-auth.mjs."
+    }
+  ],
+  "read": [
+    {
+      "operation": "dailyWellnessSummary",
+      "method": "GET",
+      "path": "/usersummary-service/usersummary/daily?calendarDate={date}",
+      "lastVerified": "2026-09-14",
+      "observedStatus": 200,
+      "notes": "Legacy/general daily summary. Exposes consumedKilocalories, remainingKilocalories, activeKilocalories, bmrKilocalories -- but consumedKilocalories was observed null even on a date where nutrition-service/food/logs/{date} showed real logged food. Do not treat this as the nutrition source of truth; it appears to be a separate, disconnected field. Kept only as a control route to confirm auth is alive."
+    },
+    {
+      "operation": "foodSearch",
+      "method": "GET",
+      "path": "/nutrition-service/food/search?searchExpression={term}",
+      "lastVerified": "2026-09-14",
+      "observedStatus": 200,
+      "notes": "FatSecret- and Garmin-sourced results. Czech terms return results. Parameter name was discovered from a 400 error body naming 'searchFood.arg0.searchExpression'. Response: { results: [{ type, foodMetaData: { foodId, foodName, foodType, source (FATSECRET|GARMIN), regionCode, languageCode }, nutritionContents: [{ servingId, servingUnit, numberOfUnits, calories, carbs, protein, fat, fiber, sugar, saturatedFat, monounsaturatedFat, polyunsaturatedFat, cholesterol, sodium, potassium, vitaminA, vitaminC, calcium, iron, unitHasServing }], isFavorite, isRecent, servingQty, logTimestamp }], moreDataAvailable }. regionCode/languageCode are response-only, not accepted as query filters (tried, got 400)."
+    },
+    {
+      "operation": "foodSearchAutocomplete",
+      "method": "GET",
+      "path": "/nutrition-service/food/search/autocomplete/",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client (classes9.dex). Not yet exercised live -- exact query param and trailing-slash requirement unconfirmed."
+    },
+    {
+      "operation": "foodSearchByBarcode",
+      "method": "GET",
+      "path": "/nutrition-service/food/search/barCode?barCode={ean}",
+      "lastVerified": "2026-09-14",
+      "observedStatus": 404,
+      "notes": "Route confirmed to exist: no-param request returns 400 naming 'getFoodByBarCode.arg1' and 'barCode query parameter must be provided'. A real-looking EAN-13 (8594001020010) returned 404, which is 'no product for this barcode', not 'route missing' -- distinguishable because the no-param case was 400, not 404. Needs a barcode known to exist in the DB to confirm the success payload shape."
+    },
+    {
+      "operation": "foodSearchImageRecognition",
+      "method": "POST",
+      "path": "/nutrition-service/food/search/image-recognition",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Write-shaped (image upload), not exercised. Out of scope for this project's MVP -- app's own VisionKit barcode scan covers the barcode case; AI photo recognition is a stretch goal."
+    },
+    {
+      "operation": "dailyFoodLog",
+      "method": "GET",
+      "path": "/nutrition-service/food/logs/{date}",
+      "lastVerified": "2026-09-14",
+      "observedStatus": 200,
+      "notes": "THE CORRECT read route -- plural 'logs', not 'log'. The vault's scripts/lib/garmin.mjs calls the singular '/nutrition-service/food/log/date/{date}', which 404s; that one-letter difference is why getNutritionLog() has silently returned null since it was written. Confirmed live with real data present on this account for 2026-09-14. Response top level: { mealDate, dayStartTime, dayEndTime, dailyViewType, dailyNutritionGoals: { calories, adjustedCalories, carbs, adjustedCarbs, fat, adjustedFat, protein, adjustedProtein }, dailyNutritionContent: { calories, carbs, fat, protein, caloriesPercentage }, mealDetails: [{ meal: { mealId, mealIndex, mealName (BREAKFAST/...), displayOrder, startTime, endTime, goals, editable, translated }, mealNutritionContent, mealNutritionGoals, loggedFoods: [{ id, logId, logTimestamp, logSource (GCM observed), logCategory (REGULAR_LOG observed), servingQty, foodMetaData, nutritionContent, isFavorite, mealId, customMealId, mealTime, foodInactive, type }] }], loggedFoodsWithServingSizes: [...] }. dayStartTime/dayEndTime were 04:00:00/17:00:00 on the observed day -- the nutrition 'day' window is configurable and is NOT simple local midnight-to-midnight; account for this when reading 'today'."
+    },
+    {
+      "operation": "mealsForDate",
+      "method": "GET",
+      "path": "/nutrition-service/meals/{date}",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Likely an alternate/lighter view of the same day's meals as dailyFoodLog's mealDetails. Not yet exercised live."
+    },
+    {
+      "operation": "recentFoods",
+      "method": "GET",
+      "path": "/nutrition-service/food/recent/{asOfDate}",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Not yet exercised live."
+    },
+    {
+      "operation": "favoriteFoods",
+      "method": "GET",
+      "path": "/nutrition-service/favorite/food",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Sibling write routes: POST /nutrition-service/favorite/food, DELETE /nutrition-service/favorite/food/{foodId}, GET/POST /nutrition-service/favorite/meal."
+    },
+    {
+      "operation": "customFoodServingUnits",
+      "method": "GET",
+      "path": "/nutrition-service/metadata/customFoodServingUnits",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Needed to build a valid custom-food creation payload -- see food-catalog capability D4."
+    },
+    {
+      "operation": "countriesAndLanguages",
+      "method": "GET",
+      "path": "/nutrition-service/metadata/countriesAndLanguages",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Not yet exercised."
+    },
+    {
+      "operation": "nutritionSettings",
+      "method": "GET",
+      "path": "/nutrition-service/settings/{date}",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client (also seen as /nutrition-service/settings/{calendarDate}). dailyFoodLog already inlines goals per-day, so this route's exact purpose beyond that is unconfirmed -- possibly the editable goal-setting screen, distinct from the computed/adjusted goals shown in the log."
+    },
+    {
+      "operation": "nutritionCurrentStatus",
+      "method": "GET",
+      "path": "/nutrition-service/user/nutritionCurrentStatus",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Candidate for a cheaper 'just the running total' read than the full dailyFoodLog payload -- worth trying before defaulting every widget refresh to the heavier route."
+    },
+    {
+      "operation": "calorieSummaryDaily",
+      "method": "GET",
+      "path": "/nutrition-service/calorie/summary/daily",
+      "lastVerified": "2026-09-14",
+      "observedStatus": null,
+      "notes": "String literal found in decompiled client. Sibling: /nutrition-service/calorie/summary/weekly. Unconfirmed whether this differs meaningfully from dailyNutritionContent inside dailyFoodLog."
+    }
+  ],
+  "write": [
+    {
+      "operation": "createFoodLogEntry",
+      "method": "POST",
+      "path": "/nutrition-service/food/logs",
+      "lastVerified": "2026-09-14",
+      "observedStatus": "documented, not exercised",
+      "notes": "Inferred from the decompiled client's FoodLogRequestDTO (Kotlin toString fragments: 'FoodLogRequestDTO(date=', ', mealType=', ', foodId=', ', servingId='). Field set is a reasonable inference from the read shape's loggedFoods items (foodId, servingId, numberOfUnits or servingQty, mealId/mealType, date) but is UNCONFIRMED until a real write is attempted -- see add-garmin-auth-and-sync task 11.4. Per this project's rules, no automated tool sends this request; the first attempt is a deliberate, human-supervised one-off against a clearly identifiable test food."
+    },
+    {
+      "operation": "quickAddFoodLogEntry",
+      "method": "POST",
+      "path": "/nutrition-service/food/logs/quickAdd",
+      "lastVerified": "2026-09-14",
+      "observedStatus": "documented, not exercised",
+      "notes": "DTO FoodLogQuickAddRequestDTO(date=...) found in decompiled client. Likely takes a foodId/servingId already known to be a favorite or recent, without needing full serving/macro detail -- a strong candidate for what a Control's quick-pick tap actually calls."
+    },
+    {
+      "operation": "bulkCreateFoodLogEntries",
+      "method": "POST",
+      "path": "/nutrition-service/food/logs/bulk",
+      "lastVerified": "2026-09-14",
+      "observedStatus": "documented, not exercised",
+      "notes": "DTOs BulkFoodLogRequestDTO(action=...) and BulkFoodLogItemDTO(logId=...) found in decompiled client. Out of scope for MVP -- single-entry create covers this project's use case."
+    },
+    {
+      "operation": "deleteFoodLogEntries",
+      "method": "DELETE",
+      "path": "/nutrition-service/food/logs",
+      "lastVerified": "2026-09-14",
+      "observedStatus": "documented, not exercised",
+      "notes": "DTO DeleteFoodRequestDTO(logIds=...) found in decompiled client -- takes a list of logId values (the same logId field observed on read, a hex string without dashes, not the same as foodId). Confirms delete-by-logId is the mechanism reconciliation (garmin-sync duplicate cleanup) should use."
+    },
+    {
+      "operation": "createCustomFood",
+      "method": "POST",
+      "path": "/nutrition-service/customFood",
+      "lastVerified": "2026-09-14",
+      "observedStatus": "documented, not exercised",
+      "notes": "String literal found in decompiled client. Sibling: PUT/DELETE /nutrition-service/customFood/{customFoodUuid}. Answers establish-garmin-nutrition-contract's open question 4 (custom food creation appears possible) but the exact request body is unconfirmed."
+    },
+    {
+      "operation": "createCustomMeal",
+      "method": "POST",
+      "path": "/nutrition-service/customMeal",
+      "lastVerified": "2026-09-14",
+      "observedStatus": "documented, not exercised",
+      "notes": "String literal found in decompiled client. Sibling: DELETE /nutrition-service/customMeal/{customMealId}. Out of scope for MVP (no-recipe-building non-goal in add-food-log-core)."
+    },
+    {
+      "operation": "calculateGoals",
+      "method": "POST",
+      "path": "/nutrition-service/settings/calculateGoals",
+      "lastVerified": "2026-09-14",
+      "observedStatus": "documented, not exercised",
+      "notes": "String literal found in decompiled client. Out of scope -- this project reads goals, it does not set them."
+    }
+  ],
+  "unresolved": [
+    "Whether an entitlement check (Connect+) gates any of the write routes -- no 402/403 has been observed anywhere, but nothing has been written by this project's own tooling either, so absence of a paywall error is not proof one doesn't exist.",
+    "Exact JSON body Content-Type and required fields for createFoodLogEntry -- decompiling gave field NAMES via Kotlin toString() fragments, not their order or which are optional, since dex string pools are alphabetically sorted and destroy source order.",
+    "Whether logSource and logCategory are client-supplied on write or server-assigned (observed as 'GCM' and 'REGULAR_LOG' on reads, suggesting server-assigned, but unconfirmed)."
+  ]
+}
