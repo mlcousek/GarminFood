@@ -19,6 +19,9 @@ import Vision
 
 /// `nil` cases mean "can't scan on this device/OS" -- task 14.3's "degrades
 /// to 'unavailable' messaging on unsupported hardware rather than crashing."
+/// `@MainActor` because `DataScannerViewController.isSupported`/`.isAvailable`
+/// are themselves main-actor-isolated.
+@MainActor
 enum BarcodeScannerAvailability {
     static var isSupported: Bool { DataScannerViewController.isSupported }
     static var isAvailable: Bool { DataScannerViewController.isAvailable }

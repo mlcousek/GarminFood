@@ -81,7 +81,7 @@ private struct GarminSignInSheet: View {
                     Text("Opens Garmin's sign-in page. The redirect back to this app is unconfirmed on this account (design.md task 8.2) -- if it doesn't return here automatically, use the manual option below instead.")
                 }
 
-                Section("Manual fallback") {
+                Section {
                     TextField("Paste service ticket", text: $pastedTicket)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
@@ -89,6 +89,8 @@ private struct GarminSignInSheet: View {
                         Task { await signInWithPastedTicket() }
                     }
                     .disabled(pastedTicket.isEmpty || isWorking)
+                } header: {
+                    Text("Manual fallback")
                 } footer: {
                     Text("Sign in to Garmin Connect in a regular browser, then copy the \"ticket\" value from the redirect URL here.")
                 }
