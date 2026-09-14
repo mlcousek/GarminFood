@@ -1,0 +1,114 @@
+# Garmin food-log write contract
+
+Status as of **2026-09-14**. This is the best evidence available, gathered without ever writing to a Garmin account. It is **not yet confirmed by a real write** — that first write is a deliberate, human-supervised step (see `add-garmin-auth-and-sync` task 11.4), not something any tool in this repo does automatically.
+
+## How this was gathered
+
+1. Live GET probing found the read route `GET /nutrition-service/food/logs/{date}` (see `docs/garmin-routes.json`), which returns real logged entries with a rich, consistent shape.
+2. Downloaded the current Garmin Connect Android client (v5.29, Sep 2026) from a public APK mirror, extracted the base APK's `classes*.dex` files, and scanned them for ASCII string literals. This surfaced every `nutrition-service` route path as compiled string constants, plus Kotlin data-class `toString()` fragments that name DTO fields (e.g. `FoodLogRequestDTO(date=`, `, mealType=`, `, foodId=`).
+3. Cross-referenced those field names against the real shape of a `loggedFoods` entry from step 1, since a create request for the same resource is very likely to accept the fields the read response echoes back.
+
+**Limitation to be explicit about:** the dex string pool is alphabetically sorted, which destroys the original source order of the `toString()` fragments. So this contract has high confidence in *which fields exist*, and only moderate confidence in exactly how they're spelled/nested in the request body, since that requires either a successful write or full bytecode disassembly (not attempted).
+
+## The route
+
+```
+POST /nutrition-service/food/logs
+```
+
+Sibling routes discovered the same way:
+
+| Purpose | Method | Path |
+|---|---|---|
+| Create one entry | POST | `/nutrition-service/food/logs` |
+| Quick-add (favorite/recent) | POST | `/nutrition-service/food/logs/quickAdd` |
+| Bulk create | POST | `/nutrition-service/food/logs/bulk` |
+| Delete | DELETE | `/nutrition-service/food/logs` (body carries `logIds`) |
+
+## Inferred request body (unconfirmed)
+
+Based on `FoodLogRequestDTO` and the shape of a read entry's `foodMetaData`/`nutritionContent`:
+
+```json
+{
+  "date": "2026-09-14",
+  "mealType": "BREAKFAST",
+  "foodId": "17926789",
+  "servingId": "16904392",
+  "numberOfUnits": 1
+}
+```
+
+- `date` — `YYYY-MM-DD`, local nutrition-day date (see the day-window note below).
+- `mealType` — an enum. Confirmed values from real reads, via `meal.mealName`: `BREAKFAST`, `LUNCH`, `SNACKS`. `DINNER` presumed to exist but not yet observed on this account.
+- `foodId` — from a prior search result's `foodMetaData.foodId`.
+- `servingId` — from that same food's chosen `nutritionContents[i].servingId`.
+- `numberOfUnits` — quantity multiplier against that serving (a read entry showed both a fractional `servingQty` at the top level and a `numberOfUnits` inside `nutritionContent` — which of the two a write actually wants is unconfirmed; they may be aliases or may serve different purposes).
+
+**Fields observed on read but presumed server-assigned, not client-supplied:** `id`, `logId`, `logTimestamp`, `logSource` (observed value: `GCM`), `logCategory` (observed value: `REGULAR_LOG`), `mealId` (numeric, appears to be a per-day-instance meal identifier rather than a stable enum — `customMealId` may be the more useful client-facing handle).
+
+## The read shape this must eventually match
+
+A single `loggedFoods` entry, from `GET /nutrition-service/food/logs/{date}` (field names only; no real values reproduced here — this account has real personal food data and it does not belong in a committed doc):
+
+```json
+{
+  "id": "<string, appears to equal foodId>",
+  "logId": "<hex string, unique per log entry, used for delete>",
+  "logTimestamp": "<ISO 8601 datetime>",
+  "logSource": "GCM",
+  "logCategory": "REGULAR_LOG",
+  "servingQty": 0.7,
+  "foodMetaData": {
+    "foodId": "<string>",
+    "foodName": "<string>",
+    "foodType": "<string, e.g. BRAND>",
+    "brandName": "<string, optional>",
+    "source": "GARMIN | FATSECRET",
+    "regionCode": "<string, e.g. CZ>",
+    "languageCode": "<string, e.g. en>",
+    "customFoodType": "FOOD"
+  },
+  "nutritionContent": {
+    "servingId": "<string>",
+    "servingUnit": "<string, e.g. G or 100g>",
+    "numberOfUnits": 100,
+    "calories": 65,
+    "carbs": 13,
+    "protein": 0.3,
+    "fat": 0.4,
+    "fiber": 16,
+    "sugar": 1.6,
+    "saturatedFat": 0.8,
+    "sodium": 4,
+    "unitHasServing": false
+  },
+  "isFavorite": true,
+  "mealId": 966545,
+  "customMealId": 185179,
+  "mealTime": "06:01:41",
+  "foodInactive": false,
+  "type": "FOOD"
+}
+```
+
+## The nutrition day is not calendar midnight-to-midnight
+
+`GET /nutrition-service/food/logs/{date}` returned `dayStartTime: "04:00:00"` and `dayEndTime: "17:00:00"` on the day this was observed. This is a **major** finding for anything computing "today" client-side: the widget/Control's local-date logic must not assume a nutrition day starts at 00:00. Whether this window is a fixed account setting, tied to the user's sleep schedule, or something else entirely is unconfirmed — but it must be read from the API response, never hardcoded.
+
+## An important surprise: the account already has real nutrition data
+
+While probing the read route, real logged food was found on the account for the current date — `logSource: "GCM"` (Garmin Connect Mobile), Czech food names, multiple meals. This means:
+
+- Connect+ nutrition tracking is **already active and in use** on this account, most likely confirming task 1.1's entitlement question without needing to check the subscription screen separately.
+- The `usersummary-service/usersummary/daily` route's `consumedKilocalories` field was `null` even while this real data existed — **that field is not fed by the nutrition-service data at all**. Any surface that reads "today's consumed calories" must read `dailyNutritionContent.calories` from `food/logs/{date}`, never `consumedKilocalories` from the legacy summary route.
+
+## What remains genuinely unconfirmed
+
+1. The exact JSON body Content-Type and field spelling/order for `createFoodLogEntry`.
+2. Whether `numberOfUnits` or `servingQty` (or both) is the client-supplied quantity field on write.
+3. The full `mealType` enum beyond the confirmed `BREAKFAST` value.
+4. Whether any write route is gated behind Connect+ specifically, versus being open to any account (no 402/403 has been observed anywhere, including reads, but nothing has attempted a write yet).
+5. Whether `foodSearchAutocomplete`, `mealsForDate`, `recentFoods`, `nutritionCurrentStatus`, and `calorieSummaryDaily` behave as their names suggest — found as string literals, not yet exercised live.
+
+Resolving 1-3 is the single highest-value remaining task before any Swift implementation begins.
