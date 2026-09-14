@@ -111,6 +111,39 @@ context: |
   - Rate limiting is respected: honour Retry-After, back off exponentially, and
     treat 429 as "stop and resume later", not "retry harder".
 
+  ## Design & UX principles (owner decision, 2026-09-14)
+
+  This is not meant to be a bare-functional tool. It should feel like a
+  genuinely well-made, modern iOS app — closer to a small indie app with a
+  point of view than a personal utility script with a UI bolted on. This
+  governs every change that touches UI, not just the ones that mention it.
+
+  - SwiftUI throughout, idiomatic and current — no UIKit fallbacks except
+    where a framework genuinely requires it (VisionKit's scanner, e.g.).
+  - Motion and feedback are not an afterthought: meaningful transitions,
+    haptics on confirm/level-up/streak milestones, and states (loading,
+    empty, error, success) are designed on purpose, not left as whatever
+    SwiftUI does by default.
+  - A small, consistent design system (color, type scale, spacing,
+    component set) defined once and reused everywhere, not per-screen
+    improvisation. Support Dynamic Type and both light and dark mode from
+    the start, not retrofitted later.
+  - Accessibility is a baseline, not a stretch goal: VoiceOver labels,
+    sufficient contrast, Reduce Motion respected.
+  - Code quality matches the UI ambition: clear module boundaries (UI /
+    domain logic / GarminKit networking kept separate, not entangled),
+    previewable SwiftUI views, and logic that's testable without a device
+    where feasible. "Best practices" means idiomatic Swift and SwiftUI
+    conventions, not maximal abstraction for its own sake.
+  - Playful and encouraging in tone (the gamification layer especially),
+    but never at the cost of clarity — a streak flame or a level-up
+    animation should never obscure whether an action actually succeeded.
+  - This is a live, evolving product, not a fixed feature list — "lots of
+    add-ons" over time is expected. Favor an architecture (small,
+    composable views; a domain layer that doesn't assume today's feature
+    set is final) that makes adding the next thing cheap, over building
+    every conceivable feature now.
+
 rules:
   proposal:
     - Always include a "## Non-goals" section naming which other change owns excluded work.
