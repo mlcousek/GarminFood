@@ -19,7 +19,6 @@ struct ScanBarcodeControl: ControlWidget {
             ControlWidgetButton(action: OpenBarcodeScannerIntent()) {
                 Label("Scan Barcode", systemImage: "barcode.viewfinder")
             }
-            .controlWidgetActionHint("Scan a barcode")
         }
         .displayName("Scan Barcode")
         .description("Opens GarminFood directly into the barcode scanner -- a camera session can't run inside a Control (design.md D3). This is the one flow in this project that is honestly three taps, not two.")

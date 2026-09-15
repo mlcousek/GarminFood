@@ -33,7 +33,6 @@ struct QuickPickControl1: ControlWidget {
             ControlWidgetButton(action: LogQuickPick1Intent()) {
                 Label("Quick Log #1", systemImage: "1.circle.fill")
             }
-            .controlWidgetActionHint("Log your #1 most-used food")
         }
         .displayName("Quick Log #1")
         .description("Logs your most-used food. Briefly opens GarminFood to do it -- there is no App Group on this account, so the real work can only happen there (design.md D1).")
@@ -49,7 +48,6 @@ struct QuickPickControl2: ControlWidget {
             ControlWidgetButton(action: LogQuickPick2Intent()) {
                 Label("Quick Log #2", systemImage: "2.circle.fill")
             }
-            .controlWidgetActionHint("Log your #2 most-used food")
         }
         .displayName("Quick Log #2")
         .description("Logs your #2 most-used food. Briefly opens GarminFood to do it (design.md D1).")
@@ -65,7 +63,6 @@ struct QuickPickControl3: ControlWidget {
             ControlWidgetButton(action: LogQuickPick3Intent()) {
                 Label("Quick Log #3", systemImage: "3.circle.fill")
             }
-            .controlWidgetActionHint("Log your #3 most-used food")
         }
         .displayName("Quick Log #3")
         .description("Logs your #3 most-used food. Briefly opens GarminFood to do it (design.md D1).")
@@ -81,7 +78,6 @@ struct QuickPickControl4: ControlWidget {
             ControlWidgetButton(action: LogQuickPick4Intent()) {
                 Label("Quick Log #4", systemImage: "4.circle.fill")
             }
-            .controlWidgetActionHint("Log your #4 most-used food")
         }
         .displayName("Quick Log #4")
         .description("Logs your #4 most-used food. Briefly opens GarminFood to do it (design.md D1).")
