@@ -66,6 +66,21 @@ public enum NutritionDayBoundary {
         calendar: Calendar = .current
     ) -> String {
         let day = nutritionDay(for: date, boundaryHour: boundaryHour, calendar: calendar)
+        return string(forNutritionDay: day, calendar: calendar)
+    }
+
+    /// Formats a `Date` that is ALREADY a nutrition-day marker (i.e. already
+    /// the output of `nutritionDay(for:)` -- midnight of the correct day) as
+    /// `yyyy-MM-dd`, with NO further boundary-hour shift applied.
+    ///
+    /// `ChallengeEngine`'s day-iteration loops (`eachDay(from:to:)`) walk
+    /// `Date`s that came from `nutritionDay(for:)` already. Passing one of
+    /// those into `dayString(for:)` re-shifts it a SECOND time -- a real bug
+    /// found via CI test failures (every goal-hitting challenge undercounted
+    /// by exactly one day). Use this function instead whenever the `Date` in
+    /// hand is already day-normalized; use `dayString(for:)` only for a raw,
+    /// unshifted wall-clock timestamp.
+    public static func string(forNutritionDay day: Date, calendar: Calendar = .current) -> String {
         let formatter = DateFormatter()
         formatter.calendar = calendar
         formatter.timeZone = calendar.timeZone

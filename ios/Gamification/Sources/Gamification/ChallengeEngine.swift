@@ -104,8 +104,12 @@ public enum ChallengeEngine {
             return ChallengeProgress(current: gained, target: days)
 
         case .goalHitDays(let macro, let minCount):
+            // `day` here is already a nutrition-day marker (eachDay walks
+            // windowStart/evaluableEnd, both already through
+            // NutritionDayBoundary.nutritionDay()) -- format it directly,
+            // don't re-shift it through dayString(for:).
             let hitDays = eachDay(from: windowStart, to: evaluableEnd, calendar: calendar).filter { day in
-                guard let status = goalByDay[NutritionDayBoundary.dayString(for: day, boundaryHour: boundaryHour, calendar: calendar)] else { return false }
+                guard let status = goalByDay[NutritionDayBoundary.string(forNutritionDay: day, calendar: calendar)] else { return false }
                 return status.met(macro)
             }
             return ChallengeProgress(current: hitDays.count, target: minCount)
@@ -114,7 +118,7 @@ public enum ChallengeEngine {
             var longest = 0
             var running = 0
             for day in eachDay(from: windowStart, to: evaluableEnd, calendar: calendar) {
-                let status = goalByDay[NutritionDayBoundary.dayString(for: day, boundaryHour: boundaryHour, calendar: calendar)]
+                let status = goalByDay[NutritionDayBoundary.string(forNutritionDay: day, calendar: calendar)]
                 let met = macro.map { status?.met($0) ?? false } ?? (status?.anyGoalMet ?? false)
                 if met {
                     running += 1
