@@ -23,7 +23,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            FoodCatalogView()
+            HomeView()
                 .safeAreaInset(edge: .top) {
                     AuthBannerView()
                         .padding(.top, Theme.Spacing.xs)

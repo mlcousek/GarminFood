@@ -41,6 +41,10 @@ final class AppEnvironment {
     let catalogSearch: FoodCatalogSearch
     let logEntryCoordinator: LogEntryCoordinator
     let gamificationEngine: GamificationEngine
+    /// Today's consumed-vs-goal calories for the home hero (HomeView /
+    /// TodayHeroView). Refreshed on every foreground alongside everything
+    /// else; see TodaySummary.swift for its last-known-good semantics.
+    let todaySummary: TodaySummaryLoader
 
     /// Non-nil while a foreground drain is in flight, purely so the UI can
     /// show a subtle "syncing" indicator rather than nothing at all -- never
@@ -66,6 +70,7 @@ final class AppEnvironment {
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: foodCache)
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
         self.gamificationEngine = GamificationEngine(usageHistory: usageHistory, garminClient: client)
+        self.todaySummary = TodaySummaryLoader(client: client)
     }
 
     /// Called once on launch and again every time the app returns to the
@@ -85,6 +90,14 @@ final class AppEnvironment {
     func refreshOnForeground() async {
         await authState.refresh()
         await drainAndReconcile()
+        // The hero number and the gamification state are refreshed AFTER
+        // the drain so that anything just delivered to Garmin is already
+        // reflected in the total the user sees. Run concurrently with each
+        // other -- they're independent reads.
+        async let summary: Void = todaySummary.refresh()
+        async let gamification: Void = gamificationEngine.refresh()
+        async let goals: Void = gamificationEngine.refreshGoalStatus()
+        _ = await (summary, gamification, goals)
     }
 
     /// Fire-and-forget from a confirm action (never awaited by the confirm

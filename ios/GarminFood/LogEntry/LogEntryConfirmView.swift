@@ -196,6 +196,14 @@ struct LogEntryConfirmView: View {
                 // fire-and-forget from here on; the confirm action itself
                 // never awaits it.
                 didConfirm = true
+                // Gamification is the deliberate second step right after the
+                // durable commit (GamificationEngine.swift's header): awards
+                // XP, detects a level-up / streak milestone / challenge
+                // completion, and enqueues the "moment" that HomeView's
+                // MomentOverlay presents. Local disk only -- no network wait
+                // added to the confirm flow. Before this call was wired, the
+                // engine computed all of this and nothing ever showed it.
+                await environment.gamificationEngine.handleLogConfirmed()
                 Task { await environment.drainAndReconcile() }
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
