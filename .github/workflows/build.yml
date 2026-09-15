@@ -71,6 +71,16 @@ jobs:
           cd FoodLogCore
           swift test
 
+      - name: Run Gamification unit tests
+        # Pure logic (streak grace-rule, level-from-XP curve, challenge
+        # completion conditions) -- same rationale as the GarminKit/
+        # FoodLogCore steps above. This package depends on FoodLogCore via a
+        # local path dependency (Gamification/Package.swift), which SwiftPM
+        # resolves automatically.
+        run: |
+          cd Gamification
+          swift test
+
       - name: Install XcodeGen
         run: brew install xcodegen
 

@@ -15,11 +15,17 @@
 //   - task 9.5: draining the outbox "on foreground" (BGAppRefreshTask
 //     registration itself is NOT done here -- see `refreshOnForeground()`'s
 //     doc comment).
+//
+// `gamificationEngine` (add-gamification) is initialized here for the same
+// reason everything else is: one composition root, thin views. See
+// GamificationEngine.swift for why it is its own type rather than more
+// properties/methods bolted directly onto this class.
 
 import Foundation
 import Observation
 import GarminKit
 import FoodLogCore
+import Gamification
 
 @MainActor
 @Observable
@@ -34,6 +40,7 @@ final class AppEnvironment {
     let foodCache: FoodCacheStore
     let catalogSearch: FoodCatalogSearch
     let logEntryCoordinator: LogEntryCoordinator
+    let gamificationEngine: GamificationEngine
 
     /// Non-nil while a foreground drain is in flight, purely so the UI can
     /// show a subtle "syncing" indicator rather than nothing at all -- never
@@ -58,6 +65,7 @@ final class AppEnvironment {
         self.foodCache = foodCache
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: foodCache)
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
+        self.gamificationEngine = GamificationEngine(usageHistory: usageHistory, garminClient: client)
     }
 
     /// Called once on launch and again every time the app returns to the

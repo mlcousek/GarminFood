@@ -149,8 +149,21 @@ struct FoodCatalogView: View {
                 }
             }
         }
-        .task { await loadLocalData() }
+        .task {
+            await loadLocalData()
+            presentScannerIfRouteIsPending()
+        }
         .task(id: searchText) { await performSearch() }
+        // Wired for add-glanceable-surfaces' barcode-scan Control
+        // (Shared/OpenBarcodeScannerIntent.swift): that intent only ever
+        // sets `AppNavigationBridge`'s pending route once its `perform()`
+        // genuinely executes in THIS app's own process (see that file's
+        // header) -- by then this view may already be on screen (hence the
+        // `.onChange` below) or not yet (hence the `.task` above also
+        // checking on appear); either ordering is covered.
+        .onChange(of: AppNavigationBridge.shared.pendingRoute) { _, _ in
+            presentScannerIfRouteIsPending()
+        }
         .sheet(item: $foodAwaitingServingPick) { food in
             ServingPickerSheet(food: food) { serving in
                 handleServingPicked(food: food, serving: serving)
@@ -178,6 +191,19 @@ struct FoodCatalogView: View {
         .navigationDestination(item: $logTarget) { target in
             LogEntryConfirmView(target: target)
         }
+    }
+
+    /// Presents the barcode scanner if `AppNavigationBridge` has a pending
+    /// request for it (add-glanceable-surfaces' barcode-scan Control) --
+    /// consumes the request immediately so it can never re-trigger itself on
+    /// a later, unrelated view update. Skipped in `pickBackingFood` mode: a
+    /// Control-driven scan should only ever land on the primary logging
+    /// flow, never the custom-food editor's internal "pick a backing food"
+    /// screen.
+    private func presentScannerIfRouteIsPending() {
+        guard !isPickingBackingFood, AppNavigationBridge.shared.pendingRoute == .barcodeScanner else { return }
+        _ = AppNavigationBridge.shared.consume()
+        isPresentingBarcodeScanner = true
     }
 
     private func select(_ food: Food) {
