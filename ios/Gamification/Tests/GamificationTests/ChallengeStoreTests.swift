@@ -8,7 +8,8 @@ final class ChallengeStoreTests: XCTestCase {
 
     func testEnsureActiveActivatesATemplateWhenNoneIsActive() async throws {
         let store = makeStore()
-        XCTAssertNil(await store.current())
+        let initial = await store.current()
+        XCTAssertNil(initial)
 
         let activated = try await store.ensureActive(catalog: ChallengeCatalog.all, now: TestClock.date(2026, 1, 1), baselineStreakLength: 0)
         XCTAssertTrue(ChallengeCatalog.all.contains { $0.id == activated.templateId })
