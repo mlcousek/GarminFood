@@ -27,7 +27,8 @@ struct GarminFoodShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: LogNamedFoodIntent(),
             phrases: [
-                "Log \(\.$foodName) in \(.applicationName)"
+                "Log a food in \(.applicationName)",
+                "Log a food by name in \(.applicationName)"
             ],
             shortTitle: "Log a Food",
             systemImageName: "text.magnifyingglass"
