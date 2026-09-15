@@ -23,25 +23,28 @@
 // `perform()` inside the extension's own process -- that cannot work at all,
 // because there is nothing there to log against or authenticate with.
 //
-// The fix (design.md D1): `supportedModes = .foreground` below makes the
-// system foreground the app BEFORE calling `perform()`, so the intent
-// genuinely executes as the app itself, with the app's own Keychain-stored
-// Garmin token and the app's own on-disk FoodLogCore stores available. This
-// is the simpler of design.md D1's two acceptable fixes ("conform to
-// `ForegroundContinuableIntent` (or use `supportedModes` including
-// `.foreground(...)`)") -- chosen over `ForegroundContinuableIntent` because
-// it does not depend on the more elaborate background-then-escalate
-// machinery (`needsToContinueInForegroundError`), whose exact call shape
-// could not be verified against a real SDK in this environment (no local
-// Xcode/Swift toolchain -- see openspec/config.yaml's "no Mac" constraint).
+// The fix (design.md D1): `openAppWhenRun = true` below makes the system
+// foreground the app BEFORE calling `perform()`, so the intent genuinely
+// executes as the app itself, with the app's own Keychain-stored Garmin
+// token and the app's own on-disk FoodLogCore stores available.
+//
+// CI CORRECTION, 2026-09-15: this file originally used
+// `supportedModes: IntentModes = .foreground` (design.md D1's other named
+// option). CI's first real compile of this code rejected it outright --
+// `IntentModes` requires iOS 26.0, but this project's deployment target is
+// iOS 17.0 (openspec/config.yaml). Switched to `openAppWhenRun = true`
+// instead: older API (available since iOS 16), achieves the identical
+// "foreground the app before running this intent" behavior, and is only
+// deprecated (not removed) on iOS 26 -- a compiler warning there, not an
+// error here. `ForegroundContinuableIntent`'s more elaborate escalation
+// machinery was deliberately avoided for the same reason design.md
+// originally gave: its exact call shape couldn't be verified without a
+// local Xcode/Swift toolchain, and a second guessed API was too much risk
+// to stack on top of the first one CI already caught.
 //
 // GENUINELY UNCONFIRMED (flagged per this project's own convention -- see
 // GarminAuthSession.swift's header -- rather than asserted as fact):
-//   1. The exact `IntentModes`/`supportedModes` API surface below was
-//      authored from platform documentation and third-party writeups
-//      without a compiler to check it against. CI (.github/workflows/build.yml)
-//      is what actually proves this compiles against the real SDK.
-//   2. Whether `authenticationPolicy = .alwaysAllowed` actually avoids a
+//   1. Whether `authenticationPolicy = .alwaysAllowed` actually avoids a
 //      Face ID/passcode prompt once the system must ALSO foreground the app
 //      to run `perform()` -- design.md D1's own Risks section names this as
 //      untested. Showing app content on a locked device is normally exactly
@@ -145,7 +148,7 @@ struct LogQuickPick1Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #1"
     static var description = IntentDescription("Logs your #1 most-used food in GarminFood.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
-    static var supportedModes: IntentModes = .foreground
+    static var openAppWhenRun: Bool = true
 
     init() {}
 
@@ -161,7 +164,7 @@ struct LogQuickPick2Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #2"
     static var description = IntentDescription("Logs your #2 most-used food in GarminFood.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
-    static var supportedModes: IntentModes = .foreground
+    static var openAppWhenRun: Bool = true
 
     init() {}
 
@@ -177,7 +180,7 @@ struct LogQuickPick3Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #3"
     static var description = IntentDescription("Logs your #3 most-used food in GarminFood.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
-    static var supportedModes: IntentModes = .foreground
+    static var openAppWhenRun: Bool = true
 
     init() {}
 
@@ -193,7 +196,7 @@ struct LogQuickPick4Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #4"
     static var description = IntentDescription("Logs your #4 most-used food in GarminFood.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
-    static var supportedModes: IntentModes = .foreground
+    static var openAppWhenRun: Bool = true
 
     init() {}
 
