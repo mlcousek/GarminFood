@@ -31,7 +31,9 @@
 
 ## 21. Cross-surface verification
 
-All three tasks below require a real, signed, installed build on a physical device (Controls, in particular, cannot be exercised in the iOS Simulator per Apple's own tooling limits) — none are verifiable in this environment (no Mac, no device, no Xcode; see openspec/config.yaml). Left unchecked rather than assumed.
+**Milestone, 2026-09-15: the full app — all targets, all Controls, all Shortcuts, both widgets, and all three Swift packages (GarminKit, FoodLogCore, Gamification) — compiles cleanly and archives into a valid unsigned `.ipa` in CI.** Getting here took 4 fix cycles from the first attempt: a SwiftUI `Section` overload ambiguity, `MainActor` isolation on `DataScannerViewController`, an iOS-26-only API (`IntentModes`) used against an iOS-17 deployment target, a nonexistent `ControlWidgetButton` modifier, and a Siri phrase illegally embedding a free-form `String` parameter — each found only by CI, none by inspection, exactly as expected with no local Swift/Xcode toolchain available throughout this project (openspec/config.yaml's "no Mac" constraint).
+
+All three tasks below still require a real, signed, installed build on a physical device (Controls, in particular, cannot be exercised in the iOS Simulator per Apple's own tooling limits) — none are verifiable in this environment. Left unchecked rather than assumed.
 
 - [ ] 21.1 Log once from each surface (app, Control, widget quick-add, Siri) in one sitting and confirm all four entries reconcile correctly in Garmin with no duplicates. (Note: "widget quick-add" no longer exists per section 19's revision — this becomes three surfaces: app, Control, Siri.)
 - [ ] 21.2 Verify the expired-token state (`add-garmin-auth-and-sync` D7) surfaces correctly on the widget and Control, not just in the app. (Note: the widgets are now data-free and have no auth-state display of their own — this reduces to verifying the Control's behavior when the token is expired, e.g. that its action fails loudly rather than silently.)
