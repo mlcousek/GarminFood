@@ -1,8 +1,9 @@
 // GarminSSOWebView.swift
 //
-// Real-device testing (2026-09-16) confirmed why `GarminAuthSession.signIn
-// (presentationContextProvider:)` (the `ASWebAuthenticationSession`-based
-// flow in GarminKit) can never complete: signing in genuinely succeeds --
+// Real-device testing (2026-09-16) confirmed why the since-deleted
+// `GarminAuthSession.signIn(presentationContextProvider:)` (an
+// `ASWebAuthenticationSession`-based flow that lived in GarminKit until
+// 2b96f35) could never complete: signing in genuinely succeeds --
 // the user ends up looking at a real, authenticated
 // https://connect.garmin.com/modern inside the sheet -- but
 // `ASWebAuthenticationSession` only ever completes when the browser
@@ -21,7 +22,12 @@
 // observes, and it fires with the REQUESTED url (ticket query param
 // included) before that page loads and before any of its own JS has a
 // chance to strip the ticket from the visible address, e.g. via
-// `history.replaceState`.
+// `history.replaceState`. CONFIRMED working on a real device 2026-09-16.
+//
+// `GarminSSOEndpoints.serviceURL` is what keeps that hop cross-origin, and
+// is pinned to `connect.garmin.com/modern` partly for this reason. See its
+// own doc comment for why garth's `sso/embed` service would be the wrong
+// trade here, despite being the shape garth itself uses.
 //
 // This uses a real `WKWebView`, not `ASWebAuthenticationSession`, purely to
 // solve that observability gap. It is NOT a response to design.md's
@@ -41,6 +47,7 @@
 // remains just as unconfirmed/best-effort as GarminAuthSession's own header
 // comment describes.
 
+import Foundation
 import SwiftUI
 import WebKit
 import GarminKit
@@ -113,10 +120,15 @@ private final class GarminSSOWebViewController: UIViewController, WKNavigationDe
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
+        // The host gate matters because capture is one-shot and destructive:
+        // it cancels the navigation and latches `didResolve`. Any URL at all
+        // carrying a `ticket` parameter -- an analytics hop, a marketing
+        // redirect, some unrelated host -- would otherwise end the sign-in
+        // holding a value Garmin never minted, with no way to retry in this
+        // sheet.
         if let url = navigationAction.request.url,
-           let ticket = URLComponents(url: url, resolvingAgainstBaseURL: false)?
-            .queryItems?
-            .first(where: { $0.name == GarminSSOEndpoints.ticketQueryParameterName })?.value {
+           GarminSSOEndpoints.isGarminHost(url),
+           let ticket = GarminSSOEndpoints.ticket(in: url) {
             decisionHandler(.cancel)
             resolveTicket(ticket)
             return
@@ -129,12 +141,41 @@ private final class GarminSSOWebViewController: UIViewController, WKNavigationDe
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        activityIndicator.stopAnimating()
-        resolveFailure("Couldn't load Garmin's sign-in page. Check your connection and try again.")
+        handleNavigationFailure(error)
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        handleNavigationFailure(error)
+    }
+
+    private func handleNavigationFailure(_ error: Error) {
         activityIndicator.stopAnimating()
+        guard !Self.isBenignNavigationInterruption(error) else { return }
         resolveFailure("Couldn't load Garmin's sign-in page. Check your connection and try again.")
+    }
+
+    /// WebKit reports a navigation that was SUPERSEDED through the same
+    /// delegate methods as one that actually broke. Two of those are routine
+    /// here and must not end the sign-in: `NSURLErrorCancelled`, when a load
+    /// is replaced mid-flight (the SSO page's own JS does this after
+    /// credential submission), and `WebKitErrorDomain` 102
+    /// (`FrameLoadInterruptedByPolicyChange`), raised when a policy decision
+    /// cancels a load -- which is exactly what `decidePolicyFor` does on
+    /// every SUCCESSFUL capture.
+    ///
+    /// Reporting either as a failure would close the sheet mid-sign-in and
+    /// latch `didResolve`, so the real ticket navigation that follows is then
+    /// silently ignored. (`resolveFailure`'s own `didResolve` guard already
+    /// absorbs the post-capture case, but only because capture happens to win
+    /// the race; the JS-navigation case has no such protection.)
+    private static func isBenignNavigationInterruption(_ error: Error) -> Bool {
+        let nsError = error as NSError
+        if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
+            return true
+        }
+        if nsError.domain == "WebKitErrorDomain", nsError.code == 102 {
+            return true
+        }
+        return false
     }
 }

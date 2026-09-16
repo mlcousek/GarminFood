@@ -8,6 +8,19 @@
 // percent-encoding rules, different parameter ordering, a different key
 // construction) will produce a signature Garmin silently rejects with a 401.
 //
+// That rule still holds, and this file still reproduces the reference
+// byte-for-byte for the shape the reference was actually exercised against:
+// a query-less URL signed with a real token. `OAuth1SignerTests` pins exactly
+// that vector. Two additions (2026-09-16) apply only to shapes the reference
+// never saw, because until the browser bootstrap landed nothing in this
+// project signed them: a URL carrying a QUERY STRING, and a request made
+// before any user token exists. For those, RFC 5849 3.4.1.2/3.4.1.3.1 govern
+// -- the query leaves the base string URI and joins the signed parameters,
+// and an absent token is omitted rather than signed as empty. Both are
+// no-ops for the confirmed route. `tools/lib/garmin-auth.mjs` has the same
+// two gaps; it has never signed a query-bearing URL either, so it is
+// latently, not actively, wrong -- fix it there before giving it one.
+//
 // Reference (`tools/lib/garmin-auth.mjs`) for comparison:
 //
 //     function pctEncode(s) {
@@ -146,21 +159,89 @@ enum OAuth1Signer {
     ) -> String {
         var params: [String: String] = [
             "oauth_consumer_key": consumer.consumerKey,
-            "oauth_token": token,
             "oauth_nonce": nonce,
             "oauth_timestamp": timestamp,
             "oauth_signature_method": "HMAC-SHA1",
             "oauth_version": "1.0",
         ]
+        // RFC 5849 3.4.1.3.1: a token that doesn't exist yet is omitted from
+        // the signature, not signed as an empty `oauth_token=`. Only the
+        // bootstrap (GarminAuthSession's `preauthorized` call, which exists to
+        // establish that token in the first place) passes an empty token; the
+        // OAuth1->OAuth2 exchange always has a real one, so its signature is
+        // byte-for-byte unchanged by this branch.
+        if !token.isEmpty {
+            params["oauth_token"] = token
+        }
+
+        // RFC 5849 3.4.1.2 + 3.4.1.3.1: the base string URI excludes the
+        // query, and the query's parameters are signed alongside the oauth_*
+        // ones. The Node reference this was ported from signs the full URL and
+        // no query parameters at all -- indistinguishable from correct for a
+        // query-less URL, which is all it was ever exercised against. The
+        // bootstrap's `preauthorized` call is the first signed request here to
+        // carry a query string (`ticket`, `login-url`, ...), and Garmin
+        // recomputes the signature server-side over those parameters, so
+        // omitting them could only ever produce a mismatch.
+        //
+        // This is deliberately ALL-OR-NOTHING. A parameter may only move into
+        // the signed set if the base string URI actually lost it; folding the
+        // query in while leaving it on the URI counts every parameter twice,
+        // which is its own guaranteed mismatch. So if the URI cannot be
+        // stripped, nothing is folded and the old (reference-identical)
+        // behavior stands.
+        var signedPairs: [(String, String)] = []
+        signedPairs.reserveCapacity(params.count)
+        for (name, value) in params {
+            signedPairs.append((name, value))
+        }
+        var signatureURL = url
+        if let components = URLComponents(string: url) {
+            var withoutQuery = components
+            withoutQuery.queryItems = nil
+            withoutQuery.fragment = nil
+            if let stripped = withoutQuery.url?.absoluteString {
+                signatureURL = stripped
+                for item in components.queryItems ?? [] {
+                    // A query parameter named `oauth_*` would otherwise
+                    // replace the value the Authorization header still
+                    // advertises below -- signing one nonce and sending
+                    // another, which is a 401 with no diagnosable symptom.
+                    guard params[item.name] == nil else { continue }
+                    signedPairs.append((item.name, item.value ?? ""))
+                }
+            }
+        }
 
         // Signature base string: METHOD & pctEncode(url) & pctEncode(sorted param string).
-        let paramString = params.keys.sorted()
-            .map { "\(OAuth1PercentEncoding.encode($0))=\(OAuth1PercentEncoding.encode(params[$0]!))" }
-            .joined(separator: "&")
+        // RFC 5849 3.4.1.3.2 sorts by encoded name and then by encoded value,
+        // which preserves repeated names instead of collapsing them the way a
+        // dictionary would. For the oauth_* keys, encoding is the identity and
+        // names are unique, so this orders them exactly as before.
+        // Written out rather than chained: the fluent
+        // map/sorted/map/joined version over tuples defeats Swift's type
+        // checker outright ("unable to type-check this expression in
+        // reasonable time"), which is a build failure, not a slow build.
+        var encodedPairs: [(name: String, value: String)] = []
+        encodedPairs.reserveCapacity(signedPairs.count)
+        for pair in signedPairs {
+            let name = OAuth1PercentEncoding.encode(pair.0)
+            let value = OAuth1PercentEncoding.encode(pair.1)
+            encodedPairs.append((name: name, value: value))
+        }
+        encodedPairs.sort { lhs, rhs in
+            lhs.name == rhs.name ? lhs.value < rhs.value : lhs.name < rhs.name
+        }
+
+        var paramString = ""
+        for (index, pair) in encodedPairs.enumerated() {
+            if index > 0 { paramString += "&" }
+            paramString += pair.name + "=" + pair.value
+        }
 
         let baseString = [
             method.uppercased(),
-            OAuth1PercentEncoding.encode(url),
+            OAuth1PercentEncoding.encode(signatureURL),
             OAuth1PercentEncoding.encode(paramString),
         ].joined(separator: "&")
 

@@ -8,14 +8,15 @@
 // no authenticated search, no delivery -- is identical from the user's
 // point of view. `.authenticated` renders nothing at all.
 //
-// The actual sign-in mechanism (`GarminAuthSession`, GarminKit) has two
-// paths: the `ASWebAuthenticationSession` flow (task 8.1, whose exact
-// redirect/ticket contract is explicitly UNCONFIRMED per that file's own
-// header) and a manual ticket-paste fallback (task 8.4, the "recovery path
-// when the redirect contract changes"). Both are exposed here rather than
-// only the happier-looking one, because the redirect flow may simply not
-// work yet -- this phase did not (and could not, without a device) verify
-// it.
+// The sheet exposes two capture paths: the in-app `WKWebView` sign-in
+// (`GarminSSOWebView`, which replaced an `ASWebAuthenticationSession` flow
+// once a real device showed that flow could never complete), and the manual
+// ticket-paste fallback (task 8.4, the "recovery path when the redirect
+// contract changes"). Both stay exposed: capture is CONFIRMED working as of
+// 2026-09-16, but the ticket EXCHANGE behind both of them is not, so the
+// recovery path still earns its place. Both funnel through
+// `GarminSSOEndpoints.ticket(in:)` so they cannot disagree about what a
+// ticket looks like.
 
 import SwiftUI
 import GarminKit
@@ -125,16 +126,24 @@ private struct GarminSignInSheet: View {
         }
     }
 
-    private func completeSignIn(withTicket ticket: String) async {
+    private func completeSignIn(withTicket rawTicket: String) async {
+        guard let ticket = GarminSSOEndpoints.ticket(in: rawTicket) else {
+            errorMessage = "That field is empty. Paste the redirect URL, or just the ticket value from it."
+            return
+        }
         isWorking = true
         defer { isWorking = false }
         do {
-            let session = GarminAuthSession()
+            // R5: handing the session the auth state is what makes a
+            // successful bootstrap update the UI. Calling markAuthenticated()
+            // here instead would re-introduce exactly the forget-to-wire-it
+            // bug R5 was added to prevent -- and the WebView path routes
+            // through this same function.
+            let session = GarminAuthSession(authState: environment.authState)
             _ = try await session.completeBootstrap(withPastedTicket: ticket)
-            environment.authState.markAuthenticated()
             dismiss()
         } catch {
-            errorMessage = "That ticket didn't work. Try signing in again, or double check a pasted ticket was copied in full."
+            errorMessage = GarminErrorPresentation.bootstrapErrorMessage(for: error)
         }
     }
 }
