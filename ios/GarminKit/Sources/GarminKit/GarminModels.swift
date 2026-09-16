@@ -239,3 +239,56 @@ public struct CreateFoodLogEntryRequest: Encodable, Sendable, Equatable {
 struct DeleteFoodLogEntriesRequest: Encodable, Sendable {
     let logIds: [String]
 }
+
+// MARK: - Create custom food (POST /nutrition-service/customFood) -- ROUTE CONFIRMED TO EXIST, BODY GENUINELY UNCONFIRMED
+
+/// The inferred request body for `GarminClient.createCustomFood`
+/// (add-czech-food-catalog design.md's Context section, task 30.1).
+///
+/// UNLIKE `CreateFoodLogEntryRequest` above, this shape has NO decompiled
+/// Kotlin `toString()` fragments behind it at all -- design.md is explicit:
+/// "unlike `createFoodLogEntry`, which had Kotlin `toString()` fragments
+/// hinting at field names, no field-level information was ever extracted
+/// for this route." What follows is a genuine guess: field names a "food"
+/// conceptually needs (a name, a serving unit/size, and macros), informed
+/// only by the shape Garmin's OWN search results already use for a food's
+/// nutrition content (see `NutritionContent` above) -- NOT by any
+/// decompiled evidence for this specific route. Both the field names AND
+/// the nesting could be wrong.
+///
+/// If this guess is wrong, `createCustomFood` fails with a
+/// `GarminClientError` the caller/user sees (per this project's existing
+/// loud-failure convention) -- a failed POST creates nothing, so a wrong
+/// guess here cannot silently corrupt data.
+public struct CreateCustomFoodRequest: Encodable, Sendable, Equatable {
+    public let foodName: String
+    public let servingUnit: String
+    public let numberOfUnits: Double
+    public let nutritionContent: CreateCustomFoodNutritionContent
+
+    public init(foodName: String, servingUnit: String, numberOfUnits: Double, nutritionContent: CreateCustomFoodNutritionContent) {
+        self.foodName = foodName
+        self.servingUnit = servingUnit
+        self.numberOfUnits = numberOfUnits
+        self.nutritionContent = nutritionContent
+    }
+}
+
+/// Same guess-quality caveat as `CreateCustomFoodRequest` above -- field
+/// names mirror `NutritionContent`'s existing confirmed-live-for-READS
+/// names, on the theory that a write is more likely to accept the same
+/// vocabulary the read side already uses than to invent a new one, but
+/// this is inference, not confirmation.
+public struct CreateCustomFoodNutritionContent: Encodable, Sendable, Equatable {
+    public let calories: Double
+    public let protein: Double?
+    public let carbs: Double?
+    public let fat: Double?
+
+    public init(calories: Double, protein: Double? = nil, carbs: Double? = nil, fat: Double? = nil) {
+        self.calories = calories
+        self.protein = protein
+        self.carbs = carbs
+        self.fat = fat
+    }
+}
