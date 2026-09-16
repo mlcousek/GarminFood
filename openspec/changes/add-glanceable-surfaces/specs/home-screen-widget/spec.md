@@ -1,43 +1,58 @@
 ## Purpose
 
-Show a glanceable, always-accurate daily calorie ring with fast quick-add actions on the Home Screen, and make that same widget available on the Mac desktop at no extra engineering cost via Continuity.
+Provide a fast, one-tap entry point to the app from the Home Screen (and,
+via Continuity, the Mac desktop) -- honestly scoped to what a widget can
+actually do on this account: open the app. It cannot display a live
+calorie total.
 
 ## ADDED Requirements
 
-### Requirement: The widget's displayed total is read from Garmin, not from local aggregation
+### Requirement: The widget shows no live or cached data of any kind
 
-The widget SHALL display the daily calorie total by reading it from Garmin's own daily summary, rather than from a value aggregated locally across processes, consistent with the sync capability's rule that Garmin is the source of truth.
+**REVISED 2026-09-14.** `add-garmin-auth-and-sync` task 6.4 confirmed there
+is no App Group and no Keychain Sharing on this account
+(`errSecMissingEntitlement`/-34018, confirmed live, on both read and write).
+WidgetKit's refresh mechanism (`WidgetCenter.reloadTimelines()`) does not
+hand a widget a value from the app -- it tells the widget to re-run its own
+`getTimeline()` in its own isolated process, which has no channel to
+anything the app knows and cannot authenticate to Garmin on its own. There
+is no version of this widget that shows a real number "eventually"; the
+system SHALL NOT attempt to fetch, cache, or display any Garmin-sourced or
+locally-aggregated value in this widget. It is a static icon and label
+only.
 
-#### Scenario: Widget displays today's total
+#### Scenario: Widget renders
 
-- **WHEN** the widget renders its timeline entry for today
-- **THEN** the calorie total shown reflects Garmin's daily summary as of the most recent successful read
+- **WHEN** the widget renders its timeline entry
+- **THEN** the content shown is identical regardless of the actual state of
+  the user's Garmin account or local logging history
+- **AND** no network request and no read of the app's local data occurs as
+  part of rendering it
 
-### Requirement: Pending entries are shown provisionally and distinguished from confirmed data
+### Requirement: The widget opens the app on tap
 
-An entry logged by the widget itself that has not yet been confirmed delivered to Garmin MAY be shown added on top of the last known Garmin total, but MUST be visually distinguished from confirmed data.
+The widget SHALL present a single whole-widget tap target that opens the
+containing app, via `widgetURL`, with no other interactive elements.
 
-#### Scenario: An entry is queued but not yet confirmed
+#### Scenario: Tapping the widget
 
-- **WHEN** the widget has a locally queued, undelivered entry from the current session
-- **THEN** it may add that entry's value to the displayed total
-- **AND** the addition is visually marked as pending
-
-### Requirement: A quick-add tap updates the widget without waiting on the reload budget
-
-Tapping a quick-add button on the widget SHALL trigger a timeline reload through the button's own app intent completion, so the displayed ring reflects the new entry without depending on WidgetKit's periodic reload budget.
-
-#### Scenario: Tapping a quick-add tile
-
-- **WHEN** the user taps a quick-add tile on the widget
-- **THEN** the food is logged
-- **AND** the widget's ring updates to reflect it immediately upon the tap completing
+- **WHEN** the user taps the Home Screen widget
+- **THEN** the app opens
+- **AND** no quick-add or other in-widget action is offered, since any such
+  action would need the same data this widget cannot access (see the
+  requirement above) to be worth anything
 
 ### Requirement: The widget remains available on the Mac desktop via Continuity
 
-The widget's local data store SHALL use a file protection level compatible with Continuity widget sharing (not `NSFileProtectionComplete`), so the widget continues to be available as a Mac desktop widget when the same Apple Account is signed in on a paired Mac.
+The widget's containing app's local data stores SHALL use a file protection
+level compatible with Continuity widget sharing (not `NSFileProtectionComplete`),
+so the widget continues to be available as a Mac desktop widget when the
+same Apple Account is signed in on a paired Mac -- even though, per the
+requirements above, it renders the same static content there too.
 
 #### Scenario: Viewing the widget on a paired Mac
 
-- **WHEN** the widget is added to a Mac's desktop or Notification Center while the iPhone is reachable
-- **THEN** it renders and its quick-add actions function, executed on the iPhone and reflected back to the Mac
+- **WHEN** the widget is added to a Mac's desktop or Notification Center
+- **THEN** it renders the same static, data-free content as on the iPhone
+- **AND** tapping it opens the app on the iPhone, per Continuity's normal
+  widget-interaction behavior

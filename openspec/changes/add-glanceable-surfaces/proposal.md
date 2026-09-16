@@ -4,9 +4,9 @@ This is the change that actually delivers "widget on the lock screen and on the 
 
 ## What Changes
 
-- Add **Controls** (`ControlWidgetButton`) bound to the user's top quick-pick foods, placeable in Control Center, on the Lock Screen, and on the Action Button, using `authenticationPolicy = .alwaysAllowed` so they fire without unlocking.
-- Add a **Home Screen widget** with a `Gauge`-based calorie ring plus 2–4 interactive quick-add buttons, reading its number fresh from Garmin per `garmin-sync`'s "Garmin is the source of truth" rule.
-- Add a **read-only Lock Screen accessory widget** (`accessoryCircular`/`accessoryRectangular`) showing the ring — explicitly not interactive, because it cannot be.
+- Add **Controls** (`ControlWidgetButton`) bound to the user's top quick-pick foods, placeable in Control Center, on the Lock Screen, and on the Action Button, using `authenticationPolicy = .alwaysAllowed` so they are permitted to fire without unlocking (whether that survives the app-foregrounding step their action also requires is unconfirmed — see design.md D1).
+- Add a **Home Screen widget** (`systemSmall`) as a static, data-free "open the app" shortcut — icon, label, `widgetURL` only. **REVISED 2026-09-14**: the originally-planned `Gauge`-based calorie ring plus 2–4 interactive quick-add buttons is dropped entirely, not degraded — `add-garmin-auth-and-sync` task 6.4 confirmed there is no App Group or Keychain Sharing on this account, so a widget's own process has no channel to Garmin or to this app's local data, ever (design.md D2).
+- Add a **static Lock Screen accessory widget** (`accessoryCircular`/`accessoryRectangular`) — the same static shortcut as the Home Screen widget, not interactive (because it cannot be while locked) and, per the same D2 revision, not showing a ring or any other data either.
 - Add **App Shortcuts** (2–5, well under Apple's 10-shortcut cap) for Siri and Spotlight voice logging.
 - Add a **barcode-scan Control** that opens the app directly into the scanner (`add-food-log-core`'s VisionKit flow), since a camera session cannot run inside a widget.
 - Add **macOS availability for free**: the Home Screen widget appears on the Mac desktop via Continuity (macOS 14+/iOS 17+), requiring no separate build, provided the local store's file protection is `NSFileProtectionCompleteUntilFirstUserAuthentication`.
@@ -15,8 +15,8 @@ This is the change that actually delivers "widget on the lock screen and on the 
 
 ### New Capabilities
 
-- `lock-screen-and-controls` - the Control Center / Lock Screen / Action Button logging surface, and the read-only Lock Screen ring.
-- `home-screen-widget` - the glanceable ring and quick-add tiles on the Home Screen and, via Continuity, the Mac desktop.
+- `lock-screen-and-controls` - the Control Center / Lock Screen / Action Button logging surface, and the static (data-free) Lock Screen shortcut.
+- `home-screen-widget` - the static, data-free "open the app" shortcut on the Home Screen and, via Continuity, the Mac desktop.
 - `siri-and-shortcuts` - voice and Spotlight-driven logging through App Intents.
 
 ### Modified Capabilities

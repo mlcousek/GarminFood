@@ -9,12 +9,67 @@
 # see .github/workflows/build.yml, which installs XcodeGen and runs
 # `xcodegen generate` immediately before `xcodebuild`.
 #
-# Task 6.4 added a widget extension here, purely to answer one empirical
-# question: does Keychain Sharing (the `keychain-access-groups` entitlement)
-# actually get granted between two targets on a FREE Apple ID, signed by
-# AltStore rather than paid-account Xcode automatic signing? Both targets
-# below declare the same access group. GarminFoodWidget/KeychainCheckWidget.swift
-# is the observable result — add the widget to the Home Screen and look at it.
+# Task 6.4 originally added the widget extension below purely to answer one
+# empirical question: does Keychain Sharing (the `keychain-access-groups`
+# entitlement) actually get granted between two targets on a FREE Apple ID,
+# signed by AltStore rather than paid-account Xcode automatic signing? The
+# answer was no (`errSecMissingEntitlement`/-34018, confirmed live, on both
+# read and write) — recorded in openspec/config.yaml's Hard Constraints. That
+# throwaway spike (formerly GarminFoodWidget/KeychainCheckWidget.swift) and
+# its now-nonfunctional `keychain-access-groups` entitlement declarations are
+# gone; `add-glanceable-surfaces` replaced them with the real widgets/Controls
+# (ios/GarminFoodWidget/) built entirely AROUND that negative result — see
+# that change's design.md D1/D2 (REVISED 2026-09-14). Neither target below
+# declares any entitlement any more: nothing left in this project asks for
+# one (GarminKit's own TokenProvider explicitly never sets
+# `kSecAttrAccessGroup` — every process bootstraps its own Garmin login
+# independently).
+#
+# `packages.GarminKit` (added in add-garmin-auth-and-sync tasks 7-11) is the
+# local Swift package holding OAuth1 signing, token management, the browser
+# bootstrap, and the per-process outbox/reconciliation logic — see
+# ios/GarminKit/.
+#
+# `packages.FoodLogCore` (added in add-food-log-core, tasks 12-16) is the
+# local Swift package holding the food-catalog/log-entry DOMAIN layer --
+# catalog search adaptation, usage-history ranking, serving-default memory,
+# custom foods, meal-type defaulting, and the confirm-and-log orchestration.
+# It depends on GarminKit (see FoodLogCore/Package.swift) and is, in turn,
+# the only non-UI dependency GarminFood's own SwiftUI views need beyond
+# GarminKit itself -- see openspec/config.yaml's "clear module boundaries:
+# UI / domain logic / GarminKit networking kept separate" principle. Both
+# packages are ALSO declared as dependencies of GarminFoodWidgetExtension
+# (added by add-glanceable-surfaces) -- not because the extension is meant
+# to call Garmin or touch FoodLogCore's stores while genuinely running as
+# the extension (design.md D1/D2 say it never should), but because
+# `Shared/QuickPickLoggingIntents.swift` and
+# `Shared/OpenBarcodeScannerIntent.swift` (compiled into BOTH targets, per
+# each target's `sources` below) import them, and the whole file has to
+# compile for every target that includes it -- see those files' own headers.
+#
+# `GarminFood/Info.plist`'s `NSCameraUsageDescription` (task 14.3) backs the
+# VisionKit `DataScannerViewController` barcode-scanning feature -- see
+# ios/GarminFood/Catalog/BarcodeScanner.swift. Barcode scanning itself is
+# deprioritized (design.md D3) but still requires this key to present the
+# camera permission prompt at all.
+#
+# `GarminFood/Info.plist`'s `CFBundleURLTypes` (added by add-glanceable-surfaces)
+# registers the "garminfood" custom URL scheme two DIFFERENT things share
+# safely (see Shared/GarminFoodDeepLink.swift's header for why that's safe):
+# `ASWebAuthenticationSession`'s own OAuth callback interception
+# (GarminKit's `GarminSSOEndpoints.callbackURLScheme`, unconfirmed end to
+# end -- see GarminAuthSession.swift), and the static Home Screen/Lock
+# Screen widgets' `widgetURL` tap-to-open target, which DOES need this
+# registration to reach the app's `onOpenURL(perform:)` handling.
+#
+# `packages.Gamification` (added by add-gamification) is the local Swift
+# package holding the streak/XP/challenge engine -- see ios/Gamification/.
+# It depends on FoodLogCore for `UsageEvent` (Gamification/Package.swift).
+# Deliberately a dependency of the GarminFood app target ONLY, not of
+# GarminFoodWidgetExtension: per that change's proposal.md non-goals,
+# gamification state never appears in a widget (a widget cannot read the
+# app's local data at all without an App Group -- add-glanceable-surfaces
+# design.md D2 -- so there is nothing for it to read there anyway).
 
 name: GarminFood
 
@@ -22,6 +77,14 @@ options:
   bundleIdPrefix: com.mlcousek
   deploymentTarget:
     iOS: "17.0"
+
+packages:
+  GarminKit:
+    path: GarminKit
+  FoodLogCore:
+    path: FoodLogCore
+  Gamification:
+    path: Gamification
 
 settings:
   base:
@@ -43,11 +106,11 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-    entitlements:
-      path: GarminFood/GarminFood.entitlements
-      properties:
-        keychain-access-groups:
-          - $(AppIdentifierPrefix)com.mlcousek.garminfood.shared
+        NSCameraUsageDescription: "GarminFood uses the camera to scan a product barcode and look it up in Garmin's food database."
+        CFBundleURLTypes:
+          - CFBundleURLName: com.mlcousek.garminfood
+            CFBundleURLSchemes:
+              - garminfood
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mlcousek.garminfood
@@ -55,6 +118,9 @@ targets:
     dependencies:
       - target: GarminFoodWidgetExtension
         embed: true
+      - package: GarminKit
+      - package: FoodLogCore
+      - package: Gamification
     scheme:
       testTargets: []
       gatherCoverageData: false
@@ -72,13 +138,11 @@ targets:
         CFBundleDisplayName: GarminFood Widget
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
-    entitlements:
-      path: GarminFoodWidget/GarminFoodWidget.entitlements
-      properties:
-        keychain-access-groups:
-          - $(AppIdentifierPrefix)com.mlcousek.garminfood.shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mlcousek.garminfood.widget
         TARGETED_DEVICE_FAMILY: "1"
         SKIP_INSTALL: true
+    dependencies:
+      - package: GarminKit
+      - package: FoodLogCore

@@ -52,6 +52,35 @@ jobs:
           xcodebuild -version
           swift --version
 
+      - name: Run GarminKit unit tests
+        # Pure logic (OAuth1 signing, outbox, reconciliation) -- no simulator
+        # or signing needed, and it's the fastest possible signal on the
+        # package by itself before it's even part of the app build.
+        run: |
+          cd GarminKit
+          swift test
+
+      - name: Run FoodLogCore unit tests
+        # Pure domain logic (quick-pick ranking, serving-default memory,
+        # meal-type-from-time-of-day defaulting, catalog search adaptation,
+        # barcode normalisation, the confirm-and-log coordinator) -- same
+        # rationale as the GarminKit step above. This package depends on
+        # GarminKit via a local path dependency (FoodLogCore/Package.swift),
+        # which SwiftPM resolves automatically.
+        run: |
+          cd FoodLogCore
+          swift test
+
+      - name: Run Gamification unit tests
+        # Pure logic (streak grace-rule, level-from-XP curve, challenge
+        # completion conditions) -- same rationale as the GarminKit/
+        # FoodLogCore steps above. This package depends on FoodLogCore via a
+        # local path dependency (Gamification/Package.swift), which SwiftPM
+        # resolves automatically.
+        run: |
+          cd Gamification
+          swift test
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
