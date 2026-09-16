@@ -10,17 +10,16 @@
 // string lives in exactly one place instead of being duplicated as a
 // string literal in each target.
 //
-// Reuses GarminKit's existing "garminfood" custom scheme
-// (`GarminSSOEndpoints.callbackURLScheme`) rather than registering a second
-// one. This is safe: `ASWebAuthenticationSession` only intercepts a
-// "garminfood://" open while ITS OWN in-flight sign-in session is waiting
-// for a callback; any other "garminfood://" open (like this one, tapped
-// from a widget with no sign-in session active) falls through to the app's
-// normal `onOpenURL(perform:)` handling exactly like any other registered
-// custom URL scheme. `ios/project.yml` registers this scheme in the
-// GarminFood app target's `CFBundleURLTypes` -- the extension itself never
-// needs to receive an open, only to construct the URL the system routes
-// elsewhere.
+// Reuses the app's existing "garminfood" custom scheme, the same one
+// registered in `ios/project.yml`'s `CFBundleURLTypes`, rather than adding
+// a second one. Garmin sign-in no longer uses this scheme for anything
+// (see GarminAuthSession.swift's 2026-09-16 real-device finding: it
+// switched to a `WKWebView`-based ticket capture that doesn't depend on a
+// custom-scheme redirect at all), so any "garminfood://" open -- including
+// this one, tapped from a widget -- falls through to the app's normal
+// `onOpenURL(perform:)` handling like any other registered custom URL
+// scheme. The extension itself never needs to receive an open, only to
+// construct the URL the system routes elsewhere.
 
 import Foundation
 

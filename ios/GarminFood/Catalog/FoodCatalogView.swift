@@ -337,7 +337,7 @@ struct FoodCatalogView: View {
             searchErrorMessage = nil
         } catch {
             searchResults = []
-            searchErrorMessage = "Couldn't reach Garmin right now. Check your connection or try again."
+            searchErrorMessage = GarminErrorPresentation.searchErrorMessage(for: error)
         }
     }
 
