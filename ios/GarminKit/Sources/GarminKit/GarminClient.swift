@@ -2,11 +2,10 @@
 //
 // The API client. Read routes (`searchFood`, `dailyFoodLog`) are confirmed
 // live against the real account as of 2026-09-14 (docs/garmin-routes.json).
-// Write routes (`createFoodLogEntry`, `deleteFoodLogEntries`) implement the
-// DOCUMENTED-BUT-UNCONFIRMED contract in docs/garmin-food-log-contract.md --
-// faithful to the best available inference, but genuinely untested against
-// a real write. See CreateFoodLogEntryRequest's doc comment in
-// GarminModels.swift for exactly what's uncertain and why.
+// Write routes (`createFoodLogEntry`, `deleteFoodLogEntries`) follow the
+// contract garmin_mcp uses against a real account (see FoodLogWriteBody in
+// GarminModels.swift and docs/garmin-food-log-contract.md). That client is
+// live-tested; this project's own first successful write is still pending.
 //
 // This type deliberately does not decode or trust the response body of
 // `createFoodLogEntry` for anything -- design.md D5 already assumes the
@@ -123,29 +122,47 @@ public struct GarminClient: Sendable {
         }
     }
 
-    // MARK: - Writes (documented, not yet confirmed by a real write)
+    /// GET `/nutrition-service/meals/{date}`. Confirmed live 2026-09-16:
+    /// returns the date's meal definitions (per-date numeric `mealId`, name,
+    /// and for all but SNACKS a startTime/endTime window) whether or not
+    /// anything is logged, which `dailyFoodLog` can't promise.
+    public func mealsForDate(date: String) async throws -> MealsForDate {
+        let (data, response) = try await get(path: "/nutrition-service/meals/\(date)", query: [])
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(MealsForDate.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
 
-    /// POST `/nutrition-service/food/logs`.
+    // MARK: - Writes (modelled on a live-tested client, not yet exercised by this project)
+
+    /// PUT `/nutrition-service/food/logs`, body per `FoodLogWriteBody`.
     ///
-    /// IMPORTANT: nothing in this package invokes this automatically. Task
-    /// 11.4 -- the first real write, against a deliberately distinctive
-    /// test food on a date the owner can inspect and delete by hand -- is a
-    /// human-supervised, one-off action, not something this client, the
-    /// Outbox, or any test triggers on its own.
+    /// Two requests, not one: the body needs the date's meal INSTANCE id,
+    /// which only exists server-side per date, so it is looked up here at
+    /// delivery time rather than at confirm time -- an entry can be queued
+    /// offline for a day it has never fetched. A missing meal throws
+    /// `FoodLogWriteError.mealNotFound` before anything is written.
     @discardableResult
     public func createFoodLogEntry(_ entry: CreateFoodLogEntryRequest) async throws -> HTTPURLResponse {
-        let (data, response) = try await post(path: "/nutrition-service/food/logs", body: entry)
+        let meals = try await mealsForDate(date: entry.date).meals ?? []
+        let body = try FoodLogWriteBody.make(for: entry, meals: meals)
+        let (data, response) = try await put(path: "/nutrition-service/food/logs", body: body)
         try Self.throwIfNotSuccessful(response, data: data)
         return response
     }
 
-    /// DELETE `/nutrition-service/food/logs`, body `{ "logIds": [...] }`.
-    /// `logIds` are the hex `logId` values from a read entry, not `foodId`s.
-    /// Used by Reconciliation.swift to remove a detected duplicate.
+    /// DELETE `/nutrition-service/food/logs/{date}`, body `{ "logIds": [...] }`,
+    /// as garmin_mcp's `delete_food_log` sends it. The date is part of the
+    /// path; the earlier inferred route omitted it. `logIds` are the hex
+    /// `logId` values from a read entry, not `foodId`s. Used by
+    /// Reconciliation.swift to remove a detected duplicate.
     @discardableResult
-    public func deleteFoodLogEntries(logIds: [String]) async throws -> HTTPURLResponse {
+    public func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse {
         let (data, response) = try await delete(
-            path: "/nutrition-service/food/logs",
+            path: "/nutrition-service/food/logs/\(date)",
             body: DeleteFoodLogEntriesRequest(logIds: logIds)
         )
         try Self.throwIfNotSuccessful(response, data: data)
@@ -230,6 +247,15 @@ public struct GarminClient: Sendable {
     private func post(path: String, body: some Encodable) async throws -> (Data, HTTPURLResponse) {
         try await send {
             var request = try await self.authorizedRequest(method: "POST", path: path)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try Self.encoder.encode(body)
+            return request
+        }
+    }
+
+    private func put(path: String, body: some Encodable) async throws -> (Data, HTTPURLResponse) {
+        try await send {
+            var request = try await self.authorizedRequest(method: "PUT", path: path)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = try Self.encoder.encode(body)
             return request

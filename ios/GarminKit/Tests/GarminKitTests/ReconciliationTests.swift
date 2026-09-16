@@ -47,6 +47,25 @@ final class ReconciliationTests: XCTestCase {
         OutboxEntry(date: "2026-09-14", mealType: mealType, foodId: foodId, servingId: servingId, numberOfUnits: numberOfUnits)
     }
 
+    private func tempStoreURL() -> URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-reconcile-\(UUID().uuidString).json")
+    }
+
+    private func instant(_ iso: String) -> Date {
+        let withFraction = ISO8601DateFormatter()
+        withFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return withFraction.date(from: iso) ?? ISO8601DateFormatter().date(from: iso)!
+    }
+
+    private func loggedFood(timestamp: String) -> LoggedFood {
+        try! JSONDecoder().decode(LoggedFood.self, from: Data("{ \"logTimestamp\": \"\(timestamp)\" }".utf8))
+    }
+
+    /// Before every 2026-09-14 fixture below. Entries created "now" would
+    /// sit after those fixtures, and the delivery guard would correctly
+    /// refuse to treat anything logged before them as their own.
+    private var queuedBeforeFixtures: Date { instant("2026-09-14T05:00:00Z") }
+
     // MARK: - No match
 
     func testNoMatchWhenFoodIdDiffers() {
@@ -143,6 +162,7 @@ final class ReconciliationTests: XCTestCase {
     private actor FakeReconcilingClient: FoodLogReconciling {
         private let log: DailyFoodLog?
         private(set) var deletedLogIds: [String] = []
+        private(set) var deleteDates: [String] = []
 
         init(log: DailyFoodLog?) {
             self.log = log
@@ -152,9 +172,10 @@ final class ReconciliationTests: XCTestCase {
             log
         }
 
-        func deleteFoodLogEntries(logIds: [String]) async throws -> HTTPURLResponse {
+        func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse {
             deletedLogIds.append(contentsOf: logIds)
-            return HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/nutrition-service/food/logs")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            deleteDates.append(date)
+            return HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/nutrition-service/food/logs/\(date)")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
         }
     }
 
@@ -166,7 +187,7 @@ final class ReconciliationTests: XCTestCase {
         let client = FakeReconcilingClient(log: log)
         let outbox = Outbox(store: OutboxStore(fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-reconcile-\(UUID().uuidString).json")))
         let reconciliation = Reconciliation(outbox: outbox)
-        let entry = OutboxEntry(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, state: .sent)
+        let entry = OutboxEntry(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, state: .sent, createdAt: queuedBeforeFixtures)
 
         let outcomes = await reconciliation.reconcile(delivered: [entry], using: client)
 
@@ -178,6 +199,8 @@ final class ReconciliationTests: XCTestCase {
         XCTAssertEqual(deleted, ["log-b"])
         let actuallyDeleted = await client.deletedLogIds
         XCTAssertEqual(actuallyDeleted, ["log-b"])
+        let deleteDates = await client.deleteDates
+        XCTAssertEqual(deleteDates, ["2026-09-14"], "the delete route takes the entry's date in its path")
     }
 
     func testGenuinelyDuplicateLocalEntriesBothSurviveReconciliation() async throws {
@@ -200,8 +223,8 @@ final class ReconciliationTests: XCTestCase {
         let outbox = Outbox(store: OutboxStore(fileURL: storeURL))
         let reconciliation = Reconciliation(outbox: outbox)
 
-        let firstEntry = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0)
-        let secondEntry = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0)
+        let firstEntry = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, createdAt: queuedBeforeFixtures)
+        let secondEntry = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, createdAt: queuedBeforeFixtures)
         var sentFirst = firstEntry
         sentFirst.state = .sent
         var sentSecond = secondEntry
@@ -257,6 +280,76 @@ final class ReconciliationTests: XCTestCase {
 
         let stored = await outbox.allEntries()
         XCTAssertEqual(stored.first?.state, .pending, "a missing entry must be re-queued for delivery, not left sent-but-absent")
-        XCTAssertEqual(stored.first?.attemptCount, 0)
+        XCTAssertEqual(stored.first?.attemptCount, 1, "a miss must count toward maxAttempts, or a write Garmin accepts but files elsewhere is re-sent forever")
+    }
+
+    // MARK: - Only this app's own deliveries count
+
+    func testAnIdenticalEntryLoggedBeforeThisAppQueuedItIsNeverDeleted() async throws {
+        // The user logged this exact snack in the official app at 06:00, then
+        // the same snack again in this app at 09:00. Both match the key, but
+        // only the second can be this app's delivery. Counting the first
+        // made it look like one excess duplicate -- and the excess deleted
+        // is the LATER copy: the one just logged here.
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "official", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00.000Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "ours", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T09:00:00.000Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+        let reconciliation = Reconciliation(outbox: Outbox(store: OutboxStore(fileURL: tempStoreURL())))
+        let entry = OutboxEntry(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, state: .sent, createdAt: instant("2026-09-14T09:00:00Z"))
+
+        let outcomes = await reconciliation.reconcile(delivered: [entry], using: client)
+
+        XCTAssertEqual(outcomes.map(\.verdict), [.confirmed(logId: "ours")])
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty, "an entry logged before this app queued anything can't be this app's duplicate, and must never be deleted")
+    }
+
+    func testTheDeliveryGuardRulesOutOnlyWhatWasLoggedClearlyEarlier() {
+        let queued = instant("2026-09-14T09:00:00Z")
+
+        XCTAssertTrue(Reconciliation.couldBeThisAppsDelivery(loggedFood(timestamp: "2026-09-14T09:00:00.000Z"), notBefore: queued))
+        XCTAssertTrue(Reconciliation.couldBeThisAppsDelivery(loggedFood(timestamp: "2026-09-14T09:03:12.500Z"), notBefore: queued))
+        XCTAssertTrue(
+            Reconciliation.couldBeThisAppsDelivery(loggedFood(timestamp: "2026-09-14T08:55:00Z"), notBefore: queued),
+            "a few minutes early is clock skew between the phone and Garmin, not proof it isn't ours"
+        )
+        XCTAssertFalse(Reconciliation.couldBeThisAppsDelivery(loggedFood(timestamp: "2026-09-14T06:00:00.000Z"), notBefore: queued))
+    }
+
+    func testAnUnreadableTimestampStillCounts() {
+        XCTAssertTrue(
+            Reconciliation.couldBeThisAppsDelivery(loggedFood(timestamp: "t"), notBefore: instant("2026-09-14T09:00:00Z")),
+            "the guard fails open: what it can't read, it can't rule out"
+        )
+    }
+
+    // MARK: - Missed deliveries are bounded
+
+    func testAnEntryThatKeepsGoingMissingIsEventuallyMarkedFailed() async throws {
+        let client = FakeReconcilingClient(log: makeLog([]))
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()), maxAttempts: 2)
+        let reconciliation = Reconciliation(outbox: outbox)
+
+        var entry = try await outbox.logFood(date: "2026-09-14", mealType: .breakfast, foodId: "1", servingId: "2", numberOfUnits: 1.0)
+        entry.state = .sent
+        try await outbox.requeue(entry)
+
+        let first = await reconciliation.reconcile(delivered: [entry], using: client)
+        XCTAssertEqual(first.map(\.verdict), [.missingRequeued])
+
+        let afterFirst = await outbox.allEntries()
+        var redelivered = try XCTUnwrap(afterFirst.first)
+        redelivered.state = .sent
+        try await outbox.requeue(redelivered)
+
+        let second = await reconciliation.reconcile(delivered: [redelivered], using: client)
+        XCTAssertEqual(second.map(\.verdict), [.missingGaveUp])
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .failed, "a delivery that keeps vanishing must stop being re-sent")
+        XCTAssertEqual(stored.first?.attemptCount, 2)
+        XCTAssertNotNil(stored.first?.lastError, "the reason has to survive for the app's delivery banner")
     }
 }

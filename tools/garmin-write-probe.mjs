@@ -24,15 +24,21 @@
  *
  * USAGE
  *
+ * The defaults target create-food-log, which is PUT (not POST) with a
+ * { mealDate, foodLogItems: [...] } body -- see
+ * docs/garmin-food-log-contract.md. mealId comes from
+ * `node tools/garmin-get.mjs /nutrition-service/meals/{date}`.
+ *
  *   # show what would be sent, send nothing (default)
- *   node tools/garmin-write-probe.mjs --body '{"date":"2026-09-16",...}'
+ *   node tools/garmin-write-probe.mjs --body '{"mealDate":"2026-09-16","foodLogItems":[...]}'
  *
  *   # actually send it
  *   node tools/garmin-write-probe.mjs --body '{...}' --send
  *
- *   # other routes / verbs
- *   node tools/garmin-write-probe.mjs --path /nutrition-service/food/logs \
- *        --method DELETE --body '{"logIds":["..."]}' --send
+ *   # delete: the date is part of the path
+ *   node tools/garmin-write-probe.mjs --method DELETE \
+ *        --path /nutrition-service/food/logs/2026-09-16 \
+ *        --body '{"logIds":["..."]}' --send
  *
  * Tokens come from lib/garmin-auth.mjs's usual resolution (GARMIN_TOKENS, or
  * VAULT_ROOT/scripts/.garmin-tokens.json). On Git Bash for Windows, prefix
@@ -53,12 +59,12 @@ function flag(name, fallback = null) {
 }
 
 const path = flag('--path', '/nutrition-service/food/logs');
-const method = (flag('--method', 'POST') || 'POST').toUpperCase();
+const method = (flag('--method', 'PUT') || 'PUT').toUpperCase();
 const rawBody = flag('--body');
 const send = args.includes('--send');
 
 if (!rawBody) {
-    console.error('Usage: node tools/garmin-write-probe.mjs --body \'{"json":"here"}\' [--path /p] [--method POST] [--send]');
+    console.error('Usage: node tools/garmin-write-probe.mjs --body \'{"json":"here"}\' [--path /p] [--method PUT] [--send]');
     console.error('Without --send it prints the request and exits: nothing is written.');
     process.exit(2);
 }

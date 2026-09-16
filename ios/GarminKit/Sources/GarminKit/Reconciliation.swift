@@ -22,7 +22,7 @@ import Foundation
 public protocol FoodLogReconciling: Sendable {
     func dailyFoodLog(date: String) async throws -> DailyFoodLog?
     @discardableResult
-    func deleteFoodLogEntries(logIds: [String]) async throws -> HTTPURLResponse
+    func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse
 }
 
 public struct ReconciliationOutcome: Sendable, Equatable {
@@ -38,6 +38,10 @@ public struct ReconciliationOutcome: Sendable, Equatable {
         /// A 2xx was received on delivery, but no matching entry exists on
         /// re-read. Re-queued.
         case missingRequeued
+        /// As `missingRequeued`, but this entry has now gone missing after
+        /// delivery as many times as it's allowed to be retried, so it was
+        /// marked `.failed` instead of being sent yet again.
+        case missingGaveUp
         /// The day's log couldn't be re-read this cycle (network error,
         /// etc). Not a verdict either way -- try again on the next drain.
         case reconciliationSkipped
@@ -132,9 +136,11 @@ public actor Reconciliation {
         // Every entry in `group` shares the same (mealType, foodId,
         // servingId, numberOfUnits) by construction (`MatchKey`), so any one
         // of them produces the identical match set.
-        let matches = Self.matchingLoggedFoods(for: representative, in: log)
-        let sortedMatches = Self.sortedByTimestamp(matches)
         let sortedGroup = Self.sortedByCreation(group)
+        let earliestCreated = sortedGroup.first?.createdAt ?? Date()
+        let matches = Self.matchingLoggedFoods(for: representative, in: log)
+            .filter { Self.couldBeThisAppsDelivery($0, notBefore: earliestCreated) }
+        let sortedMatches = Self.sortedByTimestamp(matches)
 
         let n = sortedGroup.count
         let m = sortedMatches.count
@@ -163,7 +169,7 @@ public actor Reconciliation {
 
             if !toDelete.isEmpty {
                 do {
-                    try await client.deleteFoodLogEntries(logIds: Array(toDelete))
+                    try await client.deleteFoodLogEntries(logIds: Array(toDelete), date: date)
                     Self.logLoudly("deleted \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue)/\(representative.foodId) on \(date) (\(n) locally expected, \(m) found on Garmin).")
                 } catch {
                     Self.logLoudly("found \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue)/\(representative.foodId) on \(date) (\(n) locally expected, \(m) found on Garmin) but failed to delete: \(error)")
@@ -190,14 +196,15 @@ public actor Reconciliation {
         await removeConfirmed(confirmedEntries)
 
         for entry in missingEntries {
-            var requeued = entry
-            requeued.state = .pending
-            requeued.attemptCount = 0
-            requeued.lastError = "reconciliation: 2xx received but entry not found on re-read of \(entry.date)"
-            requeued.nextAttemptAt = Date()
-            try? await outbox.requeue(requeued)
-            Self.logLoudly("entry \(entry.id) got a 2xx but is missing from Garmin's \(entry.date) log; re-queued.")
-            outcomes.append(ReconciliationOutcome(entryId: entry.id, date: date, verdict: .missingRequeued))
+            let reason = "reconciliation: 2xx received but entry not found on re-read of \(entry.date)"
+            let updated = try? await outbox.requeueMissingAfterDelivery(entry, reason: reason)
+            if updated?.state == .failed {
+                Self.logLoudly("entry \(entry.id) got a 2xx but is still missing from Garmin's \(entry.date) log after \(updated?.attemptCount ?? 0) deliveries; giving up.")
+                outcomes.append(ReconciliationOutcome(entryId: entry.id, date: date, verdict: .missingGaveUp))
+            } else {
+                Self.logLoudly("entry \(entry.id) got a 2xx but is missing from Garmin's \(entry.date) log; re-queued.")
+                outcomes.append(ReconciliationOutcome(entryId: entry.id, date: date, verdict: .missingRequeued))
+            }
         }
 
         return outcomes
@@ -248,6 +255,45 @@ public actor Reconciliation {
         entries.sorted {
             ($0.createdAt, $0.id.uuidString) < ($1.createdAt, $1.id.uuidString)
         }
+    }
+
+    /// How far a Garmin entry's `logTimestamp` may precede a local entry's
+    /// `createdAt` and still count as possibly this app's own delivery.
+    /// Generous on purpose: if Garmin replaced the client's timestamp with
+    /// its own receive time, a phone clock running ahead of Garmin's would
+    /// otherwise make a real delivery look "too early", get it re-queued,
+    /// and send it again.
+    static let deliveryClockTolerance: TimeInterval = 10 * 60
+
+    /// Whether `food` could be an entry this app delivered, for a group
+    /// whose earliest local entry was created at `earliestCreated`.
+    ///
+    /// The match key alone can't answer that: (meal, food, serving,
+    /// quantity) is just as true of an identical entry the user logged in
+    /// the official app earlier the same day. Counting that entry made a
+    /// normal delivery look like an excess duplicate -- and excess
+    /// duplicates are DELETED, latest first, so the copy that went was the
+    /// one just logged here. Both apps stamp an entry with the moment it was
+    /// logged (this one sends `createdAt` as `logTimestamp`), and nothing
+    /// this app delivers can have been logged before it was queued, so
+    /// anything logged earlier is ruled out.
+    ///
+    /// Fails open: a missing or unparseable timestamp can't rule anything
+    /// out, so it still counts, which is exactly the behaviour before this
+    /// check existed.
+    static func couldBeThisAppsDelivery(_ food: LoggedFood, notBefore earliestCreated: Date) -> Bool {
+        guard let raw = food.logTimestamp, let logged = parseLogTimestamp(raw) else { return true }
+        return logged >= earliestCreated.addingTimeInterval(-deliveryClockTolerance)
+    }
+
+    /// `2026-09-16T13:35:49.324Z` as observed, with or without the fraction.
+    static func parseLogTimestamp(_ raw: String) -> Date? {
+        let withFraction = ISO8601DateFormatter()
+        withFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = withFraction.date(from: raw) {
+            return date
+        }
+        return ISO8601DateFormatter().date(from: raw)
     }
 
     /// Pure matching logic, extracted so it is unit-testable with a

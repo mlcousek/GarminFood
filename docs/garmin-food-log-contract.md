@@ -1,6 +1,21 @@
 # Garmin food-log write contract
 
-Status as of **2026-09-14**. This is the best evidence available, gathered without ever writing to a Garmin account. It is **not yet confirmed by a real write** — that first write is a deliberate, human-supervised step (see `add-garmin-auth-and-sync` task 11.4), not something any tool in this repo does automatically.
+Status as of **2026-09-16**. **The route and body below are taken from a client that writes to a real account successfully** — [garmin_mcp](https://github.com/Taxuspt/garmin_mcp) (`log_food_to_meal` / `delete_food_log` in `src/garmin_mcp/nutrition.py`, covered by its own live end-to-end tests). This project has **not yet made a successful write of its own**: that first write is still a deliberate, human-supervised step (see `add-garmin-auth-and-sync` task 11.4), and `tools/garmin-write-probe.mjs` exists to make it from Windows without a device build.
+
+### What changed on 2026-09-16, and why
+
+The contract this doc originally recorded (a flat `POST`, reconstructed from dex strings — kept below the read shape for the record) was wrong in almost every respect, and the app's first real write on a device failed silently because of it. Comparing it with garmin_mcp:
+
+| | Originally inferred | What actually works |
+|---|---|---|
+| Method | `POST` | **`PUT`** |
+| Envelope | flat object | `{ "mealDate", "foodLogItems": [ … ] }` |
+| Meal | `mealType: "SNACKS"` | **`mealId`** — a numeric, *per-date* meal instance id |
+| Quantity | `numberOfUnits` | **`servingQty`** |
+| Namespace | — | **`source`**: `GARMIN` or `FATSECRET`; the wrong one is a 400 |
+| Delete path | `/nutrition-service/food/logs` | `/nutrition-service/food/logs/{date}` |
+
+Checked against this project's own account by read-only probing the same day: meal instance ids and windows from `GET /nutrition-service/meals/{date}` match what the body needs; every `FATSECRET` food id is numeric and every `GARMIN` id (including custom foods) is 32-character hex, so a missing `source` can be inferred; entries the official app created carry `mealTime` equal to their meal's `startTime` and a `logTimestamp` of the moment of logging.
 
 ## How this was gathered
 
@@ -13,19 +28,50 @@ Status as of **2026-09-14**. This is the best evidence available, gathered witho
 ## The route
 
 ```
-POST /nutrition-service/food/logs
+GET /nutrition-service/meals/{date}      # resolve the meal instance id first
+PUT /nutrition-service/food/logs
 ```
 
-Sibling routes discovered the same way:
+| Purpose | Method | Path | Source |
+|---|---|---|---|
+| Meal definitions for a date | GET | `/nutrition-service/meals/{date}` | probed live, 200 |
+| Create entries | PUT | `/nutrition-service/food/logs` | garmin_mcp |
+| Quick-add by name + macros | PUT | `/nutrition-service/food/logs/quickAdd` (`quickAddItems`) | garmin_mcp |
+| Delete | DELETE | `/nutrition-service/food/logs/{date}` (body `{"logIds": [...]}`) | garmin_mcp |
+| Bulk create | POST? | `/nutrition-service/food/logs/bulk` | dex strings only |
 
-| Purpose | Method | Path |
-|---|---|---|
-| Create one entry | POST | `/nutrition-service/food/logs` |
-| Quick-add (favorite/recent) | POST | `/nutrition-service/food/logs/quickAdd` |
-| Bulk create | POST | `/nutrition-service/food/logs/bulk` |
-| Delete | DELETE | `/nutrition-service/food/logs` (body carries `logIds`) |
+## Request body
 
-## Inferred request body (unconfirmed)
+```json
+{
+  "mealDate": "2026-09-16",
+  "foodLogItems": [
+    {
+      "logTimestamp": "2026-09-16T10:30:00.250Z",
+      "logSource": "GCW",
+      "logCategory": "REGULAR_LOG",
+      "mealTime": "10:00:00",
+      "action": "ADD",
+      "mealId": 123456,
+      "foodId": "<id from search>",
+      "servingId": "<id from that food's nutritionContents>",
+      "source": "FATSECRET",
+      "regionCode": "US",
+      "languageCode": "en",
+      "servingQty": 1.5
+    }
+  ]
+}
+```
+
+- `mealId` — from `GET /nutrition-service/meals/{date}`: `meals[].mealId` where `mealName` is `BREAKFAST` / `LUNCH` / `DINNER` / `SNACKS`. It differs for every date, so an entry queued offline resolves it at delivery time.
+- `mealTime` — `HH:mm:ss`. A meal with a window uses its `startTime`, as the official app does. `SNACKS` has no window: use the local time of logging, moved just past any window it falls inside, because garmin_mcp picks `mealId` *from* `mealTime`.
+- `logTimestamp` — ISO-8601 UTC with milliseconds; the moment the user logged it.
+- `servingQty` — how many of `servingId`; the same field `LoggedFood.matchesQuantity` checks first on read-back.
+- `source` — `foodMetaData.source` from search. When unknown, infer it: numeric id → `FATSECRET`, otherwise `GARMIN`.
+- `logSource` / `regionCode` / `languageCode` — client-supplied constants. garmin_mcp sends `GCW` / `US` / `en`; the official mobile app's entries read back as `GCM` / `CZ` / `en` on this account, including for a food that search reports under `US`, so the region is not checked against the food.
+
+## Originally inferred request body (superseded — kept for the record)
 
 Based on `FoodLogRequestDTO` and the shape of a read entry's `foodMetaData`/`nutritionContent`:
 
