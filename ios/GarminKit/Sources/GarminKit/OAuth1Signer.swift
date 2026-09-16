@@ -190,7 +190,11 @@ enum OAuth1Signer {
         // which is its own guaranteed mismatch. So if the URI cannot be
         // stripped, nothing is folded and the old (reference-identical)
         // behavior stands.
-        var signedPairs: [(String, String)] = params.map { ($0.key, $0.value) }
+        var signedPairs: [(String, String)] = []
+        signedPairs.reserveCapacity(params.count)
+        for (name, value) in params {
+            signedPairs.append((name, value))
+        }
         var signatureURL = url
         if let components = URLComponents(string: url) {
             var withoutQuery = components
@@ -214,11 +218,26 @@ enum OAuth1Signer {
         // which preserves repeated names instead of collapsing them the way a
         // dictionary would. For the oauth_* keys, encoding is the identity and
         // names are unique, so this orders them exactly as before.
-        let paramString = signedPairs
-            .map { (OAuth1PercentEncoding.encode($0.0), OAuth1PercentEncoding.encode($0.1)) }
-            .sorted { $0.0 == $1.0 ? $0.1 < $1.1 : $0.0 < $1.0 }
-            .map { "\($0.0)=\($0.1)" }
-            .joined(separator: "&")
+        // Written out rather than chained: the fluent
+        // map/sorted/map/joined version over tuples defeats Swift's type
+        // checker outright ("unable to type-check this expression in
+        // reasonable time"), which is a build failure, not a slow build.
+        var encodedPairs: [(name: String, value: String)] = []
+        encodedPairs.reserveCapacity(signedPairs.count)
+        for pair in signedPairs {
+            let name = OAuth1PercentEncoding.encode(pair.0)
+            let value = OAuth1PercentEncoding.encode(pair.1)
+            encodedPairs.append((name: name, value: value))
+        }
+        encodedPairs.sort { lhs, rhs in
+            lhs.name == rhs.name ? lhs.value < rhs.value : lhs.name < rhs.name
+        }
+
+        var paramString = ""
+        for (index, pair) in encodedPairs.enumerated() {
+            if index > 0 { paramString += "&" }
+            paramString += pair.name + "=" + pair.value
+        }
 
         let baseString = [
             method.uppercased(),

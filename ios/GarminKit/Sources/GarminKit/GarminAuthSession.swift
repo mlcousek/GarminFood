@@ -158,10 +158,13 @@ public enum GarminSSOEndpoints {
         }
 
         if let marker = trimmed.range(of: ticketQueryParameterName + "=") {
-            let value = trimmed[marker.upperBound...]
-                .prefix { $0 != "&" && $0 != "#" }
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            return value.isEmpty ? nil : value
+            var value = ""
+            for character in trimmed[marker.upperBound...] {
+                if character == "&" || character == "#" { break }
+                value.append(character)
+            }
+            let cleaned = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            return cleaned.isEmpty ? nil : cleaned
         }
 
         return trimmed
