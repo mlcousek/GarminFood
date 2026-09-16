@@ -24,8 +24,8 @@
 **`GarminAuthSession.swift` implemented, 2026-09-14 — compiles, but the ticket-exchange path is explicitly unconfirmed against this account (marked in code comments), not a false confidence.**
 
 - [x] 8.1 `ASWebAuthenticationSession` flow implemented, pointed at Garmin's mobile SSO URL.
-- [ ] 8.2 **Still open.** The exact redirect URL and ticket parameter name are modeled on garth's known pattern, not confirmed live. Needs a real run against the account to verify or correct.
-- [ ] 8.3 Cloudflare-challenge-inside-the-session — untested, needs a real device.
+- [ ] 8.2 **Half settled (2026-09-16).** The ticket parameter name is now CONFIRMED (`ticket`): a real sign-in reached the ticket *exchange*, which is only reachable once `GarminSSOWebView` has found that parameter in a navigated-to URL. The *exchange* itself is still unconfirmed — but that attempt was made against a request carrying three independent defects, all now fixed: the CAS `service` at mint (`connect.garmin.com/modern`) disagreed with the `login-url` at redeem (`sso.garmin.com/sso/embed`), and the OAuth1 signature both baked the query string into the base URI and signed an empty `oauth_token=`. Needs one clean run to judge.
+- [ ] 8.3 Cloudflare-challenge-inside-the-session — **not** what blocked the 2026-09-16 attempt; the interactive WebKit sign-in itself got through. Still untested as a scripted path.
 - [x] 8.4 Manual ticket paste fallback implemented alongside 8.1, per the task's own instruction to keep both.
 - [x] 8.5 Tokens stored in Keychain with `kSecAttrAccessibleAfterFirstUnlock`. **No shared access group** — task 6.4 confirmed custom groups don't work on this account; each process's Keychain entries are its own.
 - [x] 8.6 No password handling exists in the codebase — `ASWebAuthenticationSession` never exposes it to app code by construction.

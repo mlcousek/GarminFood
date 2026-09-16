@@ -17,6 +17,7 @@
 // work yet -- this phase did not (and could not, without a device) verify
 // it.
 
+import Foundation
 import SwiftUI
 import GarminKit
 
@@ -125,16 +126,29 @@ private struct GarminSignInSheet: View {
         }
     }
 
-    private func completeSignIn(withTicket ticket: String) async {
+    private func completeSignIn(withTicket rawTicket: String) async {
         isWorking = true
         defer { isWorking = false }
         do {
             let session = GarminAuthSession()
-            _ = try await session.completeBootstrap(withPastedTicket: ticket)
+            _ = try await session.completeBootstrap(withPastedTicket: Self.normalizedTicket(rawTicket))
             environment.authState.markAuthenticated()
             dismiss()
         } catch {
-            errorMessage = "That ticket didn't work. Try signing in again, or double check a pasted ticket was copied in full."
+            errorMessage = GarminErrorPresentation.bootstrapErrorMessage(for: error)
         }
+    }
+
+    /// The footer above tells the user to copy a value "from the redirect
+    /// URL", so some will reasonably paste the whole URL, and a hand-copied
+    /// value picks up stray whitespace either way. Accept both shapes rather
+    /// than failing the exchange and then blaming the paste.
+    private static func normalizedTicket(_ raw: String) -> String {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.contains("ticket=") else { return trimmed }
+        return URLComponents(string: trimmed)?
+            .queryItems?
+            .first(where: { $0.name == "ticket" })?
+            .value ?? trimmed
     }
 }

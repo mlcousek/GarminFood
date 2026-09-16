@@ -146,21 +146,51 @@ enum OAuth1Signer {
     ) -> String {
         var params: [String: String] = [
             "oauth_consumer_key": consumer.consumerKey,
-            "oauth_token": token,
             "oauth_nonce": nonce,
             "oauth_timestamp": timestamp,
             "oauth_signature_method": "HMAC-SHA1",
             "oauth_version": "1.0",
         ]
+        // RFC 5849 3.4.1.3.1: a token that doesn't exist yet is omitted from
+        // the signature, not signed as an empty `oauth_token=`. Only the
+        // bootstrap (GarminAuthSession's `preauthorized` call, which exists to
+        // establish that token in the first place) passes an empty token; the
+        // OAuth1->OAuth2 exchange always has a real one, so its signature is
+        // byte-for-byte unchanged by this branch.
+        if !token.isEmpty {
+            params["oauth_token"] = token
+        }
+
+        // RFC 5849 3.4.1.2 + 3.4.1.3.1: the base string URI excludes the
+        // query, and the query's parameters are signed alongside the oauth_*
+        // ones. The Node reference this was ported from signs the full URL and
+        // no query parameters at all -- indistinguishable from correct for a
+        // query-less URL, which is all it was ever exercised against. The
+        // bootstrap's `preauthorized` call is the first signed request here to
+        // carry a query string (`ticket`, `login-url`, ...), and Garmin
+        // recomputes the signature server-side over those parameters, so
+        // omitting them could only ever produce a mismatch.
+        let components = URLComponents(string: url)
+        var signatureURL = url
+        var signedParams = params
+        if let components {
+            var withoutQuery = components
+            withoutQuery.queryItems = nil
+            withoutQuery.fragment = nil
+            signatureURL = withoutQuery.url?.absoluteString ?? url
+            for item in components.queryItems ?? [] {
+                signedParams[item.name] = item.value ?? ""
+            }
+        }
 
         // Signature base string: METHOD & pctEncode(url) & pctEncode(sorted param string).
-        let paramString = params.keys.sorted()
-            .map { "\(OAuth1PercentEncoding.encode($0))=\(OAuth1PercentEncoding.encode(params[$0]!))" }
+        let paramString = signedParams.keys.sorted()
+            .map { "\(OAuth1PercentEncoding.encode($0))=\(OAuth1PercentEncoding.encode(signedParams[$0]!))" }
             .joined(separator: "&")
 
         let baseString = [
             method.uppercased(),
-            OAuth1PercentEncoding.encode(url),
+            OAuth1PercentEncoding.encode(signatureURL),
             OAuth1PercentEncoding.encode(paramString),
         ].joined(separator: "&")
 

@@ -14,14 +14,20 @@
 // website with no way back into the app except manually dismissing, which
 // (correctly, but unhelpfully) reports as a cancelled sign-in.
 //
-// `sso.garmin.com` and `connect.garmin.com` are different origins, so
-// landing on the latter after starting on the former MUST be a real,
-// full-page navigation (no same-origin `history.pushState` trick can do
-// that) -- which is exactly the event `WKNavigationDelegate.decidePolicyFor`
-// observes, and it fires with the REQUESTED url (ticket query param
-// included) before that page loads and before any of its own JS has a
-// chance to strip the ticket from the visible address, e.g. via
-// `history.replaceState`.
+// The post-sign-in hop is a server-issued CAS 302 carrying the ticket in its
+// Location header, which `WKNavigationDelegate.decidePolicyFor` sees with the
+// REQUESTED url (ticket query parameter included) before that page loads and
+// before any of its own JS can strip the ticket from the visible address,
+// e.g. via `history.replaceState`. This capture was CONFIRMED working on a
+// real device 2026-09-16.
+//
+// It does NOT depend on that hop crossing an origin boundary -- it did when
+// this file was written (`sso.garmin.com` -> `connect.garmin.com`), but
+// `GarminSSOEndpoints.serviceURL` now keeps the whole flow on
+// `sso.garmin.com/sso/embed`, so that the minted ticket names the same CAS
+// service the exchange later redeems it against. A 302 is observable either
+// way; only a same-origin `history.pushState` would not be, and CAS does not
+// use one.
 //
 // This uses a real `WKWebView`, not `ASWebAuthenticationSession`, purely to
 // solve that observability gap. It is NOT a response to design.md's
