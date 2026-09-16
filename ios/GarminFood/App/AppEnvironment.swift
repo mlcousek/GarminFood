@@ -144,22 +144,40 @@ final class AppEnvironment {
             // which never comes if the user simply stays in the app.
             await todaySummary.refresh()
         }
+        var authFailed = true
         switch result.authOutcome {
         case .longLivedTokenExpired:
             authState.report(GarminAuthError.longLivedTokenExpired)
-            lastDeliveryFailure = nil
         case .notSignedIn:
             authState.report(GarminAuthError.notSignedIn)
-            lastDeliveryFailure = nil
         case .none:
-            // Auth failures own their own loud banner; repeating them here
-            // would only say the same thing twice in different words. What
-            // belongs here is the case that had no voice at all: signed in,
-            // nothing expired, and Garmin still refused the write.
-            lastDeliveryFailure = result.failed.compactMap(\.lastError).first
+            authFailed = false
         }
         let pending = await outbox.pendingCount()
-        undeliveredCount = pending
         authState.updatePendingCount(pending)
+
+        // Neither `pendingCount()` nor `result.failed` answers "what hasn't
+        // Garmin accepted". The former only counts entries due NOW, and a
+        // failed attempt pushes an entry into a backoff window, so it reads
+        // 0 right after a failure -- the banner would vanish exactly when it
+        // matters. The latter only lists entries that have spent every
+        // retry, so a first failure would show a count and no reason.
+        let undelivered = await outbox.allEntries().filter { $0.state != .sent }
+        undeliveredCount = undelivered.count
+
+        // Auth failures own their own loud banner; repeating them here would
+        // say the same thing twice. What belongs here is the case that had
+        // no voice at all: signed in, nothing expired, Garmin still refused.
+        // Newest first, since that's the attempt the user just made.
+        var failure: String?
+        if !authFailed {
+            for entry in undelivered.reversed() {
+                if let error = entry.lastError, !error.hasPrefix("auth:") {
+                    failure = error
+                    break
+                }
+            }
+        }
+        lastDeliveryFailure = failure
     }
 }

@@ -38,6 +38,20 @@ final class LogEntryCoordinatorTests: XCTestCase {
         XCTAssertEqual(stored.first?.state, .pending, "confirming does not itself deliver -- that's the outbox drain's job")
     }
 
+    func testConfirmCarriesTheFoodsNamespaceAndLoggingTimeIntoTheEntry() async throws {
+        let (coordinator, outbox, _, _) = makeCoordinator()
+        let fatSecretFood = Food(id: "17926789", name: "Oats", source: .fatSecret, servings: [Serving(id: "serving-9", unit: "g", numberOfUnits: 40)])
+        let loggedAt = Date(timeIntervalSince1970: 1_789_000_000)
+
+        _ = try await coordinator.confirm(food: fatSecretFood, serving: fatSecretFood.servings[0], numberOfUnits: 1, mealType: .breakfast, date: "2026-09-14", now: loggedAt)
+        _ = try await coordinator.confirm(food: food, serving: food.servings[0], numberOfUnits: 1, mealType: .breakfast, date: "2026-09-14", now: loggedAt)
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.source, .fatSecret, "Garmin 400s a write that names the wrong namespace")
+        XCTAssertNil(stored.last?.source, "a `.garmin` Food may be the fallback for a missing source string, so it is inferred instead")
+        XCTAssertEqual(stored.first?.createdAt, loggedAt, "sent as logTimestamp: the moment of logging, not of delivery")
+    }
+
     func testConfirmUpdatesUsageHistoryInTheSameAction() async throws {
         let (coordinator, _, usageHistory, _) = makeCoordinator()
 

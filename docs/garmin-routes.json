@@ -74,9 +74,9 @@
       "operation": "mealsForDate",
       "method": "GET",
       "path": "/nutrition-service/meals/{date}",
-      "lastVerified": "2026-09-14",
+      "lastVerified": "2026-09-16",
       "observedStatus": 200,
-      "notes": "Confirmed live via probe-garmin-nutrition.mjs. Response shape not yet inspected in detail -- likely an alternate/lighter view of the same day's meals as dailyFoodLog's mealDetails."
+      "notes": "Shape inspected 2026-09-16: { meals: [{ mealId (number, a per-date meal INSTANCE id), mealName (BREAKFAST|LUNCH|DINNER|SNACKS), startTime, endTime }], dailyTimelineStartTime, dailyTimelineEndTime, dailyViewType }. BREAKFAST/LUNCH/DINNER carry an HH:mm:ss window; SNACKS carries none. Returned whether or not anything is logged. This is where createFoodLogEntry gets its mealId, which is why GarminClient.createFoodLogEntry calls it first."
     },
     {
       "operation": "recentFoods",
@@ -138,19 +138,19 @@
   "write": [
     {
       "operation": "createFoodLogEntry",
-      "method": "POST",
+      "method": "PUT",
       "path": "/nutrition-service/food/logs",
-      "lastVerified": "2026-09-14",
-      "observedStatus": "documented, not exercised",
-      "notes": "Inferred from the decompiled client's FoodLogRequestDTO (Kotlin toString fragments: 'FoodLogRequestDTO(date=', ', mealType=', ', foodId=', ', servingId='). Field set is a reasonable inference from the read shape's loggedFoods items (foodId, servingId, numberOfUnits or servingQty, mealId/mealType, date) but is UNCONFIRMED until a real write is attempted -- see add-garmin-auth-and-sync task 11.4. Per this project's rules, no automated tool sends this request; the first attempt is a deliberate, human-supervised one-off against a clearly identifiable test food."
+      "lastVerified": "2026-09-16",
+      "observedStatus": "modelled on a live-tested client, not yet exercised by this project",
+      "notes": "Body { mealDate, foodLogItems: [{ logTimestamp, logSource, logCategory, mealTime, action: ADD, mealId, foodId, servingId, source: GARMIN|FATSECRET, regionCode, languageCode, servingQty }] } -- taken from garmin_mcp (Taxuspt/garmin_mcp, log_food_to_meal), which writes to this route in its own live end-to-end tests. Supersedes the earlier dex-string inference (a flat POST of date/mealType/foodId/servingId/numberOfUnits), which was wrong on method, envelope, meal (name vs per-date mealId), quantity field (numberOfUnits vs servingQty) and the missing source -- and is what the app sent when its first real write on a device failed on 2026-09-16 (status not captured; the failure was swallowed at the time). Full field notes in docs/garmin-food-log-contract.md. The first successful write from this project is still pending; tools/garmin-write-probe.mjs makes it from Windows."
     },
     {
       "operation": "quickAddFoodLogEntry",
-      "method": "POST",
+      "method": "PUT",
       "path": "/nutrition-service/food/logs/quickAdd",
-      "lastVerified": "2026-09-14",
+      "lastVerified": "2026-09-16",
       "observedStatus": "documented, not exercised",
-      "notes": "DTO FoodLogQuickAddRequestDTO(date=...) found in decompiled client. Likely takes a foodId/servingId already known to be a favorite or recent, without needing full serving/macro detail -- a strong candidate for what a Control's quick-pick tap actually calls."
+      "notes": "Per garmin_mcp (log_food): PUT with { mealDate, quickAddItems: [{ name, logId: null, logTimestamp, logSource, logCategory: QUICK_ADD, mealTime, mealId, action: ADD, calories, carbs, protein, fat }] } -- logs a named entry by macros alone, no foodId. The earlier note here (DTO FoodLogQuickAddRequestDTO, guessed to take a favorite foodId) came from dex strings and is superseded. Not used by this project."
     },
     {
       "operation": "bulkCreateFoodLogEntries",
@@ -163,10 +163,10 @@
     {
       "operation": "deleteFoodLogEntries",
       "method": "DELETE",
-      "path": "/nutrition-service/food/logs",
-      "lastVerified": "2026-09-14",
-      "observedStatus": "documented, not exercised",
-      "notes": "DTO DeleteFoodRequestDTO(logIds=...) found in decompiled client -- takes a list of logId values (the same logId field observed on read, a hex string without dashes, not the same as foodId). Confirms delete-by-logId is the mechanism reconciliation (garmin-sync duplicate cleanup) should use."
+      "path": "/nutrition-service/food/logs/{date}",
+      "lastVerified": "2026-09-16",
+      "observedStatus": "modelled on a live-tested client, not yet exercised by this project",
+      "notes": "Per garmin_mcp (delete_food_log): the date is part of the PATH, which the earlier dex-string inference omitted; body { logIds: [...] }, each a 32-char hex logId from a read entry (not a foodId). Used by Reconciliation to remove a detected duplicate -- which, now that writes can succeed, is only allowed for entries logged no earlier than the local entry was queued (Reconciliation.couldBeThisAppsDelivery), so an identical entry made in the official app is never mistaken for one."
     },
     {
       "operation": "createCustomFood",

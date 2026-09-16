@@ -133,9 +133,10 @@ public struct LoggedFood: Decodable, Sendable {
     /// actually takes (NOT the same as `foodId`).
     public let logId: String?
     public let logTimestamp: String?
-    /// Observed value: "GCM". Presumed server-assigned, not client-supplied.
+    /// Client-supplied on write (see `FoodLogWriteBody`). Observed "GCM" on
+    /// entries the official mobile app created; this app sends "GCW".
     public let logSource: String?
-    /// Observed value: "REGULAR_LOG". Presumed server-assigned.
+    /// Client-supplied on write. Observed "REGULAR_LOG".
     public let logCategory: String?
     /// Top-level fractional quantity (e.g. 0.7). See `matchesQuantity`'s
     /// doc comment: which of this or `nutritionContent.numberOfUnits` is
@@ -194,11 +195,24 @@ public struct LoggedNutritionContent: Decodable, Sendable {
     public let unitHasServing: Bool?
 }
 
-// MARK: - Create / delete (POST/DELETE /nutrition-service/food/logs) -- DOCUMENTED, NOT CONFIRMED BY A REAL WRITE
+// MARK: - Meal definitions (GET /nutrition-service/meals/{date}) -- confirmed live 2026-09-16
 
-/// Confirmed values (via real reads' `meal.mealName`): `.breakfast`,
-/// `.lunch`, `.snacks`. `.dinner` is presumed to exist but UNCONFIRMED on
-/// this account -- see docs/garmin-food-log-contract.md.
+/// The meal definitions for one date, returned whether or not anything is
+/// logged on it. The write needs this: Garmin files an entry under a meal
+/// INSTANCE (`mealId`, numeric, different for every date), not under a meal
+/// name, and an entry queued offline cannot know that id until delivery.
+public struct MealsForDate: Decodable, Sendable {
+    public let meals: [Meal]?
+    public let dailyTimelineStartTime: String?
+    public let dailyTimelineEndTime: String?
+}
+
+// MARK: - Create / delete (PUT/DELETE /nutrition-service/food/logs) -- modelled on a live-tested client, not yet exercised by this project
+
+/// Confirmed values: all four names below are returned by
+/// `GET /nutrition-service/meals/{date}` on the owner's account (2026-09-16).
+/// BREAKFAST, LUNCH and DINNER carry a startTime/endTime window; SNACKS
+/// carries none.
 public enum MealType: String, Codable, Sendable, CaseIterable {
     case breakfast = "BREAKFAST"
     case lunch = "LUNCH"
@@ -206,31 +220,205 @@ public enum MealType: String, Codable, Sendable, CaseIterable {
     case dinner = "DINNER"
 }
 
-/// The inferred request body for `createFoodLogEntry`, per
-/// docs/garmin-food-log-contract.md's "Inferred request body (unconfirmed)"
-/// section. Field names come from decompiled `FoodLogRequestDTO` Kotlin
-/// `toString()` fragments cross-referenced against the read shape --
-/// high confidence in which fields exist, only moderate confidence in exact
-/// spelling/nesting, since the dex string pool that produced them is
-/// alphabetically sorted and destroys original source/field order.
-///
-/// `numberOfUnits` here is sent as a plain top-level field, per the
-/// documented shape -- this is DISTINCT from the ambiguity discussed on
-/// `LoggedFood.matchesQuantity`, which concerns how to interpret quantity
-/// fields when reading a response back, not what to send on write.
-public struct CreateFoodLogEntryRequest: Encodable, Sendable, Equatable {
+/// Which of Garmin's two food namespaces a `foodId` belongs to. The write
+/// body has to say, and naming the wrong one is a 400.
+public enum GarminFoodSource: String, Codable, Sendable, Equatable {
+    case garmin = "GARMIN"
+    case fatSecret = "FATSECRET"
+
+    /// For callers that don't know the namespace: a custom food's backing
+    /// food, or an entry queued by a build that predates this field.
+    /// FatSecret ids are purely numeric; Garmin's own ids -- including a
+    /// user's custom foods -- are 32-character hex UUIDs. Checked against
+    /// every entry logged on the owner's account on 2026-09-16: all numeric
+    /// ids were FATSECRET and all hex ids were GARMIN.
+    public static func inferred(fromFoodId foodId: String) -> GarminFoodSource {
+        let isNumeric = !foodId.isEmpty && foodId.utf8.allSatisfy { $0 >= 48 && $0 <= 57 }
+        return isNumeric ? .fatSecret : .garmin
+    }
+}
+
+/// What the app wants logged -- deliberately NOT the wire body. Garmin files
+/// an entry under a per-date meal instance id that an entry queued offline
+/// can't know yet, so `GarminClient.createFoodLogEntry` resolves that at
+/// delivery time and builds `FoodLogWriteBody` from this.
+public struct CreateFoodLogEntryRequest: Sendable, Equatable {
     public let date: String // YYYY-MM-DD, local nutrition-day date
     public let mealType: MealType
     public let foodId: String
     public let servingId: String
+    /// How many of `servingId` -- sent as Garmin's `servingQty`, which is
+    /// also the field `LoggedFood.matchesQuantity` checks first on read-back.
     public let numberOfUnits: Double
+    public let source: GarminFoodSource
+    /// When the user logged it, not when it was delivered. Sent as
+    /// `logTimestamp`, which is how the official app's own entries read
+    /// back (the moment of logging), and what lets Reconciliation tell this
+    /// app's deliveries apart from entries that already existed.
+    public let loggedAt: Date
 
-    public init(date: String, mealType: MealType, foodId: String, servingId: String, numberOfUnits: Double) {
+    public init(
+        date: String,
+        mealType: MealType,
+        foodId: String,
+        servingId: String,
+        numberOfUnits: Double,
+        source: GarminFoodSource? = nil,
+        loggedAt: Date = Date()
+    ) {
         self.date = date
         self.mealType = mealType
         self.foodId = foodId
         self.servingId = servingId
         self.numberOfUnits = numberOfUnits
+        self.source = source ?? .inferred(fromFoodId: foodId)
+        self.loggedAt = loggedAt
+    }
+}
+
+public enum FoodLogWriteError: Error, Sendable, Equatable {
+    /// The date's meal definitions have no meal by this name, or it has no
+    /// id. Waiting won't fix it -- the meal set is account configuration --
+    /// so the message has to say exactly which meal and date.
+    case mealNotFound(mealName: String, date: String)
+}
+
+/// The wire body for `PUT /nutrition-service/food/logs`.
+///
+/// Source of truth: garmin_mcp (Taxuspt/garmin_mcp, `log_food_to_meal` in
+/// src/garmin_mcp/nutrition.py), which writes to this route and ships live
+/// end-to-end tests against a real account. The body this project inferred
+/// earlier -- a flat POST of date/mealType/foodId/servingId/numberOfUnits,
+/// reconstructed from alphabetically sorted dex strings -- matched it in
+/// almost nothing: wrong method, no `foodLogItems` envelope, a meal NAME
+/// where Garmin wants a per-date meal INSTANCE id, `numberOfUnits` for
+/// `servingQty`, and no `source`. Every field here is what that client sends.
+struct FoodLogWriteBody: Encodable, Equatable {
+    let mealDate: String
+    let foodLogItems: [Item]
+
+    struct Item: Encodable, Equatable {
+        let logTimestamp: String
+        let logSource: String
+        let logCategory: String
+        let mealTime: String
+        let action: String
+        let mealId: Int
+        let foodId: String
+        let servingId: String
+        let source: String
+        let regionCode: String
+        let languageCode: String
+        let servingQty: Double
+    }
+
+    /// garmin_mcp's values. It sends `GCW` (Garmin Connect Web); the
+    /// official mobile app's entries read back as `GCM` -- the proven value
+    /// is used. `regionCode`/`languageCode` come from the client and are not
+    /// checked against the food: on the owner's account the official app
+    /// filed a food that search reports under region `US` as `CZ`.
+    static let logSource = "GCW"
+    static let logCategory = "REGULAR_LOG"
+    static let action = "ADD"
+    static let regionCode = "US"
+    static let languageCode = "en"
+
+    static func make(
+        for request: CreateFoodLogEntryRequest,
+        meals: [Meal],
+        timeZone: TimeZone = .current
+    ) throws -> FoodLogWriteBody {
+        guard
+            let meal = meals.first(where: { $0.mealName == request.mealType.rawValue }),
+            let mealId = meal.mealId
+        else {
+            throw FoodLogWriteError.mealNotFound(mealName: request.mealType.rawValue, date: request.date)
+        }
+        let item = Item(
+            logTimestamp: logTimestampString(request.loggedAt),
+            logSource: logSource,
+            logCategory: logCategory,
+            mealTime: mealTime(for: meal, among: meals, loggedAt: request.loggedAt, timeZone: timeZone),
+            action: action,
+            mealId: mealId,
+            foodId: request.foodId,
+            servingId: request.servingId,
+            source: request.source.rawValue,
+            regionCode: regionCode,
+            languageCode: languageCode,
+            servingQty: request.numberOfUnits
+        )
+        return FoodLogWriteBody(mealDate: request.date, foodLogItems: [item])
+    }
+
+    /// `2026-09-16T13:35:49.324Z` -- the exact shape entries read back with.
+    static func logTimestampString(_ date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.string(from: date)
+    }
+
+    /// A meal with a window is logged at its start time, which is how the
+    /// official app's own entries read back (every breakfast entry on the
+    /// owner's account carries that meal's startTime as `mealTime`).
+    ///
+    /// A windowless meal (SNACKS) gets the local time of logging -- unless
+    /// that lands inside another meal's window, in which case it moves just
+    /// past that window. garmin_mcp derives `mealId` FROM `mealTime` (inside
+    /// a window means that meal, otherwise SNACKS), so a snack stamped 11:00
+    /// would read as a lunch. This keeps the two fields from contradicting
+    /// each other, whichever one Garmin actually honours.
+    static func mealTime(for meal: Meal, among meals: [Meal], loggedAt: Date, timeZone: TimeZone) -> String {
+        if let start = meal.startTime, meal.endTime != nil {
+            return start
+        }
+
+        var windows: [(start: Int, end: Int)] = []
+        for other in meals {
+            guard
+                let startTime = other.startTime, let start = secondsOfDay(startTime),
+                let endTime = other.endTime, let end = secondsOfDay(endTime)
+            else { continue }
+            windows.append((start: start, end: end))
+        }
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let parts = calendar.dateComponents([.hour, .minute, .second], from: loggedAt)
+        let local = (parts.hour ?? 0) * 3600 + (parts.minute ?? 0) * 60 + (parts.second ?? 0)
+
+        guard let containing = windows.first(where: { local >= $0.start && local <= $0.end }) else {
+            return timeString(local)
+        }
+
+        var candidates: [Int] = [containing.end + 1, containing.start - 1]
+        for window in windows {
+            candidates.append(window.end + 1)
+            candidates.append(window.start - 1)
+        }
+        for candidate in candidates {
+            guard candidate >= 0, candidate < 86_400 else { continue }
+            let insideAWindow = windows.contains(where: { candidate >= $0.start && candidate <= $0.end })
+            if !insideAWindow {
+                return timeString(candidate)
+            }
+        }
+        return timeString(local)
+    }
+
+    static func secondsOfDay(_ time: String) -> Int? {
+        let parts = time.split(separator: ":")
+        guard parts.count == 3,
+              let hours = Int(parts[0]), let minutes = Int(parts[1]), let seconds = Int(parts[2])
+        else { return nil }
+        return hours * 3600 + minutes * 60 + seconds
+    }
+
+    static func timeString(_ secondsOfDay: Int) -> String {
+        let hours = secondsOfDay / 3600
+        let minutes = (secondsOfDay % 3600) / 60
+        let seconds = secondsOfDay % 60
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
 }
 

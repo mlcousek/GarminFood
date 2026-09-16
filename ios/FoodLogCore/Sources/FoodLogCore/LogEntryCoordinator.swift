@@ -51,7 +51,9 @@ public struct LogEntryCoordinator: Sendable {
             mealType: mealType,
             foodId: food.id,
             servingId: serving.id,
-            numberOfUnits: numberOfUnits
+            numberOfUnits: numberOfUnits,
+            source: food.source.garminFoodSource,
+            createdAt: now
         )
         // Best-effort: a failure recording usage/defaults must never undo an
         // already-committed, already-enqueued entry -- the entry existing is
@@ -79,12 +81,15 @@ public struct LogEntryCoordinator: Sendable {
         now: Date = Date()
     ) async throws -> (entry: OutboxEntry, discrepancyNote: String) {
         let target = customFood.resolvedLoggingTarget(quantity: quantity)
+        // No `source`: a custom food only records its backing food's id, so
+        // the namespace is inferred from that id's shape at delivery.
         let entry = try await outbox.logFood(
             date: date,
             mealType: mealType,
             foodId: target.foodId,
             servingId: target.servingId,
-            numberOfUnits: target.numberOfUnits
+            numberOfUnits: target.numberOfUnits,
+            createdAt: now
         )
         try? await usageHistory.record(
             foodId: customFood.id.uuidString,
@@ -93,5 +98,22 @@ public struct LogEntryCoordinator: Sendable {
             timestamp: now
         )
         return (entry, customFood.discrepancyNote)
+    }
+}
+
+extension FoodSource {
+    /// The namespace to name on the Garmin write, where this food states it
+    /// reliably. Only `.fatSecret` does: `FoodSource(garminSourceString:)`
+    /// also produces `.garmin` for a MISSING or unrecognised source string,
+    /// so `.garmin` can't be trusted to mean a Garmin id -- and naming the
+    /// wrong namespace is a 400. Everything else is left to inference from
+    /// the id's shape, which is right for both namespaces.
+    var garminFoodSource: GarminFoodSource? {
+        switch self {
+        case .fatSecret:
+            return .fatSecret
+        case .garmin, .custom, .openFoodFacts:
+            return nil
+        }
     }
 }

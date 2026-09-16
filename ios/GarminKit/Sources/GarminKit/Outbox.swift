@@ -48,6 +48,11 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
     public let foodId: String
     public let servingId: String
     public let numberOfUnits: Double
+    /// Optional, and must stay so: entries queued by a build that predates
+    /// this field are already sitting in users' outbox files, and a
+    /// synthesized `Decodable` only tolerates a missing key for an Optional.
+    /// `nil` falls back to inferring the namespace from `foodId`'s shape.
+    public let source: GarminFoodSource?
 
     public var state: OutboxEntryState
     public var attemptCount: Int
@@ -64,6 +69,7 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
         foodId: String,
         servingId: String,
         numberOfUnits: Double,
+        source: GarminFoodSource? = nil,
         state: OutboxEntryState = .pending,
         attemptCount: Int = 0,
         lastError: String? = nil,
@@ -76,6 +82,7 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
         self.foodId = foodId
         self.servingId = servingId
         self.numberOfUnits = numberOfUnits
+        self.source = source
         self.state = state
         self.attemptCount = attemptCount
         self.lastError = lastError
@@ -84,7 +91,15 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
     }
 
     var createRequest: CreateFoodLogEntryRequest {
-        CreateFoodLogEntryRequest(date: date, mealType: mealType, foodId: foodId, servingId: servingId, numberOfUnits: numberOfUnits)
+        CreateFoodLogEntryRequest(
+            date: date,
+            mealType: mealType,
+            foodId: foodId,
+            servingId: servingId,
+            numberOfUnits: numberOfUnits,
+            source: source,
+            loggedAt: createdAt
+        )
     }
 }
 
@@ -266,9 +281,20 @@ public actor Outbox {
         mealType: MealType,
         foodId: String,
         servingId: String,
-        numberOfUnits: Double
+        numberOfUnits: Double,
+        source: GarminFoodSource? = nil,
+        createdAt: Date = Date()
     ) async throws -> OutboxEntry {
-        let entry = OutboxEntry(date: date, mealType: mealType, foodId: foodId, servingId: servingId, numberOfUnits: numberOfUnits)
+        let entry = OutboxEntry(
+            date: date,
+            mealType: mealType,
+            foodId: foodId,
+            servingId: servingId,
+            numberOfUnits: numberOfUnits,
+            source: source,
+            createdAt: createdAt,
+            nextAttemptAt: createdAt
+        )
         return try await store.enqueue(entry)
     }
 
@@ -302,6 +328,32 @@ public actor Outbox {
     /// caller, and it lives in the same module.
     func requeue(_ entry: OutboxEntry) async throws {
         try await store.update(entry)
+    }
+
+    /// Reconciliation's "Garmin said 2xx, but the re-read can't find it"
+    /// path. Unlike a plain `requeue`, this COUNTS the miss against
+    /// `maxAttempts` and gives up once they're spent.
+    ///
+    /// It has to: a drain that succeeds never increments `attemptCount`, and
+    /// the old re-queue reset it to 0, so an entry Garmin accepts but files
+    /// somewhere the matcher doesn't look would be re-sent on every drain,
+    /// forever -- one more real copy in the user's diary each time. That was
+    /// harmless only while no write could succeed. Capped, the worst case is
+    /// `maxAttempts` copies and an entry marked `.failed` with the reason,
+    /// which the app's delivery banner then shows.
+    @discardableResult
+    func requeueMissingAfterDelivery(_ entry: OutboxEntry, reason: String, now: Date = Date()) async throws -> OutboxEntry {
+        var updated = entry
+        updated.attemptCount += 1
+        updated.lastError = reason
+        if updated.attemptCount >= maxAttempts {
+            updated.state = .failed
+        } else {
+            updated.state = .pending
+            updated.nextAttemptAt = now
+        }
+        try await store.update(updated)
+        return updated
     }
 
     /// Attempts delivery of every currently-due pending entry once.
