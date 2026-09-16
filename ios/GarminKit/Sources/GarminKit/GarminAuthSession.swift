@@ -25,7 +25,10 @@
 // the capture step is intentionally not implemented here.
 //
 // =====================================================================
-// READ THIS BEFORE TOUCHING ANYTHING BELOW: GENUINELY UNVERIFIED TERRITORY
+// CONFIRMED END TO END 2026-09-16. This was "genuinely unverified
+// territory" until a real device signed in and immediately performed
+// authenticated reads. Everything below is now load-bearing and proven --
+// change it only with a device to re-verify on.
 // =====================================================================
 //
 // Confirmed, live, elsewhere in this project:
@@ -45,34 +48,37 @@
 //     really does carry a `ticket` query parameter and the navigation
 //     delegate really does observe it. `ticketQueryParameterName` is settled.
 //
-// NOT confirmed, anywhere, by this project's own testing:
-//   - Whether a service ticket obtained this way is even exchangeable for
-//     an OAuth1 token at all, versus only for a different (DI OAuth2,
-//     ~30-day-refresh) token entirely -- this is design.md's Open Question 1,
-//     explicitly still open. The 2026-09-16 exchange failure is NOT yet
-//     evidence either way: it was made against a request carrying three
-//     independent defects (see `exchangeTicket`), all since fixed, so the
-//     route deserves one clean attempt before that Open Question is judged.
-//   - The exact shape of the ticket -> OAuth1 exchange request/response
-//     below (`exchangeTicket`). It is modeled on the publicly-documented
-//     behavior of community tooling (garth's `preauthorized` step: a GET
-//     to `oauth-service/oauth/preauthorized` carrying the ticket, OAuth1-signed
-//     with the consumer key/secret and an empty token, returning
-//     `oauth_token`/`oauth_token_secret` as a query string) -- NOT observed
-//     working against this project's own account. This is a best-effort
-//     port of prior art, not a verified route.
+//   - The ticket -> OAuth1 EXCHANGE below (`exchangeTicket`) works, which
+//     ANSWERS design.md's Open Question 1: a CAS service ticket IS
+//     exchangeable for a long-lived OAuth1 token, not merely for some
+//     different (DI OAuth2, ~30-day-refresh) credential. Evidence: the same
+//     device went straight from sign-in to authenticated reads, which is
+//     impossible without a valid OAuth1 token stored by this route.
+//   - `login-url` does NOT have to be garth's `https://sso.garmin.com/sso/embed`.
+//     `https://connect.garmin.com/modern` is accepted, which is what lets
+//     this project keep the redirect-based capture it had already confirmed
+//     instead of adopting garth's embed-widget flow. This was the single
+//     biggest open worry and it is now settled -- see `serviceURL`.
+//   - The response really is a query-string body carrying
+//     `oauth_token`/`oauth_token_secret`, as modelled on garth. A wrong
+//     guess here would have thrown `malformedExchangeResponse` rather than
+//     authenticating, so success confirms the shape.
 //
-// Every constant below that encodes a guess is marked UNCONFIRMED in its
-// own doc comment. When a real sign-in actually reaches `exchangeTicket`,
-// update docs/garmin-routes.json's `auth` section with whatever the real
-// parameter/response turns out to be, with a `lastVerified` date, matching
-// this repo's existing convention for every other route in that file. Do
-// not quietly leave this comment stale once that happens.
+// Still NOT confirmed:
+//   - Nothing in this file. The remaining unverified surface in this project
+//     has moved to the WRITE path: every route in docs/garmin-routes.json's
+//     `write` section is still "documented, not exercised", and the first
+//     real `createFoodLogEntry` attempt (2026-09-16) failed. See
+//     docs/garmin-food-log-contract.md.
+//
+// docs/garmin-routes.json's `auth` section has been updated accordingly
+// (`exchangeTicketForOAuth1`, observedStatus 200, lastVerified 2026-09-16),
+// per the instruction that used to live here.
 
 import Foundation
 
-/// Best-effort, UNCONFIRMED constants for the browser bootstrap. See this
-/// file's header comment.
+/// Constants for the browser bootstrap, CONFIRMED end to end 2026-09-16.
+/// See this file's header comment.
 public enum GarminSSOEndpoints {
     /// The single CAS "service" this whole bootstrap is pinned to.
     ///

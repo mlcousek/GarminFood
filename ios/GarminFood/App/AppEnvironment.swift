@@ -57,6 +57,25 @@ final class AppEnvironment {
     /// an entry must never wait on this.
     private(set) var isDraining = false
 
+    /// Why a queued entry did not reach Garmin, when that is not an auth
+    /// problem (auth has its own loud banner, per design.md D7).
+    ///
+    /// Every write route in docs/garmin-routes.json is still recorded as
+    /// "documented, not exercised" -- the create-food-log contract is
+    /// inferred, never verified against a real write. So the first real
+    /// failures are expected, and the only thing that turns one into a fix
+    /// is seeing what Garmin actually said. Before this existed,
+    /// `drainAndReconcile` discarded `DrainResult.failed` entirely: the
+    /// entry sat in the outbox with its `lastError` recorded and shown to
+    /// nobody, while the confirm screen said "saved". That is the same
+    /// invisible-failure bug the ticket exchange had, in the write path.
+    private(set) var lastDeliveryFailure: String?
+
+    /// Queued entries Garmin has not accepted. Surfaced alongside
+    /// `lastDeliveryFailure` so "saved" cannot keep meaning "saved locally,
+    /// silently stuck".
+    private(set) var undeliveredCount = 0
+
     init() {
         let client = GarminClient()
         let outbox = Outbox(processName: "app")
@@ -118,16 +137,29 @@ final class AppEnvironment {
         let result = await outbox.drain(using: garminClient)
         if !result.delivered.isEmpty {
             _ = await reconciliation.reconcile(delivered: result.delivered, using: garminClient)
+            // The hero total is READ BACK from Garmin's daily food log
+            // (TodaySummary.swift), so a delivery is invisible until the day
+            // is re-read. Without this, logging something from inside the
+            // app left the number unchanged until the next foreground --
+            // which never comes if the user simply stays in the app.
+            await todaySummary.refresh()
         }
         switch result.authOutcome {
         case .longLivedTokenExpired:
             authState.report(GarminAuthError.longLivedTokenExpired)
+            lastDeliveryFailure = nil
         case .notSignedIn:
             authState.report(GarminAuthError.notSignedIn)
+            lastDeliveryFailure = nil
         case .none:
-            break
+            // Auth failures own their own loud banner; repeating them here
+            // would only say the same thing twice in different words. What
+            // belongs here is the case that had no voice at all: signed in,
+            // nothing expired, and Garmin still refused the write.
+            lastDeliveryFailure = result.failed.compactMap(\.lastError).first
         }
         let pending = await outbox.pendingCount()
+        undeliveredCount = pending
         authState.updatePendingCount(pending)
     }
 }
