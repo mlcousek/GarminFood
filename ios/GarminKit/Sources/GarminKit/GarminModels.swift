@@ -207,7 +207,7 @@ public struct MealsForDate: Decodable, Sendable {
     public let dailyTimelineEndTime: String?
 }
 
-// MARK: - Create / delete (PUT/DELETE /nutrition-service/food/logs) -- modelled on a live-tested client, not yet exercised by this project
+// MARK: - Create / delete (PUT/DELETE /nutrition-service/food/logs) -- create confirmed by a real write 2026-09-16; delete not yet exercised
 
 /// Confirmed values: all four names below are returned by
 /// `GET /nutrition-service/meals/{date}` on the owner's account (2026-09-16).
