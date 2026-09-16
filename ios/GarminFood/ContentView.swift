@@ -25,8 +25,11 @@ struct ContentView: View {
         NavigationStack {
             HomeView()
                 .safeAreaInset(edge: .top) {
-                    AuthBannerView()
-                        .padding(.top, Theme.Spacing.xs)
+                    VStack(spacing: Theme.Spacing.xs) {
+                        AuthBannerView()
+                        DeliveryBannerView()
+                    }
+                    .padding(.top, Theme.Spacing.xs)
                 }
         }
         .environment(environment)

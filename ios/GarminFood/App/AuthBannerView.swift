@@ -58,6 +58,41 @@ struct AuthBannerView: View {
     }
 }
 
+/// A delivery failure is NOT an auth failure: the user is signed in, nothing
+/// has expired, and Garmin simply refused the write. It needs its own banner
+/// because it needs its own remedy -- and because, until the `write` section
+/// of docs/garmin-routes.json stops saying "documented, not exercised" for
+/// every route in it, this is the only channel that turns a refusal into
+/// something fixable. The error is selectable on purpose: reporting it
+/// verbatim is currently the most useful thing a user can do with it.
+struct DeliveryBannerView: View {
+    @Environment(AppEnvironment.self) private var environment
+
+    var body: some View {
+        if environment.undeliveredCount > 0 {
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: Theme.Spacing.sm) {
+                    Image(systemName: "arrow.triangle.2.circlepath.circle")
+                    Text(environment.undeliveredCount == 1
+                         ? "1 entry hasn't reached Garmin yet"
+                         : "\(environment.undeliveredCount) entries haven't reached Garmin yet")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer()
+                }
+                if let failure = environment.lastDeliveryFailure {
+                    Text(failure)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                }
+            }
+            .padding(Theme.Spacing.sm)
+            .background(Theme.warning.opacity(0.15), in: RoundedRectangle(cornerRadius: Theme.Radius.sm))
+            .padding(.horizontal, Theme.Spacing.md)
+        }
+    }
+}
+
 @MainActor
 private struct GarminSignInSheet: View {
     @Environment(AppEnvironment.self) private var environment
