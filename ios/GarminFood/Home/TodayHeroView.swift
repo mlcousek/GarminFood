@@ -18,6 +18,7 @@
 // plain state change.
 
 import SwiftUI
+import FoodLogCore
 import Gamification
 
 struct TodayHeroView: View {
