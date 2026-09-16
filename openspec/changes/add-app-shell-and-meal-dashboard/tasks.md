@@ -1,29 +1,29 @@
 ## 1. Foundations that the new screens depend on
 
 - [ ] 1.1 Give the app one process-wide set of local stores (`Outbox`, `UsageHistoryStore`, and the rest), shared by `AppEnvironment` and the in-app intents (`QuickPickLoggingIntents.performLog`, `LogNamedFoodIntent`). Today each intent opens its own copy of the same JSON files. Each copy reads its file only once, so an entry logged from a Control while the app is running can be overwritten by the app's next save (found by the 2026-09-16 task audit).
-- [ ] 1.2 Record the logged nutrition date on each usage event (optional field, so older files still decode). Streaks, XP and goal status then key on the same date the entry was sent to Garmin, instead of mixing a midnight date and a 04:00 date (`add-gamification` 23.1; goal-status lookup mismatch at `GamificationEngine.swift:113` vs `:150`).
+- [x] 1.2 Record the logged nutrition date on each usage event (optional field, so older files still decode). Streaks, XP and goal status then key on the same date the entry was sent to Garmin, instead of mixing a midnight date and a 04:00 date (`add-gamification` 23.1; goal-status lookup mismatch at `GamificationEngine.swift:113` vs `:150`).
 - [ ] 1.3 Move `Theme` into `ios/Shared` so the widget extension uses the same tokens instead of hand-copied colours (`add-gamification` 26.1). Add `@ScaledMetric` for the fixed sizes and a `Haptics` helper that honours preferences (design D11).
 - [ ] 1.4 Add `AppPreferences` (`UserDefaults`-backed; haptics, celebrations, Garmin meal windows, Czech-only search) (design D9).
 
 ## 2. GarminKit reads
 
-- [ ] 2.1 `GarminClient.nutritionSettings(date:)` for `GET /nutrition-service/settings/{date}` (probed 200, 2026-09-16; shape recorded in design.md) and the `NutritionSettings` model.
-- [ ] 2.2 `GarminClient.socialProfile()` for `GET /userprofile-service/socialProfile` (probed 200, 2026-09-16) and a `SocialProfile` model holding only the fields shown.
-- [ ] 2.3 Record both routes in `docs/garmin-routes.json`, with status 200 and the date observed.
+- [x] 2.1 `GarminClient.nutritionSettings(date:)` for `GET /nutrition-service/settings/{date}` (probed 200, 2026-09-16; shape recorded in design.md) and the `NutritionSettings` model.
+- [x] 2.2 `GarminClient.socialProfile()` for `GET /userprofile-service/socialProfile` (probed 200, 2026-09-16) and a `SocialProfile` model holding only the fields shown.
+- [x] 2.3 Record both routes in `docs/garmin-routes.json`, with status 200 and the date observed.
 
 ## 3. Dashboard domain (FoodLogCore, unit-tested)
 
-- [ ] 3.1 `MacroProgress` (consumed / goal / fraction / state), using the same ±10% band as `TodaySummary.GoalState`.
-- [ ] 3.2 `MealDashboard.build(...)`: ordered sections, adjusted-over-base goals, an empty meal counted as zero, pending entries joined to cached foods, a delivered-but-unreconciled entry shown once, and day totals.
-- [ ] 3.3 `MealWindowDefaulting`: meal from Garmin windows, SNACKS outside every window, and fallback to `MealTypeDefaulting`.
-- [ ] 3.4 Unit tests for 3.1–3.3, including every scenario in `specs/meal-dashboard`.
+- [x] 3.1 `MacroProgress` (consumed / goal / fraction / state), using the same ±10% band as `TodaySummary.GoalState`.
+- [x] 3.2 `MealDashboard.build(...)`: ordered sections, adjusted-over-base goals, an empty meal counted as zero, pending entries joined to cached foods, a delivered-but-unreconciled entry shown once, and day totals.
+- [x] 3.3 `MealWindowDefaulting`: meal from Garmin windows, SNACKS outside every window, and fallback to `MealTypeDefaulting`.
+- [x] 3.4 Unit tests for 3.1–3.3, including every scenario in `specs/meal-dashboard`.
 
 ## 4. Gamification additions (unit-tested)
 
-- [ ] 4.1 `StreakHistory`: logged days, longest streak under the grace rule, and a recent-weeks calendar with logged/missed/grace marks.
-- [ ] 4.2 `ChallengeHistoryStore`: completed challenges (template, date, XP), capped and persisted. `GamificationEngine` writes to it when a challenge completes.
-- [ ] 4.3 Read-only accessors on `GamificationEngine`: catalog, active window end, goal history, challenge history, streak history, total logs.
-- [ ] 4.4 Tests for `StreakHistory` and `ChallengeHistoryStore`, plus the missing challenge-template tests (`add-gamification` 25.4: calorie-control, carb-cutback, explorer, dinner-discipline, and the incomplete cases for full-plate and triple-threat).
+- [x] 4.1 `StreakHistory`: logged days, longest streak under the grace rule, and a recent-weeks calendar with logged/missed/grace marks.
+- [x] 4.2 `ChallengeHistoryStore`: completed challenges (template, date, XP), capped and persisted. `GamificationEngine` writes to it when a challenge completes.
+- [x] 4.3 Read-only accessors on `GamificationEngine`: catalog, active window end, goal history, challenge history, streak history, total logs.
+- [x] 4.4 Tests for `StreakHistory` and `ChallengeHistoryStore`, plus the missing challenge-template tests (`add-gamification` 25.4: calorie-control, carb-cutback, explorer, dinner-discipline, and the incomplete cases for full-plate and triple-threat).
 
 ## 5. App shell
 
@@ -61,7 +61,7 @@
 - [ ] 9.1 Bound the Control/Siri inline delivery to about 2 s and surface an auth failure instead of discarding it (`add-garmin-auth-and-sync` 9.6).
 - [ ] 9.2 Control action hint (`add-glanceable-surfaces` 17.3); CI compile decides where the modifier attaches. A dynamic "Logged N kcal" status is not possible without shared data (glanceable D2), so record that instead of faking it.
 - [ ] 9.3 Donate app- and Control-initiated logs too, and remove the donation when the user deletes that entry (`add-glanceable-surfaces` 20.2).
-- [ ] 9.4 `probe-garmin-nutrition.mjs`: always print 400 bodies, and report how many routes remained unverified when a 429 stops the run (`establish-garmin-nutrition-contract` 3.3).
+- [x] 9.4 `probe-garmin-nutrition.mjs`: always print 400 bodies, and report how many routes remained unverified when a 429 stops the run (`establish-garmin-nutrition-contract` 3.3).
 
 ## 10. Device verification checklist (owner, on iPhone)
 

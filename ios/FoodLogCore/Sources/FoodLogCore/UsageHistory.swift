@@ -13,7 +13,12 @@
 //   Path:   <Application Support>/FoodLogCore/usage-history.json
 //   Shape:  a JSON ARRAY of objects, oldest first, each:
 //             { "foodId": "<string>", "servingId": "<string>",
-//               "numberOfUnits": <number>, "timestamp": "<ISO 8601 string>" }
+//               "numberOfUnits": <number>, "timestamp": "<ISO 8601 string>",
+//               "nutritionDay": "<yyyy-MM-dd>" }
+//   `nutritionDay` (added 2026-09-16) is the date the entry was logged FOR,
+//   the same date sent to Garmin, which the user can edit. Files written
+//   before it existed lack the key; readers must treat it as optional and
+//   fall back to `timestamp`.
 //   Nothing else is in this file -- no wrapper object, no metadata header.
 //   Encoded with `JSONEncoder.dateEncodingStrategy = .iso8601` specifically
 //   so a non-Swift reader (or a Swift reader that doesn't want to import
@@ -31,12 +36,18 @@ public struct UsageEvent: Codable, Sendable, Equatable {
     public let servingId: String
     public let numberOfUnits: Double
     public let timestamp: Date
+    /// `yyyy-MM-dd`: the day this entry was logged for, which is what
+    /// streaks and challenges should count, rather than when the button
+    /// happened to be pressed. `nil` for events recorded before the field
+    /// existed.
+    public let nutritionDay: String?
 
-    public init(foodId: String, servingId: String, numberOfUnits: Double, timestamp: Date) {
+    public init(foodId: String, servingId: String, numberOfUnits: Double, timestamp: Date, nutritionDay: String? = nil) {
         self.foodId = foodId
         self.servingId = servingId
         self.numberOfUnits = numberOfUnits
         self.timestamp = timestamp
+        self.nutritionDay = nutritionDay
     }
 }
 
@@ -87,9 +98,21 @@ public actor UsageHistoryStore {
     /// Appends one event and trims to `maxStoredEvents`, oldest first.
     /// Called once per confirmed log entry (food-log-entry spec's "A
     /// confirmed entry updates local usage ranking" requirement).
-    public func record(foodId: String, servingId: String, numberOfUnits: Double, timestamp: Date = Date()) throws {
+    public func record(
+        foodId: String,
+        servingId: String,
+        numberOfUnits: Double,
+        timestamp: Date = Date(),
+        nutritionDay: String? = nil
+    ) throws {
         loadIfNeeded()
-        events.append(UsageEvent(foodId: foodId, servingId: servingId, numberOfUnits: numberOfUnits, timestamp: timestamp))
+        events.append(UsageEvent(
+            foodId: foodId,
+            servingId: servingId,
+            numberOfUnits: numberOfUnits,
+            timestamp: timestamp,
+            nutritionDay: nutritionDay
+        ))
         if events.count > Self.maxStoredEvents {
             events.removeFirst(events.count - Self.maxStoredEvents)
         }

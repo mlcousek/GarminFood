@@ -106,12 +106,21 @@ async function run() {
     const rows = buildProbes(DATE);
     const results = [];
 
-    for (const [operation, path] of rows) {
+    for (const [index, [operation, path]] of rows.entries()) {
         const r = await get(path);
         results.push({ operation, path, ...r });
         console.log(`  ${classify(r.status)} ${operation.padEnd(24)} ${path}`);
+        // A 400 body names the controller argument Garmin wanted, which is
+        // the most useful line this probe can produce, so it is always
+        // shown rather than only with --dump.
+        if (r.status === 400 && r.body != null) {
+            const text = typeof r.body === 'string' ? r.body : JSON.stringify(r.body);
+            console.log(`           \x1b[36m${text.slice(0, 400)}\x1b[0m`);
+        }
         if (r.status === 429) {
+            const skipped = rows.slice(index + 1).map(([name]) => name);
             console.log('  \x1b[35mRate limited — stopping early to stay polite.\x1b[0m');
+            console.log(`  ${skipped.length} route(s) NOT verified this run${skipped.length ? `: ${skipped.join(', ')}` : ''}.`);
             break;
         }
         // Deliberately unhurried: this is reconnaissance, not a sync. Staying

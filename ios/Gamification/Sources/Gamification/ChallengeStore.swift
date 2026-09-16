@@ -100,11 +100,16 @@ public actor ChallengeStore {
     /// without completion" requirement -- no XP awarded, per that
     /// requirement's own scenario ("without awarding completion XP").
     @discardableResult
-    public func rotateIfWindowElapsed(catalog: [ChallengeTemplate], now: Date, baselineStreakLength: Int) throws -> Bool {
+    public func rotateIfWindowElapsed(
+        catalog: [ChallengeTemplate],
+        now: Date,
+        baselineStreakLength: Int,
+        boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour
+    ) throws -> Bool {
         loadIfNeeded()
         guard let active = snapshot.active,
               let template = catalog.first(where: { $0.id == active.templateId }),
-              ChallengeEngine.isWindowElapsed(active: active, template: template, now: now)
+              ChallengeEngine.isWindowElapsed(active: active, template: template, now: now, boundaryHour: boundaryHour)
         else { return false }
 
         let nextTemplate = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now)

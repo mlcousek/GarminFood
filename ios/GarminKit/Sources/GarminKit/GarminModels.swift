@@ -93,6 +93,11 @@ public struct NutritionGoals: Decodable, Sendable {
     public let adjustedProtein: Double?
 }
 
+/// Used for the day total and for each meal's `mealNutritionContent`. The
+/// fields after `caloriesPercentage` were observed (2026-09-16) on meals
+/// with food logged; the daily total carries only the first few. A meal
+/// with nothing logged comes back as an EMPTY object, so every field is
+/// optional and an absent value means "nothing", not "unknown".
 public struct DailyNutritionContent: Decodable, Sendable {
     public let calories: Double?
     public let carbs: Double?
@@ -100,6 +105,18 @@ public struct DailyNutritionContent: Decodable, Sendable {
     public let protein: Double?
     public let otherCalories: Double?
     public let caloriesPercentage: Double?
+    public let fiber: Double?
+    public let sugar: Double?
+    public let saturatedFat: Double?
+    public let monounsaturatedFat: Double?
+    public let polyunsaturatedFat: Double?
+    public let cholesterol: Double?
+    public let sodium: Double?
+    public let potassium: Double?
+    public let vitaminA: Double?
+    public let vitaminC: Double?
+    public let calcium: Double?
+    public let iron: Double?
 }
 
 public struct MealDetail: Decodable, Sendable {
@@ -205,6 +222,52 @@ public struct MealsForDate: Decodable, Sendable {
     public let meals: [Meal]?
     public let dailyTimelineStartTime: String?
     public let dailyTimelineEndTime: String?
+}
+
+// MARK: - Nutrition settings (GET /nutrition-service/settings/{date}) -- confirmed live 2026-09-16
+
+/// The account's nutrition plan as Garmin Connect shows it. `macroGoals` are
+/// grams: on 2026-09-16 they matched the daily log's base (non-adjusted)
+/// goals exactly (316 g carbs / 64 g fat / 115 g protein against 2300 kcal),
+/// while the log's `adjusted*` values add burned calories on top.
+public struct NutritionSettings: Decodable, Sendable {
+    public let calorieGoal: Double?
+    public let macroGoals: MacroGoals?
+    /// e.g. "LOSS" (observed), presumably also "GAIN" / "MAINTAIN".
+    public let weightChangeType: String?
+    public let weightChangeRate: Double?
+    public let targetWeightGoal: Double?
+    public let startingWeight: Double?
+    public let targetDate: String?
+    public let activeDailyCalories: Double?
+    public let userDefinedActiveCalories: Bool?
+    public let autoCalorieAdjustment: Bool?
+    public let dailyTimelineStartTime: String?
+    public let dailyTimelineEndTime: String?
+    public let effectiveDate: String?
+    /// "ACTIVE" observed.
+    public let nutritionStatus: String?
+
+    public struct MacroGoals: Decodable, Sendable {
+        public let carbs: Double?
+        public let fat: Double?
+        public let protein: Double?
+    }
+}
+
+// MARK: - Social profile (GET /userprofile-service/socialProfile) -- confirmed live 2026-09-16
+
+/// Only the fields the profile screen shows. The real response has many
+/// more (visibility flags, training speeds, roles) that this app has no use
+/// for, and decoding them would only add ways for a decode to break.
+public struct SocialProfile: Decodable, Sendable {
+    public let displayName: String?
+    public let fullName: String?
+    public let userName: String?
+    public let location: String?
+    public let profileImageUrlSmall: String?
+    public let profileImageUrlMedium: String?
+    public let profileImageUrlLarge: String?
 }
 
 // MARK: - Create / delete (PUT/DELETE /nutrition-service/food/logs) -- create confirmed by a real write 2026-09-16; delete not yet exercised

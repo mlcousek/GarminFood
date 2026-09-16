@@ -59,7 +59,7 @@ public struct LogEntryCoordinator: Sendable {
         // already-committed, already-enqueued entry -- the entry existing is
         // the durability guarantee the spec cares about, not this
         // bookkeeping.
-        try? await usageHistory.record(foodId: food.id, servingId: serving.id, numberOfUnits: numberOfUnits, timestamp: now)
+        try? await usageHistory.record(foodId: food.id, servingId: serving.id, numberOfUnits: numberOfUnits, timestamp: now, nutritionDay: date)
         try? await servingDefaults.setDefault(foodId: food.id, servingId: serving.id, numberOfUnits: numberOfUnits, updatedAt: now)
         return entry
     }
@@ -95,7 +95,8 @@ public struct LogEntryCoordinator: Sendable {
             foodId: customFood.id.uuidString,
             servingId: CustomFoodDraft.servingId,
             numberOfUnits: quantity,
-            timestamp: now
+            timestamp: now,
+            nutritionDay: date
         )
         return (entry, customFood.discrepancyNote)
     }

@@ -27,9 +27,49 @@
 // D1's intent than local midnight, and is the documented, deliberate
 // trade-off -- see this change's final report for the full reasoning.
 
+// UPDATE 2026-09-16: the limitation above is resolved. `UsageEvent` now
+// carries `nutritionDay`, the logged date sent to Garmin. That date is
+// local-midnight based (`NutritionDate`), so the app now passes
+// `loggedDateBoundaryHour` (0) and `nutritionDay(for event:)` prefers the
+// recorded date. With both halves on the same calendar day, streaks, XP and
+// goal status agree with what Garmin shows even for a log made at 01:00.
+// The 04:00 default stays only for existing callers and tests; only events
+// written before the field existed still fall back to their timestamp.
+
+import FoodLogCore
 import Foundation
 
 public enum NutritionDayBoundary {
+    /// The boundary that matches the date an entry is actually logged for:
+    /// `NutritionDate` in FoodLogCore is local-midnight based, and that is
+    /// the date Garmin receives.
+    public static let loggedDateBoundaryHour = 0
+
+    /// The nutrition day an event counts toward: its recorded
+    /// `nutritionDay` when present, otherwise its timestamp bucketed with
+    /// `boundaryHour`.
+    public static func nutritionDay(
+        for event: UsageEvent,
+        boundaryHour: Int = defaultBoundaryHour,
+        calendar: Calendar = .current
+    ) -> Date {
+        if let recorded = event.nutritionDay, let day = date(fromDayString: recorded, calendar: calendar) {
+            return day
+        }
+        return nutritionDay(for: event.timestamp, boundaryHour: boundaryHour, calendar: calendar)
+    }
+
+    /// Parses `yyyy-MM-dd` into midnight of that day in `calendar`'s zone.
+    public static func date(fromDayString string: String, calendar: Calendar = .current) -> Date? {
+        let formatter = DateFormatter()
+        formatter.calendar = calendar
+        formatter.timeZone = calendar.timeZone
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let parsed = formatter.date(from: string) else { return nil }
+        return calendar.startOfDay(for: parsed)
+    }
+
     /// The one `dayStartTime` value actually observed on the probed
     /// account (docs/garmin-food-log-contract.md via
     /// GarminKit.DailyFoodLog's doc comment). Not confirmed to be constant
