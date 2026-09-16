@@ -7,52 +7,18 @@
 // legacy `usersummary-service` field is disconnected from nutrition and must
 // never be used for this, per docs/garmin-food-log-contract.md).
 //
-// Deliberately a small value type plus an `@Observable` loader rather than
-// more properties on `AppEnvironment`: the hero re-renders from this alone,
-// and the loader owns the "last known good" semantics -- a failed refresh
-// keeps showing the previous number (marked stale) instead of blanking the
-// biggest element on the screen, per config.yaml's "states... designed on
-// purpose" principle.
+// The `TodaySummary` value type itself, and its goalFraction/goalState/
+// remainingCalories logic, now live in FoodLogCore (TodaySummary.swift
+// there) so they're covered by real unit tests (TodaySummaryTests.swift) --
+// this file kept a duplicate struct only long enough to get the redesign
+// building; that duplication is why it's gone now. What's left here is
+// purely the @Observable, GarminClient-calling loader, which can't be
+// unit-tested without a device/toolchain anyway.
 
 import Foundation
 import Observation
 import GarminKit
 import FoodLogCore
-
-struct TodaySummary: Equatable, Sendable {
-    let consumedCalories: Double
-    let goalCalories: Double?
-    let protein: Double?
-    let carbs: Double?
-    let fat: Double?
-    let fetchedAt: Date
-
-    var remainingCalories: Double? {
-        guard let goalCalories else { return nil }
-        return goalCalories - consumedCalories
-    }
-
-    /// 0...1 (clamped) share of the goal consumed; `nil` when there is no goal
-    /// to measure against, so the UI can show a plain count instead of a bar
-    /// that would otherwise be lying.
-    var goalFraction: Double? {
-        guard let goalCalories, goalCalories > 0 else { return nil }
-        return min(max(consumedCalories / goalCalories, 0), 1)
-    }
-
-    enum GoalState { case under, onTarget, over, noGoal }
-
-    /// "On target" is +/-10% -- a narrower band than GamificationEngine's
-    /// 15% goal-met tolerance on purpose: this is a visual cue on a live
-    /// number, not an XP award, so it can afford to be stricter.
-    var goalState: GoalState {
-        guard let goalCalories, goalCalories > 0 else { return .noGoal }
-        let ratio = consumedCalories / goalCalories
-        if ratio > 1.10 { return .over }
-        if ratio >= 0.90 { return .onTarget }
-        return .under
-    }
-}
 
 @MainActor
 @Observable
