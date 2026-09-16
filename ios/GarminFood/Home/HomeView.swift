@@ -53,6 +53,9 @@ struct HomeView: View {
                 }
 
                 logButton
+
+                AppSignatureView()
+                    .padding(.top, Theme.Spacing.xs)
             }
             .padding(Theme.Spacing.md)
         }

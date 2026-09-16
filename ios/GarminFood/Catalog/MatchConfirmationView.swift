@@ -146,7 +146,7 @@ struct MatchConfirmationView: View {
             case .noMatch: state = .noMatch
             }
         } catch {
-            state = .error("Couldn't reach Garmin right now. Check your connection or try again.")
+            state = .error(GarminErrorPresentation.searchErrorMessage(for: error))
         }
     }
 }

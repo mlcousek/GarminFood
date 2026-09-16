@@ -65,20 +65,20 @@ private struct GarminSignInSheet: View {
     @State private var pastedTicket = ""
     @State private var isWorking = false
     @State private var errorMessage: String?
-    private let presentationProvider = GarminAuthPresentationProvider()
+    @State private var isPresentingWebSSO = false
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
                     Button {
-                        Task { await signInWithBrowser() }
+                        isPresentingWebSSO = true
                     } label: {
                         Label("Sign in with Garmin", systemImage: "safari")
                     }
                     .disabled(isWorking)
                 } footer: {
-                    Text("Opens Garmin's sign-in page. The redirect back to this app is unconfirmed on this account (design.md task 8.2) -- if it doesn't return here automatically, use the manual option below instead.")
+                    Text("Opens Garmin's real sign-in page in-app and captures the sign-in automatically once it completes.")
                 }
 
                 Section {
@@ -86,13 +86,13 @@ private struct GarminSignInSheet: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                     Button("Complete sign-in with pasted ticket") {
-                        Task { await signInWithPastedTicket() }
+                        Task { await completeSignIn(withTicket: pastedTicket) }
                     }
                     .disabled(pastedTicket.isEmpty || isWorking)
                 } header: {
                     Text("Manual fallback")
                 } footer: {
-                    Text("Sign in to Garmin Connect in a regular browser, then copy the \"ticket\" value from the redirect URL here.")
+                    Text("If the sign-in page above doesn't complete automatically, sign in to Garmin Connect in a regular browser instead, then copy the \"ticket\" value from the redirect URL here.")
                 }
 
                 if let errorMessage {
@@ -106,32 +106,35 @@ private struct GarminSignInSheet: View {
                     Button("Close") { dismiss() }
                 }
             }
+            .fullScreenCover(isPresented: $isPresentingWebSSO) {
+                GarminSSOWebView(
+                    onTicket: { ticket in
+                        isPresentingWebSSO = false
+                        Task { await completeSignIn(withTicket: ticket) }
+                    },
+                    onCancel: {
+                        isPresentingWebSSO = false
+                    },
+                    onFailure: { message in
+                        isPresentingWebSSO = false
+                        errorMessage = message
+                    }
+                )
+                .ignoresSafeArea()
+            }
         }
     }
 
-    private func signInWithBrowser() async {
+    private func completeSignIn(withTicket ticket: String) async {
         isWorking = true
         defer { isWorking = false }
         do {
             let session = GarminAuthSession()
-            _ = try await session.signIn(presentationContextProvider: presentationProvider)
+            _ = try await session.completeBootstrap(withPastedTicket: ticket)
             environment.authState.markAuthenticated()
             dismiss()
         } catch {
-            errorMessage = "Sign-in didn't complete. Try the manual ticket option below."
-        }
-    }
-
-    private func signInWithPastedTicket() async {
-        isWorking = true
-        defer { isWorking = false }
-        do {
-            let session = GarminAuthSession()
-            _ = try await session.completeBootstrap(withPastedTicket: pastedTicket)
-            environment.authState.markAuthenticated()
-            dismiss()
-        } catch {
-            errorMessage = "That ticket didn't work. Double check it was copied in full."
+            errorMessage = "That ticket didn't work. Try signing in again, or double check a pasted ticket was copied in full."
         }
     }
 }

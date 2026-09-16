@@ -111,10 +111,12 @@ targets:
           - CFBundleURLName: com.mlcousek.garminfood
             CFBundleURLSchemes:
               - garminfood
+        CFBundleIconName: AppIcon
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mlcousek.garminfood
         TARGETED_DEVICE_FAMILY: "1" # iPhone only, for now
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     dependencies:
       - target: GarminFoodWidgetExtension
         embed: true

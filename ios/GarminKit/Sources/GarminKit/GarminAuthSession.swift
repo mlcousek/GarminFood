@@ -1,11 +1,28 @@
 // GarminAuthSession.swift
 //
 // The browser-based bootstrap (design.md D2): the user taps "Connect
-// Garmin", `ASWebAuthenticationSession` opens Garmin's real sign-in page
-// (Safari's own networking stack and TLS fingerprint -- not a `WKWebView`,
-// which doesn't share Safari's cookie jar and is more fingerprintable as
-// automation), and on success the app captures a service ticket from the
-// redirect and exchanges it for the long-lived OAuth1 token.
+// Garmin", a real WebKit-rendered browser opens Garmin's sign-in page, and
+// on success the app captures a service ticket and exchanges it for the
+// long-lived OAuth1 token.
+//
+// REAL-DEVICE FINDING (2026-09-16): the capture step originally used
+// `ASWebAuthenticationSession`, which only completes when the browser
+// navigates to a URL whose SCHEME matches a registered callback scheme.
+// Real testing showed sign-in genuinely succeeds -- the user ends up on a
+// real, authenticated `https://connect.garmin.com/modern` -- but that's an
+// `https://` URL Garmin's CAS was told to redirect to
+// (`GarminSSOEndpoints.signInURL`'s `service`/`redirectAfterAccountLoginUrl`
+// params), never our app's custom scheme, so
+// `ASWebAuthenticationSession`'s completion handler never fires. The ticket
+// capture now happens in the app target instead
+// (`ios/GarminFood/App/GarminSSOWebView.swift`), using a plain `WKWebView`
+// with a navigation delegate that inspects every navigated-to URL for a
+// `ticket` query parameter -- it doesn't depend on Garmin honoring any
+// particular redirect scheme, only on the (now-confirmed) fact that
+// `sso.garmin.com` -> `connect.garmin.com` is a real, observable, full-page
+// navigation. GarminKit itself has no UIKit dependency (see Package.swift),
+// so only the ticket -> OAuth1 EXCHANGE below remains this package's job;
+// the capture step is intentionally not implemented here.
 //
 // =====================================================================
 // READ THIS BEFORE TOUCHING ANYTHING BELOW: GENUINELY UNVERIFIED TERRITORY
@@ -14,19 +31,21 @@
 // Confirmed, live, elsewhere in this project:
 //   - Garmin's SSO sign-in endpoints sit behind Cloudflare bot protection
 //     as of March 2026 (design.md Context) -- a scripted credential POST
-//     to `oauth-service/oauth/preauthorized` gets 401.
+//     to `oauth-service/oauth/preauthorized` gets 401. A real, interactive,
+//     WebKit-rendered sign-in (as opposed to a scripted POST) is NOT
+//     blocked by this -- confirmed by the same 2026-09-16 real-device test.
 //   - The OAuth1 -> OAuth2 EXCHANGE (once an OAuth1 token already exists)
 //     works (TokenProvider.swift, `POST /oauth-service/oauth/exchange/user/2.0`).
+//   - `GarminSSOEndpoints.signInURL` is a real, working Garmin sign-in page
+//     (2026-09-16): loading it and signing in by hand does produce a real,
+//     authenticated Garmin session.
 //
 // NOT confirmed, anywhere, by this project's own testing:
-//   - The exact URL of Garmin's mobile SSO sign-in page.
-//   - Whether Garmin's redirect will honor a custom URL scheme callback at
-//     all (`ASWebAuthenticationSession` requires either that or a universal
-//     link) -- this is design.md's single biggest named risk for this file:
-//     "The redirect URL or ticket parameter changes -> bootstrap breaks
-//     while existing tokens keep working, so the failure appears months
-//     later at re-auth time, which is the worst possible moment."
-//   - The exact query parameter name carrying the resulting service ticket.
+//   - The exact query parameter name carrying the resulting service ticket
+//     (`ticketQueryParameterName`) -- GarminSSOWebView.swift's capture has
+//     not yet been exercised against a real sign-in; if it never fires,
+//     this is the first thing to re-check by inspecting the actual
+//     navigated-to URL.
 //   - Whether a service ticket obtained this way is even exchangeable for
 //     an OAuth1 token at all, versus only for a different (DI OAuth2,
 //     ~30-day-refresh) token entirely -- this is design.md's Open Question 1,
@@ -41,15 +60,13 @@
 //     port of prior art, not a verified route.
 //
 // Every constant below that encodes a guess is marked UNCONFIRMED in its
-// own doc comment. When task 8.1-8.3 actually runs this against a real
-// device and a real sign-in, update docs/garmin-routes.json's `auth`
-// section with whatever the real redirect/parameter/response turns out to
-// be, with a `lastVerified` date, matching this repo's existing convention
-// for every other route in that file. Do not quietly leave this comment
-// stale once that happens.
+// own doc comment. When a real sign-in actually reaches `exchangeTicket`,
+// update docs/garmin-routes.json's `auth` section with whatever the real
+// parameter/response turns out to be, with a `lastVerified` date, matching
+// this repo's existing convention for every other route in that file. Do
+// not quietly leave this comment stale once that happens.
 
 import Foundation
-import AuthenticationServices
 
 /// Best-effort, UNCONFIRMED constants for the browser bootstrap. See this
 /// file's header comment.
@@ -78,13 +95,6 @@ public enum GarminSSOEndpoints {
         return components.url!
     }()
 
-    /// The custom URL scheme the app would need to register
-    /// (`CFBundleURLTypes` in the app target's Info.plist -- a LATER
-    /// phase's job, not this package's) for `ASWebAuthenticationSession`
-    /// to detect completion. UNCONFIRMED whether Garmin's redirect actually
-    /// supports a custom scheme versus requiring a universal link.
-    public static let callbackURLScheme = "garminfood"
-
     /// Best-effort guess at the query parameter carrying the resulting
     /// service ticket, following the CAS-protocol convention ("ticket=...")
     /// Garmin's SSO is known to be built on. UNCONFIRMED.
@@ -97,10 +107,6 @@ public enum GarminSSOEndpoints {
 }
 
 public enum GarminBootstrapError: Error {
-    case cancelled
-    case missingCallbackURL
-    case missingTicket
-    case sessionFailed(Error)
     case exchangeFailed(statusCode: Int?, body: String?)
     case malformedExchangeResponse
     /// The exchange request URL failed to construct (R3) -- mirrors
@@ -108,13 +114,12 @@ public enum GarminBootstrapError: Error {
     case invalidExchangeURL
 }
 
-/// Runs the browser-based bootstrap (or the manual-ticket-paste fallback)
-/// and, on success, stores the resulting OAuth1 token via `TokenProvider`.
-///
-/// `@MainActor` because `ASWebAuthenticationSession` must be created and
-/// started on the main thread (it presents UI).
+/// Runs the ticket -> OAuth1 exchange for the browser-based bootstrap (the
+/// browser/ticket-capture step itself lives in the app target -- see this
+/// file's header comment) and, on success, stores the resulting OAuth1
+/// token via `TokenProvider`.
 @MainActor
-public final class GarminAuthSession: NSObject {
+public final class GarminAuthSession {
     private let tokenProvider: TokenProvider
     private let urlSession: URLSession
     private let baseURL: String
@@ -124,10 +129,6 @@ public final class GarminAuthSession: NSObject {
     /// testability -- unit tests exercising just the ticket-exchange logic
     /// don't need a real `GarminAuthState` in play.
     private let authState: GarminAuthState?
-
-    /// Held for the lifetime of an in-flight sign-in so
-    /// `ASWebAuthenticationSession` isn't deallocated mid-flow.
-    private var activeSession: ASWebAuthenticationSession?
 
     public init(
         tokenProvider: TokenProvider = .shared,
@@ -141,100 +142,14 @@ public final class GarminAuthSession: NSObject {
         self.authState = authState
     }
 
-    /// Presents Garmin's sign-in page inside `ASWebAuthenticationSession`.
-    ///
-    /// `presentationContextProvider` is supplied by the CALLER (the app
-    /// target, which owns a real window to anchor the sheet to) rather than
-    /// implemented in this package -- GarminKit has no UIKit/SwiftUI
-    /// dependency by design (see Package.swift), and providing a
-    /// presentation anchor is the app's job, not a shared logic package's.
-    @discardableResult
-    public func signIn(
-        presentationContextProvider: ASWebAuthenticationPresentationContextProviding,
-        prefersEphemeralWebBrowserSession: Bool = false
-    ) async throws -> GarminOAuth1Token {
-        let callbackURL = try await runWebAuthenticationSession(
-            presentationContextProvider: presentationContextProvider,
-            prefersEphemeralWebBrowserSession: prefersEphemeralWebBrowserSession
-        )
-
-        guard let ticket = Self.extractTicket(from: callbackURL) else {
-            throw GarminBootstrapError.missingTicket
-        }
-        return try await exchangeTicket(ticket)
-    }
-
-    /// The documented fallback (design.md D2, task 8.4): sign in through a
-    /// real desktop/mobile browser by hand, copy the service ticket out of
-    /// the resulting redirect URL, and paste it here. Exactly the workflow
-    /// the wider Garmin-tooling community (garth and friends) already uses.
-    /// Kept even once `signIn(presentationContextProvider:)` works -- per D2,
-    /// "it is the recovery path when the redirect contract changes," which
-    /// it eventually will, because none of the URLs above are confirmed
-    /// stable.
+    /// Completes sign-in with a service ticket obtained however the caller
+    /// captured it -- either `GarminSSOWebView`'s automatic `WKWebView`
+    /// capture, or the manual paste-it-yourself fallback (design.md D2,
+    /// task 8.4). Both paths converge here because the exchange itself
+    /// doesn't care where the ticket came from.
     @discardableResult
     public func completeBootstrap(withPastedTicket ticket: String) async throws -> GarminOAuth1Token {
         try await exchangeTicket(ticket)
-    }
-
-    // MARK: - ASWebAuthenticationSession plumbing
-
-    private func runWebAuthenticationSession(
-        presentationContextProvider: ASWebAuthenticationPresentationContextProviding,
-        prefersEphemeralWebBrowserSession: Bool
-    ) async throws -> URL {
-        try await withCheckedThrowingContinuation { continuation in
-            var didResume = false
-            let resumeOnce: (Result<URL, Error>) -> Void = { result in
-                guard !didResume else { return }
-                didResume = true
-                continuation.resume(with: result)
-            }
-
-            let session = ASWebAuthenticationSession(
-                url: GarminSSOEndpoints.signInURL,
-                callbackURLScheme: GarminSSOEndpoints.callbackURLScheme
-            ) { url, error in
-                if let error = error as? ASWebAuthenticationSessionError, error.code == .canceledLogin {
-                    resumeOnce(.failure(GarminBootstrapError.cancelled))
-                    return
-                }
-                if let error {
-                    resumeOnce(.failure(GarminBootstrapError.sessionFailed(error)))
-                    return
-                }
-                guard let url else {
-                    resumeOnce(.failure(GarminBootstrapError.missingCallbackURL))
-                    return
-                }
-                resumeOnce(.success(url))
-            }
-            session.presentationContextProvider = presentationContextProvider
-            // false (the default) lets Garmin's page see any existing Safari
-            // session/cookies, matching D2's framing of "the user signs in
-            // inside the app" as closely as possible to a real browser --
-            // Garmin may still force fresh credential entry; that's Garmin's
-            // call, not ours.
-            session.prefersEphemeralWebBrowserSession = prefersEphemeralWebBrowserSession
-            self.activeSession = session
-
-            if !session.start() {
-                resumeOnce(.failure(GarminBootstrapError.sessionFailed(
-                    NSError(
-                        domain: "GarminAuthSession",
-                        code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "ASWebAuthenticationSession.start() returned false"]
-                    )
-                )))
-            }
-        }
-    }
-
-    private static func extractTicket(from url: URL) -> String? {
-        URLComponents(url: url, resolvingAgainstBaseURL: false)?
-            .queryItems?
-            .first(where: { $0.name == GarminSSOEndpoints.ticketQueryParameterName })?
-            .value
     }
 
     // MARK: - Ticket -> OAuth1 exchange (UNCONFIRMED -- see file header)
