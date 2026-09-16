@@ -23,10 +23,10 @@
 
 **`GarminAuthSession.swift` implemented, 2026-09-14 — compiles, but the ticket-exchange path is explicitly unconfirmed against this account (marked in code comments), not a false confidence.**
 
-- [x] 8.1 `ASWebAuthenticationSession` flow implemented, pointed at Garmin's mobile SSO URL.
+- [x] 8.1 Browser sign-in implemented, pointed at Garmin's SSO URL. **Superseded 2026-09-16:** the original `ASWebAuthenticationSession` flow was deleted in 2b96f35 once a real device proved it can never complete (it only fires on a custom-scheme callback, and Garmin's CAS redirects to `https://connect.garmin.com/modern`). The live mechanism is `GarminSSOWebView`'s `WKWebView` navigation delegate — see 8.2.
 - [ ] 8.2 **Half settled (2026-09-16).** The ticket parameter name is now CONFIRMED (`ticket`): a real sign-in reached the ticket *exchange*, which is only reachable once `GarminSSOWebView` has found that parameter in a navigated-to URL. The *exchange* itself is still unconfirmed — but that attempt was made against a request carrying three independent defects, all now fixed: the CAS `service` at mint (`connect.garmin.com/modern`) disagreed with the `login-url` at redeem (`sso.garmin.com/sso/embed`), and the OAuth1 signature both baked the query string into the base URI and signed an empty `oauth_token=`. Needs one clean run to judge.
 - [ ] 8.3 Cloudflare-challenge-inside-the-session — **not** what blocked the 2026-09-16 attempt; the interactive WebKit sign-in itself got through. Still untested as a scripted path.
-- [x] 8.4 Manual ticket paste fallback implemented alongside 8.1, per the task's own instruction to keep both.
+- [x] 8.4 Manual ticket paste fallback implemented alongside 8.1, per the task's own instruction to keep both. Shares `GarminSSOEndpoints.ticket(in:)` with the automatic path (2026-09-16) so the recovery route cannot drift from the primary one — it accepts a full redirect URL, a bare `ticket=...` pair, or the raw value.
 - [x] 8.5 Tokens stored in Keychain with `kSecAttrAccessibleAfterFirstUnlock`. **No shared access group** — task 6.4 confirmed custom groups don't work on this account; each process's Keychain entries are its own.
 - [x] 8.6 No password handling exists in the codebase — `ASWebAuthenticationSession` never exposes it to app code by construction.
 

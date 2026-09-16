@@ -8,6 +8,19 @@
 // percent-encoding rules, different parameter ordering, a different key
 // construction) will produce a signature Garmin silently rejects with a 401.
 //
+// That rule still holds, and this file still reproduces the reference
+// byte-for-byte for the shape the reference was actually exercised against:
+// a query-less URL signed with a real token. `OAuth1SignerTests` pins exactly
+// that vector. Two additions (2026-09-16) apply only to shapes the reference
+// never saw, because until the browser bootstrap landed nothing in this
+// project signed them: a URL carrying a QUERY STRING, and a request made
+// before any user token exists. For those, RFC 5849 3.4.1.2/3.4.1.3.1 govern
+// -- the query leaves the base string URI and joins the signed parameters,
+// and an absent token is omitted rather than signed as empty. Both are
+// no-ops for the confirmed route. `tools/lib/garmin-auth.mjs` has the same
+// two gaps; it has never signed a query-bearing URL either, so it is
+// latently, not actively, wrong -- fix it there before giving it one.
+//
 // Reference (`tools/lib/garmin-auth.mjs`) for comparison:
 //
 //     function pctEncode(s) {
@@ -170,22 +183,41 @@ enum OAuth1Signer {
         // carry a query string (`ticket`, `login-url`, ...), and Garmin
         // recomputes the signature server-side over those parameters, so
         // omitting them could only ever produce a mismatch.
-        let components = URLComponents(string: url)
+        //
+        // This is deliberately ALL-OR-NOTHING. A parameter may only move into
+        // the signed set if the base string URI actually lost it; folding the
+        // query in while leaving it on the URI counts every parameter twice,
+        // which is its own guaranteed mismatch. So if the URI cannot be
+        // stripped, nothing is folded and the old (reference-identical)
+        // behavior stands.
+        var signedPairs: [(String, String)] = params.map { ($0.key, $0.value) }
         var signatureURL = url
-        var signedParams = params
-        if let components {
+        if let components = URLComponents(string: url) {
             var withoutQuery = components
             withoutQuery.queryItems = nil
             withoutQuery.fragment = nil
-            signatureURL = withoutQuery.url?.absoluteString ?? url
-            for item in components.queryItems ?? [] {
-                signedParams[item.name] = item.value ?? ""
+            if let stripped = withoutQuery.url?.absoluteString {
+                signatureURL = stripped
+                for item in components.queryItems ?? [] {
+                    // A query parameter named `oauth_*` would otherwise
+                    // replace the value the Authorization header still
+                    // advertises below -- signing one nonce and sending
+                    // another, which is a 401 with no diagnosable symptom.
+                    guard params[item.name] == nil else { continue }
+                    signedPairs.append((item.name, item.value ?? ""))
+                }
             }
         }
 
         // Signature base string: METHOD & pctEncode(url) & pctEncode(sorted param string).
-        let paramString = signedParams.keys.sorted()
-            .map { "\(OAuth1PercentEncoding.encode($0))=\(OAuth1PercentEncoding.encode(signedParams[$0]!))" }
+        // RFC 5849 3.4.1.3.2 sorts by encoded name and then by encoded value,
+        // which preserves repeated names instead of collapsing them the way a
+        // dictionary would. For the oauth_* keys, encoding is the identity and
+        // names are unique, so this orders them exactly as before.
+        let paramString = signedPairs
+            .map { (OAuth1PercentEncoding.encode($0.0), OAuth1PercentEncoding.encode($0.1)) }
+            .sorted { $0.0 == $1.0 ? $0.1 < $1.1 : $0.0 < $1.0 }
+            .map { "\($0.0)=\($0.1)" }
             .joined(separator: "&")
 
         let baseString = [

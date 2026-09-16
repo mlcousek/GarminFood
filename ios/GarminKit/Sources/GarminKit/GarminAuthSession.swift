@@ -85,27 +85,42 @@ public enum GarminSSOEndpoints {
     /// `https://sso.garmin.com/sso/embed` at redeem), which alone is enough
     /// for Garmin to reject every ticket the app ever captured. They are one
     /// constant now specifically so they cannot drift apart again.
-    public static let serviceURL = "https://sso.garmin.com/sso/embed"
+    ///
+    /// It resolves to the MINT side's value, not the redeem side's, because
+    /// the mint side is the half this project has actually confirmed. garth
+    /// uses `https://sso.garmin.com/sso/embed` here, but garth does not
+    /// capture its ticket from a redirect at all -- it regex-scrapes
+    /// `embed?ticket=...` out of the sign-in POST's response body. The embed
+    /// widget is built to be iframed and hand its result to a parent frame in
+    /// JS, so adopting garth's `service` would risk the top frame never
+    /// navigating, `decidePolicyFor` never firing, and the sheet hanging with
+    /// no callback -- trading a confirmed-working capture for an unverified
+    /// one. Changing this constant means re-verifying capture on a device.
+    public static let serviceURL = "https://connect.garmin.com/modern"
 
-    /// Garmin's SSO sign-in page, parameterized the way community tooling
-    /// (garth) constructs it for an embedded widget: every redirect target is
-    /// `serviceURL`, so a completed sign-in lands back on that URL with a
-    /// `ticket=ST-...` query parameter. That hop is a server-issued 302, so
-    /// `GarminSSOWebView`'s navigation delegate still observes it even though
-    /// it no longer crosses an origin boundary (the previous
-    /// `sso.garmin.com` -> `connect.garmin.com` hop did).
+    /// Garmin's SSO sign-in page. This is the exact parameter set under which
+    /// a real device completed sign-in and produced an observable,
+    /// ticket-bearing navigation on 2026-09-16; only `service` and the two
+    /// `redirectAfter...` values are routed through `serviceURL`, so that the
+    /// ticket is minted for the same service `exchangeTicket` redeems it
+    /// against. Do not re-parameterize this without a device to re-confirm on.
     public static let signInURL: URL = {
         var components = URLComponents(string: "https://sso.garmin.com/sso/signin")!
         let service = GarminSSOEndpoints.serviceURL
         components.queryItems = [
-            URLQueryItem(name: "id", value: "gauth-widget"),
-            URLQueryItem(name: "embedWidget", value: "true"),
-            URLQueryItem(name: "gauthHost", value: service),
             URLQueryItem(name: "service", value: service),
-            URLQueryItem(name: "source", value: service),
+            URLQueryItem(name: "webhost", value: "https://connect.garmin.com"),
+            URLQueryItem(name: "source", value: "https://connect.garmin.com/signin"),
             URLQueryItem(name: "redirectAfterAccountLoginUrl", value: service),
             URLQueryItem(name: "redirectAfterAccountCreationUrl", value: service),
+            URLQueryItem(name: "gauthHost", value: "https://sso.garmin.com/sso"),
             URLQueryItem(name: "locale", value: "en_US"),
+            URLQueryItem(name: "id", value: "gauth-widget"),
+            URLQueryItem(name: "clientId", value: "GarminConnect"),
+            URLQueryItem(name: "consumeServiceTicket", value: "false"),
+            URLQueryItem(name: "generateExtraServiceTicket", value: "true"),
+            URLQueryItem(name: "generateNoServiceTicket", value: "false"),
+            URLQueryItem(name: "mobile", value: "false"),
         ]
         return components.url!
     }()
@@ -114,6 +129,74 @@ public enum GarminSSOEndpoints {
     /// 2026-09-16: a real sign-in reached the ticket EXCHANGE, which is only
     /// reachable once this parameter has been found in a navigated-to URL.
     public static let ticketQueryParameterName = "ticket"
+
+    /// Extracts a service ticket from whatever the caller has in hand.
+    ///
+    /// Both capture paths funnel through here so they cannot disagree about
+    /// what a ticket looks like, and so neither hardcodes the parameter name
+    /// that `ticketQueryParameterName` exists to own. `GarminSSOWebView`
+    /// passes a navigated-to URL; the manual fallback passes whatever the
+    /// user pasted. That user is told to copy a value "from the redirect
+    /// URL", so all three of these shapes turn up in practice:
+    ///
+    ///   - a full URL   -- `https://connect.garmin.com/modern?ticket=ST-...`
+    ///   - a query pair -- `ticket=ST-...`, which has no `?`, so
+    ///     `URLComponents` reads it as a PATH and finds no query items at all
+    ///   - the bare value -- `ST-...`
+    ///
+    /// The middle case is why this cannot just be `URLComponents`: a
+    /// URL-parsing-only version silently hands `ticket=ST-...` back with the
+    /// prefix still attached, and the exchange then fails blaming the user's
+    /// paste. A copy that wrapped across lines (embedding a space, which
+    /// `URLComponents(string:)` rejects outright) lands here the same way.
+    public static func ticket(in raw: String) -> String? {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        if let url = URL(string: trimmed), let value = ticket(in: url) {
+            return value
+        }
+
+        if let marker = trimmed.range(of: ticketQueryParameterName + "=") {
+            let value = trimmed[marker.upperBound...]
+                .prefix { $0 != "&" && $0 != "#" }
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }
+
+        return trimmed
+    }
+
+    /// The strict counterpart, for a URL that was actually navigated to:
+    /// returns a ticket only if this URL genuinely carries one. Callers
+    /// watching navigations need that "no" answer, which is exactly what the
+    /// lenient `ticket(in raw:)` above cannot give them -- it falls back to
+    /// treating unrecognised input as the ticket itself, which is right for a
+    /// human paste and wrong for a redirect.
+    public static func ticket(in url: URL) -> String? {
+        guard
+            let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems,
+            let value = items.first(where: { $0.name == ticketQueryParameterName })?.value,
+            !value.isEmpty
+        else { return nil }
+        return value
+    }
+
+    /// Whether a navigated-to URL belongs to Garmin, used to gate ticket
+    /// capture. Without it, ANY navigation carrying a `ticket` query
+    /// parameter -- an analytics hop, a marketing redirect, an unrelated
+    /// host -- latches the one-shot capture, cancels that navigation, and
+    /// ends the sign-in holding a ticket Garmin never minted, with no way to
+    /// retry inside the same sheet.
+    ///
+    /// Deliberately the whole `garmin.com` tree rather than just
+    /// `serviceURL`'s host: the class of mistake worth excluding is a third
+    /// party, and narrowing it further risks rejecting an intermediate CAS
+    /// hop that the 2026-09-16 device test had no reason to reveal.
+    public static func isGarminHost(_ url: URL) -> Bool {
+        guard let host = url.host?.lowercased() else { return false }
+        return host == "garmin.com" || host.hasSuffix(".garmin.com")
+    }
 
     /// The GET route community tooling (garth) uses to exchange a ticket
     /// for an OAuth1 token pair. UNCONFIRMED against this project's own
@@ -190,8 +273,11 @@ public final class GarminAuthSession {
             URLQueryItem(name: "login-url", value: GarminSSOEndpoints.serviceURL),
             URLQueryItem(name: "accepts-mfa-tokens", value: "true"),
         ]
+        // R3 again: this fires BEFORE any request is sent, so it is a
+        // malformed URL, not a malformed response. Reporting it as the latter
+        // tells the user Garmin replied when Garmin was never contacted.
         guard let url = components.url else {
-            throw GarminBootstrapError.malformedExchangeResponse
+            throw GarminBootstrapError.invalidExchangeURL
         }
 
         var request = URLRequest(url: url)

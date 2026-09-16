@@ -35,11 +35,10 @@ enum GarminErrorPresentation {
             switch bootstrap {
             case .exchangeFailed(let statusCode, let body):
                 let status = statusCode.map { "HTTP \($0)" } ?? "no HTTP response"
-                let detail = (body ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-                if detail.isEmpty {
+                guard let detail = readableDetail(from: body) else {
                     return "Garmin rejected the sign-in ticket (\(status))."
                 }
-                return "Garmin rejected the sign-in ticket (\(status)): \(detail.prefix(300))"
+                return "Garmin rejected the sign-in ticket (\(status)): \(detail)"
             case .malformedExchangeResponse:
                 return "Garmin accepted the ticket but sent back a response this app couldn't read."
             case .invalidExchangeURL:
@@ -51,5 +50,23 @@ enum GarminErrorPresentation {
             return "Couldn't fetch Garmin's public consumer key (\(status)). Check your connection and try again."
         }
         return "Sign-in failed: \(error.localizedDescription)"
+    }
+
+    /// The likeliest bodies here are a Cloudflare interstitial or a Garmin
+    /// HTML error page. Pasting either into a label buries the one actionable
+    /// fact -- challenged, not rejected -- inside markup truncated mid-tag,
+    /// and echoes back whatever the server chose to include, which can be the
+    /// submitted ticket. So classify HTML rather than display it, and show
+    /// only short non-HTML bodies, which is where Garmin's own API errors
+    /// live (the 400s that named `searchFood.arg0.searchExpression` and
+    /// `getFoodByBarCode.arg1` are how half of `garmin-routes.json` was
+    /// mapped in the first place).
+    private static func readableDetail(from body: String?) -> String? {
+        let trimmed = (body ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if trimmed.hasPrefix("<") {
+            return "the response was an HTML page rather than an API error, most likely a Cloudflare challenge"
+        }
+        return String(trimmed.prefix(200))
     }
 }

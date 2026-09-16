@@ -79,6 +79,60 @@ final class OAuth1SignerTests: XCTestCase {
         XCTAssertEqual(header, expected)
     }
 
+    /// The bootstrap's `preauthorized` call: a query string to fold into the
+    /// signature, and no user token yet. The golden vector above exercises
+    /// neither branch (it is query-less and token-bearing), so without this
+    /// the two fixes the browser bootstrap depends on ship untested -- on the
+    /// one route whose failure mode is a silent 401.
+    ///
+    /// Generated with the same Node `oauth1Header` construction as the vector
+    /// above, extended per RFC 5849 3.4.1.2/3.4.1.3.1. What it pins: the
+    /// query is gone from the base string URI and present in the parameter
+    /// list -- not both, which would double-count it -- and `oauth_token`
+    /// appears nowhere at all.
+    func testAuthorizationHeaderFoldsQueryAndOmitsEmptyToken() {
+        let header = OAuth1Signer.authorizationHeader(
+            method: "GET",
+            url: "https://connectapi.garmin.com/oauth-service/oauth/preauthorized"
+                + "?ticket=ST-0123456-aBcDeF-cas"
+                + "&login-url=https://connect.garmin.com/modern"
+                + "&accepts-mfa-tokens=true",
+            consumer: fakeConsumer,
+            token: "",
+            tokenSecret: "",
+            nonce: "0123456789abcdef0123456789abcdef",
+            timestamp: "1700000000"
+        )
+
+        let expected = "OAuth oauth_consumer_key=\"fake_consumer_key\", " +
+            "oauth_nonce=\"0123456789abcdef0123456789abcdef\", " +
+            "oauth_signature=\"vD4%2FudoF8yonh25LDTBUJv0rmr8%3D\", " +
+            "oauth_signature_method=\"HMAC-SHA1\", " +
+            "oauth_timestamp=\"1700000000\", " +
+            "oauth_version=\"1.0\""
+
+        XCTAssertEqual(header, expected)
+        XCTAssertFalse(header.contains("oauth_token"))
+    }
+
+    /// A query parameter must never displace an `oauth_*` value, or the
+    /// client signs one nonce and advertises another -- a 401 with no
+    /// diagnosable symptom. The header must still carry the real nonce.
+    func testQueryParametersCannotShadowOAuthParameters() {
+        let header = OAuth1Signer.authorizationHeader(
+            method: "GET",
+            url: "https://connectapi.garmin.com/x?oauth_nonce=injected",
+            consumer: fakeConsumer,
+            token: "t",
+            tokenSecret: "s",
+            nonce: "realnonce",
+            timestamp: "123"
+        )
+
+        XCTAssertTrue(header.contains("oauth_nonce=\"realnonce\""))
+        XCTAssertFalse(header.contains("injected"))
+    }
+
     func testAuthorizationHeaderIsDeterministicForSameInputs() {
         let header1 = OAuth1Signer.authorizationHeader(
             method: "get", // lowercase on purpose -- must be normalized to GET

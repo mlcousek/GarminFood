@@ -3,6 +3,15 @@
   "lastFullSweep": "2026-09-14",
   "auth": [
     {
+      "operation": "exchangeTicketForOAuth1",
+      "method": "GET",
+      "path": "/oauth-service/oauth/preauthorized?ticket={ticket}&login-url={service}&accepts-mfa-tokens=true",
+      "base": "connectapi.garmin.com",
+      "lastVerified": "2026-09-16",
+      "observedStatus": null,
+      "notes": "REACHED but NOT characterised. A real device signed in on 2026-09-16 and the app captured a genuine service ticket, so this route really was called -- but the status code and body were discarded by a catch-all error handler, which is why observedStatus is null rather than a number. That handler is fixed (GarminErrorPresentation.bootstrapErrorMessage), so the next real attempt will surface the status; fill it in then. The request as sent was wrong in three independent ways at the time, all since corrected: login-url named a different CAS service than the one the ticket was minted for, and the OAuth1 signature both kept the query string on the base string URI and signed an empty oauth_token. Treat any conclusion drawn from that attempt as void. Request shape is modelled on garth's preauthorized step (OAuth1-signed with the public consumer key/secret and no user token; response expected as a query-string body carrying oauth_token/oauth_token_secret); the response shape remains unverified. This is design.md Open Question 1 -- whether a CAS ticket is exchangeable for OAuth1 at all, versus only for a DI OAuth2 token."
+    },
+    {
       "operation": "exchangeOAuth1ForOAuth2",
       "method": "POST",
       "path": "/oauth-service/oauth/exchange/user/2.0",
