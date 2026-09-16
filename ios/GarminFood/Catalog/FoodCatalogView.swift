@@ -42,6 +42,15 @@ struct FoodCatalogView: View {
     @State private var isSearching = false
     @State private var searchErrorMessage: String?
 
+    // Czech (Open Food Facts) results (add-czech-food-catalog task 28.1) --
+    // deliberately separate state from the Garmin search above, never
+    // merged, per design.md D5.
+    @State private var czechOnly = true
+    @State private var czechSearchResults: [Food] = []
+    @State private var isCzechSearching = false
+    @State private var czechSearchErrorMessage: String?
+    @State private var matchingTarget: Food?
+
     @State private var quickPickItems: [QuickPickItem] = []
     @State private var customFoods: [CustomFoodDraft] = []
 
@@ -117,6 +126,55 @@ struct FoodCatalogView: View {
                 if !searchResults.isEmpty { SectionHeader(title: "Results") }
             }
 
+            // Czech (Open Food Facts) results -- visibly separate from
+            // Garmin's own "Results" section above, per design.md D5 /
+            // the czech-food-catalog spec's "never merged" requirement.
+            // Hidden in `pickBackingFood` mode: that picker's whole job is
+            // finding an existing GARMIN food to back a custom food, so an
+            // OFF result (which itself needs matching/creation) doesn't
+            // belong there.
+            if !isPickingBackingFood, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+                Section {
+                    if isCzechSearching {
+                        HStack {
+                            ProgressView()
+                            Text("Searching Open Food Facts…")
+                                .foregroundStyle(.secondary)
+                        }
+                    } else if let czechSearchErrorMessage {
+                        Text(czechSearchErrorMessage)
+                            .foregroundStyle(.secondary)
+                    } else if czechSearchResults.isEmpty {
+                        EmptyStateView(
+                            systemImage: "magnifyingglass",
+                            title: "No Czech-database matches",
+                            message: "Open Food Facts doesn't have this yet."
+                        )
+                    } else {
+                        ForEach(czechSearchResults) { food in
+                            Button {
+                                matchingTarget = food
+                            } label: {
+                                FoodListRow(food: food, serving: food.servings.first)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text("Czech database (Open Food Facts)")
+                            .font(.sectionHeader)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Toggle("Czech only", isOn: $czechOnly)
+                            .font(.caption)
+                            .fixedSize()
+                            .accessibilityLabel("Limit Open Food Facts results to Czech products")
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            }
+
             if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, !isPickingBackingFood {
                 EmptyStateView(
                     systemImage: "fork.knife",
@@ -154,6 +212,7 @@ struct FoodCatalogView: View {
             presentScannerIfRouteIsPending()
         }
         .task(id: searchText) { await performSearch() }
+        .task(id: "\(searchText)#\(czechOnly)") { await performCzechSearch() }
         // Wired for add-glanceable-surfaces' barcode-scan Control
         // (Shared/OpenBarcodeScannerIntent.swift): that intent only ever
         // sets `AppNavigationBridge`'s pending route once its `perform()`
@@ -190,6 +249,11 @@ struct FoodCatalogView: View {
         }
         .navigationDestination(item: $logTarget) { target in
             LogEntryConfirmView(target: target)
+        }
+        // Task 28.2: picking a Czech-database result routes into the
+        // matching flow instead of straight to the confirm screen.
+        .navigationDestination(item: $matchingTarget) { offFood in
+            MatchConfirmationView(offFood: offFood)
         }
     }
 
@@ -274,6 +338,37 @@ struct FoodCatalogView: View {
         } catch {
             searchResults = []
             searchErrorMessage = "Couldn't reach Garmin right now. Check your connection or try again."
+        }
+    }
+
+    /// Task 28.1: the Czech (Open Food Facts) search, "debounced the same
+    /// way the existing Garmin search already is". A completely separate
+    /// `.task(id:)`/debounce from `performSearch()` above -- the two
+    /// sources are independent network calls to independent hosts, per
+    /// design.md D5, so one failing or being slow never blocks the other.
+    private func performCzechSearch() async {
+        let trimmed = searchText.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else {
+            czechSearchResults = []
+            czechSearchErrorMessage = nil
+            return
+        }
+
+        do {
+            try await Task.sleep(nanoseconds: 300_000_000)
+        } catch {
+            return
+        }
+        guard !Task.isCancelled else { return }
+
+        isCzechSearching = true
+        defer { isCzechSearching = false }
+        do {
+            czechSearchResults = try await environment.openFoodFactsClient.search(term: trimmed, czechOnly: czechOnly)
+            czechSearchErrorMessage = nil
+        } catch {
+            czechSearchResults = []
+            czechSearchErrorMessage = "Couldn't reach Open Food Facts right now. Check your connection or try again."
         }
     }
 }

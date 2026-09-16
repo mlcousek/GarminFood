@@ -39,6 +39,11 @@ final class AppEnvironment {
     let customFoodStore: CustomFoodStore
     let foodCache: FoodCacheStore
     let catalogSearch: FoodCatalogSearch
+    /// The Czech (Open Food Facts) search source (add-czech-food-catalog) --
+    /// a completely separate network client from `garminClient`/
+    /// `catalogSearch`, per proposal.md's "two sources, never silently
+    /// merged" design. See `FoodCatalogView`'s Czech results section.
+    let openFoodFactsClient: OpenFoodFactsClient
     let logEntryCoordinator: LogEntryCoordinator
     let gamificationEngine: GamificationEngine
     /// Today's consumed-vs-goal calories for the home hero (HomeView /
@@ -68,6 +73,7 @@ final class AppEnvironment {
         self.customFoodStore = CustomFoodStore()
         self.foodCache = foodCache
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: foodCache)
+        self.openFoodFactsClient = OpenFoodFactsClient()
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
         self.gamificationEngine = GamificationEngine(usageHistory: usageHistory, garminClient: client)
         self.todaySummary = TodaySummaryLoader(client: client)

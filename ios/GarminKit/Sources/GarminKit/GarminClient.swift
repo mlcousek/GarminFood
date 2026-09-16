@@ -13,6 +13,15 @@
 // only trustworthy signal after a write is a fresh read of the day's log
 // (Reconciliation.swift), so a wrong guess about the create response shape
 // can't silently corrupt anything downstream.
+//
+// `createCustomFood` (add-czech-food-catalog, task group 30) is the one
+// exception to that "don't trust the response body" rule: it MUST decode
+// the response to learn the newly created food's Garmin `foodId` before
+// anything can be logged against it, so there is no read-back-and-verify
+// step available the way `createFoodLogEntry` has via
+// Reconciliation.swift. Its request AND response shapes are both
+// genuinely unconfirmed guesses -- see its own doc comment below and
+// `CreateCustomFoodRequest`'s in GarminModels.swift.
 
 import Foundation
 
@@ -141,6 +150,55 @@ public struct GarminClient: Sendable {
         )
         try Self.throwIfNotSuccessful(response, data: data)
         return response
+    }
+
+    /// POST `/nutrition-service/customFood` (add-czech-food-catalog design.md
+    /// D4, task 30.1).
+    ///
+    /// ROUTE CONFIRMED TO EXIST (found in the decompiled Android client, per
+    /// docs/garmin-routes.json), but -- UNLIKE `createFoodLogEntry` above --
+    /// BOTH the request and response shapes are genuinely unconfirmed: no
+    /// field-level evidence (Kotlin `toString()` fragments or otherwise) was
+    /// ever extracted for this specific route. See
+    /// `CreateCustomFoodRequest`'s doc comment in GarminModels.swift for
+    /// exactly what's being guessed in the request body and why.
+    ///
+    /// The response is decoded as a `FoodSearchResult` -- the same "one
+    /// food" shape `searchFoodByBarcode` above already assumes for a
+    /// single-food payload -- since that is this package's best guess for
+    /// what a newly created food looks like coming back from Garmin. If the
+    /// real response is shaped differently, this throws
+    /// `GarminClientError.decodingFailed` rather than silently returning
+    /// something wrong.
+    ///
+    /// IMPORTANT, same rule as `createFoodLogEntry`'s task 11.4 above:
+    /// nothing in this package invokes this automatically, and per
+    /// add-czech-food-catalog task 30.4 nothing in the app layer may
+    /// either -- the first (and every) real invocation is a deliberate
+    /// action the user takes by tapping "Create in Garmin" after reviewing
+    /// the exact name and macro values that will be sent.
+    public func createCustomFood(
+        name: String,
+        servingUnit: String,
+        numberOfUnits: Double = 100,
+        calories: Double,
+        protein: Double? = nil,
+        carbs: Double? = nil,
+        fat: Double? = nil
+    ) async throws -> FoodSearchResult {
+        let body = CreateCustomFoodRequest(
+            foodName: name,
+            servingUnit: servingUnit,
+            numberOfUnits: numberOfUnits,
+            nutritionContent: CreateCustomFoodNutritionContent(calories: calories, protein: protein, carbs: carbs, fat: fat)
+        )
+        let (data, response) = try await post(path: "/nutrition-service/customFood", body: body)
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(FoodSearchResult.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
     }
 
     // MARK: - Request plumbing

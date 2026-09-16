@@ -29,6 +29,17 @@ public enum FoodSource: String, Codable, Sendable, Equatable, Hashable {
     case garmin = "GARMIN"
     case fatSecret = "FATSECRET"
     case custom = "CUSTOM"
+    /// A result from Open Food Facts (add-czech-food-catalog) -- never
+    /// produced by `init(garminSourceString:)` below, since Garmin itself
+    /// never reports this as a food's source. Set explicitly by
+    /// `OpenFoodFactsClient`'s own adapter when it builds a `Food` from an
+    /// OFF product. Kept as its own case (not folded into `.custom`) so the
+    /// catalog UI and matching flow can tell "a Czech-database result that
+    /// still needs matching/creation in Garmin" apart from "a locally
+    /// hand-entered food already backed by a real Garmin food" -- the two
+    /// have different logging paths (garmin-food-matching spec vs
+    /// design.md D4's existing custom-food fallback).
+    case openFoodFacts = "OPENFOODFACTS"
 
     /// Maps GarminKit's free-form `FoodMetaData.source` string (only
     /// "GARMIN" | "FATSECRET" confirmed live) to this closed set, falling
