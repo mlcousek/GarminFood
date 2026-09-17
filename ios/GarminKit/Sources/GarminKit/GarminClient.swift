@@ -4,8 +4,9 @@
 // live against the real account as of 2026-09-14 (docs/garmin-routes.json).
 // Write routes (`createFoodLogEntry`, `deleteFoodLogEntries`) follow the
 // contract garmin_mcp uses against a real account (see FoodLogWriteBody in
-// GarminModels.swift and docs/garmin-food-log-contract.md). That client is
-// live-tested; this project's own first successful write is still pending.
+// GarminModels.swift and docs/garmin-food-log-contract.md). Create is
+// CONFIRMED by this project's own first real write (2026-09-16). Delete is
+// still unexercised here.
 //
 // This type deliberately does not decode or trust the response body of
 // `createFoodLogEntry` for anything -- design.md D5 already assumes the
@@ -136,7 +137,31 @@ public struct GarminClient: Sendable {
         }
     }
 
-    // MARK: - Writes (modelled on a live-tested client, not yet exercised by this project)
+    /// GET `/nutrition-service/settings/{date}`. Confirmed live 2026-09-16:
+    /// the calorie goal, macro goals in grams, and the weight plan.
+    public func nutritionSettings(date: String) async throws -> NutritionSettings {
+        let (data, response) = try await get(path: "/nutrition-service/settings/\(date)", query: [])
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(NutritionSettings.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
+    /// GET `/userprofile-service/socialProfile`. Confirmed live 2026-09-16:
+    /// display name, full name and profile photo URLs.
+    public func socialProfile() async throws -> SocialProfile {
+        let (data, response) = try await get(path: "/userprofile-service/socialProfile", query: [])
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(SocialProfile.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
+    // MARK: - Writes (create confirmed 2026-09-16; delete not yet exercised)
 
     /// PUT `/nutrition-service/food/logs`, body per `FoodLogWriteBody`.
     ///

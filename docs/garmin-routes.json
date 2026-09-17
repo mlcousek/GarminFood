@@ -114,9 +114,9 @@
       "operation": "nutritionSettings",
       "method": "GET",
       "path": "/nutrition-service/settings/{date}",
-      "lastVerified": "2026-09-14",
+      "lastVerified": "2026-09-16",
       "observedStatus": 200,
-      "notes": "Confirmed live via probe-garmin-nutrition.mjs (also seen as /nutrition-service/settings/{calendarDate}). dailyFoodLog already inlines goals per-day, so this route's exact purpose beyond that is unconfirmed -- possibly the editable goal-setting screen, distinct from the computed/adjusted goals shown in the log."
+      "notes": "Shape: { weightChangeType (LOSS observed), targetDate, weightChangeRate, activeDailyCalories, userDefinedActiveCalories, calorieGoal, macroGoals: { carbs, fat, protein }, autoCalorieAdjustment, regionCode, languageCode, dailyTimelineStartTime, dailyTimelineEndTime, startingWeight, targetWeightGoal, effectiveDate, nutritionStatus (ACTIVE observed) }. macroGoals are GRAMS: they equalled the daily log's base (non-adjusted) goals exactly on the probed day. Read-only in this app (GarminClient.nutritionSettings); garmin_mcp writes it with PUT to the same path, which this project does not use."
     },
     {
       "operation": "nutritionCurrentStatus",
@@ -133,6 +133,14 @@
       "lastVerified": "2026-09-14",
       "observedStatus": 200,
       "notes": "Confirmed live with a real date range. Accepts a MULTI-DAY range in one call -- more efficient than calling dailyFoodLog once per day for a trend view. Response: { startDate, endDate, caloriesBurned, mealNutritionContents: [], dailyNutritionContents: [{ mealDate, nutritionContent?: { calories, carbs, fat, protein, otherCalories, caloriesPercentage }, nutritionGoals?: { calories, adjustedCalories, carbs, adjustedCarbs, fat, adjustedFat, protein, adjustedProtein } }], averageNutritionContents: {} }. Days with no logged food omit nutritionContent/nutritionGoals entirely (bare { mealDate }) rather than returning zeros -- treat a missing key as 'nothing logged', not an error. nutritionGoals values cross-checked exactly against dailyFoodLog's dailyNutritionGoals for the same day (2300/3128/316/430/64/87/115/156) -- consistent between routes. Sibling: /nutrition-service/calorie/summary/weekly, same param shape presumed, not tested."
+    },
+    {
+      "operation": "socialProfile",
+      "method": "GET",
+      "path": "/userprofile-service/socialProfile",
+      "lastVerified": "2026-09-16",
+      "observedStatus": 200,
+      "notes": "The profile the Garmin Connect app shows: displayName, fullName, userName, location, profileImageUrlSmall/Medium/Large, plus many visibility flags and Garmin's own userLevel/userPoint (unrelated to this app's XP and deliberately not shown). GarminClient.socialProfile decodes only the name, location and photo fields. Same route python-garminconnect uses for get_full_name."
     }
   ],
   "write": [
@@ -141,8 +149,8 @@
       "method": "PUT",
       "path": "/nutrition-service/food/logs",
       "lastVerified": "2026-09-16",
-      "observedStatus": "modelled on a live-tested client, not yet exercised by this project",
-      "notes": "Body { mealDate, foodLogItems: [{ logTimestamp, logSource, logCategory, mealTime, action: ADD, mealId, foodId, servingId, source: GARMIN|FATSECRET, regionCode, languageCode, servingQty }] } -- taken from garmin_mcp (Taxuspt/garmin_mcp, log_food_to_meal), which writes to this route in its own live end-to-end tests. Supersedes the earlier dex-string inference (a flat POST of date/mealType/foodId/servingId/numberOfUnits), which was wrong on method, envelope, meal (name vs per-date mealId), quantity field (numberOfUnits vs servingQty) and the missing source -- and is what the app sent when its first real write on a device failed on 2026-09-16 (status not captured; the failure was swallowed at the time). Full field notes in docs/garmin-food-log-contract.md. The first successful write from this project is still pending; tools/garmin-write-probe.mjs makes it from Windows."
+      "observedStatus": 200,
+      "notes": "CONFIRMED WORKING 2026-09-16: a real device logged a FATSECRET food to DINNER and it read back once, filed under the right meal, with logSource GCW, logCategory REGULAR_LOG, mealTime equal to the meal window start, servingQty as sent, and regionCode US. Status is recorded as 200 because the write succeeded, not from a logged response line. Body { mealDate, foodLogItems: [{ logTimestamp, logSource, logCategory, mealTime, action: ADD, mealId, foodId, servingId, source: GARMIN|FATSECRET, regionCode, languageCode, servingQty }] } -- taken from garmin_mcp (Taxuspt/garmin_mcp, log_food_to_meal), which writes to this route in its own live end-to-end tests. Supersedes the earlier dex-string inference (a flat POST of date/mealType/foodId/servingId/numberOfUnits), which was wrong on method, envelope, meal (name vs per-date mealId), quantity field (numberOfUnits vs servingQty) and the missing source -- and is what the app sent when its first real write on a device failed on 2026-09-16 (status not captured; the failure was swallowed at the time). Full field notes in docs/garmin-food-log-contract.md. The first successful write from this project is still pending; tools/garmin-write-probe.mjs makes it from Windows."
     },
     {
       "operation": "quickAddFoodLogEntry",

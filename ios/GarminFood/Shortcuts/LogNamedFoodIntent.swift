@@ -34,32 +34,38 @@ struct LogNamedFoodIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        let client = GarminClient()
-        let foodCache = FoodCacheStore()
-        let search = FoodCatalogSearch(searcher: client, foodCache: foodCache)
+        // The same store instances the running app uses (AppServices.swift).
+        let services = AppServices.shared
+        let search = FoodCatalogSearch(searcher: services.garminClient, foodCache: services.foodCache)
 
         let results = try await search.search(term: foodName)
         guard let food = results.first, let serving = food.servings.first else {
             return .result(dialog: "Couldn't find \"\(foodName)\" in Garmin's food database.")
         }
 
-        let usageHistory = UsageHistoryStore()
-        let servingDefaults = ServingDefaultStore()
-        let outbox = Outbox(processName: "app")
-        let coordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
-
-        try await coordinator.confirm(
+        let date = NutritionDate.todayString()
+        try await services.logEntryCoordinator.confirm(
             food: food,
             serving: serving,
             numberOfUnits: serving.numberOfUnits,
             mealType: MealTypeDefaulting.defaultMealType(),
-            date: NutritionDate.todayString()
+            date: date
         )
-        _ = await outbox.drain(using: client)
+        // Records the Siri donation (task 20.2) so deleting this entry in the
+        // app can remove it again.
+        await services.logObserver?.didLog(food: food, date: date)
 
-        // Task 20.2: best-effort donation, same rationale as LogTopQuickPickIntent.
-        try? await IntentDonationManager.shared.donate(intent: self)
-
-        return .result(dialog: "Logged \(food.name).")
+        // Bounded wait (add-garmin-auth-and-sync 9.6), and the reply says
+        // what actually happened instead of claiming success regardless.
+        guard let result = await services.briefDelivery() else {
+            return .result(dialog: "Saved \(food.name). It will sync to Garmin in a moment.")
+        }
+        if QuickPickControlAction.isSignedOut(result.authOutcome) {
+            return .result(dialog: "Saved \(food.name), but it can't reach Garmin until you sign in again in GarminFood.")
+        }
+        if result.delivered.isEmpty {
+            return .result(dialog: "Saved \(food.name). It will sync to Garmin when Garmin accepts it.")
+        }
+        return .result(dialog: "Logged \(food.name) to Garmin.")
     }
 }

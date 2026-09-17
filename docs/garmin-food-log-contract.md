@@ -1,6 +1,6 @@
 # Garmin food-log write contract
 
-Status as of **2026-09-16**. **The route and body below are taken from a client that writes to a real account successfully** — [garmin_mcp](https://github.com/Taxuspt/garmin_mcp) (`log_food_to_meal` / `delete_food_log` in `src/garmin_mcp/nutrition.py`, covered by its own live end-to-end tests). This project has **not yet made a successful write of its own**: that first write is still a deliberate, human-supervised step (see `add-garmin-auth-and-sync` task 11.4), and `tools/garmin-write-probe.mjs` exists to make it from Windows without a device build.
+Status as of **2026-09-16**. **The route and body below are taken from a client that writes to a real account successfully** — [garmin_mcp](https://github.com/Taxuspt/garmin_mcp) (`log_food_to_meal` / `delete_food_log` in `src/garmin_mcp/nutrition.py`, covered by its own live end-to-end tests). **Confirmed by this project's own first write on 2026-09-16** (task 11.4). A real device logged a FatSecret food, and it read back exactly once, in the right meal, with every field as sent. `tools/garmin-write-probe.mjs` makes further writes from Windows without a device build.
 
 ### What changed on 2026-09-16, and why
 

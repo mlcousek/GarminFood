@@ -87,23 +87,68 @@ public enum StreakEngine {
             NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour, calendar: calendar)
         })
         let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
+        return status(loggedDays: loggedDays, today: today, calendar: calendar)
+    }
 
-        guard let earliest = loggedDays.min() else {
+    /// Convenience overload for real call sites. Each event counts toward
+    /// its recorded `nutritionDay` when it has one (the date sent to
+    /// Garmin), and toward its bucketed timestamp otherwise.
+    public static func status(
+        events: [UsageEvent],
+        now: Date = Date(),
+        boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
+        calendar: Calendar = .current
+    ) -> Status {
+        let loggedDays = Set(events.map {
+            NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour, calendar: calendar)
+        })
+        let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
+        return status(loggedDays: loggedDays, today: today, calendar: calendar)
+    }
+
+    /// The pure core: day markers (midnight of each nutrition day) in,
+    /// status out.
+    public static func status(loggedDays: Set<Date>, today: Date, calendar: Calendar = .current) -> Status {
+        guard let lastLoggedDay = loggedDays.max() else {
             return Status(length: 0, hasLoggedToday: false, isAtRiskToday: false, lastLoggedDay: nil)
         }
-        let lastLoggedDay = loggedDays.max()
         let hasLoggedToday = loggedDays.contains(today)
+        let walk = simulate(loggedDays: loggedDays, today: today, calendar: calendar)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today) ?? today
+        let isAtRisk = !hasLoggedToday && walk.currentLength > 0 && loggedDays.contains(yesterday)
+        return Status(length: walk.currentLength, hasLoggedToday: hasLoggedToday, isAtRiskToday: isAtRisk, lastLoggedDay: lastLoggedDay)
+    }
 
-        let endDay = hasLoggedToday ? today : (calendar.date(byAdding: .day, value: -1, to: today) ?? today)
+    // MARK: - The walk, shared with StreakHistory
+
+    enum DayOutcome: Equatable {
+        case logged
+        /// A miss the grace rule forgave while a streak was running.
+        case grace
+        /// A miss that ended a streak, or that fell while no streak ran.
+        case missed
+    }
+
+    struct Walk {
+        var outcomes: [Date: DayOutcome] = [:]
+        var currentLength = 0
+        var longestLength = 0
+    }
+
+    /// The forward simulation described in this file's header, recording
+    /// what happened on each walked day so the streak calendar can show it
+    /// with exactly the same rule the current streak uses.
+    static func simulate(loggedDays: Set<Date>, today: Date, calendar: Calendar) -> Walk {
+        var walk = Walk()
+        guard let earliest = loggedDays.min() else { return walk }
+
+        let endDay = loggedDays.contains(today) ? today : (calendar.date(byAdding: .day, value: -1, to: today) ?? today)
 
         // Nothing to walk: the only ever-logged day(s) are still in the
         // future relative to `endDay` (shouldn't normally happen, but keeps
         // this total rather than trapping on a malformed input).
-        guard earliest <= endDay else {
-            return Status(length: 0, hasLoggedToday: hasLoggedToday, isAtRiskToday: false, lastLoggedDay: lastLoggedDay)
-        }
+        guard earliest <= endDay else { return walk }
 
-        var streakLength = 0
         var recentMisses: [Date] = [] // miss-days still within the trailing window of "the current day" as we walk forward
         var cursor = earliest
         var iterations = 0
@@ -115,38 +160,25 @@ public enum StreakEngine {
         while cursor <= endDay, iterations < maxIterations {
             iterations += 1
             if loggedDays.contains(cursor) {
-                streakLength += 1
+                walk.currentLength += 1
+                walk.longestLength = max(walk.longestLength, walk.currentLength)
+                walk.outcomes[cursor] = .logged
             } else {
                 recentMisses.removeAll { daysBetween($0, cursor, calendar: calendar) > Self.graceWindowDays - 1 }
                 if recentMisses.isEmpty {
                     // First miss in its rolling window: forgiven.
                     recentMisses.append(cursor)
+                    walk.outcomes[cursor] = walk.currentLength > 0 ? .grace : .missed
                 } else {
                     // Second miss within the same rolling window: reset.
-                    streakLength = 0
+                    walk.currentLength = 0
                     recentMisses = [cursor]
+                    walk.outcomes[cursor] = .missed
                 }
             }
             cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? endDay.addingTimeInterval(1)
         }
-
-        let isAtRisk = !hasLoggedToday && streakLength > 0 && loggedDays.contains(
-            calendar.date(byAdding: .day, value: -1, to: today) ?? today
-        )
-
-        return Status(length: streakLength, hasLoggedToday: hasLoggedToday, isAtRiskToday: isAtRisk, lastLoggedDay: lastLoggedDay)
-    }
-
-    /// Convenience overload for real call sites: reads `UsageEvent`
-    /// (FoodLogCore) directly rather than making every caller extract
-    /// `.timestamp` itself.
-    public static func status(
-        events: [UsageEvent],
-        now: Date = Date(),
-        boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
-        calendar: Calendar = .current
-    ) -> Status {
-        status(eventTimestamps: events.map(\.timestamp), now: now, boundaryHour: boundaryHour, calendar: calendar)
+        return walk
     }
 
     private static func daysBetween(_ a: Date, _ b: Date, calendar: Calendar) -> Int {

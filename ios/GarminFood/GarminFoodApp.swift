@@ -7,12 +7,18 @@
 // composed from `ContentView` -- see that file and `App/AppEnvironment.swift`.
 
 import SwiftUI
+import BackgroundTasks
 
 @main
 struct GarminFoodApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+        }
+        // Delivers queued entries while the app is closed, when iOS grants
+        // the time (add-garmin-auth-and-sync 9.5).
+        .backgroundTask(.appRefresh(BackgroundRefresh.identifier)) {
+            await BackgroundRefresh.run()
         }
     }
 }

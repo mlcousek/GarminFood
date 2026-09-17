@@ -16,8 +16,8 @@
 ## 3. Build the registry and harness
 
 - [x] 3.1 Create `docs/garmin-routes.json`. **Done 2026-09-14**, seeded with every route from both live probing and decompilation, each tagged with its actual observed status (including `null` for decompiled-but-unverified, and `"documented, not exercised"` for write routes per this project's own rule against automated writes).
-- [ ] 3.2 Refactor `tools/probe-garmin-nutrition.mjs` to read its route list from `docs/garmin-routes.json`. Not yet done — the registry now exists and is far more complete than the probe's original hardcoded list, so this refactor is straightforward but still pending.
-- [ ] 3.3 Make the harness classify and report 400/401/402/403/404/429 distinctly. Partially satisfied by `tools/garmin-get.mjs`'s ad hoc output (which does print 400 bodies in full — that's how `searchExpression` and `barCode` were both found), but the *automated* harness (`probe-garmin-nutrition.mjs`) itself hasn't been updated to match yet.
+- [x] 3.2 **DONE (audit 2026-09-16): probe-garmin-nutrition.mjs buildProbes already reads its route list from docs/garmin-routes.json.** Refactor `tools/probe-garmin-nutrition.mjs` to read its route list from `docs/garmin-routes.json`. Not yet done — the registry now exists and is far more complete than the probe's original hardcoded list, so this refactor is straightforward but still pending.
+- [ ] 3.3 **CARRIED to add-app-shell-and-meal-dashboard 9.4.** Make the harness classify and report 400/401/402/403/404/429 distinctly. Partially satisfied by `tools/garmin-get.mjs`'s ad hoc output (which does print 400 bodies in full — that's how `searchExpression` and `barCode` were both found), but the *automated* harness (`probe-garmin-nutrition.mjs`) itself hasn't been updated to match yet.
 - [x] 3.4 **Gate.** A write route was found and documented (`POST /nutrition-service/food/logs`, plus quick-add, bulk, delete, and custom-food/meal creation siblings). **Proceed** — the project's premise holds. No fallback needed.
 
 ## 4. Document the write contract

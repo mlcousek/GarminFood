@@ -85,7 +85,7 @@ public enum ChallengeEngine {
         // challenge's progress.
         var eventsByDay: [Date: [UsageEvent]] = [:]
         for event in events {
-            let day = NutritionDayBoundary.nutritionDay(for: event.timestamp, boundaryHour: boundaryHour, calendar: calendar)
+            let day = NutritionDayBoundary.nutritionDay(for: event, boundaryHour: boundaryHour, calendar: calendar)
             guard day >= windowStart, day <= evaluableEnd else { continue }
             eventsByDay[day, default: []].append(event)
         }
@@ -137,7 +137,7 @@ public enum ChallengeEngine {
             // already rolled off the 500-event cap.
             var firstSeen: [String: Date] = [:]
             for event in events {
-                let day = NutritionDayBoundary.nutritionDay(for: event.timestamp, boundaryHour: boundaryHour, calendar: calendar)
+                let day = NutritionDayBoundary.nutritionDay(for: event, boundaryHour: boundaryHour, calendar: calendar)
                 if let existing = firstSeen[event.foodId] {
                     if day < existing { firstSeen[event.foodId] = day }
                 } else {

@@ -29,18 +29,29 @@ struct MomentOverlay: View {
                     .onTapGesture { dismiss() }
                     .accessibilityHidden(true)
 
-                MomentCard(moment: moment, onDone: dismiss)
-                    .transition(reduceMotion
-                        ? .opacity
-                        : .scale(scale: 0.86).combined(with: .opacity))
+                MomentCard(moment: moment, animated: animated, onDone: dismiss)
+                    .transition(animated
+                        ? .scale(scale: 0.86).combined(with: .opacity)
+                        : .opacity)
             }
         }
-        .animation(reduceMotion ? .easeInOut(duration: 0.15) : .spring(response: 0.45, dampingFraction: 0.78), value: shown)
-        .sensoryFeedback(.success, trigger: shown)
+        .animation(animated ? .spring(response: 0.45, dampingFraction: 0.78) : .easeInOut(duration: 0.15), value: shown)
+        // Only when a moment APPEARS: the trigger also changes to nil on
+        // dismiss, which used to buzz a second time.
+        .sensoryFeedback(.success, trigger: shown) { _, new in
+            new != nil && Haptics.isEnabled
+        }
         .onChange(of: environment.gamificationEngine.pendingMoments.first) { _, next in
             if shown == nil { shown = next }
         }
         .onAppear { shown = environment.gamificationEngine.pendingMoments.first }
+    }
+
+    /// Movement only when both the system (Reduce Motion) and the user's
+    /// celebrations preference allow it. The card itself always appears
+    /// (levels spec: an equivalent non-animated confirmation).
+    private var animated: Bool {
+        !reduceMotion && environment.preferences.celebrationsEnabled
     }
 
     private func dismiss() {
@@ -55,14 +66,17 @@ struct MomentOverlay: View {
 
 private struct MomentCard: View {
     let moment: GamificationMoment
+    let animated: Bool
     let onDone: () -> Void
+
+    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 44
 
     var body: some View {
         VStack(spacing: Theme.Spacing.md) {
             Image(systemName: symbol)
-                .font(.system(size: 44, weight: .bold))
+                .font(.system(size: iconSize, weight: .bold))
                 .foregroundStyle(Theme.flameGradient)
-                .symbolEffect(.bounce, value: moment)
+                .symbolEffect(.bounce, options: .nonRepeating, value: animated ? moment : nil)
 
             Text(title)
                 .font(.title2.weight(.bold))

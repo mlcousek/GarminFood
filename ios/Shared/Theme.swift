@@ -11,6 +11,10 @@
 // `.secondary`, `Color(.secondarySystemBackground)`) so Dynamic Type,
 // light/dark mode, and contrast support are automatic rather than
 // hand-maintained token-by-token here.
+//
+// Lives in Shared/ (since 2026-09-16) so the widget extension draws from the
+// same tokens as the app, instead of copying the RGB values by hand
+// (add-gamification 26.1).
 
 import SwiftUI
 
@@ -18,6 +22,16 @@ enum Theme {
     // MARK: - Color
 
     static let accent = Color(red: 0.96, green: 0.42, blue: 0.29)
+    /// The darker end of the accent gradient (widget background, rings).
+    static let accentDeep = Color(red: 0.80, green: 0.27, blue: 0.18)
+
+    /// One hue per macro, used consistently wherever a macro is drawn, so a
+    /// colour always means the same nutrient.
+    static let carbs = Color(red: 0.29, green: 0.56, blue: 0.89)
+    static let protein = Color(red: 0.55, green: 0.40, blue: 0.86)
+    static let fat = Color(red: 0.93, green: 0.69, blue: 0.20)
+    /// Streak calendar: a forgiven day.
+    static let grace = Color(red: 0.55, green: 0.62, blue: 0.70)
     static let success = Color(red: 0.20, green: 0.68, blue: 0.45)
     static let warning = Color(red: 0.90, green: 0.60, blue: 0.13)
 
