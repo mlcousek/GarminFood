@@ -29,8 +29,8 @@ struct TodayView: View {
                 DaySwitcher(
                     date: dayLog.selectedDate,
                     isToday: dayLog.isToday,
-                    onStep: { days in Task { await dayLog.step(byDays: days) } },
-                    onToday: { Task { await dayLog.goToToday() } }
+                    onStep: { days in Task { await environment.stepDay(byDays: days) } },
+                    onToday: { Task { await environment.goToToday() } }
                 )
 
                 DaySummaryCard(dashboard: dashboard, isStale: dayLog.isStale, isLoading: dayLog.isLoading)
@@ -370,8 +370,7 @@ struct MealEntryRow: View {
     }
 
     private var detailText: String {
-        // Garmin stores quantities as floats (0.699999988 for 0.7).
-        let quantity = entry.servingQty.formatted(.number.precision(.fractionLength(0...2)))
+        let quantity = entry.servingQty.formattedQuantity
         guard let serving = entry.servingDescription else { return "\(quantity) ×" }
         return "\(quantity) × \(serving)"
     }
@@ -403,5 +402,22 @@ extension MealWindow {
 
     private static func clock(_ seconds: Int) -> String {
         String(format: "%02d:%02d", seconds / 3600, (seconds % 3600) / 60)
+    }
+}
+
+/// Matches `LogEntryConfirmView.swift`'s copy of this exact extension
+/// (`%.2f`, closer to this row's "show the precise logged quantity"
+/// purpose than `QuickPickShelf.swift`'s own copy, which uses `%.1f`).
+/// Those two disagree with each other already -- there is no single,
+/// module-visible source of truth to call into instead, since both are
+/// `private` to their own file. This file previously formatted with a
+/// third, different rule (`.formatted(.number.precision(.fractionLength(0...2)))`),
+/// so `0.7` could read differently in a meal card than in the confirm
+/// screen for the SAME entry. Consolidating all three into one shared,
+/// non-private helper is a real follow-up, not attempted here to avoid
+/// touching two already-shipped, working screens in a bug-fix pass.
+private extension Double {
+    var formattedQuantity: String {
+        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.2f", self)
     }
 }

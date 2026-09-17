@@ -47,7 +47,20 @@ public enum NutritionDayBoundary {
 
     /// The nutrition day an event counts toward: its recorded
     /// `nutritionDay` when present, otherwise its timestamp bucketed with
-    /// `boundaryHour`.
+    /// `defaultBoundaryHour` -- deliberately NOT the caller's `boundaryHour`.
+    ///
+    /// 2026-09-17 bug, fixed before it shipped: every real caller
+    /// (`GamificationEngine`) now passes `loggedDateBoundaryHour` (0) for
+    /// events that DO carry a recorded date. An earlier version of this
+    /// function threaded that same `0` into the FALLBACK branch too, which
+    /// only runs for events written before `nutritionDay` existed. That
+    /// retroactively re-bucketed every pre-migration event logged between
+    /// midnight and 04:00 the moment a user upgraded -- silently shifting
+    /// their streak length and challenge day-counts on next launch, for
+    /// data that never changed. Those events were always computed against
+    /// the 04:00 boundary; the fallback keeps doing exactly that,
+    /// regardless of what `boundaryHour` the caller asks for on the
+    /// has-a-recorded-date path.
     public static func nutritionDay(
         for event: UsageEvent,
         boundaryHour: Int = defaultBoundaryHour,
@@ -56,7 +69,7 @@ public enum NutritionDayBoundary {
         if let recorded = event.nutritionDay, let day = date(fromDayString: recorded, calendar: calendar) {
             return day
         }
-        return nutritionDay(for: event.timestamp, boundaryHour: boundaryHour, calendar: calendar)
+        return nutritionDay(for: event.timestamp, boundaryHour: defaultBoundaryHour, calendar: calendar)
     }
 
     /// Parses `yyyy-MM-dd` into midnight of that day in `calendar`'s zone.

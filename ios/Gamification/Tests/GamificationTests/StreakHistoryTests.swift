@@ -112,9 +112,23 @@ final class StreakHistoryTests: XCTestCase {
         let event = UsageEvent(foodId: "f", servingId: "s", numberOfUnits: 1, timestamp: TestClock.date(2026, 1, 5, hour: 1))
 
         XCTAssertEqual(NutritionDayBoundary.nutritionDay(for: event, calendar: calendar), day(4))
+    }
+
+    /// The migration-safety regression this file exists to guard: a
+    /// pre-existing event (no recorded `nutritionDay`) logged at 01:00 was
+    /// ALWAYS bucketed to the previous day under the 04:00 boundary. Passing
+    /// `loggedDateBoundaryHour` (0) -- what every real caller now passes for
+    /// events that DO have a recorded date -- must NOT change that, or every
+    /// user's pre-migration history silently reshuffles on first launch
+    /// after upgrading, changing streak length and challenge day-counts for
+    /// data that never actually changed.
+    func testAnOldEventIsNotRetroactivelyReBucketedByTheCallersBoundaryHour() {
+        let event = UsageEvent(foodId: "f", servingId: "s", numberOfUnits: 1, timestamp: TestClock.date(2026, 1, 5, hour: 1))
+
         XCTAssertEqual(
             NutritionDayBoundary.nutritionDay(for: event, boundaryHour: NutritionDayBoundary.loggedDateBoundaryHour, calendar: calendar),
-            day(5)
+            day(4),
+            "must still use the original 04:00 boundary this event was always computed with, not the caller's boundaryHour"
         )
     }
 

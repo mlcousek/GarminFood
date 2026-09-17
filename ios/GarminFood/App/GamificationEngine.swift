@@ -114,13 +114,21 @@ final class GamificationEngine {
         updateHistory(events: events, goalStatuses: goalStatuses, now: now)
         completedChallenges = await challengeHistoryStore.all()
 
-        guard let active = try? await challengeStore.ensureActive(
+        // `if let`, not `guard ... else { return }`: a transient failure
+        // here (disk pressure, a first-launch directory race) used to bail
+        // out of the whole function, silently skipping
+        // `refreshChallengeDisplay` below and leaving the Progress tab
+        // showing stale or missing challenge state with no error surfaced.
+        // `refreshChallengeDisplay` reads via `challengeStore.current()`,
+        // which never throws, so it always runs now -- a failed
+        // `ensureActive` this cycle just means no NEW challenge activation
+        // or rotation-check happened, not that the rest of `refresh()` is
+        // skipped.
+        if let active = try? await challengeStore.ensureActive(
             catalog: ChallengeCatalog.all,
             now: now,
             baselineStreakLength: streakStatus.length
-        ) else { return }
-
-        if let template = ChallengeCatalog.all.first(where: { $0.id == active.templateId }),
+        ), let template = ChallengeCatalog.all.first(where: { $0.id == active.templateId }),
            ChallengeEngine.isWindowElapsed(active: active, template: template, now: now, boundaryHour: boundaryHour) {
             _ = try? await challengeStore.rotateIfWindowElapsed(
                 catalog: ChallengeCatalog.all,

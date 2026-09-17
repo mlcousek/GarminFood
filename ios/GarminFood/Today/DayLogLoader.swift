@@ -88,7 +88,19 @@ final class DayLogLoader {
     /// Fetches the selected day from Garmin. On failure the previous copy
     /// stays (stale); the meal windows are then fetched separately, so a day
     /// never loaded before still gets its meal layout.
+    ///
+    /// Reentrancy guard restored 2026-09-17: `ContentView`'s `.task` and its
+    /// `scenePhase == .active` handler can both call `refreshOnForeground()`
+    /// -- and so this -- close together (e.g. a Control launches the app,
+    /// firing both near-simultaneously), and `MealDetailView`'s own
+    /// `.refreshable` can call `refresh()` directly while a foreground
+    /// refresh is still in flight. Without this guard, two concurrent calls
+    /// race on `isLoading`/`logsByDate`/`isStale`: the FIRST call's `defer`
+    /// can flip `isLoading` back to false while the second is still
+    /// awaiting the network, so the "Updating…" indicator disappears
+    /// early, and whichever response resolves last silently wins.
     func refresh() async {
+        guard !isLoading else { return }
         let date = dateString
         isLoading = true
         defer { isLoading = false }

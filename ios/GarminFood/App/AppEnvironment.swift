@@ -112,14 +112,51 @@ final class AppEnvironment {
         Task { await self.drainAndReconcile() }
     }
 
+    /// Day navigation, routed through here rather than calling `dayLog`
+    /// directly (as `TodayView` did until 2026-09-17) so goal status gets
+    /// recomputed for whichever day is actually being looked at. Without
+    /// this, `refreshGoalStatus` only ever ran for "today" (on foreground,
+    /// after a delivery, or after a delete) -- viewing a past day and
+    /// adding or removing something there left that day's `DailyGoalStatus`
+    /// stale or missing, so a goal-hitting challenge or the Progress tab's
+    /// goal history could silently never reflect it.
+    func stepDay(byDays days: Int) async {
+        await dayLog.step(byDays: days)
+        await gamificationEngine.refreshGoalStatus(for: dayLog.selectedDate)
+    }
+
+    func goToToday() async {
+        await dayLog.goToToday()
+        await gamificationEngine.refreshGoalStatus(for: dayLog.selectedDate)
+    }
+
     func drainAndReconcile() async {
         guard !isDraining else { return }
         isDraining = true
         defer { isDraining = false }
 
         let result = await outbox.drain(using: garminClient)
-        if !result.delivered.isEmpty {
-            _ = await reconciliation.reconcile(delivered: result.delivered, using: garminClient)
+
+        // Reconciles every CURRENTLY `.sent` entry, not just what this
+        // cycle's drain delivered. `Reconciliation.reconcile` can leave an
+        // entry `.sent` and unreconciled if re-reading that day's log fails
+        // right after a successful write (a network hiccup, not an error
+        // `drain()` itself would retry -- `.sent` entries are invisible to
+        // `drain()`, which only ever looks at `.pending` ones). Before this,
+        // such an entry stayed `.sent` forever: never removed, never
+        // retried. That used to be harmless -- the old Home screen only
+        // ever showed Garmin's own read-back total. `MealDashboard` changed
+        // that: it shows an unmatched `.sent` entry as a "syncing" row and
+        // adds its calories on top of Garmin's total, specifically to cover
+        // the brief legitimate window between a delivery and its re-read.
+        // Left permanently unreconciled, that window never closes, so a
+        // real Garmin total gets a phantom entry added on top of it forever.
+        // Re-attempting every `.sent` entry on every drain is what actually
+        // closes it: `result.delivered` (fresh from THIS drain) already
+        // has `.sent` state by the time this line runs, so it's a subset.
+        let sentEntries = await outbox.allEntries().filter { $0.state == .sent }
+        if !sentEntries.isEmpty {
+            _ = await reconciliation.reconcile(delivered: sentEntries, using: garminClient)
             // Totals are read back from Garmin, so a delivery only shows
             // once the day is re-read.
             await dayLog.refresh()
