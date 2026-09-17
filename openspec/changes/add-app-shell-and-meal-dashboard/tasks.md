@@ -1,9 +1,9 @@
 ## 1. Foundations that the new screens depend on
 
-- [ ] 1.1 Give the app one process-wide set of local stores (`Outbox`, `UsageHistoryStore`, and the rest), shared by `AppEnvironment` and the in-app intents (`QuickPickLoggingIntents.performLog`, `LogNamedFoodIntent`). Today each intent opens its own copy of the same JSON files. Each copy reads its file only once, so an entry logged from a Control while the app is running can be overwritten by the app's next save (found by the 2026-09-16 task audit).
+- [x] 1.1 Give the app one process-wide set of local stores (`Outbox`, `UsageHistoryStore`, and the rest), shared by `AppEnvironment` and the in-app intents (`QuickPickLoggingIntents.performLog`, `LogNamedFoodIntent`). Today each intent opens its own copy of the same JSON files. Each copy reads its file only once, so an entry logged from a Control while the app is running can be overwritten by the app's next save (found by the 2026-09-16 task audit).
 - [x] 1.2 Record the logged nutrition date on each usage event (optional field, so older files still decode). Streaks, XP and goal status then key on the same date the entry was sent to Garmin, instead of mixing a midnight date and a 04:00 date (`add-gamification` 23.1; goal-status lookup mismatch at `GamificationEngine.swift:113` vs `:150`).
-- [ ] 1.3 Move `Theme` into `ios/Shared` so the widget extension uses the same tokens instead of hand-copied colours (`add-gamification` 26.1). Add `@ScaledMetric` for the fixed sizes and a `Haptics` helper that honours preferences (design D11).
-- [ ] 1.4 Add `AppPreferences` (`UserDefaults`-backed; haptics, celebrations, Garmin meal windows, Czech-only search) (design D9).
+- [x] 1.3 Move `Theme` into `ios/Shared` so the widget extension uses the same tokens instead of hand-copied colours (`add-gamification` 26.1). Add `@ScaledMetric` for the fixed sizes and a `Haptics` helper that honours preferences (design D11).
+- [x] 1.4 Add `AppPreferences` (`UserDefaults`-backed; haptics, celebrations, Garmin meal windows, Czech-only search) (design D9).
 
 ## 2. GarminKit reads
 
@@ -27,40 +27,40 @@
 
 ## 5. App shell
 
-- [ ] 5.1 `AppShell` `TabView` (Today / Progress / Profile), with each tab keeping its own navigation stack.
-- [ ] 5.2 Route handling at the shell: `onOpenURL` for `garminfood://open`, and `AppNavigationBridge` consumed on activation to select Today and present the scanner.
-- [ ] 5.3 Keep the auth and delivery banners visible across tabs.
+- [x] 5.1 `AppShell` `TabView` (Today / Progress / Profile), with each tab keeping its own navigation stack.
+- [x] 5.2 Route handling at the shell: `onOpenURL` for `garminfood://open`, and `AppNavigationBridge` consumed on activation to select Today and present the scanner.
+- [x] 5.3 Keep the auth and delivery banners visible across tabs.
 
 ## 6. Today
 
-- [ ] 6.1 A `DayLogLoader` that replaces `TodaySummaryLoader`: loads any date and keeps the full `DailyFoodLog` plus the meal windows, and the last good data per date on failure.
-- [ ] 6.2 A day header with a `DaySwitcher` and totals against targets (a calorie ring and macro bars).
-- [ ] 6.3 Meal sections in Garmin order: consumed/suggested kcal and macros, the food list, syncing entries, and an add action that pre-selects the meal and date.
-- [ ] 6.4 A compact streak and level strip linking to Progress, plus the existing quick-pick shelf.
-- [ ] 6.5 `MealDetailView`: the full nutrient breakdown, the food list, add to this meal, and delete with confirmation (Garmin delete route or local queue removal), with a visible error on failure.
-- [ ] 6.6 `LogEntryConfirmView`: optional initial meal and date, meals listed in dashboard order, and the default meal from Garmin windows when the preference is on.
-- [ ] 6.7 Refresh the day after a delivery or delete, and when the date changes.
+- [x] 6.1 A `DayLogLoader` that replaces `TodaySummaryLoader`: loads any date and keeps the full `DailyFoodLog` plus the meal windows, and the last good data per date on failure.
+- [x] 6.2 A day header with a `DaySwitcher` and totals against targets (a calorie ring and macro bars).
+- [x] 6.3 Meal sections in Garmin order: consumed/suggested kcal and macros, the food list, syncing entries, and an add action that pre-selects the meal and date.
+- [x] 6.4 A compact streak and level strip linking to Progress, plus the existing quick-pick shelf.
+- [x] 6.5 `MealDetailView`: the full nutrient breakdown, the food list, add to this meal, and delete with confirmation (Garmin delete route or local queue removal), with a visible error on failure.
+- [x] 6.6 `LogEntryConfirmView`: optional initial meal and date, meals listed in dashboard order, and the default meal from Garmin windows when the preference is on.
+- [x] 6.7 Refresh the day after a delivery or delete, and when the date changes.
 
 ## 7. Progress
 
-- [ ] 7.1 `ProgressHomeView`: level, streak and challenge summary cards, plus goal history.
-- [ ] 7.2 `LevelDetailView`: progress, the next levels' thresholds, and how XP is earned.
-- [ ] 7.3 `StreakDetailView`: current and longest streak, and the calendar grid with grace days.
-- [ ] 7.4 `ChallengesView`: the active challenge with time left, all challenges, and completed ones.
-- [ ] 7.5 Gate every repeating or celebratory animation on Reduce Motion and the celebrations preference, including the existing `symbolEffect(.bounce)` in `MomentOverlay` and `.pulse` in the streak flame (`add-gamification` 26.3). Stop the moment haptic from firing again on dismiss.
+- [x] 7.1 `ProgressHomeView`: level, streak and challenge summary cards, plus goal history.
+- [x] 7.2 `LevelDetailView`: progress, the next levels' thresholds, and how XP is earned.
+- [x] 7.3 `StreakDetailView`: current and longest streak, and the calendar grid with grace days.
+- [x] 7.4 `ChallengesView`: the active challenge with time left, all challenges, and completed ones.
+- [x] 7.5 Gate every repeating or celebratory animation on Reduce Motion and the celebrations preference, including the existing `symbolEffect(.bounce)` in `MomentOverlay` and `.pulse` in the streak flame (`add-gamification` 26.3). Stop the moment haptic from firing again on dismiss.
 
 ## 8. Profile and settings
 
-- [ ] 8.1 `ProfileView`: the Garmin name and avatar with a fallback, and stat tiles.
-- [ ] 8.2 `SettingsView` sections: Garmin account (status, sign in, sign out with confirmation), nutrition goals and meal windows (read-only), sync queue, preferences, about.
-- [ ] 8.3 `SyncQueueView`: pending and failed entries with meal/date/state/error, retry, delete with confirmation, and sync now.
-- [ ] 8.4 Background delivery: `BGTaskSchedulerPermittedIdentifiers` (`com.mlcousek.garminfood.refresh`) and `UIBackgroundModes: fetch` in `project.yml`, a `.backgroundTask(.appRefresh)` handler that drains and reschedules, and scheduling on entering the background with queued entries (`add-garmin-auth-and-sync` 9.5).
+- [x] 8.1 `ProfileView`: the Garmin name and avatar with a fallback, and stat tiles.
+- [x] 8.2 `SettingsView` sections: Garmin account (status, sign in, sign out with confirmation), nutrition goals and meal windows (read-only), sync queue, preferences, about.
+- [x] 8.3 `SyncQueueView`: pending and failed entries with meal/date/state/error, retry, delete with confirmation, and sync now.
+- [x] 8.4 Background delivery: `BGTaskSchedulerPermittedIdentifiers` (`com.mlcousek.garminfood.refresh`) and `UIBackgroundModes: fetch` in `project.yml`, a `.backgroundTask(.appRefresh)` handler that drains and reschedules, and scheduling on entering the background with queued entries (`add-garmin-auth-and-sync` 9.5).
 
 ## 9. Carried code work from other changes
 
-- [ ] 9.1 Bound the Control/Siri inline delivery to about 2 s and surface an auth failure instead of discarding it (`add-garmin-auth-and-sync` 9.6).
-- [ ] 9.2 Control action hint (`add-glanceable-surfaces` 17.3); CI compile decides where the modifier attaches. A dynamic "Logged N kcal" status is not possible without shared data (glanceable D2), so record that instead of faking it.
-- [ ] 9.3 Donate app- and Control-initiated logs too, and remove the donation when the user deletes that entry (`add-glanceable-surfaces` 20.2).
+- [x] 9.1 Bound the Control/Siri inline delivery to about 2 s and surface an auth failure instead of discarding it (`add-garmin-auth-and-sync` 9.6).
+- [x] 9.2 Control action hint (`add-glanceable-surfaces` 17.3); CI compile decides where the modifier attaches. A dynamic "Logged N kcal" status is not possible without shared data (glanceable D2), so record that instead of faking it.
+- [x] 9.3 Donate app- and Control-initiated logs too, and remove the donation when the user deletes that entry (`add-glanceable-surfaces` 20.2).
 - [x] 9.4 `probe-garmin-nutrition.mjs`: always print 400 bodies, and report how many routes remained unverified when a 429 stops the run (`establish-garmin-nutrition-contract` 3.3).
 
 ## 10. Device verification checklist (owner, on iPhone)

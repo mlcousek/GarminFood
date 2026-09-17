@@ -1,18 +1,10 @@
 // ContentView.swift
 //
-// The app's real root screen (add-food-log-core, tasks 12-16) -- replaces
-// the earlier hello-world/Keychain-spike-adjacent placeholder (task 6.1).
-// Hosts the food catalog as the primary screen, a loud auth banner
-// (add-garmin-auth-and-sync task 11.1) above it, and triggers a best-effort
-// outbox drain on foreground (task 9.5's foreground half -- see
-// AppEnvironment.refreshOnForeground()'s doc comment for what's
-// deliberately NOT done yet, i.e. BGAppRefreshTask registration).
-//
-// The Keychain-sharing spike itself (ios/Shared/KeychainSpike.swift,
-// GarminFoodWidget/KeychainCheckWidget.swift) is untouched and still exists
-// as its own files -- this view simply no longer triggers it, since its
-// finding is already settled and recorded (openspec/config.yaml's Hard
-// Constraints: confirmed 2026-09-14, `errSecMissingEntitlement`).
+// The app shell (app-navigation spec, design D1): three tabs, each with its
+// own navigation stack so switching away and back keeps its place. The shell
+// owns `AppEnvironment`, applies external routes (widget link, barcode
+// Control), drives foreground/background work, and hosts the celebration
+// overlay above every tab.
 
 import SwiftUI
 
@@ -22,23 +14,68 @@ struct ContentView: View {
     @State private var environment = AppEnvironment()
 
     var body: some View {
-        NavigationStack {
-            HomeView()
-                .safeAreaInset(edge: .top) {
-                    VStack(spacing: Theme.Spacing.xs) {
-                        AuthBannerView()
-                        DeliveryBannerView()
-                    }
-                    .padding(.top, Theme.Spacing.xs)
-                }
+        @Bindable var router = environment.router
+
+        TabView(selection: $router.selectedTab) {
+            NavigationStack {
+                TodayView()
+                    .withStatusBanners()
+            }
+            .tabItem { Label("Today", systemImage: "fork.knife") }
+            .tag(AppRouter.Tab.today)
+
+            NavigationStack {
+                ProgressHomeView()
+                    .withStatusBanners()
+            }
+            .tabItem { Label("Progress", systemImage: "flame.fill") }
+            .tag(AppRouter.Tab.progress)
+
+            NavigationStack {
+                ProfileView()
+                    .withStatusBanners()
+            }
+            .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+            .tag(AppRouter.Tab.profile)
         }
-        .environment(environment)
+        .tint(Theme.accent)
+        .overlay { MomentOverlay() }
+        .onOpenURL { url in
+            environment.router.handle(url: url)
+        }
         .task {
+            environment.router.applyPendingRoute()
             await environment.refreshOnForeground()
         }
-        .onChange(of: scenePhase) { _, newPhase in
-            guard newPhase == .active else { return }
-            Task { await environment.refreshOnForeground() }
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .active:
+                environment.router.applyPendingRoute()
+                Task { await environment.refreshOnForeground() }
+            case .background:
+                environment.didEnterBackground()
+            default:
+                break
+            }
+        }
+        .onChange(of: AppNavigationBridge.shared.pendingRoute) { _, _ in
+            environment.router.applyPendingRoute()
+        }
+        // Outermost, so the overlay and every presented screen get it too.
+        .environment(environment)
+    }
+}
+
+extension View {
+    /// The sign-in and delivery banners, kept visible on every tab
+    /// (app-navigation 5.3).
+    func withStatusBanners() -> some View {
+        safeAreaInset(edge: .top) {
+            VStack(spacing: Theme.Spacing.xs) {
+                AuthBannerView()
+                DeliveryBannerView()
+            }
+            .padding(.top, Theme.Spacing.xs)
         }
     }
 }

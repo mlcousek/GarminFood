@@ -25,6 +25,8 @@ struct LogEntryConfirmView: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.logContext) private var logContext
+    @State private var didApplyContext = false
 
     @State private var quantity: Double
     @State private var mealType: MealType
@@ -116,8 +118,8 @@ struct LogEntryConfirmView: View {
 
             Section("When") {
                 Picker("Meal", selection: $mealType) {
-                    ForEach(MealType.allCases, id: \.self) { meal in
-                        Text(meal.rawValue.capitalized).tag(meal)
+                    ForEach(MealType.dashboardOrder, id: \.self) { meal in
+                        Label(meal.displayName, systemImage: meal.symbolName).tag(meal)
                     }
                 }
                 DatePicker("Date", selection: $date, displayedComponents: .date)
@@ -152,9 +154,28 @@ struct LogEntryConfirmView: View {
                 quantity = serving.numberOfUnits
             }
         }
-        .sensoryFeedback(.success, trigger: didConfirm)
+        .sensoryFeedback(.success, trigger: didConfirm) { _, confirmed in
+            confirmed && Haptics.isEnabled
+        }
         .animation(Theme.confirmAnimation(reduceMotion: reduceMotion), value: didConfirm)
         .interactiveDismissDisabled(isSaving)
+        .onAppear(perform: applyContextOnce)
+    }
+
+    /// A meal and day chosen on the dashboard win. Otherwise the meal comes
+    /// from Garmin's meal windows (design D4) when that preference is on.
+    /// Applied once, so the user's own picks are never overwritten.
+    private func applyContextOnce() {
+        guard !didApplyContext else { return }
+        didApplyContext = true
+        if let contextDate = logContext.date {
+            date = contextDate
+        }
+        if let contextMeal = logContext.mealType {
+            mealType = contextMeal
+        } else if environment.preferences.useGarminMealWindows {
+            mealType = MealWindowDefaulting.mealType(at: Date(), windows: environment.dayLog.latestWindows)
+        }
     }
 
     private var canConfirm: Bool {
@@ -199,12 +220,13 @@ struct LogEntryConfirmView: View {
                 // Gamification is the deliberate second step right after the
                 // durable commit (GamificationEngine.swift's header): awards
                 // XP, detects a level-up / streak milestone / challenge
-                // completion, and enqueues the "moment" that HomeView's
+                // completion, and enqueues the "moment" that the shell's
                 // MomentOverlay presents. Local disk only -- no network wait
-                // added to the confirm flow. Before this call was wired, the
-                // engine computed all of this and nothing ever showed it.
+                // added to the confirm flow.
                 await environment.gamificationEngine.handleLogConfirmed()
-                Task { await environment.drainAndReconcile() }
+                // Shows the entry in its meal immediately, records the Siri
+                // donation, and starts delivery without waiting for it.
+                await environment.logConfirmed(food: isCustom ? nil : food, date: dateString)
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
             } catch {

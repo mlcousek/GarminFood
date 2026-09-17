@@ -94,7 +94,7 @@ struct DeliveryBannerView: View {
 }
 
 @MainActor
-private struct GarminSignInSheet: View {
+struct GarminSignInSheet: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
 

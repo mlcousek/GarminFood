@@ -63,11 +63,10 @@ struct GarminFoodHomeWidgetView: View {
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
+            // Theme lives in Shared/, compiled into this extension too, so
+            // the widget and the app can't drift apart.
             LinearGradient(
-                colors: [
-                    Color(red: 0.96, green: 0.42, blue: 0.29), // Theme.accent, duplicated here --
-                    Color(red: 0.80, green: 0.27, blue: 0.18)  // this extension target doesn't
-                ],                                             // depend on the app target's DesignSystem.
+                colors: [Theme.accent, Theme.accentDeep],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )

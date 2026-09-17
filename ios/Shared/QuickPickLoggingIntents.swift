@@ -75,6 +75,11 @@ enum QuickPickControlAction {
     enum ActionError: Error, CustomLocalizedStringResourceConvertible {
         case nothingRankedYet
         case foodNotCachedLocally
+        /// The entry IS saved and queued; it just can't reach Garmin until
+        /// the user signs in again. Thrown so the Control shows a failure
+        /// instead of a success it hasn't earned (add-glanceable-surfaces
+        /// 21.2: an expired sign-in must fail loudly).
+        case savedButSignedOut
 
         var localizedStringResource: LocalizedStringResource {
             switch self {
@@ -82,6 +87,8 @@ enum QuickPickControlAction {
                 return "Nothing logged yet to quick-pick from -- log a food from the app first."
             case .foodNotCachedLocally:
                 return "That food's details aren't saved locally yet -- open the app and log it once from there."
+            case .savedButSignedOut:
+                return "Saved in GarminFood, but not sent: sign in to Garmin again in the app."
             }
         }
     }
@@ -90,56 +97,56 @@ enum QuickPickControlAction {
     /// app's own `FoodCatalogView` shelf uses) and logs the one at
     /// `rankIndex` (0-based -- rank 0 is the #1 quick pick).
     ///
-    /// Deliberately builds its OWN `Outbox`/`UsageHistoryStore`/
-    /// `FoodCacheStore`/`ServingDefaultStore` instances (all default-argument,
-    /// file-path-based, matching `AppEnvironment.init()`'s own
-    /// `Outbox(processName: "app")` exactly) rather than trying to reach a
-    /// live `AppEnvironment` -- an `AppIntent` has no SwiftUI environment to
-    /// read from, and GarminKit/FoodLogCore's stores are designed from the
-    /// ground up to be safely opened fresh by any code running in the right
-    /// process (see Outbox.swift's own header: "each process... instantiates
-    /// its OWN Outbox"). Since this function only ever legitimately runs
-    /// once foregrounded into the APP's process (never the extension's --
-    /// see this file's header), "the right process" here is the app's own,
-    /// so these are exactly the same on-disk files `AppEnvironment` already
-    /// reads and writes.
+    /// Uses the process-wide `AppServices` stores, the same instances the
+    /// running app uses, so a Control log can't be lost to a second
+    /// in-memory copy of the same files (add-app-shell-and-meal-dashboard
+    /// 1.1). This only ever runs in the APP's process (see this file's
+    /// header).
     @MainActor
     static func performLog(rankIndex: Int) async throws {
-        let usageHistory = UsageHistoryStore()
-        let foodCache = FoodCacheStore()
-        let outbox = Outbox(processName: "app")
-        let servingDefaults = ServingDefaultStore()
-        let coordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
+        let services = AppServices.shared
 
-        let ranked = QuickPick.rank(events: await usageHistory.all())
+        let ranked = QuickPick.rank(events: await services.usageHistory.all())
         guard ranked.indices.contains(rankIndex) else {
             throw ActionError.nothingRankedYet
         }
         let pick = ranked[rankIndex]
 
-        let cache = await foodCache.all()
+        let cache = await services.foodCache.all()
         guard let food = cache[pick.foodId],
               let serving = food.servings.first(where: { $0.id == pick.servingId }) else {
             throw ActionError.foodNotCachedLocally
         }
 
-        try await coordinator.confirm(
+        let date = NutritionDate.todayString()
+        try await services.logEntryCoordinator.confirm(
             food: food,
             serving: serving,
             numberOfUnits: pick.numberOfUnits,
             mealType: MealTypeDefaulting.defaultMealType(),
-            date: NutritionDate.todayString()
+            date: date
         )
+        await services.logObserver?.didLog(food: food, date: date)
 
-        // Best-effort immediate delivery attempt -- awaited here (unlike
-        // LogEntryConfirmView's deliberately fire-and-forget drain) because
-        // the one thing that must never wait on the network (the durable
-        // local commit, above) is already done; a bounded delivery attempt
-        // afterwards is a reasonable thing for a Control tap (which has
-        // already foregrounded the app) to wait out before reporting
-        // success, since the whole point of tapping the Control is to get
-        // food logged, not just queued.
-        _ = await outbox.drain(using: GarminClient())
+        // The durable local commit above is what must never wait on the
+        // network. Delivery after it is waited for, but only briefly
+        // (add-garmin-auth-and-sync 9.6): past ~2 s the Control reports
+        // success and the drain finishes on its own.
+        if let result = await services.briefDelivery(), isSignedOut(result.authOutcome) {
+            throw ActionError.savedButSignedOut
+        }
+    }
+
+    /// A switch rather than `!= .none`: `DrainAuthOutcome` has a case named
+    /// `none`, and a comparison against `.none` can resolve to
+    /// `Optional.none`, which would always be "not equal".
+    static func isSignedOut(_ outcome: DrainAuthOutcome) -> Bool {
+        switch outcome {
+        case .none:
+            return false
+        case .longLivedTokenExpired, .notSignedIn:
+            return true
+        }
     }
 }
 

@@ -45,7 +45,15 @@ struct FoodCatalogView: View {
     // Czech (Open Food Facts) results (add-czech-food-catalog task 28.1) --
     // deliberately separate state from the Garmin search above, never
     // merged, per design.md D5.
-    @State private var czechOnly = true
+    /// Persisted in preferences, so the choice survives a relaunch.
+    private var czechOnly: Bool { environment.preferences.czechOnlySearch }
+
+    private var czechOnlyBinding: Binding<Bool> {
+        Binding(
+            get: { environment.preferences.czechOnlySearch },
+            set: { environment.preferences.czechOnlySearch = $0 }
+        )
+    }
     @State private var czechSearchResults: [Food] = []
     @State private var isCzechSearching = false
     @State private var czechSearchErrorMessage: String?
@@ -166,7 +174,7 @@ struct FoodCatalogView: View {
                             .font(.sectionHeader)
                             .foregroundStyle(.secondary)
                         Spacer()
-                        Toggle("Czech only", isOn: $czechOnly)
+                        Toggle("Czech only", isOn: czechOnlyBinding)
                             .font(.caption)
                             .fixedSize()
                             .accessibilityLabel("Limit Open Food Facts results to Czech products")

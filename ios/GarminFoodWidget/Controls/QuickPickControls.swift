@@ -32,6 +32,7 @@ struct QuickPickControl1: ControlWidget {
         StaticControlConfiguration(kind: Self.kind) {
             ControlWidgetButton(action: LogQuickPick1Intent()) {
                 Label("Quick Log #1", systemImage: "1.circle.fill")
+                    .controlWidgetActionHint("Logs your most-used food")
             }
         }
         .displayName("Quick Log #1")
@@ -47,6 +48,7 @@ struct QuickPickControl2: ControlWidget {
         StaticControlConfiguration(kind: Self.kind) {
             ControlWidgetButton(action: LogQuickPick2Intent()) {
                 Label("Quick Log #2", systemImage: "2.circle.fill")
+                    .controlWidgetActionHint("Logs your #2 most-used food")
             }
         }
         .displayName("Quick Log #2")
@@ -62,6 +64,7 @@ struct QuickPickControl3: ControlWidget {
         StaticControlConfiguration(kind: Self.kind) {
             ControlWidgetButton(action: LogQuickPick3Intent()) {
                 Label("Quick Log #3", systemImage: "3.circle.fill")
+                    .controlWidgetActionHint("Logs your #3 most-used food")
             }
         }
         .displayName("Quick Log #3")
@@ -77,6 +80,7 @@ struct QuickPickControl4: ControlWidget {
         StaticControlConfiguration(kind: Self.kind) {
             ControlWidgetButton(action: LogQuickPick4Intent()) {
                 Label("Quick Log #4", systemImage: "4.circle.fill")
+                    .controlWidgetActionHint("Logs your #4 most-used food")
             }
         }
         .displayName("Quick Log #4")

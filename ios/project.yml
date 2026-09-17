@@ -112,6 +112,14 @@ targets:
             CFBundleURLSchemes:
               - garminfood
         CFBundleIconName: AppIcon
+        # add-garmin-auth-and-sync 9.5 / BackgroundRefresh.swift: delivers
+        # queued entries while the app isn't open. The identifier must match
+        # BackgroundRefresh.identifier exactly, or BGTaskScheduler.submit
+        # throws at runtime.
+        UIBackgroundModes:
+          - fetch
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.mlcousek.garminfood.refresh
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mlcousek.garminfood
