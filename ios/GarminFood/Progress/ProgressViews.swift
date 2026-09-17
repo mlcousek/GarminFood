@@ -437,14 +437,20 @@ struct LevelDetailView: View {
         }
     }
 
+    private struct UpcomingLevel: Identifiable {
+        let level: Int
+        let totalXP: Int
+        var id: Int { level }
+    }
+
     /// The next few levels and the total XP each is reached at.
-    private func upcomingLevels(from progress: LevelCurve.Progress, count: Int = 5) -> [(level: Int, totalXP: Int)] {
+    private func upcomingLevels(from progress: LevelCurve.Progress, count: Int = 5) -> [UpcomingLevel] {
         guard progress.xpNeededForNextLevel > 0 else { return [] }
-        var result: [(level: Int, totalXP: Int)] = []
+        var result: [UpcomingLevel] = []
         var total = progress.totalXP + (progress.xpNeededForNextLevel - progress.xpIntoCurrentLevel)
         var level = progress.level + 1
         while result.count < count, level <= LevelCurve.maxLevel {
-            result.append((level: level, totalXP: total))
+            result.append(UpcomingLevel(level: level, totalXP: total))
             total += LevelCurve.xpRequired(afterLevel: level)
             level += 1
         }
