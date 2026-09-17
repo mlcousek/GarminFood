@@ -36,7 +36,14 @@ final class LogDonations: LogObserving {
     func entryDeleted(foodId: String, date: String) async {
         let identifiers = await ledger.remove(date: date, foodId: foodId)
         guard !identifiers.isEmpty else { return }
-        _ = try? await IntentDonationManager.shared.deleteDonations(matching: .donationIdentifiers(identifiers))
+        // `.donationIdentifiers(_:)` needs iOS 26.4+; this app's deployment
+        // target is 17.0 (project.yml). The ledger still records and drops
+        // identifiers on every OS version, so the moment this becomes
+        // available at the deployment target, deleting the guard's body ships
+        // the feature with no other change needed.
+        if #available(iOS 26.4, *) {
+            _ = try? await IntentDonationManager.shared.deleteDonations(matching: .donationIdentifiers(identifiers))
+        }
     }
 }
 

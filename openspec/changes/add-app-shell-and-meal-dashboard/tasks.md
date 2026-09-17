@@ -60,7 +60,7 @@
 
 - [x] 9.1 Bound the Control/Siri inline delivery to about 2 s and surface an auth failure instead of discarding it (`add-garmin-auth-and-sync` 9.6).
 - [x] 9.2 Control action hint (`add-glanceable-surfaces` 17.3); CI compile decides where the modifier attaches. A dynamic "Logged N kcal" status is not possible without shared data (glanceable D2), so record that instead of faking it.
-- [x] 9.3 Donate app- and Control-initiated logs too, and remove the donation when the user deletes that entry (`add-glanceable-surfaces` 20.2).
+- [x] 9.3 Donate app- and Control-initiated logs too (`add-glanceable-surfaces` 20.2). Removing a donation on delete is implemented (`LogDonations.entryDeleted`) but guarded behind `if #available(iOS 26.4, *)`: CI's compile caught that `IntentDonationMatchingPredicate.donationIdentifiers(_:)` needs iOS 26.4+, above this app's 17.0 deployment target. The ledger records and drops identifiers on every OS version regardless, so this activates with no other change once the deployment target allows it.
 - [x] 9.4 `probe-garmin-nutrition.mjs`: always print 400 bodies, and report how many routes remained unverified when a 429 stops the run (`establish-garmin-nutrition-contract` 3.3).
 
 ## 10. Device verification checklist (owner, on iPhone)
