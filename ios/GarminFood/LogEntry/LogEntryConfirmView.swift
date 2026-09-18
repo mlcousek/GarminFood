@@ -28,6 +28,11 @@ struct LogEntryConfirmView: View {
     @Environment(\.logContext) private var logContext
     @State private var didApplyContext = false
 
+    /// The multiplier of `selectedServing` being logged -- `1` means
+    /// exactly one serving. This is exactly what's sent to Garmin as
+    /// `servingQty` (`FoodLogWriteBody`, confirmed by the project's first
+    /// real write 2026-09-16), so every other calculation in this view
+    /// must treat it the same way.
     @State private var quantity: Double
     @State private var mealType: MealType
     @State private var date: Date
@@ -37,19 +42,25 @@ struct LogEntryConfirmView: View {
     @State private var didConfirm = false
     @State private var discrepancyNote: String?
     @State private var errorMessage: String?
+    @FocusState private var isAmountFieldFocused: Bool
 
     init(target: LogTarget) {
         self.target = target
-        let initialQuantity: Double
         switch target {
         case .catalog(_, let serving):
-            initialQuantity = serving?.numberOfUnits ?? 1
             _selectedServing = State(initialValue: serving)
         case .custom(let draft):
-            initialQuantity = 1
             _selectedServing = State(initialValue: draft.asFood().servings.first)
         }
-        _quantity = State(initialValue: initialQuantity)
+        // One full serving, always -- see `quantity`'s own doc comment.
+        // 2026-09-18 bug, fixed before any user could rely on the wrong
+        // value: this used to default to the SERVING's own defined amount
+        // (e.g. 100 for a "100g" serving), while the Stepper below it was
+        // range-limited to 0.25...50 -- a starting value already outside
+        // its own control's valid range. The first tap of "+" snapped it
+        // down to 50 rather than incrementing, which read as the app
+        // randomly jumping to "50 servings" the moment you touched it.
+        _quantity = State(initialValue: 1)
         _mealType = State(initialValue: MealTypeDefaulting.defaultMealType())
         _date = State(initialValue: Date())
     }
@@ -67,8 +78,46 @@ struct LogEntryConfirmView: View {
     }
 
     private var caloriesForQuantity: Double? {
-        guard let calories = selectedServing?.calories, let servingUnits = selectedServing?.numberOfUnits, servingUnits > 0 else { return nil }
-        return calories * (quantity / servingUnits)
+        // A serving's `calories` is for one full serving, and `quantity` is
+        // already the multiplier (see its doc comment) -- a straight
+        // multiply, matching MealDashboard's identical scaling of a logged
+        // entry's macros. The previous `calories * (quantity / servingUnits)`
+        // was correct only if `quantity` meant an absolute amount in the
+        // serving's own unit, which it never was: this screen's Stepper
+        // only ever produced small multiplier-range values (0.25...50), so
+        // the on-screen preview was silently wrong -- too low by roughly
+        // the serving size -- for any serving where `numberOfUnits != 1`
+        // (a "100g" serving showed calories about 100x too small).
+        guard let calories = selectedServing?.calories else { return nil }
+        return calories * quantity
+    }
+
+    /// Grams, ml, and the like are amounts a user actually knows and wants
+    /// to type ("70g"); "medium", "cup", "slice" are not -- there is no
+    /// unit conversion available for those without knowing the food's
+    /// density, which Garmin doesn't provide. Case/whitespace-insensitive,
+    /// since Garmin's own data uses "G" and "g" for the same thing.
+    private var isDirectlyEnterableAmount: Bool {
+        guard let unit = selectedServing?.unit.trimmingCharacters(in: .whitespaces).lowercased() else { return false }
+        return ["g", "gram", "grams", "ml", "milliliter", "milliliters", "millilitre", "millilitres"].contains(unit)
+    }
+
+    /// The amount of `selectedServing.unit` this logs, e.g. 70 (g) for a
+    /// "100g" serving at `quantity == 0.7`. Read/write: typing a new amount
+    /// recomputes `quantity` against the serving's own defined size, which
+    /// is the whole point -- the user thinks in grams, Garmin's API thinks
+    /// in servings, and this is the one place those two convert.
+    private var amountBinding: Binding<Double> {
+        Binding(
+            get: {
+                guard let base = selectedServing?.numberOfUnits else { return quantity }
+                return quantity * base
+            },
+            set: { newAmount in
+                guard let base = selectedServing?.numberOfUnits, base > 0 else { return }
+                quantity = newAmount / base
+            }
+        )
     }
 
     var body: some View {
@@ -98,12 +147,40 @@ struct LogEntryConfirmView: View {
                     }
                 }
 
-                Stepper(value: $quantity, in: 0.25...50, step: 0.25) {
+                if isDirectlyEnterableAmount {
+                    HStack {
+                        Text("Amount")
+                        Spacer()
+                        TextField("Amount", value: amountBinding, format: .number.precision(.fractionLength(0...1)))
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .focused($isAmountFieldFocused)
+                            .frame(minWidth: 60)
+                        Text(selectedServing?.unit.lowercased() ?? "g")
+                            .foregroundStyle(.secondary)
+                    }
+                    if let selectedServing {
+                        // The conversion made explicit, since the whole
+                        // point of typing grams is not having to think in
+                        // servings -- but showing it builds trust that the
+                        // right number is what actually reaches Garmin.
+                        Text("= \(quantity.formattedQuantity) of a \(selectedServing.displayLabel) serving")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                } else {
                     HStack {
                         Text("Quantity")
                         Spacer()
-                        Text(quantity.formattedQuantity)
-                            .foregroundStyle(.secondary)
+                        TextField("Quantity", value: $quantity, format: .number.precision(.fractionLength(0...2)))
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .focused($isAmountFieldFocused)
+                            .frame(minWidth: 60)
+                        if let unit = selectedServing?.unit, !unit.isEmpty {
+                            Text(unit)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
 
@@ -148,10 +225,19 @@ struct LogEntryConfirmView: View {
             .padding(Theme.Spacing.md)
             .background(.bar)
         }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { isAmountFieldFocused = false }
+            }
+        }
         .sheet(isPresented: $isPresentingServingPicker) {
             ServingPickerSheet(food: food) { serving in
                 selectedServing = serving
-                quantity = serving.numberOfUnits
+                // One full serving of whichever was just picked -- see
+                // `quantity`'s doc comment for why this must never be the
+                // serving's own `numberOfUnits`.
+                quantity = 1
             }
         }
         .sensoryFeedback(.success, trigger: didConfirm) { _, confirmed in
