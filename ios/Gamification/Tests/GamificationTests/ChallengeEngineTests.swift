@@ -30,8 +30,11 @@ final class ChallengeEngineTests: XCTestCase {
 
     // MARK: - Catalog sanity
 
-    func testCatalogHasBetweenTenAndFifteenTemplates() {
-        XCTAssertTrue((10...15).contains(ChallengeCatalog.all.count))
+    // expand-gamification-depth: the catalog was deliberately expanded from
+    // 13 to 220+ (design.md D2, challenges spec's "at least 200 templates"
+    // requirement) -- this replaces the old 10-15 sanity bound.
+    func testCatalogHasAtLeast220Templates() {
+        XCTAssertGreaterThanOrEqual(ChallengeCatalog.all.count, 220)
     }
 
     func testCatalogIdsAreUnique() {
