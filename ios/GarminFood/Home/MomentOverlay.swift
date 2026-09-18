@@ -118,7 +118,7 @@ private struct MomentCard: View {
 
     private var detail: String {
         switch moment {
-        case .levelUp: return "Consistency is paying off."
+        case .levelUp(let level): return "\(LevelTiers.tier(forLevel: level).title) -- consistency is paying off."
         case .streakMilestone(let days): return "\(days) days in a row. That's a habit now."
         case .challengeCompleted(_, let xp): return "Challenge done. +\(xp) XP."
         }

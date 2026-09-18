@@ -123,8 +123,13 @@ private struct LevelSummaryCard: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             CardHeader(title: "Level", systemImage: "sparkles")
             HStack(alignment: .firstTextBaseline) {
-                Text("Level \(progress.level)")
-                    .font(.system(.title, design: .rounded).weight(.bold))
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Level \(progress.level)")
+                        .font(.system(.title, design: .rounded).weight(.bold))
+                    Text(LevelTiers.tier(forLevel: progress.level).title)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
                 Text("\(progress.totalXP) XP")
                     .font(.macroValue)
@@ -140,7 +145,7 @@ private struct LevelSummaryCard: View {
         }
         .card()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Level \(progress.level), \(progress.totalXP) XP")
+        .accessibilityLabel("Level \(progress.level), \(LevelTiers.tier(forLevel: progress.level).title), \(progress.totalXP) XP")
         .accessibilityHint("Opens level details")
     }
 }
@@ -385,8 +390,16 @@ struct LevelDetailView: View {
                     }
                     .frame(width: ringSize, height: ringSize)
                     .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("Level \(progress.level)")
+                    .accessibilityLabel("Level \(progress.level), \(LevelTiers.tier(forLevel: progress.level).title)")
                     .accessibilityValue("\(Int((progress.fractionToNextLevel * 100).rounded())) percent to the next level")
+
+                    VStack(spacing: 2) {
+                        Text(LevelTiers.tier(forLevel: progress.level).title)
+                            .font(.headline)
+                        Text(LevelTiers.tier(forLevel: progress.level).flavor)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
                     Text("\(progress.totalXP) XP total")
                         .font(.headline)

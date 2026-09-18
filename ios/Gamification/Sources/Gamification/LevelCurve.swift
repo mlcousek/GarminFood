@@ -20,11 +20,20 @@ public enum LevelCurve {
 
     /// The geometric growth factor applied per level, per D3's "thresholds
     /// growing roughly geometrically" and the proposal's "deliberately
-    /// unglamorous-to-grind curve": 1.3 makes each level cost 30% more XP
-    /// than the last, so early levels feel frequent while later ones become
-    /// a genuine long-term arc (by level 20 a single level-up costs roughly
-    /// 100x the first one) without ever being a wall.
-    public static let growthFactor: Double = 1.3
+    /// unglamorous-to-grind curve".
+    ///
+    /// 2026-09-18 retune (`expand-gamification-depth` design.md D1): the
+    /// original `1.3` made anything past roughly level 20 practically
+    /// unreachable -- by level 60 a single level-up already cost hundreds
+    /// of millions of XP, which defeats the entire point of having 200
+    /// levels. `1.045` (4.5% more XP per level) keeps the same early-game
+    /// pacing (the level 1->2 band is unaffected by this constant) while
+    /// producing a genuine multi-year arc at a realistic ~75 XP/day: level
+    /// 10 in a few weeks, level 50 within about a year, level ~84 by year
+    /// three, and level 100 around six years in -- with levels past ~150
+    /// staying honestly aspirational, the same "may never be reached in
+    /// practice" role `maxLevel` below already plays.
+    public static let growthFactor: Double = 1.045
 
     /// A safety ceiling, not a design statement -- purely so
     /// `level(forTotalXP:)` always terminates. At `growthFactor` 1.3 this
