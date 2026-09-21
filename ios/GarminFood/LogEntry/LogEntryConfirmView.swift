@@ -309,7 +309,7 @@ struct LogEntryConfirmView: View {
                 // completion, and enqueues the "moment" that the shell's
                 // MomentOverlay presents. Local disk only -- no network wait
                 // added to the confirm flow.
-                await environment.gamificationEngine.handleLogConfirmed()
+                await environment.gamificationEngine.handleLogConfirmed(calories: caloriesForQuantity)
                 // Shows the entry in its meal immediately, records the Siri
                 // donation, and starts delivery without waiting for it.
                 await environment.logConfirmed(food: isCustom ? nil : food, date: dateString)

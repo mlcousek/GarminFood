@@ -105,6 +105,8 @@ private struct MomentCard: View {
         case .levelUp: return "arrow.up.circle.fill"
         case .streakMilestone: return "flame.fill"
         case .challengeCompleted: return "checkmark.seal.fill"
+        case .dailyChallengeCompleted: return "checkmark.circle.fill"
+        case .achievementUnlocked(_, let badgeSymbol): return badgeSymbol
         }
     }
 
@@ -113,14 +115,18 @@ private struct MomentCard: View {
         case .levelUp(let level): return "Level \(level)"
         case .streakMilestone(let days): return "\(days)-day streak"
         case .challengeCompleted(let name, _): return name
+        case .dailyChallengeCompleted(let name, _): return name
+        case .achievementUnlocked(let name, _): return name
         }
     }
 
     private var detail: String {
         switch moment {
-        case .levelUp: return "Consistency is paying off."
+        case .levelUp(let level): return "\(LevelTiers.tier(forLevel: level).title) -- consistency is paying off."
         case .streakMilestone(let days): return "\(days) days in a row. That's a habit now."
         case .challengeCompleted(_, let xp): return "Challenge done. +\(xp) XP."
+        case .dailyChallengeCompleted(_, let xp): return "Today's challenge done. +\(xp) XP."
+        case .achievementUnlocked: return "New achievement unlocked."
         }
     }
 }

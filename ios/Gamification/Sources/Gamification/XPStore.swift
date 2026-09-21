@@ -53,6 +53,16 @@ public enum XPAward {
     /// largest award in the system, since a challenge requires sustained
     /// behaviour over several days, not a single lucky day.
     public static let challengeCompletionBonus = 50
+
+    /// Awarded once per completed daily challenge (daily-challenges spec's
+    /// "distinct from the long-running-challenge completion bonus"
+    /// requirement, expand-gamification-depth design.md D3). Deliberately
+    /// smaller than `challengeCompletionBonus`: daily challenges are meant
+    /// to be frequent and easy, two of them a day, not a multi-day effort.
+    public static let dailyChallengeBonus = 15
+
+    /// Awarded once per achievement unlock (achievements spec).
+    public static let achievementBonus = 30
 }
 
 public struct XPAwardResult: Equatable, Sendable {

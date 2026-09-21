@@ -177,6 +177,71 @@ public enum ChallengeEngine {
                 best = max(best, (satLogged ? 1 : 0) + (sunLogged ? 1 : 0))
             }
             return ChallengeProgress(current: best, target: 2)
+
+        case .mealSlotAbsent(let bucket, let minDays):
+            // `eventsByDay` only has keys for days with >=1 entry (built
+            // above), so a fully empty day never appears here and never
+            // trivially counts.
+            let qualifyingDays = eventsByDay.filter { _, dayEvents in
+                !dayEvents.contains { MealTimeBucket.bucket(for: $0.timestamp, calendar: calendar) == bucket }
+            }
+            return ChallengeProgress(current: qualifyingDays.count, target: minDays)
+
+        case .allGoalsHitDays(let minCount):
+            let hitDays = eachDay(from: windowStart, to: evaluableEnd, calendar: calendar).filter { day in
+                guard let status = goalByDay[NutritionDayBoundary.string(forNutritionDay: day, calendar: calendar)] else { return false }
+                return status.metCalorieGoal && status.metProteinGoal && status.metCarbGoal && status.metFatGoal
+            }
+            return ChallengeProgress(current: hitDays.count, target: minCount)
+
+        case .allFourMealSlotsDays(let minDays):
+            let qualifyingDays = eventsByDay.filter { _, dayEvents in
+                Set(dayEvents.map { MealTimeBucket.bucket(for: $0.timestamp, calendar: calendar) }).count == MealTimeBucket.allCases.count
+            }
+            return ChallengeProgress(current: qualifyingDays.count, target: minDays)
+
+        case .sameFoodConsecutiveDays(let minDays):
+            // "Identical foodId" means a single fixed food, not a chain of
+            // pairwise-overlapping days -- so this is computed per-foodId
+            // (the longest run of consecutive days THAT food was logged),
+            // taking the best across every food seen in the window.
+            var daysByFood: [String: Set<Date>] = [:]
+            for (day, dayEvents) in eventsByDay {
+                for event in dayEvents {
+                    daysByFood[event.foodId, default: []].insert(day)
+                }
+            }
+            var longest = 0
+            for (_, days) in daysByFood {
+                var running = 0
+                for day in eachDay(from: windowStart, to: evaluableEnd, calendar: calendar) {
+                    if days.contains(day) {
+                        running += 1
+                        longest = max(longest, running)
+                    } else {
+                        running = 0
+                    }
+                }
+            }
+            return ChallengeProgress(current: longest, target: minDays)
+
+        case .consecutiveWeekendsBothDays(let weekends):
+            var completeWeekendStarts: [Date] = []
+            for day in eachDay(from: windowStart, to: windowEnd, calendar: calendar) {
+                guard calendar.component(.weekday, from: day) == 7 else { continue } // Saturday
+                guard let sunday = calendar.date(byAdding: .day, value: 1, to: day), sunday <= windowEnd else { continue }
+                if loggedDays.contains(day), loggedDays.contains(sunday) {
+                    completeWeekendStarts.append(day)
+                }
+            }
+            var longest = completeWeekendStarts.isEmpty ? 0 : 1
+            var running = longest
+            for index in 1..<completeWeekendStarts.count {
+                let gap = calendar.dateComponents([.day], from: completeWeekendStarts[index - 1], to: completeWeekendStarts[index]).day ?? 0
+                running = (gap == 7) ? running + 1 : 1
+                longest = max(longest, running)
+            }
+            return ChallengeProgress(current: longest, target: weekends)
         }
     }
 
@@ -191,6 +256,11 @@ public enum ChallengeEngine {
         case .multiMealDays(_, let minDays): return minDays
         case .busyDays(_, let minDays): return minDays
         case .weekendBothDays: return 2
+        case .mealSlotAbsent(_, let minDays): return minDays
+        case .allGoalsHitDays(let minCount): return minCount
+        case .allFourMealSlotsDays(let minDays): return minDays
+        case .sameFoodConsecutiveDays(let minDays): return minDays
+        case .consecutiveWeekendsBothDays(let weekends): return weekends
         }
     }
 
