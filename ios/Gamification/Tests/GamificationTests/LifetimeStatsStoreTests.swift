@@ -69,7 +69,8 @@ final class LifetimeStatsStoreTests: XCTestCase {
         var snapshot = await store.current()
         XCTAssertEqual(snapshot.totalLogsEver, 2)
         XCTAssertEqual(snapshot.firstLogDate, TestClock.date(2026, 1, 1))
-        XCTAssertEqual(await store.goalHitDays(.protein), 2)
+        let proteinDays = await store.goalHitDays(.protein)
+        XCTAssertEqual(proteinDays, 2)
 
         // A real log then arrives; a second backfill call must not
         // overwrite or double-count the now-nonempty ledger.
