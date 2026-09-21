@@ -31,6 +31,10 @@ private enum MatchState {
 @MainActor
 struct MatchConfirmationView: View {
     let offFood: Food
+    /// Threaded through from whichever meal/day this search started from
+    /// (meal-dashboard spec) -- see LogContext.swift's header.
+    var presetMealType: MealType? = nil
+    var presetDate: Date? = nil
 
     @Environment(AppEnvironment.self) private var environment
 
@@ -46,13 +50,13 @@ struct MatchConfirmationView: View {
             .navigationBarTitleDisplayMode(.inline)
             .task { await runMatch() }
             .navigationDestination(item: $logTarget) { target in
-                LogEntryConfirmView(target: target)
+                LogEntryConfirmView(target: target, presetMealType: presetMealType, presetDate: presetDate)
             }
             .navigationDestination(isPresented: $isPresentingCreateInGarmin) {
-                CreateInGarminConfirmView(offFood: offFood)
+                CreateInGarminConfirmView(offFood: offFood, presetMealType: presetMealType, presetDate: presetDate)
             }
             .navigationDestination(isPresented: $isPresentingFallbackSearch) {
-                FoodCatalogView()
+                FoodCatalogView(logContext: LogContext(mealType: presetMealType, date: presetDate))
             }
     }
 
@@ -161,6 +165,10 @@ struct MatchConfirmationView: View {
 @MainActor
 struct CreateInGarminConfirmView: View {
     let offFood: Food
+    /// Threaded through from whichever meal/day this search started from
+    /// (meal-dashboard spec) -- see LogContext.swift's header.
+    var presetMealType: MealType? = nil
+    var presetDate: Date? = nil
 
     @Environment(AppEnvironment.self) private var environment
     @State private var isCreating = false
@@ -213,7 +221,7 @@ struct CreateInGarminConfirmView: View {
         }
         .interactiveDismissDisabled(isCreating)
         .navigationDestination(item: $logTarget) { target in
-            LogEntryConfirmView(target: target)
+            LogEntryConfirmView(target: target, presetMealType: presetMealType, presetDate: presetDate)
         }
         .overlay {
             if serving?.calories == nil {

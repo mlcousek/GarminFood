@@ -511,16 +511,36 @@ struct DeleteFoodLogEntriesRequest: Encodable, Sendable {
 /// `GarminClientError` the caller/user sees (per this project's existing
 /// loud-failure convention) -- a failed POST creates nothing, so a wrong
 /// guess here cannot silently corrupt data.
+///
+/// 2026-09-21: `regionCode`/`languageCode` added after a real device error
+/// on this exact route: `"custom food nutrition information is missing for
+/// the provided food id with region code and language code"`
+/// (`BadRequestException`). `FoodLogWriteBody.Item` above already proves
+/// Garmin's nutrition data is keyed by `(foodId, regionCode, languageCode)`
+/// on the READ/LOG side (`regionCode`/`languageCode` were required there
+/// from the start) -- this request never told Garmin which region/language
+/// the new food's nutrition content belongs to when CREATING it, so the
+/// create silently produced a food with no nutrition record under the
+/// `(US, en)` pair the log write always stamps. `GarminClient.createCustomFood`
+/// passes `FoodLogWriteBody.regionCode`/`.languageCode` -- the same
+/// confirmed constants every real write in this project already uses,
+/// since there is no other confirmed value to use. Still a guess like the
+/// rest of this route -- but now one directly motivated by the exact
+/// wording of the error Garmin returned, not blind inference.
 public struct CreateCustomFoodRequest: Encodable, Sendable, Equatable {
     public let foodName: String
     public let servingUnit: String
     public let numberOfUnits: Double
+    public let regionCode: String
+    public let languageCode: String
     public let nutritionContent: CreateCustomFoodNutritionContent
 
-    public init(foodName: String, servingUnit: String, numberOfUnits: Double, nutritionContent: CreateCustomFoodNutritionContent) {
+    public init(foodName: String, servingUnit: String, numberOfUnits: Double, regionCode: String, languageCode: String, nutritionContent: CreateCustomFoodNutritionContent) {
         self.foodName = foodName
         self.servingUnit = servingUnit
         self.numberOfUnits = numberOfUnits
+        self.regionCode = regionCode
+        self.languageCode = languageCode
         self.nutritionContent = nutritionContent
     }
 }

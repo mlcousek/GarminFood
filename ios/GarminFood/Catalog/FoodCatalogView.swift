@@ -33,6 +33,11 @@ struct FoodCatalogView: View {
     }
 
     var mode: Mode = .logFood
+    /// Where this catalog was opened from, if a specific meal/day
+    /// (meal-dashboard spec) -- passed explicitly down to whatever confirm
+    /// screen a picked food eventually reaches, per LogContext.swift's
+    /// header on why this is no longer relayed through the environment.
+    var logContext: LogContext = .empty
 
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
@@ -270,12 +275,12 @@ struct FoodCatalogView: View {
             )
         }
         .navigationDestination(item: $logTarget) { target in
-            LogEntryConfirmView(target: target)
+            LogEntryConfirmView(target: target, presetMealType: logContext.mealType, presetDate: logContext.date)
         }
         // Task 28.2: picking a Czech-database result routes into the
         // matching flow instead of straight to the confirm screen.
         .navigationDestination(item: $matchingTarget) { offFood in
-            MatchConfirmationView(offFood: offFood)
+            MatchConfirmationView(offFood: offFood, presetMealType: logContext.mealType, presetDate: logContext.date)
         }
     }
 

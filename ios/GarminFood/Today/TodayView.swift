@@ -81,12 +81,10 @@ struct TodayView: View {
             }
         }
         .navigationDestination(item: $catalogContext) { context in
-            FoodCatalogView()
-                .environment(\.logContext, context)
+            FoodCatalogView(logContext: context)
         }
         .navigationDestination(item: $logTarget) { target in
-            LogEntryConfirmView(target: target)
-                .environment(\.logContext, LogContext(mealType: nil, date: dayLog.selectedDate))
+            LogEntryConfirmView(target: target, presetMealType: nil, presetDate: dayLog.selectedDate)
         }
         .navigationDestination(item: $openMeal) { meal in
             MealDetailView(mealType: meal)

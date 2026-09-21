@@ -180,9 +180,9 @@
       "operation": "createCustomFood",
       "method": "POST",
       "path": "/nutrition-service/customFood",
-      "lastVerified": "2026-09-14",
-      "observedStatus": "documented, not exercised",
-      "notes": "String literal found in decompiled client. Sibling: PUT/DELETE /nutrition-service/customFood/{customFoodUuid}. Answers establish-garmin-nutrition-contract's open question 4 (custom food creation appears possible) but the exact request body is unconfirmed."
+      "lastVerified": "2026-09-21",
+      "observedStatus": "exercised on a real device, real 400 observed, request body patched in response",
+      "notes": "String literal found in decompiled client. Sibling: PUT/DELETE /nutrition-service/customFood/{customFoodUuid}. Real device attempt (2026-09-21) returned 400 BadRequestException: 'custom food nutrition information is missing for the provided food id with region code and language code' -- the original request body had no regionCode/languageCode fields at all. Added both, using the same confirmed constants (US/en) FoodLogWriteBody's proven write contract already sends. Still genuinely unconfirmed whether this fully fixes it (no device retry has been reported back yet) -- the field NAMES/nesting remain a guess, just one now directly motivated by the exact error text rather than blind inference."
     },
     {
       "operation": "createCustomMeal",
