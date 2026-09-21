@@ -24,6 +24,11 @@ public actor DailyChallengeStore {
         var byDay: [String: DayRecord] = [:]
         /// Day keys (`yyyy-MM-dd`), oldest first, for pruning.
         var order: [String] = []
+        /// A true lifetime total, independent of `maxStoredDays` pruning --
+        /// same reasoning as `LifetimeStatsStore`: the achievements spec's
+        /// "completed N daily challenges total" tiers go well past what
+        /// the bounded `byDay` window could ever answer on its own.
+        var totalCompletedEver: Int = 0
     }
 
     /// Bounds the file size and doubles as the window `recentlyShown`
@@ -105,6 +110,7 @@ public actor DailyChallengeStore {
         guard !record.completedTemplateIds.contains(templateId) else { return false }
         record.completedTemplateIds.append(templateId)
         snapshot.byDay[day] = record
+        snapshot.totalCompletedEver += 1
         try persist()
         return true
     }
@@ -112,6 +118,13 @@ public actor DailyChallengeStore {
     public func completedTemplateIds(day: String) -> Set<String> {
         loadIfNeeded()
         return Set(snapshot.byDay[day]?.completedTemplateIds ?? [])
+    }
+
+    /// achievements spec's "completed N daily challenges total" -- see
+    /// `Snapshot.totalCompletedEver`'s doc comment.
+    public func totalCompletedEver() -> Int {
+        loadIfNeeded()
+        return snapshot.totalCompletedEver
     }
 
     /// Every template id's most recent assignment date, derived from the

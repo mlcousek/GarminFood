@@ -23,8 +23,13 @@ public struct CompletedChallenge: Codable, Sendable, Equatable, Identifiable {
 
 public actor ChallengeHistoryStore {
     /// Bounded like the package's other stores. At one or two completions a
-    /// week, 200 records is years of history.
-    public static let maxStoredRecords = 200
+    /// week, 300 records is years of history -- also generous margin above
+    /// the 226-template catalog (expand-gamification-depth), so the
+    /// "complete every challenge" achievement's distinct-template count
+    /// (derived from these records) doesn't lose a never-repeated
+    /// template's only completion record to eviction before all of them
+    /// are reached.
+    public static let maxStoredRecords = 300
 
     private let fileURL: URL
     private var records: [CompletedChallenge] = [] // oldest first

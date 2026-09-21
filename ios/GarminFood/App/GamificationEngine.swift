@@ -36,6 +36,7 @@ final class GamificationEngine {
     private let challengeHistoryStore: ChallengeHistoryStore
     private let dailyChallengeStore: DailyChallengeStore
     private let lifetimeStatsStore: LifetimeStatsStore
+    private let achievementStore: AchievementStore
 
     /// Every day-keyed calculation uses the date entries are logged FOR
     /// (local midnight, the same date sent to Garmin), so streaks, XP bonuses
@@ -56,8 +57,11 @@ final class GamificationEngine {
     private(set) var completedChallenges: [CompletedChallenge] = []
     private(set) var totalLogCount = 0
     private(set) var todayDailyChallenges: [DailyChallengeDisplay] = []
+    /// Achievement id -> unlock date, for the Achievements screen.
+    private(set) var unlockedAchievements: [String: Date] = [:]
 
     var catalog: [ChallengeTemplate] { ChallengeCatalog.all }
+    var achievementCatalog: [AchievementDefinition] { AchievementCatalog.all }
 
     /// The last nutrition day the active challenge can still be completed on.
     var challengeWindowEnd: Date? {
@@ -93,7 +97,8 @@ final class GamificationEngine {
         challengeStore: ChallengeStore = ChallengeStore(),
         challengeHistoryStore: ChallengeHistoryStore = ChallengeHistoryStore(),
         dailyChallengeStore: DailyChallengeStore = DailyChallengeStore(),
-        lifetimeStatsStore: LifetimeStatsStore = LifetimeStatsStore()
+        lifetimeStatsStore: LifetimeStatsStore = LifetimeStatsStore(),
+        achievementStore: AchievementStore = AchievementStore()
     ) {
         self.usageHistory = usageHistory
         self.garminClient = garminClient
@@ -103,6 +108,7 @@ final class GamificationEngine {
         self.challengeHistoryStore = challengeHistoryStore
         self.dailyChallengeStore = dailyChallengeStore
         self.lifetimeStatsStore = lifetimeStatsStore
+        self.achievementStore = achievementStore
     }
 
     /// Recomputes everything the UI displays, without awarding anything --
@@ -148,6 +154,7 @@ final class GamificationEngine {
 
         await refreshChallengeDisplay(events: events, goalStatuses: goalStatuses, now: now)
         await refreshDailyChallenges(events: events, goalStatuses: goalStatuses, now: now)
+        await checkAchievements(events: events, now: now)
     }
 
     /// Called once, right after `LogEntryCoordinator.confirm` /
@@ -190,6 +197,7 @@ final class GamificationEngine {
 
         await checkChallengeCompletion(events: events, goalStatuses: goalStatuses, now: now)
         await checkDailyChallengeCompletion(events: events, goalStatuses: goalStatuses, now: now)
+        await checkAchievements(events: events, now: now)
     }
 
     /// The one network call this feature makes anywhere (design.md's
@@ -363,6 +371,54 @@ final class GamificationEngine {
             if let xpResult { levelProgress = xpResult.levelAfter }
         }
         todayDailyChallenges = display
+    }
+
+    // MARK: - Achievements (expand-gamification-depth, achievements spec)
+
+    private func buildAchievementContext(events: [UsageEvent], now: Date) async -> AchievementContext {
+        let lifetime = await lifetimeStatsStore.current()
+        let dailyCompletedEver = await dailyChallengeStore.totalCompletedEver()
+        let loggedDays = Set(events.map { NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour) })
+
+        return AchievementContext(
+            level: levelProgress.level,
+            longestStreak: streakSummary.longestLength,
+            totalLogsEver: lifetime.totalLogsEver,
+            distinctFoodsInRetainedHistory: Set(events.map(\.foodId)).count,
+            challengeCompletionCount: completedChallenges.count,
+            distinctCompletedChallengeTemplateCount: Set(completedChallenges.map(\.templateId)).count,
+            totalChallengeCatalogCount: ChallengeCatalog.all.count,
+            dailyChallengeCompletionCount: dailyCompletedEver,
+            goalHitDaysEver: lifetime.goalHitDaysEver,
+            maxSingleDayCalories: lifetime.maxSingleDayCalories,
+            totalCaloriesEver: lifetime.totalCaloriesEver,
+            hasPerfectCalendarMonth: AchievementSignals.hasPerfectCalendarMonth(loggedDays: loggedDays, calendar: .current),
+            hasLoggedOnLeapDay: AchievementSignals.loggedOnLeapDay(events: events, boundaryHour: boundaryHour, calendar: .current),
+            hasLoggedOnNewYearsDay: AchievementSignals.loggedOnNewYearsDay(events: events, boundaryHour: boundaryHour, calendar: .current),
+            hasLoggedAtMidnight: AchievementSignals.loggedAtMidnight(events: events, calendar: .current),
+            yearsSinceFirstLog: AchievementSignals.yearsSince(lifetime.firstLogDate, now: now, calendar: .current)
+        )
+    }
+
+    /// achievements spec's "unlocking an achievement is a rewarded, visible
+    /// moment" -- always refreshes `unlockedAchievements` for display
+    /// (achievements spec's "showing... unlocked ones" requirement), and
+    /// separately awards XP + enqueues a moment for anything newly unlocked
+    /// this cycle.
+    private func checkAchievements(events: [UsageEvent], now: Date) async {
+        let context = await buildAchievementContext(events: events, now: now)
+        let alreadyUnlocked = await achievementStore.unlockedIds()
+        let newlyUnlocked = AchievementEngine.evaluate(context: context, alreadyUnlocked: alreadyUnlocked)
+
+        if !newlyUnlocked.isEmpty {
+            let recorded = (try? await achievementStore.unlock(ids: newlyUnlocked.map(\.id), now: now)) ?? []
+            for definition in newlyUnlocked where recorded.contains(definition.id) {
+                let xpResult = try? await xpStore.recordChallengeCompletion(xp: XPAward.achievementBonus)
+                if let xpResult { levelProgress = xpResult.levelAfter }
+                pendingMoments.append(.achievementUnlocked(title: definition.title, badgeSymbol: definition.badgeSymbol))
+            }
+        }
+        unlockedAchievements = await achievementStore.all()
     }
 
     private static func metAtLeast(actual: Double?, goal: Double?) -> Bool {
