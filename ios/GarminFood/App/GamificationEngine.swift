@@ -35,6 +35,7 @@ final class GamificationEngine {
     private let challengeStore: ChallengeStore
     private let challengeHistoryStore: ChallengeHistoryStore
     private let dailyChallengeStore: DailyChallengeStore
+    private let lifetimeStatsStore: LifetimeStatsStore
 
     /// Every day-keyed calculation uses the date entries are logged FOR
     /// (local midnight, the same date sent to Garmin), so streaks, XP bonuses
@@ -91,7 +92,8 @@ final class GamificationEngine {
         goalStatusStore: GoalStatusStore = GoalStatusStore(),
         challengeStore: ChallengeStore = ChallengeStore(),
         challengeHistoryStore: ChallengeHistoryStore = ChallengeHistoryStore(),
-        dailyChallengeStore: DailyChallengeStore = DailyChallengeStore()
+        dailyChallengeStore: DailyChallengeStore = DailyChallengeStore(),
+        lifetimeStatsStore: LifetimeStatsStore = LifetimeStatsStore()
     ) {
         self.usageHistory = usageHistory
         self.garminClient = garminClient
@@ -100,6 +102,7 @@ final class GamificationEngine {
         self.challengeStore = challengeStore
         self.challengeHistoryStore = challengeHistoryStore
         self.dailyChallengeStore = dailyChallengeStore
+        self.lifetimeStatsStore = lifetimeStatsStore
     }
 
     /// Recomputes everything the UI displays, without awarding anything --
@@ -117,6 +120,7 @@ final class GamificationEngine {
         levelProgress = LevelCurve.level(forTotalXP: await xpStore.currentTotal())
         updateHistory(events: events, goalStatuses: goalStatuses, now: now)
         completedChallenges = await challengeHistoryStore.all()
+        try? await lifetimeStatsStore.backfillIfEmpty(events: events, goalStatuses: goalStatuses)
 
         // `if let`, not `guard ... else { return }`: a transient failure
         // here (disk pressure, a first-launch directory race) used to bail
@@ -152,7 +156,13 @@ final class GamificationEngine {
     /// completion, and enqueues whichever "moments" apply. Entirely local
     /// computation and disk I/O -- no network call, so awaiting this from
     /// the confirm flow does not reintroduce a network wait.
-    func handleLogConfirmed(now: Date = Date()) async {
+    /// `calories` is the confirm screen's already-computed value for the
+    /// entry just logged (`LogEntryConfirmView.caloriesForQuantity`) --
+    /// `nil` for anything without a known calorie value. Threaded straight
+    /// through to `LifetimeStatsStore`, which is the only thing in this
+    /// engine that needs it (achievements spec's lifetime-calories ledger,
+    /// design.md D4); nothing else here reads it.
+    func handleLogConfirmed(now: Date = Date(), calories: Double? = nil) async {
         let previousStreak = StreakEngine.status(events: lastKnownEvents, now: now, boundaryHour: boundaryHour)
         let events = await usageHistory.all() // already includes the entry that was just confirmed
         let newStreak = StreakEngine.status(events: events, now: now, boundaryHour: boundaryHour)
@@ -161,6 +171,7 @@ final class GamificationEngine {
         let goalStatuses = await goalStatusStore.all()
         let today = NutritionDayBoundary.dayString(for: now, boundaryHour: boundaryHour)
         let goalMetToday = goalStatuses.first(where: { $0.date == today })?.anyGoalMet ?? false
+        try? await lifetimeStatsStore.recordLog(nutritionDay: today, calories: calories, now: now)
 
         streakStatus = newStreak
         lastKnownEvents = events
@@ -212,6 +223,7 @@ final class GamificationEngine {
             metFatGoal: Self.metAtLeast(actual: content.fat, goal: goals.adjustedFat ?? goals.fat)
         )
         try? await goalStatusStore.record(status)
+        try? await lifetimeStatsStore.recordGoalStatus(status)
     }
 
     /// The UI calls this once it has finished presenting
