@@ -293,26 +293,57 @@ final class GamificationEngine {
             return
         }
 
+        // 2026-09-21 bug fix: atomically check-and-rotate FIRST, before
+        // awarding anything -- closes a race where two overlapping
+        // `handleLogConfirmed()` calls (see the method's own doc comment)
+        // could both see the same challenge as complete and both
+        // award/rotate. A clean `nil` (no throw) means a concurrent call
+        // already won that race -- an expected no-op. A THROW is
+        // different: it means the atomic check inside DID succeed (this
+        // call is the one that "won"), but the store's own rotate-persist
+        // failed (disk pressure etc.) -- a materially rarer situation, so
+        // XP/history are still awarded in the `catch` below, matching this
+        // method's original resilience to a lone persistence failure; only
+        // the DISPLAY doesn't advance to a new active challenge until a
+        // later refresh's `ensureActive`/`rotateIfWindowElapsed` reconciles it.
+        do {
+            guard let rotated = try await challengeStore.completeAndRotateIfStillActive(
+                templateId: template.id,
+                catalog: ChallengeCatalog.all,
+                now: now,
+                baselineStreakLength: streakStatus.length
+            ) else {
+                await refreshChallengeDisplay(events: events, goalStatuses: goalStatuses, now: now)
+                return
+            }
+            await awardChallengeCompletion(template: template, now: now)
+            if let newTemplate = ChallengeCatalog.all.first(where: { $0.id == rotated.templateId }) {
+                activeChallenge = rotated
+                activeChallengeTemplate = newTemplate
+                challengeProgress = ChallengeEngine.progress(
+                    for: newTemplate,
+                    active: rotated,
+                    events: events,
+                    goalStatuses: goalStatuses,
+                    now: now,
+                    boundaryHour: boundaryHour
+                )
+            }
+        } catch {
+            await awardChallengeCompletion(template: template, now: now)
+        }
+    }
+
+    /// Shared by `checkChallengeCompletion`'s two "this call genuinely
+    /// completed the challenge" paths (a clean rotate, and a rotate whose
+    /// persist failed but still won the atomic check).
+    private func awardChallengeCompletion(template: ChallengeTemplate, now: Date) async {
         let xpResult = try? await xpStore.recordChallengeCompletion(xp: template.xpReward)
         let awarded = xpResult?.xpAwarded ?? template.xpReward
         pendingMoments.append(.challengeCompleted(title: template.title, xpAwarded: awarded))
         if let xpResult { levelProgress = xpResult.levelAfter }
         try? await challengeHistoryStore.record(CompletedChallenge(templateId: template.id, completedAt: now, xpAwarded: awarded))
         completedChallenges = await challengeHistoryStore.all()
-
-        let rotated = try? await challengeStore.completeAndRotate(catalog: ChallengeCatalog.all, now: now, baselineStreakLength: streakStatus.length)
-        if let rotated, let newTemplate = ChallengeCatalog.all.first(where: { $0.id == rotated.templateId }) {
-            activeChallenge = rotated
-            activeChallengeTemplate = newTemplate
-            challengeProgress = ChallengeEngine.progress(
-                for: newTemplate,
-                active: rotated,
-                events: events,
-                goalStatuses: goalStatuses,
-                now: now,
-                boundaryHour: boundaryHour
-            )
-        }
     }
 
     // MARK: - Daily challenges (expand-gamification-depth, daily-challenges spec)

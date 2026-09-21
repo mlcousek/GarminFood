@@ -191,14 +191,20 @@ final class AppEnvironment {
         }
     }
 
-    func retryQueued(id: UUID) async {
-        try? await outbox.retry(id: id)
+    /// 2026-09-21 bug fix: this used to swallow a write failure with `try?`
+    /// and give the user no feedback at all -- the one screen whose entire
+    /// job is "make a failed entry actionable again" was the one place a
+    /// failed retry/delete went completely silent, unlike every other
+    /// delete path in the app (e.g. `DayLogLoader.delete`), which surfaces
+    /// its error. Now propagates so `SyncQueueView` can show it.
+    func retryQueued(id: UUID) async throws {
+        try await outbox.retry(id: id)
         await refreshQueueState()
         await drainAndReconcile()
     }
 
-    func deleteQueued(_ entry: OutboxEntry) async {
-        try? await outbox.delete(id: entry.id)
+    func deleteQueued(_ entry: OutboxEntry) async throws {
+        try await outbox.delete(id: entry.id)
         await donations.entryDeleted(foodId: entry.foodId, date: entry.date)
         await refreshQueueState()
         await dayLog.rebuild()

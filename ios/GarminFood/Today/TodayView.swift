@@ -97,6 +97,25 @@ struct TodayView: View {
         .onChange(of: environment.router.catalogRequested, initial: true) { _, requested in
             guard requested else { return }
             environment.router.catalogRequested = false
+            // 2026-09-21 bug fix: this used to unconditionally overwrite
+            // `catalogContext`, even while a meal-scoped FoodCatalogView
+            // was already open (e.g. the user tapped "Add food" under
+            // Lunch, then triggered the Lock Screen/Control Center
+            // barcode-scan Control before logging anything) -- silently
+            // discarding that meal preset, reintroducing the exact "wrong
+            // meal" bug already fixed once, just through this one
+            // Control-driven entry point. Checking `environment.router.
+            // isCatalogPresented` (not this view's own local
+            // `catalogContext`) also correctly covers the catalog being
+            // open one level deeper via `MealDetailView`'s own separate
+            // `catalogContext`, since `TodayView` stays mounted underneath
+            // it in the same `NavigationStack` and this listener still
+            // fires either way. If a catalog is already open anywhere,
+            // leave it alone: `FoodCatalogView` has its own independent
+            // listener on the same `AppNavigationBridge` pending route
+            // (`presentScannerIfRouteIsPending`) and will present the
+            // scanner itself without needing a new push here.
+            guard !environment.router.isCatalogPresented else { return }
             catalogContext = LogContext(mealType: nil, date: nil)
         }
     }

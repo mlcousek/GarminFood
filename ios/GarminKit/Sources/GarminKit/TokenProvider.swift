@@ -17,9 +17,18 @@
 // Apple grants to every app/extension automatically without any
 // entitlement at all.
 //
-// `kSecAttrAccessibleAfterFirstUnlock` (not `.whenUnlocked`) is used so a
-// background drain (design.md D6/D8) can read the token and refresh it
-// before the user has unlocked the phone that session.
+// `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` (not `.whenUnlocked`)
+// is used so a background drain (design.md D6/D8) can read the token and
+// refresh it before the user has unlocked the phone that session.
+//
+// 2026-09-21 security fix: the `ThisDeviceOnly` suffix was missing. Without
+// it, this ~1-year OAuth1 token (and the OAuth2 token derived from it) was
+// included in encrypted local/iTunes-Finder backups and could be restored
+// onto a DIFFERENT physical device, silently granting that device full
+// read/write access to the account with no re-authentication. Every
+// `...ThisDeviceOnly` accessibility value is excluded from backups by
+// definition, while still preserving the same before-first-unlock
+// background-read behaviour the non-`ThisDeviceOnly` variant provided.
 
 import Foundation
 import Security
@@ -120,7 +129,7 @@ struct KeychainStore: Sendable {
 
         var attributes = query
         attributes[kSecValueData as String] = data
-        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
+        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
 
         let status = SecItemAdd(attributes as CFDictionary, nil)
         guard status == errSecSuccess else {
