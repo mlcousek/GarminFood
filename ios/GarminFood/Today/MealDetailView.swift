@@ -84,8 +84,7 @@ struct MealDetailView: View {
             }
         }
         .navigationDestination(item: $catalogContext) { context in
-            FoodCatalogView()
-                .environment(\.logContext, context)
+            FoodCatalogView(logContext: context)
         }
         .confirmationDialog(
             "Delete this entry?",

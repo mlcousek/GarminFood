@@ -25,7 +25,12 @@ struct LogEntryConfirmView: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.logContext) private var logContext
+    /// Where this log was started from, if anywhere specific (meal-dashboard
+    /// spec: "Adding from a meal pre-selects that meal and day") -- passed
+    /// explicitly by every call site now (see LogContext.swift's header for
+    /// why this is no longer read from the environment).
+    private let presetMealType: MealType?
+    private let presetDate: Date?
     @State private var didApplyContext = false
 
     /// The multiplier of `selectedServing` being logged -- `1` means
@@ -44,8 +49,10 @@ struct LogEntryConfirmView: View {
     @State private var errorMessage: String?
     @FocusState private var isAmountFieldFocused: Bool
 
-    init(target: LogTarget) {
+    init(target: LogTarget, presetMealType: MealType? = nil, presetDate: Date? = nil) {
         self.target = target
+        self.presetMealType = presetMealType
+        self.presetDate = presetDate
         switch target {
         case .catalog(_, let serving):
             _selectedServing = State(initialValue: serving)
@@ -61,8 +68,18 @@ struct LogEntryConfirmView: View {
         // down to 50 rather than incrementing, which read as the app
         // randomly jumping to "50 servings" the moment you touched it.
         _quantity = State(initialValue: 1)
-        _mealType = State(initialValue: MealTypeDefaulting.defaultMealType())
-        _date = State(initialValue: Date())
+        // 2026-09-21 bug fix: `presetMealType` is applied HERE, directly in
+        // `init`, rather than corrected afterward in `applyContextOnce()` --
+        // the previous version always started `mealType` at the time-of-day
+        // default and only overwrote it once `.onAppear` fired and read an
+        // environment value that had to have survived up to three separate
+        // view pushes. Setting the real starting value up front removes
+        // that relay from the equation entirely for the meal/date presets;
+        // `applyContextOnce()` now only handles the "no explicit preset"
+        // Garmin-meal-windows fallback, which reads `AppEnvironment`
+        // (a single app-root environment object, not a per-push relay).
+        _mealType = State(initialValue: presetMealType ?? MealTypeDefaulting.defaultMealType())
+        _date = State(initialValue: presetDate ?? Date())
     }
 
     private var food: Food {
@@ -248,20 +265,15 @@ struct LogEntryConfirmView: View {
         .onAppear(perform: applyContextOnce)
     }
 
-    /// A meal and day chosen on the dashboard win. Otherwise the meal comes
-    /// from Garmin's meal windows (design D4) when that preference is on.
-    /// Applied once, so the user's own picks are never overwritten.
+    /// A meal chosen on the dashboard (`presetMealType`, already applied in
+    /// `init`) always wins. Otherwise the meal comes from Garmin's meal
+    /// windows (design D4) when that preference is on. Applied once, so the
+    /// user's own picks are never overwritten.
     private func applyContextOnce() {
         guard !didApplyContext else { return }
         didApplyContext = true
-        if let contextDate = logContext.date {
-            date = contextDate
-        }
-        if let contextMeal = logContext.mealType {
-            mealType = contextMeal
-        } else if environment.preferences.useGarminMealWindows {
-            mealType = MealWindowDefaulting.mealType(at: Date(), windows: environment.dayLog.latestWindows)
-        }
+        guard presetMealType == nil, environment.preferences.useGarminMealWindows else { return }
+        mealType = MealWindowDefaulting.mealType(at: Date(), windows: environment.dayLog.latestWindows)
     }
 
     private var canConfirm: Bool {

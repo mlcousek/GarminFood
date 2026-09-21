@@ -232,6 +232,12 @@ public struct GarminClient: Sendable {
             foodName: name,
             servingUnit: servingUnit,
             numberOfUnits: numberOfUnits,
+            // 2026-09-21: real device 400 -- "custom food nutrition
+            // information is missing for the provided food id with region
+            // code and language code" -- see CreateCustomFoodRequest's own
+            // doc comment in GarminModels.swift for the full reasoning.
+            regionCode: FoodLogWriteBody.regionCode,
+            languageCode: FoodLogWriteBody.languageCode,
             nutritionContent: CreateCustomFoodNutritionContent(calories: calories, protein: protein, carbs: carbs, fat: fat)
         )
         let (data, response) = try await post(path: "/nutrition-service/customFood", body: body)
