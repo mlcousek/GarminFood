@@ -34,6 +34,7 @@ final class GamificationEngine {
     private let goalStatusStore: GoalStatusStore
     private let challengeStore: ChallengeStore
     private let challengeHistoryStore: ChallengeHistoryStore
+    private let dailyChallengeStore: DailyChallengeStore
 
     /// Every day-keyed calculation uses the date entries are logged FOR
     /// (local midnight, the same date sent to Garmin), so streaks, XP bonuses
@@ -53,6 +54,7 @@ final class GamificationEngine {
     private(set) var goalHistory: [DailyGoalStatus] = []
     private(set) var completedChallenges: [CompletedChallenge] = []
     private(set) var totalLogCount = 0
+    private(set) var todayDailyChallenges: [DailyChallengeDisplay] = []
 
     var catalog: [ChallengeTemplate] { ChallengeCatalog.all }
 
@@ -88,7 +90,8 @@ final class GamificationEngine {
         xpStore: XPStore = XPStore(),
         goalStatusStore: GoalStatusStore = GoalStatusStore(),
         challengeStore: ChallengeStore = ChallengeStore(),
-        challengeHistoryStore: ChallengeHistoryStore = ChallengeHistoryStore()
+        challengeHistoryStore: ChallengeHistoryStore = ChallengeHistoryStore(),
+        dailyChallengeStore: DailyChallengeStore = DailyChallengeStore()
     ) {
         self.usageHistory = usageHistory
         self.garminClient = garminClient
@@ -96,6 +99,7 @@ final class GamificationEngine {
         self.goalStatusStore = goalStatusStore
         self.challengeStore = challengeStore
         self.challengeHistoryStore = challengeHistoryStore
+        self.dailyChallengeStore = dailyChallengeStore
     }
 
     /// Recomputes everything the UI displays, without awarding anything --
@@ -139,6 +143,7 @@ final class GamificationEngine {
         }
 
         await refreshChallengeDisplay(events: events, goalStatuses: goalStatuses, now: now)
+        await refreshDailyChallenges(events: events, goalStatuses: goalStatuses, now: now)
     }
 
     /// Called once, right after `LogEntryCoordinator.confirm` /
@@ -173,6 +178,7 @@ final class GamificationEngine {
         }
 
         await checkChallengeCompletion(events: events, goalStatuses: goalStatuses, now: now)
+        await checkDailyChallengeCompletion(events: events, goalStatuses: goalStatuses, now: now)
     }
 
     /// The one network call this feature makes anywhere (design.md's
@@ -287,6 +293,64 @@ final class GamificationEngine {
                 boundaryHour: boundaryHour
             )
         }
+    }
+
+    // MARK: - Daily challenges (expand-gamification-depth, daily-challenges spec)
+
+    /// Splits `events` into today's (by nutrition-day) and everything
+    /// strictly before today -- `tryNewFood` needs "never seen before
+    /// today" from the prior half.
+    private func eventsForToday(_ events: [UsageEvent], now: Date) -> (today: [UsageEvent], prior: [UsageEvent]) {
+        let todayDay = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour)
+        var today: [UsageEvent] = []
+        var prior: [UsageEvent] = []
+        for event in events {
+            let day = NutritionDayBoundary.nutritionDay(for: event, boundaryHour: boundaryHour)
+            if day == todayDay {
+                today.append(event)
+            } else if day < todayDay {
+                prior.append(event)
+            }
+        }
+        return (today, prior)
+    }
+
+    private func refreshDailyChallenges(events: [UsageEvent], goalStatuses: [DailyGoalStatus], now: Date) async {
+        let dayString = NutritionDayBoundary.dayString(for: now, boundaryHour: boundaryHour)
+        guard let templates = try? await dailyChallengeStore.templatesForDay(dayString, catalog: DailyChallengeCatalog.all) else {
+            todayDailyChallenges = []
+            return
+        }
+        let (todayEvents, priorEvents) = eventsForToday(events, now: now)
+        let goalStatus = goalStatuses.first { $0.date == dayString }
+        todayDailyChallenges = templates.map { template in
+            let complete = DailyChallengeEngine.isComplete(kind: template.kind, dayEvents: todayEvents, priorEvents: priorEvents, goalStatus: goalStatus)
+            return DailyChallengeDisplay(template: template, isComplete: complete)
+        }
+    }
+
+    /// daily-challenges spec's "the first time a given day's daily
+    /// challenge is detected as complete" -- awards XP and enqueues a
+    /// moment exactly once per (day, template), via `DailyChallengeStore`'s
+    /// own idempotent `markCompleted`.
+    private func checkDailyChallengeCompletion(events: [UsageEvent], goalStatuses: [DailyGoalStatus], now: Date) async {
+        let dayString = NutritionDayBoundary.dayString(for: now, boundaryHour: boundaryHour)
+        guard let templates = try? await dailyChallengeStore.templatesForDay(dayString, catalog: DailyChallengeCatalog.all) else { return }
+        let (todayEvents, priorEvents) = eventsForToday(events, now: now)
+        let goalStatus = goalStatuses.first { $0.date == dayString }
+
+        var display: [DailyChallengeDisplay] = []
+        for template in templates {
+            let complete = DailyChallengeEngine.isComplete(kind: template.kind, dayEvents: todayEvents, priorEvents: priorEvents, goalStatus: goalStatus)
+            display.append(DailyChallengeDisplay(template: template, isComplete: complete))
+            guard complete, let justCompleted = try? await dailyChallengeStore.markCompleted(templateId: template.id, day: dayString), justCompleted else { continue }
+
+            let xpResult = try? await xpStore.recordChallengeCompletion(xp: XPAward.dailyChallengeBonus)
+            let awarded = xpResult?.xpAwarded ?? XPAward.dailyChallengeBonus
+            pendingMoments.append(.dailyChallengeCompleted(title: template.title, xpAwarded: awarded))
+            if let xpResult { levelProgress = xpResult.levelAfter }
+        }
+        todayDailyChallenges = display
     }
 
     private static func metAtLeast(actual: Double?, goal: Double?) -> Bool {

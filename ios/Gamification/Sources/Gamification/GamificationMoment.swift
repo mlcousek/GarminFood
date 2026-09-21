@@ -16,6 +16,12 @@ public enum GamificationMoment: Sendable, Equatable {
     /// streak milestone is reached in a session" -- `days` is the
     /// milestone reached (a multiple of `StreakMilestones.interval`).
     case streakMilestone(days: Int)
+    /// daily-challenges spec's "completing a daily challenge is a
+    /// rewarded, visible moment" requirement.
+    case dailyChallengeCompleted(title: String, xpAwarded: Int)
+    /// achievements spec's "unlocking an achievement is a rewarded,
+    /// visible moment" requirement.
+    case achievementUnlocked(title: String, badgeSymbol: String)
 }
 
 /// Tasks 23.4: "every 7 days" is the one concrete example given; kept as a
