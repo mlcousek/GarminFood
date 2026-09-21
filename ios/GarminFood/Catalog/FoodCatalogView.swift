@@ -57,6 +57,15 @@ struct FoodCatalogView: View {
     @State private var czechSearchResults: [Food] = []
     @State private var isCzechSearching = false
     @State private var czechSearchErrorMessage: String?
+    /// 2026-09-21: true when the Czech-scoped search came back empty and
+    /// `czechSearchResults` above was filled by an automatic global
+    /// (non-Czech-filtered) retry instead -- see `performCzechSearch()`.
+    /// OFF's Czech tagging is thin enough that plenty of real matches for
+    /// a term simply never got the country tag added; without this, the
+    /// "Czech only" toggle could silently hide a food that genuinely
+    /// exists in Open Food Facts, which read as "the database isn't full"
+    /// even when a match was sitting right there, just untagged.
+    @State private var czechSearchUsedGlobalFallback = false
     @State private var matchingTarget: Food?
 
     @State private var quickPickItems: [QuickPickItem] = []
@@ -159,6 +168,11 @@ struct FoodCatalogView: View {
                             message: "Open Food Facts doesn't have this yet."
                         )
                     } else {
+                        if czechSearchUsedGlobalFallback {
+                            Text("No Czech-tagged matches -- showing worldwide Open Food Facts results instead.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                         ForEach(czechSearchResults) { food in
                             Button {
                                 matchingTarget = food
@@ -359,6 +373,7 @@ struct FoodCatalogView: View {
         guard !trimmed.isEmpty else {
             czechSearchResults = []
             czechSearchErrorMessage = nil
+            czechSearchUsedGlobalFallback = false
             return
         }
 
@@ -372,10 +387,25 @@ struct FoodCatalogView: View {
         isCzechSearching = true
         defer { isCzechSearching = false }
         do {
-            czechSearchResults = try await environment.openFoodFactsClient.search(term: trimmed, czechOnly: czechOnly)
+            let scoped = try await environment.openFoodFactsClient.search(term: trimmed, czechOnly: czechOnly)
+            // 2026-09-21: if the "Czech only" filter is on but came back
+            // empty, retry once against ALL of Open Food Facts before
+            // giving up -- OFF's Czech tagging is too thin to trust an
+            // empty result as "this food doesn't exist in the database."
+            // Skipped entirely when the toggle is already off (that search
+            // WAS the global one) or already found something.
+            if czechOnly, scoped.isEmpty {
+                guard !Task.isCancelled else { return }
+                czechSearchResults = try await environment.openFoodFactsClient.search(term: trimmed, czechOnly: false)
+                czechSearchUsedGlobalFallback = !czechSearchResults.isEmpty
+            } else {
+                czechSearchResults = scoped
+                czechSearchUsedGlobalFallback = false
+            }
             czechSearchErrorMessage = nil
         } catch {
             czechSearchResults = []
+            czechSearchUsedGlobalFallback = false
             czechSearchErrorMessage = "Couldn't reach Open Food Facts right now. Check your connection or try again."
         }
     }

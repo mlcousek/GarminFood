@@ -64,10 +64,19 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
         self.baseURL = baseURL
     }
 
-    /// `GET /cgi/search.pl?search_terms={term}&json=1&page_size=20&fields=...`,
+    /// `GET /cgi/search.pl?search_terms={term}&json=1&page_size=50&fields=...`,
     /// with `&tagtype_0=countries&tag_contains_0=contains&tag_0=czech-republic`
     /// appended when `czechOnly` is true (default, per task 27.2). `term` is
     /// URL-encoded automatically by `URLComponents`.
+    ///
+    /// 2026-09-21: `page_size` raised from 20 to 50 (the owner's own
+    /// complaint: "the databases are not full") -- OFF's Czech-specific
+    /// tagging is genuinely thin (~1,300 products manufactured-in-CZ at
+    /// last count), so a search term that DOES have real matches was
+    /// sometimes silently truncating them at the old cap. 50 stays well
+    /// under what the legacy `search.pl` endpoint comfortably returns in
+    /// one page without materially slowing the debounced per-keystroke
+    /// search this feeds.
     public func search(term: String, czechOnly: Bool = true) async throws -> [Food] {
         let trimmed = term.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return [] }
@@ -78,7 +87,7 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
         var query = [
             URLQueryItem(name: "search_terms", value: trimmed),
             URLQueryItem(name: "json", value: "1"),
-            URLQueryItem(name: "page_size", value: "20"),
+            URLQueryItem(name: "page_size", value: "50"),
             URLQueryItem(name: "fields", value: "code,product_name,brands,nutriments,quantity")
         ]
         if czechOnly {
