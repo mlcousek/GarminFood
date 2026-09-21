@@ -127,6 +127,19 @@ final class MealDashboardTests: XCTestCase {
         XCTAssertEqual(lunch.totals.protein.goal, 30, "falls back to the base value when no adjusted one exists")
     }
 
+    // 2026-09-21 bug fix: `remaining` used to guard only `goal != nil`
+    // while `fraction`/`state` both guard `goal > 0` -- a `goal` of exactly
+    // `0` (not `nil`) used to make `fraction`/`state` correctly report "no
+    // usable goal" while `remaining` still returned a large, misleading
+    // negative number for the same value.
+    func testAZeroGoalIsTreatedAsNoGoalByRemainingTooNotJustFractionAndState() {
+        let progress = MacroProgress(consumed: 1800, goal: 0)
+
+        XCTAssertNil(progress.fraction)
+        XCTAssertEqual(progress.state, .noGoal)
+        XCTAssertNil(progress.remaining, "a zero goal must agree with fraction/state that there is no usable target")
+    }
+
     func testAMealWithoutGoalsShowsConsumedOnly() throws {
         let dinnerJSON = mealJSON("DINNER", content: "{\"calories\": 250}")
 

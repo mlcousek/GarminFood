@@ -39,8 +39,15 @@ public struct MacroProgress: Sendable, Equatable {
         return min(max(consumed / goal, 0), 1)
     }
 
+    /// 2026-09-21 bug fix: this used to guard only `goal != nil`, while its
+    /// siblings `fraction`/`state` both guard `goal > 0` (a `0` goal is
+    /// "no usable target", same as no goal at all). If Garmin ever sends an
+    /// explicit `0` rather than omitting the field, `fraction`/`state`
+    /// correctly read it as "no goal" while `remaining` returned a large
+    /// negative number for the same value -- e.g. the calorie ring showing
+    /// "no goal" right next to text saying "1800 kcal over."
     public var remaining: Double? {
-        guard let goal else { return nil }
+        guard let goal, goal > 0 else { return nil }
         return goal - consumed
     }
 

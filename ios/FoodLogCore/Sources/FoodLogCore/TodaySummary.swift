@@ -33,8 +33,11 @@ public struct TodaySummary: Equatable, Sendable {
         self.fetchedAt = fetchedAt
     }
 
+    /// 2026-09-21 bug fix: matches `MacroProgress.remaining`'s identical
+    /// fix -- guard `goalCalories > 0`, not just non-nil, so this agrees
+    /// with `goalFraction`/`goalState` below about what counts as "no goal."
     public var remainingCalories: Double? {
-        guard let goalCalories else { return nil }
+        guard let goalCalories, goalCalories > 0 else { return nil }
         return goalCalories - consumedCalories
     }
 

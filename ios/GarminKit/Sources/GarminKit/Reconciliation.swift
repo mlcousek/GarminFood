@@ -170,9 +170,15 @@ public actor Reconciliation {
             if !toDelete.isEmpty {
                 do {
                     try await client.deleteFoodLogEntries(logIds: Array(toDelete), date: date)
-                    Self.logLoudly("deleted \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue)/\(representative.foodId) on \(date) (\(n) locally expected, \(m) found on Garmin).")
+                    // 2026-09-21 security fix: no longer embeds `foodId`
+                    // (which food was actually logged) -- NSLog output is
+                    // readable via Console.app/sysdiagnose with only brief
+                    // physical/USB access to an unlocked device, no
+                    // debugger needed. The meal category + date + counts
+                    // are still enough to diagnose a reconciliation issue.
+                    Self.logLoudly("deleted \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue) on \(date) (\(n) locally expected, \(m) found on Garmin).")
                 } catch {
-                    Self.logLoudly("found \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue)/\(representative.foodId) on \(date) (\(n) locally expected, \(m) found on Garmin) but failed to delete: \(error)")
+                    Self.logLoudly("found \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue) on \(date) (\(n) locally expected, \(m) found on Garmin) but failed to delete: \(error)")
                 }
             }
             let outcomes = zip(sortedGroup, toKeep).map { entry, match in

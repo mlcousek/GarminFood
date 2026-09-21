@@ -54,9 +54,24 @@ public enum GarminFoodMatching {
                 || normalizedTarget.contains(normalizedCandidate)
             guard namesMatch else { continue }
 
-            if let offCalories, let candidateCalories = candidate.servings.first?.calories, candidateCalories > 0 {
-                let relativeDifference = abs(offCalories - candidateCalories) / candidateCalories
-                guard relativeDifference <= calorieTolerance else { continue }
+            // 2026-09-21 bug fix: `candidateCalories > 0` used to gate
+            // whether this check ran AT ALL, which treated a genuinely
+            // zero-calorie Garmin food (diet soda, black coffee) the same
+            // as "calories missing" -- a name-similar OFF product with
+            // real calories (e.g. regular Coca-Cola) could match a
+            // "Coca-Cola Zero" Garmin candidate on name alone, with no
+            // sanity check at all. The `> 0` split below now only decides
+            // HOW to compare (relative-% is undefined against a zero
+            // denominator), never WHETHER to compare.
+            if let offCalories, let candidateCalories = candidate.servings.first?.calories {
+                if candidateCalories > 0 {
+                    let relativeDifference = abs(offCalories - candidateCalories) / candidateCalories
+                    guard relativeDifference <= calorieTolerance else { continue }
+                } else {
+                    // A relative-% comparison against zero is meaningless;
+                    // require the OFF side to also be near-zero instead.
+                    guard offCalories <= 5 else { continue }
+                }
             }
 
             return .matched(candidate)

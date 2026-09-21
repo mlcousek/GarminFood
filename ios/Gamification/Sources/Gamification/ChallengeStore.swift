@@ -85,11 +85,29 @@ public actor ChallengeStore {
     /// Challenges spec's "completing a challenge... replaces it with a new
     /// one" requirement. Caller is responsible for awarding XP
     /// (`XPStore.recordChallengeCompletion`) and for having already
-    /// confirmed `progress.isComplete` -- this method only performs the
-    /// rotation itself.
+    /// confirmed `progress.isComplete`.
+    ///
+    /// 2026-09-21 bug fix: this method used to be unconditional -- no
+    /// "has someone already completed THIS instance" check, unlike
+    /// `DailyChallengeStore.markCompleted`/`AchievementStore.unlock`.
+    /// `GamificationEngine.handleLogConfirmed` is invoked from a bare
+    /// `Task { }` per confirmed log (not tied to a view's lifecycle), so
+    /// logging two foods back-to-back could produce two overlapping calls
+    /// that both saw the same active challenge as complete before either
+    /// had rotated it away -- double-awarding XP, double-recording
+    /// history, and rotating twice. The unconditional version was removed
+    /// outright (not just deprecated) rather than left alongside this one,
+    /// since a future caller reaching for the simpler-looking name would
+    /// silently reintroduce that exact race. Since `ChallengeStore` is an
+    /// actor and this method contains no `await`, it runs as one atomic
+    /// unit -- only the FIRST concurrent caller to reach it still finds
+    /// `templateId` active and gets a real rotation; any later overlapping
+    /// caller for the SAME already-completed instance sees it already
+    /// rotated away and gets `nil`.
     @discardableResult
-    public func completeAndRotate(catalog: [ChallengeTemplate], now: Date, baselineStreakLength: Int) throws -> ActiveChallenge {
+    public func completeAndRotateIfStillActive(templateId: String, catalog: [ChallengeTemplate], now: Date, baselineStreakLength: Int) throws -> ActiveChallenge? {
         loadIfNeeded()
+        guard snapshot.active?.templateId == templateId else { return nil }
         let template = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now)
         let activated = activate(template: template, now: now, baselineStreakLength: baselineStreakLength)
         try persist()

@@ -25,7 +25,20 @@ final class DayLogLoader {
 
     private(set) var selectedDate: Date
     private(set) var dashboard: DayDashboard
-    private(set) var isLoading = false
+    /// 2026-09-21 bug fix: this used to be a single loader-wide `Bool`, so
+    /// `refresh()`'s reentrancy guard (needed to stop two concurrent
+    /// refreshes of the SAME day from clobbering each other) also blocked
+    /// a refresh of a DIFFERENT day. Switching days while a refresh was
+    /// still in flight silently dropped the new day's fetch entirely --
+    /// `isLoading` ended up `false` and `isStale` stayed `false`, so the
+    /// newly selected day looked like it had been freshly loaded and
+    /// genuinely had nothing logged, when it was simply never fetched.
+    /// Tracking the set of dates currently being fetched (rather than a
+    /// single flag) lets different days load concurrently -- each only
+    /// touches its own `logsByDate`/`mealsByDate` key -- while still
+    /// preventing two overlapping refreshes of the SAME day.
+    private var loadingDates: Set<String> = []
+    var isLoading: Bool { loadingDates.contains(dateString) }
     /// The day shown is an older copy because the last refresh failed.
     private(set) var isStale = false
     /// The most recent meal windows seen for any day, for defaulting the
@@ -89,21 +102,24 @@ final class DayLogLoader {
     /// stays (stale); the meal windows are then fetched separately, so a day
     /// never loaded before still gets its meal layout.
     ///
-    /// Reentrancy guard restored 2026-09-17: `ContentView`'s `.task` and its
+    /// Reentrancy guard restored 2026-09-17, made per-date 2026-09-21 (see
+    /// `loadingDates`' doc comment): `ContentView`'s `.task` and its
     /// `scenePhase == .active` handler can both call `refreshOnForeground()`
     /// -- and so this -- close together (e.g. a Control launches the app,
     /// firing both near-simultaneously), and `MealDetailView`'s own
     /// `.refreshable` can call `refresh()` directly while a foreground
-    /// refresh is still in flight. Without this guard, two concurrent calls
-    /// race on `isLoading`/`logsByDate`/`isStale`: the FIRST call's `defer`
-    /// can flip `isLoading` back to false while the second is still
+    /// refresh is still in flight. Without a guard, two concurrent calls
+    /// for the SAME date race on `logsByDate`/`isStale`: the FIRST call's
+    /// `defer` can clear its loading state while the second is still
     /// awaiting the network, so the "Updating…" indicator disappears
-    /// early, and whichever response resolves last silently wins.
+    /// early, and whichever response resolves last silently wins. The
+    /// guard is scoped per-date (not loader-wide) so refreshing a
+    /// DIFFERENT date is never blocked by one already in flight.
     func refresh() async {
-        guard !isLoading else { return }
         let date = dateString
-        isLoading = true
-        defer { isLoading = false }
+        guard !loadingDates.contains(date) else { return }
+        loadingDates.insert(date)
+        defer { loadingDates.remove(date) }
 
         do {
             if let log = try await client.dailyFoodLog(date: date) {

@@ -234,6 +234,8 @@ struct FoodCatalogView: View {
                 }
             }
         }
+        .onAppear { environment.router.catalogDidAppear() }
+        .onDisappear { environment.router.catalogDidDisappear() }
         .task {
             await loadLocalData()
             presentScannerIfRouteIsPending()

@@ -114,8 +114,19 @@ public enum StreakEngine {
         }
         let hasLoggedToday = loggedDays.contains(today)
         let walk = simulate(loggedDays: loggedDays, today: today, calendar: calendar)
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: today) ?? today
-        let isAtRisk = !hasLoggedToday && walk.currentLength > 0 && loggedDays.contains(yesterday)
+        // 2026-09-21 bug fix: this used to additionally require
+        // `loggedDays.contains(yesterday)`, which was false -- and so
+        // reported "not at risk" -- on exactly the day after yesterday's
+        // miss was forgiven by the grace rule (`simulate`'s `.grace`
+        // outcome). But a grace miss already used up the trailing 7-day
+        // window's one forgiven miss; a SECOND miss today is not
+        // forgiven and resets the streak to zero. `walk.currentLength > 0`
+        // here already implies yesterday's outcome was `.logged` or
+        // `.grace` (never a non-grace `.missed`, which would have zeroed
+        // `currentLength` at that exact step in `simulate`) -- so it alone
+        // is both necessary and sufficient, and the extra `contains`
+        // check only made the flag wrong on grace days.
+        let isAtRisk = !hasLoggedToday && walk.currentLength > 0
         return Status(length: walk.currentLength, hasLoggedToday: hasLoggedToday, isAtRiskToday: isAtRisk, lastLoggedDay: lastLoggedDay)
     }
 

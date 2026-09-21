@@ -112,4 +112,28 @@ final class GarminFoodMatchingTests: XCTestCase {
 
         XCTAssertEqual(result, .noMatch)
     }
+
+    // 2026-09-21 bug fix: a genuinely zero-calorie Garmin candidate used to
+    // skip the sanity check entirely (treated the same as "calories
+    // missing"), so a name-similar but calorically very different OFF
+    // product could match it with no check at all.
+    func testZeroCalorieCandidateDoesNotMatchAWildlyDifferentOffCalorieCount() {
+        let result = GarminFoodMatching.match(
+            offFood: offFood("Cola", calories: 42),
+            garminCandidates: [garminFood("g1", "Cola", calories: 0)]
+        )
+
+        XCTAssertEqual(result, .noMatch)
+    }
+
+    func testZeroCalorieCandidateStillMatchesAnAlsoNearZeroOffProduct() {
+        let result = GarminFoodMatching.match(
+            offFood: offFood("Cola Zero", calories: 1),
+            garminCandidates: [garminFood("g1", "Cola Zero", calories: 0)]
+        )
+
+        guard case .matched = result else {
+            return XCTFail("expected two near-zero-calorie products to still match, got \(result)")
+        }
+    }
 }

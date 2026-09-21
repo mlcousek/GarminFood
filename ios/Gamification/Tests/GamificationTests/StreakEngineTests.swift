@@ -35,6 +35,22 @@ final class StreakEngineTests: XCTestCase {
         XCTAssertTrue(result.isAtRiskToday)
     }
 
+    // 2026-09-21 bug fix: `isAtRiskToday` used to require yesterday itself
+    // to have been logged, which was false -- reporting "not at risk" --
+    // on exactly the day after a grace-forgiven miss, even though a SECOND
+    // miss today (the day after) is not forgiven and resets the streak.
+    func testADayAfterAGraceForgivenMissIsStillAtRisk() {
+        // Jan 1-5 logged (streak 5), Jan 6 missed (the week's one grace,
+        // forgiven, streak stays 5), "now" is Jan 7 with nothing logged
+        // yet -- missing today too would be the second miss in the
+        // rolling window and would reset the whole streak.
+        let days = (1...5).map { TestClock.date(2026, 1, $0) }
+        let result = status(days, now: TestClock.date(2026, 1, 7, hour: 9))
+        XCTAssertEqual(result.length, 5, "the grace-forgiven miss on Jan 6 does not reduce the streak")
+        XCTAssertFalse(result.hasLoggedToday)
+        XCTAssertTrue(result.isAtRiskToday, "missing today too would be the second miss in the window and reset the streak")
+    }
+
     func testTwoConsecutiveMissedDaysLeavesNoAtRiskState() {
         // Logged day 1 only; day 2 is missed (forgiven, the week's one
         // grace), day 3 is ALSO missed -- the second miss within the

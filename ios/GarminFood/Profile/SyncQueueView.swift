@@ -13,6 +13,7 @@ struct SyncQueueView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var pendingDelete: OutboxEntry?
     @State private var isSyncing = false
+    @State private var actionError: String?
 
     var body: some View {
         let entries = environment.undeliveredEntries.sorted { $0.createdAt > $1.createdAt }
@@ -30,7 +31,13 @@ struct SyncQueueView: View {
                 Section {
                     ForEach(entries) { entry in
                         QueueEntryRow(entry: entry) {
-                            Task { await environment.retryQueued(id: entry.id) }
+                            Task {
+                                do {
+                                    try await environment.retryQueued(id: entry.id)
+                                } catch {
+                                    actionError = "Couldn't retry this entry: \(error.localizedDescription)"
+                                }
+                            }
                         } onDelete: {
                             pendingDelete = entry
                         }
@@ -70,10 +77,27 @@ struct SyncQueueView: View {
             presenting: pendingDelete
         ) { entry in
             Button("Delete", role: .destructive) {
-                Task { await environment.deleteQueued(entry) }
+                Task {
+                    do {
+                        try await environment.deleteQueued(entry)
+                    } catch {
+                        actionError = "Couldn't delete this entry: \(error.localizedDescription)"
+                    }
+                }
             }
         } message: { _ in
             Text("It hasn't reached Garmin yet, so nothing is removed there.")
+        }
+        .alert(
+            "Couldn't complete that action",
+            isPresented: Binding(
+                get: { actionError != nil },
+                set: { if !$0 { actionError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(actionError ?? "")
         }
     }
 }
