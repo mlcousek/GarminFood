@@ -15,6 +15,7 @@
 // through every view's own `init`, so the compiler enforces that each hop
 // actually passes the right value along instead of relying on ambient
 // propagation holding up across three separate files.
+import Foundation
 import GarminKit
 
 struct LogContext: Hashable {
