@@ -45,6 +45,13 @@ struct ProgressHomeView: View {
                 }
                 .buttonStyle(.plain)
 
+                NavigationLink {
+                    AchievementsView()
+                } label: {
+                    AchievementsSummaryCard(unlockedCount: engine.unlockedAchievements.count, totalCount: engine.achievementCatalog.count)
+                }
+                .buttonStyle(.plain)
+
                 VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                     SectionHeader(title: "Goals, last 14 days")
                     GoalHistoryList(statuses: Array(engine.goalHistory.prefix(14)))
@@ -190,6 +197,30 @@ private struct ChallengeSummaryCard: View {
         .card()
         .accessibilityElement(children: .combine)
         .accessibilityHint("Opens challenges")
+    }
+}
+
+private struct AchievementsSummaryCard: View {
+    let unlockedCount: Int
+    let totalCount: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            CardHeader(title: "Achievements", systemImage: "rosette")
+            HStack(alignment: .firstTextBaseline) {
+                Text("\(unlockedCount)")
+                    .font(.system(.title, design: .rounded).weight(.bold))
+                Text("/ \(totalCount) unlocked")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            ProgressView(value: totalCount > 0 ? Double(unlockedCount) / Double(totalCount) : 0)
+                .tint(Theme.accent)
+        }
+        .card()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(unlockedCount) of \(totalCount) achievements unlocked")
+        .accessibilityHint("Opens achievements")
     }
 }
 
@@ -481,6 +512,30 @@ struct ChallengesView: View {
         let engine = environment.gamificationEngine
 
         List {
+            Section("Today") {
+                if engine.todayDailyChallenges.isEmpty {
+                    Text("Today's daily challenges will show up here.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(engine.todayDailyChallenges) { display in
+                        HStack(spacing: Theme.Spacing.sm) {
+                            Image(systemName: display.isComplete ? "checkmark.circle.fill" : "circle")
+                                .foregroundStyle(display.isComplete ? Theme.success : Color.secondary.opacity(0.4))
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(display.template.title)
+                                    .strikethrough(display.isComplete)
+                                Text(display.template.subtitle)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("\(display.template.title), \(display.template.subtitle), \(display.isComplete ? "completed" : "not yet completed")")
+                    }
+                }
+            }
+
             Section("Active") {
                 if let template = engine.activeChallengeTemplate, let progress = engine.challengeProgress {
                     VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
