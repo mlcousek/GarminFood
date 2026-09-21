@@ -1,3 +1,4 @@
+import FoodLogCore
 import Foundation
 
 // LifetimeStatsStore.swift
