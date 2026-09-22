@@ -47,6 +47,13 @@ final class AppEnvironment {
     let hydrationOutbox: HydrationOutbox
     let hydrationLogCoordinator: HydrationLogCoordinator
     let hydrationLoader: HydrationLoader
+    /// add-trends-and-insights: the Trends screen's macro-trend data. Unlike
+    /// every loader above, this has no local store/outbox of its own to
+    /// mirror -- `calorieSummaryDaily` is a single stateless Garmin read
+    /// over a date range, so there is nothing to persist. Deliberately NOT
+    /// refreshed in `refreshOnForeground()` below -- see `MacroTrendLoader`'s
+    /// own header for why it loads only when the Trends screen is open.
+    let trendsLoader: MacroTrendLoader
     let gamificationEngine: GamificationEngine
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
@@ -95,6 +102,7 @@ final class AppEnvironment {
         self.hydrationOutbox = services.hydrationOutbox
         self.hydrationLogCoordinator = services.hydrationLogCoordinator
         self.hydrationLoader = HydrationLoader(store: services.hydrationStore, outbox: services.hydrationOutbox)
+        self.trendsLoader = MacroTrendLoader(client: client)
         self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
         self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache)
         self.preferences = AppPreferences()

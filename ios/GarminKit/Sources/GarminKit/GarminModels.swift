@@ -255,6 +255,45 @@ public struct NutritionSettings: Decodable, Sendable {
     }
 }
 
+// MARK: - Calorie summary daily (GET /nutrition-service/calorie/summary/daily) -- route confirmed live 2026-09-14 as a probe; first called by GarminClient itself as of add-trends-and-insights (2026-09-22)
+
+/// A multi-day macro trend in ONE call -- `startDate`/`endDate` bound the
+/// range, `dailyNutritionContents` carries one entry per day in it. Used by
+/// the Trends screen instead of one `dailyFoodLog` call per day.
+///
+/// `mealNutritionContents`/`averageNutritionContents` (observed as `[]`/`{}`
+/// on the probed range, docs/garmin-routes.json) are deliberately NOT
+/// modeled here -- their element/field shape was never inspected, and
+/// nothing in this app needs them; `JSONDecoder` ignores JSON keys a
+/// `Decodable` type doesn't declare, so omitting them does not affect
+/// decoding the fields that ARE modeled.
+public struct CalorieSummaryDailyResponse: Decodable, Sendable {
+    public let startDate: String?
+    public let endDate: String?
+    public let caloriesBurned: Double?
+    public let dailyNutritionContents: [CalorieSummaryDay]?
+}
+
+/// One day within a `CalorieSummaryDailyResponse`.
+///
+/// `nutritionContent`/`nutritionGoals` are BOTH optional, and the route's
+/// own confirmed gotcha is that a day nothing was logged on omits them
+/// ENTIRELY (a bare `{ mealDate }`) rather than sending zeros -- callers
+/// must treat a missing key as "nothing logged that day", never as an
+/// error or a fabricated zero.
+///
+/// Reuses `DailyNutritionContent`/`NutritionGoals` -- the exact same types
+/// `dailyFoodLog` decodes -- rather than declaring parallel types: the route
+/// doc's field-by-field cross-check against a known day's `dailyFoodLog`
+/// goal values (2300/3128/316/430/64/87/115/156 kcal/g) matched exactly, so
+/// the two routes' per-day shapes are confirmed identical, not just
+/// similar.
+public struct CalorieSummaryDay: Decodable, Sendable {
+    public let mealDate: String?
+    public let nutritionContent: DailyNutritionContent?
+    public let nutritionGoals: NutritionGoals?
+}
+
 // MARK: - Social profile (GET /userprofile-service/socialProfile) -- confirmed live 2026-09-16
 
 /// Only the fields the profile screen shows. The real response has many

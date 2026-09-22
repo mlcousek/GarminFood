@@ -117,4 +117,30 @@ public enum HydrationHistory {
     public static func entries(for entries: [HydrationEntry], on date: Date, calendar: Calendar = .current) -> [HydrationEntry] {
         entries.filter { calendar.isDate($0.loggedAt, inSameDayAs: date) }
     }
+
+    /// Consecutive days, counting back from `today`, whose total (via
+    /// `total(for:on:calendar:)`) meets or exceeds `goalML`. Stops at the
+    /// first day that falls short -- including `today` itself, so a streak
+    /// is 0 until today's own total reaches the goal (today doesn't get a
+    /// free pass the way a still-in-progress day sometimes would).
+    ///
+    /// Deliberately simple, unlike `Gamification.StreakEngine`'s food
+    /// streak: no grace day forgiving one missed day per rolling week. That
+    /// richer rule is a `Gamification`-level concept (streak history,
+    /// XP-aware, its own persisted state) this package has no business
+    /// depending on -- `FoodLogCore` never imports `Gamification` (the
+    /// dependency runs the other way). A plain "did every day in a row hit
+    /// the goal" count is the right scope for a pure, local hydration
+    /// trend stat.
+    public static func streak(for entries: [HydrationEntry], goalML: Double, on today: Date = Date(), calendar: Calendar = .current) -> Int {
+        guard goalML > 0 else { return 0 }
+        var count = 0
+        var day = today
+        while total(for: entries, on: day, calendar: calendar) >= goalML {
+            count += 1
+            guard let previousDay = calendar.date(byAdding: .day, value: -1, to: day) else { break }
+            day = previousDay
+        }
+        return count
+    }
 }

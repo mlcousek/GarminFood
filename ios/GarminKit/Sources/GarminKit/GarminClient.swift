@@ -31,6 +31,14 @@
 // never yet called by THIS project against the real account. See
 // `WeighInWriteBody`/`WeightRangeResponse`'s doc comments in
 // GarminModels.swift.
+//
+// `calorieSummaryDaily` (add-trends-and-insights, 2026-09-22) is a READ the
+// route registry already had confirmed live (2026-09-14, as a standalone
+// probe) but this project had never actually called from its own code until
+// now -- unlike the weight routes above, its evidence tier doesn't change:
+// still "confirmed live with a real date range", not "device-verified
+// against this app's own UI". Powers the Trends screen's ~30-day macro
+// chart in one call instead of one `dailyFoodLog` per day.
 
 import Foundation
 
@@ -153,6 +161,34 @@ public struct GarminClient: Sendable {
         try Self.throwIfNotSuccessful(response, data: data)
         do {
             return try Self.decoder.decode(NutritionSettings.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
+    /// GET `/nutrition-service/calorie/summary/daily?startDate={date}&endDate={date}`
+    /// (dates `YYYY-MM-DD`). Route confirmed live 2026-09-14 as a standalone
+    /// probe (docs/garmin-routes.json); this is the first time GarminClient
+    /// itself calls it (add-trends-and-insights, 2026-09-22). One call
+    /// covers a whole date range -- the Trends screen's ~30-day macro chart
+    /// uses this instead of 30 separate `dailyFoodLog` reads.
+    ///
+    /// Does NOT special-case 404 the way `dailyFoodLog`/`searchFoodByBarcode`
+    /// do -- a day with nothing logged is represented WITHIN a 200 response
+    /// (its `nutritionContent`/`nutritionGoals` simply absent, per
+    /// `CalorieSummaryDay`'s doc comment in GarminModels.swift), not by the
+    /// route 404ing, per the probe's own observation.
+    public func calorieSummaryDaily(startDate: String, endDate: String) async throws -> CalorieSummaryDailyResponse {
+        let (data, response) = try await get(
+            path: "/nutrition-service/calorie/summary/daily",
+            query: [
+                URLQueryItem(name: "startDate", value: startDate),
+                URLQueryItem(name: "endDate", value: endDate)
+            ]
+        )
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(CalorieSummaryDailyResponse.self, from: data)
         } catch {
             throw GarminClientError.decodingFailed(description: String(describing: error))
         }
