@@ -20,8 +20,11 @@ public enum GamificationMoment: Sendable, Equatable {
     /// rewarded, visible moment" requirement.
     case dailyChallengeCompleted(title: String, xpAwarded: Int)
     /// achievements spec's "unlocking an achievement is a rewarded,
-    /// visible moment" requirement.
-    case achievementUnlocked(title: String, badgeSymbol: String)
+    /// visible moment" requirement. Carries `rarity` (added alongside
+    /// `BadgeMedallion`) so the celebration card can render the same
+    /// rarity-graded medallion the Achievements screen uses, instead of a
+    /// plain icon -- see `AchievementDefinition.rarity`.
+    case achievementUnlocked(title: String, badgeSymbol: String, rarity: AchievementRarity)
 }
 
 /// Tasks 23.4: "every 7 days" is the one concrete example given; kept as a

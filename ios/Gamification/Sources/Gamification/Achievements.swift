@@ -56,6 +56,13 @@ public struct AchievementDefinition: Identifiable, Sendable, Equatable {
     /// every OTHER meta achievement's denominator -- see `AchievementEngine`.
     public let isMeta: Bool
 
+    /// How hard this achievement is to unlock, purely derived from
+    /// `condition` -- see `AchievementRarity.derive(from:)`'s header for why
+    /// this is computed rather than a stored field. Used by
+    /// `BadgeMedallion` (GarminFood/DesignSystem/) to pick the badge's
+    /// rim/fill treatment; not persisted anywhere.
+    public var rarity: AchievementRarity { AchievementRarity.derive(from: condition) }
+
     public init(id: String, title: String, subtitle: String, category: AchievementCategory, badgeSymbol: String, condition: AchievementCondition, isMeta: Bool = false) {
         self.id = id
         self.title = title

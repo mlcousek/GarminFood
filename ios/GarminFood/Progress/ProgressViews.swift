@@ -126,14 +126,17 @@ private struct StreakSummaryCard: View {
 private struct LevelSummaryCard: View {
     let progress: LevelCurve.Progress
 
+    private var tier: LevelTier { LevelTiers.tier(forLevel: progress.level) }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             CardHeader(title: "Level", systemImage: "sparkles")
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .center, spacing: Theme.Spacing.sm) {
+                BadgeMedallion(symbol: tier.badgeSymbol, rarity: tier.rarity, isLocked: false, size: 40)
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Level \(progress.level)")
                         .font(.system(.title, design: .rounded).weight(.bold))
-                    Text(LevelTiers.tier(forLevel: progress.level).title)
+                    Text(tier.title)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                 }
@@ -152,7 +155,7 @@ private struct LevelSummaryCard: View {
         }
         .card()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Level \(progress.level), \(LevelTiers.tier(forLevel: progress.level).title), \(progress.totalXP) XP")
+        .accessibilityLabel("Level \(progress.level), \(tier.title), \(tier.rarity.displayName) tier, \(progress.totalXP) XP")
         .accessibilityHint("Opens level details")
     }
 }
@@ -405,10 +408,14 @@ struct LevelDetailView: View {
 
     var body: some View {
         let progress = environment.gamificationEngine.levelProgress
+        let tier = LevelTiers.tier(forLevel: progress.level)
 
         List {
             Section {
                 VStack(spacing: Theme.Spacing.md) {
+                    BadgeMedallion(symbol: tier.badgeSymbol, rarity: tier.rarity, isLocked: false, size: 64)
+                        .accessibilityHidden(true)
+
                     ProgressRing(fraction: progress.fractionToNextLevel, lineWidth: 14) {
                         VStack(spacing: 0) {
                             Text("Level")
@@ -421,13 +428,13 @@ struct LevelDetailView: View {
                     }
                     .frame(width: ringSize, height: ringSize)
                     .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("Level \(progress.level), \(LevelTiers.tier(forLevel: progress.level).title)")
+                    .accessibilityLabel("Level \(progress.level), \(tier.title), \(tier.rarity.displayName) tier")
                     .accessibilityValue("\(Int((progress.fractionToNextLevel * 100).rounded())) percent to the next level")
 
                     VStack(spacing: 2) {
-                        Text(LevelTiers.tier(forLevel: progress.level).title)
+                        Text(tier.title)
                             .font(.headline)
-                        Text(LevelTiers.tier(forLevel: progress.level).flavor)
+                        Text(tier.flavor)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
