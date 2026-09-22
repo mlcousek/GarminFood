@@ -81,6 +81,11 @@ struct SettingsView: View {
                 } label: {
                     Label("Diagnostics", systemImage: "stethoscope")
                 }
+                NavigationLink {
+                    AppIconPickerView()
+                } label: {
+                    Label("App Icon", systemImage: "app.badge")
+                }
             }
 
             Section("Preferences") {

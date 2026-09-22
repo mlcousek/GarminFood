@@ -112,6 +112,41 @@ targets:
             CFBundleURLSchemes:
               - garminfood
         CFBundleIconName: AppIcon
+        # add-app-icon-picker (2026-09-22): the 5 alternates are loose PNG
+        # pairs (`GarminFood/AppIcons/<Name>@2x.png`/`@3x.png`, iPhone-only
+        # per this target's TARGETED_DEVICE_FAMILY, so no ~ipad sizes) --
+        # NOT asset-catalog imagesets. This is the classic, stable
+        # CFBundleAlternateIcons mechanism `setAlternateIconName` has used
+        # since iOS 10.3, kept deliberately separate from `CFBundleIconName`
+        # above (which stays asset-catalog-driven for the primary icon only,
+        # unchanged) -- confirmed via Apple's own setAlternateIconName docs
+        # and cross-checked against a second independent source
+        # (nemecek.be/blog/114/implementing-alternate-icons-in-ios) since
+        # there is no local Xcode to test a wrong guess against; an Info.plist
+        # key typo wouldn't fail `xcodebuild` in CI, only silently fail to
+        # switch icons on a real device.
+        CFBundleIcons:
+          CFBundleAlternateIcons:
+            AppIcon-Streak:
+              CFBundleIconFiles:
+                - AppIcon-Streak
+              UIPrerenderedIcon: false
+            AppIcon-Macro:
+              CFBundleIconFiles:
+                - AppIcon-Macro
+              UIPrerenderedIcon: false
+            AppIcon-Midnight:
+              CFBundleIconFiles:
+                - AppIcon-Midnight
+              UIPrerenderedIcon: false
+            AppIcon-Mint:
+              CFBundleIconFiles:
+                - AppIcon-Mint
+              UIPrerenderedIcon: false
+            AppIcon-Pastel:
+              CFBundleIconFiles:
+                - AppIcon-Pastel
+              UIPrerenderedIcon: false
         # add-garmin-auth-and-sync 9.5 / BackgroundRefresh.swift: delivers
         # queued entries while the app isn't open. The identifier must match
         # BackgroundRefresh.identifier exactly, or BGTaskScheduler.submit
