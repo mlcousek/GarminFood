@@ -40,6 +40,13 @@ final class AppServices {
     let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
     let logEntryCoordinator: LogEntryCoordinator
+    /// Purely local, no Garmin route involved (see FastingSession.swift's
+    /// header) -- included here anyway, not just in the app's own
+    /// `AppEnvironment`, for the same reason `mealPresetStore` is: one
+    /// shared instance per process, so a future widget/Control surface
+    /// reading fasting state (there isn't one yet) wouldn't open a second,
+    /// divergent copy of the file.
+    let fastingStore: FastingSessionStore
 
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
@@ -58,6 +65,7 @@ final class AppServices {
         self.customFoodStore = CustomFoodStore()
         self.mealPresetStore = MealPresetStore()
         self.foodCache = FoodCacheStore()
+        self.fastingStore = FastingSessionStore()
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
     }
 

@@ -29,6 +29,7 @@ final class AppEnvironment {
     let customFoodStore: CustomFoodStore
     let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
+    let fastingStore: FastingSessionStore
     let catalogSearch: FoodCatalogSearch
     /// The Czech (Open Food Facts) search source (add-czech-food-catalog) --
     /// a completely separate network client from `garminClient`/
@@ -74,6 +75,7 @@ final class AppEnvironment {
         self.customFoodStore = services.customFoodStore
         self.mealPresetStore = services.mealPresetStore
         self.foodCache = services.foodCache
+        self.fastingStore = services.fastingStore
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: services.foodCache)
         self.openFoodFactsClient = OpenFoodFactsClient()
         self.logEntryCoordinator = services.logEntryCoordinator
@@ -273,23 +275,69 @@ final class AppEnvironment {
         Task { await syncNotifications() }
     }
 
+    func setFastingReminder(_ setting: FastingReminderSetting) {
+        notificationPreferences.setFastingReminder(setting)
+        Task { await syncNotifications() }
+    }
+
     /// Re-plans and re-syncs local reminders against current state -- see
     /// `NotificationScheduler`'s header for why this needs to re-run
     /// whenever something that could change the plan happens (foreground,
     /// a confirm, a setting change), rather than being scheduled once.
-    /// Skipped while a past day is being viewed: today's actual logged-meal
-    /// state lives in `dayLog.dashboard` only while `dayLog.isToday`, and a
-    /// stale/empty read would incorrectly re-arm an already-logged meal's
-    /// reminder -- the next time the user is back on today, this runs again
-    /// with the real state.
+    /// The meal/streak/challenge half is skipped while a past day is being
+    /// viewed: today's actual logged-meal state lives in `dayLog.dashboard`
+    /// only while `dayLog.isToday`, and a stale/empty read would
+    /// incorrectly re-arm an already-logged meal's reminder -- the next
+    /// time the user is back on today, this runs again with the real
+    /// state. The fasting half has no such day dependency (it's driven by
+    /// wall-clock time against the active session, not by which day's food
+    /// log is on screen), so it always runs.
     func syncNotifications() async {
-        guard dayLog.isToday else { return }
-        let mealsLoggedToday = Set(dayLog.dashboard.sections.filter { !$0.entries.isEmpty }.map(\.mealType))
-        await NotificationScheduler.shared.sync(
-            preferences: notificationPreferences.preferences,
-            mealsLoggedToday: mealsLoggedToday,
-            isStreakAtRiskToday: gamificationEngine.streakStatus.isAtRiskToday
+        if dayLog.isToday {
+            let mealsLoggedToday = Set(dayLog.dashboard.sections.filter { !$0.entries.isEmpty }.map(\.mealType))
+            await NotificationScheduler.shared.sync(
+                preferences: notificationPreferences.preferences,
+                mealsLoggedToday: mealsLoggedToday,
+                isStreakAtRiskToday: gamificationEngine.streakStatus.isAtRiskToday
+            )
+        }
+        let activeSession = await fastingStore.active()
+        await NotificationScheduler.shared.syncFastingReminder(
+            setting: notificationPreferences.preferences.fastingReminder,
+            activeSession: activeSession
         )
+    }
+
+    // MARK: - Fasting
+
+    /// Thin wrappers around `fastingStore`, mirroring the entry/delete
+    /// methods above: the store call itself, plus the one side effect every
+    /// mutation needs (re-syncing the fasting reminder, since starting/
+    /// ending a fast changes what -- if anything -- should be scheduled).
+    /// Reads (`fastingStore.active()`/`.history()`) don't need a wrapper --
+    /// views call those directly, same as `environment.mealPresetStore.all()`.
+    @discardableResult
+    func startFasting(protocolKind: FastingProtocol, at date: Date = Date()) async throws -> FastingSession {
+        let session = try await fastingStore.start(FastingSession(protocolKind: protocolKind, startedAt: date))
+        await syncNotifications()
+        return session
+    }
+
+    func breakFast(at date: Date = Date()) async throws {
+        try await fastingStore.endFastingPhase(at: date)
+        await syncNotifications()
+    }
+
+    @discardableResult
+    func endFastingSession(at date: Date = Date()) async throws -> FastingSession {
+        let session = try await fastingStore.endActiveSession(at: date)
+        await syncNotifications()
+        return session
+    }
+
+    func cancelActiveFast() async throws {
+        try await fastingStore.cancelActiveSession()
+        await syncNotifications()
     }
 
     // MARK: - Private
