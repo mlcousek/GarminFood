@@ -33,25 +33,44 @@ public struct ReminderSetting: Sendable, Equatable {
     }
 }
 
+/// The fasting-reminder analogue of `ReminderSetting` -- same shape in
+/// spirit (an on/off switch plus one number), but the number is a
+/// minutes-before-the-boundary OFFSET rather than a fixed daily hour/minute.
+/// A daily clock time doesn't fit here: the fasting/eating window boundary
+/// moves with whenever the user actually started fasting, so there is no
+/// single "9am" this could mean.
+public struct FastingReminderSetting: Sendable, Equatable {
+    public var isEnabled: Bool
+    public var minutesBefore: Int
+
+    public init(isEnabled: Bool, minutesBefore: Int) {
+        self.isEnabled = isEnabled
+        self.minutesBefore = minutesBefore
+    }
+}
+
 public struct NotificationPreferences: Sendable, Equatable {
     public var breakfastReminder: ReminderSetting
     public var lunchReminder: ReminderSetting
     public var dinnerReminder: ReminderSetting
     public var streakReminder: ReminderSetting
     public var dailyChallengeReminder: ReminderSetting
+    public var fastingReminder: FastingReminderSetting
 
     public init(
         breakfastReminder: ReminderSetting,
         lunchReminder: ReminderSetting,
         dinnerReminder: ReminderSetting,
         streakReminder: ReminderSetting,
-        dailyChallengeReminder: ReminderSetting
+        dailyChallengeReminder: ReminderSetting,
+        fastingReminder: FastingReminderSetting
     ) {
         self.breakfastReminder = breakfastReminder
         self.lunchReminder = lunchReminder
         self.dinnerReminder = dinnerReminder
         self.streakReminder = streakReminder
         self.dailyChallengeReminder = dailyChallengeReminder
+        self.fastingReminder = fastingReminder
     }
 
     /// Off by default, times chosen as reasonable defaults matching
@@ -62,7 +81,8 @@ public struct NotificationPreferences: Sendable, Equatable {
         lunchReminder: ReminderSetting(isEnabled: false, hour: 13, minute: 30),
         dinnerReminder: ReminderSetting(isEnabled: false, hour: 19, minute: 30),
         streakReminder: ReminderSetting(isEnabled: false, hour: 21, minute: 0),
-        dailyChallengeReminder: ReminderSetting(isEnabled: false, hour: 8, minute: 0)
+        dailyChallengeReminder: ReminderSetting(isEnabled: false, hour: 8, minute: 0),
+        fastingReminder: FastingReminderSetting(isEnabled: false, minutesBefore: 15)
     )
 }
 
@@ -138,6 +158,55 @@ public enum NotificationPlanning {
             body: "Don't forget to log \(mealType.displayNameLowercased) today.",
             hour: setting.hour,
             minute: setting.minute
+        )
+    }
+
+    /// A single, date-scoped fasting/eating-window reminder -- carries an
+    /// absolute `fireDate` rather than `PlannedNotification`'s hour/minute
+    /// of day, because the boundary it's warning about isn't at a fixed
+    /// daily clock time (see `FastingReminderSetting`'s header). Kept as a
+    /// separate type/function rather than folded into `plan(...)` since it
+    /// answers a different question ("is the CURRENT fasting phase about to
+    /// end") from `plan(...)`'s "what's due today", and needs its own
+    /// `FastingSession` input that the other five reminder kinds have no
+    /// use for.
+    public struct PlannedFastingReminder: Sendable, Equatable, Identifiable {
+        public let id: String
+        public let title: String
+        public let body: String
+        public let fireDate: Date
+
+        public init(id: String, title: String, body: String, fireDate: Date) {
+            self.id = id
+            self.title = title
+            self.body = body
+            self.fireDate = fireDate
+        }
+    }
+
+    /// `nil` when disabled, when there's no active session, or when the
+    /// computed fire date has already passed (the session's current phase
+    /// is already overdue, or `minutesBefore` is longer than what's left --
+    /// same "don't schedule something in the past" rule
+    /// `NotificationScheduler.sync` applies to the other five kinds).
+    public static func planFastingReminder(
+        setting: FastingReminderSetting,
+        activeSession: FastingSession?,
+        now: Date
+    ) -> PlannedFastingReminder? {
+        guard setting.isEnabled, let activeSession else { return nil }
+        let phase = activeSession.currentPhase(at: now)
+        let fireDate = phase.scheduledEndAt.addingTimeInterval(-Double(setting.minutesBefore) * 60)
+        guard fireDate > now else { return nil }
+
+        let isFasting = phase.kind == .fasting
+        return PlannedFastingReminder(
+            id: "fastingReminder",
+            title: isFasting ? "Fasting window ending soon" : "Eating window ending soon",
+            body: isFasting
+                ? "Your fast ends in \(setting.minutesBefore) minutes."
+                : "Your eating window ends in \(setting.minutesBefore) minutes.",
+            fireDate: fireDate
         )
     }
 }
