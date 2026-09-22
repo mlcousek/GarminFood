@@ -247,6 +247,26 @@ public struct NutritionSettings: Decodable, Sendable {
     public let effectiveDate: String?
     /// "ACTIVE" observed.
     public let nutritionStatus: String?
+    /// The account's real region/language -- part of this route's own
+    /// confirmed-live shape (docs/garmin-routes.json) but never decoded
+    /// until now (fix-custom-food-log-region, 2026-09-22). A real device
+    /// error logging a just-created custom food ("Custom food nutrition
+    /// information is missing for the provided food id with region code
+    /// and language code") traced back to `FoodLogWriteBody`/
+    /// `CustomFoodWriteBody` always hardcoding `"US"`/`"en"` regardless of
+    /// the account's actual locale -- for a REGULAR Garmin/FatSecret food
+    /// that's apparently tolerated (this file's own `FoodLogWriteBody`
+    /// comment: "not checked against the food"), but a custom food's
+    /// nutrition record is looked up by the exact `(foodId, regionCode,
+    /// languageCode)` tuple it was created under, so a mismatch between
+    /// the region/language used at CREATE time and the one used at LOG
+    /// time throws exactly this error. These two fields let the app pass
+    /// the account's real values through instead, falling back to the
+    /// same `"US"`/`"en"` constants when unavailable (e.g. settings
+    /// haven't loaded yet) -- unconfirmed which exact value this account
+    /// carries until a real device reports it back.
+    public let regionCode: String?
+    public let languageCode: String?
 
     public struct MacroGoals: Decodable, Sendable {
         public let carbs: Double?
@@ -358,6 +378,12 @@ public struct CreateFoodLogEntryRequest: Sendable, Equatable {
     /// back (the moment of logging), and what lets Reconciliation tell this
     /// app's deliveries apart from entries that already existed.
     public let loggedAt: Date
+    /// `nil` falls back to `FoodLogWriteBody`'s hardcoded `"US"`/`"en"`
+    /// constants -- see `NutritionSettings.regionCode`'s doc comment for
+    /// why a caller should pass the account's real values here instead
+    /// whenever they're available (fix-custom-food-log-region, 2026-09-22).
+    public let regionCode: String?
+    public let languageCode: String?
 
     public init(
         date: String,
@@ -366,7 +392,9 @@ public struct CreateFoodLogEntryRequest: Sendable, Equatable {
         servingId: String,
         numberOfUnits: Double,
         source: GarminFoodSource? = nil,
-        loggedAt: Date = Date()
+        loggedAt: Date = Date(),
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) {
         self.date = date
         self.mealType = mealType
@@ -375,6 +403,8 @@ public struct CreateFoodLogEntryRequest: Sendable, Equatable {
         self.numberOfUnits = numberOfUnits
         self.source = source ?? .inferred(fromFoodId: foodId)
         self.loggedAt = loggedAt
+        self.regionCode = regionCode
+        self.languageCode = languageCode
     }
 }
 
@@ -416,9 +446,17 @@ struct FoodLogWriteBody: Encodable, Equatable {
 
     /// garmin_mcp's values. It sends `GCW` (Garmin Connect Web); the
     /// official mobile app's entries read back as `GCM` -- the proven value
-    /// is used. `regionCode`/`languageCode` come from the client and are not
-    /// checked against the food: on the owner's account the official app
-    /// filed a food that search reports under region `US` as `CZ`.
+    /// is used. `regionCode`/`languageCode` are the FALLBACK when a caller's
+    /// `CreateFoodLogEntryRequest` doesn't supply its own (see `make`
+    /// below): for a REGULAR Garmin/FatSecret food, region/language aren't
+    /// checked against the food itself (on the owner's account the official
+    /// app filed a food that search reports under region `US` as `CZ`), but
+    /// fix-custom-food-log-region (2026-09-22) found that's NOT true for a
+    /// custom food -- its nutrition record is looked up by the exact
+    /// `(foodId, regionCode, languageCode)` tuple it was created under, so
+    /// logging one with the wrong region/language 400s even though the food
+    /// genuinely exists. Prefer the account's real values
+    /// (`NutritionSettings.regionCode`/`.languageCode`) when available.
     static let logSource = "GCW"
     static let logCategory = "REGULAR_LOG"
     static let action = "ADD"
@@ -446,8 +484,8 @@ struct FoodLogWriteBody: Encodable, Equatable {
             foodId: request.foodId,
             servingId: request.servingId,
             source: request.source.rawValue,
-            regionCode: regionCode,
-            languageCode: languageCode,
+            regionCode: request.regionCode ?? regionCode,
+            languageCode: request.languageCode ?? languageCode,
             servingQty: request.numberOfUnits
         )
         return FoodLogWriteBody(mealDate: request.date, foodLogItems: [item])
@@ -628,7 +666,9 @@ struct CustomFoodWriteBody: Encodable, Equatable {
         calories: Double,
         protein: Double?,
         carbs: Double?,
-        fat: Double?
+        fat: Double?,
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) -> CustomFoodWriteBody {
         CustomFoodWriteBody(
             foodMetaData: FoodMetaData(
@@ -636,8 +676,15 @@ struct CustomFoodWriteBody: Encodable, Equatable {
                 foodName: foodName,
                 foodType: "GENERIC",
                 source: "GARMIN",
-                regionCode: FoodLogWriteBody.regionCode,
-                languageCode: FoodLogWriteBody.languageCode,
+                // fix-custom-food-log-region (2026-09-22): a caller should
+                // pass the account's real region/language
+                // (NutritionSettings.regionCode/.languageCode) whenever
+                // available -- the food-log write for THIS food later must
+                // match whatever gets stored here exactly, or Garmin can't
+                // find the nutrition record (see FoodLogWriteBody's own
+                // comment on this same fallback pair for the full story).
+                regionCode: regionCode ?? FoodLogWriteBody.regionCode,
+                languageCode: languageCode ?? FoodLogWriteBody.languageCode,
                 brandName: nil
             ),
             nutritionContents: [

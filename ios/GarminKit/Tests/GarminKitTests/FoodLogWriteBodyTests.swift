@@ -43,7 +43,9 @@ final class FoodLogWriteBodyTests: XCTestCase {
         mealType: MealType,
         loggedAt: String,
         foodId: String = "12345",
-        source: GarminFoodSource? = nil
+        source: GarminFoodSource? = nil,
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) -> CreateFoodLogEntryRequest {
         CreateFoodLogEntryRequest(
             date: "2026-09-16",
@@ -52,7 +54,9 @@ final class FoodLogWriteBodyTests: XCTestCase {
             servingId: "678",
             numberOfUnits: 1.5,
             source: source,
-            loggedAt: instant(loggedAt)
+            loggedAt: instant(loggedAt),
+            regionCode: regionCode,
+            languageCode: languageCode
         )
     }
 
@@ -192,6 +196,32 @@ final class FoodLogWriteBodyTests: XCTestCase {
         XCTAssertEqual(request(mealType: .lunch, loggedAt: "2026-09-16T10:00:00Z", foodId: "12345", source: .garmin).source, .garmin)
     }
 
+    // MARK: - Region/language (fix-custom-food-log-region, 2026-09-22)
+
+    func testDefaultsToTheHardcodedUSEnConstantsWhenNoneAreSupplied() throws {
+        let body = try FoodLogWriteBody.make(
+            for: request(mealType: .lunch, loggedAt: "2026-09-16T10:00:00Z"),
+            meals: meals(),
+            timeZone: utc
+        )
+        XCTAssertEqual(try onlyItem(body).regionCode, "US")
+        XCTAssertEqual(try onlyItem(body).languageCode, "en")
+    }
+
+    func testAnExplicitRegionAndLanguageOverrideTheHardcodedDefault() throws {
+        // The real-device bug this pins: a custom food is looked up by the
+        // exact (foodId, regionCode, languageCode) tuple it was created
+        // under, so logging it must be able to use the account's real
+        // values instead of always "US"/"en".
+        let body = try FoodLogWriteBody.make(
+            for: request(mealType: .lunch, loggedAt: "2026-09-16T10:00:00Z", regionCode: "CZ", languageCode: "cs"),
+            meals: meals(),
+            timeZone: utc
+        )
+        XCTAssertEqual(try onlyItem(body).regionCode, "CZ")
+        XCTAssertEqual(try onlyItem(body).languageCode, "cs")
+    }
+
     // MARK: - Entries already sitting in users' outbox files
 
     func testAnOutboxEntryQueuedBeforeSourceExistedStillDecodesAndDelivers() throws {
@@ -218,5 +248,33 @@ final class FoodLogWriteBodyTests: XCTestCase {
         XCTAssertNil(entry.source)
         XCTAssertEqual(entry.createRequest.source, .fatSecret, "a missing source is inferred, not a reason to drop the entry")
         XCTAssertEqual(entry.createRequest.loggedAt, entry.createdAt, "the entry is stamped with when it was logged, not when it's delivered")
+        // fix-custom-food-log-region (2026-09-22): the same JSON also
+        // predates regionCode/languageCode -- must decode as nil, not fail
+        // the whole entry, and FoodLogWriteBody.make must still fall back
+        // to its own hardcoded "US"/"en" default for it, same as before
+        // this fix existed.
+        XCTAssertNil(entry.regionCode)
+        XCTAssertNil(entry.languageCode)
+        XCTAssertNil(entry.createRequest.regionCode)
+        XCTAssertNil(entry.createRequest.languageCode)
+    }
+
+    func testLogFoodCapturesRegionAndLanguageAtEnqueueTime() async throws {
+        let outbox = Outbox(store: OutboxStore(fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-outbox-region-test-\(UUID().uuidString).json")))
+
+        let entry = try await outbox.logFood(
+            date: "2026-09-16",
+            mealType: .lunch,
+            foodId: "12345",
+            servingId: "678",
+            numberOfUnits: 1,
+            regionCode: "CZ",
+            languageCode: "cs"
+        )
+
+        XCTAssertEqual(entry.regionCode, "CZ")
+        XCTAssertEqual(entry.languageCode, "cs")
+        XCTAssertEqual(entry.createRequest.regionCode, "CZ")
+        XCTAssertEqual(entry.createRequest.languageCode, "cs")
     }
 }

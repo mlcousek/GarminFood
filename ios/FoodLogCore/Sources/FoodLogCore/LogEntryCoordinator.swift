@@ -44,7 +44,9 @@ public struct LogEntryCoordinator: Sendable {
         numberOfUnits: Double,
         mealType: MealType,
         date: String,
-        now: Date = Date()
+        now: Date = Date(),
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) async throws -> OutboxEntry {
         let entry = try await outbox.logFood(
             date: date,
@@ -53,6 +55,8 @@ public struct LogEntryCoordinator: Sendable {
             servingId: serving.id,
             numberOfUnits: numberOfUnits,
             source: food.source.garminFoodSource,
+            regionCode: regionCode,
+            languageCode: languageCode,
             createdAt: now
         )
         // Best-effort: a failure recording usage/defaults must never undo an
@@ -78,7 +82,9 @@ public struct LogEntryCoordinator: Sendable {
         quantity: Double,
         mealType: MealType,
         date: String,
-        now: Date = Date()
+        now: Date = Date(),
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) async throws -> (entry: OutboxEntry, discrepancyNote: String) {
         let target = customFood.resolvedLoggingTarget(quantity: quantity)
         // No `source`: a custom food only records its backing food's id, so
@@ -89,6 +95,8 @@ public struct LogEntryCoordinator: Sendable {
             foodId: target.foodId,
             servingId: target.servingId,
             numberOfUnits: target.numberOfUnits,
+            regionCode: regionCode,
+            languageCode: languageCode,
             createdAt: now
         )
         try? await usageHistory.record(
@@ -128,17 +136,19 @@ public struct LogEntryCoordinator: Sendable {
         servingsMultiplier: Double = 1,
         mealType: MealType,
         date: String,
-        now: Date = Date()
+        now: Date = Date(),
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) async throws -> [OutboxEntry] {
         var entries: [OutboxEntry] = []
         entries.reserveCapacity(preset.ingredients.count)
         for ingredient in preset.ingredients {
             let quantity = ingredient.quantity * servingsMultiplier
             if let customFoodDraft = ingredient.customFoodDraft {
-                let (entry, _) = try await confirmCustomFood(customFoodDraft, quantity: quantity, mealType: mealType, date: date, now: now)
+                let (entry, _) = try await confirmCustomFood(customFoodDraft, quantity: quantity, mealType: mealType, date: date, now: now, regionCode: regionCode, languageCode: languageCode)
                 entries.append(entry)
             } else {
-                let entry = try await confirm(food: ingredient.food, serving: ingredient.serving, numberOfUnits: quantity, mealType: mealType, date: date, now: now)
+                let entry = try await confirm(food: ingredient.food, serving: ingredient.serving, numberOfUnits: quantity, mealType: mealType, date: date, now: now, regionCode: regionCode, languageCode: languageCode)
                 entries.append(entry)
             }
         }

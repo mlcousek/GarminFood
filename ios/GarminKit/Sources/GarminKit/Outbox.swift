@@ -53,6 +53,15 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// synthesized `Decodable` only tolerates a missing key for an Optional.
     /// `nil` falls back to inferring the namespace from `foodId`'s shape.
     public let source: GarminFoodSource?
+    /// The account's real region/language at the moment this entry was
+    /// enqueued, captured then rather than re-read at delivery time so a
+    /// custom food logs under the same region/language it was actually
+    /// created under even if the cached account settings change later
+    /// (fix-custom-food-log-region, 2026-09-22). `nil` (entries queued by
+    /// an older build, or when the account settings hadn't loaded yet)
+    /// falls back to `FoodLogWriteBody`'s hardcoded `"US"`/`"en"`.
+    public let regionCode: String?
+    public let languageCode: String?
 
     public var state: OutboxEntryState
     public var attemptCount: Int
@@ -70,6 +79,8 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
         servingId: String,
         numberOfUnits: Double,
         source: GarminFoodSource? = nil,
+        regionCode: String? = nil,
+        languageCode: String? = nil,
         state: OutboxEntryState = .pending,
         attemptCount: Int = 0,
         lastError: String? = nil,
@@ -83,6 +94,8 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
         self.servingId = servingId
         self.numberOfUnits = numberOfUnits
         self.source = source
+        self.regionCode = regionCode
+        self.languageCode = languageCode
         self.state = state
         self.attemptCount = attemptCount
         self.lastError = lastError
@@ -98,6 +111,8 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
             servingId: servingId,
             numberOfUnits: numberOfUnits,
             source: source,
+            regionCode: regionCode,
+            languageCode: languageCode,
             loggedAt: createdAt
         )
     }
@@ -283,6 +298,8 @@ public actor Outbox {
         servingId: String,
         numberOfUnits: Double,
         source: GarminFoodSource? = nil,
+        regionCode: String? = nil,
+        languageCode: String? = nil,
         createdAt: Date = Date()
     ) async throws -> OutboxEntry {
         let entry = OutboxEntry(
@@ -292,6 +309,8 @@ public actor Outbox {
             servingId: servingId,
             numberOfUnits: numberOfUnits,
             source: source,
+            regionCode: regionCode,
+            languageCode: languageCode,
             createdAt: createdAt,
             nextAttemptAt: createdAt
         )

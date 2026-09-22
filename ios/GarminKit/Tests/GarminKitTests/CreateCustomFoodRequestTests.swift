@@ -63,6 +63,23 @@ final class CreateCustomFoodRequestTests: XCTestCase {
         XCTAssertEqual(decoded.foodMetaData.languageCode, FoodLogWriteBody.languageCode)
     }
 
+    /// fix-custom-food-log-region (2026-09-22): a caller-supplied region/
+    /// language must win over the hardcoded default -- a custom food's
+    /// nutrition record is looked up by the exact tuple it was CREATED
+    /// under, so create and the later log write must be able to agree on
+    /// something other than always "US"/"en".
+    func testMakeUsesACallerSuppliedRegionAndLanguageOverTheDefault() throws {
+        let body = CustomFoodWriteBody.make(
+            foodName: "Tvaroh", servingUnit: "g", numberOfUnits: 100, calories: 98,
+            protein: 12, carbs: 4, fat: 0.5, regionCode: "CZ", languageCode: "cs"
+        )
+
+        let decoded = try decode(body)
+
+        XCTAssertEqual(decoded.foodMetaData.regionCode, "CZ")
+        XCTAssertEqual(decoded.foodMetaData.languageCode, "cs")
+    }
+
     func testMakeOmitsFoodIdAndServingIdForACreate() throws {
         let body = CustomFoodWriteBody.make(foodName: "Rohlík", servingUnit: "g", numberOfUnits: 43, calories: 140, protein: nil, carbs: nil, fat: nil)
 

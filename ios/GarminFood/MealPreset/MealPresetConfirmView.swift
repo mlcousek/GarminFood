@@ -153,7 +153,9 @@ struct MealPresetConfirmView: View {
                     preset,
                     servingsMultiplier: portions,
                     mealType: mealType,
-                    date: dateString
+                    date: dateString,
+                    regionCode: environment.profile.settings?.regionCode,
+                    languageCode: environment.profile.settings?.languageCode
                 )
 
                 // Success shown immediately, matching LogEntryConfirmView's

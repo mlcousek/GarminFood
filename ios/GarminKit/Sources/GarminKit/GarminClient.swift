@@ -274,7 +274,9 @@ public struct GarminClient: Sendable {
         calories: Double,
         protein: Double? = nil,
         carbs: Double? = nil,
-        fat: Double? = nil
+        fat: Double? = nil,
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) async throws -> FoodSearchResult {
         let body = CustomFoodWriteBody.make(
             foodName: name,
@@ -283,7 +285,9 @@ public struct GarminClient: Sendable {
             calories: calories,
             protein: protein,
             carbs: carbs,
-            fat: fat
+            fat: fat,
+            regionCode: regionCode,
+            languageCode: languageCode
         )
         let (data, response) = try await put(path: "/nutrition-service/customFood", body: body)
         try Self.throwIfNotSuccessful(response, data: data)
