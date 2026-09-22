@@ -95,4 +95,57 @@ final class HydrationTrackingTests: XCTestCase {
 
         XCTAssertEqual(filtered.map(\.id), [todayEntry.id])
     }
+
+    // MARK: - HydrationHistory.streak
+
+    func testStreakCountsConsecutiveDaysMeetingTheGoal() {
+        let calendar = Calendar(identifier: .gregorian)
+        let today = Date(timeIntervalSince1970: 1_758_500_000)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: today)!
+
+        let entries = [
+            HydrationEntry(valueInML: 2000, loggedAt: today),
+            HydrationEntry(valueInML: 2000, loggedAt: yesterday),
+            HydrationEntry(valueInML: 2000, loggedAt: twoDaysAgo)
+        ]
+
+        let streak = HydrationHistory.streak(for: entries, goalML: 2000, on: today, calendar: calendar)
+
+        XCTAssertEqual(streak, 3)
+    }
+
+    func testStreakStopsAtTheFirstDayBelowGoal() {
+        let calendar = Calendar(identifier: .gregorian)
+        let today = Date(timeIntervalSince1970: 1_758_500_000)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: today)!
+
+        let entries = [
+            HydrationEntry(valueInML: 2000, loggedAt: today),
+            HydrationEntry(valueInML: 500, loggedAt: yesterday), // short of goal, breaks the streak
+            HydrationEntry(valueInML: 2000, loggedAt: twoDaysAgo)
+        ]
+
+        let streak = HydrationHistory.streak(for: entries, goalML: 2000, on: today, calendar: calendar)
+
+        XCTAssertEqual(streak, 1, "only today counts; yesterday's shortfall breaks the streak before two-days-ago is ever reached")
+    }
+
+    func testStreakIsZeroWhenTodayItselfIsBelowGoal() {
+        let today = Date()
+        let entries = [HydrationEntry(valueInML: 250, loggedAt: today)]
+
+        let streak = HydrationHistory.streak(for: entries, goalML: 2000, on: today)
+
+        XCTAssertEqual(streak, 0, "today doesn't get a free pass -- it must itself meet the goal to count")
+    }
+
+    func testStreakIsZeroWhenGoalIsZeroOrNegative() {
+        let today = Date()
+        let entries = [HydrationEntry(valueInML: 3000, loggedAt: today)]
+
+        XCTAssertEqual(HydrationHistory.streak(for: entries, goalML: 0, on: today), 0)
+        XCTAssertEqual(HydrationHistory.streak(for: entries, goalML: -100, on: today), 0)
+    }
 }

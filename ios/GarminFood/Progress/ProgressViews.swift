@@ -15,6 +15,12 @@ import FoodLogCore
 struct ProgressHomeView: View {
     @Environment(AppEnvironment.self) private var environment
 
+    /// Same per-device preference `HydrationView`/`TrendsView` read -- only
+    /// needed here to compute the streak number `TrendsSummaryCard` shows;
+    /// see `HydrationComponents.swift`'s header for why this isn't
+    /// Garmin-synced.
+    @AppStorage("hydrationDailyGoalML") private var hydrationDailyGoalML: Double = 2000
+
     var body: some View {
         let engine = environment.gamificationEngine
 
@@ -64,6 +70,15 @@ struct ProgressHomeView: View {
                     HydrationView()
                 } label: {
                     HydrationSummaryCard(todayTotalML: environment.hydrationLoader.todayTotalML)
+                }
+                .buttonStyle(.plain)
+
+                NavigationLink {
+                    TrendsView()
+                } label: {
+                    TrendsSummaryCard(
+                        hydrationStreak: HydrationHistory.streak(for: environment.hydrationLoader.entries, goalML: hydrationDailyGoalML)
+                    )
                 }
                 .buttonStyle(.plain)
 
@@ -305,6 +320,39 @@ private struct HydrationSummaryCard: View {
         .card()
         .accessibilityElement(children: .combine)
         .accessibilityHint("Opens hydration tracking")
+    }
+}
+
+/// Progress tab entry point into `TrendsView` (add-trends-and-insights) --
+/// same "card summarizes, tap opens the detail screen" shape as
+/// `WeightSummaryCard`/`HydrationSummaryCard` above. Shows the hydration
+/// streak, not a macro-trend preview: it's the one number this card can
+/// show for free -- purely local, already computed from
+/// `environment.hydrationLoader.entries`, which the Progress tab already
+/// keeps fresh. The macro trend itself needs `environment.trendsLoader`'s
+/// own Garmin read, which -- per that loader's header -- only happens once
+/// `TrendsView` is actually opened, so this card doesn't fetch it just to
+/// preview it.
+private struct TrendsSummaryCard: View {
+    let hydrationStreak: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            CardHeader(title: "Trends", systemImage: "chart.line.uptrend.xyaxis")
+            HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
+                Text("\(hydrationStreak)")
+                    .font(.system(.largeTitle, design: .rounded).weight(.bold).monospacedDigit())
+                Text("day water streak")
+                    .font(.streakLabel)
+                    .foregroundStyle(.secondary)
+            }
+            Text("Macro and hydration history over time.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .card()
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Opens trends and insights")
     }
 }
 
