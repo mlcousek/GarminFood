@@ -43,6 +43,10 @@ final class AppEnvironment {
     let weightOutbox: WeightOutbox
     let weightLogCoordinator: WeightLogCoordinator
     let weightLoader: WeightLoader
+    /// add-hydration-tracking: mirrors the weight trio directly above.
+    let hydrationOutbox: HydrationOutbox
+    let hydrationLogCoordinator: HydrationLogCoordinator
+    let hydrationLoader: HydrationLoader
     let gamificationEngine: GamificationEngine
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
@@ -88,6 +92,9 @@ final class AppEnvironment {
         self.weightOutbox = services.weightOutbox
         self.weightLogCoordinator = services.weightLogCoordinator
         self.weightLoader = WeightLoader(store: services.weightStore, outbox: services.weightOutbox)
+        self.hydrationOutbox = services.hydrationOutbox
+        self.hydrationLogCoordinator = services.hydrationLogCoordinator
+        self.hydrationLoader = HydrationLoader(store: services.hydrationStore, outbox: services.hydrationOutbox)
         self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
         self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache)
         self.preferences = AppPreferences()
@@ -113,7 +120,8 @@ final class AppEnvironment {
         async let goals: Void = gamificationEngine.refreshGoalStatus()
         async let garminProfile: Void = profile.refresh()
         async let weight: Void = weightLoader.refresh()
-        _ = await (day, gamification, goals, garminProfile, weight)
+        async let hydration: Void = hydrationLoader.refresh()
+        _ = await (day, gamification, goals, garminProfile, weight, hydration)
         await syncNotifications()
     }
 
@@ -147,6 +155,21 @@ final class AppEnvironment {
         await weightLoader.refresh()
     }
 
+    /// Right after logging a drink (AddHydrationSheet's own confirm
+    /// action) -- same reasoning as `weightLogged()`.
+    func hydrationLogged() async {
+        await hydrationLoader.refresh()
+        Task { await self.drainAndReconcile() }
+    }
+
+    /// Deletes a hydration entry shown on the Hydration screen
+    /// (HydrationLogCoordinator.deleteHydration's own doc comment covers
+    /// what this does and doesn't undo on Garmin's side).
+    func deleteHydration(_ entry: HydrationEntry) async throws {
+        try await hydrationLogCoordinator.deleteHydration(entry)
+        await hydrationLoader.refresh()
+    }
+
     /// Day navigation, routed through here rather than calling `dayLog`
     /// directly (as `TodayView` did until 2026-09-17) so goal status gets
     /// recomputed for whichever day is actually being looked at. Without
@@ -178,6 +201,13 @@ final class AppEnvironment {
         let weightResult = await weightOutbox.drain(using: garminClient)
         if !weightResult.delivered.isEmpty || !weightResult.failed.isEmpty {
             await weightLoader.refresh()
+        }
+
+        // Same reasoning as the weight drain above -- its own outbox, no
+        // reconciliation step (HydrationLogCoordinator.swift's header).
+        let hydrationResult = await hydrationOutbox.drain(using: garminClient)
+        if !hydrationResult.delivered.isEmpty || !hydrationResult.failed.isEmpty {
+            await hydrationLoader.refresh()
         }
 
         let result = await outbox.drain(using: garminClient)

@@ -215,6 +215,14 @@
       "lastVerified": "2026-09-22",
       "observedStatus": "documented via a third-party OSS client, not exercised by this project",
       "notes": "add-weight-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's add_weigh_in/add_weigh_in_with_timestamps (~lines 1414-1483) and the shared _fmt_ts helper (~line 221), fetched 2026-09-22 -- a real, actively-maintained, widely-used OSS client's actual request shape, not a decompiled string literal or blind guess: { dateTimestamp, gmtTimestamp, unitKey ('kg'|'lbs'), sourceType: 'MANUAL', value }, both timestamps formatted yyyy-MM-dd'T'HH:mm:ss.SSS (naive/no offset), dateTimestamp in local time and gmtTimestamp the same instant in UTC. This app always sends unitKey='kg' (no imperial/metric setting exists anywhere in GarminFood). Never yet called by this project against the real account -- gated the same way createFoodLogEntry is (delivery only via WeightOutbox's durable queue, never a synchronous UI call), NOT gated behind an extra confirmation dialog the way createCustomFood/createCustomMeal are, since logging a weight IS the deliberate user action, same status as a food log entry."
+    },
+    {
+      "operation": "addHydration",
+      "method": "PUT",
+      "path": "/usersummary-service/usersummary/hydration/log",
+      "lastVerified": "2026-09-22",
+      "observedStatus": "documented via a third-party OSS client, not exercised by this project",
+      "notes": "add-hydration-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's add_hydration_data (~lines 1820-1898), fetched 2026-09-22 -- same evidence tier as addWeighIn above: a real, actively-maintained OSS client's actual request shape, not a decompiled string literal. Body: { calendarDate ('yyyy-MM-dd', local date of the entry), timestampLocal (reuses the same naive-local, millisecond-precision _fmt_ts shape as WeighInWriteBody -- no separate GMT timestamp field for this route, unlike weight), valueInML }. Never yet called by this project against the real account -- gated the same way addWeighIn is (delivery only via HydrationOutbox's durable queue, no extra confirmation dialog, since logging a drink IS the deliberate user action). The sibling READ route (GET /usersummary-service/usersummary/hydration/daily/{date}, garmin_connect_daily_hydration_url in the same source file) exists but its response is NEVER destructured anywhere in that library -- no field-level evidence at all, unlike getWeighIns's dateWeightList/samplePk which at least has a same-service sibling route confirming the field name. Deliberately NOT implemented in GarminClient: this app's own HydrationStore is the sole source of truth for history and today's total, same as WeightStore is for weight."
     }
   ],
   "unresolved": [

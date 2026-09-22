@@ -60,6 +60,13 @@ struct ProgressHomeView: View {
                 }
                 .buttonStyle(.plain)
 
+                NavigationLink {
+                    HydrationView()
+                } label: {
+                    HydrationSummaryCard(todayTotalML: environment.hydrationLoader.todayTotalML)
+                }
+                .buttonStyle(.plain)
+
                 VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                     SectionHeader(title: "Goals, last 14 days")
                     GoalHistoryList(statuses: Array(engine.goalHistory.prefix(14)))
@@ -73,6 +80,7 @@ struct ProgressHomeView: View {
         .refreshable {
             await engine.refresh()
             await environment.weightLoader.refresh()
+            await environment.hydrationLoader.refresh()
         }
     }
 }
@@ -272,6 +280,31 @@ private struct WeightSummaryCard: View {
         .card()
         .accessibilityElement(children: .combine)
         .accessibilityHint("Opens weight tracking")
+    }
+}
+
+/// Progress tab entry point into `HydrationView` (add-hydration-tracking) --
+/// same "card summarises, tap opens the detail screen" shape as
+/// `WeightSummaryCard` directly above. Shows only today's total (no delta
+/// badge, unlike weight): hydration resets every day, so "since last
+/// entry" isn't a meaningful comparison the way it is for a weigh-in.
+private struct HydrationSummaryCard: View {
+    let todayTotalML: Double
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            CardHeader(title: "Water", systemImage: "drop.fill")
+            HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
+                Text(todayTotalML.formattedML)
+                    .font(.system(.largeTitle, design: .rounded).weight(.bold).monospacedDigit())
+                Text("ml today")
+                    .font(.streakLabel)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .card()
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Opens hydration tracking")
     }
 }
 
