@@ -19,9 +19,10 @@
 // the response to learn the newly created food's Garmin `foodId` before
 // anything can be logged against it, so there is no read-back-and-verify
 // step available the way `createFoodLogEntry` has via
-// Reconciliation.swift. Its request AND response shapes are both
-// genuinely unconfirmed guesses -- see its own doc comment below and
-// `CreateCustomFoodRequest`'s in GarminModels.swift.
+// Reconciliation.swift. Its request shape is now a real third-party
+// client's confirmed contract (2026-09-22 correction, `CustomFoodWriteBody`
+// in GarminModels.swift); its response shape remains an educated guess --
+// see both doc comments for the full reasoning.
 //
 // `addWeighIn`/`getWeighIns` (add-weight-tracking, 2026-09-22) add
 // `weight-service` routes. Their evidence tier is DIFFERENT from every
@@ -239,24 +240,26 @@ public struct GarminClient: Sendable {
         return response
     }
 
-    /// POST `/nutrition-service/customFood` (add-czech-food-catalog design.md
-    /// D4, task 30.1).
+    /// PUT `/nutrition-service/customFood` (add-czech-food-catalog design.md
+    /// D4, task 30.1 -- CORRECTED 2026-09-22).
     ///
-    /// ROUTE CONFIRMED TO EXIST (found in the decompiled Android client, per
-    /// docs/garmin-routes.json), but -- UNLIKE `createFoodLogEntry` above --
-    /// BOTH the request and response shapes are genuinely unconfirmed: no
-    /// field-level evidence (Kotlin `toString()` fragments or otherwise) was
-    /// ever extracted for this specific route. See
-    /// `CreateCustomFoodRequest`'s doc comment in GarminModels.swift for
-    /// exactly what's being guessed in the request body and why.
+    /// The ORIGINAL flat POST guess 400'd on a real device: "custom food
+    /// nutrition information is missing for the provided food id with
+    /// region code and language code". A first attempted fix (adding
+    /// top-level regionCode/languageCode) did NOT resolve it, because the
+    /// real problem was the envelope shape itself, not a missing field --
+    /// see `CustomFoodWriteBody`'s doc comment in GarminModels.swift for
+    /// the full, now-evidence-backed contract (method, nesting, and
+    /// numbers-as-strings, all confirmed against a real third-party
+    /// client's source, not guessed).
     ///
-    /// The response is decoded as a `FoodSearchResult` -- the same "one
-    /// food" shape `searchFoodByBarcode` above already assumes for a
-    /// single-food payload -- since that is this package's best guess for
-    /// what a newly created food looks like coming back from Garmin. If the
-    /// real response is shaped differently, this throws
-    /// `GarminClientError.decodingFailed` rather than silently returning
-    /// something wrong.
+    /// The response is decoded as a `FoodSearchResult` -- the exact same
+    /// `foodMetaData`/`nutritionContents` envelope shape the confirmed
+    /// source client's own response type (`FoodItem`) uses, so this is a
+    /// stronger bet than the request shape was, but still not
+    /// device-confirmed for the response specifically. If the real response
+    /// is shaped differently, this throws `GarminClientError.
+    /// decodingFailed` rather than silently returning something wrong.
     ///
     /// IMPORTANT, same rule as `createFoodLogEntry`'s task 11.4 above:
     /// nothing in this package invokes this automatically, and per
@@ -273,19 +276,16 @@ public struct GarminClient: Sendable {
         carbs: Double? = nil,
         fat: Double? = nil
     ) async throws -> FoodSearchResult {
-        let body = CreateCustomFoodRequest(
+        let body = CustomFoodWriteBody.make(
             foodName: name,
             servingUnit: servingUnit,
             numberOfUnits: numberOfUnits,
-            // 2026-09-21: real device 400 -- "custom food nutrition
-            // information is missing for the provided food id with region
-            // code and language code" -- see CreateCustomFoodRequest's own
-            // doc comment in GarminModels.swift for the full reasoning.
-            regionCode: FoodLogWriteBody.regionCode,
-            languageCode: FoodLogWriteBody.languageCode,
-            nutritionContent: CreateCustomFoodNutritionContent(calories: calories, protein: protein, carbs: carbs, fat: fat)
+            calories: calories,
+            protein: protein,
+            carbs: carbs,
+            fat: fat
         )
-        let (data, response) = try await post(path: "/nutrition-service/customFood", body: body)
+        let (data, response) = try await put(path: "/nutrition-service/customFood", body: body)
         try Self.throwIfNotSuccessful(response, data: data)
         do {
             return try Self.decoder.decode(FoodSearchResult.self, from: data)
