@@ -108,6 +108,39 @@ struct FoodListRow: View {
     }
 }
 
+// MARK: - FavoriteToggleButton
+
+/// The star affordance for marking/unmarking a food as a LOCAL favorite
+/// (add-favorite-foods, `FoodLogCore.FavoriteFoodStore`) -- distinct from
+/// Garmin's own read-only `Food.garminIsFavorite` flag shown by
+/// `FoodListRow`'s "Favorite" `Tag` above (that one reflects Garmin
+/// account state this app cannot write to; this one is entirely this
+/// project's own local, instantly-toggleable concept).
+///
+/// Deliberately a SIBLING view next to a row's own `Button`, never nested
+/// inside one -- a second `Button` inside a List row's primary `Button`'s
+/// `label` is unreliable in SwiftUI (the outer button's hit-testing can
+/// swallow the inner tap). Every call site places this in an `HStack`/
+/// `ZStack` alongside, not inside, the row's own tap target, matching the
+/// standard "checkbox + row" multi-button List pattern.
+struct FavoriteToggleButton: View {
+    let isFavorite: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: isFavorite ? "star.fill" : "star")
+                .foregroundStyle(isFavorite ? Theme.accent : .secondary)
+                .imageScale(.medium)
+                .frame(width: 32, height: 32)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
+        .accessibilityAddTraits(isFavorite ? [.isSelected] : [])
+    }
+}
+
 private struct Tag: View {
     let text: String
     let color: Color
@@ -439,6 +472,13 @@ struct DaySwitcher: View {
             food: Food(id: "2", name: "Domácí tvaroh", source: .custom, servings: []),
             serving: Serving(id: "custom", unit: "bowl", numberOfUnits: 1, calories: 220)
         )
+    }
+}
+
+#Preview("FavoriteToggleButton") {
+    HStack {
+        FavoriteToggleButton(isFavorite: false, action: {})
+        FavoriteToggleButton(isFavorite: true, action: {})
     }
 }
 

@@ -13,17 +13,36 @@ import FoodLogCore
 struct QuickPickShelf: View {
     let items: [QuickPickItem]
     let onTap: (QuickPickItem) -> Void
+    /// Favorite-star wiring (add-favorite-foods) -- both optional and only
+    /// meaningful together, so existing/preview call sites that don't pass
+    /// them simply render no star at all rather than a half-wired one.
+    /// `FoodCatalogView` passes `nil` for both while in a picker mode
+    /// (`.pickBackingFood`/`.pickIngredient`), where toggling a favorite
+    /// isn't offered.
+    var isFavorite: ((Food) -> Bool)? = nil
+    var onToggleFavorite: ((Food) -> Void)? = nil
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: Theme.Spacing.sm) {
                 ForEach(items) { item in
-                    Button {
-                        onTap(item)
-                    } label: {
-                        QuickPickCard(item: item)
+                    ZStack(alignment: .topTrailing) {
+                        Button {
+                            onTap(item)
+                        } label: {
+                            QuickPickCard(item: item)
+                        }
+                        .buttonStyle(.plain)
+                        // A sibling of the Button above, not nested inside
+                        // its label -- see FavoriteToggleButton's own doc
+                        // comment (Components.swift) for why.
+                        if let isFavorite, let onToggleFavorite {
+                            FavoriteToggleButton(isFavorite: isFavorite(item.food)) {
+                                onToggleFavorite(item.food)
+                            }
+                            .padding(4)
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, Theme.Spacing.md)

@@ -81,6 +81,12 @@ struct FoodCatalogView: View {
     @State private var quickPickItems: [QuickPickItem] = []
     @State private var customFoods: [CustomFoodDraft] = []
     @State private var mealPresets: [MealPreset] = []
+    // add-favorite-foods: the local favorites list, plus a derived id set
+    // for O(1) `isFoodFavorited` lookups from row rendering (rebuilt
+    // whenever `favoriteFoods` changes, which is cheap -- this list is
+    // expected to stay small, same assumption `customFoods` already makes).
+    @State private var favoriteFoods: [FavoriteFood] = []
+    private var favoriteFoodIds: Set<String> { Set(favoriteFoods.map(\.id)) }
 
     @State private var logTarget: LogTarget?
     @State private var mealPresetTarget: MealPreset?
@@ -113,9 +119,14 @@ struct FoodCatalogView: View {
             if !isPickingBackingFood, searchText.trimmingCharacters(in: .whitespaces).isEmpty {
                 if !quickPickItems.isEmpty {
                     Section {
-                        QuickPickShelf(items: quickPickItems) { item in
-                            logTarget = .catalog(food: item.food, initialServing: item.serving)
-                        }
+                        QuickPickShelf(
+                            items: quickPickItems,
+                            onTap: { item in
+                                logTarget = .catalog(food: item.food, initialServing: item.serving)
+                            },
+                            isFavorite: isPicking ? nil : { isFoodFavorited($0) },
+                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) }
+                        )
                         .listRowInsets(EdgeInsets())
                         .listRowSeparator(.hidden)
                     } header: {
@@ -123,15 +134,43 @@ struct FoodCatalogView: View {
                     }
                 }
 
+                // add-favorite-foods: same visibility rule as the quick-pick
+                // shelf above (shown whenever not picking a BACKING food;
+                // still shown while picking an ingredient, same as quick
+                // pick). The star toggle itself is `nil` in EITHER picker
+                // mode, per this feature's own scope note -- favoriting
+                // isn't offered while picking for another screen, only tap-
+                // to-select is.
+                if !isPickingBackingFood, !favoriteFoods.isEmpty {
+                    Section {
+                        FavoritesShelf(
+                            items: favoriteFoods,
+                            onTap: { food in select(food) },
+                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) }
+                        )
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+                    } header: {
+                        SectionHeader(title: "Favorites")
+                    }
+                }
+
                 if !customFoods.isEmpty {
                     Section {
                         ForEach(customFoods) { draft in
-                            Button {
-                                selectCustomFood(draft)
-                            } label: {
-                                FoodListRow(food: draft.asFood(), serving: draft.asFood().servings.first)
+                            HStack(spacing: Theme.Spacing.sm) {
+                                Button {
+                                    selectCustomFood(draft)
+                                } label: {
+                                    FoodListRow(food: draft.asFood(), serving: draft.asFood().servings.first)
+                                }
+                                .buttonStyle(.plain)
+                                if !isPicking {
+                                    FavoriteToggleButton(isFavorite: isFoodFavorited(draft.asFood())) {
+                                        toggleFavorite(draft.asFood())
+                                    }
+                                }
                             }
-                            .buttonStyle(.plain)
                         }
                     } header: {
                         SectionHeader(title: "Your custom foods")
@@ -188,12 +227,19 @@ struct FoodCatalogView: View {
                     )
                 } else {
                     ForEach(searchResults) { food in
-                        Button {
-                            select(food)
-                        } label: {
-                            FoodListRow(food: food, serving: food.servings.first)
+                        HStack(spacing: Theme.Spacing.sm) {
+                            Button {
+                                select(food)
+                            } label: {
+                                FoodListRow(food: food, serving: food.servings.first)
+                            }
+                            .buttonStyle(.plain)
+                            if !isPicking {
+                                FavoriteToggleButton(isFavorite: isFoodFavorited(food)) {
+                                    toggleFavorite(food)
+                                }
+                            }
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             } header: {
@@ -254,7 +300,7 @@ struct FoodCatalogView: View {
                 }
             }
 
-            if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, mealPresets.isEmpty, !isPickingBackingFood {
+            if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, mealPresets.isEmpty, favoriteFoods.isEmpty, !isPickingBackingFood {
                 EmptyStateView(
                     systemImage: "fork.knife",
                     title: "Nothing logged yet",
@@ -436,9 +482,32 @@ struct FoodCatalogView: View {
 
         if !isPickingBackingFood {
             customFoods = await environment.customFoodStore.all()
+            favoriteFoods = await environment.favoriteFoodStore.all()
         }
         if !isPicking {
             mealPresets = await environment.mealPresetStore.all()
+        }
+    }
+
+    // MARK: - Favorites (add-favorite-foods)
+
+    private func isFoodFavorited(_ food: Food) -> Bool {
+        favoriteFoodIds.contains(food.id)
+    }
+
+    /// Local-first by construction: `FavoriteFoodStore.toggle` is a
+    /// synchronous JSON-file write wrapped in `async` purely because it's
+    /// actor-isolated, not because it waits on any network -- there is no
+    /// Garmin route this syncs to (FavoriteFood.swift's header explains
+    /// why), so there is nothing to enqueue or drain here, unlike a food
+    /// LOG action. `try?` matches this file's own existing convention for
+    /// a local-store mutation that's immediately followed by a UI refresh
+    /// (see `deleteMealPreset` below) -- a write failure here has no
+    /// dedicated error UI, same as that one.
+    private func toggleFavorite(_ food: Food) {
+        Task {
+            try? await environment.favoriteFoodStore.toggle(food)
+            favoriteFoods = await environment.favoriteFoodStore.all()
         }
     }
 
