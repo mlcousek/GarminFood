@@ -19,6 +19,7 @@
 // both, computes these booleans and passes them in.
 
 import Foundation
+import GarminKit
 
 public struct ReminderSetting: Sendable, Equatable {
     public var isEnabled: Bool
