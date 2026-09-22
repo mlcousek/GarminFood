@@ -37,6 +37,7 @@ final class AppServices {
     let usageHistory: UsageHistoryStore
     let servingDefaults: ServingDefaultStore
     let customFoodStore: CustomFoodStore
+    let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
     let logEntryCoordinator: LogEntryCoordinator
 
@@ -55,6 +56,7 @@ final class AppServices {
         self.usageHistory = usageHistory
         self.servingDefaults = servingDefaults
         self.customFoodStore = CustomFoodStore()
+        self.mealPresetStore = MealPresetStore()
         self.foodCache = FoodCacheStore()
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
     }

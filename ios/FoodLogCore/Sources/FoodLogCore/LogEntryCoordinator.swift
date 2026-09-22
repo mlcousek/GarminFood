@@ -100,6 +100,50 @@ public struct LogEntryCoordinator: Sendable {
         )
         return (entry, customFood.discrepancyNote)
     }
+
+    /// Confirms every ingredient of a meal preset as its own outbox entry,
+    /// all sharing the same meal type, date, and timestamp -- see
+    /// MealPreset.swift's header for why this is N separate entries rather
+    /// than one aggregated custom food. Built entirely on top of `confirm`/
+    /// `confirmCustomFood` above, unchanged, so a preset ingredient is
+    /// indistinguishable -- to Garmin, to usage history, to quick-pick
+    /// ranking -- from that same food logged on its own.
+    ///
+    /// `servingsMultiplier` scales every ingredient's own preset quantity
+    /// together, e.g. `0.5` to log half the preset as composed (a smaller
+    /// portion of the same recipe, not a different recipe).
+    ///
+    /// Not transactional: each ingredient is its own durable local commit
+    /// (`Outbox.logFood` only ever appends to a file), so if one throws
+    /// partway through, every ingredient before it is already committed and
+    /// stays that way -- undoing them to fake atomicity would throw away
+    /// real, already-durable entries over an unrelated failure. Rethrows
+    /// immediately on the first failure, same as every other method here;
+    /// the caller can tell a partial log happened by comparing how many
+    /// entries came back (when it doesn't throw) or simply that it threw at
+    /// all against `preset.ingredients.count`.
+    @discardableResult
+    public func confirmMealPreset(
+        _ preset: MealPreset,
+        servingsMultiplier: Double = 1,
+        mealType: MealType,
+        date: String,
+        now: Date = Date()
+    ) async throws -> [OutboxEntry] {
+        var entries: [OutboxEntry] = []
+        entries.reserveCapacity(preset.ingredients.count)
+        for ingredient in preset.ingredients {
+            let quantity = ingredient.quantity * servingsMultiplier
+            if let customFoodDraft = ingredient.customFoodDraft {
+                let (entry, _) = try await confirmCustomFood(customFoodDraft, quantity: quantity, mealType: mealType, date: date, now: now)
+                entries.append(entry)
+            } else {
+                let entry = try await confirm(food: ingredient.food, serving: ingredient.serving, numberOfUnits: quantity, mealType: mealType, date: date, now: now)
+                entries.append(entry)
+            }
+        }
+        return entries
+    }
 }
 
 extension FoodSource {

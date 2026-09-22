@@ -27,6 +27,7 @@ final class AppEnvironment {
     let usageHistory: UsageHistoryStore
     let servingDefaults: ServingDefaultStore
     let customFoodStore: CustomFoodStore
+    let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
     let catalogSearch: FoodCatalogSearch
     /// The Czech (Open Food Facts) search source (add-czech-food-catalog) --
@@ -70,6 +71,7 @@ final class AppEnvironment {
         self.usageHistory = services.usageHistory
         self.servingDefaults = services.servingDefaults
         self.customFoodStore = services.customFoodStore
+        self.mealPresetStore = services.mealPresetStore
         self.foodCache = services.foodCache
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: services.foodCache)
         self.openFoodFactsClient = OpenFoodFactsClient()
