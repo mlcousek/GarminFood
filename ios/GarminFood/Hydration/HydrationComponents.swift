@@ -15,6 +15,7 @@
 
 import SwiftUI
 import FoodLogCore
+import GarminKit
 
 // MARK: - Hero
 
