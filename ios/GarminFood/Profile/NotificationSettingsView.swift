@@ -77,9 +77,6 @@ struct NotificationSettingsView: View {
         .navigationTitle("Reminders")
         .navigationBarTitleDisplayMode(.inline)
         .task { await refreshStatus() }
-        .onChange(of: environment.notificationPreferences.preferences) {
-            Task { await environment.syncNotifications() }
-        }
     }
 
     @ViewBuilder

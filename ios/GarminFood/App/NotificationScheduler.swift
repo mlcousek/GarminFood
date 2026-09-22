@@ -55,14 +55,33 @@ final class NotificationScheduler {
         return await center.notificationSettings().authorizationStatus
     }
 
+    /// `true` while a sync is in flight -- `AppEnvironment` calls `sync`
+    /// from several independent triggers (foreground, right after a log,
+    /// every reminder-setting change), so two calls can legitimately
+    /// overlap. Same reentrancy guard `AppEnvironment.drainAndReconcile()`
+    /// already uses for the exact same reason (a 2026-09-22 review found
+    /// two callers could both be mid-flight against the same `await
+    /// center.pendingNotificationRequests()` snapshot, each computing a
+    /// diff that's stale by the time it writes -- self-healing on the next
+    /// call, but worth closing off rather than relying on that).
+    private var isSyncing = false
+
     /// Re-plans and re-syncs pending notifications against current state.
-    /// Idempotent and safe to call often -- a no-op when nothing changed.
+    /// Idempotent and safe to call often -- a no-op when nothing changed,
+    /// and a no-op (not queued) when another call is already in flight,
+    /// since the in-flight call already reflects whatever triggered this
+    /// one by the time it finishes reading `preferences`/`mealsLoggedToday`
+    /// fresh on its own next invocation.
     func sync(
         preferences: NotificationPreferences,
         mealsLoggedToday: Set<MealType>,
         isStreakAtRiskToday: Bool,
         now: Date = Date()
     ) async {
+        guard !isSyncing else { return }
+        isSyncing = true
+        defer { isSyncing = false }
+
         let status = await center.notificationSettings().authorizationStatus
         guard status == .authorized || status == .provisional else { return }
 
