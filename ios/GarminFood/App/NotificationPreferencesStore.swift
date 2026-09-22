@@ -31,6 +31,8 @@ final class NotificationPreferencesStore {
         static let challengeEnabled = "notifications.dailyChallenge.enabled"
         static let challengeHour = "notifications.dailyChallenge.hour"
         static let challengeMinute = "notifications.dailyChallenge.minute"
+        static let fastingEnabled = "notifications.fasting.enabled"
+        static let fastingMinutesBefore = "notifications.fasting.minutesBefore"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -45,7 +47,11 @@ final class NotificationPreferencesStore {
             lunchReminder: Self.read(defaults, Key.lunchEnabled, Key.lunchHour, Key.lunchMinute, fallback.lunchReminder),
             dinnerReminder: Self.read(defaults, Key.dinnerEnabled, Key.dinnerHour, Key.dinnerMinute, fallback.dinnerReminder),
             streakReminder: Self.read(defaults, Key.streakEnabled, Key.streakHour, Key.streakMinute, fallback.streakReminder),
-            dailyChallengeReminder: Self.read(defaults, Key.challengeEnabled, Key.challengeHour, Key.challengeMinute, fallback.dailyChallengeReminder)
+            dailyChallengeReminder: Self.read(defaults, Key.challengeEnabled, Key.challengeHour, Key.challengeMinute, fallback.dailyChallengeReminder),
+            fastingReminder: FastingReminderSetting(
+                isEnabled: defaults.object(forKey: Key.fastingEnabled) as? Bool ?? fallback.fastingReminder.isEnabled,
+                minutesBefore: defaults.object(forKey: Key.fastingMinutesBefore) as? Int ?? fallback.fastingReminder.minutesBefore
+            )
         )
     }
 
@@ -72,6 +78,12 @@ final class NotificationPreferencesStore {
     func setDailyChallengeReminder(_ setting: ReminderSetting) {
         preferences.dailyChallengeReminder = setting
         write(setting, Key.challengeEnabled, Key.challengeHour, Key.challengeMinute)
+    }
+
+    func setFastingReminder(_ setting: FastingReminderSetting) {
+        preferences.fastingReminder = setting
+        defaults.set(setting.isEnabled, forKey: Key.fastingEnabled)
+        defaults.set(setting.minutesBefore, forKey: Key.fastingMinutesBefore)
     }
 
     private func write(_ setting: ReminderSetting, _ enabledKey: String, _ hourKey: String, _ minuteKey: String) {

@@ -77,4 +77,90 @@ final class NotificationPlanningTests: XCTestCase {
         XCTAssertEqual(plan.first?.hour, 12)
         XCTAssertEqual(plan.first?.minute, 45)
     }
+
+    // MARK: - Fasting reminder
+
+    func testPlanFastingReminderIsNilWhenDisabled() {
+        let now = Date(timeIntervalSince1970: 0)
+        let session = FastingSession(protocolKind: .sixteenEight, startedAt: now)
+
+        let planned = NotificationPlanning.planFastingReminder(
+            setting: FastingReminderSetting(isEnabled: false, minutesBefore: 15),
+            activeSession: session,
+            now: now
+        )
+
+        XCTAssertNil(planned)
+    }
+
+    func testPlanFastingReminderIsNilWithNoActiveSession() {
+        let planned = NotificationPlanning.planFastingReminder(
+            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
+            activeSession: nil,
+            now: Date()
+        )
+
+        XCTAssertNil(planned)
+    }
+
+    func testPlanFastingReminderFiresBeforeTheFastingPhaseEnds() {
+        let start = Date(timeIntervalSince1970: 0)
+        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start)
+        let now = start.addingTimeInterval(10 * 3600) // 10h into a 16h fast
+
+        let planned = NotificationPlanning.planFastingReminder(
+            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
+            activeSession: session,
+            now: now
+        )
+
+        XCTAssertEqual(planned?.fireDate, start.addingTimeInterval(16 * 3600 - 15 * 60))
+        XCTAssertEqual(planned?.title, "Fasting window ending soon")
+    }
+
+    func testPlanFastingReminderFiresBeforeTheEatingPhaseEndsOnceFastIsBroken() {
+        let start = Date(timeIntervalSince1970: 0)
+        let brokeFastAt = start.addingTimeInterval(16 * 3600)
+        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start, fastingEndedAt: brokeFastAt)
+        let now = brokeFastAt.addingTimeInterval(3600)
+
+        let planned = NotificationPlanning.planFastingReminder(
+            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
+            activeSession: session,
+            now: now
+        )
+
+        XCTAssertEqual(planned?.fireDate, brokeFastAt.addingTimeInterval(8 * 3600 - 15 * 60))
+        XCTAssertEqual(planned?.title, "Eating window ending soon")
+    }
+
+    func testPlanFastingReminderIsNilOnceTheFireDateHasAlreadyPassed() {
+        let start = Date(timeIntervalSince1970: 0)
+        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start)
+        // Only 5 minutes left before the 16h boundary, but the setting wants
+        // 15 minutes of lead time -- the fire date is already in the past.
+        let now = start.addingTimeInterval(16 * 3600 - 5 * 60)
+
+        let planned = NotificationPlanning.planFastingReminder(
+            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
+            activeSession: session,
+            now: now
+        )
+
+        XCTAssertNil(planned)
+    }
+
+    func testPlanFastingReminderIsNilOnceThePhaseIsAlreadyOverdue() {
+        let start = Date(timeIntervalSince1970: 0)
+        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start)
+        let now = start.addingTimeInterval(20 * 3600) // past the 16h boundary, fast never explicitly broken
+
+        let planned = NotificationPlanning.planFastingReminder(
+            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
+            activeSession: session,
+            now: now
+        )
+
+        XCTAssertNil(planned)
+    }
 }

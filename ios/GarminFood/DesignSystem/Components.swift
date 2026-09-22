@@ -287,6 +287,70 @@ struct MacroBar: View {
     }
 }
 
+// MARK: - NutrientRow / NutritionBreakdownSections
+
+// implement-micronutrients (2026-09-22): promoted out of MealDetailView.swift
+// (was `private struct NutrientRow` there) so `LogEntryConfirmView`'s new
+// per-serving nutrition breakdown can reuse the exact same row styling
+// instead of a second, subtly-different one -- config.yaml's "small,
+// composable views... makes adding the next thing cheap" principle.
+
+/// One nutrient's name + amount, e.g. "Vitamin D  3.4 µg" -- indented and
+/// de-emphasized when `NutrientKind.isSubNutrient` (fiber under carbs).
+struct NutrientRow: View {
+    let nutrient: NutrientAmount
+
+    var body: some View {
+        HStack {
+            Text(nutrient.kind.displayName)
+                .font(nutrient.kind.isSubNutrient ? .subheadline : .body)
+                .foregroundStyle(nutrient.kind.isSubNutrient ? .secondary : .primary)
+                .padding(.leading, nutrient.kind.isSubNutrient ? Theme.Spacing.md : 0)
+            Spacer()
+            Text("\(nutrient.value.formatted(.number.precision(.fractionLength(0...1)))) \(nutrient.kind.unit)")
+                .font(.body.monospacedDigit())
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// A food/serving's full nutrient panel, grouped into Form/List `Section`s
+/// by `NutrientKind.group` (design ask: "Group by type (vitamins vs.
+/// minerals)... if that reads better than one flat list" -- it does, once
+/// Open Food Facts's richer panel is in the mix: a single ungrouped list of
+/// ~30 rows is much harder to scan than four short, labeled ones). Calories
+/// is excluded -- every call site already shows it more prominently nearby
+/// (`LogEntryConfirmView`'s calorie row, `MealDetailView`'s ring).
+///
+/// Emits `Section`s directly (not wrapped in a `List`/`Form` itself) so it
+/// drops straight into an existing `Form { ... }` body, the same way
+/// `MealDetailView`'s own "Nutrients" `Section` already does -- this is
+/// deliberately NOT a new parallel screen, per this change's "prefer
+/// extending what exists" constraint. A group with nothing present is
+/// omitted entirely, same "never a fabricated zero" rule every other
+/// nutrient display in this codebase already follows.
+struct NutritionBreakdownSections: View {
+    let nutrients: [NutrientAmount]
+
+    private var groupedSections: [(group: NutrientGroup, items: [NutrientAmount])] {
+        NutrientGroup.allCases.compactMap { group in
+            let items = nutrients.filter { $0.kind.group == group && $0.kind != .calories }
+            return items.isEmpty ? nil : (group, items)
+        }
+    }
+
+    var body: some View {
+        ForEach(groupedSections, id: \.group.rawValue) { section in
+            Section(section.group.displayName) {
+                ForEach(section.items) { item in
+                    NutrientRow(nutrient: item)
+                }
+            }
+        }
+    }
+}
+
 // MARK: - StatTile
 
 struct StatTile: View {

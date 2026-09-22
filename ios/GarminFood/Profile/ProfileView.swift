@@ -4,6 +4,14 @@
 // the Garmin name and photo when available, plus local stats that never
 // depend on the network. A failed Garmin profile load never hides the local
 // stats -- it just falls back to a neutral placeholder for the name/photo.
+//
+// The "Fasting" row (2026-09-22) is the one STABLE entry point into
+// `FastingView` -- `TodayView`'s own fasting card only renders once a fast
+// is already active (it's a glance-while-running surface, not a launcher),
+// so starting the very first fast has to be reachable from somewhere that's
+// always on screen regardless of state. This list already plays that role
+// for `SettingsView`, so it's the natural place for a second one rather
+// than adding a fourth tab for a feature this size.
 
 import SwiftUI
 import GarminKit
@@ -28,6 +36,20 @@ struct ProfileView: View {
                     StatTile(value: "\(engine.streakSummary.loggedDayCount)", label: "Days logged", systemImage: "calendar")
                     StatTile(value: "\(engine.completedChallenges.count)", label: "Challenges done", systemImage: "checkmark.seal.fill")
                 }
+
+                NavigationLink {
+                    FastingView()
+                } label: {
+                    HStack {
+                        Label("Fasting", systemImage: "timer")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .card()
+                }
+                .buttonStyle(.plain)
 
                 NavigationLink {
                     SettingsView()

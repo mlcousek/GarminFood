@@ -204,6 +204,32 @@ final class MealDashboardTests: XCTestCase {
         XCTAssertEqual(dinner.nutrients.first { $0.kind == .sodium }?.value, 300)
     }
 
+    // MARK: New micronutrients ceiling (implement-micronutrients, 2026-09-22)
+
+    /// `DailyNutritionContent` (Garmin's own daily/meal aggregate) has no
+    /// vitaminB1...omega6 fields at all, so `MealDashboard.nutrients` must
+    /// never surface them here even though the enum now has cases for them
+    /// -- that richer panel only exists per-food, via `Serving.
+    /// detailedNutrients` (FoodTests.swift), never synthesized into a day
+    /// total Garmin never actually returned.
+    func testNewMicronutrientKindsNeverAppearInTheGarminFedMealDashboardEvenWhenEverythingElseIsPresent() throws {
+        let content = "{\"calories\": 230, \"carbs\": 20, \"protein\": 10, \"fat\": 5, \"fiber\": 4, \"sugar\": 2, "
+            + "\"saturatedFat\": 1, \"monounsaturatedFat\": 1, \"polyunsaturatedFat\": 1, \"cholesterol\": 10, "
+            + "\"sodium\": 300, \"potassium\": 200, \"vitaminA\": 5, \"vitaminC\": 10, \"calcium\": 8, \"iron\": 6}"
+        let dinnerJSON = mealJSON("DINNER", content: content)
+
+        let dashboard = MealDashboard.build(date: day, log: try dayLog(meals: [dinnerJSON]), outboxEntries: [], foods: [:])
+        let dinner = try XCTUnwrap(dashboard.section(for: .dinner))
+
+        let newKinds: Set<NutrientKind> = [
+            .vitaminB1, .vitaminB2, .vitaminB3, .vitaminB5, .vitaminB6, .vitaminB9, .vitaminB12,
+            .vitaminD, .vitaminE, .vitaminK,
+            .magnesium, .zinc, .phosphorus, .selenium, .copper, .manganese, .iodine,
+            .omega3, .omega6,
+        ]
+        XCTAssertTrue(newKinds.isDisjoint(with: Set(dinner.nutrients.map(\.kind))))
+    }
+
     // MARK: Queued entries
 
     func testAQueuedEntryAppearsInItsMealAndCountsTowardTheTotals() throws {

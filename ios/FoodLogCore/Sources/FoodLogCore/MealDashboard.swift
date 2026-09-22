@@ -76,10 +76,28 @@ public struct NutrientTotals: Sendable, Equatable {
 
 // MARK: - Detailed nutrients
 
-public enum NutrientKind: String, Sendable, Equatable, CaseIterable, Identifiable {
+/// 2026-09-22 (implement-micronutrients): `vitaminB1`...`omega6` are new.
+/// They deliberately CANNOT appear via `MealDashboard.nutrients(content:
+/// totals:)` -- Garmin's own daily/meal log aggregate (`DailyNutritionContent`,
+/// GarminModels.swift) has no such fields, full stop, confirmed by re-reading
+/// every field that struct and `NutritionContent` already decode. They exist
+/// on this enum so a single `Food`/`Serving`'s own richer panel (Open Food
+/// Facts only -- see `Serving`'s header comment in Food.swift) can reuse the
+/// same `NutrientKind`/`NutrientAmount` display types via `Serving.
+/// detailedNutrients`, rather than inventing a parallel enum for the exact
+/// same "kind + value, only if present" shape.
+public enum NutrientKind: String, Sendable, Equatable, Hashable, CaseIterable, Identifiable {
     case calories, carbs, fiber, sugar, protein, fat
     case saturatedFat, monounsaturatedFat, polyunsaturatedFat
     case cholesterol, sodium, potassium, vitaminA, vitaminC, calcium, iron
+    // New in implement-micronutrients (2026-09-22) -- Open Food Facts only,
+    // never populated by `MealDashboard`'s Garmin-fed pipeline. Appended
+    // after `iron` rather than interleaved so existing enumeration order
+    // (and the tests that assert on it) is unaffected.
+    case vitaminB1, vitaminB2, vitaminB3, vitaminB5, vitaminB6, vitaminB9, vitaminB12
+    case vitaminD, vitaminE, vitaminK
+    case magnesium, zinc, phosphorus, selenium, copper, manganese, iodine
+    case omega3, omega6
 
     public var id: String { rawValue }
 
@@ -101,17 +119,48 @@ public enum NutrientKind: String, Sendable, Equatable, CaseIterable, Identifiabl
         case .vitaminC: return "Vitamin C"
         case .calcium: return "Calcium"
         case .iron: return "Iron"
+        case .vitaminB1: return "Vitamin B1 (Thiamin)"
+        case .vitaminB2: return "Vitamin B2 (Riboflavin)"
+        case .vitaminB3: return "Vitamin B3 (Niacin)"
+        case .vitaminB5: return "Vitamin B5 (Pantothenic acid)"
+        case .vitaminB6: return "Vitamin B6"
+        case .vitaminB9: return "Folate (B9)"
+        case .vitaminB12: return "Vitamin B12"
+        case .vitaminD: return "Vitamin D"
+        case .vitaminE: return "Vitamin E"
+        case .vitaminK: return "Vitamin K"
+        case .magnesium: return "Magnesium"
+        case .zinc: return "Zinc"
+        case .phosphorus: return "Phosphorus"
+        case .selenium: return "Selenium"
+        case .copper: return "Copper"
+        case .manganese: return "Manganese"
+        case .iodine: return "Iodine"
+        case .omega3: return "Omega-3"
+        case .omega6: return "Omega-6"
         }
     }
 
-    /// Units as Garmin reports them. Vitamins and minerals come back as a
-    /// percentage of the daily value, the way FatSecret publishes them.
+    /// Units as Garmin reports them for the original set. Vitamins and
+    /// minerals come back as a percentage of the daily value, the way
+    /// FatSecret publishes them. The new (Open Food Facts only) nutrients
+    /// below use OFF's own per-serving mg/µg convention instead -- see
+    /// `Serving`'s header comment in Food.swift for why these two
+    /// vocabularies are never mixed into the same field/kind.
     public var unit: String {
         switch self {
         case .calories: return "kcal"
         case .carbs, .fiber, .sugar, .protein, .fat, .saturatedFat, .monounsaturatedFat, .polyunsaturatedFat: return "g"
         case .cholesterol, .sodium, .potassium: return "mg"
         case .vitaminA, .vitaminC, .calcium, .iron: return "%"
+        case .vitaminB1, .vitaminB2, .vitaminB3, .vitaminB5, .vitaminB6: return "mg"
+        case .vitaminB9, .vitaminB12: return "µg"
+        case .vitaminD: return "µg"
+        case .vitaminE: return "mg"
+        case .vitaminK: return "µg"
+        case .magnesium, .zinc, .phosphorus, .copper, .manganese: return "mg"
+        case .selenium, .iodine: return "µg"
+        case .omega3, .omega6: return "mg"
         }
     }
 
@@ -120,6 +169,36 @@ public enum NutrientKind: String, Sendable, Equatable, CaseIterable, Identifiabl
         switch self {
         case .fiber, .sugar, .saturatedFat, .monounsaturatedFat, .polyunsaturatedFat: return true
         default: return false
+        }
+    }
+
+    /// Which section of a grouped breakdown this belongs in (design ask:
+    /// "Group by type (vitamins vs. minerals) if that reads better than one
+    /// flat list" -- `LogEntryConfirmView`'s nutrition section uses this).
+    public var group: NutrientGroup {
+        switch self {
+        case .calories: return .energy
+        case .carbs, .fiber, .sugar, .protein, .fat,
+             .saturatedFat, .monounsaturatedFat, .polyunsaturatedFat,
+             .cholesterol, .omega3, .omega6: return .macronutrient
+        case .vitaminA, .vitaminC, .vitaminB1, .vitaminB2, .vitaminB3, .vitaminB5, .vitaminB6,
+             .vitaminB9, .vitaminB12, .vitaminD, .vitaminE, .vitaminK: return .vitamin
+        case .sodium, .potassium, .calcium, .iron,
+             .magnesium, .zinc, .phosphorus, .selenium, .copper, .manganese, .iodine: return .mineral
+        }
+    }
+}
+
+/// A grouped-breakdown section, per `NutrientKind.group`.
+public enum NutrientGroup: String, Sendable, Equatable, CaseIterable {
+    case energy, macronutrient, vitamin, mineral
+
+    public var displayName: String {
+        switch self {
+        case .energy: return "Energy"
+        case .macronutrient: return "Macronutrients"
+        case .vitamin: return "Vitamins"
+        case .mineral: return "Minerals"
         }
     }
 }
@@ -360,6 +439,14 @@ public enum MealDashboard {
 
     /// The four headline values always appear (as totals, so they include
     /// queued entries). The rest appear only when Garmin returned them.
+    ///
+    /// `vitaminB1`...`omega6` always resolve to `nil` here, deliberately --
+    /// `DailyNutritionContent` (Garmin's own daily/meal aggregate) has no
+    /// such fields at all, so there is nothing genuine to surface at this
+    /// level; see `NutrientKind`'s header comment. A single food's own
+    /// richer Open-Food-Facts-sourced panel is shown separately, via
+    /// `Serving.detailedNutrients` (Food.swift), not synthesized into this
+    /// day/meal total.
     static func nutrients(content: DailyNutritionContent?, totals: NutrientTotals) -> [NutrientAmount] {
         var result: [NutrientAmount] = []
         for kind in NutrientKind.allCases {
@@ -381,6 +468,11 @@ public enum MealDashboard {
             case .vitaminC: value = content?.vitaminC
             case .calcium: value = content?.calcium
             case .iron: value = content?.iron
+            case .vitaminB1, .vitaminB2, .vitaminB3, .vitaminB5, .vitaminB6, .vitaminB9, .vitaminB12,
+                 .vitaminD, .vitaminE, .vitaminK,
+                 .magnesium, .zinc, .phosphorus, .selenium, .copper, .manganese, .iodine,
+                 .omega3, .omega6:
+                value = nil
             }
             if let value {
                 result.append(NutrientAmount(kind: kind, value: value))
