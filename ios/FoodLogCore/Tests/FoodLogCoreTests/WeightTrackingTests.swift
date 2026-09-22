@@ -78,15 +78,17 @@ final class WeightTrackingTests: XCTestCase {
         XCTAssertNil(WeightHistory.delta(latest: latest, previous: nil))
     }
 
-    func testDeltaIsPositiveWhenLatestIsHeavier() {
+    func testDeltaIsPositiveWhenLatestIsHeavier() throws {
         let previous = WeightEntry(weightKg: 74)
         let latest = WeightEntry(weightKg: 75.5)
-        XCTAssertEqual(WeightHistory.delta(latest: latest, previous: previous), 1.5, accuracy: 0.0001)
+        let delta = try XCTUnwrap(WeightHistory.delta(latest: latest, previous: previous))
+        XCTAssertEqual(delta, 1.5, accuracy: 0.0001)
     }
 
-    func testDeltaIsNegativeWhenLatestIsLighter() {
+    func testDeltaIsNegativeWhenLatestIsLighter() throws {
         let previous = WeightEntry(weightKg: 80)
         let latest = WeightEntry(weightKg: 78.2)
-        XCTAssertEqual(WeightHistory.delta(latest: latest, previous: previous), -1.8, accuracy: 0.0001)
+        let delta = try XCTUnwrap(WeightHistory.delta(latest: latest, previous: previous))
+        XCTAssertEqual(delta, -1.8, accuracy: 0.0001)
     }
 }
