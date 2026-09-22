@@ -16,6 +16,17 @@
 // "decoded into the same Food/Serving shape... so the rest of the
 // logging flow treats a Czech-database food identically once selected."
 //
+// 2026-09-22 (implement-micronutrients): re-verified live against this
+// exact endpoint that OFF's real `nutriments` object is far richer than the
+// handful of macros originally decoded here -- a fortified-cereal search
+// result came back with real declared calcium, iron, vitamin B1/B2/B6,
+// vitamin D and pantothenic acid (B5) values, none of which this file used
+// to extract even though they were already present in every response. See
+// `OFFNutriments`'s own header comment below for the full field list this
+// pass adds, and `Serving`'s header comment in Food.swift for why some
+// overlapping-sounding fields (calcium/iron) are deliberately NOT mapped
+// from OFF despite existing in the response.
+//
 // =====================================================================
 // UNCONFIRMED: the `User-Agent` header below needs live re-verification
 // =====================================================================
@@ -135,23 +146,68 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
     /// `product_name`) are unusable -- an unnamed/uncoded "product" isn't
     /// useful to show or later create in Garmin against, mirroring
     /// `Food.init(searchResult:)`'s own failure rule for Garmin results.
+    ///
+    /// 2026-09-22 (implement-micronutrients): every OFF `*_100g` numeric
+    /// field is in OFF's own raw base SI unit -- **grams**, even for a
+    /// nutrient whose natural display unit is mg or µg (confirmed live:
+    /// `vitamin-d_100g: 3.4e-06` on a real captured 2026-09-22 product is
+    /// 3.4 µg, not 3.4 g). `milligrams(fromGrams:)`/`micrograms(fromGrams:)`
+    /// below convert at the point every new field is read. This also fixes
+    /// a real latent bug in `sodium` (pre-existing field, not new): it used
+    /// to pass OFF's raw grams straight into `Serving.sodium` uncoverted,
+    /// while that field is documented (and Garmin's own reads confirm) as
+    /// mg -- invisible until now only because nothing displayed a
+    /// `Serving`'s own `sodium` anywhere in the app yet.
     private static func food(from product: OFFProduct) -> Food? {
         guard let code = product.code, !code.isEmpty else { return nil }
         guard let name = product.productName?.trimmingCharacters(in: .whitespacesAndNewlines), !name.isEmpty else { return nil }
 
         let brand = product.brands?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let n = product.nutriments
         let serving = Serving(
             id: "100g",
             unit: "g",
             numberOfUnits: 100,
-            calories: product.nutriments?.energyKcal100g,
-            carbs: product.nutriments?.carbohydrates100g,
-            protein: product.nutriments?.proteins100g,
-            fat: product.nutriments?.fat100g,
-            fiber: product.nutriments?.fiber100g,
-            sugar: product.nutriments?.sugars100g,
-            saturatedFat: product.nutriments?.saturatedFat100g,
-            sodium: product.nutriments?.sodium100g
+            calories: n?.energyKcal100g,
+            carbs: n?.carbohydrates100g,
+            protein: n?.proteins100g,
+            fat: n?.fat100g,
+            fiber: n?.fiber100g,
+            sugar: n?.sugars100g,
+            saturatedFat: n?.saturatedFat100g,
+            // Fixed 2026-09-22: was the raw OFF gram value, unconverted --
+            // see this function's header comment.
+            cholesterol: milligrams(fromGrams: n?.cholesterol100g),
+            sodium: milligrams(fromGrams: n?.sodium100g),
+            potassium: milligrams(fromGrams: n?.potassium100g),
+            // vitaminA/vitaminC/calcium/iron deliberately NOT populated from
+            // OFF here -- those four fields on `Serving` are documented
+            // (Food.swift) as Garmin/FatSecret's %-of-daily-value
+            // convention. OFF has no percent-DV nutrients at all, only
+            // absolute per-100g values, so writing an OFF value into those
+            // fields would silently swap the unit under the same field name
+            // -- exactly the misleading-as-real data this project won't
+            // ship. OFF's own calcium/iron DO exist in the raw response but
+            // are intentionally left undecoded here for that reason.
+            vitaminB1: milligrams(fromGrams: n?.vitaminB1_100g),
+            vitaminB2: milligrams(fromGrams: n?.vitaminB2_100g),
+            vitaminB3: milligrams(fromGrams: n?.vitaminB3_100g),
+            vitaminB5: milligrams(fromGrams: n?.vitaminB5_100g),
+            vitaminB6: milligrams(fromGrams: n?.vitaminB6_100g),
+            vitaminB9: micrograms(fromGrams: n?.vitaminB9_100g),
+            vitaminB12: micrograms(fromGrams: n?.vitaminB12_100g),
+            vitaminD: micrograms(fromGrams: n?.vitaminD100g),
+            vitaminE: milligrams(fromGrams: n?.vitaminE100g),
+            vitaminK: micrograms(fromGrams: n?.vitaminK100g),
+            magnesium: milligrams(fromGrams: n?.magnesium100g),
+            zinc: milligrams(fromGrams: n?.zinc100g),
+            phosphorus: milligrams(fromGrams: n?.phosphorus100g),
+            selenium: micrograms(fromGrams: n?.selenium100g),
+            copper: milligrams(fromGrams: n?.copper100g),
+            manganese: milligrams(fromGrams: n?.manganese100g),
+            iodine: micrograms(fromGrams: n?.iodine100g),
+            omega3: milligrams(fromGrams: n?.omega3Fat100g),
+            omega6: milligrams(fromGrams: n?.omega6Fat100g)
         )
 
         return Food(
@@ -161,6 +217,14 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
             source: .openFoodFacts,
             servings: [serving]
         )
+    }
+
+    private static func milligrams(fromGrams grams: Double?) -> Double? {
+        grams.map { $0 * 1_000 }
+    }
+
+    private static func micrograms(fromGrams grams: Double?) -> Double? {
+        grams.map { $0 * 1_000_000 }
     }
 }
 
@@ -200,6 +264,22 @@ struct OFFProduct: Decodable, Sendable {
 /// `Double?` would fail the ENTIRE product's decode over one missing
 /// field, which task 27.1/27.3's "handle all as optional" explicitly
 /// rules out.
+///
+/// 2026-09-22 (implement-micronutrients): the vitamin/mineral/omega fields
+/// below were added after auditing OFF's own published nutrient taxonomy
+/// (`static.openfoodfacts.org/data/taxonomies/nutrients.json`) against what
+/// this file already decoded -- OFF's real per-product `nutriments` object
+/// is far richer than the handful of macros this struct captured before.
+/// Field ids match that taxonomy exactly (e.g. `vitamin-b1`, `vitamin-pp`
+/// for niacin/B3, `pantothenic-acid` for B5). `vitaminB1_100g` through
+/// `vitaminD100g` were live-verified against a real product (a fortified
+/// breakfast cereal) via this exact `search.pl` endpoint on 2026-09-22; the
+/// rest are confirmed to exist with these ids/units by that same taxonomy
+/// file but were not captured live in this session (OFF's anonymous-request
+/// rate limit was hit while researching) -- see `Serving`'s header comment
+/// in Food.swift for the full per-field citation. All remain optional and
+/// silently absent for a product that doesn't declare them, same as every
+/// other field here.
 struct OFFNutriments: Decodable, Sendable {
     let energyKcal100g: Double?
     let carbohydrates100g: Double?
@@ -209,6 +289,27 @@ struct OFFNutriments: Decodable, Sendable {
     let sugars100g: Double?
     let sodium100g: Double?
     let saturatedFat100g: Double?
+    let cholesterol100g: Double?
+    let potassium100g: Double?
+    let vitaminB1_100g: Double?
+    let vitaminB2_100g: Double?
+    let vitaminB3_100g: Double?
+    let vitaminB5_100g: Double?
+    let vitaminB6_100g: Double?
+    let vitaminB9_100g: Double?
+    let vitaminB12_100g: Double?
+    let vitaminD100g: Double?
+    let vitaminE100g: Double?
+    let vitaminK100g: Double?
+    let magnesium100g: Double?
+    let zinc100g: Double?
+    let phosphorus100g: Double?
+    let selenium100g: Double?
+    let copper100g: Double?
+    let manganese100g: Double?
+    let iodine100g: Double?
+    let omega3Fat100g: Double?
+    let omega6Fat100g: Double?
 
     enum CodingKeys: String, CodingKey {
         case energyKcal100g = "energy-kcal_100g"
@@ -219,6 +320,27 @@ struct OFFNutriments: Decodable, Sendable {
         case sugars100g = "sugars_100g"
         case sodium100g = "sodium_100g"
         case saturatedFat100g = "saturated-fat_100g"
+        case cholesterol100g = "cholesterol_100g"
+        case potassium100g = "potassium_100g"
+        case vitaminB1_100g = "vitamin-b1_100g"
+        case vitaminB2_100g = "vitamin-b2_100g"
+        case vitaminB3_100g = "vitamin-pp_100g"
+        case vitaminB5_100g = "pantothenic-acid_100g"
+        case vitaminB6_100g = "vitamin-b6_100g"
+        case vitaminB9_100g = "vitamin-b9_100g"
+        case vitaminB12_100g = "vitamin-b12_100g"
+        case vitaminD100g = "vitamin-d_100g"
+        case vitaminE100g = "vitamin-e_100g"
+        case vitaminK100g = "vitamin-k_100g"
+        case magnesium100g = "magnesium_100g"
+        case zinc100g = "zinc_100g"
+        case phosphorus100g = "phosphorus_100g"
+        case selenium100g = "selenium_100g"
+        case copper100g = "copper_100g"
+        case manganese100g = "manganese_100g"
+        case iodine100g = "iodine_100g"
+        case omega3Fat100g = "omega-3-fat_100g"
+        case omega6Fat100g = "omega-6-fat_100g"
     }
 
     init(from decoder: Decoder) throws {
@@ -231,6 +353,27 @@ struct OFFNutriments: Decodable, Sendable {
         sugars100g = Self.lenientDouble(container, .sugars100g)
         sodium100g = Self.lenientDouble(container, .sodium100g)
         saturatedFat100g = Self.lenientDouble(container, .saturatedFat100g)
+        cholesterol100g = Self.lenientDouble(container, .cholesterol100g)
+        potassium100g = Self.lenientDouble(container, .potassium100g)
+        vitaminB1_100g = Self.lenientDouble(container, .vitaminB1_100g)
+        vitaminB2_100g = Self.lenientDouble(container, .vitaminB2_100g)
+        vitaminB3_100g = Self.lenientDouble(container, .vitaminB3_100g)
+        vitaminB5_100g = Self.lenientDouble(container, .vitaminB5_100g)
+        vitaminB6_100g = Self.lenientDouble(container, .vitaminB6_100g)
+        vitaminB9_100g = Self.lenientDouble(container, .vitaminB9_100g)
+        vitaminB12_100g = Self.lenientDouble(container, .vitaminB12_100g)
+        vitaminD100g = Self.lenientDouble(container, .vitaminD100g)
+        vitaminE100g = Self.lenientDouble(container, .vitaminE100g)
+        vitaminK100g = Self.lenientDouble(container, .vitaminK100g)
+        magnesium100g = Self.lenientDouble(container, .magnesium100g)
+        zinc100g = Self.lenientDouble(container, .zinc100g)
+        phosphorus100g = Self.lenientDouble(container, .phosphorus100g)
+        selenium100g = Self.lenientDouble(container, .selenium100g)
+        copper100g = Self.lenientDouble(container, .copper100g)
+        manganese100g = Self.lenientDouble(container, .manganese100g)
+        iodine100g = Self.lenientDouble(container, .iodine100g)
+        omega3Fat100g = Self.lenientDouble(container, .omega3Fat100g)
+        omega6Fat100g = Self.lenientDouble(container, .omega6Fat100g)
     }
 
     private static func lenientDouble(_ container: KeyedDecodingContainer<CodingKeys>, _ key: CodingKeys) -> Double? {
