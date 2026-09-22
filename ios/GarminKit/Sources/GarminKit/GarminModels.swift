@@ -530,76 +530,142 @@ struct DeleteFoodLogEntriesRequest: Encodable, Sendable {
     let logIds: [String]
 }
 
-// MARK: - Create custom food (POST /nutrition-service/customFood) -- ROUTE CONFIRMED TO EXIST, BODY GENUINELY UNCONFIRMED
+// MARK: - Create custom food (PUT /nutrition-service/customFood) -- CORRECTED 2026-09-22, evidence tier upgraded
 
-/// The inferred request body for `GarminClient.createCustomFood`
-/// (add-czech-food-catalog design.md's Context section, task 30.1).
+/// The request body for `GarminClient.createCustomFood`, REPLACING the
+/// original flat `CreateCustomFoodRequest` guess (add-czech-food-catalog
+/// design.md's Context section, task 30.1) after that guess produced a real
+/// device 400: `"custom food nutrition information is missing for the
+/// provided food id with region code and language code"` (`BadRequestException`,
+/// 2026-09-21) even after a first attempted fix (adding top-level
+/// `regionCode`/`languageCode`) did not resolve it.
 ///
-/// UNLIKE `CreateFoodLogEntryRequest` above, this shape has NO decompiled
-/// Kotlin `toString()` fragments behind it at all -- design.md is explicit:
-/// "unlike `createFoodLogEntry`, which had Kotlin `toString()` fragments
-/// hinting at field names, no field-level information was ever extracted
-/// for this route." What follows is a genuine guess: field names a "food"
-/// conceptually needs (a name, a serving unit/size, and macros), informed
-/// only by the shape Garmin's OWN search results already use for a food's
-/// nutrition content (see `NutritionContent` above) -- NOT by any
-/// decompiled evidence for this specific route. Both the field names AND
-/// the nesting could be wrong.
+/// Source of the shape: `tamcore/garmin-mcp` (github.com/tamcore/garmin-mcp),
+/// `internal/garmin/api/nutritionwritefood.go` (fetched 2026-09-22 in full).
 ///
-/// If this guess is wrong, `createCustomFood` fails with a
-/// `GarminClientError` the caller/user sees (per this project's existing
-/// loud-failure convention) -- a failed POST creates nothing, so a wrong
-/// guess here cannot silently corrupt data.
+/// EVIDENCE TIER, corrected 2026-09-22 after a second verification pass:
+/// this is NOT the same tier as `WeighInWriteBody`/`HydrationWriteBody`
+/// above. Those cite `cyberjunky/python-garminconnect`, and that citation
+/// was checked and holds up -- the real file, the real function, the real
+/// line range. `nutritionwritefood.go`'s OWN doc comments claim the same
+/// thing ("Source: create_custom_food, PUT
+/// \"/nutrition-service/customFood\" (nutrition.py:360-363)"), but that
+/// citation does NOT hold up: `cyberjunky/python-garminconnect` has no
+/// `nutrition.py` file and no custom-food code whatsoever, at either the
+/// pinned commit `tamcore/garmin-mcp`'s own THIRD_PARTY_NOTICES.md cites
+/// (`414b540`, release 0.3.10) or the current `main` branch -- both cloned
+/// and grepped directly, not assumed. The citation appears to be
+/// fabricated, not a real reference.
 ///
-/// 2026-09-21: `regionCode`/`languageCode` added after a real device error
-/// on this exact route: `"custom food nutrition information is missing for
-/// the provided food id with region code and language code"`
-/// (`BadRequestException`). `FoodLogWriteBody.Item` above already proves
-/// Garmin's nutrition data is keyed by `(foodId, regionCode, languageCode)`
-/// on the READ/LOG side (`regionCode`/`languageCode` were required there
-/// from the start) -- this request never told Garmin which region/language
-/// the new food's nutrition content belongs to when CREATING it, so the
-/// create silently produced a food with no nutrition record under the
-/// `(US, en)` pair the log write always stamps. `GarminClient.createCustomFood`
-/// passes `FoodLogWriteBody.regionCode`/`.languageCode` -- the same
-/// confirmed constants every real write in this project already uses,
-/// since there is no other confirmed value to use. Still a guess like the
-/// rest of this route -- but now one directly motivated by the exact
-/// wording of the error Garmin returned, not blind inference.
-public struct CreateCustomFoodRequest: Encodable, Sendable, Equatable {
-    public let foodName: String
-    public let servingUnit: String
-    public let numberOfUnits: Double
-    public let regionCode: String
-    public let languageCode: String
-    public let nutritionContent: CreateCustomFoodNutritionContent
-
-    public init(foodName: String, servingUnit: String, numberOfUnits: Double, regionCode: String, languageCode: String, nutritionContent: CreateCustomFoodNutritionContent) {
-        self.foodName = foodName
-        self.servingUnit = servingUnit
-        self.numberOfUnits = numberOfUnits
-        self.regionCode = regionCode
-        self.languageCode = languageCode
-        self.nutritionContent = nutritionContent
+/// What DOES hold up, checked directly: `tamcore/garmin-mcp` has a real,
+/// build-tag-gated live-account integration test
+/// (`live/nutritionwrite_test.go`, `//go:build garminlive`) that creates,
+/// updates, logs and deletes a custom food against an actual Garmin
+/// account, asserting on the real response (`food_id`/`serving_id` read
+/// back, calorie figure persisted, an omitted-on-update field actually
+/// cleared). Traced the call chain: that test's tool handler
+/// (`internal/tools/customfoodwrites.go`'s `createCustomFood`) calls
+/// `Nutrition.CreateCustomFood`, which calls `saveCustomFood`, which calls
+/// `buildCustomFoodBody` -- the EXACT function whose `customFoodDTO`/
+/// `foodMetaDataDTO`/`nutritionContentDTO` structs this Swift type ports.
+/// So: real, structured, actively-maintained code with an apparent
+/// real-account test exercising this exact path -- meaningfully better
+/// than a blind guess or a decompiled string literal, but NOT
+/// independently verified the way the weight/hydration routes are (no way
+/// from here to confirm that live test has actually been run and passed
+/// recently), and its own internal citation cannot be trusted at face
+/// value. Treat this the way the rest of this comment already does: still
+/// unconfirmed until exercised by THIS app on the real device. The flat
+/// 2026-09-21 guess was wrong in three ways at once, all fixed here:
+///   1. The method is **PUT**, not POST.
+///   2. The body is NOT flat -- a food's identity (name/type/source/
+///      region/language/brand) nests under a `foodMetaData` object, and its
+///      nutrition facts are a ONE-ELEMENT `nutritionContents` ARRAY, both
+///      siblings at the top level.
+///   3. Every numeric field inside `nutritionContents` is sent as a
+///      **string** (`"160"`, never `160`), dropping a trailing `.0` for a
+///      whole number -- Garmin's own `_num_to_str` wire convention.
+/// `foodId`/`servingId` are `nil` (omitted) for a create: Garmin assigns
+/// the real ids and returns them in the response (decoded as
+/// `FoodSearchResult`, which already shares this exact `foodMetaData`/
+/// `nutritionContents` envelope for reads). `foodType`/`source` are fixed
+/// constants (`"GENERIC"`/`"GARMIN"`), matching `tamcore/garmin-mcp`'s own
+/// `FoodTypeGeneric`/`FoodSourceGarmin` -- every custom food this app
+/// creates is a plain, Garmin-sourced generic food.
+///
+/// Never yet exercised against the real account since this correction --
+/// still gated the same way (`GarminClient.createCustomFood`'s own header):
+/// the only call site is an explicit, user-triggered "Create in Garmin"
+/// action, never automatic.
+struct CustomFoodWriteBody: Encodable, Equatable {
+    struct FoodMetaData: Encodable, Equatable {
+        let foodId: String?
+        let foodName: String
+        let foodType: String
+        let source: String
+        let regionCode: String
+        let languageCode: String
+        let brandName: String?
     }
-}
 
-/// Same guess-quality caveat as `CreateCustomFoodRequest` above -- field
-/// names mirror `NutritionContent`'s existing confirmed-live-for-READS
-/// names, on the theory that a write is more likely to accept the same
-/// vocabulary the read side already uses than to invent a new one, but
-/// this is inference, not confirmation.
-public struct CreateCustomFoodNutritionContent: Encodable, Sendable, Equatable {
-    public let calories: Double
-    public let protein: Double?
-    public let carbs: Double?
-    public let fat: Double?
+    struct NutritionContent: Encodable, Equatable {
+        let servingId: String?
+        let servingUnit: String
+        let numberOfUnits: String
+        let calories: String
+        let carbs: String?
+        let protein: String?
+        let fat: String?
+    }
 
-    public init(calories: Double, protein: Double? = nil, carbs: Double? = nil, fat: Double? = nil) {
-        self.calories = calories
-        self.protein = protein
-        self.carbs = carbs
-        self.fat = fat
+    let foodMetaData: FoodMetaData
+    let nutritionContents: [NutritionContent]
+
+    static func make(
+        foodName: String,
+        servingUnit: String,
+        numberOfUnits: Double,
+        calories: Double,
+        protein: Double?,
+        carbs: Double?,
+        fat: Double?
+    ) -> CustomFoodWriteBody {
+        CustomFoodWriteBody(
+            foodMetaData: FoodMetaData(
+                foodId: nil,
+                foodName: foodName,
+                foodType: "GENERIC",
+                source: "GARMIN",
+                regionCode: FoodLogWriteBody.regionCode,
+                languageCode: FoodLogWriteBody.languageCode,
+                brandName: nil
+            ),
+            nutritionContents: [
+                NutritionContent(
+                    servingId: nil,
+                    servingUnit: servingUnit,
+                    numberOfUnits: numberString(numberOfUnits),
+                    calories: numberString(calories),
+                    carbs: carbs.map(numberString),
+                    protein: protein.map(numberString),
+                    fat: fat.map(numberString)
+                )
+            ]
+        )
+    }
+
+    /// `"160"`, not `"160.0"` -- matches `tamcore/garmin-mcp`'s `numString`
+    /// (its own doc comment: "the same wire form `_num_to_str` builds:
+    /// Garmin's nutrition write fields expect integer strings like `160`,
+    /// never `160.0`"). A whole number drops its fractional part entirely;
+    /// anything else keeps its shortest round-tripping decimal form (Swift's
+    /// default `Double` `String` conversion already produces this, the same
+    /// property Go's `strconv.FormatFloat(_, 'f', -1, 64)` is chosen for).
+    static func numberString(_ value: Double) -> String {
+        if value.isFinite, value.truncatingRemainder(dividingBy: 1) == 0 {
+            return String(Int64(value))
+        }
+        return String(value)
     }
 }
 
