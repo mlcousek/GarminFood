@@ -16,6 +16,17 @@
 // Also locks in a real bug fix: `sodium` used to pass OFF's raw gram value
 // straight through instead of converting to mg like the rest of this app
 // assumes (`MealDashboard.NutrientKind.unit`).
+//
+// 2026-09-22 (fix-czech-search-name-ranking): added coverage for
+// `OpenFoodFactsClient.rerank(_:forSearchTerm:)`, the fix for the owner's
+// own complaint ("it find by brand but i want to find it also by name of
+// food"). The fixture in `testRerankBoostsProductNameMatchesOverBrandOnlyMatches`
+// mirrors a REAL live `search.pl` capture from this change's own research
+// (2026-09-22, `search_terms=rohlik`): every one of the top 10 results
+// carried brand "Rohlik"/"Rohlík" (a real Czech grocery-delivery retailer)
+// with a product name that had nothing to do with bread rolls -- see this
+// file's own header comment (OpenFoodFactsClient.swift) for the full
+// live-evidence writeup.
 
 import XCTest
 @testable import FoodLogCore
@@ -236,5 +247,83 @@ final class OpenFoodFactsClientTests: XCTestCase {
         let foods = try await client.search(term: "   ")
 
         XCTAssertTrue(foods.isEmpty)
+    }
+
+    // MARK: - rerank(_:forSearchTerm:) (fix-czech-search-name-ranking)
+
+    private func food(name: String, brand: String?) -> Food {
+        Food(id: name, name: name, brandName: brand, source: .openFoodFacts, servings: [])
+    }
+
+    /// Mirrors a REAL live `search.pl` capture (2026-09-22, `search_terms=
+    /// rohlik`): 4 of the top results all carried brand "Rohlik"/"Rohlík"
+    /// (a real Czech grocery-delivery retailer) with product names
+    /// completely unrelated to bread rolls, and OFF returned them ahead of
+    /// (in this fixture, mixed in with) a genuine "rohlík" product-name
+    /// match. `rerank` must put the real name match first without
+    /// reordering anything else.
+    func testRerankBoostsProductNameMatchesOverBrandOnlyMatches() {
+        let popsicle = food(name: "Jahodový nanuk", brand: "Rohlík")
+        let cheese = food(name: "Gorgonzola spoonable PDO", brand: "Rohlik")
+        let realBreadRoll = food(name: "Rohlíky Krehké Celozrné 250G Active Bonavita", brand: "Bonavita")
+        let ham = food(name: "Turkey Ham", brand: "Rohlik")
+
+        let reranked = OpenFoodFactsClient.rerank([popsicle, cheese, realBreadRoll, ham], forSearchTerm: "rohlik")
+
+        XCTAssertEqual(reranked.map(\.name), [
+            "Rohlíky Krehké Celozrné 250G Active Bonavita",
+            "Jahodový nanuk",
+            "Gorgonzola spoonable PDO",
+            "Turkey Ham"
+        ])
+    }
+
+    func testRerankIsCaseAndDiacriticInsensitive() {
+        let match = food(name: "TVAROH Měkký", brand: nil)
+        let nonMatch = food(name: "Jogurt", brand: "Tvarohárna")
+
+        // "tvaroh" (no diacritics, lowercase) must still match "TVAROH
+        // Měkký" (diacritics, uppercase) -- Czech search terms and product
+        // names routinely mix the two spellings.
+        let reranked = OpenFoodFactsClient.rerank([nonMatch, match], forSearchTerm: "tvaroh")
+
+        XCTAssertEqual(reranked.map(\.name), ["TVAROH Měkký", "Jogurt"])
+    }
+
+    func testRerankPreservesOriginalOrderWithinEachGroup() {
+        let nameMatchA = food(name: "Rohlík A", brand: nil)
+        let nameMatchB = food(name: "Rohlík B", brand: nil)
+        let otherA = food(name: "Sýr A", brand: "Rohlik")
+        let otherB = food(name: "Sýr B", brand: "Rohlik")
+
+        let reranked = OpenFoodFactsClient.rerank(
+            [otherA, nameMatchA, otherB, nameMatchB],
+            forSearchTerm: "rohlik"
+        )
+
+        // Both name matches (A before B) come first in their original
+        // relative order, then both non-matches (A before B) -- a stable
+        // partition, not a full re-sort with no ordering guarantee.
+        XCTAssertEqual(reranked.map(\.name), ["Rohlík A", "Rohlík B", "Sýr A", "Sýr B"])
+    }
+
+    func testRerankWithNoNameMatchesReturnsOriginalOrderUnchanged() {
+        let foods = [food(name: "Sýr", brand: "Rohlik"), food(name: "Šunka", brand: "Rohlik")]
+
+        let reranked = OpenFoodFactsClient.rerank(foods, forSearchTerm: "rohlik")
+
+        XCTAssertEqual(reranked.map(\.name), foods.map(\.name))
+    }
+
+    func testRerankWithEmptySearchTermReturnsInputUnchanged() {
+        // `search(term:czechOnly:)` never calls `rerank` with an empty term
+        // (it returns `[]` before making the request in that case), but
+        // `rerank` guards it directly too since it's `static` and callable
+        // on its own.
+        let foods = [food(name: "Sýr", brand: nil), food(name: "Rohlík", brand: nil)]
+
+        let reranked = OpenFoodFactsClient.rerank(foods, forSearchTerm: "")
+
+        XCTAssertEqual(reranked.map(\.name), foods.map(\.name))
     }
 }

@@ -44,6 +44,46 @@
 // block. Matches this project's existing convention for flagging
 // unverified assumptions loudly and in one place (see
 // GarminKit/GarminAuthSession.swift's file header for the same pattern).
+//
+// 2026-09-22 (fix-czech-search-name-ranking): re-tested live from this
+// dev machine. This exact `userAgent` string got a real 200 JSON response
+// for `search_terms=rohlik` on the FIRST attempt; every attempt after that
+// (same UA, different terms, waits up to 20s between tries) came back 503
+// with OFF's own "Page temporarily unavailable" HTML page -- and a plain
+// curl default UA against the same query in the same session also got 503.
+// That rules out "this UA gets blocked" as the explanation for the 503s
+// (the one success used this UA; the one no-custom-UA attempt failed the
+// same way) -- reads as the endpoint being genuinely flaky/overloaded
+// right now, not a UA-based challenge. Still not enough evidence to
+// declare the UA question closed either way; leaving `userAgent` as-is.
+//
+// The one successful capture, however, answered a DIFFERENT open question
+// (see `rerank(_:forSearchTerm:)` below): a live `search_terms=rohlik`
+// query returned 10 products, ALL of them carrying brand "Rohlik"/"Rohlík"
+// (a real Czech online grocery-delivery retailer's private label -- same
+// spelling as the bread-roll word) and NONE with "rohlík" anywhere in
+// `product_name` -- e.g. "Jahodový nanuk" (strawberry popsicle), "Turkey
+// Ham", "Carrot Cake". Confirmed independently against OFF's own newer
+// Search-a-licious engine (https://search.openfoodfacts.org/search, also
+// live-reachable this session even while `search.pl` was 503ing): its
+// response includes the actual Elasticsearch query it ran, an explicit
+// `bool.should` matching `product_name.en`, `generic_name.en`,
+// `categories.en`, `labels.en` and `brands` all at equal boost (2.0 for a
+// phrase match) plus an unweighted `multi_match` across the same fields --
+// i.e. OFF's own search, old and new engine alike, does NOT rank a
+// product-name match above a brand match; they're weighted the same or
+// brand can win on tie-breaking/popularity. That's a real, cited
+// explanation for "brand beats name": `search_terms` matching `brands` at
+// parity with `product_name` lets an unrelated but popular/well-tagged
+// brand's entire catalog crowd out genuine name matches for the same word.
+// Fixed client-side below since neither engine's own ranking can be
+// trusted to fix this server-side. Search-a-licious itself is a much
+// bigger potential fix (a real, richer full-text engine) but switching to
+// it is out of scope here -- new host, new response shape, no country-
+// filter equivalent verified yet, and it returned a suspiciously small
+// total count (6) for "rohlik" in this one live sample, so its Czech
+// coverage is itself unverified. Left as a candidate for a future,
+// dedicated change, not folded into this fix.
 
 import Foundation
 
@@ -88,6 +128,12 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
     /// under what the legacy `search.pl` endpoint comfortably returns in
     /// one page without materially slowing the debounced per-keystroke
     /// search this feeds.
+    ///
+    /// 2026-09-22 (fix-czech-search-name-ranking): the decoded results are
+    /// now passed through `rerank(_:forSearchTerm:)` before returning --
+    /// see that function's doc comment and this file's header for why (the
+    /// owner's own complaint: "it find by brand but i want to find it also
+    /// by name of food").
     public func search(term: String, czechOnly: Bool = true) async throws -> [Food] {
         let trimmed = term.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return [] }
@@ -121,7 +167,37 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
         guard (200..<300).contains(http.statusCode) else {
             throw OpenFoodFactsError.httpError(statusCode: http.statusCode, body: String(data: data, encoding: .utf8))
         }
-        return try Self.decode(data)
+        return Self.rerank(try Self.decode(data), forSearchTerm: trimmed)
+    }
+
+    /// Client-side re-rank: pushes every product whose `name` actually
+    /// contains the search term above every product that only matched some
+    /// other way (brand, category, etc.) -- see this file's header comment
+    /// (2026-09-22 entry) for the live evidence that OFF's own ranking,
+    /// legacy `search.pl` and the newer Search-a-licious engine alike,
+    /// weights a brand match the same as a product-name match, so a
+    /// popular/well-tagged brand that happens to share spelling with a
+    /// genuine food-name search term (the live example: brand "Rohlík", a
+    /// Czech grocery retailer, crowding out actual "rohlík" bread rolls)
+    /// swamps the results the user actually typed the term to find.
+    ///
+    /// Deliberately a plain stable partition (matches, then non-matches),
+    /// not a full relevance sort -- neither `Food` nor `OFFProduct` carries
+    /// anything resembling a real relevance/popularity score to sort by, so
+    /// preserving OFF's own within-group order is the only sound default.
+    /// Case- and diacritic-insensitive (`.folding`) because Czech search
+    /// terms and product names both routinely mix diacritic and
+    /// non-diacritic spelling (e.g. "rohlik" vs "Rohlíky").
+    static func rerank(_ foods: [Food], forSearchTerm term: String) -> [Food] {
+        let normalizedTerm = normalizeForMatching(term)
+        guard !normalizedTerm.isEmpty else { return foods }
+        let nameMatches = foods.filter { normalizeForMatching($0.name).contains(normalizedTerm) }
+        let otherMatches = foods.filter { !normalizeForMatching($0.name).contains(normalizedTerm) }
+        return nameMatches + otherMatches
+    }
+
+    private static func normalizeForMatching(_ text: String) -> String {
+        text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale(identifier: "cs_CZ"))
     }
 
     /// Pure decoding, split out from `search(term:czechOnly:)` specifically
