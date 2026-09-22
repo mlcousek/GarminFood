@@ -12,6 +12,16 @@
 // below, placed higher up (right under the streak strip) since the owner
 // wants this genuinely checked day to day, not buried under the meal cards.
 // Tapping it pushes the full `FastingView` (`GarminFood/Fasting/`).
+//
+// The "Weight & Water" section (2026-09-22, `TodayWeightHydrationSection.
+// swift`) is the last thing in the scroll view, below the meal-preset
+// shelf: both trackers already live one tap away on the Progress tab, so
+// this is a second, more convenient entry point rather than these screens'
+// primary home -- it reads last, after food logging, which is what this
+// screen is actually for. Always shown (unlike the quick-pick/meal-preset
+// shelves above it, which hide when empty): an empty weight/hydration
+// history is itself useful information here ("log your weight to start"),
+// and the water card's quick-add row is useful with zero history too.
 
 import SwiftUI
 import FoodLogCore
@@ -22,6 +32,11 @@ import Gamification
 struct TodayView: View {
     @Environment(AppEnvironment.self) private var environment
 
+    /// Same per-device preference `HydrationView`/`ProgressHomeView` read --
+    /// see `HydrationComponents.swift`'s header for why this isn't
+    /// Garmin-synced.
+    @AppStorage(HydrationPreferenceKeys.dailyGoalML) private var hydrationDailyGoalML: Double = 2000
+
     @State private var quickPickItems: [QuickPickItem] = []
     @State private var mealPresets: [MealPreset] = []
     @State private var activeFastingSession: FastingSession?
@@ -30,6 +45,8 @@ struct TodayView: View {
     @State private var catalogContext: LogContext?
     @State private var openMeal: MealType?
     @State private var showFasting = false
+    @State private var isPresentingAddHydration = false
+    @State private var hydrationActionError: String?
 
     var body: some View {
         let dayLog = environment.dayLog
@@ -96,6 +113,17 @@ struct TodayView: View {
                     .padding(.horizontal, -Theme.Spacing.md)
                 }
 
+                VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                    SectionHeader(title: "Weight & Water")
+                    TodayWeightCard(latest: environment.weightLoader.latest, previous: environment.weightLoader.previous)
+                    TodayHydrationCard(
+                        todayTotalML: environment.hydrationLoader.todayTotalML,
+                        goalML: hydrationDailyGoalML,
+                        onQuickAdd: { amount in Task { await quickAddHydration(amount) } },
+                        onCustom: { isPresentingAddHydration = true }
+                    )
+                }
+
                 AppSignatureView()
                     .padding(.top, Theme.Spacing.xs)
             }
@@ -127,6 +155,22 @@ struct TodayView: View {
         }
         .navigationDestination(isPresented: $showFasting) {
             FastingView()
+        }
+        .sheet(isPresented: $isPresentingAddHydration) {
+            NavigationStack {
+                AddHydrationSheet()
+            }
+        }
+        .alert(
+            "Couldn't complete that action",
+            isPresented: Binding(
+                get: { hydrationActionError != nil },
+                set: { if !$0 { hydrationActionError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(hydrationActionError ?? "")
         }
         .refreshable {
             await environment.refreshOnForeground()
@@ -193,6 +237,19 @@ struct TodayView: View {
 
     private func loadFastingSession() async {
         activeFastingSession = await environment.fastingStore.active()
+    }
+
+    /// Mirrors `HydrationView.quickAdd(_:)` exactly (same coordinator call,
+    /// same post-log refresh, same simple inline error surface) -- this is
+    /// a second entry point to the same local-first logging path, not a
+    /// separate implementation of it.
+    private func quickAddHydration(_ amount: Double) async {
+        do {
+            _ = try await environment.hydrationLogCoordinator.logHydration(valueInML: amount)
+            await environment.hydrationLogged()
+        } catch {
+            hydrationActionError = "Couldn't save this entry."
+        }
     }
 }
 
