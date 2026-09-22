@@ -39,6 +39,29 @@ final class MealPresetTests: XCTestCase {
         XCTAssertEqual(totals.calories, 100, "half the preset is half the calories")
     }
 
+    func testHasUnsyncableIngredientsIsFalseForAllCatalogIngredients() {
+        let preset = MealPreset(name: "Soup", ingredients: [makeIngredient(calories: 200)])
+        XCTAssertFalse(preset.hasUnsyncableIngredients)
+    }
+
+    func testHasUnsyncableIngredientsIsTrueWithACustomFoodIngredient() {
+        let customFoodIngredient = MealPresetIngredient(
+            food: Food(id: "custom-1", name: "Custom", source: .custom, servings: []),
+            serving: Serving(id: "custom", unit: "bowl", numberOfUnits: 1, calories: 100),
+            quantity: 1,
+            customFoodDraft: CustomFoodDraft(
+                name: "Custom",
+                servingUnit: "bowl",
+                numberOfUnits: 1,
+                backingFoodId: "garmin-1",
+                backingFoodName: "Backing",
+                backingServingId: "serving-1"
+            )
+        )
+        let preset = MealPreset(name: "Mix", ingredients: [makeIngredient(calories: 100), customFoodIngredient])
+        XCTAssertTrue(preset.hasUnsyncableIngredients)
+    }
+
     func testIngredientCaloriesIsNilWhenTheServingHasNone() {
         let ingredient = MealPresetIngredient(
             food: Food(id: "f1", name: "Mystery", source: .garmin, servings: []),

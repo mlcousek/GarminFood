@@ -71,7 +71,7 @@ struct GarminFoodHomeWidgetView: View {
                 endPoint: .bottomTrailing
             )
         }
-        .widgetURL(GarminFoodDeepLink.openAppURL)
+        .widgetURL(GarminFoodDeepLink.logFoodURL)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Log Food")
         .accessibilityHint("Opens GarminFood")
@@ -86,7 +86,7 @@ struct GarminFoodHomeWidget: Widget {
             GarminFoodHomeWidgetView()
         }
         .configurationDisplayName("Log Food")
-        .description("A one-tap shortcut to open GarminFood and log a food. Shows no live calorie data -- there is no way for a widget to read that on this account (design.md D2).")
+        .description("A one-tap shortcut straight into GarminFood's food catalog, ready to log. Shows no live calorie data -- there is no way for a widget to read that on this account (design.md D2).")
         .supportedFamilies([.systemSmall])
     }
 }

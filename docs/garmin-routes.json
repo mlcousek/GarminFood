@@ -188,9 +188,9 @@
       "operation": "createCustomMeal",
       "method": "POST",
       "path": "/nutrition-service/customMeal",
-      "lastVerified": "2026-09-14",
-      "observedStatus": "documented, not exercised",
-      "notes": "String literal found in decompiled client. Sibling: DELETE /nutrition-service/customMeal/{customMealId}. Out of scope for MVP (no-recipe-building non-goal in add-food-log-core)."
+      "lastVerified": "2026-09-22",
+      "observedStatus": "client implemented (GarminClient.createCustomMeal), never sent -- still genuinely unexercised",
+      "notes": "String literal found in decompiled client. Sibling: DELETE /nutrition-service/customMeal/{customMealId} (not implemented). No longer out of scope: add-meal-presets reversed the no-recipe-building non-goal, and this account's OWN dailyFoodLog data already carries a real customMealId (185179, see docs/garmin-food-log-contract.md) from the official Garmin Connect Mobile app, confirming the concept is real and in active use -- just not yet reverse-engineered on the write side. sync-meal-presets-to-garmin (2026-09-22) added a guessed request body (CreateCustomMealRequest in GarminModels.swift) gated behind an explicit, clearly-labeled 'Sync to Garmin (experimental)' user action in MealPresetEditorView -- same risk tier and gating as createCustomFood. Needs a real device test to confirm or fix the guess."
     },
     {
       "operation": "calculateGoals",

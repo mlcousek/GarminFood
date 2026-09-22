@@ -563,3 +563,91 @@ public struct CreateCustomFoodNutritionContent: Encodable, Sendable, Equatable {
         self.fat = fat
     }
 }
+
+/// `POST /nutrition-service/customMeal`'s request body (add-meal-presets,
+/// 2026-09-22 research) -- a genuine guess, same risk category as
+/// `CreateCustomFoodRequest` above and for the same reason: this route was
+/// found only as a string literal in the decompiled Android client
+/// (docs/garmin-routes.json, "documented, not exercised"), never called
+/// even once. No Kotlin `toString()` fragments or other field-level
+/// evidence exist for it, unlike `createFoodLogEntry`'s confirmed
+/// `FoodLogWriteBody`.
+///
+/// The shape here is not a blind guess, though: `GET /nutrition-service/
+/// food/logs/{date}` already proves a REAL `customMealId` (a plain `Int`,
+/// per `LoggedFood.customMealId` above) exists on THIS account today,
+/// created by the official Garmin Connect Mobile app -- so the concept is
+/// real and in active use, just not yet reverse-engineered on the write
+/// side. `foodItems`' per-item fields mirror `FoodLogWriteBody.Item`'s
+/// confirmed vocabulary (`foodId`/`servingId`/`source`/`regionCode`/
+/// `languageCode`/quantity) on the theory that a sibling nutrition-service
+/// write is more likely to reuse that vocabulary than invent a new one --
+/// inference, not confirmation.
+///
+/// If this guess is wrong, `createCustomMeal` fails with a
+/// `GarminClientError` the caller/user sees -- a failed POST creates
+/// nothing, so a wrong guess here cannot silently corrupt data. Per this
+/// project's task rule ("never write to the Garmin account before the
+/// write contract is documented"), nothing calls `GarminClient.
+/// createCustomMeal` automatically; the only call site is an explicit,
+/// clearly-labeled "Sync to Garmin (experimental)" action the user takes
+/// deliberately (`MealPresetEditorView`), same gating `createCustomFood`
+/// already uses.
+/// What a caller of `GarminClient.createCustomMeal` actually supplies --
+/// deliberately without `regionCode`/`languageCode`, which `GarminClient`
+/// fills in itself from its own internal `FoodLogWriteBody` constants, the
+/// same way `createCustomFood`'s public parameter list has no region/
+/// language fields either. Keeps the app layer from needing to know that
+/// internal type exists at all.
+public struct CustomMealItemInput: Sendable, Equatable {
+    public let foodId: String
+    public let servingId: String
+    public let source: String
+    public let numberOfUnits: Double
+
+    public init(foodId: String, servingId: String, source: String, numberOfUnits: Double) {
+        self.foodId = foodId
+        self.servingId = servingId
+        self.source = source
+        self.numberOfUnits = numberOfUnits
+    }
+}
+
+public struct CreateCustomMealRequest: Encodable, Sendable, Equatable {
+    public struct Item: Encodable, Sendable, Equatable {
+        public let foodId: String
+        public let servingId: String
+        public let source: String
+        public let regionCode: String
+        public let languageCode: String
+        public let numberOfUnits: Double
+
+        public init(foodId: String, servingId: String, source: String, regionCode: String, languageCode: String, numberOfUnits: Double) {
+            self.foodId = foodId
+            self.servingId = servingId
+            self.source = source
+            self.regionCode = regionCode
+            self.languageCode = languageCode
+            self.numberOfUnits = numberOfUnits
+        }
+    }
+
+    public let mealName: String
+    public let foodItems: [Item]
+
+    public init(mealName: String, foodItems: [Item]) {
+        self.mealName = mealName
+        self.foodItems = foodItems
+    }
+}
+
+/// The presumed response shape: just the new meal's id. Presumed `Int`
+/// because the one real `customMealId` this project has observed
+/// (docs/garmin-food-log-contract.md) decoded as a plain integer, and
+/// `LoggedFood.customMealId` above is typed the same way. If the real
+/// response is shaped differently, `createCustomMeal` throws
+/// `GarminClientError.decodingFailed` rather than silently returning
+/// something wrong.
+public struct CreateCustomMealResponse: Decodable, Sendable {
+    public let customMealId: Int
+}
