@@ -133,7 +133,7 @@ public enum NotificationPlanning {
 
     private static func mealReminder(_ mealType: MealType, _ setting: ReminderSetting) -> PlannedNotification {
         PlannedNotification(
-            id: "mealReminder.\(mealType.rawValue)",
+            id: "mealReminder.\(mealType.rawValue.lowercased())",
             title: "Log your \(mealType.displayNameLowercased)",
             body: "Don't forget to log \(mealType.displayNameLowercased) today.",
             hour: setting.hour,
