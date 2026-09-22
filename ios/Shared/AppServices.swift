@@ -40,6 +40,15 @@ final class AppServices {
     let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
     let logEntryCoordinator: LogEntryCoordinator
+    /// add-weight-tracking: the weight domain's own store/outbox/coordinator
+    /// pair, following the exact same one-instance-per-process shape as the
+    /// food-logging ones above -- see WeightTracking.swift/
+    /// WeightLogCoordinator.swift (FoodLogCore) and WeightSync.swift
+    /// (GarminKit) for why this is a SEPARATE outbox rather than reusing
+    /// `outbox` above.
+    let weightStore: WeightStore
+    let weightOutbox: WeightOutbox
+    let weightLogCoordinator: WeightLogCoordinator
     /// Purely local, no Garmin route involved (see FastingSession.swift's
     /// header) -- included here anyway, not just in the app's own
     /// `AppEnvironment`, for the same reason `mealPresetStore` is: one
@@ -56,6 +65,8 @@ final class AppServices {
         let outbox = Outbox(processName: "app")
         let usageHistory = UsageHistoryStore()
         let servingDefaults = ServingDefaultStore()
+        let weightStore = WeightStore()
+        let weightOutbox = WeightOutbox(processName: "app")
 
         self.garminClient = client
         self.outbox = outbox
@@ -67,6 +78,9 @@ final class AppServices {
         self.foodCache = FoodCacheStore()
         self.fastingStore = FastingSessionStore()
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
+        self.weightStore = weightStore
+        self.weightOutbox = weightOutbox
+        self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox)
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`

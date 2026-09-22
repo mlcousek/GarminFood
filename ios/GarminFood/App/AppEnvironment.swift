@@ -37,6 +37,12 @@ final class AppEnvironment {
     /// merged" design.
     let openFoodFactsClient: OpenFoodFactsClient
     let logEntryCoordinator: LogEntryCoordinator
+    /// add-weight-tracking: mirrors `outbox`/`logEntryCoordinator` above,
+    /// plus a loader (`weightLoader`) since, unlike the food dashboard,
+    /// there's no existing `dayLog`-shaped object weight can piggyback on.
+    let weightOutbox: WeightOutbox
+    let weightLogCoordinator: WeightLogCoordinator
+    let weightLoader: WeightLoader
     let gamificationEngine: GamificationEngine
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
@@ -79,6 +85,9 @@ final class AppEnvironment {
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: services.foodCache)
         self.openFoodFactsClient = OpenFoodFactsClient()
         self.logEntryCoordinator = services.logEntryCoordinator
+        self.weightOutbox = services.weightOutbox
+        self.weightLogCoordinator = services.weightLogCoordinator
+        self.weightLoader = WeightLoader(store: services.weightStore, outbox: services.weightOutbox)
         self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
         self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache)
         self.preferences = AppPreferences()
@@ -103,7 +112,8 @@ final class AppEnvironment {
         async let gamification: Void = gamificationEngine.refresh()
         async let goals: Void = gamificationEngine.refreshGoalStatus()
         async let garminProfile: Void = profile.refresh()
-        _ = await (day, gamification, goals, garminProfile)
+        async let weight: Void = weightLoader.refresh()
+        _ = await (day, gamification, goals, garminProfile, weight)
         await syncNotifications()
     }
 
@@ -118,6 +128,23 @@ final class AppEnvironment {
         await dayLog.rebuild()
         await syncNotifications()
         Task { await self.drainAndReconcile() }
+    }
+
+    /// Right after logging a weigh-in (AddWeightSheet's own confirm
+    /// action): the entry appears in the history list at once (local-first,
+    /// `WeightLogCoordinator.logWeight` already committed it before this is
+    /// called), and delivery starts without the sheet waiting for it.
+    func weightLogged() async {
+        await weightLoader.refresh()
+        Task { await self.drainAndReconcile() }
+    }
+
+    /// Deletes a weigh-in shown on the Weight screen (WeightLogCoordinator.
+    /// deleteWeight's own doc comment covers what this does and doesn't
+    /// undo on Garmin's side).
+    func deleteWeight(_ entry: WeightEntry) async throws {
+        try await weightLogCoordinator.deleteWeight(entry)
+        await weightLoader.refresh()
     }
 
     /// Day navigation, routed through here rather than calling `dayLog`
@@ -142,6 +169,16 @@ final class AppEnvironment {
         guard !isDraining else { return }
         isDraining = true
         defer { isDraining = false }
+
+        // Weight has its own outbox (WeightSync.swift's header explains
+        // why) but shares this same foreground/post-confirm drain trigger
+        // -- no reconciliation step follows it (unlike the food outbox
+        // below), since this app doesn't read weigh-ins back from Garmin to
+        // merge against local state (WeightLogCoordinator.swift's header).
+        let weightResult = await weightOutbox.drain(using: garminClient)
+        if !weightResult.delivered.isEmpty || !weightResult.failed.isEmpty {
+            await weightLoader.refresh()
+        }
 
         let result = await outbox.drain(using: garminClient)
 

@@ -651,3 +651,147 @@ public struct CreateCustomMealRequest: Encodable, Sendable, Equatable {
 public struct CreateCustomMealResponse: Decodable, Sendable {
     public let customMealId: Int
 }
+
+// MARK: - Weight (weight-service) -- add-weight-tracking, 2026-09-22 research
+
+/// What the app wants to log -- deliberately not the wire body (mirrors
+/// `CreateFoodLogEntryRequest`'s own separation), so `GarminClient.addWeighIn`
+/// can format the two timestamp fields itself.
+public struct AddWeighInRequest: Sendable, Equatable {
+    public let weightKg: Double
+    /// Local wall-clock moment of the weigh-in -- may be backdated (the app
+    /// lets the user pick a past date/time for a missed entry).
+    /// `WeighInWriteBody.make` derives BOTH `dateTimestamp` (this instant
+    /// rendered in the given `timeZone`) and `gmtTimestamp` (the same
+    /// instant converted to UTC) from this one value -- there is no separate
+    /// "GMT" input, matching python-garminconnect's simpler `add_weigh_in`
+    /// (as opposed to its `add_weigh_in_with_timestamps` sibling, which
+    /// takes the two independently), since this app never needs a GMT value
+    /// that isn't simply this instant's own UTC conversion.
+    public let loggedAt: Date
+
+    public init(weightKg: Double, loggedAt: Date = Date()) {
+        self.weightKg = weightKg
+        self.loggedAt = loggedAt
+    }
+}
+
+/// The wire body for `POST /weight-service/user-weight`.
+///
+/// Source of truth: `cyberjunky/python-garminconnect` (github.com/cyberjunky/
+/// python-garminconnect), a mature, actively-maintained, widely-used
+/// open-source Garmin Connect client -- `garminconnect/__init__.py`,
+/// `add_weigh_in`/`add_weigh_in_with_timestamps` (~lines 1414-1483 as fetched
+/// 2026-09-22) and the shared `_fmt_ts` helper (~line 221):
+/// ```
+/// payload = {
+///     "dateTimestamp": _fmt_ts(dt),        # dt.replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+///     "gmtTimestamp": _fmt_ts(dtGMT),      # dt.astimezone(UTC), same format
+///     "unitKey": unitKey,                  # "kg" or "lbs" -- VALID_WEIGHT_UNITS = {"kg", "lbs"}
+///     "sourceType": "MANUAL",
+///     "value": weight,
+/// }
+/// ```
+/// This is meaningfully stronger evidence than this project's usual
+/// "decompiled string literal" tier -- it's a real field-name-and-format
+/// contract another live client actually sends and presumably has users
+/// exercising -- but it has never been called from THIS app against the
+/// real account, so it stays UNCONFIRMED for this project until a real
+/// device write is observed and reported back, matching
+/// `CreateCustomFoodRequest`'s "documented, not yet exercised by us" status
+/// tier (one step below `FoodLogWriteBody`'s, which garmin_mcp's own live
+/// end-to-end tests back).
+///
+/// `unitKey`: note python-garminconnect's valid set is `{"kg", "lbs"}` --
+/// "lbs", not "lb". Moot for this app: GarminFood has no imperial/metric
+/// setting anywhere (checked before adding this -- no unit-system awareness
+/// exists in the app today) and always sends `"kg"`, matching Garmin's own
+/// internal body-metric storage unit.
+struct WeighInWriteBody: Encodable, Equatable {
+    let dateTimestamp: String
+    let gmtTimestamp: String
+    let unitKey: String
+    let sourceType: String
+    let value: Double
+
+    static let unitKey = "kg"
+    static let sourceType = "MANUAL"
+
+    static func make(for request: AddWeighInRequest, timeZone: TimeZone = .current) -> WeighInWriteBody {
+        WeighInWriteBody(
+            dateTimestamp: timestampString(request.loggedAt, timeZone: timeZone),
+            gmtTimestamp: timestampString(request.loggedAt, timeZone: TimeZone(identifier: "UTC") ?? .gmt),
+            unitKey: unitKey,
+            sourceType: sourceType,
+            value: request.weightKg
+        )
+    }
+
+    /// `2026-09-22T10:30:00.000` -- wall-clock time in `timeZone`, NO
+    /// offset/`Z` suffix, millisecond precision. Confirmed exact shape:
+    /// python-garminconnect's `_fmt_ts` does `dt.replace(tzinfo=None)
+    /// .strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]` -- format as naive local
+    /// time, truncate microseconds to milliseconds. `WeighInWriteBody.make`
+    /// passes the device's own `timeZone` for `dateTimestamp` and UTC for
+    /// `gmtTimestamp`, exactly `add_weigh_in`'s `dt` vs `dt.astimezone(UTC)`
+    /// split.
+    static func timestampString(_ date: Date, timeZone: TimeZone) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        formatter.timeZone = timeZone
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.string(from: date)
+    }
+}
+
+/// `GET /weight-service/weight/range/{startdate}/{enddate}?includeAll=true`.
+///
+/// ROUTE confirmed to exist via python-garminconnect's `get_weigh_ins`
+/// (`garminconnect/__init__.py`, ~line 1487) -- `startdate`/`enddate` are
+/// `YYYY-MM-DD`, `includeAll=true` is always sent as a query param, matching
+/// this project's own task brief exactly.
+///
+/// RESPONSE SHAPE for this specific route is NOT confirmed field-by-field:
+/// `get_weigh_ins` returns a plain `dict[str, Any]`, and nothing in that
+/// source file ever indexes into it. `dateWeightList` below is a documented
+/// GUESS by analogy with a SIBLING route, `get_daily_weigh_ins` (GET
+/// `/weight-service/weight/dayview/{cdate}`, not implemented by this
+/// package), whose response IS field-confirmed to carry a `dateWeightList`
+/// array: `delete_weigh_ins` (~line 1520) reads `daily_weigh_ins.get(
+/// "dateWeightList", [])`, then `w["samplePk"]` for each entry (~line 1538)
+/// to build the delete route's `{weight_pk}` path segment -- further
+/// confirmed by `delete_weigh_in`'s own `_validate_positive_integer` call on
+/// that value, i.e. `samplePk` really is a positive `Int`. Two sibling
+/// `/weight-service/weight/...` routes sharing the same envelope shape is a
+/// reasonable inference, not a confirmation -- if wrong, decoding this type
+/// simply yields `nil`/an empty list rather than throwing, matching this
+/// package's lenient-decode convention (`FoodSearchResult`'s header).
+public struct WeightRangeResponse: Decodable, Sendable {
+    public let dateWeightList: [WeighInSample]?
+}
+
+/// One sample within `WeightRangeResponse` (and, presumably, the
+/// unimplemented day-view route's response). See `WeightRangeResponse`'s
+/// header for exactly which field is confirmed (`samplePk`) vs guessed
+/// (everything else) and why.
+public struct WeighInSample: Decodable, Sendable {
+    /// CONFIRMED name and type (positive `Int`): the value python-
+    /// garminconnect's `delete_weigh_in` sends as its `{weight_pk}` path
+    /// segment, read from exactly this field on exactly this kind of
+    /// object.
+    public let samplePk: Int?
+    /// UNCONFIRMED guess -- no evidence for this field's name was found
+    /// anywhere in python-garminconnect. Grams is this project's own
+    /// best-guess unit (Garmin's typical internal body-metric storage
+    /// unit); this app's own WRITE always sends kilograms (`unitKey: "kg"`),
+    /// which is not proof the READ side uses the same unit.
+    public let weight: Double?
+    /// UNCONFIRMED guess at the date field's name -- kept alongside
+    /// `calendarDate` (another plausible Garmin naming, seen elsewhere in
+    /// this project e.g. `dailyWellnessSummary`'s `calendarDate` query
+    /// param) since neither has any real evidence backing it for this
+    /// specific route.
+    public let date: String?
+    public let calendarDate: String?
+    public let sourceType: String?
+}
