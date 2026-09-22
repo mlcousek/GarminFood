@@ -24,7 +24,7 @@ struct TrendsView: View {
     /// Same per-device preference `HydrationView` reads -- there is no
     /// Garmin-synced hydration goal to read instead (HydrationComponents.
     /// swift's header covers why).
-    @AppStorage("hydrationDailyGoalML") private var hydrationGoalML: Double = 2000
+    @AppStorage(HydrationPreferenceKeys.dailyGoalML) private var hydrationGoalML: Double = 2000
 
     /// Matches `HydrationTrendChartView`'s reasonable phone-width range
     /// (task brief: "last ~14-30 days"); 21 keeps the bar chart legible on

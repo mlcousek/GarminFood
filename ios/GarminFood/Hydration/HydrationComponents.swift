@@ -17,6 +17,18 @@ import SwiftUI
 import FoodLogCore
 import GarminKit
 
+/// The single source of truth for the `@AppStorage` key backing the local
+/// hydration goal -- `HydrationView`, `ProgressViews.swift`'s
+/// `TrendsSummaryCard`/`ProgressHomeView`, and `TrendsView` each need this
+/// same per-device preference (this file's own header explains why it's
+/// local, not Garmin-synced). Before 2026-09-22 (a code-review finding)
+/// each of those redeclared `"hydrationDailyGoalML"` as its own string
+/// literal -- all three happened to agree, but nothing enforced it, and a
+/// typo in any one would have silently created a second, un-synced goal.
+enum HydrationPreferenceKeys {
+    static let dailyGoalML = "hydrationDailyGoalML"
+}
+
 // MARK: - Hero
 
 struct HydrationHeroCard: View {

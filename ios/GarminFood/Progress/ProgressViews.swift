@@ -19,7 +19,7 @@ struct ProgressHomeView: View {
     /// needed here to compute the streak number `TrendsSummaryCard` shows;
     /// see `HydrationComponents.swift`'s header for why this isn't
     /// Garmin-synced.
-    @AppStorage("hydrationDailyGoalML") private var hydrationDailyGoalML: Double = 2000
+    @AppStorage(HydrationPreferenceKeys.dailyGoalML) private var hydrationDailyGoalML: Double = 2000
 
     var body: some View {
         let engine = environment.gamificationEngine
