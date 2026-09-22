@@ -14,8 +14,11 @@ context: |
 
   ## Owner context
 
-  Single user, single Garmin account, iPhone + Apple Watch, Czech-speaking
-  (food search must work for Czech products, not just US ones). Already runs a
+  Single user, single Garmin account, iPhone + a Garmin Forerunner 970 (NOT
+  an Apple Watch -- corrected 2026-09-22; an earlier version of this file
+  said Apple Watch, which was wrong and briefly informed a since-corrected
+  recommendation to build a watchOS companion app), Czech-speaking (food
+  search must work for Czech products, not just US ones). Already runs a
   substantial Obsidian vault with a working Garmin sync pipeline in Node
   (scripts/lib/garmin.mjs) that this project deliberately reuses rather than
   reinvents.

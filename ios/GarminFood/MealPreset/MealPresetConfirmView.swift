@@ -165,6 +165,7 @@ struct MealPresetConfirmView: View {
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
             } catch {
+                DiagnosticsLog.log(.error, category: "MealPresetConfirmView", "confirmMealPreset failed for preset=\(preset.name): \(error)")
                 errorMessage = "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue."
             }
         }

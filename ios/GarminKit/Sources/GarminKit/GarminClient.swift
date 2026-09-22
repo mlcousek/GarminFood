@@ -337,8 +337,16 @@ public struct GarminClient: Sendable {
     }
 
     private func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        let (data, response) = try await urlSession.data(for: request)
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await urlSession.data(for: request)
+        } catch {
+            DiagnosticsLog.log(.error, category: "GarminClient", "\(request.httpMethod ?? "?") \(request.url?.path ?? "?") failed: \(error.localizedDescription)")
+            throw error
+        }
         guard let http = response as? HTTPURLResponse else {
+            DiagnosticsLog.log(.error, category: "GarminClient", "\(request.httpMethod ?? "?") \(request.url?.path ?? "?") returned no HTTP response")
             throw GarminClientError.noHTTPResponse
         }
         return (data, http)
@@ -347,6 +355,8 @@ public struct GarminClient: Sendable {
     private static func throwIfNotSuccessful(_ response: HTTPURLResponse, data: Data) throws {
         if (200..<300).contains(response.statusCode) { return }
         let body = String(data: data, encoding: .utf8)
+        let path = response.url?.path ?? "?"
+        DiagnosticsLog.log(.warning, category: "GarminClient", "\(path) returned \(response.statusCode)\(body.map { ": \($0.prefix(300))" } ?? "")")
         switch response.statusCode {
         case 401:
             throw GarminClientError.unauthorized(body: body)

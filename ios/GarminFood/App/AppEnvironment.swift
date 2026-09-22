@@ -40,6 +40,7 @@ final class AppEnvironment {
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
     let preferences: AppPreferences
+    let notificationPreferences: NotificationPreferencesStore
     let profile: ProfileLoader
     let donations: LogDonations
     let router: AppRouter
@@ -79,6 +80,7 @@ final class AppEnvironment {
         self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
         self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache)
         self.preferences = AppPreferences()
+        self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
         self.router = AppRouter()
@@ -100,6 +102,7 @@ final class AppEnvironment {
         async let goals: Void = gamificationEngine.refreshGoalStatus()
         async let garminProfile: Void = profile.refresh()
         _ = await (day, gamification, goals, garminProfile)
+        await syncNotifications()
     }
 
     /// Right after an in-app confirm: the entry appears in its meal at once
@@ -111,6 +114,7 @@ final class AppEnvironment {
         }
         await refreshQueueState()
         await dayLog.rebuild()
+        await syncNotifications()
         Task { await self.drainAndReconcile() }
     }
 
@@ -236,6 +240,56 @@ final class AppEnvironment {
 
     func preferencesChanged() {
         Haptics.isEnabled = preferences.hapticsEnabled
+    }
+
+    // MARK: - Notifications
+
+    func requestNotificationPermissionIfNeeded() async {
+        await NotificationScheduler.shared.requestAuthorizationIfNeeded()
+    }
+
+    func setBreakfastReminder(_ setting: ReminderSetting) {
+        notificationPreferences.setBreakfastReminder(setting)
+        Task { await syncNotifications() }
+    }
+
+    func setLunchReminder(_ setting: ReminderSetting) {
+        notificationPreferences.setLunchReminder(setting)
+        Task { await syncNotifications() }
+    }
+
+    func setDinnerReminder(_ setting: ReminderSetting) {
+        notificationPreferences.setDinnerReminder(setting)
+        Task { await syncNotifications() }
+    }
+
+    func setStreakReminder(_ setting: ReminderSetting) {
+        notificationPreferences.setStreakReminder(setting)
+        Task { await syncNotifications() }
+    }
+
+    func setDailyChallengeReminder(_ setting: ReminderSetting) {
+        notificationPreferences.setDailyChallengeReminder(setting)
+        Task { await syncNotifications() }
+    }
+
+    /// Re-plans and re-syncs local reminders against current state -- see
+    /// `NotificationScheduler`'s header for why this needs to re-run
+    /// whenever something that could change the plan happens (foreground,
+    /// a confirm, a setting change), rather than being scheduled once.
+    /// Skipped while a past day is being viewed: today's actual logged-meal
+    /// state lives in `dayLog.dashboard` only while `dayLog.isToday`, and a
+    /// stale/empty read would incorrectly re-arm an already-logged meal's
+    /// reminder -- the next time the user is back on today, this runs again
+    /// with the real state.
+    func syncNotifications() async {
+        guard dayLog.isToday else { return }
+        let mealsLoggedToday = Set(dayLog.dashboard.sections.filter { !$0.entries.isEmpty }.map(\.mealType))
+        await NotificationScheduler.shared.sync(
+            preferences: notificationPreferences.preferences,
+            mealsLoggedToday: mealsLoggedToday,
+            isStreakAtRiskToday: gamificationEngine.streakStatus.isAtRiskToday
+        )
     }
 
     // MARK: - Private

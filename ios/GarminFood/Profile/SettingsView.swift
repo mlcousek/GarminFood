@@ -71,6 +71,16 @@ struct SettingsView: View {
                         }
                     }
                 }
+                NavigationLink {
+                    NotificationSettingsView()
+                } label: {
+                    Label("Reminders", systemImage: "bell.badge")
+                }
+                NavigationLink {
+                    DiagnosticsLogView()
+                } label: {
+                    Label("Diagnostics", systemImage: "stethoscope")
+                }
             }
 
             Section("Preferences") {
