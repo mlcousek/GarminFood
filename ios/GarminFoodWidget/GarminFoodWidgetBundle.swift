@@ -31,6 +31,7 @@ import SwiftUI
 struct GarminFoodWidgetBundle: WidgetBundle {
     var body: some Widget {
         GarminFoodHomeWidget()
+        GarminFoodStreakWidget()
         GarminFoodLockScreenWidget()
 
         if #available(iOS 18.0, *) {
