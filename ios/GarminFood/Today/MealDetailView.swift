@@ -64,6 +64,14 @@ struct MealDetailView: View {
                 }
 
                 if section.nutrients.count > 4 {
+                    // This is Garmin's own daily/meal aggregate -- it has no
+                    // vitaminB1...omega6 fields to show even after
+                    // implement-micronutrients (2026-09-22), since Garmin's
+                    // API genuinely doesn't return them (MealDashboard.
+                    // nutrients' header comment). A food's fuller Open Food
+                    // Facts panel is shown per-food instead, on
+                    // LogEntryConfirmView's nutrition section, at the point
+                    // it's actually known.
                     Section("Nutrients") {
                         ForEach(section.nutrients.filter { $0.kind != .calories }) { nutrient in
                             NutrientRow(nutrient: nutrient)
@@ -184,20 +192,6 @@ struct MealDetailView: View {
     }
 }
 
-private struct NutrientRow: View {
-    let nutrient: NutrientAmount
-
-    var body: some View {
-        HStack {
-            Text(nutrient.kind.displayName)
-                .font(nutrient.kind.isSubNutrient ? .subheadline : .body)
-                .foregroundStyle(nutrient.kind.isSubNutrient ? .secondary : .primary)
-                .padding(.leading, nutrient.kind.isSubNutrient ? Theme.Spacing.md : 0)
-            Spacer()
-            Text("\(nutrient.value.formatted(.number.precision(.fractionLength(0...1)))) \(nutrient.kind.unit)")
-                .font(.body.monospacedDigit())
-                .foregroundStyle(.secondary)
-        }
-        .accessibilityElement(children: .combine)
-    }
-}
+// `NutrientRow` moved to DesignSystem/Components.swift (implement-micronutrients,
+// 2026-09-22) so `LogEntryConfirmView`'s new per-serving nutrition section
+// can reuse it too.

@@ -82,4 +82,46 @@ final class FoodTests: XCTestCase {
         XCTAssertEqual(whole.displayLabel, "100 g")
         XCTAssertEqual(fractional.displayLabel, "medium banana")
     }
+
+    // MARK: detailedNutrients (implement-micronutrients, 2026-09-22)
+
+    /// Only nutrients the serving actually carries appear -- same
+    /// "never a fabricated zero" rule `MealDashboard.nutrients` already
+    /// follows, now reused for a single food/serving via `NutrientKind`/
+    /// `NutrientAmount` (Food.swift's header comment on `Serving` explains
+    /// why this lives separately from the Garmin-fed day/meal dashboard).
+    func testDetailedNutrientsOnlyIncludesWhatsActuallyPresent() {
+        let serving = Serving(
+            id: "100g", unit: "g", numberOfUnits: 100,
+            calories: 384, carbs: 73.8, protein: 8.5, fat: 4.4,
+            sodium: 80,
+            vitaminB1: 1.0, vitaminD: 3.4
+        )
+
+        let kinds = serving.detailedNutrients.map(\.kind)
+
+        XCTAssertEqual(kinds, [.calories, .carbs, .protein, .fat, .sodium, .vitaminB1, .vitaminD], "enum order, nils skipped")
+        XCTAssertEqual(serving.detailedNutrients.first { $0.kind == .vitaminD }?.value, 3.4)
+    }
+
+    func testDetailedNutrientsIsEmptyForAServingWithNoNutrientDataAtAll() {
+        let serving = Serving(id: "s1", unit: "serving", numberOfUnits: 1)
+
+        XCTAssertTrue(serving.detailedNutrients.isEmpty)
+    }
+
+    /// Garmin/FatSecret's %DV fields (vitaminA/vitaminC/calcium/iron) and
+    /// Open-Food-Facts-only absolute mg/µg fields (e.g. vitaminD, zinc) can
+    /// coexist on the same serving's `detailedNutrients` without the reader
+    /// needing to guess which is which -- `NutrientKind.unit` already
+    /// disambiguates ("%", "mg", "µg") independent of `Food.source`.
+    func testDetailedNutrientsCanMixGarminPercentDVAndOFFAbsoluteFieldsWithoutConflating() {
+        let serving = Serving(id: "1", unit: "g", numberOfUnits: 100, calcium: 20, zinc: 1.2)
+
+        let calcium = try? XCTUnwrap(serving.detailedNutrients.first { $0.kind == .calcium })
+        let zinc = try? XCTUnwrap(serving.detailedNutrients.first { $0.kind == .zinc })
+
+        XCTAssertEqual(calcium?.kind.unit, "%")
+        XCTAssertEqual(zinc?.kind.unit, "mg")
+    }
 }

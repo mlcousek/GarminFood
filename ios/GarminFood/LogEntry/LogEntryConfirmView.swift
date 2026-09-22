@@ -13,6 +13,13 @@
 // finish" requirements. A best-effort outbox drain is kicked off AFTER
 // success is already shown, deliberately unawaited by the confirm action
 // itself (see `confirm()` below) -- see `AppEnvironment.drainAndReconcile()`.
+//
+// implement-micronutrients (2026-09-22): also shows `selectedServing`'s full
+// nutrient breakdown (`NutritionBreakdownSections`, DesignSystem/Components.swift)
+// -- this is the point a `Serving`'s Open-Food-Facts-only vitamin/mineral
+// panel is actually known and food-specific, unlike `MealDetailView`'s
+// "Nutrients" section which is capped at whatever Garmin's own daily/meal
+// aggregate returns (see `MealDashboard.nutrients`'s header comment).
 
 import SwiftUI
 import FoodLogCore
@@ -208,6 +215,23 @@ struct LogEntryConfirmView: View {
                         MacroBadge(value: caloriesForQuantity, unit: " kcal", accessibleUnit: "kilocalories")
                     }
                 }
+            }
+
+            // implement-micronutrients (2026-09-22): the full vitamin/
+            // mineral/macro panel for the SERVING actually being logged --
+            // per-serving values (not scaled by `quantity`, matching how
+            // this project already shows an un-scaled `calories`/label on
+            // `FoodListRow`/`ServingPickerSheet` elsewhere; only the
+            // headline "Calories" row above is quantity-scaled today). Real
+            // data for a Garmin/FatSecret result is just the existing four
+            // %DV fields; a real Open Food Facts result can show the much
+            // larger panel `OpenFoodFactsClient` now decodes -- either way,
+            // only whatever `selectedServing` actually carries appears
+            // (`NutritionBreakdownSections`' own "never a fabricated zero"
+            // rule), so this section is silently absent for a serving with
+            // nothing beyond calories/macros.
+            if let selectedServing, !selectedServing.detailedNutrients.filter({ $0.kind != .calories }).isEmpty {
+                NutritionBreakdownSections(nutrients: selectedServing.detailedNutrients)
             }
 
             Section("When") {
