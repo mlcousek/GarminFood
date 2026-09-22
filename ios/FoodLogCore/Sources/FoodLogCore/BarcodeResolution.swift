@@ -13,6 +13,15 @@
 // dependency at all; the actual `DataScannerViewController` UI lives in the
 // app target (VisionKit requires UIKit, which this package deliberately
 // never imports).
+//
+// `ManualBarcodeEntry` below was added by `polish-barcode-scanning`
+// (2026-09-22) for the manual digit-entry fallback on `BarcodeScanScreen` --
+// a real usability need, not decoration, since this project's own contract
+// doc (docs/garmin-food-log-contract.md) records that even Garmin's own
+// native scanner fails to read Czech barcodes. The manual path reuses
+// `BarcodeResolution.resolve` below unchanged (same candidates, same
+// GarminClient lookup); this is only the pre-flight "is this worth a
+// network round trip" gate for whatever the user typed.
 
 import Foundation
 import GarminKit
@@ -54,5 +63,25 @@ public enum BarcodeResolution {
             }
         }
         return nil
+    }
+}
+
+/// Validation for the manual barcode-entry fallback -- deliberately just a
+/// length/digit-only gate, not a real EAN/UPC check-digit validation. This
+/// project's scanned symbologies (task 14.1) span EAN-8 (8 digits) through
+/// ITF-14 (14 digits), so anything shorter or longer, or containing a
+/// non-digit, is almost certainly a typo or the wrong kind of input (a
+/// phone number, an empty field) rather than a real barcode worth spending
+/// a Garmin network round trip on.
+public enum ManualBarcodeEntry {
+    /// Whether `text` is plausible enough to attempt `BarcodeResolution.
+    /// resolve` against -- not a guarantee the code exists or will resolve,
+    /// only that it looks like the kind of string a barcode scan would have
+    /// produced. Whitespace around the input is ignored (a keyboard-typed
+    /// field often picks up a trailing space or newline).
+    public static func looksPlausible(_ text: String) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 8, trimmed.count <= 14 else { return false }
+        return trimmed.allSatisfy { $0.isASCII && $0.isNumber }
     }
 }

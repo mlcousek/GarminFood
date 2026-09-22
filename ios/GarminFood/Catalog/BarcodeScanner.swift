@@ -3,9 +3,20 @@
 // The `DataScannerViewController` wrapper (task 14.1). VisionKit requires
 // UIKit, which is exactly why this lives in the app target and not
 // FoodLogCore (that package's own header comment: no UIKit/SwiftUI import
-// anywhere). Barcode scanning is DEPRIORITIZED (design.md D3) -- this is a
-// correct, functional wrapper, not a polished one: no custom highlight UI,
-// no manual torch/zoom controls beyond VisionKit's own built-ins.
+// anywhere). Barcode scanning is DEPRIORITIZED (design.md D3), and this
+// wrapper stays deliberately minimal functionally -- no manual zoom controls
+// beyond VisionKit's own pinch-to-zoom, no region-of-interest restriction.
+// `polish-barcode-scanning` (2026-09-22) closed the gap worth closing here:
+// `BarcodeScanScreen.swift` now draws a real viewfinder overlay on top of
+// this view and fires a success haptic the moment `onScan` below reports a
+// payload. A torch/flashlight toggle was investigated for that same change
+// and deliberately NOT added -- `DataScannerViewController` has no
+// documented public API for it (this wrapper never touches a raw
+// `AVCaptureDevice`; VisionKit owns the capture session internally and
+// doesn't expose one). Guessing at an unconfirmed member is exactly the
+// mistake `add-glanceable-surfaces` tasks.md 17.3 already made once
+// (`controlWidgetActionHint`) and had to revert after CI's real compiler
+// rejected it -- not repeating that here.
 //
 // Scoped to exactly the symbologies task 14.1 and the food-catalog spec
 // name: EAN-13, EAN-8, UPC-E, Code 128, ITF-14, GS1 DataBar. UPC-A has no
@@ -69,6 +80,14 @@ struct BarcodeScannerRepresentable: UIViewControllerRepresentable {
             self.onScan = onScan
         }
 
+        // Deliberately no haptic call in this delegate method: whether
+        // `DataScannerViewControllerDelegate`'s requirements are themselves
+        // main-actor-isolated isn't confirmed (unlike the class's own
+        // `isSupported`/`isAvailable`, called out above), and this project
+        // has no local compiler to find out which way that guess would
+        // break. `BarcodeScanScreen.handleScan` -- provably `@MainActor`
+        // since the whole view is -- fires `Haptics.success()` instead, the
+        // moment this delegate reports a payload via `onScan` below.
         func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
             guard !hasReportedScan, let first = addedItems.first else { return }
             guard case let .barcode(barcode) = first, let payload = barcode.payloadStringValue else { return }
