@@ -540,16 +540,43 @@ struct DeleteFoodLogEntriesRequest: Encodable, Sendable {
 /// 2026-09-21) even after a first attempted fix (adding top-level
 /// `regionCode`/`languageCode`) did not resolve it.
 ///
-/// Source of the real shape: `tamcore/garmin-mcp`
-/// (github.com/tamcore/garmin-mcp), `internal/garmin/api/nutritionwritefood.go`
-/// (fetched 2026-09-22 in full) -- a Go client whose every field carries its
-/// own doc comment citing an upstream Python reference implementation's
-/// exact file/line (e.g. "Source: create_custom_food, PUT
-/// \"/nutrition-service/customFood\" (nutrition.py:360-363)"), the same
-/// evidence tier as `WeighInWriteBody`/`HydrationWriteBody` above -- a real,
-/// actively-maintained third-party client's actual request shape, not a
-/// decompiled string literal or blind guess. The flat 2026-09-21 guess was
-/// wrong in three ways at once, all fixed here:
+/// Source of the shape: `tamcore/garmin-mcp` (github.com/tamcore/garmin-mcp),
+/// `internal/garmin/api/nutritionwritefood.go` (fetched 2026-09-22 in full).
+///
+/// EVIDENCE TIER, corrected 2026-09-22 after a second verification pass:
+/// this is NOT the same tier as `WeighInWriteBody`/`HydrationWriteBody`
+/// above. Those cite `cyberjunky/python-garminconnect`, and that citation
+/// was checked and holds up -- the real file, the real function, the real
+/// line range. `nutritionwritefood.go`'s OWN doc comments claim the same
+/// thing ("Source: create_custom_food, PUT
+/// \"/nutrition-service/customFood\" (nutrition.py:360-363)"), but that
+/// citation does NOT hold up: `cyberjunky/python-garminconnect` has no
+/// `nutrition.py` file and no custom-food code whatsoever, at either the
+/// pinned commit `tamcore/garmin-mcp`'s own THIRD_PARTY_NOTICES.md cites
+/// (`414b540`, release 0.3.10) or the current `main` branch -- both cloned
+/// and grepped directly, not assumed. The citation appears to be
+/// fabricated, not a real reference.
+///
+/// What DOES hold up, checked directly: `tamcore/garmin-mcp` has a real,
+/// build-tag-gated live-account integration test
+/// (`live/nutritionwrite_test.go`, `//go:build garminlive`) that creates,
+/// updates, logs and deletes a custom food against an actual Garmin
+/// account, asserting on the real response (`food_id`/`serving_id` read
+/// back, calorie figure persisted, an omitted-on-update field actually
+/// cleared). Traced the call chain: that test's tool handler
+/// (`internal/tools/customfoodwrites.go`'s `createCustomFood`) calls
+/// `Nutrition.CreateCustomFood`, which calls `saveCustomFood`, which calls
+/// `buildCustomFoodBody` -- the EXACT function whose `customFoodDTO`/
+/// `foodMetaDataDTO`/`nutritionContentDTO` structs this Swift type ports.
+/// So: real, structured, actively-maintained code with an apparent
+/// real-account test exercising this exact path -- meaningfully better
+/// than a blind guess or a decompiled string literal, but NOT
+/// independently verified the way the weight/hydration routes are (no way
+/// from here to confirm that live test has actually been run and passed
+/// recently), and its own internal citation cannot be trusted at face
+/// value. Treat this the way the rest of this comment already does: still
+/// unconfirmed until exercised by THIS app on the real device. The flat
+/// 2026-09-21 guess was wrong in three ways at once, all fixed here:
 ///   1. The method is **PUT**, not POST.
 ///   2. The body is NOT flat -- a food's identity (name/type/source/
 ///      region/language/brand) nests under a `foodMetaData` object, and its

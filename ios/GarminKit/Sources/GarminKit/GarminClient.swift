@@ -349,10 +349,13 @@ public struct GarminClient: Sendable {
     /// evidence tier (see `WeighInWriteBody`'s doc comment in
     /// GarminModels.swift) sits one step below `createFoodLogEntry`'s
     /// (garmin_mcp, a live-tested client with its own end-to-end tests
-    /// against a real Garmin account) but one step above `createCustomFood`'s
-    /// (a route with literally no field-level evidence at all): a real,
-    /// actively-maintained third-party OSS client's exact request shape,
-    /// just never yet exercised BY THIS APP against the real account.
+    /// against a real Garmin account): a real, actively-maintained
+    /// third-party OSS client's exact request shape, with a citation that
+    /// was independently checked and holds up, just never yet exercised BY
+    /// THIS APP against the real account. `createCustomFood`'s evidence is
+    /// different in kind, not just degree -- see `CustomFoodWriteBody`'s
+    /// doc comment in GarminModels.swift, which found and corrected a false
+    /// citation in its own source client on a second verification pass.
     ///
     /// Not gated behind an extra confirmation the way `createCustomFood`/
     /// `createCustomMeal` are: logging a weight IS the deliberate user
