@@ -49,6 +49,11 @@ final class AppServices {
     let weightStore: WeightStore
     let weightOutbox: WeightOutbox
     let weightLogCoordinator: WeightLogCoordinator
+    /// add-hydration-tracking: same shape as the weight trio above, its own
+    /// separate outbox for the same reason (HydrationSync.swift's header).
+    let hydrationStore: HydrationStore
+    let hydrationOutbox: HydrationOutbox
+    let hydrationLogCoordinator: HydrationLogCoordinator
     /// Purely local, no Garmin route involved (see FastingSession.swift's
     /// header) -- included here anyway, not just in the app's own
     /// `AppEnvironment`, for the same reason `mealPresetStore` is: one
@@ -67,6 +72,8 @@ final class AppServices {
         let servingDefaults = ServingDefaultStore()
         let weightStore = WeightStore()
         let weightOutbox = WeightOutbox(processName: "app")
+        let hydrationStore = HydrationStore()
+        let hydrationOutbox = HydrationOutbox(processName: "app")
 
         self.garminClient = client
         self.outbox = outbox
@@ -81,6 +88,9 @@ final class AppServices {
         self.weightStore = weightStore
         self.weightOutbox = weightOutbox
         self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox)
+        self.hydrationStore = hydrationStore
+        self.hydrationOutbox = hydrationOutbox
+        self.hydrationLogCoordinator = HydrationLogCoordinator(store: hydrationStore, outbox: hydrationOutbox)
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`

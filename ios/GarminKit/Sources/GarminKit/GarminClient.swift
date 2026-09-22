@@ -358,6 +358,22 @@ public struct GarminClient: Sendable {
         }
     }
 
+    // MARK: - Hydration (add-hydration-tracking, 2026-09-22)
+
+    /// PUT `/usersummary-service/usersummary/hydration/log`, body per
+    /// `HydrationWriteBody`. Same evidence tier and same "not gated behind
+    /// an extra confirmation" reasoning as `addWeighIn` above -- logging a
+    /// drink IS the deliberate user action, and delivery goes through
+    /// `HydrationOutbox`'s durable local-first queue (HydrationSync.swift),
+    /// so this method is never called synchronously from a UI action.
+    @discardableResult
+    public func addHydration(_ request: AddHydrationRequest) async throws -> HTTPURLResponse {
+        let body = HydrationWriteBody.make(for: request)
+        let (data, response) = try await put(path: "/usersummary-service/usersummary/hydration/log", body: body)
+        try Self.throwIfNotSuccessful(response, data: data)
+        return response
+    }
+
     // MARK: - Request plumbing
 
     private func authorizedRequest(method: String, path: String, query: [URLQueryItem] = []) async throws -> URLRequest {
@@ -488,3 +504,4 @@ public struct GarminClient: Sendable {
 extension GarminClient: FoodLogDelivering {}
 extension GarminClient: FoodLogReconciling {}
 extension GarminClient: WeighInDelivering {}
+extension GarminClient: HydrationDelivering {}

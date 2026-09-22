@@ -774,6 +774,73 @@ public struct WeightRangeResponse: Decodable, Sendable {
 /// unimplemented day-view route's response). See `WeightRangeResponse`'s
 /// header for exactly which field is confirmed (`samplePk`) vs guessed
 /// (everything else) and why.
+// MARK: - Hydration (usersummary-service) -- add-hydration-tracking, 2026-09-22 research
+
+/// What the app wants to log -- same separation from the wire body as
+/// `AddWeighInRequest` above, for the same reason.
+public struct AddHydrationRequest: Sendable, Equatable {
+    public let valueInML: Double
+    /// Local wall-clock moment of the drink -- may be backdated the same
+    /// way a weigh-in can be. `HydrationWriteBody.make` derives BOTH
+    /// `calendarDate` (this instant's own local date) and `timestampLocal`
+    /// (this instant rendered in the given time zone) from this one value.
+    public let loggedAt: Date
+
+    public init(valueInML: Double, loggedAt: Date = Date()) {
+        self.valueInML = valueInML
+        self.loggedAt = loggedAt
+    }
+}
+
+/// The wire body for `PUT /usersummary-service/usersummary/hydration/log`.
+///
+/// Source of truth: same file as `WeighInWriteBody` above --
+/// `cyberjunky/python-garminconnect`'s `garminconnect/__init__.py`,
+/// `add_hydration_data` (~lines 1820-1898 as fetched 2026-09-22):
+/// ```
+/// payload = {
+///     "calendarDate": cdate,          # "YYYY-MM-DD", the LOCAL date of the entry
+///     "timestampLocal": timestamp,    # local wall-clock, "%Y-%m-%dT%H:%M:%S.%f"[:-3] via the same _fmt_ts helper
+///     "valueInML": value_in_ml,
+/// }
+/// ```
+/// Same evidence tier as `WeighInWriteBody`: a real field-name-and-format
+/// contract from a live, actively-maintained third-party client, never yet
+/// called from THIS app against the real account -- see that struct's own
+/// doc comment for the full reasoning, which applies here unchanged.
+///
+/// Only the write route is implemented. `GET /usersummary-service/
+/// usersummary/hydration/daily/{date}` (`garmin_connect_daily_hydration_url`
+/// in the same source file) exists but its response is never destructured
+/// anywhere in that library either (`get_hydration_data` just returns the
+/// raw dict) -- there is even less field-level evidence for it than for
+/// `WeightRangeResponse`'s already-guessed shape, so it isn't implemented
+/// here at all rather than shipping a second, weaker guess. This app's own
+/// `HydrationStore` (FoodLogCore) is the sole source of truth for history
+/// and today's total, exactly like `WeightStore` is for weight -- see that
+/// type's header.
+struct HydrationWriteBody: Encodable, Equatable {
+    let calendarDate: String
+    let timestampLocal: String
+    let valueInML: Double
+
+    static func make(for request: AddHydrationRequest, timeZone: TimeZone = .current) -> HydrationWriteBody {
+        HydrationWriteBody(
+            calendarDate: calendarDateString(request.loggedAt, timeZone: timeZone),
+            timestampLocal: WeighInWriteBody.timestampString(request.loggedAt, timeZone: timeZone),
+            valueInML: request.valueInML
+        )
+    }
+
+    private static func calendarDateString(_ date: Date, timeZone: TimeZone) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = timeZone
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.string(from: date)
+    }
+}
+
 public struct WeighInSample: Decodable, Sendable {
     /// CONFIRMED name and type (positive `Int`): the value python-
     /// garminconnect's `delete_weigh_in` sends as its `{weight_pk}` path
