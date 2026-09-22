@@ -116,14 +116,14 @@ final class FastingSessionTests: XCTestCase {
             FastingSession(
                 protocolKind: .sixteenEight,
                 startedAt: start.addingTimeInterval(-daysAgo * 86400),
-                fastingEndedAt: start.addingTimeInterval(-daysAgo * 86400 + 16 * hour)
+                fastingEndedAt: start.addingTimeInterval(-daysAgo * 86400 + 16 * self.hour)
             )
         }
         let brokeEarly = { (daysAgo: Double) in
             FastingSession(
                 protocolKind: .sixteenEight,
                 startedAt: start.addingTimeInterval(-daysAgo * 86400),
-                fastingEndedAt: start.addingTimeInterval(-daysAgo * 86400 + 5 * hour)
+                fastingEndedAt: start.addingTimeInterval(-daysAgo * 86400 + 5 * self.hour)
             )
         }
 
