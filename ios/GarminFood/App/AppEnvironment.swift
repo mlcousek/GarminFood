@@ -246,8 +246,20 @@ final class AppEnvironment {
             await gamificationEngine.refreshGoalStatus(for: dayLog.selectedDate)
         }
 
+        // The weight/hydration drains above can ALSO hit an auth failure
+        // (WeightOutbox/HydrationOutbox.drain detect it exactly like the
+        // food outbox does) -- fixed 2026-09-22, a code-review finding: this
+        // used to check only `result.authOutcome` (the food outbox), so a
+        // day where the user only logged weight/water while the token was
+        // expired never showed the auth banner at all. Every entry just
+        // queued forever with no visible signal, the exact "silent auth
+        // failure" this app is built to avoid (CLAUDE.md: "Auth failures
+        // are loud"). Checking all three, any non-`.none` wins.
+        let authOutcome = [result.authOutcome, weightResult.authOutcome, hydrationResult.authOutcome]
+            .first { $0 != .none } ?? .none
+
         var authFailed = true
-        switch result.authOutcome {
+        switch authOutcome {
         case .longLivedTokenExpired:
             authState.report(GarminAuthError.longLivedTokenExpired)
         case .notSignedIn:

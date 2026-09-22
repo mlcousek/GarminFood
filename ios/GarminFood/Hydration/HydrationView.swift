@@ -23,7 +23,7 @@ struct HydrationView: View {
     /// Purely local -- Garmin's hydration goal isn't readable from this
     /// app (HydrationComponents.swift's header covers why), so this is a
     /// per-device preference, not synced state.
-    @AppStorage("hydrationDailyGoalML") private var dailyGoalML: Double = 2000
+    @AppStorage(HydrationPreferenceKeys.dailyGoalML) private var dailyGoalML: Double = 2000
 
     @State private var isPresentingAdd = false
     @State private var isPresentingGoalEditor = false

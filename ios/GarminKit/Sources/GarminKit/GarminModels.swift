@@ -809,10 +809,6 @@ public struct WeightRangeResponse: Decodable, Sendable {
     public let dateWeightList: [WeighInSample]?
 }
 
-/// One sample within `WeightRangeResponse` (and, presumably, the
-/// unimplemented day-view route's response). See `WeightRangeResponse`'s
-/// header for exactly which field is confirmed (`samplePk`) vs guessed
-/// (everything else) and why.
 // MARK: - Hydration (usersummary-service) -- add-hydration-tracking, 2026-09-22 research
 
 /// What the app wants to log -- same separation from the wire body as
@@ -880,6 +876,16 @@ struct HydrationWriteBody: Encodable, Equatable {
     }
 }
 
+/// One sample within `WeightRangeResponse` (and, presumably, the
+/// unimplemented day-view route's response). See `WeightRangeResponse`'s
+/// header for exactly which field is confirmed (`samplePk`) vs guessed
+/// (everything else) and why.
+///
+/// Moved back next to this declaration 2026-09-22 (a code-review finding):
+/// the Hydration section above was inserted between this comment and the
+/// struct it describes, leaving a reader who follows `WeightRangeResponse`'s
+/// own doc comment landing in unrelated Hydration code before ever reaching
+/// what it was describing.
 public struct WeighInSample: Decodable, Sendable {
     /// CONFIRMED name and type (positive `Int`): the value python-
     /// garminconnect's `delete_weigh_in` sends as its `{weight_pk}` path
