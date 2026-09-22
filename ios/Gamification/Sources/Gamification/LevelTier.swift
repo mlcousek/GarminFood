@@ -17,6 +17,30 @@ public struct LevelTier: Sendable, Equatable {
         self.flavor = flavor
         self.levelRange = levelRange
     }
+
+    /// Reuses `AchievementRarity`'s same bucketing as level-based
+    /// achievements (`AchievementCondition.levelAtLeast`), evaluated at this
+    /// tier's lower bound, so the level-up moment and the achievements
+    /// screen agree on what "epic" or "legendary" progress looks like
+    /// instead of maintaining two separate notions of "how far along".
+    public var rarity: AchievementRarity {
+        AchievementRarity.derive(from: .levelAtLeast(level: levelRange.lowerBound))
+    }
+
+    /// A glyph that escalates with `rarity`, for `BadgeMedallion` display in
+    /// the level-up moment -- all five symbols are already used elsewhere in
+    /// this catalog/app (see `AchievementCatalog`'s level and meta families,
+    /// and `StreakDot`), so nothing new needs verifying at the glyph-name
+    /// level.
+    public var badgeSymbol: String {
+        switch rarity {
+        case .common: return "star.fill"
+        case .uncommon: return "sparkles"
+        case .rare: return "shield.fill"
+        case .epic: return "flame.fill"
+        case .legendary: return "crown.fill"
+        }
+    }
 }
 
 public enum LevelTiers {

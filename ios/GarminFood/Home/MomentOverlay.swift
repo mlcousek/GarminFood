@@ -11,6 +11,13 @@
 // opacity change and no scale/bounce (levels spec: "an equivalent
 // non-animated confirmation SHALL still be shown"), and the haptic still
 // fires -- haptics are not motion.
+//
+// The card's icon is a `BadgeMedallion` (not a plain glyph) for every
+// moment kind, so a level-up genuinely shows its tier's rarity/art
+// prominently (owner ask: "improve the gamification... tiers") rather than
+// just a bare number -- `LevelTiers.tier(forLevel:)` already carries a
+// title/flavor/rarity/symbol per tier (LevelTier.swift), this just finally
+// puts all four on screen together.
 
 import SwiftUI
 import Gamification
@@ -69,18 +76,25 @@ private struct MomentCard: View {
     let animated: Bool
     let onDone: () -> Void
 
-    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 44
+    @ScaledMetric(relativeTo: .largeTitle) private var medallionSize: CGFloat = 84
 
     var body: some View {
         VStack(spacing: Theme.Spacing.md) {
-            Image(systemName: symbol)
-                .font(.system(size: iconSize, weight: .bold))
-                .foregroundStyle(Theme.flameGradient)
+            BadgeMedallion(symbol: medallionSymbol, rarity: medallionRarity, isLocked: false, size: medallionSize)
                 .symbolEffect(.bounce, options: .nonRepeating, value: animated ? moment : nil)
 
-            Text(title)
-                .font(.title2.weight(.bold))
-                .multilineTextAlignment(.center)
+            VStack(spacing: 2) {
+                Text(title)
+                    .font(.title2.weight(.bold))
+                    .multilineTextAlignment(.center)
+                if let tierTitle {
+                    Text(tierTitle)
+                        .font(.subheadline.weight(.semibold))
+                        .textCase(.uppercase)
+                        .kerning(0.6)
+                        .foregroundStyle(.secondary)
+                }
+            }
 
             Text(detail)
                 .font(.subheadline)
@@ -100,13 +114,33 @@ private struct MomentCard: View {
         .accessibilityAddTraits(.isModal)
     }
 
-    private var symbol: String {
+    /// The badge glyph for whatever this moment is -- a level-up shows its
+    /// tier's own escalating symbol (`LevelTier.badgeSymbol`), everything
+    /// else keeps the glyph it always had.
+    private var medallionSymbol: String {
         switch moment {
-        case .levelUp: return "arrow.up.circle.fill"
+        case .levelUp(let level): return LevelTiers.tier(forLevel: level).badgeSymbol
         case .streakMilestone: return "flame.fill"
-        case .challengeCompleted: return "checkmark.seal.fill"
+        case .challengeCompleted: return "target"
         case .dailyChallengeCompleted: return "checkmark.circle.fill"
-        case .achievementUnlocked(_, let badgeSymbol): return badgeSymbol
+        case .achievementUnlocked(_, let badgeSymbol, _): return badgeSymbol
+        }
+    }
+
+    /// Which `BadgeMedallion` colour ramp this moment's badge renders in.
+    /// Level-up and achievement unlocks carry a real rarity already;
+    /// streak milestones derive one from the same thresholds
+    /// `AchievementRarity` uses for streak achievements, so a 500-day
+    /// streak moment visibly outshines a 7-day one. Challenge completions
+    /// have no natural difficulty tier of their own (every template is
+    /// equally "one challenge"), so they stay at a modest, consistent grade
+    /// rather than inventing one.
+    private var medallionRarity: AchievementRarity {
+        switch moment {
+        case .levelUp(let level): return LevelTiers.tier(forLevel: level).rarity
+        case .streakMilestone(let days): return AchievementRarity.derive(from: .streakAtLeast(days: days))
+        case .challengeCompleted, .dailyChallengeCompleted: return .uncommon
+        case .achievementUnlocked(_, _, let rarity): return rarity
         }
     }
 
@@ -116,17 +150,34 @@ private struct MomentCard: View {
         case .streakMilestone(let days): return "\(days)-day streak"
         case .challengeCompleted(let name, _): return name
         case .dailyChallengeCompleted(let name, _): return name
-        case .achievementUnlocked(let name, _): return name
+        case .achievementUnlocked(let name, _, _): return name
         }
+    }
+
+    /// A prominent second line under the title for a level-up only -- the
+    /// tier name (owner ask: "show the tier name... prominently, not just
+    /// a number"). Nil for every other moment kind, which has no tier
+    /// concept of its own.
+    private var tierTitle: String? {
+        guard case .levelUp(let level) = moment else { return nil }
+        return LevelTiers.tier(forLevel: level).title
     }
 
     private var detail: String {
         switch moment {
-        case .levelUp(let level): return "\(LevelTiers.tier(forLevel: level).title) -- consistency is paying off."
+        case .levelUp(let level): return LevelTiers.tier(forLevel: level).flavor
         case .streakMilestone(let days): return "\(days) days in a row. That's a habit now."
         case .challengeCompleted(_, let xp): return "Challenge done. +\(xp) XP."
         case .dailyChallengeCompleted(_, let xp): return "Today's challenge done. +\(xp) XP."
         case .achievementUnlocked: return "New achievement unlocked."
         }
     }
+}
+
+#Preview("MomentCard -- level up") {
+    MomentCard(moment: .levelUp(newLevel: 91), animated: true, onDone: {})
+}
+
+#Preview("MomentCard -- achievement") {
+    MomentCard(moment: .achievementUnlocked(title: "Century Club", badgeSymbol: "fork.knife", rarity: .epic), animated: true, onDone: {})
 }
