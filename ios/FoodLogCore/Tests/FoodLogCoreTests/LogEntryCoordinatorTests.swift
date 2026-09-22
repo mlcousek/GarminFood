@@ -95,4 +95,62 @@ final class LogEntryCoordinatorTests: XCTestCase {
         let events = await usageHistory.all()
         XCTAssertEqual(events.first?.foodId, customFood.id.uuidString, "usage history tracks the custom food's OWN identity, not the backing food's")
     }
+
+    // MARK: - Meal presets
+
+    func testConfirmMealPresetEnqueuesOneEntryPerIngredient() async throws {
+        let (coordinator, outbox, _, _) = makeCoordinator()
+        let secondFood = Food(id: "food-2", name: "Banana", source: .garmin, servings: [Serving(id: "serving-2", unit: "medium", numberOfUnits: 1, calories: 105)])
+        let preset = MealPreset(name: "Breakfast bowl", ingredients: [
+            MealPresetIngredient(food: food, serving: food.servings[0], quantity: 1.5),
+            MealPresetIngredient(food: secondFood, serving: secondFood.servings[0], quantity: 1),
+        ])
+
+        let entries = try await coordinator.confirmMealPreset(preset, mealType: .breakfast, date: "2026-09-22")
+
+        XCTAssertEqual(entries.count, 2)
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(Set(stored.map(\.foodId)), ["food-1", "food-2"])
+        XCTAssertTrue(stored.allSatisfy { $0.mealType == .breakfast && $0.date == "2026-09-22" })
+        XCTAssertEqual(stored.first { $0.foodId == "food-1" }?.numberOfUnits, 1.5)
+    }
+
+    func testConfirmMealPresetScalesEveryIngredientByTheServingsMultiplier() async throws {
+        let (coordinator, outbox, _, _) = makeCoordinator()
+        let preset = MealPreset(name: "Soup", ingredients: [
+            MealPresetIngredient(food: food, serving: food.servings[0], quantity: 2),
+        ])
+
+        _ = try await coordinator.confirmMealPreset(preset, servingsMultiplier: 0.5, mealType: .lunch, date: "2026-09-22")
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.numberOfUnits, 1, "2 units x 0.5 servingsMultiplier = 1")
+    }
+
+    func testConfirmMealPresetLogsACustomFoodIngredientAsItsBackingFood() async throws {
+        let (coordinator, outbox, usageHistory, _) = makeCoordinator()
+        let customFood = CustomFoodDraft(
+            name: "Domácí tvaroh",
+            servingUnit: "bowl",
+            numberOfUnits: 1,
+            backingFoodId: "garmin-42",
+            backingFoodName: "Cottage cheese",
+            backingServingId: "garmin-serving-7",
+            backingQuantityMultiplier: 2
+        )
+        let preset = MealPreset(name: "Breakfast bowl", ingredients: [
+            MealPresetIngredient(food: customFood.asFood(), serving: customFood.asFood().servings[0], quantity: 1, customFoodDraft: customFood),
+            MealPresetIngredient(food: food, serving: food.servings[0], quantity: 1),
+        ])
+
+        let entries = try await coordinator.confirmMealPreset(preset, mealType: .snacks, date: "2026-09-22")
+
+        XCTAssertEqual(entries.count, 2)
+        let stored = await outbox.allEntries()
+        XCTAssertTrue(stored.contains { $0.foodId == "garmin-42" }, "the custom-food ingredient must log as its backing food, not its own id")
+        XCTAssertTrue(stored.contains { $0.foodId == "food-1" })
+
+        let events = await usageHistory.all()
+        XCTAssertTrue(events.contains { $0.foodId == customFood.id.uuidString }, "usage history still tracks the custom food's own identity")
+    }
 }

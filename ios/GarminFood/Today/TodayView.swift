@@ -16,7 +16,9 @@ struct TodayView: View {
     @Environment(AppEnvironment.self) private var environment
 
     @State private var quickPickItems: [QuickPickItem] = []
+    @State private var mealPresets: [MealPreset] = []
     @State private var logTarget: LogTarget?
+    @State private var mealPresetTarget: MealPreset?
     @State private var catalogContext: LogContext?
     @State private var openMeal: MealType?
 
@@ -63,6 +65,17 @@ struct TodayView: View {
                     .padding(.horizontal, -Theme.Spacing.md)
                 }
 
+                if dayLog.isToday, !mealPresets.isEmpty {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                        SectionHeader(title: "Log a meal")
+                            .padding(.horizontal, Theme.Spacing.md)
+                        MealPresetShelf(presets: mealPresets) { preset in
+                            mealPresetTarget = preset
+                        }
+                    }
+                    .padding(.horizontal, -Theme.Spacing.md)
+                }
+
                 AppSignatureView()
                     .padding(.top, Theme.Spacing.xs)
             }
@@ -86,14 +99,19 @@ struct TodayView: View {
         .navigationDestination(item: $logTarget) { target in
             LogEntryConfirmView(target: target, presetMealType: nil, presetDate: dayLog.selectedDate)
         }
+        .navigationDestination(item: $mealPresetTarget) { preset in
+            MealPresetConfirmView(preset: preset, presetMealType: nil, presetDate: dayLog.selectedDate)
+        }
         .navigationDestination(item: $openMeal) { meal in
             MealDetailView(mealType: meal)
         }
         .refreshable {
             await environment.refreshOnForeground()
             await loadQuickPicks()
+            await loadMealPresets()
         }
         .task { await loadQuickPicks() }
+        .task { await loadMealPresets() }
         .onChange(of: environment.router.catalogRequested, initial: true) { _, requested in
             guard requested else { return }
             environment.router.catalogRequested = false
@@ -133,6 +151,10 @@ struct TodayView: View {
             else { return nil }
             return QuickPickItem(food: food, serving: serving, numberOfUnits: entry.numberOfUnits)
         }
+    }
+
+    private func loadMealPresets() async {
+        mealPresets = await environment.mealPresetStore.all()
     }
 }
 

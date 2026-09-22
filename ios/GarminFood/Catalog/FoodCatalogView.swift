@@ -30,6 +30,11 @@ struct FoodCatalogView: View {
         /// Reused by the custom-food editor to pick the existing Garmin
         /// food+serving a custom food is backed by (design.md D4).
         case pickBackingFood(onPick: (Food, Serving) -> Void)
+        /// Reused by the meal-preset editor to add an ingredient -- either a
+        /// real catalog food+serving, or one of the user's own custom foods,
+        /// in which case the third argument carries the draft the preset
+        /// needs to log it correctly later (see MealPreset.swift).
+        case pickIngredient(onPick: (Food, Serving, CustomFoodDraft?) -> Void)
     }
 
     var mode: Mode = .logFood
@@ -75,10 +80,14 @@ struct FoodCatalogView: View {
 
     @State private var quickPickItems: [QuickPickItem] = []
     @State private var customFoods: [CustomFoodDraft] = []
+    @State private var mealPresets: [MealPreset] = []
 
     @State private var logTarget: LogTarget?
+    @State private var mealPresetTarget: MealPreset?
     @State private var foodAwaitingServingPick: Food?
     @State private var isPresentingCustomFoodEditor = false
+    @State private var isPresentingMealPresetEditor = false
+    @State private var mealPresetBeingEdited: MealPreset?
     @State private var isPresentingBarcodeScanner = false
     @State private var barcodeNoteForNewCustomFood: String?
 
@@ -86,6 +95,18 @@ struct FoodCatalogView: View {
         if case .pickBackingFood = mode { return true }
         return false
     }
+
+    private var isPickingIngredient: Bool {
+        if case .pickIngredient = mode { return true }
+        return false
+    }
+
+    /// True for either "pick something for another screen" mode -- neither
+    /// should show meal presets (a preset is a group of separately-logged
+    /// entries, not itself a pickable food/serving) or the Czech search
+    /// section (that flow ends in Garmin matching/creation, not a plain
+    /// food+serving pick).
+    private var isPicking: Bool { isPickingBackingFood || isPickingIngredient }
 
     var body: some View {
         List {
@@ -106,7 +127,7 @@ struct FoodCatalogView: View {
                     Section {
                         ForEach(customFoods) { draft in
                             Button {
-                                logTarget = .custom(draft)
+                                selectCustomFood(draft)
                             } label: {
                                 FoodListRow(food: draft.asFood(), serving: draft.asFood().servings.first)
                             }
@@ -114,6 +135,37 @@ struct FoodCatalogView: View {
                         }
                     } header: {
                         SectionHeader(title: "Your custom foods")
+                    }
+                }
+
+                // Meal presets (multiple ingredients logged together in one
+                // action) aren't a pickable food+serving themselves, so this
+                // section is hidden while picking FOR another screen.
+                if !isPicking, !mealPresets.isEmpty {
+                    Section {
+                        ForEach(mealPresets) { preset in
+                            Button {
+                                mealPresetTarget = preset
+                            } label: {
+                                MealPresetRow(preset: preset)
+                            }
+                            .buttonStyle(.plain)
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    Task { await deleteMealPreset(preset) }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                Button {
+                                    mealPresetBeingEdited = preset
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                .tint(Theme.accent)
+                            }
+                        }
+                    } header: {
+                        SectionHeader(title: "Your meals")
                     }
                 }
             }
@@ -155,7 +207,7 @@ struct FoodCatalogView: View {
             // finding an existing GARMIN food to back a custom food, so an
             // OFF result (which itself needs matching/creation) doesn't
             // belong there.
-            if !isPickingBackingFood, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+            if !isPicking, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
                 Section {
                     if isCzechSearching {
                         HStack {
@@ -202,7 +254,7 @@ struct FoodCatalogView: View {
                 }
             }
 
-            if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, !isPickingBackingFood {
+            if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, mealPresets.isEmpty, !isPickingBackingFood {
                 EmptyStateView(
                     systemImage: "fork.knife",
                     title: "Nothing logged yet",
@@ -213,7 +265,7 @@ struct FoodCatalogView: View {
         }
         .listStyle(.plain)
         .searchable(text: $searchText, prompt: "Search foods (rohlík, chleba, tvaroh…)")
-        .navigationTitle(isPickingBackingFood ? "Pick closest match" : "Log Food")
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             if !isPickingBackingFood {
@@ -230,6 +282,15 @@ struct FoodCatalogView: View {
                         isPresentingCustomFoodEditor = true
                     } label: {
                         Label("New custom food", systemImage: "plus")
+                    }
+                }
+                if !isPickingIngredient {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isPresentingMealPresetEditor = true
+                        } label: {
+                            Label("New meal", systemImage: "square.stack.3d.up")
+                        }
                     }
                 }
             }
@@ -262,6 +323,16 @@ struct FoodCatalogView: View {
                 CustomFoodEditorView(prefillNote: barcodeNoteForNewCustomFood)
             }
         }
+        .sheet(isPresented: $isPresentingMealPresetEditor, onDismiss: { Task { await loadLocalData() } }) {
+            NavigationStack {
+                MealPresetEditorView()
+            }
+        }
+        .sheet(item: $mealPresetBeingEdited, onDismiss: { Task { await loadLocalData() } }) { preset in
+            NavigationStack {
+                MealPresetEditorView(existing: preset)
+            }
+        }
         .fullScreenCover(isPresented: $isPresentingBarcodeScanner) {
             BarcodeScanScreen(
                 onResolved: { food in
@@ -284,6 +355,15 @@ struct FoodCatalogView: View {
         .navigationDestination(item: $matchingTarget) { offFood in
             MatchConfirmationView(offFood: offFood, presetMealType: logContext.mealType, presetDate: logContext.date)
         }
+        .navigationDestination(item: $mealPresetTarget) { preset in
+            MealPresetConfirmView(preset: preset, presetMealType: logContext.mealType, presetDate: logContext.date)
+        }
+    }
+
+    private var navigationTitle: String {
+        if isPickingBackingFood { return "Pick closest match" }
+        if isPickingIngredient { return "Add ingredient" }
+        return "Log Food"
     }
 
     /// Presents the barcode scanner if `AppNavigationBridge` has a pending
@@ -301,7 +381,7 @@ struct FoodCatalogView: View {
 
     private func select(_ food: Food) {
         switch mode {
-        case .pickBackingFood:
+        case .pickBackingFood, .pickIngredient:
             foodAwaitingServingPick = food
         case .logFood:
             Task {
@@ -320,8 +400,26 @@ struct FoodCatalogView: View {
         case .pickBackingFood(let onPick):
             onPick(food, serving)
             dismiss()
+        case .pickIngredient(let onPick):
+            onPick(food, serving, nil)
+            dismiss()
         case .logFood:
             logTarget = .catalog(food: food, initialServing: serving)
+        }
+    }
+
+    /// A custom food has exactly one implicit serving (`CustomFoodDraft.
+    /// servingId`), so -- unlike a catalog food -- picking one never goes
+    /// through the serving-picker sheet in any mode.
+    private func selectCustomFood(_ draft: CustomFoodDraft) {
+        switch mode {
+        case .pickIngredient(let onPick):
+            let asFood = draft.asFood()
+            guard let serving = asFood.servings.first else { return }
+            onPick(asFood, serving, draft)
+            dismiss()
+        case .pickBackingFood, .logFood:
+            logTarget = .custom(draft)
         }
     }
 
@@ -339,6 +437,14 @@ struct FoodCatalogView: View {
         if !isPickingBackingFood {
             customFoods = await environment.customFoodStore.all()
         }
+        if !isPicking {
+            mealPresets = await environment.mealPresetStore.all()
+        }
+    }
+
+    private func deleteMealPreset(_ preset: MealPreset) async {
+        try? await environment.mealPresetStore.delete(id: preset.id)
+        mealPresets.removeAll { $0.id == preset.id }
     }
 
     private func performSearch() async {
