@@ -39,6 +39,11 @@ final class AppServices {
     let customFoodStore: CustomFoodStore
     let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
+    /// add-favorite-foods: purely local (see FavoriteFood.swift's header for
+    /// why there is no Garmin sync) -- included here, not just in the app's
+    /// own `AppEnvironment`, for the same one-shared-instance-per-process
+    /// reason `customFoodStore`/`mealPresetStore` are.
+    let favoriteFoodStore: FavoriteFoodStore
     let logEntryCoordinator: LogEntryCoordinator
     /// add-weight-tracking: the weight domain's own store/outbox/coordinator
     /// pair, following the exact same one-instance-per-process shape as the
@@ -83,6 +88,7 @@ final class AppServices {
         self.customFoodStore = CustomFoodStore()
         self.mealPresetStore = MealPresetStore()
         self.foodCache = FoodCacheStore()
+        self.favoriteFoodStore = FavoriteFoodStore()
         self.fastingStore = FastingSessionStore()
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
         self.weightStore = weightStore

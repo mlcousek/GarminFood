@@ -30,6 +30,8 @@ final class AppEnvironment {
     let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
     let fastingStore: FastingSessionStore
+    /// add-favorite-foods: purely local, see FavoriteFood.swift's header.
+    let favoriteFoodStore: FavoriteFoodStore
     let catalogSearch: FoodCatalogSearch
     /// The Czech (Open Food Facts) search source (add-czech-food-catalog) --
     /// a completely separate network client from `garminClient`/
@@ -93,6 +95,7 @@ final class AppEnvironment {
         self.mealPresetStore = services.mealPresetStore
         self.foodCache = services.foodCache
         self.fastingStore = services.fastingStore
+        self.favoriteFoodStore = services.favoriteFoodStore
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: services.foodCache)
         self.openFoodFactsClient = OpenFoodFactsClient()
         self.logEntryCoordinator = services.logEntryCoordinator
