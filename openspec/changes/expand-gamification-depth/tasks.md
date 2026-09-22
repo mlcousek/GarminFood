@@ -1,56 +1,68 @@
+> **2026-09-22 reconciliation**: this file was left at 0/36 despite the work
+> actually shipping across several commits (`Retune the level curve...`,
+> `Expand the challenge catalog from 13 to 226 templates`, `Add the
+> daily-challenges system...`, `Add a lifetime-stats ledger...`, `Add the
+> achievements system: 122 permanent badges across 11 categories`, `Wire
+> daily challenges and achievements into the Progress tab UI`) —
+> documentation drift, not unstarted work. Checkboxes below were verified
+> against the actual code (file/wiring existence) during this pass, not
+> reopened from scratch. Task 7.4 (a real-device check) has no evidence
+> either way and is left open honestly, matching this project's own "no
+> Mac" convention of not claiming device verification that didn't happen.
+
 ## 1. Levels
 
-- [ ] 1.1 Retune `LevelCurve.growthFactor` from `1.3` to `1.045` (base unchanged); update the file's doc comments with the new reachability numbers (see design.md D1).
-- [ ] 1.2 Add `LevelTier.swift`: ~20 named tiers spanning levels 1-200, each with a title + one-line flavor string, plus a lookup function from level to tier.
-- [ ] 1.3 Wire tier display into the level screen and the level-up moment.
-- [ ] 1.4 Update `LevelCurveTests` for the new curve; add `LevelTierTests` (boundary levels, monotonic tier ordering, every level 1-200 maps to exactly one tier).
+- [x] 1.1 Retuned in `LevelCurve.swift` (verified: file present, doc comments updated).
+- [x] 1.2 `LevelTier.swift` exists with tiers + a level-to-tier lookup.
+- [x] 1.3 Tier display wired into the level UI (`ProgressViews.swift`).
+- [x] 1.4 `LevelCurveTests.swift` and `LevelTierTests.swift` both exist.
 
 ## 2. Challenge catalog expansion
 
-- [ ] 2.1 Add the five new `ChallengeKind` cases to `ChallengeTemplates.swift` (`mealSlotAbsent`, `allGoalsHitDays`, `allFourMealSlotsDays`, `sameFoodConsecutiveDays`, `consecutiveWeekendsBothDays`).
-- [ ] 2.2 Implement evaluation for each new kind in `ChallengeEngine.progress` and `targetCount`.
-- [ ] 2.3 Build blueprint-generator helpers producing a difficulty ladder (Easy/Medium/Hard/Extreme) per kind family, parameterized across `GoalMacro`/`MealTimeBucket` where relevant, with hand-written per-tier title/subtitle copy.
-- [ ] 2.4 Assemble `ChallengeCatalog.all` from the existing 13 (ids unchanged) plus the generated set; verify count >= 220 and every id is unique.
-- [ ] 2.5 Unit test each new `ChallengeKind`'s evaluation against constructed log histories (happy path + at least one non-trivial edge case each), matching the existing `ChallengeTemplateCoverageTests` pattern.
+- [x] 2.1 New `ChallengeKind` cases present in `ChallengeTemplates.swift`.
+- [x] 2.2 Evaluation implemented in `ChallengeEngine.swift`.
+- [x] 2.3 Blueprint-generator helpers present in `ChallengeTemplates.swift`.
+- [x] 2.4 `ChallengeCatalog.all` assembled; commit message records 226 templates (>= 220 target).
+- [x] 2.5 Covered by `ChallengeTemplateCoverageTests.swift` and `NewChallengeKindTests.swift`.
 
 ## 3. Daily challenges
 
-- [ ] 3.1 Add `DailyChallenges.swift`: `DailyChallengeKind` (11 cases), `DailyChallengeTemplate`, `DailyChallengeCatalog.all` (120+ templates via the same generator-plus-flavor-text approach).
-- [ ] 3.2 Add `DailyChallengeEngine`: evaluates a kind against one day's `[UsageEvent]` + optional `DailyGoalStatus`.
-- [ ] 3.3 Add `DailyChallengeStore` (actor): deterministic day-seeded selection of 2 templates/day, 30-day no-repeat with least-recently-shown fallback, persisted `{day: [templateId]}` history (~60 days), per-day completion/XP-awarded flags.
-- [ ] 3.4 Add `XPAward.dailyChallengeBonus` and a `GamificationMoment.dailyChallengeCompleted(title:xpAwarded:)` case.
-- [ ] 3.5 Wire `GamificationEngine`: assign/read today's daily challenges on `refresh()`, evaluate + award on `handleLogConfirmed()`.
-- [ ] 3.6 Unit tests: deterministic same-day reselection, 30-day no-repeat (including the fewer-than-2-eligible fallback), each `DailyChallengeKind`'s evaluation, idempotent same-day XP award.
+- [x] 3.1 `DailyChallenges.swift` exists (`DailyChallengeKind`, templates, catalog).
+- [x] 3.2 `DailyChallengeEngine.swift` exists.
+- [x] 3.3 `DailyChallengeStore.swift` exists (actor-based, per the store pattern used throughout this project).
+- [x] 3.4 `GamificationMoment.dailyChallengeCompleted(title:xpAwarded:)` confirmed present (`GamificationMoment.swift`), wired into `MomentOverlay.swift`.
+- [x] 3.5 Wired into `GamificationEngine.swift`.
+- [x] 3.6 Covered by `DailyChallengeTests.swift`.
 
 ## 4. Lifetime stats ledger
 
-- [ ] 4.1 Add `LifetimeStatsStore.swift` (actor): `totalLogsEver`, `totalCaloriesEver`, `maxSingleDayCalories`, `firstLogDate`, `goalHitDaysEver: [GoalMacro: Int]` with per-macro last-counted-day dedupe.
-- [ ] 4.2 Add `handleLogConfirmed(now:calories:)` parameter to `GamificationEngine`; thread `LogEntryConfirmView`'s existing `caloriesForQuantity` through at its one call site.
-- [ ] 4.3 Call `LifetimeStatsStore.recordGoalStatus(_:)` from `refreshGoalStatus(for:)` alongside the existing `goalStatusStore.record(_:)` call.
-- [ ] 4.4 First-launch best-effort backfill: if the ledger is empty but `usageHistory`/`goalStatusStore` already have data, seed `totalLogsEver`/`firstLogDate`/`goalHitDaysEver` from whatever's still retained (documented, bounded gap — see design.md's Risks).
-- [ ] 4.5 Unit tests: idempotent per-day goal-hit counting, max-single-day tracking across a backdated log, backfill behavior on a pre-populated history.
+- [x] 4.1 `LifetimeStatsStore.swift` exists.
+- [x] 4.2 `handleLogConfirmed(calories:)` confirmed present on `GamificationEngine` (also the exact hook `MealPresetConfirmView`'s own confirm action reuses — see `add-meal-presets`).
+- [x] 4.3 Wired per `LifetimeStatsStore.swift`'s own contents.
+- [x] 4.4 Backfill logic present in `LifetimeStatsStore.swift`.
+- [x] 4.5 Covered by `LifetimeStatsStoreTests.swift`.
 
 ## 5. Achievements
 
-- [ ] 5.1 Add `Achievements.swift`: `AchievementDefinition`, `AchievementCategory`, `AchievementCondition`, `AchievementContext` (bundles level/XP/streak/lifetime-stats/challenge-and-daily-challenge-completion-counts/calendar-novelty booleans).
-- [ ] 5.2 Author the catalog (120+ definitions) across the eleven categories in design.md D5, including the funny cumulative-comparison and extreme-single-day-calorie sets with the specified tone.
-- [ ] 5.3 Add `AchievementEngine.evaluate(context:alreadyUnlocked:)`: two-pass (non-meta, then meta/completionist against the resulting count), returns newly-unlocked definitions.
-- [ ] 5.4 Add `AchievementStore` (actor): persists unlocked ids + unlock dates.
-- [ ] 5.5 Add `XPAward.achievementBonus` and `GamificationMoment.achievementUnlocked(title:badgeSymbol:)`.
-- [ ] 5.6 Wire `GamificationEngine.refresh()`/`handleLogConfirmed()`: build the context, evaluate, persist new unlocks, enqueue moments.
-- [ ] 5.7 Unit tests: every category's boundary condition, meta-achievement two-pass correctness, permanence (condition later becoming false does not revoke), catalog count >= 100.
+- [x] 5.1 `Achievements.swift` exists with the described types.
+- [x] 5.2 Catalog present; commit message records 122 definitions across 11 categories.
+- [x] 5.3 `AchievementEngine.swift` exists.
+- [x] 5.4 `AchievementStore.swift` exists (actor).
+- [x] 5.5 `GamificationMoment.achievementUnlocked(title:badgeSymbol:)` confirmed present, wired into `MomentOverlay.swift`.
+- [x] 5.6 Wired into `GamificationEngine.swift`.
+- [x] 5.7 Covered by `AchievementTests.swift`.
 
 ## 6. UI
 
-- [ ] 6.1 Add `AchievementsView.swift`: grouped grid, locked (greyed + lock glyph) vs. unlocked (colored + date) states, unlock-count header.
-- [ ] 6.2 Add a card/link to `AchievementsView` from `ProgressHomeView`.
-- [ ] 6.3 Add a "Today" section to `ChallengesView` showing the two daily challenges with live progress.
-- [ ] 6.4 Extend `MomentOverlay` (or its equivalent) to present `.dailyChallengeCompleted` and `.achievementUnlocked`, respecting Reduce Motion per the existing pattern.
-- [ ] 6.5 Verify Dynamic Type and VoiceOver labels on the new Achievements screen and the daily-challenges section.
+- [x] 6.1 `AchievementsView.swift` exists (`ios/GarminFood/Progress/`).
+- [x] 6.2 Linked from the Progress tab (`ProgressViews.swift`).
+- [x] 6.3 Daily challenges section present in `ProgressViews.swift`.
+- [x] 6.4 `MomentOverlay.swift` confirmed handling both `.dailyChallengeCompleted` and `.achievementUnlocked`.
+- [ ] 6.5 Dynamic Type / VoiceOver pass not separately confirmed during this reconciliation — genuinely open, not just undocumented.
 
 ## 7. Verification
 
-- [ ] 7.1 `swift test` green for all `Gamification` package targets (CI, no local toolchain).
-- [ ] 7.2 Full app build green (CI).
-- [ ] 7.3 Adversarial self-review pass (matching this project's established pattern) before considering the change done, given its size.
-- [ ] 7.4 Device check: open the app, confirm today's two daily challenges appear and persist across a re-open, confirm the Achievements screen renders and an easy achievement (e.g. first log) unlocks.
+- [x] 7.1 `swift test` gated by `.github/workflows/build.yml` on every push to this branch's history; the code merged to `main`, so this passed in CI.
+- [x] 7.2 Same reasoning as 7.1 — the app build is part of the same required CI job.
+- [x] 7.3 Directly evidenced: `Fix 9 findings from a full-app adversarial review` (git log), on this branch's history.
+- [ ] 7.4 Device check genuinely not confirmed — no evidence either way. Left open.

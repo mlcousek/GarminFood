@@ -440,6 +440,13 @@ public actor Outbox {
             }
         }
 
+        if !delivered.isEmpty || !failed.isEmpty || authOutcome != .none {
+            DiagnosticsLog.log(
+                delivered.isEmpty && !failed.isEmpty ? .warning : .info,
+                category: "Outbox",
+                "drain: \(delivered.count) delivered, \(failed.count) gave up, rateLimited=\(stoppedDueToRateLimit), authOutcome=\(authOutcome)"
+            )
+        }
         return DrainResult(delivered: delivered, failed: failed, stoppedDueToRateLimit: stoppedDueToRateLimit, authOutcome: authOutcome)
     }
 

@@ -328,6 +328,7 @@ struct LogEntryConfirmView: View {
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
             } catch {
+                DiagnosticsLog.log(.error, category: "LogEntryConfirmView", "confirm failed for foodId=\(food.id): \(error)")
                 errorMessage = "Couldn't save this entry. Try again."
             }
         }

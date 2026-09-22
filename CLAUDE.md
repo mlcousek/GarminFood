@@ -89,6 +89,22 @@ store per process; `AppEnvironment.swift` (`GarminFood/App/`) is the SwiftUI
 composition root that exposes them via `.environment(_:)`. Add a new store
 there, not as a fresh instance inside a view.
 
+Two smaller cross-cutting pieces worth knowing about:
+- `GarminKit/DiagnosticsLog.swift` — a persistent, capped, in-app-visible
+  log (viewable/copyable from Settings → Diagnostics). This exists because
+  there's no Mac to attach a debugger or Console.app to; log real errors
+  here (`DiagnosticsLog.log(.error, category:, "...")`), not just a generic
+  user-facing message. Already wired into `GarminClient`'s two choke points
+  and `Outbox.drain` — extend from there rather than adding new logging
+  infra.
+- `NotificationScheduler`/`NotificationPreferencesStore` (`GarminFood/App/`)
+  + `FoodLogCore/NotificationPlanning.swift` — local reminders (meals,
+  streak-at-risk, daily challenges), each re-planned fresh on every
+  foreground/log/setting-change and diffed against what's actually pending,
+  because a local notification can't check app state at fire time on its
+  own. See `openspec/changes/add-reminders-and-diagnostics/design.md` for
+  why.
+
 ## Conventions
 
 - **OpenSpec.** Larger changes are planned under `openspec/changes/<name>/`
