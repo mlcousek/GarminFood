@@ -22,6 +22,15 @@
 // Reconciliation.swift. Its request AND response shapes are both
 // genuinely unconfirmed guesses -- see its own doc comment below and
 // `CreateCustomFoodRequest`'s in GarminModels.swift.
+//
+// `addWeighIn`/`getWeighIns` (add-weight-tracking, 2026-09-22) add
+// `weight-service` routes. Their evidence tier is DIFFERENT from every
+// route above: sourced from `cyberjunky/python-garminconnect`, a real
+// third-party OSS client's actual field names and formats, not a
+// decompiled string literal or blind guess -- but, like `createCustomFood`,
+// never yet called by THIS project against the real account. See
+// `WeighInWriteBody`/`WeightRangeResponse`'s doc comments in
+// GarminModels.swift.
 
 import Foundation
 
@@ -294,6 +303,61 @@ public struct GarminClient: Sendable {
         }
     }
 
+    // MARK: - Weight (add-weight-tracking, 2026-09-22)
+
+    /// POST `/weight-service/user-weight`, body per `WeighInWriteBody`.
+    ///
+    /// Same "don't trust the response body" stance as `createFoodLogEntry`:
+    /// a caller that needs proof of persistence should re-read via
+    /// `getWeighIns`, not trust this call's 2xx alone. This route's own
+    /// evidence tier (see `WeighInWriteBody`'s doc comment in
+    /// GarminModels.swift) sits one step below `createFoodLogEntry`'s
+    /// (garmin_mcp, a live-tested client with its own end-to-end tests
+    /// against a real Garmin account) but one step above `createCustomFood`'s
+    /// (a route with literally no field-level evidence at all): a real,
+    /// actively-maintained third-party OSS client's exact request shape,
+    /// just never yet exercised BY THIS APP against the real account.
+    ///
+    /// Not gated behind an extra confirmation the way `createCustomFood`/
+    /// `createCustomMeal` are: logging a weight IS the deliberate user
+    /// action (tapping "Save" on the Add Weight screen), same as logging a
+    /// food is for `createFoodLogEntry` -- Garmin's own official app logs a
+    /// weigh-in immediately as a normal flow too, there is nothing
+    /// "experimental-feature-shaped" about this write the way an unreviewed
+    /// custom-food/custom-meal creation is. Delivery still goes through
+    /// `WeightOutbox`'s durable local-first queue (WeightSync.swift),
+    /// exactly mirroring `Outbox`'s shape for food logs, so this method
+    /// itself is never called synchronously from a UI action.
+    @discardableResult
+    public func addWeighIn(_ request: AddWeighInRequest) async throws -> HTTPURLResponse {
+        let body = WeighInWriteBody.make(for: request)
+        let (data, response) = try await post(path: "/weight-service/user-weight", body: body)
+        try Self.throwIfNotSuccessful(response, data: data)
+        return response
+    }
+
+    /// GET `/weight-service/weight/range/{startdate}/{enddate}?includeAll=true`
+    /// (dates `YYYY-MM-DD`). See `WeightRangeResponse`'s doc comment in
+    /// GarminModels.swift for exactly what is, and isn't, confirmed about
+    /// this route's response shape. Not currently called from the app layer
+    /// (the History screen reads its own local `WeightStore`, which is
+    /// always populated and never depends on this response shape guess) --
+    /// implemented as documented infrastructure per this project's route
+    /// coverage convention, and a natural next step once the shape above is
+    /// confirmed or corrected against a real device.
+    public func getWeighIns(startDate: String, endDate: String) async throws -> WeightRangeResponse {
+        let (data, response) = try await get(
+            path: "/weight-service/weight/range/\(startDate)/\(endDate)",
+            query: [URLQueryItem(name: "includeAll", value: "true")]
+        )
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(WeightRangeResponse.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
     // MARK: - Request plumbing
 
     private func authorizedRequest(method: String, path: String, query: [URLQueryItem] = []) async throws -> URLRequest {
@@ -423,3 +487,4 @@ public struct GarminClient: Sendable {
 
 extension GarminClient: FoodLogDelivering {}
 extension GarminClient: FoodLogReconciling {}
+extension GarminClient: WeighInDelivering {}

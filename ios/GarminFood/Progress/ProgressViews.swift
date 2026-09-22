@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Gamification
+import FoodLogCore
 
 // MARK: - Progress home
 
@@ -52,6 +53,13 @@ struct ProgressHomeView: View {
                 }
                 .buttonStyle(.plain)
 
+                NavigationLink {
+                    WeightView()
+                } label: {
+                    WeightSummaryCard(latest: environment.weightLoader.latest, previous: environment.weightLoader.previous)
+                }
+                .buttonStyle(.plain)
+
                 VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                     SectionHeader(title: "Goals, last 14 days")
                     GoalHistoryList(statuses: Array(engine.goalHistory.prefix(14)))
@@ -64,6 +72,7 @@ struct ProgressHomeView: View {
         .navigationTitle("Progress")
         .refreshable {
             await engine.refresh()
+            await environment.weightLoader.refresh()
         }
     }
 }
@@ -224,6 +233,45 @@ private struct AchievementsSummaryCard: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(unlockedCount) of \(totalCount) achievements unlocked")
         .accessibilityHint("Opens achievements")
+    }
+}
+
+/// Progress tab entry point into `WeightView` (add-weight-tracking) --
+/// same "card summarises, tap opens the detail screen" shape as every other
+/// card on this tab. Deliberately its own compact layout rather than
+/// reusing `WeightHeroCard` (WeightComponents.swift) as-is: that view's own
+/// "Current weight" caption would duplicate this card's `CardHeader` title.
+private struct WeightSummaryCard: View {
+    let latest: WeightEntry?
+    let previous: WeightEntry?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            CardHeader(title: "Weight", systemImage: "scalemass.fill")
+            if let latest {
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
+                    Text(latest.weightKg.formattedKg)
+                        .font(.system(.largeTitle, design: .rounded).weight(.bold).monospacedDigit())
+                    Text("kg")
+                        .font(.streakLabel)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    if let delta = WeightHistory.delta(latest: latest, previous: previous) {
+                        WeightDeltaBadge(delta: delta)
+                    }
+                }
+                Text("Logged \(latest.loggedAt.formatted(.relative(presentation: .named)))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("Log your weight to start tracking it here.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .card()
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Opens weight tracking")
     }
 }
 

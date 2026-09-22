@@ -141,6 +141,14 @@
       "lastVerified": "2026-09-16",
       "observedStatus": 200,
       "notes": "The profile the Garmin Connect app shows: displayName, fullName, userName, location, profileImageUrlSmall/Medium/Large, plus many visibility flags and Garmin's own userLevel/userPoint (unrelated to this app's XP and deliberately not shown). GarminClient.socialProfile decodes only the name, location and photo fields. Same route python-garminconnect uses for get_full_name."
+    },
+    {
+      "operation": "getWeighIns",
+      "method": "GET",
+      "path": "/weight-service/weight/range/{startdate}/{enddate}?includeAll=true",
+      "lastVerified": "2026-09-22",
+      "observedStatus": "documented via a third-party OSS client, not exercised by this project",
+      "notes": "add-weight-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's get_weigh_ins (~line 1487), fetched 2026-09-22. Route/params/dates confirmed by that method's own implementation. RESPONSE SHAPE is NOT confirmed for this specific route -- get_weigh_ins returns a bare dict with no field access anywhere in that file. WeightRangeResponse's dateWeightList/WeighInSample.samplePk guess is by analogy with the SIBLING dayview route (get_daily_weigh_ins, GET /weight-service/weight/dayview/{cdate}, not implemented here), whose dateWeightList[].samplePk IS field-confirmed (delete_weigh_ins reads it to build delete_weigh_in's path). Every other WeighInSample field (weight, date, calendarDate) is an unconfirmed guess -- see GarminModels.swift's doc comment. Implemented in GarminClient.getWeighIns but not yet called from the app layer (the History screen reads its own local WeightStore instead)."
     }
   ],
   "write": [
@@ -199,6 +207,14 @@
       "lastVerified": "2026-09-14",
       "observedStatus": "documented, not exercised",
       "notes": "String literal found in decompiled client. Out of scope -- this project reads goals, it does not set them."
+    },
+    {
+      "operation": "addWeighIn",
+      "method": "POST",
+      "path": "/weight-service/user-weight",
+      "lastVerified": "2026-09-22",
+      "observedStatus": "documented via a third-party OSS client, not exercised by this project",
+      "notes": "add-weight-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's add_weigh_in/add_weigh_in_with_timestamps (~lines 1414-1483) and the shared _fmt_ts helper (~line 221), fetched 2026-09-22 -- a real, actively-maintained, widely-used OSS client's actual request shape, not a decompiled string literal or blind guess: { dateTimestamp, gmtTimestamp, unitKey ('kg'|'lbs'), sourceType: 'MANUAL', value }, both timestamps formatted yyyy-MM-dd'T'HH:mm:ss.SSS (naive/no offset), dateTimestamp in local time and gmtTimestamp the same instant in UTC. This app always sends unitKey='kg' (no imperial/metric setting exists anywhere in GarminFood). Never yet called by this project against the real account -- gated the same way createFoodLogEntry is (delivery only via WeightOutbox's durable queue, never a synchronous UI call), NOT gated behind an extra confirmation dialog the way createCustomFood/createCustomMeal are, since logging a weight IS the deliberate user action, same status as a food log entry."
     }
   ],
   "unresolved": [
