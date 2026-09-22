@@ -12,6 +12,7 @@
 
 import SwiftUI
 import FoodLogCore
+import GarminKit
 
 @MainActor
 struct MealPresetEditorView: View {
@@ -26,12 +27,19 @@ struct MealPresetEditorView: View {
     @State private var isPresentingIngredientPicker = false
     @State private var isSaving = false
     @State private var saveErrorMessage: String?
+    @State private var garminCustomMealId: Int?
+    @State private var garminSyncedAt: Date?
+    @State private var isSyncingToGarmin = false
+    @State private var isConfirmingGarminSync = false
+    @State private var garminSyncErrorMessage: String?
 
     init(existing: MealPreset? = nil) {
         self.existing = existing
         _name = State(initialValue: existing?.name ?? "")
         _ingredients = State(initialValue: existing?.ingredients ?? [])
         _note = State(initialValue: existing?.note ?? "")
+        _garminCustomMealId = State(initialValue: existing?.garminCustomMealId)
+        _garminSyncedAt = State(initialValue: existing?.garminSyncedAt)
     }
 
     private var isValid: Bool {
@@ -92,6 +100,48 @@ struct MealPresetEditorView: View {
                 }
             }
 
+            if existing != nil, !ingredients.isEmpty {
+                Section {
+                    if let garminSyncedAt {
+                        Label("Synced to Garmin \(garminSyncedAt.formatted(.relative(presentation: .named)))", systemImage: "checkmark.circle.fill")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    if ingredients.contains(where: { $0.customFoodDraft != nil }) {
+                        Text("This meal includes a custom food, which can't be synced to Garmin yet -- only real catalog/matched foods can.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Button {
+                            isConfirmingGarminSync = true
+                        } label: {
+                            if isSyncingToGarmin {
+                                ProgressView()
+                            } else {
+                                Text(garminCustomMealId == nil ? "Sync to Garmin (experimental)" : "Re-sync to Garmin (experimental)")
+                            }
+                        }
+                        .disabled(isSyncingToGarmin)
+                    }
+                    if let garminSyncErrorMessage {
+                        Text(garminSyncErrorMessage).foregroundStyle(.red).font(.footnote)
+                    }
+                } header: {
+                    Text("Garmin")
+                } footer: {
+                    Text("Creates this meal as a real, named meal in your Garmin account (an experimental, unconfirmed route -- see openspec/changes/sync-meal-presets-to-garmin). Logging this preset already works fully without this; this only makes Garmin's own app show it as one grouped meal too.")
+                }
+                .confirmationDialog(
+                    "Send \(ingredients.count) ingredient\(ingredients.count == 1 ? "" : "s") to Garmin as \"\(name)\"?",
+                    isPresented: $isConfirmingGarminSync,
+                    titleVisibility: .visible
+                ) {
+                    Button("Sync") { Task { await syncToGarmin() } }
+                } message: {
+                    Text("This is an experimental, unconfirmed Garmin route -- it may fail. If it succeeds, it creates a new meal in your Garmin account; it never deletes or replaces anything there.")
+                }
+            }
+
             Section("Note") {
                 TextField("Optional note", text: $note, axis: .vertical)
             }
@@ -132,7 +182,9 @@ struct MealPresetEditorView: View {
             name: name.trimmingCharacters(in: .whitespaces),
             ingredients: ingredients,
             note: note.isEmpty ? nil : note,
-            createdAt: existing?.createdAt ?? Date()
+            createdAt: existing?.createdAt ?? Date(),
+            garminCustomMealId: garminCustomMealId,
+            garminSyncedAt: garminSyncedAt
         )
 
         do {
@@ -140,6 +192,53 @@ struct MealPresetEditorView: View {
             dismiss()
         } catch {
             saveErrorMessage = "Couldn't save this meal. Try again."
+        }
+    }
+
+    /// The one explicit, user-triggered call to `GarminClient.
+    /// createCustomMeal` for this preset -- never invoked automatically.
+    /// Genuinely experimental: the route's request/response shape is
+    /// unconfirmed (see `CreateCustomMealRequest`'s doc comment in
+    /// GarminKit), so a failure here is expected as a real possibility, not
+    /// a bug -- it's surfaced plainly and changes nothing else about the
+    /// preset (logging it already works fully without this).
+    private func syncToGarmin() async {
+        guard let existing else { return }
+        isSyncingToGarmin = true
+        garminSyncErrorMessage = nil
+        defer { isSyncingToGarmin = false }
+
+        let items = ingredients.map { ingredient in
+            CustomMealItemInput(
+                foodId: ingredient.food.id,
+                servingId: ingredient.serving.id,
+                source: ingredient.food.source == .fatSecret ? "FATSECRET" : "GARMIN",
+                // The quantity MULTIPLIER, matching `FoodLogWriteBody.Item.
+                // servingQty`'s confirmed meaning on the food-log write --
+                // NOT `serving.numberOfUnits * quantity` (the serving's own
+                // absolute size is separate and already implied by
+                // `servingId`).
+                numberOfUnits: ingredient.quantity
+            )
+        }
+
+        do {
+            let result = try await environment.garminClient.createCustomMeal(name: name, items: items)
+            garminCustomMealId = result.customMealId
+            garminSyncedAt = Date()
+            let preset = MealPreset(
+                id: existing.id,
+                name: name.trimmingCharacters(in: .whitespaces),
+                ingredients: ingredients,
+                note: note.isEmpty ? nil : note,
+                createdAt: existing.createdAt,
+                garminCustomMealId: garminCustomMealId,
+                garminSyncedAt: garminSyncedAt
+            )
+            try? await environment.mealPresetStore.upsert(preset)
+        } catch {
+            DiagnosticsLog.log(.warning, category: "MealPresetEditorView", "createCustomMeal failed for preset=\(name): \(error)")
+            garminSyncErrorMessage = "Couldn't sync to Garmin: this route is experimental and may not be supported. \(error)"
         }
     }
 }

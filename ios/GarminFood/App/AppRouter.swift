@@ -55,10 +55,14 @@ final class AppRouter {
     func catalogDidAppear() { catalogPresentationCount += 1 }
     func catalogDidDisappear() { catalogPresentationCount = max(0, catalogPresentationCount - 1) }
 
-    /// A `garminfood://` link. The widget's only link opens Today.
+    /// A `garminfood://` link from a widget tap.
     func handle(url: URL) {
-        guard url.scheme == GarminFoodDeepLink.scheme else { return }
+        guard let action = GarminFoodDeepLink.action(from: url) else { return }
         selectedTab = .today
+        switch action {
+        case .logFood:
+            catalogRequested = true
+        }
     }
 
     func applyPendingRoute() {

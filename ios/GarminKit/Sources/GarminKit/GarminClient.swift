@@ -249,6 +249,51 @@ public struct GarminClient: Sendable {
         }
     }
 
+    /// POST `/nutrition-service/customMeal` (add-meal-presets, 2026-09-22
+    /// research task).
+    ///
+    /// ROUTE CONFIRMED TO EXIST (decompiled Android client string literal,
+    /// docs/garmin-routes.json) AND the concept is confirmed in active use
+    /// on this very account -- a real `customMealId` already shows up on a
+    /// logged food entry, created by the official Garmin Connect Mobile app
+    /// -- but, exactly like `createCustomFood` above, BOTH the request and
+    /// response shapes are genuinely unconfirmed guesses; see
+    /// `CreateCustomMealRequest`'s doc comment in GarminModels.swift for
+    /// what's being guessed and why.
+    ///
+    /// Same rule as `createCustomFood`/`createFoodLogEntry`: nothing in this
+    /// package invokes this automatically, and nothing in the app layer may
+    /// either -- the only real invocation is the user's own deliberate
+    /// "Sync to Garmin (experimental)" tap after reviewing exactly what's
+    /// about to be sent.
+    public func createCustomMeal(name: String, items: [CustomMealItemInput]) async throws -> CreateCustomMealResponse {
+        let body = CreateCustomMealRequest(
+            mealName: name,
+            foodItems: items.map { item in
+                CreateCustomMealRequest.Item(
+                    foodId: item.foodId,
+                    servingId: item.servingId,
+                    source: item.source,
+                    // Baked in here, not exposed as a caller-supplied
+                    // parameter -- same reasoning as `createCustomFood`
+                    // above: the app layer shouldn't need to know these
+                    // constants exist, and there is no other confirmed
+                    // value to use.
+                    regionCode: FoodLogWriteBody.regionCode,
+                    languageCode: FoodLogWriteBody.languageCode,
+                    numberOfUnits: item.numberOfUnits
+                )
+            }
+        )
+        let (data, response) = try await post(path: "/nutrition-service/customMeal", body: body)
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(CreateCustomMealResponse.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
     // MARK: - Request plumbing
 
     private func authorizedRequest(method: String, path: String, query: [URLQueryItem] = []) async throws -> URLRequest {

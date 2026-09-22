@@ -88,19 +88,42 @@ public struct MealPreset: Codable, Sendable, Equatable, Hashable, Identifiable {
     public var ingredients: [MealPresetIngredient]
     public var note: String?
     public var createdAt: Date
+    /// Set once this preset has been pushed to Garmin's own "custom meal"
+    /// concept (`GarminClient.createCustomMeal`, an explicit, experimental,
+    /// user-triggered action -- see MealPresetEditorView.swift). `nil`
+    /// means never synced. This is purely a local record of what happened;
+    /// nothing reads it back from Garmin to verify it still exists there.
+    public var garminCustomMealId: Int?
+    public var garminSyncedAt: Date?
 
     public init(
         id: UUID = UUID(),
         name: String,
         ingredients: [MealPresetIngredient],
         note: String? = nil,
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        garminCustomMealId: Int? = nil,
+        garminSyncedAt: Date? = nil
     ) {
         self.id = id
         self.name = name
         self.ingredients = ingredients
         self.note = note
         self.createdAt = createdAt
+        self.garminCustomMealId = garminCustomMealId
+        self.garminSyncedAt = garminSyncedAt
+    }
+
+    /// True when every ingredient is a real catalog/matched food that maps
+    /// directly to a Garmin `(foodId, servingId, source)` triple. A
+    /// custom-food ingredient only exists by proxy through its backing food
+    /// (design.md D4 of add-food-log-core) and deriving that indirection's
+    /// own source/region reliably would meaningfully complicate an already
+    /// fully-unconfirmed Garmin route for uncertain benefit -- so syncing
+    /// to Garmin is offered only when this is `false`. See
+    /// `openspec/changes/sync-meal-presets-to-garmin/design.md` D2.
+    public var hasUnsyncableIngredients: Bool {
+        ingredients.contains { $0.customFoodDraft != nil }
     }
 
     /// The preset's nutrition, summed across every ingredient at its own
