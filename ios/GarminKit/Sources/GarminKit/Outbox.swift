@@ -111,9 +111,9 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
             servingId: servingId,
             numberOfUnits: numberOfUnits,
             source: source,
+            loggedAt: createdAt,
             regionCode: regionCode,
-            languageCode: languageCode,
-            loggedAt: createdAt
+            languageCode: languageCode
         )
     }
 }
