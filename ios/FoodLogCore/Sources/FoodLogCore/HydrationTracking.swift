@@ -63,11 +63,10 @@ public actor HydrationStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        let decoded = (try? decoder.decode([HydrationEntry].self, from: data)) ?? []
-        entriesById = Dictionary(uniqueKeysWithValues: decoded.map { ($0.id, $0) })
+        let decoded = FoodLogCoreStorage.loadPersistedJSON([HydrationEntry].self, from: fileURL, decoder: decoder, category: "HydrationStore") ?? []
+        entriesById = Dictionary(decoded.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
     }
 
     private func persist() throws {

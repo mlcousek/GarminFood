@@ -152,8 +152,7 @@ actor OutboxStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
-        entries = (try? JSONDecoder().decode([OutboxEntry].self, from: data)) ?? []
+        entries = PersistedJSON.load([OutboxEntry].self, from: fileURL, decoder: JSONDecoder(), category: "OutboxStore") ?? []
     }
 
     private func persist() throws {

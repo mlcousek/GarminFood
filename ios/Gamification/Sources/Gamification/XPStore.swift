@@ -99,8 +99,7 @@ public actor XPStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
-        snapshot = (try? JSONDecoder().decode(Snapshot.self, from: data)) ?? snapshot
+        snapshot = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: JSONDecoder(), category: "XPStore") ?? snapshot
     }
 
     private func persist() throws {

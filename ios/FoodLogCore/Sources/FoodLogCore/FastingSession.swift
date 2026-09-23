@@ -283,10 +283,10 @@ public actor FastingSessionStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        state = (try? decoder.decode(PersistedState.self, from: data)) ?? PersistedState(active: nil, history: [])
+        state = FoodLogCoreStorage.loadPersistedJSON(PersistedState.self, from: fileURL, decoder: decoder, category: "FastingSessionStore")
+            ?? PersistedState(active: nil, history: [])
     }
 
     private func persist() throws {

@@ -36,9 +36,8 @@ public actor FoodCacheStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
-        let decoded = (try? JSONDecoder().decode([Food].self, from: data)) ?? []
-        foodsById = Dictionary(uniqueKeysWithValues: decoded.map { ($0.id, $0) })
+        let decoded = FoodLogCoreStorage.loadPersistedJSON([Food].self, from: fileURL, decoder: JSONDecoder(), category: "FoodCacheStore") ?? []
+        foodsById = Dictionary(decoded.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
     }
 
     private func persist() {

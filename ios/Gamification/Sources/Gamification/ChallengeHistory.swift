@@ -61,10 +61,9 @@ public actor ChallengeHistoryStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        records = (try? decoder.decode([CompletedChallenge].self, from: data)) ?? []
+        records = GamificationStorage.loadPersistedJSON([CompletedChallenge].self, from: fileURL, decoder: decoder, category: "ChallengeHistoryStore") ?? []
     }
 
     private func persist() throws {

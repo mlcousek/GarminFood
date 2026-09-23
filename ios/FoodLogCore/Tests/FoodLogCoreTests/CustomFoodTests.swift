@@ -88,4 +88,50 @@ final class CustomFoodTests: XCTestCase {
 
         XCTAssertEqual(all.map(\.id), [draft.id])
     }
+
+    // MARK: - Unreadable file (openspec/changes/fix-silent-store-wipe)
+
+    /// The actual bug: an undecodable custom-foods file used to start the
+    /// store empty and then get overwritten by the next `upsert`, wiping
+    /// every custom food permanently. Now the original bytes must survive,
+    /// moved aside next to the store's file.
+    func testUndecodableFileIsQuarantinedNotOverwrittenByTheNextUpsert() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("foodlogcore-customfoods-corrupt-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("custom-foods.json")
+        let garbage = Data(#"[{"id":"not-a-uuid","name":42}]"#.utf8)
+        try garbage.write(to: url)
+
+        let store = CustomFoodStore(fileURL: url)
+        let before = await store.all()
+        XCTAssertTrue(before.isEmpty)
+
+        let draft = makeDraft()
+        try await store.upsert(draft)
+
+        let after = await store.all()
+        XCTAssertEqual(after.map(\.id), [draft.id])
+        let quarantined = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .filter { $0.lastPathComponent.hasPrefix("custom-foods.unreadable-") && $0.pathExtension == "json" }
+        XCTAssertEqual(quarantined.count, 1)
+        XCTAssertEqual(try quarantined.first.map { try Data(contentsOf: $0) }, garbage)
+    }
+
+    /// `Dictionary(uniqueKeysWithValues:)` used to TRAP on a duplicate id,
+    /// crashing on every launch; a duplicate now loads (last one wins).
+    func testDuplicateIdsInThePersistedFileDoNotCrashTheLoad() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("foodlogcore-customfoods-dupes-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let draft = makeDraft()
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        try encoder.encode([draft, draft]).write(to: url)
+
+        let store = CustomFoodStore(fileURL: url)
+        let all = await store.all()
+
+        XCTAssertEqual(all.map(\.id), [draft.id])
+    }
 }

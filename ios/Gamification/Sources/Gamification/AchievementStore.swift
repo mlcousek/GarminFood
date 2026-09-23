@@ -27,10 +27,9 @@ public actor AchievementStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        snapshot = (try? decoder.decode(Snapshot.self, from: data)) ?? snapshot
+        snapshot = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: decoder, category: "AchievementStore") ?? snapshot
     }
 
     private func persist() throws {
