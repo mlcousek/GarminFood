@@ -1,11 +1,11 @@
 ## 1. Spike (record results in design.md)
 
-- [ ] 1.1 Pick the export (Parquet via DuckDB, JSONL or CSV). Measure download volume and runtime.
-- [ ] 1.2 Measure the Czech product count, name coverage, and index size raw and gzipped. If it exceeds 5 MB, apply the trimming from D1.
+- [x] 1.1 Pick the export (Parquet via DuckDB, JSONL or CSV). Measure download volume and runtime.
+- [x] 1.2 Measure the Czech product count, name coverage, and index size raw and gzipped. If it exceeds 5 MB, apply the trimming from D1.
 
 ## 2. Builder + CI
 
-- [ ] 2.1 Add `tools/build-czech-food-index/` (script and README). Output must be deterministic, sorted by code.
+- [x] 2.1 Add `tools/build-czech-food-index/` (script and README). Output must be deterministic, sorted by code.
 - [ ] 2.2 Add `.github/workflows/food-index.yml`:
   - Triggers: weekly cron and `workflow_dispatch`.
   - Builds the index and writes the manifest.

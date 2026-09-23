@@ -18,6 +18,45 @@ records the following. Every access is read-only and anonymous.
   larger, drop fiber/sugar/salt first, then products with no barcode and no
   brand.
 
+### Spike results (2026-09-23, read-only, anonymous, from the owner's Windows machine)
+
+The export options above were set aside in favour of the Search-a-licious
+API, the same endpoint the app already searches live
+(`GET https://search.openfoodfacts.org/search`). It needs no multi-GB
+download and no DuckDB.
+
+- **Probe: `q=countries_tags:"en:czech-republic"`, `page_size=100`.**
+  - 200 in ~330 ms.
+  - `count: 10000, is_count_exact: false`: the count is capped.
+  - Page 101 returns 400: "Maximum number of returned results is 10 000".
+- **Workaround: partition by barcode prefix**
+  (`… AND code:8*`). Every prefix returned an exact count:
+  0*=334, 1*=58, 2*=790, 3*=178, 4*=1435, 5*=874, 6*=36, 7*=178,
+  8*=8012, 9*=273. **Total 12,168.** The builder splits a prefix further
+  if it ever reaches the window.
+- **Legacy `/api/v2/search?countries_tags_en=czech-republic`** reports
+  `count: 20805`, but page_size is capped at 100. Deeper pages returned
+  **503**, then **401**, so it can't be used for a bulk build.
+  **Open question:** why this count is about 8.6k higher than
+  Search-a-licious's. Likely causes are products Search-a-licious doesn't
+  index, or products with no usable data. If coverage turns out to matter,
+  the fallback is the Parquet export (option 1).
+- **Full build run locally** (`tools/build-czech-food-index/build.mjs`):
+  - 126 pages, **47 s**.
+  - 12,168 products fetched. **8,104 kept** with a name and kcal (67 %).
+  - Size: **1.04 MB raw JSON, 295 KB gzipped**, far under the 5 MB
+    target, so no trimming is needed.
+  - Field coverage in the kept set:
+    - brand 7,281
+    - pack quantity 5,647
+    - alternate name 1,252
+    - carbs 7,954
+    - salt 6,443
+    - fiber 3,786
+  - 107 products have "tvaroh" in the name.
+- **kcal from kJ.** When only `energy-kj_100g` is present, kcal is derived
+  from it (÷ 4.184) rather than dropping the product.
+
 ## D1: File format
 
     manifest.json: { "schema": 1, "version": "2026-09-28T03:00Z", "count": 38412,
