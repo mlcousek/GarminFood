@@ -13,9 +13,15 @@
 // near-identical views -- config.yaml's "small, composable views... makes
 // adding the next thing cheap" principle applies exactly as much to charts
 // as to any other view.
+//
+// Both charts optionally draw day-note markers (add-day-notes) -- the
+// shared marker content, tap handling and reveal sheet live in
+// `DayNoteChartMarkers.swift`; each chart only filters the markers to its
+// own date range and hands a tap back through `onSelectNote`.
 
 import SwiftUI
 import Charts
+import FoodLogCore
 
 // MARK: - Macro line chart
 
@@ -31,6 +37,10 @@ struct MacroLineChartView: View {
     let days: [MacroTrendDay]
     let actual: (MacroTrendDay) -> Double?
     let goal: (MacroTrendDay) -> Double?
+    /// add-day-notes: every tagged day's marker; only those inside `days`'
+    /// range are drawn.
+    var noteMarkers: [DayNoteChartMarker] = []
+    var onSelectNote: ((DayNote) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -65,6 +75,7 @@ struct MacroLineChartView: View {
                         .interpolationMethod(.catmullRom)
                     }
                 }
+                DayNoteMarks(markers: visibleNoteMarkers)
             }
             .chartYAxis {
                 AxisMarks(position: .leading)
@@ -72,11 +83,17 @@ struct MacroLineChartView: View {
             .chartXAxis {
                 AxisMarks(values: .automatic(desiredCount: 4))
             }
+            .dayNoteMarkerTaps(visibleNoteMarkers, onSelect: onSelectNote)
             .frame(height: 140)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(title) trend")
             .accessibilityValue(accessibilitySummary)
+            .dayNoteMarkerAccessibilityActions(visibleNoteMarkers, onSelect: onSelectNote)
         }
+    }
+
+    private var visibleNoteMarkers: [DayNoteChartMarker] {
+        DayNoteChartMarker.visible(noteMarkers, from: days.first?.date, to: days.last?.date)
     }
 
     private var accessibilitySummary: String {
@@ -109,6 +126,9 @@ struct HydrationTrendPoint: Identifiable {
 struct HydrationTrendChartView: View {
     let points: [HydrationTrendPoint]
     let goalML: Double
+    /// add-day-notes -- same as `MacroLineChartView`'s.
+    var noteMarkers: [DayNoteChartMarker] = []
+    var onSelectNote: ((DayNote) -> Void)?
 
     var body: some View {
         Chart {
@@ -124,6 +144,8 @@ struct HydrationTrendChartView: View {
                     .foregroundStyle(Theme.accent)
                     .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
             }
+            // Bars are plotted with `unit: .day`, so markers centre on the day.
+            DayNoteMarks(markers: visibleNoteMarkers, centeredOnDay: true)
         }
         .chartYAxis {
             AxisMarks(position: .leading)
@@ -131,10 +153,16 @@ struct HydrationTrendChartView: View {
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 4))
         }
+        .dayNoteMarkerTaps(visibleNoteMarkers, centeredOnDay: true, onSelect: onSelectNote)
         .frame(height: 140)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Water trend")
         .accessibilityValue(accessibilitySummary)
+        .dayNoteMarkerAccessibilityActions(visibleNoteMarkers, onSelect: onSelectNote)
+    }
+
+    private var visibleNoteMarkers: [DayNoteChartMarker] {
+        DayNoteChartMarker.visible(noteMarkers, from: points.first?.date, to: points.last?.date)
     }
 
     private var accessibilitySummary: String {

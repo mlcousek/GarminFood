@@ -66,6 +66,10 @@ final class AppServices {
     /// reading fasting state (there isn't one yet) wouldn't open a second,
     /// divergent copy of the file.
     let fastingStore: FastingSessionStore
+    /// add-day-notes: purely local, no Garmin route exists (DayNote.swift's
+    /// header) -- one shared instance per process, same reason as
+    /// `fastingStore` above.
+    let dayNoteStore: DayNoteStore
 
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
@@ -90,6 +94,7 @@ final class AppServices {
         self.foodCache = FoodCacheStore()
         self.favoriteFoodStore = FavoriteFoodStore()
         self.fastingStore = FastingSessionStore()
+        self.dayNoteStore = DayNoteStore()
         self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
         self.weightStore = weightStore
         self.weightOutbox = weightOutbox

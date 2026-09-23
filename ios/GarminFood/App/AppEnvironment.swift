@@ -32,6 +32,9 @@ final class AppEnvironment {
     let fastingStore: FastingSessionStore
     /// add-favorite-foods: purely local, see FavoriteFood.swift's header.
     let favoriteFoodStore: FavoriteFoodStore
+    /// add-day-notes: purely local, see DayNote.swift's header. Written by
+    /// `DayNoteCard` (Today), read by `TrendsView` for its chart markers.
+    let dayNoteStore: DayNoteStore
     let catalogSearch: FoodCatalogSearch
     /// The Czech (Open Food Facts) search source (add-czech-food-catalog) --
     /// a completely separate network client from `garminClient`/
@@ -96,6 +99,7 @@ final class AppEnvironment {
         self.foodCache = services.foodCache
         self.fastingStore = services.fastingStore
         self.favoriteFoodStore = services.favoriteFoodStore
+        self.dayNoteStore = services.dayNoteStore
         self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: services.foodCache)
         self.openFoodFactsClient = OpenFoodFactsClient()
         self.logEntryCoordinator = services.logEntryCoordinator

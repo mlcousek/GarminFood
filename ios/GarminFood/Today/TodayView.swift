@@ -124,6 +124,10 @@ struct TodayView: View {
                     )
                 }
 
+                // add-day-notes: note + tags for the selected day (see
+                // DayNoteCard.swift's header).
+                DayNoteCard(day: dayLog.dateString, store: environment.dayNoteStore)
+
                 AppSignatureView()
                     .padding(.top, Theme.Spacing.xs)
             }
