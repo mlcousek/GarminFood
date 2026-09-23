@@ -29,6 +29,16 @@ enum BackgroundRefresh {
 
     /// The refresh itself: deliver, reconcile, and ask again if anything is
     /// still waiting.
+    ///
+    /// Drains all three outboxes, like `AppEnvironment.drainAndReconcile`
+    /// (2026-09-23 review fix: this used to drain only the food outbox, so a
+    /// queued weigh-in delete or a negative water correction never moved in
+    /// the background and didn't even keep the refresh scheduled). Each
+    /// drain stops itself on an auth failure without burning an attempt;
+    /// there is no UI to report it to here, so it is logged, and the next
+    /// foreground `drainAndReconcile` hits the same failure and raises the
+    /// auth banner. Only `.pending` entries keep the refresh scheduled -- a
+    /// `.failed` one waits for the user in the sync queue.
     @MainActor
     static func run() async {
         let services = AppServices.shared
@@ -36,12 +46,23 @@ enum BackgroundRefresh {
         if !result.delivered.isEmpty {
             _ = await services.reconciliation.reconcile(delivered: result.delivered, using: services.garminClient)
         }
+        let weightResult = await services.weightOutbox.drain(using: services.garminClient)
+        let hydrationResult = await services.hydrationOutbox.drain(using: services.garminClient)
+
+        let authOutcome = [result.authOutcome, weightResult.authOutcome, hydrationResult.authOutcome]
+            .first { $0 != .none } ?? .none
+        if authOutcome != .none {
+            DiagnosticsLog.log(.warning, category: "BackgroundRefresh", "background drain stopped on auth: \(authOutcome)")
+        }
+
         // An unparked edit still owing its old entry's delete
         // (add-log-entry-editing) needs another drain just like a pending create.
-        let waiting = await services.outbox.allEntries().contains {
+        let foodWaiting = await services.outbox.allEntries().contains {
             $0.state == .pending || ($0.state == .createdAwaitingDelete && !$0.isParkedReplace)
         }
-        if waiting {
+        let weightWaiting = await services.weightOutbox.allEntries().contains { $0.state == .pending }
+        let hydrationWaiting = await services.hydrationOutbox.allEntries().contains { $0.state == .pending }
+        if foodWaiting || weightWaiting || hydrationWaiting {
             schedule()
         }
         // add-offline-czech-food-index D3: the at-most-daily index check,
