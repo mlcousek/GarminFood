@@ -138,6 +138,21 @@ public actor UsageHistoryStore {
         }
         try persist()
     }
+
+    /// Fills in the meal of events recorded before `mealType` existed, from
+    /// Garmin's own day logs (`UsageMealBackfill`). Runs over the CURRENT
+    /// events inside the actor, so a log recorded while the day logs were
+    /// being fetched is never lost. Returns how many were filled; writes
+    /// only when that is more than zero.
+    @discardableResult
+    public func applyMealBackfill(_ logs: [String: DailyFoodLog]) throws -> Int {
+        loadIfNeeded()
+        let result = UsageMealBackfill.apply(to: events, logs: logs)
+        guard result.filled > 0 else { return 0 }
+        events = result.events
+        try persist()
+        return result.filled
+    }
 }
 
 /// Pure ranking logic (task 13.2), extracted from the store so it is

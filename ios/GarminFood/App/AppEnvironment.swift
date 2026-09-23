@@ -103,6 +103,7 @@ final class AppEnvironment {
     /// One Garmin health read at a time (foreground, screen appear, and a
     /// post-delivery refresh can all ask at once).
     @ObservationIgnored private var isRefreshingGarminHealth = false
+    @ObservationIgnored private var isBackfillingUsageMeals = false
     @ObservationIgnored private var garminHealthRefreshQueued = false
     @ObservationIgnored private var garminHealthRefreshQueuedForce = false
 
@@ -178,6 +179,47 @@ final class AppEnvironment {
         async let weightAndWater: Void = refreshGarminHealth()
         _ = await (day, gamification, goals, garminProfile, weightAndWater)
         await syncNotifications()
+        // Low priority and never awaited by anything the user sees.
+        Task(priority: .background) { await self.backfillUsageMealsIfNeeded() }
+    }
+
+    /// One-time (until it completes): fills in the meal of usage events
+    /// recorded before `UsageEvent.mealType` existed, from Garmin's day logs
+    /// for the last few weeks, so "Usual for <meal>" isn't empty after the
+    /// upgrade (`UsageMealBackfill`). Read-only against Garmin (the same
+    /// confirmed day-log route the Today tab uses). Any read failure --
+    /// offline, expired sign-in -- just stops it quietly; the next
+    /// foreground tries again, and the regular refresh already surfaces an
+    /// auth problem loudly.
+    private func backfillUsageMealsIfNeeded() async {
+        let doneKey = "usageMealBackfill.v1.done"
+        guard !UserDefaults.standard.bool(forKey: doneKey), !isBackfillingUsageMeals else { return }
+        isBackfillingUsageMeals = true
+        defer { isBackfillingUsageMeals = false }
+
+        let days = UsageMealBackfill.daysNeedingBackfill(await usageHistory.all())
+        var logs: [String: DailyFoodLog] = [:]
+        for day in days {
+            if let cached = dayLog.cachedFoodLogs[day] {
+                logs[day] = cached
+                continue
+            }
+            do {
+                if let log = try await garminClient.dailyFoodLog(date: day) {
+                    logs[day] = log
+                }
+            } catch {
+                DiagnosticsLog.log(.info, category: "UsageMealBackfill", "Stopped after \(logs.count)/\(days.count) days, will retry next foreground: \(error)")
+                return
+            }
+        }
+        do {
+            let filled = try await usageHistory.applyMealBackfill(logs)
+            DiagnosticsLog.log(.info, category: "UsageMealBackfill", "Filled the meal of \(filled) older usage events from \(logs.count) Garmin day logs.")
+            UserDefaults.standard.set(true, forKey: doneKey)
+        } catch {
+            DiagnosticsLog.log(.warning, category: "UsageMealBackfill", "Couldn't save the backfill, will retry: \(error)")
+        }
     }
 
     /// Reads weigh-ins, today's water and the weight goal from Garmin into

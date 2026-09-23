@@ -19,9 +19,11 @@
 //
 // Events recorded before `mealType` existed (nil) never count toward any
 // meal -- guessing their meal from the clock would put a 10pm snack on the
-// dinner shelf. So the shelf starts empty after the upgrade and fills as
-// the owner logs; `minimumMealEvents` keeps it hidden until a meal has
-// enough history to mean something.
+// dinner shelf. Instead, `UsageMealBackfill` fills those events in once
+// from Garmin's own day logs (ground truth for which meal a food was
+// logged under), so the shelf isn't empty after the upgrade; anything it
+// can't place unambiguously stays nil. `minimumMealEvents` keeps the shelf
+// hidden until a meal has enough history to mean something.
 //
 // Depended on by: FoodCatalogView's `loadLocalData` (app target).
 
