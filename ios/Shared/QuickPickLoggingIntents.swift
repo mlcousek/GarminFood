@@ -97,6 +97,14 @@ enum QuickPickControlAction {
     /// app's own `FoodCatalogView` shelf uses) and logs the one at
     /// `rankIndex` (0-based -- rank 0 is the #1 quick pick).
     ///
+    /// Ranked entries are resolved with `QuickPickResolution.loggable`
+    /// first, exactly like the in-app shelves: a custom food is logged via
+    /// `confirmCustomFood` as its backing Garmin food (it used to be sent
+    /// under its local UUID and serving "custom" -- a guaranteed Garmin 400
+    /// after the Control had already reported success), and an entry that
+    /// can't be logged at all (a deleted custom food, an uncached food) is
+    /// skipped, so rank N is the Nth card the app itself shows.
+    ///
     /// Uses the process-wide `AppServices` stores, the same instances the
     /// running app uses, so a Control log can't be lost to a second
     /// in-memory copy of the same files (add-app-shell-and-meal-dashboard
@@ -107,26 +115,40 @@ enum QuickPickControlAction {
         let services = AppServices.shared
 
         let ranked = QuickPick.rank(events: await services.usageHistory.all())
-        guard ranked.indices.contains(rankIndex) else {
-            throw ActionError.nothingRankedYet
-        }
-        let pick = ranked[rankIndex]
-
-        let cache = await services.foodCache.all()
-        guard let food = cache[pick.foodId],
-              let serving = food.servings.first(where: { $0.id == pick.servingId }) else {
-            throw ActionError.foodNotCachedLocally
+        let loggable = QuickPickResolution.loggable(
+            ranked,
+            cache: await services.foodCache.all(),
+            customFoods: await services.customFoodStore.all()
+        )
+        guard loggable.indices.contains(rankIndex) else {
+            // Something IS ranked this deep, it just can't be logged from
+            // here (see `QuickPickResolution`'s header).
+            throw ranked.indices.contains(rankIndex) ? ActionError.foodNotCachedLocally : ActionError.nothingRankedYet
         }
 
         let date = NutritionDate.todayString()
-        try await services.logEntryCoordinator.confirm(
-            food: food,
-            serving: serving,
-            numberOfUnits: pick.numberOfUnits,
-            mealType: MealTypeDefaulting.defaultMealType(),
-            date: date
-        )
-        await services.logObserver?.didLog(food: food, date: date)
+        let mealType = MealTypeDefaulting.defaultMealType()
+        switch loggable[rankIndex] {
+        case .catalog(let food, let serving, let numberOfUnits):
+            try await services.logEntryCoordinator.confirm(
+                food: food,
+                serving: serving,
+                numberOfUnits: numberOfUnits,
+                mealType: mealType,
+                date: date
+            )
+            await services.logObserver?.didLog(food: food, date: date)
+        case .custom(let draft, let quantity):
+            // Same call the confirm screen makes for a custom food; no Siri
+            // donation, same as there (a custom food's name can't be found
+            // by "log it by name").
+            try await services.logEntryCoordinator.confirmCustomFood(
+                draft,
+                quantity: quantity,
+                mealType: mealType,
+                date: date
+            )
+        }
 
         // The durable local commit above is what must never wait on the
         // network. Delivery after it is waited for, but only briefly
