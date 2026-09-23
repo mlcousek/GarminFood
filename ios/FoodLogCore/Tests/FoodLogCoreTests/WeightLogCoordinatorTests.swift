@@ -79,6 +79,93 @@ final class WeightLogCoordinatorTests: XCTestCase {
         XCTAssertEqual(outboxEntries.count, 1, "an already-delivered outbox entry is left alone -- it can't be recalled from Garmin")
         XCTAssertEqual(outboxEntries.first?.state, .sent)
     }
+
+    // MARK: - delete(_:) on the merged history (sync-weight-hydration-with-garmin, D3)
+
+    private func sample(pk: Int = 1_790_149_333_817, kg: Double = 83.9, at date: Date = Date(timeIntervalSince1970: 1_790_149_291.732)) -> GarminWeighIn {
+        GarminWeighIn(samplePk: pk, calendarDate: "2026-09-23", weightGrams: kg * 1000, timestampGMT: date.timeIntervalSince1970 * 1000)
+    }
+
+    func testDeletingAGarminWeighInQueuesAGarminDeleteWithoutAnyNetworkCall() async throws {
+        let (coordinator, _, outbox) = makeCoordinator()
+        let garminOnly = WeighInDisplayEntry(source: .garmin(sample(), matchedLocalEntry: nil), syncState: .synced, outboxEntryId: nil)
+
+        let result = try await coordinator.delete(garminOnly)
+
+        XCTAssertEqual(result, .garminDeleteQueued)
+        let queued = await outbox.allEntries()
+        XCTAssertEqual(queued.count, 1)
+        XCTAssertEqual(queued.first?.kind, .delete)
+        XCTAssertEqual(queued.first?.samplePk, 1_790_149_333_817)
+        XCTAssertEqual(queued.first?.calendarDate, "2026-09-23")
+        XCTAssertEqual(queued.first?.state, .pending, "queued, delivered later by the drain")
+    }
+
+    func testTheDeletedSampleIsHiddenFromTheMergedHistoryAtOnce() async throws {
+        let (coordinator, store, outbox) = makeCoordinator()
+        let garminSample = sample()
+        let row = WeighInDisplayEntry(source: .garmin(garminSample, matchedLocalEntry: nil), syncState: .synced, outboxEntryId: nil)
+
+        try await coordinator.delete(row)
+
+        let localEntries = await store.all()
+        let outboxEntries = await outbox.allEntries()
+        let merged = WeightHistoryMerge.merge(
+            garminWeighIns: [garminSample],
+            garminDayFetchedAt: ["2026-09-23": Date()],
+            localEntries: localEntries,
+            outboxEntries: outboxEntries
+        )
+        XCTAssertTrue(merged.isEmpty)
+    }
+
+    func testDeletingAGarminWeighInLoggedHereAlsoRemovesTheLocalRecord() async throws {
+        let (coordinator, store, outbox) = makeCoordinator()
+        let local = try await coordinator.logWeight(weightKg: 83.9, loggedAt: Date(timeIntervalSince1970: 1_790_149_291.732))
+        _ = await outbox.drain(using: AlwaysSucceedsWeighInDeliverer())
+        let row = WeighInDisplayEntry(source: .garmin(sample(), matchedLocalEntry: local), syncState: .synced, outboxEntryId: nil)
+
+        try await coordinator.delete(row)
+
+        let storedEntries = await store.all()
+        XCTAssertTrue(storedEntries.isEmpty, "the app's own copy goes too, so it can't resurface")
+        let deletes = await outbox.allEntries().filter { $0.kind == .delete }
+        XCTAssertEqual(deletes.count, 1)
+    }
+
+    func testDeletingAPendingLocalEntryJustCancelsIt() async throws {
+        let (coordinator, store, outbox) = makeCoordinator()
+        let local = try await coordinator.logWeight(weightKg: 80)
+        let row = WeighInDisplayEntry(source: .local(local), syncState: .pending, outboxEntryId: local.outboxEntryId)
+
+        let result = try await coordinator.delete(row)
+
+        XCTAssertEqual(result, .cancelledBeforeDelivery)
+        let storedEntries = await store.all()
+        XCTAssertTrue(storedEntries.isEmpty)
+        let outboxEntries = await outbox.allEntries()
+        XCTAssertTrue(outboxEntries.isEmpty, "no delete is queued for something Garmin never had")
+    }
+
+    func testDeletingAgainAfterAFailedDeleteRetriesItInsteadOfQueueingASecond() async throws {
+        let (coordinator, _, outbox) = makeCoordinator()
+        let row = WeighInDisplayEntry(source: .garmin(sample(), matchedLocalEntry: nil), syncState: .synced, outboxEntryId: nil)
+        try await coordinator.delete(row)
+        // `WeightOutbox(processName:)`'s default maxAttempts is 5; zero
+        // jitter makes every backoff 0 s, so each drain retries at once.
+        for _ in 0..<5 {
+            _ = await outbox.drain(using: AlwaysFailsWeighInDeliverer(), randomJitter: { 0 })
+        }
+        let failed = await outbox.allEntries()
+        XCTAssertEqual(failed.first?.state, .failed, "precondition: the delete gave up")
+
+        try await coordinator.delete(row)
+
+        let after = await outbox.allEntries()
+        XCTAssertEqual(after.count, 1)
+        XCTAssertEqual(after.first?.state, .pending)
+        XCTAssertEqual(after.first?.attemptCount, 0)
+    }
 }
 
 /// A `WeighInDelivering` fake that always succeeds -- lets a test drive a
@@ -89,5 +176,20 @@ final class WeightLogCoordinatorTests: XCTestCase {
 private struct AlwaysSucceedsWeighInDeliverer: WeighInDelivering {
     func addWeighIn(_ request: AddWeighInRequest) async throws -> HTTPURLResponse {
         HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/weight-service/user-weight")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
+
+    func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse {
+        HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/weight-service/weight/\(date)/byversion/\(samplePk)")!, statusCode: 204, httpVersion: nil, headerFields: nil)!
+    }
+}
+
+/// Always fails with a server error -- drives a queued delete to `.failed`.
+private struct AlwaysFailsWeighInDeliverer: WeighInDelivering {
+    func addWeighIn(_ request: AddWeighInRequest) async throws -> HTTPURLResponse {
+        throw GarminClientError.httpError(statusCode: 500, body: nil)
+    }
+
+    func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse {
+        throw GarminClientError.httpError(statusCode: 500, body: nil)
     }
 }

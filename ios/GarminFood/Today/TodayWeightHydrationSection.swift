@@ -40,16 +40,21 @@ import GarminKit
 /// the same "whole card is one tap target" shape `FastingHomeCard`/
 /// `ProgressStrip` (`TodayView.swift`) already use for their own Today-tab
 /// summary rows.
+///
+/// sync-weight-hydration-with-garmin: shows Garmin's latest weigh-in (merged
+/// with any not-yet-synced local one) and the goal bar (design.md D5).
 struct TodayWeightCard: View {
-    let latest: WeightEntry?
-    let previous: WeightEntry?
+    let latest: WeighInDisplayEntry?
+    let previous: WeighInDisplayEntry?
+    var progress: WeightGoalProgress? = nil
+    var refreshFailed: Bool = false
 
     var body: some View {
         NavigationLink {
             WeightView()
         } label: {
             HStack {
-                WeightHeroCard(latest: latest, previous: previous)
+                WeightHeroCard(latest: latest, previous: previous, progress: progress, refreshFailed: refreshFailed)
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
@@ -68,9 +73,14 @@ struct TodayWeightCard: View {
 /// link's own tap target (the same nested-tappable-control hazard
 /// `FavoriteToggleButton`'s doc comment in `DesignSystem/Components.swift`
 /// already calls out for buttons-in-rows).
+///
+/// sync-weight-hydration-with-garmin: `todayTotalML` is Garmin's total plus
+/// undelivered local drinks and `goalML` the effective goal (Garmin's unless
+/// overridden) -- both from `HydrationLoader`.
 struct TodayHydrationCard: View {
     let todayTotalML: Double
     let goalML: Double
+    var refreshFailed: Bool = false
     let onQuickAdd: (Double) -> Void
     let onCustom: () -> Void
 
@@ -80,7 +90,7 @@ struct TodayHydrationCard: View {
                 HydrationView()
             } label: {
                 HStack {
-                    HydrationHeroCard(todayTotalML: todayTotalML, goalML: goalML)
+                    HydrationHeroCard(todayTotalML: todayTotalML, goalML: goalML, refreshFailed: refreshFailed)
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.tertiary)
@@ -98,8 +108,8 @@ struct TodayHydrationCard: View {
 #Preview("TodayWeightCard") {
     NavigationStack {
         TodayWeightCard(
-            latest: WeightEntry(weightKg: 75.5, loggedAt: Date()),
-            previous: WeightEntry(weightKg: 76.8, loggedAt: Date().addingTimeInterval(-86_400))
+            latest: WeighInDisplayEntry(source: .local(WeightEntry(weightKg: 75.5, loggedAt: Date())), syncState: .synced, outboxEntryId: nil),
+            previous: WeighInDisplayEntry(source: .local(WeightEntry(weightKg: 76.8, loggedAt: Date().addingTimeInterval(-86_400))), syncState: .synced, outboxEntryId: nil)
         )
         .padding()
     }

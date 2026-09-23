@@ -5,35 +5,25 @@
 // HydrationView and ProgressViews.swift's summary card), a quick-add chip
 // row, and one history row. Nothing new invented here.
 //
-// Hydration's hero differs from weight's in one structural way: weight has
-// no in-app goal to compare against (WeightDeltaBadge's own doc comment
-// covers why), but "how much of today's target have I had" is the whole
-// point of a hydration screen every competitor (Yazio, Kalorické tabulky)
-// shows. Garmin's own hydration goal isn't readable (GarminModels.swift's
-// hydration section -- no confirmed response shape for a read route), so
-// the goal here is a plain local preference, not synced anywhere.
+// "How much of today's target have I had" is the whole point of a
+// hydration screen every competitor (Yazio, Kalorické tabulky) shows.
+// Since sync-weight-hydration-with-garmin the total is Garmin's day total
+// plus undelivered local drinks (FoodLogCore `HydrationDayTotal`), and the
+// goal is Garmin's `goalInML` unless overridden in Settings -> Goals
+// (`HydrationLoader.goal`). The old per-device `@AppStorage`
+// "hydrationDailyGoalML" preference is no longer read anywhere.
 
 import SwiftUI
 import FoodLogCore
 import GarminKit
-
-/// The single source of truth for the `@AppStorage` key backing the local
-/// hydration goal -- `HydrationView`, `ProgressViews.swift`'s
-/// `TrendsSummaryCard`/`ProgressHomeView`, and `TrendsView` each need this
-/// same per-device preference (this file's own header explains why it's
-/// local, not Garmin-synced). Before 2026-09-22 (a code-review finding)
-/// each of those redeclared `"hydrationDailyGoalML"` as its own string
-/// literal -- all three happened to agree, but nothing enforced it, and a
-/// typo in any one would have silently created a second, un-synced goal.
-enum HydrationPreferenceKeys {
-    static let dailyGoalML = "hydrationDailyGoalML"
-}
 
 // MARK: - Hero
 
 struct HydrationHeroCard: View {
     let todayTotalML: Double
     let goalML: Double
+    /// Shows the quiet "couldn't refresh" caption.
+    var refreshFailed: Bool = false
 
     private var fraction: Double {
         guard goalML > 0 else { return 0 }
@@ -61,6 +51,9 @@ struct HydrationHeroCard: View {
             Text(goalML > 0 ? "Goal \(goalML.formattedML) ml" : "No goal set")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            if refreshFailed {
+                GarminRefreshFailedCaption()
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)

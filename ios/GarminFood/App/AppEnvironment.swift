@@ -53,6 +53,11 @@ final class AppEnvironment {
     let hydrationOutbox: HydrationOutbox
     let hydrationLogCoordinator: HydrationLogCoordinator
     let hydrationLoader: HydrationLoader
+    /// sync-weight-hydration-with-garmin: the Garmin READS behind both
+    /// loaders above (weigh-ins, water total, weight goal), cached in
+    /// `AppServices.garminHealthCache`. Run by `refreshGarminHealth(force:)`
+    /// only -- never on a confirm/save path.
+    let garminHealthSync: GarminHealthSync
     /// add-trends-and-insights: the Trends screen's macro-trend data. Unlike
     /// every loader above, this has no local store/outbox of its own to
     /// mirror -- `calorieSummaryDaily` is a single stateless Garmin read
@@ -82,12 +87,23 @@ final class AppEnvironment {
     /// for the sync queue screen.
     private(set) var undeliveredCount = 0
     private(set) var undeliveredEntries: [OutboxEntry] = []
+    /// sync-weight-hydration-with-garmin: weigh-in adds/deletes and drinks/
+    /// corrections Garmin hasn't accepted, shown in the sync queue next to
+    /// food entries (spec: a failed delete "is visible in the sync queue").
+    private(set) var undeliveredWeightEntries: [WeightOutboxEntry] = []
+    private(set) var undeliveredHydrationEntries: [HydrationOutboxEntry] = []
 
     @ObservationIgnored private var lastForegroundDay = Date()
+    /// One Garmin health read at a time (foreground, screen appear, and a
+    /// post-delivery refresh can all ask at once).
+    @ObservationIgnored private var isRefreshingGarminHealth = false
+    @ObservationIgnored private var garminHealthRefreshQueued = false
+    @ObservationIgnored private var garminHealthRefreshQueuedForce = false
 
     init() {
         let services = AppServices.shared
         let client = services.garminClient
+        let preferences = AppPreferences()
 
         self.garminClient = client
         self.authState = GarminAuthState()
@@ -111,14 +127,15 @@ final class AppEnvironment {
         self.logEntryCoordinator = services.logEntryCoordinator
         self.weightOutbox = services.weightOutbox
         self.weightLogCoordinator = services.weightLogCoordinator
-        self.weightLoader = WeightLoader(store: services.weightStore, outbox: services.weightOutbox)
+        self.weightLoader = WeightLoader(store: services.weightStore, outbox: services.weightOutbox, cache: services.garminHealthCache, preferences: preferences)
         self.hydrationOutbox = services.hydrationOutbox
         self.hydrationLogCoordinator = services.hydrationLogCoordinator
-        self.hydrationLoader = HydrationLoader(store: services.hydrationStore, outbox: services.hydrationOutbox)
+        self.hydrationLoader = HydrationLoader(store: services.hydrationStore, outbox: services.hydrationOutbox, cache: services.garminHealthCache, preferences: preferences)
+        self.garminHealthSync = services.garminHealthSync
         self.trendsLoader = MacroTrendLoader(client: client)
         self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
         self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache)
-        self.preferences = AppPreferences()
+        self.preferences = preferences
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
@@ -141,10 +158,66 @@ final class AppEnvironment {
         async let gamification: Void = gamificationEngine.refresh()
         async let goals: Void = gamificationEngine.refreshGoalStatus()
         async let garminProfile: Void = profile.refresh()
+        // Weight + water: Garmin is the source of truth
+        // (sync-weight-hydration-with-garmin); this reads Garmin into the
+        // cache and then reloads both loaders from it.
+        async let weightAndWater: Void = refreshGarminHealth()
+        _ = await (day, gamification, goals, garminProfile, weightAndWater)
+        await syncNotifications()
+    }
+
+    /// Reads weigh-ins, today's water and the weight goal from Garmin into
+    /// the cache, then reloads both loaders (sync-weight-hydration-with-
+    /// garmin task 3.1). Called on foreground (which covers the Today card),
+    /// when the Weight/Water screens appear, on pull-to-refresh there
+    /// (`force`: re-reads the whole 90-day history and the goal), and after
+    /// a weight/water delivery. Never from a confirm/save path. The loaders
+    /// render from the cache first, so nothing waits on this; a failure
+    /// only sets their quiet "couldn't refresh" flag, except an expired
+    /// sign-in, which goes to the loud auth banner.
+    ///
+    /// One read at a time. A request arriving while one runs is not
+    /// dropped: it queues exactly one more pass (keeping `force` if any
+    /// queued request had it). That matters after a delivery -- a read that
+    /// started before the POST landed can't contain it, so the follow-up
+    /// read must still happen.
+    func refreshGarminHealth(force: Bool = false) async {
+        guard !isRefreshingGarminHealth else {
+            garminHealthRefreshQueued = true
+            garminHealthRefreshQueuedForce = garminHealthRefreshQueuedForce || force
+            return
+        }
+        isRefreshingGarminHealth = true
+        defer { isRefreshingGarminHealth = false }
+        garminHealthRefreshQueued = false
+        garminHealthRefreshQueuedForce = false
+
+        var passForce = force
+        while true {
+            await performGarminHealthRefresh(force: passForce)
+            guard garminHealthRefreshQueued else { break }
+            passForce = garminHealthRefreshQueuedForce
+            garminHealthRefreshQueued = false
+            garminHealthRefreshQueuedForce = false
+        }
+    }
+
+    private func performGarminHealthRefresh(force: Bool) async {
+        // Render whatever is cached right away.
+        async let weightCached: Void = weightLoader.refresh()
+        async let hydrationCached: Void = hydrationLoader.refresh()
+        _ = await (weightCached, hydrationCached)
+
+        let outcome = await garminHealthSync.refresh(force: force)
+        if let authError = outcome.authError {
+            authState.report(authError)
+        }
+        weightLoader.lastGarminRefreshFailed = outcome.weightFailed
+        hydrationLoader.lastGarminRefreshFailed = outcome.hydrationFailed
+
         async let weight: Void = weightLoader.refresh()
         async let hydration: Void = hydrationLoader.refresh()
-        _ = await (day, gamification, goals, garminProfile, weight, hydration)
-        await syncNotifications()
+        _ = await (weight, hydration)
     }
 
     /// Right after an in-app confirm: the entry appears in its meal at once
@@ -169,12 +242,39 @@ final class AppEnvironment {
         Task { await self.drainAndReconcile() }
     }
 
-    /// Deletes a weigh-in shown on the Weight screen (WeightLogCoordinator.
-    /// deleteWeight's own doc comment covers what this does and doesn't
-    /// undo on Garmin's side).
-    func deleteWeight(_ entry: WeightEntry) async throws {
-        try await weightLogCoordinator.deleteWeight(entry)
+    /// Deletes one row of the merged weigh-in history (sync-weight-
+    /// hydration-with-garmin D3): a Garmin weigh-in gets a queued Garmin
+    /// delete and disappears at once; an undelivered local one is simply
+    /// cancelled. Local writes only -- delivery starts in the background.
+    @discardableResult
+    func deleteWeighIn(_ row: WeighInDisplayEntry) async throws -> WeighInDeletion {
+        let result = try await weightLogCoordinator.delete(row)
         await weightLoader.refresh()
+        await refreshQueueState()
+        if result == .garminDeleteQueued {
+            Task { await self.drainAndReconcile() }
+        }
+        return result
+    }
+
+    /// Retries a failed weigh-in add or delete (a history row or the sync
+    /// queue).
+    func retryWeightQueued(id: UUID) async throws {
+        try await weightOutbox.retry(id: id)
+        await weightLoader.refresh()
+        await refreshQueueState()
+        await drainAndReconcile()
+    }
+
+    /// Gives up on a queued Garmin DELETE (sync queue only): the weigh-in
+    /// stays in Garmin and reappears in the history. Adds aren't cancelled
+    /// here -- deleting the weigh-in from the Weight screen does that and
+    /// keeps the local record consistent.
+    func cancelWeightDelete(_ entry: WeightOutboxEntry) async throws {
+        guard entry.kind == .delete, entry.state != .sent else { return }
+        try await weightOutbox.delete(id: entry.id)
+        await weightLoader.refresh()
+        await refreshQueueState()
     }
 
     /// Right after logging a drink (AddHydrationSheet's own confirm
@@ -184,12 +284,28 @@ final class AppEnvironment {
         Task { await self.drainAndReconcile() }
     }
 
-    /// Deletes a hydration entry shown on the Hydration screen
-    /// (HydrationLogCoordinator.deleteHydration's own doc comment covers
-    /// what this does and doesn't undo on Garmin's side).
-    func deleteHydration(_ entry: HydrationEntry) async throws {
-        try await hydrationLogCoordinator.deleteHydration(entry)
+    /// Removes a drink shown on the Water screen (sync-weight-hydration-
+    /// with-garmin D4): an undelivered drink is cancelled; a delivered one
+    /// gets a queued negative correction so Garmin's total drops too, and
+    /// the shown total drops at once. Local writes only.
+    @discardableResult
+    func removeHydration(_ entry: HydrationEntry) async throws -> HydrationRemoval {
+        let result = try await hydrationLogCoordinator.removeHydration(entry)
         await hydrationLoader.refresh()
+        await refreshQueueState()
+        if result == .correctionQueued {
+            Task { await self.drainAndReconcile() }
+        }
+        return result
+    }
+
+    /// Retries a failed drink or correction (a history row or the sync
+    /// queue).
+    func retryHydrationQueued(id: UUID) async throws {
+        try await hydrationOutbox.retry(id: id)
+        await hydrationLoader.refresh()
+        await refreshQueueState()
+        await drainAndReconcile()
     }
 
     /// Day navigation, routed through here rather than calling `dayLog`
@@ -216,20 +332,29 @@ final class AppEnvironment {
         defer { isDraining = false }
 
         // Weight has its own outbox (WeightSync.swift's header explains
-        // why) but shares this same foreground/post-confirm drain trigger
-        // -- no reconciliation step follows it (unlike the food outbox
-        // below), since this app doesn't read weigh-ins back from Garmin to
-        // merge against local state (WeightLogCoordinator.swift's header).
+        // why) but shares this same foreground/post-confirm drain trigger.
+        // No food-style reconciliation step follows it: since
+        // sync-weight-hydration-with-garmin the "read back" is the Garmin
+        // health refresh kicked off below, and `WeightHistoryMerge` does
+        // the matching.
         let weightResult = await weightOutbox.drain(using: garminClient)
         if !weightResult.delivered.isEmpty || !weightResult.failed.isEmpty {
             await weightLoader.refresh()
         }
 
-        // Same reasoning as the weight drain above -- its own outbox, no
-        // reconciliation step (HydrationLogCoordinator.swift's header).
+        // Same for water (HydrationDayTotal does the matching).
         let hydrationResult = await hydrationOutbox.drain(using: garminClient)
         if !hydrationResult.delivered.isEmpty || !hydrationResult.failed.isEmpty {
             await hydrationLoader.refresh()
+        }
+
+        // Something reached Garmin: re-read it so a just-delivered weigh-in
+        // picks up its `samplePk` (needed to delete it) and the water total
+        // includes the drink. In the background -- the drain itself never
+        // waits on a read. If a read is already running, this queues one
+        // more pass after it (see `refreshGarminHealth`).
+        if !weightResult.delivered.isEmpty || !hydrationResult.delivered.isEmpty {
+            Task { await self.refreshGarminHealth() }
         }
 
         let result = await outbox.drain(using: garminClient)
@@ -456,18 +581,25 @@ final class AppEnvironment {
         authState.updatePendingCount(pending)
 
         let undelivered = await outbox.allEntries().filter { $0.state != .sent }
+        let undeliveredWeight = await weightOutbox.allEntries().filter { $0.state != .sent }
+        let undeliveredHydration = await hydrationOutbox.allEntries().filter { $0.state != .sent }
         undeliveredEntries = undelivered
-        undeliveredCount = undelivered.count
+        undeliveredWeightEntries = undeliveredWeight
+        undeliveredHydrationEntries = undeliveredHydration
+        undeliveredCount = undelivered.count + undeliveredWeight.count + undeliveredHydration.count
 
         // Auth failures have their own banner. Newest first, since that's
-        // the attempt the user just made.
+        // the attempt the user just made. Food first, then weight/water
+        // (included since sync-weight-hydration-with-garmin; before that a
+        // failed weigh-in or drink only showed on its own screen's row).
         var failure: String?
         if !authFailed {
-            for entry in undelivered.reversed() {
-                if let error = entry.lastError, !error.hasPrefix("auth:") {
-                    failure = error
-                    break
-                }
+            let errors: [String?] = undelivered.reversed().map(\.lastError)
+                + undeliveredWeight.reversed().map(\.lastError)
+                + undeliveredHydration.reversed().map(\.lastError)
+            for case let error? in errors where !error.hasPrefix("auth:") {
+                failure = error
+                break
             }
         }
         lastDeliveryFailure = failure

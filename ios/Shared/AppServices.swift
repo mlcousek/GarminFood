@@ -59,6 +59,12 @@ final class AppServices {
     let hydrationStore: HydrationStore
     let hydrationOutbox: HydrationOutbox
     let hydrationLogCoordinator: HydrationLogCoordinator
+    /// sync-weight-hydration-with-garmin: the last good Garmin reads for
+    /// weigh-ins, the daily water total and the weight goal
+    /// (GarminHealthCache.swift), refreshed by `garminHealthSync`. One
+    /// instance per process for the same reason as every store here.
+    let garminHealthCache: GarminHealthCacheStore
+    let garminHealthSync: GarminHealthSync
     /// Purely local, no Garmin route involved (see FastingSession.swift's
     /// header) -- included here anyway, not just in the app's own
     /// `AppEnvironment`, for the same reason `mealPresetStore` is: one
@@ -83,6 +89,7 @@ final class AppServices {
         let weightOutbox = WeightOutbox(processName: "app")
         let hydrationStore = HydrationStore()
         let hydrationOutbox = HydrationOutbox(processName: "app")
+        let garminHealthCache = GarminHealthCacheStore()
 
         self.garminClient = client
         self.outbox = outbox
@@ -102,6 +109,8 @@ final class AppServices {
         self.hydrationStore = hydrationStore
         self.hydrationOutbox = hydrationOutbox
         self.hydrationLogCoordinator = HydrationLogCoordinator(store: hydrationStore, outbox: hydrationOutbox)
+        self.garminHealthCache = garminHealthCache
+        self.garminHealthSync = GarminHealthSync(cache: garminHealthCache, reader: client)
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`

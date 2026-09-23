@@ -30,11 +30,6 @@ import Gamification
 struct TodayView: View {
     @Environment(AppEnvironment.self) private var environment
 
-    /// Same per-device preference `HydrationView`/`ProgressHomeView` read --
-    /// see `HydrationComponents.swift`'s header for why this isn't
-    /// Garmin-synced.
-    @AppStorage(HydrationPreferenceKeys.dailyGoalML) private var hydrationDailyGoalML: Double = 2000
-
     @State private var quickPickItems: [QuickPickItem] = []
     @State private var mealPresets: [MealPreset] = []
     @State private var logTarget: LogTarget?
@@ -109,10 +104,16 @@ struct TodayView: View {
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                     SectionHeader(title: "Weight & Water")
-                    TodayWeightCard(latest: environment.weightLoader.latest, previous: environment.weightLoader.previous)
+                    TodayWeightCard(
+                        latest: environment.weightLoader.latest,
+                        previous: environment.weightLoader.previous,
+                        progress: environment.weightLoader.progress,
+                        refreshFailed: environment.weightLoader.lastGarminRefreshFailed
+                    )
                     TodayHydrationCard(
                         todayTotalML: environment.hydrationLoader.todayTotalML,
-                        goalML: hydrationDailyGoalML,
+                        goalML: environment.hydrationLoader.goalML,
+                        refreshFailed: environment.hydrationLoader.lastGarminRefreshFailed,
                         onQuickAdd: { amount in Task { await quickAddHydration(amount) } },
                         onCustom: { isPresentingAddHydration = true }
                     )

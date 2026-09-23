@@ -930,32 +930,6 @@ struct WeighInWriteBody: Encodable, Equatable {
     }
 }
 
-/// `GET /weight-service/weight/range/{startdate}/{enddate}?includeAll=true`.
-///
-/// ROUTE confirmed to exist via python-garminconnect's `get_weigh_ins`
-/// (`garminconnect/__init__.py`, ~line 1487) -- `startdate`/`enddate` are
-/// `YYYY-MM-DD`, `includeAll=true` is always sent as a query param, matching
-/// this project's own task brief exactly.
-///
-/// RESPONSE SHAPE for this specific route is NOT confirmed field-by-field:
-/// `get_weigh_ins` returns a plain `dict[str, Any]`, and nothing in that
-/// source file ever indexes into it. `dateWeightList` below is a documented
-/// GUESS by analogy with a SIBLING route, `get_daily_weigh_ins` (GET
-/// `/weight-service/weight/dayview/{cdate}`, not implemented by this
-/// package), whose response IS field-confirmed to carry a `dateWeightList`
-/// array: `delete_weigh_ins` (~line 1520) reads `daily_weigh_ins.get(
-/// "dateWeightList", [])`, then `w["samplePk"]` for each entry (~line 1538)
-/// to build the delete route's `{weight_pk}` path segment -- further
-/// confirmed by `delete_weigh_in`'s own `_validate_positive_integer` call on
-/// that value, i.e. `samplePk` really is a positive `Int`. Two sibling
-/// `/weight-service/weight/...` routes sharing the same envelope shape is a
-/// reasonable inference, not a confirmation -- if wrong, decoding this type
-/// simply yields `nil`/an empty list rather than throwing, matching this
-/// package's lenient-decode convention (`FoodSearchResult`'s header).
-public struct WeightRangeResponse: Decodable, Sendable {
-    public let dateWeightList: [WeighInSample]?
-}
-
 // MARK: - Hydration (usersummary-service) -- add-hydration-tracking, 2026-09-22 research
 
 /// What the app wants to log -- same separation from the wire body as
@@ -991,16 +965,13 @@ public struct AddHydrationRequest: Sendable, Equatable {
 /// called from THIS app against the real account -- see that struct's own
 /// doc comment for the full reasoning, which applies here unchanged.
 ///
-/// Only the write route is implemented. `GET /usersummary-service/
-/// usersummary/hydration/daily/{date}` (`garmin_connect_daily_hydration_url`
-/// in the same source file) exists but its response is never destructured
-/// anywhere in that library either (`get_hydration_data` just returns the
-/// raw dict) -- there is even less field-level evidence for it than for
-/// `WeightRangeResponse`'s already-guessed shape, so it isn't implemented
-/// here at all rather than shipping a second, weaker guess. This app's own
-/// `HydrationStore` (FoodLogCore) is the sole source of truth for history
-/// and today's total, exactly like `WeightStore` is for weight -- see that
-/// type's header.
+/// `valueInML` may be NEGATIVE (sync-weight-hydration-with-garmin): the
+/// log route is additive, so removing an already-delivered drink sends
+/// `-value` as a correction (python-garminconnect's `add_hydration_data`
+/// documents negative values as the way to subtract). The read side
+/// (`HydrationDaily` below, live-probed 2026-09-23) now makes Garmin's day
+/// total authoritative; this app's own `HydrationStore` only lists the
+/// drinks it logged itself.
 struct HydrationWriteBody: Encodable, Equatable {
     let calendarDate: String
     let timestampLocal: String
@@ -1023,34 +994,303 @@ struct HydrationWriteBody: Encodable, Equatable {
     }
 }
 
-/// One sample within `WeightRangeResponse` (and, presumably, the
-/// unimplemented day-view route's response). See `WeightRangeResponse`'s
-/// header for exactly which field is confirmed (`samplePk`) vs guessed
-/// (everything else) and why.
+// MARK: - Weigh-in reads (weight-service) -- dayview + range both LIVE-PROBED 2026-09-23
+
+/// One weigh-in exactly as Garmin stores it -- the element shape of BOTH
+/// `GET /weight-service/weight/dayview/{date}?includeAll=true`'s
+/// `dateWeightList[]` and `GET /weight-service/weight/range/{start}/{end}
+/// ?includeAll=true`'s `dailyWeightSummaries[].allWeightMetrics[]` (and
+/// `latestWeight`). Both routes were live-probed read-only against the
+/// owner's account on 2026-09-23 (docs/garmin-routes.json:
+/// `weighInsDayView`, `getWeighIns`) and returned field-for-field the same
+/// object, e.g.:
+/// ```
+/// { "samplePk": 1790149333817, "date": 1790156491732,
+///   "calendarDate": "2026-09-23", "weight": 83900, "bmi": null, ...,
+///   "sourceType": "MANUAL", "timestampGMT": 1790149291732,
+///   "weightDelta": 900.0000000000057 }
+/// ```
 ///
-/// Moved back next to this declaration 2026-09-22 (a code-review finding):
-/// the Hydration section above was inserted between this comment and the
-/// struct it describes, leaving a reader who follows `WeightRangeResponse`'s
-/// own doc comment landing in unrelated Hydration code before ever reaching
-/// what it was describing.
-public struct WeighInSample: Decodable, Sendable {
-    /// CONFIRMED name and type (positive `Int`): the value python-
-    /// garminconnect's `delete_weigh_in` sends as its `{weight_pk}` path
-    /// segment, read from exactly this field on exactly this kind of
-    /// object.
-    public let samplePk: Int?
-    /// UNCONFIRMED guess -- no evidence for this field's name was found
-    /// anywhere in python-garminconnect. Grams is this project's own
-    /// best-guess unit (Garmin's typical internal body-metric storage
-    /// unit); this app's own WRITE always sends kilograms (`unitKey: "kg"`),
-    /// which is not proof the READ side uses the same unit.
-    public let weight: Double?
-    /// UNCONFIRMED guess at the date field's name -- kept alongside
-    /// `calendarDate` (another plausible Garmin naming, seen elsewhere in
-    /// this project e.g. `dailyWellnessSummary`'s `calendarDate` query
-    /// param) since neither has any real evidence backing it for this
-    /// specific route.
-    public let date: String?
-    public let calendarDate: String?
+/// Replaces the 2026-09-22 `WeighInSample` guess, which modelled `date` as
+/// a String (it is an epoch-millisecond NUMBER -- decoding a real response
+/// with that type would have thrown) and could only guess at the unit.
+///
+/// Units: `weight` is GRAMS (83900 = 83.9 kg; confirmed by comparing the
+/// dayview read against a known 83.9 kg test write). `timestampGMT` is the
+/// real instant in epoch ms (UTC). `date` is the same instant's LOCAL
+/// wall-clock time encoded as if it were UTC (it differs from
+/// `timestampGMT` by exactly the device's UTC offset, 2 h in CEST) -- kept
+/// only for completeness; use `timestamp` for anything time-related.
+///
+/// `Codable` (not just `Decodable`) because FoodLogCore's
+/// `GarminHealthCacheStore` persists these as-is for offline rendering.
+/// The encoded shape is the same wire shape, so a cached file decodes with
+/// the same type.
+public struct GarminWeighIn: Codable, Sendable, Equatable, Hashable {
+    /// Garmin's id for this sample -- the `{samplePk}` path segment of
+    /// `DELETE /weight-service/weight/{date}/byversion/{samplePk}`
+    /// (weighInDelete, live-confirmed 2026-09-23).
+    public let samplePk: Int
+    /// `yyyy-MM-dd`, the LOCAL date of the weigh-in -- the `{date}` path
+    /// segment of the delete route.
+    public let calendarDate: String
+    /// GRAMS, as sent by Garmin (JSON key `weight`).
+    public let weightGrams: Double
+    /// Epoch milliseconds, UTC -- the real instant.
+    public let timestampGMT: Double
+    /// Epoch milliseconds of the local wall-clock time, encoded as UTC
+    /// (JSON key `date`). See the type's doc comment.
+    public let localWallClockMillis: Double?
+    /// "MANUAL" observed for app/Connect-entered weigh-ins; a smart scale
+    /// presumably reports something else. Not interpreted anywhere.
     public let sourceType: String?
+    /// Grams vs Garmin's previous sample. Observed as a non-integral float
+    /// (`900.0000000000057`), hence `Double`.
+    public let weightDelta: Double?
+
+    // Body composition -- all `null` for manual entries on the probed
+    // account. Decoded (as `Double?`, the loosest numeric type) but not shown
+    // anywhere (proposal.md non-goal).
+    public let bmi: Double?
+    public let bodyFat: Double?
+    public let bodyWater: Double?
+    public let boneMass: Double?
+    public let muscleMass: Double?
+    public let physiqueRating: Double?
+    public let visceralFat: Double?
+    public let metabolicAge: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case samplePk
+        case calendarDate
+        case weightGrams = "weight"
+        case timestampGMT
+        case localWallClockMillis = "date"
+        case sourceType
+        case weightDelta
+        case bmi, bodyFat, bodyWater, boneMass, muscleMass, physiqueRating, visceralFat, metabolicAge
+    }
+
+    public init(
+        samplePk: Int,
+        calendarDate: String,
+        weightGrams: Double,
+        timestampGMT: Double,
+        localWallClockMillis: Double? = nil,
+        sourceType: String? = "MANUAL",
+        weightDelta: Double? = nil,
+        bmi: Double? = nil,
+        bodyFat: Double? = nil,
+        bodyWater: Double? = nil,
+        boneMass: Double? = nil,
+        muscleMass: Double? = nil,
+        physiqueRating: Double? = nil,
+        visceralFat: Double? = nil,
+        metabolicAge: Double? = nil
+    ) {
+        self.samplePk = samplePk
+        self.calendarDate = calendarDate
+        self.weightGrams = weightGrams
+        self.timestampGMT = timestampGMT
+        self.localWallClockMillis = localWallClockMillis
+        self.sourceType = sourceType
+        self.weightDelta = weightDelta
+        self.bmi = bmi
+        self.bodyFat = bodyFat
+        self.bodyWater = bodyWater
+        self.boneMass = boneMass
+        self.muscleMass = muscleMass
+        self.physiqueRating = physiqueRating
+        self.visceralFat = visceralFat
+        self.metabolicAge = metabolicAge
+    }
+
+    /// Kilograms -- what every screen in this app shows.
+    public var weightKg: Double { weightGrams / 1000 }
+
+    /// The real instant of the weigh-in.
+    public var timestamp: Date { Date(timeIntervalSince1970: timestampGMT / 1000) }
 }
+
+/// `GET /weight-service/weight/dayview/{date}?includeAll=true` --
+/// live-probed 2026-09-23 (docs/garmin-routes.json `weighInsDayView`):
+/// `{ startDate, endDate, dateWeightList: [GarminWeighIn], totalAverage }`,
+/// newest first. `totalAverage` is not modelled (nothing needs it).
+///
+/// `dateWeightList` is decoded LOSSILY: one malformed element (say, a
+/// body-composition-only sample with a null `weight`, which this account
+/// has never produced but a smart scale might) is skipped and counted in
+/// `skippedCount` instead of failing the whole day -- `GarminClient` logs
+/// that count to `DiagnosticsLog` so it doesn't vanish silently.
+public struct WeighInDayView: Decodable, Sendable {
+    public let startDate: String?
+    public let endDate: String?
+    public let weighIns: [GarminWeighIn]
+    public let skippedCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case startDate, endDate, dateWeightList
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        startDate = try container.decodeIfPresent(String.self, forKey: .startDate)
+        endDate = try container.decodeIfPresent(String.self, forKey: .endDate)
+        let list = try container.decodeIfPresent(LossyDecodableList<GarminWeighIn>.self, forKey: .dateWeightList)
+        weighIns = list?.elements ?? []
+        skippedCount = list?.skippedCount ?? 0
+    }
+}
+
+/// `GET /weight-service/weight/range/{startdate}/{enddate}?includeAll=true`
+/// -- LIVE-PROBED read-only 2026-09-23 (docs/garmin-routes.json
+/// `getWeighIns`, 2026-09-01..2026-09-23 -> 200):
+/// ```
+/// { "dailyWeightSummaries": [ { "summaryDate": "2026-09-23",
+///       "numOfWeightEntries": 2, "minWeight": 82800, "maxWeight": 83900,
+///       "latestWeight": {GarminWeighIn},
+///       "allWeightMetrics": [ {GarminWeighIn}, {GarminWeighIn} ] }, ... ],
+///   "totalAverage": { "from", "until", "weight", ... },
+///   "previousDateWeight": {GarminWeighIn} | null,
+///   "nextDateWeight": {GarminWeighIn} | null }
+/// ```
+/// This confirms garmin_mcp's reading (`dailyWeightSummaries[].
+/// allWeightMetrics[]`) and REPLACES the 2026-09-22 `dateWeightList` guess,
+/// which was the dayview route's envelope, not this one's. Days with no
+/// weigh-in are OMITTED from `dailyWeightSummaries` (not returned as an
+/// empty summary), so a caller caching per day must treat every day in the
+/// requested range that is absent here as "no weigh-ins", not "unknown".
+/// `previousDateWeight` is the last sample BEFORE the range -- not part of
+/// the range, deliberately not folded into `allWeighIns`.
+public struct WeightRangeResponse: Decodable, Sendable {
+    public let dailyWeightSummaries: [DailyWeightSummary]
+    public let previousDateWeight: GarminWeighIn?
+
+    enum CodingKeys: String, CodingKey {
+        case dailyWeightSummaries, previousDateWeight
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        dailyWeightSummaries = try container.decodeIfPresent(LossyDecodableList<DailyWeightSummary>.self, forKey: .dailyWeightSummaries)?.elements ?? []
+        previousDateWeight = (try? container.decodeIfPresent(GarminWeighIn.self, forKey: .previousDateWeight)) ?? nil
+    }
+
+    /// Every sample in the range, flattened across days, newest first.
+    public var allWeighIns: [GarminWeighIn] {
+        dailyWeightSummaries
+            .flatMap(\.allWeightMetrics)
+            .sorted { $0.timestampGMT > $1.timestampGMT }
+    }
+
+    /// Samples that failed to decode and were skipped, summed over days.
+    public var skippedCount: Int {
+        dailyWeightSummaries.reduce(0) { $0 + $1.skippedCount }
+    }
+}
+
+/// One day inside `WeightRangeResponse`. `allWeightMetrics` is decoded
+/// lossily, same reasoning as `WeighInDayView.dateWeightList`.
+public struct DailyWeightSummary: Decodable, Sendable {
+    public let summaryDate: String?
+    public let numOfWeightEntries: Int?
+    public let allWeightMetrics: [GarminWeighIn]
+    public let skippedCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case summaryDate, numOfWeightEntries, allWeightMetrics
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        summaryDate = try container.decodeIfPresent(String.self, forKey: .summaryDate)
+        numOfWeightEntries = (try? container.decodeIfPresent(Int.self, forKey: .numOfWeightEntries)) ?? nil
+        let list = try container.decodeIfPresent(LossyDecodableList<GarminWeighIn>.self, forKey: .allWeightMetrics)
+        allWeightMetrics = list?.elements ?? []
+        skippedCount = list?.skippedCount ?? 0
+    }
+}
+
+/// Decodes a JSON array element by element, keeping what decodes and
+/// counting what doesn't, instead of letting one bad element fail the whole
+/// array -- used for Garmin's weigh-in lists (see `WeighInDayView`).
+///
+/// A failed `decode` does NOT advance an unkeyed container's index, so a
+/// skipped element is consumed with `SkippedElement` (whose initializer
+/// reads nothing and therefore accepts any JSON value). If even that fails,
+/// the loop stops rather than spinning forever on the same element.
+struct LossyDecodableList<Element: Decodable>: Decodable {
+    let elements: [Element]
+    let skippedCount: Int
+
+    private struct SkippedElement: Decodable {
+        init(from decoder: Decoder) throws {}
+    }
+
+    init(from decoder: Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+        var decoded: [Element] = []
+        var skipped = 0
+        while !container.isAtEnd {
+            if let element = try? container.decode(Element.self) {
+                decoded.append(element)
+            } else {
+                skipped += 1
+                if (try? container.decode(SkippedElement.self)) == nil { break }
+            }
+        }
+        self.elements = decoded
+        self.skippedCount = skipped
+    }
+}
+
+// MARK: - Hydration daily read (GET /usersummary-service/usersummary/hydration/daily/{date}) -- LIVE-PROBED 2026-09-23
+
+/// Garmin's water total for one day. Live-probed read-only 2026-09-23
+/// (docs/garmin-routes.json `hydrationDaily`) -- the first field-level
+/// evidence anywhere, since neither python-garminconnect nor garmin_mcp
+/// destructures this response:
+/// ```
+/// { "userId": ..., "calendarDate": "2026-09-23", "valueInML": 1500,
+///   "goalInML": 2800, "dailyAverageinML": null,
+///   "lastEntryTimestampLocal": "2026-09-23T09:25:26.387",
+///   "sweatLossInML": ..., "activityIntakeInML": ... }
+/// ```
+/// It is a day TOTAL only -- there is no per-drink list anywhere -- so the
+/// app shows Garmin's total (plus its own not-yet-delivered drinks, see
+/// FoodLogCore's `HydrationDayTotal`) but lists only the drinks it logged
+/// itself. `goalInML` is Garmin's (auto-adjusting, on this account) daily
+/// goal, the default water goal in this app.
+///
+/// Every field optional (this package's lenient-decode convention);
+/// `Codable` so FoodLogCore's cache store can persist it as-is.
+public struct HydrationDaily: Codable, Sendable, Equatable {
+    public let calendarDate: String?
+    public let valueInML: Double?
+    public let goalInML: Double?
+    public let lastEntryTimestampLocal: String?
+    public let sweatLossInML: Double?
+    public let activityIntakeInML: Double?
+
+    public init(
+        calendarDate: String? = nil,
+        valueInML: Double? = nil,
+        goalInML: Double? = nil,
+        lastEntryTimestampLocal: String? = nil,
+        sweatLossInML: Double? = nil,
+        activityIntakeInML: Double? = nil
+    ) {
+        self.calendarDate = calendarDate
+        self.valueInML = valueInML
+        self.goalInML = goalInML
+        self.lastEntryTimestampLocal = lastEntryTimestampLocal
+        self.sweatLossInML = sweatLossInML
+        self.activityIntakeInML = activityIntakeInML
+    }
+}
+
+/// The `{}` body sent with `DELETE /weight-service/weight/{date}/byversion/
+/// {samplePk}` -- exactly what the owner-approved 2026-09-23 probe sent
+/// (204). Kept as an explicit empty object rather than no body at all so
+/// the request matches the confirmed one byte for byte.
+struct EmptyJSONBody: Encodable, Equatable {}

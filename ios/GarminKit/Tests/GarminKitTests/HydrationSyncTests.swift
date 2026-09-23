@@ -195,4 +195,49 @@ final class HydrationSyncTests: XCTestCase {
 
         XCTAssertEqual(reloaded.map(\.id), [entry.id])
     }
+
+    // MARK: - Negative corrections (sync-weight-hydration-with-garmin, D4)
+
+    func testNegativeCorrectionIsDeliveredWithItsNegativeValue() async throws {
+        let outbox = makeOutbox()
+        let loggedAt = Date(timeIntervalSince1970: 1_789_000_000)
+        let correction = try await outbox.logHydration(valueInML: -250, loggedAt: loggedAt)
+        XCTAssertTrue(correction.isCorrection)
+        let now = Date()
+
+        let result = await outbox.drain(using: FakeHydrationDeliverer(outcomes: [.succeed]), now: now)
+
+        XCTAssertEqual(result.delivered.map(\.id), [correction.id])
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.valueInML, -250)
+        XCTAssertEqual(stored.first?.deliveredAt, now, "deliveredAt is stamped on delivery")
+    }
+
+    func testNegativeCorrectionWireBodyCarriesTheNegativeValue() {
+        let body = HydrationWriteBody.make(
+            for: AddHydrationRequest(valueInML: -250, loggedAt: Date(timeIntervalSince1970: 1_789_000_000)),
+            timeZone: TimeZone(identifier: "UTC")!
+        )
+        XCTAssertEqual(body.valueInML, -250, "the additive log route subtracts via a negative valueInML")
+    }
+
+    /// The exact shape a pre-2026-09-23 build wrote (no `deliveredAt`) must
+    /// still decode, or `PersistedJSON` would quarantine the whole file.
+    func testOutboxFileWrittenBeforeDeliveredAtStillDecodes() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-hydration-outbox-legacy-\(UUID().uuidString).json")
+        let legacyJSON = """
+        [
+          {"id":"6F1C2D3E-0000-4000-8000-000000000011","valueInML":250,"loggedAt":"2026-09-23T07:00:00Z","state":"sent","attemptCount":0,"nextAttemptAt":"2026-09-23T07:00:01Z"},
+          {"id":"6F1C2D3E-0000-4000-8000-000000000012","valueInML":500,"loggedAt":"2026-09-23T09:00:00Z","state":"pending","attemptCount":0,"nextAttemptAt":"2026-09-23T09:00:01Z"}
+        ]
+        """
+        try Data(legacyJSON.utf8).write(to: url)
+
+        let outbox = HydrationOutbox(store: HydrationOutboxStore(fileURL: url))
+        let entries = await outbox.allEntries()
+
+        XCTAssertEqual(entries.map(\.valueInML), [250, 500])
+        XCTAssertNil(entries.first?.deliveredAt)
+        XCTAssertEqual(entries.first?.state, .sent)
+    }
 }

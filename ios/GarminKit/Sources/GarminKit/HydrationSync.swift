@@ -15,6 +15,14 @@
 // One instance per process, same as `Outbox`/`WeightOutbox` -- see
 // `AppServices.swift`. `OutboxEntryState`/`DrainAuthOutcome` (Outbox.swift)
 // are reused as-is.
+//
+// sync-weight-hydration-with-garmin (2026-09-23): `valueInML` may be
+// NEGATIVE. Garmin keeps only a day total and its log route is additive, so
+// removing a drink that already reached Garmin is a queued `-value`
+// correction (design.md D4), delivered exactly like a drink. `deliveredAt`
+// (new, optional, so older outbox files still decode) records when Garmin
+// accepted an entry, which FoodLogCore's `HydrationDayTotal` compares with
+// when Garmin's total was last read.
 
 import Foundation
 
@@ -32,6 +40,9 @@ public protocol HydrationDelivering: Sendable {
 /// weight.
 public struct HydrationOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     public let id: UUID
+    /// Positive for a drink; NEGATIVE for a correction that removes an
+    /// already-delivered drink from Garmin's day total (see this file's
+    /// header).
     public let valueInML: Double
     /// What the user says the drink happened -- sent to Garmin as BOTH
     /// `calendarDate` and `timestampLocal`. May be backdated -- same
@@ -43,6 +54,10 @@ public struct HydrationOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     public var attemptCount: Int
     public var lastError: String?
     public var nextAttemptAt: Date
+    /// When Garmin accepted this entry (set by `drain` alongside `.sent`);
+    /// `nil` when undelivered or delivered by a build older than
+    /// 2026-09-23. Same role as `WeightOutboxEntry.deliveredAt`.
+    public var deliveredAt: Date?
 
     public init(
         id: UUID = UUID(),
@@ -51,7 +66,8 @@ public struct HydrationOutboxEntry: Codable, Sendable, Equatable, Identifiable {
         state: OutboxEntryState = .pending,
         attemptCount: Int = 0,
         lastError: String? = nil,
-        nextAttemptAt: Date = Date()
+        nextAttemptAt: Date = Date(),
+        deliveredAt: Date? = nil
     ) {
         self.id = id
         self.valueInML = valueInML
@@ -60,7 +76,11 @@ public struct HydrationOutboxEntry: Codable, Sendable, Equatable, Identifiable {
         self.attemptCount = attemptCount
         self.lastError = lastError
         self.nextAttemptAt = nextAttemptAt
+        self.deliveredAt = deliveredAt
     }
+
+    /// `true` for a queued correction (removing a delivered drink).
+    public var isCorrection: Bool { valueInML < 0 }
 
     var addRequest: AddHydrationRequest {
         AddHydrationRequest(valueInML: valueInML, loggedAt: loggedAt)
@@ -183,6 +203,8 @@ public actor HydrationOutbox {
         self.backoffCap = backoffCap
     }
 
+    /// Enqueues a drink (positive `valueInML`) or a correction (negative --
+    /// see this file's header). Durable on return, no network call.
     @discardableResult
     public func logHydration(valueInML: Double, loggedAt: Date = Date()) async throws -> HydrationOutboxEntry {
         let entry = HydrationOutboxEntry(valueInML: valueInML, loggedAt: loggedAt)
@@ -235,6 +257,7 @@ public actor HydrationOutbox {
                 try await deliverer.addHydration(entry.addRequest)
                 entry.state = .sent
                 entry.lastError = nil
+                entry.deliveredAt = now
                 try? await store.update(entry)
                 delivered.append(entry)
             } catch GarminClientError.rateLimited(let retryAfterSeconds) {

@@ -10,7 +10,7 @@
 // the source of truth the Hydration screen actually reads. `outboxEntryId`
 // is the only link back to GarminKit's delivery queue, kept purely so a
 // later delete can also cancel an undelivered outbox entry -- see
-// `HydrationLogCoordinator.deleteHydration`.
+// `HydrationLogCoordinator.removeHydration`.
 
 import Foundation
 

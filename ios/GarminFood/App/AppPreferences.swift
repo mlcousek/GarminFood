@@ -21,6 +21,11 @@ final class AppPreferences {
         static let fastingEndMinute = "preferences.fasting.endMinute"
         static let fastingTrackedSince = "preferences.fasting.trackedSince"
         static let fastingLegacyMigrated = "preferences.fasting.legacyMigrated"
+        // sync-weight-hydration-with-garmin D5: local goal overrides. Absent
+        // = use Garmin's goal (AppPreferences+Goals.swift).
+        static let waterGoalOverrideML = "goals.water.overrideML"
+        static let weightGoalOverrideKg = "goals.weight.overrideKg"
+        static let weightGoalStartKg = "goals.weight.startKg"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -36,6 +41,9 @@ final class AppPreferences {
     private var storedFastingEndMinute: Int
     private var storedFastingTrackedSince: Date?
     private var storedFastingLegacyMigrated: Bool
+    private var storedWaterGoalOverrideML: Double?
+    private var storedWeightGoalOverrideKg: Double?
+    private var storedWeightGoalStartKg: Double?
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -51,6 +59,9 @@ final class AppPreferences {
         storedFastingEndMinute = defaults.object(forKey: Key.fastingEndMinute) as? Int ?? 12 * 60
         storedFastingTrackedSince = (defaults.object(forKey: Key.fastingTrackedSince) as? Double).map { Date(timeIntervalSince1970: $0) }
         storedFastingLegacyMigrated = defaults.object(forKey: Key.fastingLegacyMigrated) as? Bool ?? false
+        storedWaterGoalOverrideML = defaults.object(forKey: Key.waterGoalOverrideML) as? Double
+        storedWeightGoalOverrideKg = defaults.object(forKey: Key.weightGoalOverrideKg) as? Double
+        storedWeightGoalStartKg = defaults.object(forKey: Key.weightGoalStartKg) as? Double
     }
 
     var hapticsEnabled: Bool {
@@ -148,6 +159,48 @@ final class AppPreferences {
         set {
             storedFastingLegacyMigrated = newValue
             defaults.set(newValue, forKey: Key.fastingLegacyMigrated)
+        }
+    }
+
+    // MARK: Goals (sync-weight-hydration-with-garmin D5)
+    //
+    // Raw optional values; `nil` means "use Garmin's goal". The domain
+    // `GoalSource` built from them lives in AppPreferences+Goals.swift, like
+    // fasting's. Local only -- never written back to Garmin (proposal
+    // non-goal).
+
+    /// Water goal override in ml.
+    var waterGoalOverrideML: Double? {
+        get { storedWaterGoalOverrideML }
+        set {
+            storedWaterGoalOverrideML = newValue
+            setOptional(newValue, forKey: Key.waterGoalOverrideML)
+        }
+    }
+
+    /// Weight target override in kg.
+    var weightGoalOverrideKg: Double? {
+        get { storedWeightGoalOverrideKg }
+        set {
+            storedWeightGoalOverrideKg = newValue
+            setOptional(newValue, forKey: Key.weightGoalOverrideKg)
+        }
+    }
+
+    /// Starting weight override in kg (the progress bar's left end).
+    var weightGoalStartKg: Double? {
+        get { storedWeightGoalStartKg }
+        set {
+            storedWeightGoalStartKg = newValue
+            setOptional(newValue, forKey: Key.weightGoalStartKg)
+        }
+    }
+
+    private func setOptional(_ value: Double?, forKey key: String) {
+        if let value {
+            defaults.set(value, forKey: key)
+        } else {
+            defaults.removeObject(forKey: key)
         }
     }
 }

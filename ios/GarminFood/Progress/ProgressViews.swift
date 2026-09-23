@@ -15,12 +15,6 @@ import FoodLogCore
 struct ProgressHomeView: View {
     @Environment(AppEnvironment.self) private var environment
 
-    /// Same per-device preference `HydrationView`/`TrendsView` read -- only
-    /// needed here to compute the streak number `TrendsSummaryCard` shows;
-    /// see `HydrationComponents.swift`'s header for why this isn't
-    /// Garmin-synced.
-    @AppStorage(HydrationPreferenceKeys.dailyGoalML) private var hydrationDailyGoalML: Double = 2000
-
     var body: some View {
         let engine = environment.gamificationEngine
 
@@ -77,7 +71,7 @@ struct ProgressHomeView: View {
                     TrendsView()
                 } label: {
                     TrendsSummaryCard(
-                        hydrationStreak: HydrationHistory.streak(for: environment.hydrationLoader.entries, goalML: hydrationDailyGoalML)
+                        hydrationStreak: HydrationHistory.streak(for: environment.hydrationLoader.entries, goalML: environment.hydrationLoader.goalML)
                     )
                 }
                 .buttonStyle(.plain)
@@ -94,8 +88,7 @@ struct ProgressHomeView: View {
         .navigationTitle("Progress")
         .refreshable {
             await engine.refresh()
-            await environment.weightLoader.refresh()
-            await environment.hydrationLoader.refresh()
+            await environment.refreshGarminHealth()
         }
     }
 }
@@ -265,8 +258,10 @@ private struct AchievementsSummaryCard: View {
 /// reusing `WeightHeroCard` (WeightComponents.swift) as-is: that view's own
 /// "Current weight" caption would duplicate this card's `CardHeader` title.
 private struct WeightSummaryCard: View {
-    let latest: WeightEntry?
-    let previous: WeightEntry?
+    /// Rows of the merged Garmin + local history (sync-weight-hydration-
+    /// with-garmin), so a scale weigh-in shows here too.
+    let latest: WeighInDisplayEntry?
+    let previous: WeighInDisplayEntry?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
