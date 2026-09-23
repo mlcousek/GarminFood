@@ -25,10 +25,11 @@ import FoodLogCore
 struct TrendsView: View {
     @Environment(AppEnvironment.self) private var environment
 
-    /// Same per-device preference `HydrationView` reads -- there is no
-    /// Garmin-synced hydration goal to read instead (HydrationComponents.
-    /// swift's header covers why).
-    @AppStorage(HydrationPreferenceKeys.dailyGoalML) private var hydrationGoalML: Double = 2000
+    /// The effective water goal (Garmin's unless overridden in Settings,
+    /// sync-weight-hydration-with-garmin D5). The streak/trend below still
+    /// sums only drinks logged in this app: Garmin's per-day totals are
+    /// fetched for today only, not for past days.
+    private var hydrationGoalML: Double { environment.hydrationLoader.goalML }
 
     /// Matches `HydrationTrendChartView`'s reasonable phone-width range
     /// (task brief: "last ~14-30 days"); 21 keeps the bar chart legible on

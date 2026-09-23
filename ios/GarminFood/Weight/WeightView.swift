@@ -1,17 +1,23 @@
 // WeightView.swift
 //
-// The whole weight-tracking screen (add-weight-tracking): current weight up
-// top, a trend chart once there's enough data, then the full history with
-// per-row sync status, swipe-to-delete, and swipe-to-retry on a failed
-// delivery -- same information architecture as `SyncQueueView` (list +
-// per-row actions) plus `ProgressViews.swift`'s hero-card idiom, since this
-// screen is reached from the Progress tab (see WeightSummaryCard there).
+// The whole weight-tracking screen (add-weight-tracking): current weight
+// and goal progress up top, a trend chart once there's enough data, then
+// the full history with per-row sync status, swipe-to-delete, and
+// swipe-to-retry on a failed delivery -- same information architecture as
+// `SyncQueueView` (list + per-row actions) plus `ProgressViews.swift`'s
+// hero-card idiom.
 //
-// Reads `environment.weightLoader` (a plain in-memory snapshot of
-// `WeightStore`/`WeightOutbox`, refreshed on `.task`/`.refreshable` and
-// after every add/delete) rather than talking to either store directly --
-// keeps this file, like every other screen in `GarminFood/`, thin: no
-// domain logic here beyond simple view-state.
+// sync-weight-hydration-with-garmin: the history is Garmin's weigh-ins
+// merged with the app's own not-yet-synced ones (`WeightLoader.rows`,
+// design.md D1), so a scale or Garmin Connect weigh-in appears here, and
+// deleting a Garmin weigh-in deletes it in Garmin too -- queued in the
+// durable outbox, never a blocking call (D3). Appearing on screen reads
+// Garmin (`refreshGarminHealth`), pull-to-refresh re-reads the full
+// history; both render from the cache first.
+//
+// Reads `environment.weightLoader` rather than talking to any store
+// directly -- keeps this file, like every other screen in `GarminFood/`,
+// thin: no domain logic here beyond simple view-state.
 
 import SwiftUI
 import FoodLogCore
@@ -22,48 +28,52 @@ struct WeightView: View {
     @Environment(AppEnvironment.self) private var environment
 
     @State private var isPresentingAdd = false
-    @State private var pendingDelete: WeightEntry?
+    @State private var pendingDelete: WeighInDisplayEntry?
     @State private var actionError: String?
 
     var body: some View {
         let loader = environment.weightLoader
-        let entries = loader.entries
+        let rows = loader.rows
 
         List {
             Section {
-                WeightHeroCard(latest: loader.latest, previous: loader.previous)
+                WeightHeroCard(
+                    latest: loader.latest,
+                    previous: loader.previous,
+                    progress: loader.progress,
+                    refreshFailed: loader.lastGarminRefreshFailed
+                )
             }
 
-            if entries.count >= 2 {
+            if rows.count >= 2 {
                 Section("Trend") {
-                    WeightChartView(entries: Array(entries.prefix(90).reversed()))
+                    WeightChartView(rows: chartRows(rows), targetKg: loader.goal?.targetKg)
                         .frame(height: 180)
                         .padding(.vertical, Theme.Spacing.xs)
                 }
             }
 
             Section {
-                if entries.isEmpty {
+                if rows.isEmpty {
                     EmptyStateView(
                         systemImage: "scalemass",
                         title: "No weigh-ins yet",
-                        message: "Tap + to log your weight. It's saved on this phone right away and synced to Garmin in the background."
+                        message: "Tap + to log your weight. It's saved on this phone right away and synced to Garmin in the background. Weigh-ins from a Garmin scale or Garmin Connect show up here too."
                     )
                 } else {
-                    ForEach(entries) { entry in
+                    ForEach(rows) { row in
                         WeightRow(
-                            entry: entry,
-                            syncState: loader.outboxState(for: entry),
-                            onDelete: { pendingDelete = entry },
-                            onRetry: { Task { await retry(entry) } }
+                            row: row,
+                            onDelete: { pendingDelete = row },
+                            onRetry: { Task { await retry(row) } }
                         )
                     }
                 }
             } header: {
                 Text("History")
             } footer: {
-                if !entries.isEmpty {
-                    Text("Synced to your Garmin account automatically. A failed entry keeps retrying, or you can retry it directly.")
+                if !rows.isEmpty {
+                    Text("Your Garmin weigh-ins, plus any logged here that haven't synced yet. Deleting one here deletes it in Garmin too.")
                 }
             }
         }
@@ -80,8 +90,11 @@ struct WeightView: View {
                 .accessibilityLabel("Add weight")
             }
         }
-        .task { await loader.refresh() }
-        .refreshable { await environment.drainAndReconcile() }
+        .task { await environment.refreshGarminHealth() }
+        .refreshable {
+            await environment.drainAndReconcile()
+            await environment.refreshGarminHealth(force: true)
+        }
         .sheet(isPresented: $isPresentingAdd) {
             NavigationStack {
                 AddWeightSheet()
@@ -95,12 +108,12 @@ struct WeightView: View {
             ),
             titleVisibility: .visible,
             presenting: pendingDelete
-        ) { entry in
+        ) { row in
             Button("Delete", role: .destructive) {
-                Task { await delete(entry) }
+                Task { await delete(row) }
             }
-        } message: { _ in
-            Text("Removes it from this phone. If it already reached Garmin, it stays there.")
+        } message: { row in
+            Text(deleteMessage(for: row))
         }
         .alert(
             "Couldn't complete that action",
@@ -115,19 +128,35 @@ struct WeightView: View {
         }
     }
 
-    private func delete(_ entry: WeightEntry) async {
+    /// The last 90 rows, oldest first, for the chart.
+    private func chartRows(_ rows: [WeighInDisplayEntry]) -> [WeighInDisplayEntry] {
+        Array(rows.prefix(90).reversed())
+    }
+
+    private func deleteMessage(for row: WeighInDisplayEntry) -> String {
+        if row.isFromGarmin {
+            return "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online."
+        }
+        switch row.syncState {
+        case .pending, .failed:
+            return "It hasn't reached Garmin yet, so it simply won't be sent."
+        case .synced, .deleteFailed:
+            return "Removes it from this phone. It already reached Garmin; once Garmin has been re-read it shows up here again and can be deleted there too."
+        }
+    }
+
+    private func delete(_ row: WeighInDisplayEntry) async {
         do {
-            try await environment.deleteWeight(entry)
+            try await environment.deleteWeighIn(row)
         } catch {
             actionError = "Couldn't delete this entry."
         }
     }
 
-    private func retry(_ entry: WeightEntry) async {
-        guard let outboxEntryId = entry.outboxEntryId else { return }
+    private func retry(_ row: WeighInDisplayEntry) async {
+        guard let outboxEntryId = row.outboxEntryId else { return }
         do {
-            try await environment.weightOutbox.retry(id: outboxEntryId)
-            await environment.drainAndReconcile()
+            try await environment.retryWeightQueued(id: outboxEntryId)
         } catch {
             actionError = "Couldn't retry this entry."
         }

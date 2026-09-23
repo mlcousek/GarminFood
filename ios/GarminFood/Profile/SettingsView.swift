@@ -54,6 +54,9 @@ struct SettingsView: View {
                 }
             }
 
+            // sync-weight-hydration-with-garmin 3.5 (GoalsSettingsSection.swift).
+            GoalsSettingsSection()
+
             Section {
                 NavigationLink {
                     SyncQueueView()

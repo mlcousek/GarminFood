@@ -46,36 +46,62 @@ final class HydrationLogCoordinatorTests: XCTestCase {
         XCTAssertEqual(outboxEntries.first?.loggedAt, backdated, "the backdated time is what gets sent to Garmin")
     }
 
-    func testDeleteHydrationRemovesBothLocalRecordAndAStillPendingOutboxEntry() async throws {
+    func testRemovingAnUndeliveredDrinkCancelsItWithoutAnyCorrection() async throws {
         let (coordinator, store, outbox) = makeCoordinator()
         let entry = try await coordinator.logHydration(valueInML: 250)
 
-        try await coordinator.deleteHydration(entry)
+        let result = try await coordinator.removeHydration(entry)
 
+        XCTAssertEqual(result, .cancelledBeforeDelivery)
         let storedEntries = await store.all()
         XCTAssertTrue(storedEntries.isEmpty)
         let outboxEntries = await outbox.allEntries()
-        XCTAssertTrue(outboxEntries.isEmpty, "an undelivered entry must never be sent after its local record was deleted")
+        XCTAssertTrue(outboxEntries.isEmpty, "an undelivered entry must never be sent after its local record was deleted, and needs no correction")
     }
 
-    func testDeleteHydrationLeavesAnAlreadySentOutboxEntryAlone() async throws {
+    func testRemovingADeliveredDrinkQueuesANegativeCorrectionForItsOwnTime() async throws {
         let (coordinator, store, outbox) = makeCoordinator()
-        let entry = try await coordinator.logHydration(valueInML: 250)
+        let loggedAt = Date(timeIntervalSince1970: 1_789_000_000)
+        let entry = try await coordinator.logHydration(valueInML: 250, loggedAt: loggedAt)
 
         // Actually deliver it, via a real drain against a fake that always
         // succeeds, so the outbox entry genuinely reaches `.sent` rather
         // than being faked in-memory.
         _ = await outbox.drain(using: AlwaysSucceedsHydrationDeliverer())
-        let beforeDelete = await outbox.allEntries()
-        XCTAssertEqual(beforeDelete.first?.state, .sent, "precondition: delivery must have actually succeeded")
+        let beforeRemove = await outbox.allEntries()
+        XCTAssertEqual(beforeRemove.first?.state, .sent, "precondition: delivery must have actually succeeded")
 
-        try await coordinator.deleteHydration(entry)
+        let result = try await coordinator.removeHydration(entry)
 
+        XCTAssertEqual(result, .correctionQueued)
         let storedEntries = await store.all()
-        XCTAssertTrue(storedEntries.isEmpty, "the local record is still removed")
+        XCTAssertTrue(storedEntries.isEmpty, "the drink leaves the local list")
         let outboxEntries = await outbox.allEntries()
-        XCTAssertEqual(outboxEntries.count, 1, "an already-delivered outbox entry is left alone -- it can't be recalled from Garmin")
-        XCTAssertEqual(outboxEntries.first?.state, .sent)
+        XCTAssertEqual(outboxEntries.count, 2, "the delivered drink stays as history, plus one correction")
+        let correction = try XCTUnwrap(outboxEntries.first { $0.state == .pending })
+        XCTAssertEqual(correction.valueInML, -250, "Garmin's additive log route subtracts via a negative value")
+        XCTAssertEqual(correction.loggedAt, loggedAt, "the correction lands on the drink's own day")
+    }
+
+    func testTheShownTotalDropsAsSoonAsADeliveredDrinkIsRemoved() async throws {
+        let (coordinator, _, outbox) = makeCoordinator()
+        let loggedAt = Date()
+        let entry = try await coordinator.logHydration(valueInML: 250, loggedAt: loggedAt)
+        // Captured AFTER logging, so the new entry is already due.
+        let deliveredAt = Date()
+        _ = await outbox.drain(using: AlwaysSucceedsHydrationDeliverer(), now: deliveredAt)
+        // Garmin read AFTER the delivery: its 1750 already includes the 250.
+        let garmin = HydrationDaily(valueInML: 1750, goalInML: 2800)
+        let fetchedAt = deliveredAt.addingTimeInterval(60)
+        let entriesBefore = await outbox.allEntries()
+        let before = HydrationDayTotal.total(garminDaily: garmin, garminFetchedAt: fetchedAt, outboxEntries: entriesBefore, on: loggedAt)
+        XCTAssertEqual(before, 1750)
+
+        try await coordinator.removeHydration(entry)
+
+        let entriesAfter = await outbox.allEntries()
+        let after = HydrationDayTotal.total(garminDaily: garmin, garminFetchedAt: fetchedAt, outboxEntries: entriesAfter, on: loggedAt)
+        XCTAssertEqual(after, 1500, "the queued -250 counts immediately, before it is even delivered")
     }
 }
 

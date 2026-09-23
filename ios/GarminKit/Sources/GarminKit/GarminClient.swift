@@ -33,6 +33,14 @@
 // `WeighInWriteBody`/`WeightRangeResponse`'s doc comments in
 // GarminModels.swift.
 //
+// UPDATE 2026-09-23 (sync-weight-hydration-with-garmin): `addWeighIn` is
+// now CONFIRMED (owner-approved probe + device reports), and the weight/
+// hydration READS were live-probed: `weighInRange` (range route, replaces
+// the never-called `getWeighIns` and its wrong response guess),
+// `weighIns(on:)` (dayview), `hydrationDaily(date:)`, plus
+// `deleteWeighIn(date:samplePk:)` (owner-approved probe, 204). Garmin is
+// now the source of truth for weigh-ins and the daily water total.
+//
 // `calorieSummaryDaily` (add-trends-and-insights, 2026-09-22) is a READ the
 // route registry already had confirmed live (2026-09-14, as a standalone
 // probe) but this project had never actually called from its own code until
@@ -379,7 +387,7 @@ public struct GarminClient: Sendable {
     ///
     /// Same "don't trust the response body" stance as `createFoodLogEntry`:
     /// a caller that needs proof of persistence should re-read via
-    /// `getWeighIns`, not trust this call's 2xx alone. This route's own
+    /// `weighInRange`, not trust this call's 2xx alone. This route's own
     /// evidence tier (see `WeighInWriteBody`'s doc comment in
     /// GarminModels.swift) sits one step below `createFoodLogEntry`'s
     /// (garmin_mcp, a live-tested client with its own end-to-end tests
@@ -410,25 +418,80 @@ public struct GarminClient: Sendable {
     }
 
     /// GET `/weight-service/weight/range/{startdate}/{enddate}?includeAll=true`
-    /// (dates `YYYY-MM-DD`). See `WeightRangeResponse`'s doc comment in
-    /// GarminModels.swift for exactly what is, and isn't, confirmed about
-    /// this route's response shape. Not currently called from the app layer
-    /// (the History screen reads its own local `WeightStore`, which is
-    /// always populated and never depends on this response shape guess) --
-    /// implemented as documented infrastructure per this project's route
-    /// coverage convention, and a natural next step once the shape above is
-    /// confirmed or corrected against a real device.
-    public func getWeighIns(startDate: String, endDate: String) async throws -> WeightRangeResponse {
+    /// (dates `YYYY-MM-DD`, inclusive). LIVE-PROBED read-only 2026-09-23
+    /// (docs/garmin-routes.json `getWeighIns`): 200 with
+    /// `dailyWeightSummaries[].allWeightMetrics[]` -- see
+    /// `WeightRangeResponse`'s doc comment in GarminModels.swift. One call
+    /// covers the Weight screen's whole 90-day history (design.md D2's
+    /// "if the probe confirms that shape, use it as one call" path), so no
+    /// per-day dayview fan-out is needed. Days without a weigh-in are
+    /// omitted from the response, not returned empty.
+    ///
+    /// Replaces the unused 2026-09-22 `getWeighIns(startDate:endDate:)`,
+    /// whose response type was a guess that would not have decoded.
+    public func weighInRange(startDate: String, endDate: String) async throws -> WeightRangeResponse {
         let (data, response) = try await get(
             path: "/weight-service/weight/range/\(startDate)/\(endDate)",
             query: [URLQueryItem(name: "includeAll", value: "true")]
         )
         try Self.throwIfNotSuccessful(response, data: data)
+        let decoded: WeightRangeResponse
         do {
-            return try Self.decoder.decode(WeightRangeResponse.self, from: data)
+            decoded = try Self.decoder.decode(WeightRangeResponse.self, from: data)
         } catch {
+            DiagnosticsLog.log(.error, category: "GarminClient", "weight range \(startDate)..\(endDate) did not decode: \(String(describing: error).prefix(300))")
             throw GarminClientError.decodingFailed(description: String(describing: error))
         }
+        if decoded.skippedCount > 0 {
+            DiagnosticsLog.log(.warning, category: "GarminClient", "weight range \(startDate)..\(endDate): skipped \(decoded.skippedCount) weigh-in(s) that did not decode")
+        }
+        return decoded
+    }
+
+    /// GET `/weight-service/weight/dayview/{date}?includeAll=true` (date
+    /// `YYYY-MM-DD`). LIVE-PROBED 2026-09-23 (docs/garmin-routes.json
+    /// `weighInsDayView`): `dateWeightList[]` of `GarminWeighIn`, grams,
+    /// newest first. The app's refresh path uses `weighInRange` (one call
+    /// for many days); this single-day read is kept as the documented
+    /// fallback should the range route ever break (design.md D2).
+    public func weighIns(on date: String) async throws -> WeighInDayView {
+        let (data, response) = try await get(
+            path: "/weight-service/weight/dayview/\(date)",
+            query: [URLQueryItem(name: "includeAll", value: "true")]
+        )
+        try Self.throwIfNotSuccessful(response, data: data)
+        let decoded: WeighInDayView
+        do {
+            decoded = try Self.decoder.decode(WeighInDayView.self, from: data)
+        } catch {
+            DiagnosticsLog.log(.error, category: "GarminClient", "weight dayview \(date) did not decode: \(String(describing: error).prefix(300))")
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+        if decoded.skippedCount > 0 {
+            DiagnosticsLog.log(.warning, category: "GarminClient", "weight dayview \(date): skipped \(decoded.skippedCount) weigh-in(s) that did not decode")
+        }
+        return decoded
+    }
+
+    /// DELETE `/weight-service/weight/{date}/byversion/{samplePk}` with a
+    /// `{}` body. LIVE-CONFIRMED 2026-09-23 with the owner's explicit
+    /// approval (docs/garmin-routes.json `weighInDelete`): 204, and a
+    /// re-read no longer listed the sample while the day's other weigh-ins
+    /// were untouched. `date` is the sample's own `calendarDate`,
+    /// `samplePk` its `samplePk` -- both straight from a `GarminWeighIn`.
+    ///
+    /// Like `addWeighIn`, never called synchronously from a UI action:
+    /// the user's delete is enqueued in `WeightOutbox` (a `.delete`
+    /// operation) and delivered by its drain, so it survives being offline
+    /// and a failure shows in the sync queue instead of being lost.
+    @discardableResult
+    public func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse {
+        let (data, response) = try await delete(
+            path: "/weight-service/weight/\(date)/byversion/\(samplePk)",
+            body: EmptyJSONBody()
+        )
+        try Self.throwIfNotSuccessful(response, data: data)
+        return response
     }
 
     // MARK: - Hydration (add-hydration-tracking, 2026-09-22)
@@ -445,6 +508,23 @@ public struct GarminClient: Sendable {
         let (data, response) = try await put(path: "/usersummary-service/usersummary/hydration/log", body: body)
         try Self.throwIfNotSuccessful(response, data: data)
         return response
+    }
+
+    /// GET `/usersummary-service/usersummary/hydration/daily/{date}` (date
+    /// `YYYY-MM-DD`). LIVE-PROBED 2026-09-23 (docs/garmin-routes.json
+    /// `hydrationDaily`): the day's TOTAL (`valueInML`) and Garmin's goal
+    /// (`goalInML`) -- see `HydrationDaily`'s doc comment. Makes Garmin the
+    /// source of truth for "water today" (sync-weight-hydration-with-garmin),
+    /// so water logged on the watch or in Connect counts too.
+    public func hydrationDaily(date: String) async throws -> HydrationDaily {
+        let (data, response) = try await get(path: "/usersummary-service/usersummary/hydration/daily/\(date)", query: [])
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(HydrationDaily.self, from: data)
+        } catch {
+            DiagnosticsLog.log(.error, category: "GarminClient", "hydration daily \(date) did not decode: \(String(describing: error).prefix(300))")
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
     }
 
     // MARK: - Request plumbing

@@ -1,17 +1,20 @@
 // WeightLoader.swift
 //
-// The weight data every screen that shows it needs (the Progress tab's
-// summary card, the full Weight screen's hero/chart/history list), kept in
-// one place so both read the same in-memory snapshot rather than each
-// re-reading `WeightStore`/`WeightOutbox` on its own -- mirrors
-// `ProfileLoader`'s exact shape (App/ProfileLoader.swift), just over local
-// stores instead of a network client, so `refresh()` never waits on
-// anything and is safe to call as often as `AppEnvironment` calls its other
-// loaders (foreground, after a log, after a delete).
+// The weight data every screen that shows it needs (the Today card, the
+// Progress tab's summary card, the full Weight screen's hero/goal/chart/
+// history list), kept in one place so they all read the same in-memory
+// snapshot -- mirrors `ProfileLoader`'s shape (App/ProfileLoader.swift).
 //
-// `outboxEntries` exists purely so a history row can show "waiting to
-// sync"/"failed" next to a `WeightEntry` -- `WeightRow` (WeightComponents.swift)
-// looks up the matching entry by `WeightEntry.outboxEntryId`.
+// sync-weight-hydration-with-garmin: Garmin is now the source of truth.
+// `rows` is FoodLogCore's `WeightHistoryMerge` over the CACHED Garmin
+// weigh-ins (`GarminHealthCacheStore`) plus the app's own not-yet-in-Garmin
+// entries (design.md D1), and the goal/progress comes from
+// `WeightAndWaterOverview` with the owner's override from `AppPreferences`
+// (D5). `refresh()` still only reads local files -- it never waits on the
+// network and is safe to call after every log/delete; the Garmin READ that
+// fills the cache is `AppEnvironment.refreshGarminHealth(force:)`, which
+// then calls `refresh()` and sets `lastGarminRefreshFailed` for the quiet
+// "couldn't refresh" caption.
 
 import Foundation
 import Observation
@@ -23,37 +26,61 @@ import GarminKit
 final class WeightLoader {
     @ObservationIgnored private let store: WeightStore
     @ObservationIgnored private let outbox: WeightOutbox
+    @ObservationIgnored private let cache: GarminHealthCacheStore
+    @ObservationIgnored private let preferences: AppPreferences
 
-    /// Newest first, matching `WeightStore.all()`.
-    private(set) var entries: [WeightEntry] = []
-    private(set) var outboxEntries: [WeightOutboxEntry] = []
+    /// The merged Garmin + local history, newest first.
+    private(set) var rows: [WeighInDisplayEntry] = []
+    private(set) var snapshot = GarminHealthSnapshot()
+    /// Whether the last Garmin read for weight failed (not auth -- that has
+    /// its own banner). Rows still render from the cache.
+    var lastGarminRefreshFailed = false
 
-    init(store: WeightStore, outbox: WeightOutbox) {
+    init(store: WeightStore, outbox: WeightOutbox, cache: GarminHealthCacheStore, preferences: AppPreferences) {
         self.store = store
         self.outbox = outbox
+        self.cache = cache
+        self.preferences = preferences
     }
 
-    var latest: WeightEntry? { entries.first }
-    var previous: WeightEntry? { entries.dropFirst().first }
+    var latest: WeighInDisplayEntry? { rows.first }
+    var previous: WeighInDisplayEntry? { rows.dropFirst().first }
 
-    /// The sync state for one history row, or `nil` if its outbox entry has
-    /// already been fully delivered and reconciled away (or the entry
-    /// predates this field). A missing outbox entry is treated as "synced"
-    /// rather than shown as an error -- the far more common reason it's
-    /// gone is that delivery succeeded, and this app doesn't reconcile
-    /// weigh-in reads back from Garmin (see WeightLogCoordinator.swift's
-    /// header), so there is no way to positively confirm that here; "no
-    /// news" defaults to the optimistic, common case rather than a
-    /// permanent false alarm.
-    func outboxState(for entry: WeightEntry) -> OutboxEntryState? {
-        guard let outboxEntryId = entry.outboxEntryId else { return nil }
-        return outboxEntries.first { $0.id == outboxEntryId }?.state
+    /// Override else Garmin's plan (D5); `nil` hides the goal bar. Reads
+    /// `preferences`, so a Settings change re-renders the cards at once.
+    var goal: EffectiveWeightGoal? {
+        WeightAndWaterOverview.weightGoal(
+            snapshot: snapshot,
+            targetSource: preferences.weightGoalSource,
+            startOverrideKg: preferences.weightGoalStartKg
+        )
     }
 
+    var progress: WeightGoalProgress? {
+        WeightAndWaterOverview.weightProgress(rows: rows, goal: goal, now: Date())
+    }
+
+    /// Garmin's own target in kg, for Settings' "Use Garmin's goal" row.
+    var garminTargetKg: Double? {
+        snapshot.weightGoal?.targetWeightGrams.flatMap { $0 > 0 ? $0 / 1000 : nil }
+    }
+
+    var garminStartKg: Double? {
+        snapshot.weightGoal?.startingWeightGrams.flatMap { $0 > 0 ? $0 / 1000 : nil }
+    }
+
+    /// Local files only (stores, outbox, Garmin cache) -- no network.
     func refresh() async {
         async let loadedEntries = store.all()
         async let loadedOutbox = outbox.allEntries()
-        entries = await loadedEntries
-        outboxEntries = await loadedOutbox
+        async let loadedSnapshot = cache.current()
+        let (entries, outboxEntries, cached) = await (loadedEntries, loadedOutbox, loadedSnapshot)
+        snapshot = cached
+        rows = WeightHistoryMerge.merge(
+            garminWeighIns: cached.allWeighIns,
+            garminDayFetchedAt: cached.weighInDayFetchTimes,
+            localEntries: entries,
+            outboxEntries: outboxEntries
+        )
     }
 }

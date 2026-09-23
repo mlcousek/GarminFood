@@ -21,6 +21,16 @@
 // `OutboxEntryState`/`DrainAuthOutcome` (Outbox.swift) are reused as-is:
 // pending/sent/failed and none/longLivedTokenExpired/notSignedIn mean
 // exactly the same thing here as they do for a food-log entry.
+//
+// sync-weight-hydration-with-garmin (2026-09-23) adds a second OPERATION to
+// the same queue: deleting a Garmin weigh-in by its `samplePk` (design.md
+// D3). A delete goes through this durable queue for the same reasons an
+// add does -- the UI hides the sample at once and never waits on the
+// network, the delete survives being offline, and a failure is retried
+// with backoff and then surfaced (WeightView row + SyncQueueView) instead
+// of being lost. Every new field on `WeightOutboxEntry` is OPTIONAL, so an
+// outbox file written by an older build (adds only, no `operation`) still
+// decodes: a missing `operation` means `.add`.
 
 import Foundation
 
@@ -31,12 +41,28 @@ import Foundation
 public protocol WeighInDelivering: Sendable {
     @discardableResult
     func addWeighIn(_ request: AddWeighInRequest) async throws -> HTTPURLResponse
+
+    /// `DELETE /weight-service/weight/{date}/byversion/{samplePk}` --
+    /// live-confirmed 2026-09-23 (see `GarminClient.deleteWeighIn`).
+    @discardableResult
+    func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse
+}
+
+/// What a `WeightOutboxEntry` asks Garmin to do.
+public enum WeightOutboxOperation: String, Codable, Sendable, Equatable {
+    /// POST a new weigh-in (`addWeighIn`) -- the only operation before
+    /// 2026-09-23, and what a missing `operation` field decodes as.
+    case add
+    /// DELETE an existing Garmin sample by `samplePk` (`deleteWeighIn`).
+    case delete
 }
 
 /// One queued weigh-in plus its own delivery bookkeeping -- same shape as
 /// `OutboxEntry`, just carrying a weight instead of a food.
 public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     public let id: UUID
+    /// For `.add`: the weight to send. For `.delete`: the deleted sample's
+    /// weight, kept purely so the sync queue can say what is being deleted.
     public let weightKg: Double
     /// What the user says the weigh-in time was -- sent to Garmin as BOTH
     /// `dateTimestamp` and (converted) `gmtTimestamp`. May be backdated (the
@@ -57,6 +83,22 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// representation `OutboxEntry` uses.
     public var nextAttemptAt: Date
 
+    /// `nil` in files written before 2026-09-23 -- read `kind` instead,
+    /// which maps `nil` to `.add`.
+    public let operation: WeightOutboxOperation?
+    /// `.delete` only: the Garmin sample to delete. `nil` for `.add`.
+    public let samplePk: Int?
+    /// `.delete` only: the sample's own Garmin `calendarDate`
+    /// (`yyyy-MM-dd`), the `{date}` segment of the delete route.
+    public let calendarDate: String?
+    /// When Garmin accepted this entry (set by `drain` alongside `.sent`).
+    /// `nil` for anything not yet delivered AND for entries delivered by a
+    /// build older than 2026-09-23. FoodLogCore's merge logic compares it
+    /// with when Garmin's data was last fetched, to tell "delivered after
+    /// the last read, so the read can't contain it yet" from "delivered
+    /// before the last read, so the read is authoritative".
+    public var deliveredAt: Date?
+
     public init(
         id: UUID = UUID(),
         weightKg: Double,
@@ -64,7 +106,11 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
         state: OutboxEntryState = .pending,
         attemptCount: Int = 0,
         lastError: String? = nil,
-        nextAttemptAt: Date = Date()
+        nextAttemptAt: Date = Date(),
+        operation: WeightOutboxOperation? = nil,
+        samplePk: Int? = nil,
+        calendarDate: String? = nil,
+        deliveredAt: Date? = nil
     ) {
         self.id = id
         self.weightKg = weightKg
@@ -73,11 +119,25 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
         self.attemptCount = attemptCount
         self.lastError = lastError
         self.nextAttemptAt = nextAttemptAt
+        self.operation = operation
+        self.samplePk = samplePk
+        self.calendarDate = calendarDate
+        self.deliveredAt = deliveredAt
     }
+
+    /// The operation, with a pre-2026-09-23 `nil` read as `.add`.
+    public var kind: WeightOutboxOperation { operation ?? .add }
 
     var addRequest: AddWeighInRequest {
         AddWeighInRequest(weightKg: weightKg, loggedAt: loggedAt)
     }
+}
+
+/// Thrown (and recorded as the entry's `lastError`) when a `.delete` entry
+/// is missing the `samplePk`/`calendarDate` it needs -- only possible from a
+/// hand-edited file, since `logDelete` always sets both.
+struct WeightOutboxMalformedEntry: Error, CustomStringConvertible {
+    var description: String { "delete entry is missing samplePk/calendarDate" }
 }
 
 // MARK: - Persistence
@@ -212,7 +272,23 @@ public actor WeightOutbox {
     /// to show in the UI immediately.
     @discardableResult
     public func logWeight(weightKg: Double, loggedAt: Date = Date()) async throws -> WeightOutboxEntry {
-        let entry = WeightOutboxEntry(weightKg: weightKg, loggedAt: loggedAt)
+        let entry = WeightOutboxEntry(weightKg: weightKg, loggedAt: loggedAt, operation: .add)
+        return try await store.enqueue(entry)
+    }
+
+    /// Enqueues deleting Garmin sample `samplePk` (dated `calendarDate`,
+    /// both straight from a `GarminWeighIn`). Same contract as `logWeight`:
+    /// a successful return is durable and made no network call. `weightKg`/
+    /// `loggedAt` describe the sample being deleted, for display only.
+    @discardableResult
+    public func logDelete(samplePk: Int, calendarDate: String, weightKg: Double, loggedAt: Date) async throws -> WeightOutboxEntry {
+        let entry = WeightOutboxEntry(
+            weightKg: weightKg,
+            loggedAt: loggedAt,
+            operation: .delete,
+            samplePk: samplePk,
+            calendarDate: calendarDate
+        )
         return try await store.enqueue(entry)
     }
 
@@ -262,9 +338,29 @@ public actor WeightOutbox {
 
         for var entry in await store.pending(now: now) {
             do {
-                try await deliverer.addWeighIn(entry.addRequest)
+                switch entry.kind {
+                case .add:
+                    try await deliverer.addWeighIn(entry.addRequest)
+                case .delete:
+                    guard let samplePk = entry.samplePk, let calendarDate = entry.calendarDate else {
+                        throw WeightOutboxMalformedEntry()
+                    }
+                    do {
+                        try await deliverer.deleteWeighIn(date: calendarDate, samplePk: samplePk)
+                    } catch GarminClientError.httpError(let statusCode, _) where statusCode == 404 {
+                        // The sample is already gone (e.g. deleted in Garmin
+                        // Connect meanwhile) -- the delete's goal is met, so
+                        // this counts as delivered rather than burning
+                        // retries on something that can never succeed. The
+                        // route's 404 behaviour itself is NOT confirmed (the
+                        // 2026-09-23 probe only saw 204); logged so a real
+                        // occurrence is visible.
+                        DiagnosticsLog.log(.info, category: "WeightOutbox", "delete of sample \(samplePk) on \(calendarDate) returned 404 -- treating as already deleted")
+                    }
+                }
                 entry.state = .sent
                 entry.lastError = nil
+                entry.deliveredAt = now
                 try? await store.update(entry)
                 delivered.append(entry)
             } catch GarminClientError.rateLimited(let retryAfterSeconds) {
