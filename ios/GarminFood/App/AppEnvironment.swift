@@ -444,6 +444,75 @@ final class AppEnvironment {
         await dayLog.rebuild()
     }
 
+    // MARK: - Editing entries (add-log-entry-editing)
+
+    /// Changes a logged entry's amount and/or meal on the day being viewed.
+    /// Returns as soon as the change is durably queued: the day view shows
+    /// it at once (design D3) and delivery -- create the corrected entry,
+    /// then delete the old one (D1) -- happens in the background. Not a new
+    /// thing eaten, so no XP; the day's goal status is re-checked.
+    func editEntry(_ entry: MealEntry, newQuantity: Double, newMeal: MealType) async throws {
+        let date = dayLog.dateString
+        _ = try await logEntryCoordinator.edit(
+            entry,
+            date: date,
+            newQuantity: newQuantity,
+            newMeal: newMeal,
+            regionCode: profile.settings?.regionCode,
+            languageCode: profile.settings?.languageCode
+        )
+        await refreshQueueState()
+        await dayLog.rebuild()
+        await gamificationEngine.refreshGoalStatus(for: dayLog.selectedDate)
+        Task { await self.drainAndReconcile() }
+    }
+
+    /// Logs the same food and amount again into the same meal ("second
+    /// coffee"): an ordinary add, so it counts like any other log.
+    func duplicateEntry(_ entry: MealEntry) async throws {
+        let date = dayLog.dateString
+        _ = try await logEntryCoordinator.duplicate(
+            entry,
+            date: date,
+            regionCode: profile.settings?.regionCode,
+            languageCode: profile.settings?.languageCode
+        )
+        await gamificationEngine.handleLogConfirmed(calories: entry.calories)
+        await logConfirmed(food: nil, date: date)
+    }
+
+    /// What "Copy from…" can re-log out of `mealType` on `sourceDate`
+    /// (design D4). A read of that day's Garmin log -- the same confirmed
+    /// route the Today tab uses -- reusing the day loader's cache when it
+    /// already has that day. Not a confirm path, so a network wait is fine.
+    func copyMealPlan(from sourceDate: Date, mealType: MealType) async throws -> CopyMealPlan {
+        let dateString = NutritionDate.string(from: sourceDate)
+        let log: DailyFoodLog?
+        if let cached = dayLog.cachedFoodLogs[dateString] {
+            log = cached
+        } else {
+            log = try await garminClient.dailyFoodLog(date: dateString)
+        }
+        return CopyMealPlanner.plan(log: log, mealType: mealType)
+    }
+
+    /// Logs the checked items into `mealType` on the day being viewed, each
+    /// as an ordinary add (durable before this returns; delivery follows).
+    func copyMeal(_ items: [CopyableMealItem], to mealType: MealType) async throws {
+        guard !items.isEmpty else { return }
+        let date = dayLog.dateString
+        _ = try await logEntryCoordinator.copyMeal(
+            items,
+            to: mealType,
+            date: date,
+            regionCode: profile.settings?.regionCode,
+            languageCode: profile.settings?.languageCode
+        )
+        let calories = items.compactMap(\.calories).reduce(0, +)
+        await gamificationEngine.handleLogConfirmed(calories: calories)
+        await logConfirmed(food: nil, date: date)
+    }
+
     // MARK: - Account
 
     /// Removes the stored Garmin credentials. Queued entries stay queued
