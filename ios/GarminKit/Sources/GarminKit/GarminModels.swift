@@ -968,7 +968,11 @@ public struct AddHydrationRequest: Sendable, Equatable {
 /// `valueInML` may be NEGATIVE (sync-weight-hydration-with-garmin): the
 /// log route is additive, so removing an already-delivered drink sends
 /// `-value` as a correction (python-garminconnect's `add_hydration_data`
-/// documents negative values as the way to subtract). The read side
+/// documents negative values as the way to subtract). UNCONFIRMED from this
+/// app: a negative write has never been sent live (only positive adds were
+/// verified on device); it only ever runs from an explicit user "remove
+/// drink" action. Confirm on device, then date it in garmin-routes.json.
+/// The read side
 /// (`HydrationDaily` below, live-probed 2026-09-23) now makes Garmin's day
 /// total authoritative; this app's own `HydrationStore` only lists the
 /// drinks it logged itself.
