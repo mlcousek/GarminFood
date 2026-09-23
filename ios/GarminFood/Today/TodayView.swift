@@ -219,15 +219,19 @@ struct TodayView: View {
     /// `CustomFoodDraft` (logged as its backing food), exactly like
     /// `FoodCatalogView.selectQuickPick`. A custom food whose draft was
     /// deleted can't be logged at all, so the tap does nothing.
+    ///
+    /// Either way the confirm screen starts at the card's own remembered
+    /// amount (`item.numberOfUnits`, the "2×" the card shows), not one
+    /// serving.
     private func logAgain(_ item: QuickPickItem) {
         guard item.food.source == .custom else {
-            logTarget = .catalog(food: item.food, initialServing: item.serving)
+            logTarget = .catalog(food: item.food, initialServing: item.serving, initialQuantity: item.numberOfUnits)
             return
         }
         Task {
             let drafts = await environment.customFoodStore.all()
             if let draft = drafts.first(where: { $0.id.uuidString == item.food.id }) {
-                logTarget = .custom(draft)
+                logTarget = .custom(draft, initialQuantity: item.numberOfUnits)
             }
         }
     }

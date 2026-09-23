@@ -431,10 +431,12 @@ struct FoodCatalogView: View {
                 onPick(food, serving)
                 dismiss()
             case .logFood:
+                // The card's own remembered amount, not one serving
+                // (LogTarget's doc comment).
                 if let draft {
-                    logTarget = .custom(draft)
+                    logTarget = .custom(draft, initialQuantity: item.numberOfUnits)
                 } else {
-                    logTarget = .catalog(food: food, initialServing: serving)
+                    logTarget = .catalog(food: food, initialServing: serving, initialQuantity: item.numberOfUnits)
                 }
             }
         }
@@ -610,14 +612,19 @@ struct QuickPickItem: Identifiable {
 
 /// What `LogEntryConfirmView` is confirming -- either a catalog food (with
 /// an optional already-resolved serving) or a custom food (design.md D4).
+///
+/// `initialQuantity` is the amount the confirm screen starts at, `nil`
+/// meaning one serving. A Quick pick / Usual / Recent / Log again card
+/// passes the amount it SHOWS ("2×, 580 kcal") -- it used to be dropped
+/// here, so the card said 2 servings and the screen logged 1.
 enum LogTarget: Identifiable, Hashable {
-    case catalog(food: Food, initialServing: Serving?)
-    case custom(CustomFoodDraft)
+    case catalog(food: Food, initialServing: Serving?, initialQuantity: Double? = nil)
+    case custom(CustomFoodDraft, initialQuantity: Double? = nil)
 
     var id: String {
         switch self {
-        case .catalog(let food, _): return "catalog:\(food.id)"
-        case .custom(let draft): return "custom:\(draft.id.uuidString)"
+        case .catalog(let food, _, _): return "catalog:\(food.id)"
+        case .custom(let draft, _): return "custom:\(draft.id.uuidString)"
         }
     }
 }
