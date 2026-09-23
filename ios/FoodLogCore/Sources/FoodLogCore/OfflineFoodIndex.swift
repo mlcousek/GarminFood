@@ -24,8 +24,18 @@
 //   - pre-scoring. The candidates are scored with `SearchRanker`'s own
 //     text match on the pre-tokenized names, and only the top 50 are
 //     handed to the engine, which ranks them again with everything else.
-//     Without this cap a one-letter query would hand thousands of rows to
-//     the per-keystroke ranking.
+//     Without this cap a short query would hand thousands of rows to the
+//     per-keystroke ranking;
+//   - per-keystroke cost bounds. This runs on every keystroke with no
+//     debounce, and a short prefix ("p", "po") matches a large share of the
+//     ~8k products. So a query needs a word of at least
+//     `minimumWordLength` letters (a single letter gets nothing from the
+//     index: 50 arbitrary products out of thousands are noise, and remote
+//     OFF is gated the same way), a shorter word only looks up its exact
+//     posting instead of a whole prefix range (the ranker never
+//     prefix-matches it in a multi-word query either), and the gathering and
+//     scoring loops stop as soon as the searching task is cancelled by the
+//     next keystroke instead of finishing work nobody will see.
 // Known gap: the ranker's "typo in the FIRST letter" tier has no candidate
 // gathering here. Bounding fuzzy lookup by the first two letters is what
 // keeps it cheap.
@@ -194,6 +204,16 @@ public struct OfflineFoodIndex: Sendable {
     /// D2: at most this many pre-scored candidates per query.
     public static let maximumCandidates = 50
 
+    /// A query needs a word at least this long before the index answers,
+    /// and only a term at least this long is expanded to every term it
+    /// prefixes. Matches `SearchRanker.tierWeight`'s minimum prefix length
+    /// for a multi-word query, so candidate gathering stays complete for
+    /// every query the index answers.
+    public static let minimumWordLength = 2
+
+    /// How many rows are scored between two cancellation checks.
+    private static let cancellationCheckInterval = 256
+
     public let products: [OfflineIndexProduct]
     private let entries: [Entry]
     private let rowByCode: [String: Int]
@@ -296,27 +316,35 @@ public struct OfflineFoodIndex: Sendable {
     // MARK: Search (design.md D2)
 
     /// The best `limit` products for `query`, as unscored candidates for the
-    /// engine's ranking. Empty for a query with no words (only pack sizes).
+    /// engine's ranking. Empty for a query with no word of at least
+    /// `minimumWordLength` letters (a single letter, or only pack sizes),
+    /// and empty when the calling task is cancelled part-way (the caller
+    /// checks for cancellation itself; see OfflineCzechIndexSource).
     public func candidates(
         for query: SearchQuery,
         limit: Int = OfflineFoodIndex.maximumCandidates,
         weights: SearchWeights = .standard
     ) -> [SearchCandidate] {
         let words = query.wordTokens
-        guard !words.isEmpty, limit > 0 else { return [] }
+        guard limit > 0, words.contains(where: { $0.text.count >= OfflineFoodIndex.minimumWordLength }) else { return [] }
 
         var rows = Set<Int>()
         for token in words {
+            if Task.isCancelled { return [] }
             rows.formUnion(rowsMatching(token))
         }
 
         var scored: [ScoredRow] = []
         scored.reserveCapacity(rows.count)
+        var visited = 0
         for row in rows {
+            if visited % OfflineFoodIndex.cancellationCheckInterval == 0, Task.isCancelled { return [] }
+            visited += 1
             if let relevance = relevance(of: entries[row], for: query, weights: weights) {
                 scored.append(ScoredRow(row: row, relevance: relevance))
             }
         }
+        if Task.isCancelled { return [] }
         // Same order as SearchRanker.isRankedBefore (score, then folded
         // name, then id), so the cap cuts where the final ranking would.
         scored.sort { lhs, rhs in
@@ -354,9 +382,17 @@ public struct OfflineFoodIndex: Sendable {
     private func rowsMatching(_ token: SearchToken) -> Set<Int> {
         var rows = Set<Int>()
         // Exact, same stem, prefix of the word being typed, and stem prefix.
+        // A term shorter than `minimumWordLength` can only match exactly
+        // (the ranker's prefix tier needs 2 letters in a multi-word query,
+        // its stem-prefix tier 3), so it skips the prefix range, which for
+        // one letter is a large share of the whole index.
         for prefix in Set([token.text, token.stem]) where !prefix.isEmpty {
-            for term in termsWithPrefix(prefix) {
-                rows.formUnion(postings[term] ?? [])
+            if prefix.count >= OfflineFoodIndex.minimumWordLength {
+                for term in termsWithPrefix(prefix) {
+                    rows.formUnion(postings[term] ?? [])
+                }
+            } else {
+                rows.formUnion(postings[prefix] ?? [])
             }
         }
         // Fuzzy, bounded to terms sharing the first two letters, with the

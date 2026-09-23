@@ -166,12 +166,41 @@ final class OfflineFoodIndexSearchTests: XCTestCase {
     /// top 50 gives the same top results as ranking the whole index.
     func testPreScoringKeepsTheSameTopResultsAsRankingEverything() {
         let everything = index.products.map { SearchCandidate(food: $0.food, origin: .offlineIndex, alternateNames: $0.alternateNames) }
-        for query in ["tvaroh", "rohlik", "kureci rizek", "madeta", "jogurt bily 7", "soft quark", "mleko 1,5"] {
+        for query in ["tvaroh", "rohlik", "kureci rizek", "madeta", "jogurt bily 7", "soft quark", "mleko 1,5", "tv", "jo", "tvaroh m", "jogurt b", "a tvaroh"] {
             let parsed = SearchQuery(query)
             let full = SearchRanker.rank(parsed, candidates: everything).prefix(10).map(\.food.id)
             let fromIndex = SearchRanker.rank(parsed, candidates: index.candidates(for: parsed)).prefix(10).map(\.food.id)
             XCTAssertEqual(fromIndex, full, "query: \(query)")
         }
+    }
+
+    /// Per-keystroke cost: a single letter prefixes a large share of the
+    /// real ~8k-product index, and 50 arbitrary rows out of thousands are
+    /// noise, so the index answers nothing until a word has 2 letters.
+    func testASingleLetterGetsNothingFromTheIndex() {
+        XCTAssertEqual(ids("j"), [])
+        XCTAssertEqual(ids("t"), [])
+        XCTAssertEqual(ids("a b"), [], "no word of two letters or more")
+        XCTAssertTrue(ids("tv").contains("8594001234567"), "two letters already search")
+    }
+
+    /// A one-letter word next to a real one looks up only its exact
+    /// posting (the ranker can't prefix-match it in a multi-word query),
+    /// and the other word still finds the product.
+    func testAOneLetterWordBesideAnotherStillFinds() {
+        XCTAssertEqual(Set(ids("tvaroh m")), ["8594001234567", "8594001234574"])
+    }
+
+    /// The next keystroke cancels this search; the loops stop instead of
+    /// scoring rows nobody will see.
+    func testACancelledSearchStopsEarlyWithNothing() async {
+        let index = self.index
+        let candidates = await Task { () -> [SearchCandidate] in
+            _ = withUnsafeCurrentTask { $0?.cancel() }
+            return index.candidates(for: SearchQuery("jogurt"))
+        }.value
+        XCTAssertEqual(candidates, [])
+        XCTAssertEqual(index.candidates(for: SearchQuery("jogurt")).count, OfflineFoodIndex.maximumCandidates, "the same query uncancelled has results")
     }
 
     func testBarcodeLookupHandlesUPCVariants() {
@@ -210,6 +239,25 @@ final class OfflineCzechIndexSourceTests: XCTestCase {
         XCTAssertEqual(after.candidates.count, 2)
         let second = try await source.search(SearchQuery("tvaroh"), page: 1, options: SearchOptions())
         XCTAssertEqual(second.candidates, [])
+    }
+
+    /// A cancelled search is reported as a cancellation, not as "no matches".
+    func testACancelledSearchThrowsCancellation() async {
+        let source = OfflineCzechIndexSource(holder: OfflineFoodIndexHolder(index: OfflineFoodIndex(products: offlineFixtureProducts())))
+        let outcome = await Task { () -> Result<SourcePage, Error> in
+            _ = withUnsafeCurrentTask { $0?.cancel() }
+            do {
+                return .success(try await source.search(SearchQuery("tvaroh"), page: 0, options: SearchOptions()))
+            } catch {
+                return .failure(error)
+            }
+        }.value
+        switch outcome {
+        case .success(let page):
+            XCTFail("expected CancellationError, got \(page.candidates.count) candidates")
+        case .failure(let error):
+            XCTAssertTrue(error is CancellationError)
+        }
     }
 
     func testEngineListsOfflineHitsAndMergesTheLiveCopyOfTheSameProduct() async {

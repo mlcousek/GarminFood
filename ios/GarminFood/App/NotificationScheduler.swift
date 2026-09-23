@@ -75,22 +75,60 @@ final class NotificationScheduler {
     /// call, but worth closing off rather than relying on that).
     private var isSyncing = false
 
+    /// The newest `sync` arguments not yet applied. A call arriving while
+    /// one is in flight can't just be dropped: its caller captured its
+    /// arguments AFTER the in-flight call's (a meal just logged, a reminder
+    /// time just changed), so the in-flight pass is planning from older
+    /// state. They're parked here instead and the in-flight call runs one
+    /// more pass with them -- newest wins, however many arrived meanwhile.
+    /// Same coalescing as `AppEnvironment.refreshGarminHealth`'s queued flag.
+    private var pendingSync: SyncRequest?
+
+    private struct SyncRequest {
+        let preferences: NotificationPreferences
+        let mealsLoggedToday: Set<MealType>
+        let isStreakAtRiskToday: Bool
+        let now: Date
+    }
+
     /// Re-plans and re-syncs pending notifications against current state.
-    /// Idempotent and safe to call often -- a no-op when nothing changed,
-    /// and a no-op (not queued) when another call is already in flight,
-    /// since the in-flight call already reflects whatever triggered this
-    /// one by the time it finishes reading `preferences`/`mealsLoggedToday`
-    /// fresh on its own next invocation.
+    /// Idempotent and safe to call often -- a no-op when nothing changed.
+    /// While another call is in flight this one returns at once, and the
+    /// in-flight call re-runs with these (newer) arguments when it's done.
     func sync(
         preferences: NotificationPreferences,
         mealsLoggedToday: Set<MealType>,
         isStreakAtRiskToday: Bool,
         now: Date = Date()
     ) async {
+        pendingSync = SyncRequest(
+            preferences: preferences,
+            mealsLoggedToday: mealsLoggedToday,
+            isStreakAtRiskToday: isStreakAtRiskToday,
+            now: now
+        )
         guard !isSyncing else { return }
         isSyncing = true
         defer { isSyncing = false }
 
+        while let request = pendingSync {
+            pendingSync = nil
+            await performSync(
+                preferences: request.preferences,
+                mealsLoggedToday: request.mealsLoggedToday,
+                isStreakAtRiskToday: request.isStreakAtRiskToday,
+                now: request.now
+            )
+        }
+    }
+
+    /// One replan-and-diff pass; only ever run by `sync`'s loop.
+    private func performSync(
+        preferences: NotificationPreferences,
+        mealsLoggedToday: Set<MealType>,
+        isStreakAtRiskToday: Bool,
+        now: Date
+    ) async {
         let status = await center.notificationSettings().authorizationStatus
         guard status == .authorized || status == .provisional else { return }
 
@@ -158,6 +196,19 @@ final class NotificationScheduler {
     /// rather than sharing `isSyncing`.
     private var isSyncingFasting = false
 
+    /// The newest fasting arguments not yet applied -- same coalescing as
+    /// `pendingSync`. Dropping them instead lost real edits: every "Fast
+    /// until" picker change fires its own sync, so moving 12:00 -> 13:00
+    /// while the 12:00 pass was still in flight left the repeating reminder
+    /// saying "ends at 12:00" until the next foreground replan.
+    private var pendingFastingSync: FastingSyncRequest?
+
+    private struct FastingSyncRequest {
+        let schedule: FastingSchedule?
+        let endsSoon: FastingReminderSetting
+        let startsSoon: FastingReminderSetting
+    }
+
     /// - Parameter schedule: the ACTIVE fasting window (`nil` while fasting
     ///   is off, which removes both reminders).
     func syncFastingReminders(
@@ -165,10 +216,24 @@ final class NotificationScheduler {
         endsSoon: FastingReminderSetting,
         startsSoon: FastingReminderSetting
     ) async {
+        pendingFastingSync = FastingSyncRequest(schedule: schedule, endsSoon: endsSoon, startsSoon: startsSoon)
         guard !isSyncingFasting else { return }
         isSyncingFasting = true
         defer { isSyncingFasting = false }
 
+        while let request = pendingFastingSync {
+            pendingFastingSync = nil
+            await performFastingSync(schedule: request.schedule, endsSoon: request.endsSoon, startsSoon: request.startsSoon)
+        }
+    }
+
+    /// One fasting replan-and-diff pass; only ever run by
+    /// `syncFastingReminders`'s loop.
+    private func performFastingSync(
+        schedule: FastingSchedule?,
+        endsSoon: FastingReminderSetting,
+        startsSoon: FastingReminderSetting
+    ) async {
         let status = await center.notificationSettings().authorizationStatus
         guard status == .authorized || status == .provisional else { return }
 

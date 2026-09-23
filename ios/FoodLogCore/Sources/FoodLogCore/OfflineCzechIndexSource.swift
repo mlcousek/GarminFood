@@ -3,7 +3,10 @@
 // The downloaded Czech Open Food Facts index as a `FoodSearchSource`
 // (add-offline-czech-food-index task 3.2). It answers from memory with no
 // network: `isRemote == false`, so FoodSearchEngine asks it on every
-// keystroke alongside the user's own foods, never debounced. Its results
+// keystroke alongside the user's own foods, never debounced. That is why
+// OfflineFoodIndex answers nothing for a single letter and stops scoring
+// once the next keystroke cancels this search (a cancelled search throws
+// CancellationError here, like any other source). Its results
 // are ranked and deduped with every other source's by `SearchRanker`. A
 // product also found by live OFF search merges by EAN (SearchDedup's
 // identity key), and live OFF still runs to catch products newer than the
@@ -74,6 +77,10 @@ public struct OfflineCzechIndexSource: FoodSearchSource {
     public func search(_ query: SearchQuery, page: Int, options: SearchOptions) async throws -> SourcePage {
         guard page == 0, let index = holder.index else { return SourcePage() }
         try Task.checkCancellation()
-        return SourcePage(candidates: index.candidates(for: query))
+        let candidates = index.candidates(for: query)
+        // `candidates(for:)` stops early and answers empty once cancelled;
+        // report that as the cancellation it is, not as "no matches".
+        try Task.checkCancellation()
+        return SourcePage(candidates: candidates)
     }
 }
