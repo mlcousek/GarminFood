@@ -250,7 +250,9 @@ struct CreateInGarminConfirmView: View {
                     calories: calories,
                     protein: serving?.protein,
                     carbs: serving?.carbs,
-                    fat: serving?.fat
+                    fat: serving?.fat,
+                    regionCode: environment.profile.settings?.regionCode,
+                    languageCode: environment.profile.settings?.languageCode
                 )
                 guard let createdFood = Food(searchResult: result) else {
                     errorMessage = "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead."

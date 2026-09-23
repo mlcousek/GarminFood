@@ -52,6 +52,24 @@ final class LogEntryCoordinatorTests: XCTestCase {
         XCTAssertEqual(stored.first?.createdAt, loggedAt, "sent as logTimestamp: the moment of logging, not of delivery")
     }
 
+    /// fix-custom-food-log-region (2026-09-22): a caller (the app layer,
+    /// from `environment.profile.settings`) must be able to pass the
+    /// account's real region/language all the way through to the
+    /// durably-enqueued entry -- see GarminKit's `FoodLogWriteBody`/
+    /// `NutritionSettings` doc comments for the real-device bug this fixes.
+    func testConfirmCarriesRegionAndLanguageIntoTheEntry() async throws {
+        let (coordinator, outbox, _, _) = makeCoordinator()
+
+        _ = try await coordinator.confirm(
+            food: food, serving: food.servings[0], numberOfUnits: 1, mealType: .breakfast, date: "2026-09-14",
+            regionCode: "CZ", languageCode: "cs"
+        )
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.regionCode, "CZ")
+        XCTAssertEqual(stored.first?.languageCode, "cs")
+    }
+
     func testConfirmUpdatesUsageHistoryInTheSameAction() async throws {
         let (coordinator, _, usageHistory, _) = makeCoordinator()
 

@@ -321,14 +321,18 @@ struct LogEntryConfirmView: View {
                         serving: selectedServing,
                         numberOfUnits: quantity,
                         mealType: mealType,
-                        date: dateString
+                        date: dateString,
+                        regionCode: environment.profile.settings?.regionCode,
+                        languageCode: environment.profile.settings?.languageCode
                     )
                 case .custom(let draft):
                     let (_, note) = try await environment.logEntryCoordinator.confirmCustomFood(
                         draft,
                         quantity: quantity,
                         mealType: mealType,
-                        date: dateString
+                        date: dateString,
+                        regionCode: environment.profile.settings?.regionCode,
+                        languageCode: environment.profile.settings?.languageCode
                     )
                     discrepancyNote = note
                 }
