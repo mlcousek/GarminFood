@@ -113,11 +113,6 @@ public actor OfflineIndexStore {
     private let manifestURL: URL
     private let clock: @Sendable () -> Date
     private var status: OfflineIndexStatus
-    /// `false` only while the status file exists but could not be read
-    /// (e.g. this process started before first unlock): `persistStatus()`
-    /// then refuses to overwrite it, and the next entry point retries the
-    /// read (fix/store-unreadable-latch).
-    private var statusLoaded: Bool
     private var loadAttempted = false
     private var updateInFlight = false
 
@@ -139,6 +134,10 @@ public actor OfflineIndexStore {
             decoder: JSONDecoder(),
             category: "OfflineIndexStore"
         ).value ?? OfflineIndexStatus()
+        // Unlike the other stores this doesn't guard its save against an
+        // unreadable file (fix/store-unreadable-latch): the status is
+        // disposable metadata -- losing it only means the next check
+        // re-downloads the index, never user data.
     }
 
     public static func defaultDirectory() -> URL {
