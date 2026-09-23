@@ -347,10 +347,12 @@ final class AppEnvironment {
     /// Gives up on a queued Garmin DELETE (sync queue only): the weigh-in
     /// stays in Garmin and reappears in the history. Adds aren't cancelled
     /// here -- deleting the weigh-in from the Weight screen does that and
-    /// keeps the local record consistent.
+    /// keeps the local record consistent. Refused with
+    /// `OutboxEditError.entryInFlight` while a drain is sending that very
+    /// DELETE (a sample can't be un-deleted) -- 2026-09-23 race fix.
     func cancelWeightDelete(_ entry: WeightOutboxEntry) async throws {
         guard entry.kind == .delete, entry.state != .sent else { return }
-        try await weightOutbox.delete(id: entry.id)
+        try await weightOutbox.cancelQueued(id: entry.id)
         await weightLoader.refresh()
         await refreshQueueState()
     }

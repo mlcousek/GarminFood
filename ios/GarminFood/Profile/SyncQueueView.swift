@@ -49,6 +49,8 @@ struct SyncQueueView: View {
                             Task {
                                 do {
                                     try await environment.cancelWeightDelete(entry)
+                                } catch OutboxEditError.entryInFlight {
+                                    actionError = "This delete is being sent to Garmin right now, so it can't be cancelled."
                                 } catch {
                                     actionError = "Couldn't cancel this delete: \(error.localizedDescription)"
                                 }
