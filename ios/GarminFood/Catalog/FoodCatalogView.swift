@@ -83,6 +83,12 @@ struct FoodCatalogView: View {
     @State private var matchingTarget: Food?
 
     @State private var quickPickItems: [QuickPickItem] = []
+    // improve-log-food-shelves: the "Usual for <meal>" and "Recent" shelves,
+    // ranked from the same usage history as Quick pick (MealUsualRanker /
+    // RecentRanker) and rendered with the same card and tap path.
+    @State private var usualItems: [QuickPickItem] = []
+    @State private var usualMealType: MealType = MealTypeDefaulting.defaultMealType()
+    @State private var recentItems: [QuickPickItem] = []
     @State private var customFoods: [CustomFoodDraft] = []
     @State private var mealPresets: [MealPreset] = []
     // add-favorite-foods: the local favorites list, plus a derived id set
@@ -127,41 +133,55 @@ struct FoodCatalogView: View {
 
     var body: some View {
         List {
+            // improve-log-food-shelves: with no query, five swipeable card
+            // shelves in a fixed order -- Quick pick, Favorites, Usual for
+            // <meal>, Meals, Recent -- then the custom-food list. A shelf
+            // with no items is hidden, so the next one moves up. Hidden
+            // entirely in `pickBackingFood` (only a real Garmin search
+            // result can back a custom food). In `pickIngredient` every
+            // shelf tap goes through the mode-aware paths
+            // (`selectQuickPick` / `select`, fix-testing-feedback-quick-
+            // wins) and hands the food back instead of logging, favorite
+            // stars are off, and the Meals shelf is hidden (presets can't
+            // nest).
             if !isPickingBackingFood, searchText.trimmingCharacters(in: .whitespaces).isEmpty {
                 if !quickPickItems.isEmpty {
-                    Section {
-                        QuickPickShelf(
-                            items: quickPickItems,
-                            onTap: { item in selectQuickPick(item) },
-                            isFavorite: isPicking ? nil : { isFoodFavorited($0) },
-                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
-                            cardAccessibilityHint: isPickingIngredient ? "Adds this to the meal" : "Logs this again"
-                        )
-                        .listRowInsets(EdgeInsets())
-                        .listRowSeparator(.hidden)
-                    } header: {
-                        SectionHeader(title: "Quick pick")
+                    shelfSection(title: "Quick pick") {
+                        rememberedFoodShelf(quickPickItems)
                     }
                 }
 
-                // add-favorite-foods: same visibility rule as the quick-pick
-                // shelf above (shown whenever not picking a BACKING food;
-                // still shown while picking an ingredient, same as quick
-                // pick). The star toggle itself is `nil` in EITHER picker
-                // mode, per this feature's own scope note -- favoriting
-                // isn't offered while picking for another screen, only tap-
-                // to-select is.
-                if !isPickingBackingFood, !favoriteFoods.isEmpty {
-                    Section {
+                if !favoriteFoods.isEmpty {
+                    shelfSection(title: "Favorites") {
                         FavoritesShelf(
                             items: favoriteFoods,
                             onTap: { food in select(food) },
-                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) }
+                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
+                            cardAccessibilityHint: isPickingIngredient ? "Adds this to the meal" : "Logs this food"
                         )
-                        .listRowInsets(EdgeInsets())
-                        .listRowSeparator(.hidden)
-                    } header: {
-                        SectionHeader(title: "Favorites")
+                    }
+                }
+
+                if !usualItems.isEmpty {
+                    shelfSection(title: "Usual for \(usualMealType.displayName.lowercased())") {
+                        rememberedFoodShelf(usualItems)
+                    }
+                }
+
+                if !isPicking, !mealPresets.isEmpty {
+                    shelfSection(title: "Meals") {
+                        MealPresetShelf(
+                            presets: mealPresets,
+                            onTap: { preset in mealPresetTarget = preset },
+                            onEdit: { preset in mealPresetBeingEdited = preset },
+                            onDelete: { preset in Task { await deleteMealPreset(preset) } }
+                        )
+                    }
+                }
+
+                if !recentItems.isEmpty {
+                    shelfSection(title: "Recent") {
+                        rememberedFoodShelf(recentItems)
                     }
                 }
 
@@ -172,37 +192,6 @@ struct FoodCatalogView: View {
                         }
                     } header: {
                         SectionHeader(title: "Your custom foods")
-                    }
-                }
-
-                // Meal presets (multiple ingredients logged together in one
-                // action) aren't a pickable food+serving themselves, so this
-                // section is hidden while picking FOR another screen.
-                if !isPicking, !mealPresets.isEmpty {
-                    Section {
-                        ForEach(mealPresets) { preset in
-                            Button {
-                                mealPresetTarget = preset
-                            } label: {
-                                MealPresetRow(preset: preset)
-                            }
-                            .buttonStyle(.plain)
-                            .swipeActions(edge: .trailing) {
-                                Button(role: .destructive) {
-                                    Task { await deleteMealPreset(preset) }
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                                Button {
-                                    mealPresetBeingEdited = preset
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
-                                .tint(Theme.accent)
-                            }
-                        }
-                    } header: {
-                        SectionHeader(title: "Your meals")
                     }
                 }
             }
@@ -465,6 +454,34 @@ struct FoodCatalogView: View {
         }
     }
 
+    /// One empty-query shelf as an edge-to-edge List section with a header
+    /// (improve-log-food-shelves) -- the shelf scrolls horizontally inside
+    /// its own row, so the row gets no insets or separator.
+    private func shelfSection<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
+        let shelf = content()
+        return Section {
+            shelf
+                .listRowInsets(EdgeInsets())
+                .listRowSeparator(.hidden)
+        } header: {
+            SectionHeader(title: title)
+        }
+    }
+
+    /// The Quick pick, Usual for <meal> and Recent shelves: all three are a
+    /// remembered food+serving+quantity, so all three share one card and
+    /// one tap path -- `selectQuickPick`, which is what keeps a tap in
+    /// `pickIngredient` returning the food instead of logging it.
+    private func rememberedFoodShelf(_ items: [QuickPickItem]) -> some View {
+        QuickPickShelf(
+            items: items,
+            onTap: { item in selectQuickPick(item) },
+            isFavorite: isPicking ? nil : { isFoodFavorited($0) },
+            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
+            cardAccessibilityHint: isPickingIngredient ? "Adds this to the meal" : "Logs this again"
+        )
+    }
+
     /// Hands a matched (or newly created) Garmin food from the OFF match
     /// flow back through the same path a picked serving takes, so an OFF
     /// product becomes a meal ingredient instead of a log entry. `nil`
@@ -586,15 +603,10 @@ struct FoodCatalogView: View {
 
     private func loadLocalData() async {
         let events = await environment.usageHistory.all()
-        let ranked = QuickPick.rank(events: events)
         let cache = await environment.foodCache.all()
 
-        quickPickItems = ranked.compactMap { entry -> QuickPickItem? in
-            guard let food = cache[entry.foodId] else { return nil }
-            guard let serving = food.servings.first(where: { $0.id == entry.servingId }) else { return nil }
-            return QuickPickItem(food: food, serving: serving, numberOfUnits: entry.numberOfUnits)
-        }
-
+        // Loaded first: the shelves below resolve a custom food through its
+        // draft (`shelfItem`).
         if !isPickingBackingFood {
             customFoods = await environment.customFoodStore.all()
             favoriteFoods = await environment.favoriteFoodStore.all()
@@ -602,6 +614,54 @@ struct FoodCatalogView: View {
         if !isPicking {
             mealPresets = await environment.mealPresetStore.all()
         }
+
+        quickPickItems = QuickPick.rank(events: events).compactMap { entry in
+            shelfItem(foodId: entry.foodId, servingId: entry.servingId, numberOfUnits: entry.numberOfUnits, cache: cache)
+        }
+
+        // improve-log-food-shelves: the meal comes from where Log Food was
+        // opened (a meal card), else the same default the confirm screen
+        // would pick, so the shelf matches the meal the entry will land in.
+        let mealType = defaultShelfMealType()
+        usualMealType = mealType
+        usualItems = MealUsualRanker.rank(events: events, mealType: mealType).compactMap { entry in
+            shelfItem(foodId: entry.foodId, servingId: entry.servingId, numberOfUnits: entry.numberOfUnits, cache: cache)
+        }
+        recentItems = RecentRanker.rank(events: events).compactMap { entry in
+            shelfItem(foodId: entry.foodId, servingId: entry.servingId, numberOfUnits: entry.numberOfUnits, cache: cache)
+        }
+    }
+
+    /// Resolves a ranked usage entry to a card: a custom food from its
+    /// current draft (the cache only holds a snapshot from its last save,
+    /// or nothing), anything else from the food cache, plus the exact
+    /// serving it was logged with. `nil` -- the card is skipped -- when the
+    /// food, its serving, or a custom food's draft is gone, rather than
+    /// showing a card a tap can't log (`selectQuickPick` ignores a custom
+    /// food without a draft).
+    private func shelfItem(foodId: String, servingId: String, numberOfUnits: Double, cache: [String: Food]) -> QuickPickItem? {
+        let food: Food
+        if let draft = customFoods.first(where: { $0.id.uuidString == foodId }) {
+            food = draft.asFood()
+        } else if let cached = cache[foodId], cached.source != .custom {
+            food = cached
+        } else {
+            return nil
+        }
+        guard let serving = food.servings.first(where: { $0.id == servingId }) else { return nil }
+        return QuickPickItem(food: food, serving: serving, numberOfUnits: numberOfUnits)
+    }
+
+    /// The meal the "Usual for <meal>" shelf ranks for: `logContext`'s meal
+    /// when opened from a meal card, otherwise exactly what
+    /// `LogEntryConfirmView` would default to -- Garmin's meal windows when
+    /// that preference is on, the fixed time-of-day table when not.
+    private func defaultShelfMealType() -> MealType {
+        if let mealType = logContext.mealType { return mealType }
+        if environment.preferences.useGarminMealWindows {
+            return MealWindowDefaulting.mealType(at: Date(), windows: environment.dayLog.latestWindows)
+        }
+        return MealTypeDefaulting.defaultMealType()
     }
 
     // MARK: - Favorites (add-favorite-foods)

@@ -27,6 +27,13 @@ import Foundation
 // screen (logs a 7am snack instead of breakfast, say), these templates
 // will not know that. Accepted as a real, named limitation, not an
 // oversight.
+//
+// UPDATE 2026-09-23 (improve-log-food-shelves): `UsageEvent` now carries an
+// OPTIONAL `mealType` for events logged from then on. These templates still
+// use the time-of-day bucket on purpose: every event older than that has no
+// meal type, so switching would silently change challenge progress for
+// history that never changed. Revisit once the pre-upgrade events have aged
+// out of the 500-event usage-history cap.
 public enum MealTimeBucket: String, Sendable, Equatable, Codable, CaseIterable {
     case breakfast, lunch, snack, dinner
 

@@ -17,6 +17,10 @@
 // screen" shortcut available here; every tap goes through the normal
 // remembered-serving-or-picker-sheet path, same as tapping any other
 // catalog result.
+//
+// Since improve-log-food-shelves: a thin adapter onto the shared
+// `FoodShelf`/`FoodShelfCard` (FoodShelf.swift), so it looks and behaves
+// like every other shelf on the Log Food screen.
 
 import SwiftUI
 import FoodLogCore
@@ -28,64 +32,40 @@ struct FavoritesShelf: View {
     /// -- see `FoodCatalogView`'s own gating, matching `QuickPickShelf`'s
     /// identical optional-pair convention.
     var onToggleFavorite: ((Food) -> Void)? = nil
+    /// What a tap does, for VoiceOver ("Adds this to the meal" in the
+    /// ingredient picker).
+    var cardAccessibilityHint: String = "Logs this food"
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Theme.Spacing.sm) {
-                ForEach(items) { item in
-                    ZStack(alignment: .topTrailing) {
-                        Button {
-                            onTap(item.food)
-                        } label: {
-                            FavoriteCard(food: item.food)
-                        }
-                        .buttonStyle(.plain)
-                        // Sibling of the Button above, not nested inside its
-                        // label -- see FavoriteToggleButton's own doc
-                        // comment (Components.swift).
-                        if let onToggleFavorite {
-                            // Every card in THIS shelf is, by construction,
-                            // already favorited -- always show the filled
-                            // star; tapping it un-favorites.
-                            FavoriteToggleButton(isFavorite: true) {
-                                onToggleFavorite(item.food)
-                            }
-                            .padding(4)
-                        }
-                    }
-                }
-            }
-            .padding(.horizontal, Theme.Spacing.md)
-            .padding(.vertical, Theme.Spacing.xs)
+        FoodShelf(items: items) { item in
+            FoodShelfCard(
+                title: item.food.name,
+                subtitle: brandLine(for: item.food),
+                calories: item.food.servings.first?.calories,
+                accessibilityLabel: accessibilityLabel(for: item.food),
+                accessibilityHint: cardAccessibilityHint,
+                // Every card in THIS shelf is, by construction, already
+                // favorited -- always the filled star; tapping it
+                // un-favorites.
+                favorite: onToggleFavorite.map { toggle in
+                    FoodShelfFavorite(isFavorite: true, toggle: { toggle(item.food) })
+                },
+                onTap: { onTap(item.food) }
+            )
         }
     }
-}
 
-private struct FavoriteCard: View {
-    let food: Food
+    private func brandLine(for food: Food) -> String? {
+        guard let brandName = food.brandName, !brandName.isEmpty else { return nil }
+        return brandName
+    }
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            Text(food.name)
-                .font(.foodTitle)
-                .lineLimit(2)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            if let brandName = food.brandName, !brandName.isEmpty {
-                Text(brandName)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-            if let calories = food.servings.first?.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
-            }
+    private func accessibilityLabel(for food: Food) -> String {
+        var label = "\(food.name), favorite"
+        if let calories = food.servings.first?.calories {
+            label += ", \(Int(calories.rounded())) kilocalories"
         }
-        .padding(Theme.Spacing.sm)
-        .frame(width: 140, alignment: .leading)
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.md))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(food.name), favorite")
-        .accessibilityHint("Logs this food")
+        return label
     }
 }
 
