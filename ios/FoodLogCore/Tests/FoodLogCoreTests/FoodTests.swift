@@ -47,6 +47,24 @@ final class FoodTests: XCTestCase {
         XCTAssertEqual(food?.garminIsFavorite, true)
         XCTAssertEqual(food?.garminIsRecent, false)
         XCTAssertNil(food?.imageURL, "Garmin's confirmed response shape carries no image field")
+        // Carried through (2026-09-22): a Garmin custom food's nutrition is
+        // looked up by exactly this tuple when it's logged, so dropping it
+        // here is what made logging one 400.
+        XCTAssertEqual(food?.regionCode, "CZ")
+        XCTAssertEqual(food?.languageCode, "cs")
+    }
+
+    func testAFoodPersistedBeforeRegionFieldsExistedStillDecodes() throws {
+        // Written by a build that predates regionCode/languageCode -- the
+        // food cache, favorites and meal presets all hold Foods like this.
+        let oldFoodJSON = """
+        { "id": "1", "name": "Rohlik", "source": "FATSECRET", "servings": [] }
+        """
+
+        let food = try JSONDecoder().decode(Food.self, from: Data(oldFoodJSON.utf8))
+
+        XCTAssertNil(food.regionCode)
+        XCTAssertNil(food.languageCode)
     }
 
     func testAResultWithNoServingsIsNotRepresentable() throws {

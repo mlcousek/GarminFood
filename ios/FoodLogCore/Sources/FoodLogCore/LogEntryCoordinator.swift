@@ -55,8 +55,11 @@ public struct LogEntryCoordinator: Sendable {
             servingId: serving.id,
             numberOfUnits: numberOfUnits,
             source: food.source.garminFoodSource,
-            regionCode: regionCode,
-            languageCode: languageCode,
+            // The food's own region/language (as Garmin reported it) is the
+            // exact tuple a custom food's nutrition is stored under, so it
+            // wins; the caller's account-wide values are only a fallback.
+            regionCode: food.regionCode ?? regionCode,
+            languageCode: food.languageCode ?? languageCode,
             createdAt: now
         )
         // Best-effort: a failure recording usage/defaults must never undo an
@@ -95,8 +98,8 @@ public struct LogEntryCoordinator: Sendable {
             foodId: target.foodId,
             servingId: target.servingId,
             numberOfUnits: target.numberOfUnits,
-            regionCode: regionCode,
-            languageCode: languageCode,
+            regionCode: customFood.backingRegionCode ?? regionCode,
+            languageCode: customFood.backingLanguageCode ?? languageCode,
             createdAt: now
         )
         try? await usageHistory.record(

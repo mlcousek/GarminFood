@@ -170,7 +170,9 @@ struct CustomFoodEditorView: View {
             backingFoodName: backingFood.name,
             backingServingId: backingServing.id,
             backingQuantityMultiplier: multiplier,
-            note: note.isEmpty ? nil : note
+            note: note.isEmpty ? nil : note,
+            backingRegionCode: backingFood.regionCode,
+            backingLanguageCode: backingFood.languageCode
         )
 
         do {
