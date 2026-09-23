@@ -39,11 +39,10 @@ public actor ServingDefaultStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        let decoded = (try? decoder.decode([ServingDefault].self, from: data)) ?? []
-        defaultsByFoodId = Dictionary(uniqueKeysWithValues: decoded.map { ($0.foodId, $0) })
+        let decoded = FoodLogCoreStorage.loadPersistedJSON([ServingDefault].self, from: fileURL, decoder: decoder, category: "ServingDefaultStore") ?? []
+        defaultsByFoodId = Dictionary(decoded.map { ($0.foodId, $0) }, uniquingKeysWith: { _, last in last })
     }
 
     private func persist() throws {

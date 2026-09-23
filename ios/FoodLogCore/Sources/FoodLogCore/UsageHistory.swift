@@ -73,10 +73,9 @@ public actor UsageHistoryStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        events = (try? decoder.decode([UsageEvent].self, from: data)) ?? []
+        events = FoodLogCoreStorage.loadPersistedJSON([UsageEvent].self, from: fileURL, decoder: decoder, category: "UsageHistoryStore") ?? []
     }
 
     private func persist() throws {
@@ -211,7 +210,10 @@ public enum QuickPick {
 /// matching GarminKit's own "trivially inspectable" rationale for its
 /// outbox file (there is no interactive debugger for this project -- see
 /// openspec/config.yaml D9-style constraints referenced throughout GarminKit).
-enum FoodLogCoreStorage {
+///
+/// Public only so Gamification can reach `loadPersistedJSON` (see
+/// PersistedStoreLoading.swift); `directory()` itself stays internal.
+public enum FoodLogCoreStorage {
     static func directory() -> URL {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory

@@ -86,9 +86,8 @@ public actor GoalStatusStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
-        let decoded = (try? decoder.decode([DailyGoalStatus].self, from: data)) ?? []
+        let decoded = GamificationStorage.loadPersistedJSON([DailyGoalStatus].self, from: fileURL, decoder: decoder, category: "GoalStatusStore") ?? []
         for status in decoded {
             byDate[status.date] = status
             order.append(status.date)

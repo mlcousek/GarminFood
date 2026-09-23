@@ -91,4 +91,31 @@ final class XPStoreTests: XCTestCase {
         let result = try await store.recordChallengeCompletion()
         XCTAssertEqual(result.xpAwarded, XPAward.challengeCompletionBonus)
     }
+
+    /// openspec/changes/fix-silent-store-wipe: an undecodable XP ledger used
+    /// to start at 0 and then be overwritten by the very next log, wiping
+    /// the user's lifetime XP with no copy anywhere else. The original
+    /// bytes must now survive, moved aside next to the ledger file.
+    func testUndecodableLedgerIsQuarantinedNotOverwrittenByTheNextLog() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("gamification-xp-corrupt-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let fileURL = directory.appendingPathComponent("xp-ledger.json")
+        let garbage = Data(#"{"totalXP":"lots"}"#.utf8)
+        try garbage.write(to: fileURL)
+
+        let store = XPStore(fileURL: fileURL)
+        let before = await store.currentTotal()
+        XCTAssertEqual(before, 0)
+
+        _ = try await store.recordLog(nutritionDay: "2026-01-01", streakExtendedToday: false, goalMetToday: false)
+
+        let after = await store.currentTotal()
+        XCTAssertEqual(after, XPAward.flatPerLog)
+        let quarantined = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .filter { $0.lastPathComponent.hasPrefix("xp-ledger.unreadable-") && $0.pathExtension == "json" }
+        XCTAssertEqual(quarantined.count, 1)
+        XCTAssertEqual(try quarantined.first.map { try Data(contentsOf: $0) }, garbage)
+    }
 }

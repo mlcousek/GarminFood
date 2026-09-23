@@ -91,10 +91,9 @@ actor HydrationOutboxStore {
     private func loadIfNeeded() {
         guard !loaded else { return }
         loaded = true
-        guard let data = try? Data(contentsOf: fileURL) else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        entries = (try? decoder.decode([HydrationOutboxEntry].self, from: data)) ?? []
+        entries = PersistedJSON.load([HydrationOutboxEntry].self, from: fileURL, decoder: decoder, category: "HydrationOutboxStore") ?? []
     }
 
     private func persist() throws {
