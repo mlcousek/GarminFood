@@ -85,17 +85,17 @@ struct MealPresetEditorView: View {
                     HStack {
                         Text("Carbs")
                         Spacer()
-                        Text("\(Int(totals.carbs.rounded())) g").foregroundStyle(.secondary)
+                        Text("\(totals.carbs.wholeNumberText) g").foregroundStyle(.secondary)
                     }
                     HStack {
                         Text("Protein")
                         Spacer()
-                        Text("\(Int(totals.protein.rounded())) g").foregroundStyle(.secondary)
+                        Text("\(totals.protein.wholeNumberText) g").foregroundStyle(.secondary)
                     }
                     HStack {
                         Text("Fat")
                         Spacer()
-                        Text("\(Int(totals.fat.rounded())) g").foregroundStyle(.secondary)
+                        Text("\(totals.fat.wholeNumberText) g").foregroundStyle(.secondary)
                     }
                 }
             }
@@ -267,7 +267,7 @@ private struct IngredientRow: View {
                 .frame(width: 50)
                 .onChange(of: quantityText) { _, newValue in
                     // `DecimalInput`: accepts the Czech decimal comma ("0,5").
-                    if let value = DecimalInput.parse(newValue), value > 0 {
+                    if let value = DecimalInput.parse(newValue), LogQuantity.isValid(value) {
                         ingredient.quantity = value
                     }
                 }
@@ -282,11 +282,5 @@ private struct IngredientRow: View {
                 quantityText = ingredient.quantity.formattedQuantity
             }
         }
-    }
-}
-
-private extension Double {
-    var formattedQuantity: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.2f", self)
     }
 }

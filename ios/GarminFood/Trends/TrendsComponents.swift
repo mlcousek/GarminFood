@@ -101,7 +101,7 @@ struct MacroLineChartView: View {
         guard let first = values.first, let last = values.last else {
             return "No \(title.lowercased()) logged in this range"
         }
-        return "From \(Int(first.rounded())) to \(Int(last.rounded())) \(unit) over \(values.count) days logged"
+        return "From \(first.wholeNumberText) to \(last.wholeNumberText) \(unit) over \(values.count) days logged"
     }
 }
 
@@ -168,7 +168,7 @@ struct HydrationTrendChartView: View {
     private var accessibilitySummary: String {
         guard let first = points.first, let last = points.last else { return "No data" }
         let metCount = points.filter { $0.totalML >= goalML && goalML > 0 }.count
-        return "From \(Int(first.totalML.rounded())) to \(Int(last.totalML.rounded())) milliliters over \(points.count) days, goal met on \(metCount) of them"
+        return "From \(first.totalML.wholeNumberText) to \(last.totalML.wholeNumberText) milliliters over \(points.count) days, goal met on \(metCount) of them"
     }
 }
 

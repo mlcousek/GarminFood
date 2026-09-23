@@ -712,9 +712,7 @@ public enum MealDashboard {
     static func servingDescription(unit: String?, numberOfUnits: Double?) -> String? {
         guard let unit = unit?.trimmingCharacters(in: .whitespaces), !unit.isEmpty else { return nil }
         guard let numberOfUnits, numberOfUnits != 1 else { return unit.lowercased() }
-        let quantity = numberOfUnits.truncatingRemainder(dividingBy: 1) == 0
-            ? String(Int(numberOfUnits))
-            : String(format: "%.1f", numberOfUnits)
+        let quantity = NumberDisplay.quantity(numberOfUnits, fractionDigits: 1)
         return "\(quantity) \(unit.lowercased())"
     }
 

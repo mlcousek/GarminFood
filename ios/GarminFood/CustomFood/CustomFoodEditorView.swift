@@ -58,8 +58,10 @@ struct CustomFoodEditorView: View {
         }
     }
 
+    /// A serving size or multiplier: positive and within `LogQuantity`'s
+    /// bound, so the serving label and the backing amount stay sane.
     private func parsedPositive(_ text: String) -> Double? {
-        guard let value = DecimalInput.parse(text), value > 0 else { return nil }
+        guard let value = DecimalInput.parse(text), LogQuantity.isValid(value) else { return nil }
         return value
     }
 

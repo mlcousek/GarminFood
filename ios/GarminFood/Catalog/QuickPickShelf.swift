@@ -57,7 +57,7 @@ struct QuickPickShelf: View {
     private func accessibilityLabel(for item: QuickPickItem) -> String {
         var label = "\(item.food.name), \(item.numberOfUnits.shelfQuantityText) times \(item.serving.displayLabel)"
         if let calories = item.serving.calories {
-            label += ", \(Int((calories * item.numberOfUnits).rounded())) kilocalories"
+            label += ", \((calories * item.numberOfUnits).wholeNumberText) kilocalories"
         }
         return label
     }

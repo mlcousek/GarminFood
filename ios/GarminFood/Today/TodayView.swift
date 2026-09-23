@@ -291,7 +291,7 @@ struct DaySummaryCard: View {
                     tint: calories.calorieBand?.tint ?? Theme.accent
                 ) {
                     VStack(spacing: 0) {
-                        Text("\(Int(calories.consumed.rounded()))")
+                        Text("\(calories.consumed.wholeNumberText)")
                             .font(.system(.title, design: .rounded).weight(.bold).monospacedDigit())
                             .minimumScaleFactor(0.6)
                             .lineLimit(1)
@@ -310,7 +310,7 @@ struct DaySummaryCard: View {
                     Text(remainingText(calories))
                         .font(.headline)
                     if let goal = calories.goal {
-                        Text("Target \(Int(goal.rounded())) kcal")
+                        Text("Target \(goal.wholeNumberText) kcal")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -352,25 +352,25 @@ struct DaySummaryCard: View {
 
     private func remainingText(_ calories: MacroProgress) -> String {
         guard let remaining = calories.remaining else { return "No calorie target" }
-        let value = Int(abs(remaining).rounded())
+        let value = abs(remaining).wholeNumberText
         return remaining >= 0 ? "\(value) kcal left" : "\(value) kcal over"
     }
 
     private func caloriesAccessibility(_ calories: MacroProgress) -> String {
-        let consumed = Int(calories.consumed.rounded())
+        let consumed = calories.consumed.wholeNumberText
         guard let goal = calories.goal else { return "\(consumed) kilocalories" }
-        let base = "\(consumed) of \(Int(goal.rounded())) kilocalories"
+        let base = "\(consumed) of \(goal.wholeNumberText) kilocalories"
         guard let band = calories.calorieBand else { return base }
         return "\(base), \(band.accessibilityDescription)"
     }
 
     private func activeText(_ kilocalories: Double) -> String {
-        let value = Int(kilocalories.rounded())
+        let value = kilocalories.wholeNumberText
         return isToday ? "Active today: \(value) kcal" : "Active: \(value) kcal"
     }
 
     private func activeAccessibility(_ kilocalories: Double) -> String {
-        let value = Int(kilocalories.rounded())
+        let value = kilocalories.wholeNumberText
         let when = isToday ? "today" : "that day"
         return "Active calories burned \(when): \(value) kilocalories. For information only, not added to the target."
     }
@@ -532,9 +532,9 @@ struct MealSectionCard: View {
     }
 
     private var caloriesText: String {
-        let consumed = Int(section.totals.calories.consumed.rounded())
+        let consumed = section.totals.calories.consumed.wholeNumberText
         guard let goal = section.totals.calories.goal else { return "\(consumed) kcal" }
-        return "\(consumed) / \(Int(goal.rounded())) kcal"
+        return "\(consumed) / \(goal.wholeNumberText) kcal"
     }
 }
 
@@ -595,22 +595,5 @@ extension MealWindow {
 
     private static func clock(_ seconds: Int) -> String {
         String(format: "%02d:%02d", seconds / 3600, (seconds % 3600) / 60)
-    }
-}
-
-/// Matches `LogEntryConfirmView.swift`'s copy of this exact extension
-/// (`%.2f`, closer to this row's "show the precise logged quantity"
-/// purpose than `QuickPickShelf.swift`'s own copy, which uses `%.1f`).
-/// Those two disagree with each other already -- there is no single,
-/// module-visible source of truth to call into instead, since both are
-/// `private` to their own file. This file previously formatted with a
-/// third, different rule (`.formatted(.number.precision(.fractionLength(0...2)))`),
-/// so `0.7` could read differently in a meal card than in the confirm
-/// screen for the SAME entry. Consolidating all three into one shared,
-/// non-private helper is a real follow-up, not attempted here to avoid
-/// touching two already-shipped, working screens in a bug-fix pass.
-private extension Double {
-    var formattedQuantity: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.2f", self)
     }
 }

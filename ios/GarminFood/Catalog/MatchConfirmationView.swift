@@ -245,13 +245,13 @@ struct CreateInGarminConfirmView: View {
                     }
                 }
                 if let protein = serving?.protein {
-                    LabeledContent("Protein", value: "\(Int(protein.rounded())) g")
+                    LabeledContent("Protein", value: "\(protein.wholeNumberText) g")
                 }
                 if let carbs = serving?.carbs {
-                    LabeledContent("Carbs", value: "\(Int(carbs.rounded())) g")
+                    LabeledContent("Carbs", value: "\(carbs.wholeNumberText) g")
                 }
                 if let fat = serving?.fat {
-                    LabeledContent("Fat", value: "\(Int(fat.rounded())) g")
+                    LabeledContent("Fat", value: "\(fat.wholeNumberText) g")
                 }
             }
 

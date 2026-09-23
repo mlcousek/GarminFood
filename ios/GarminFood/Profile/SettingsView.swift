@@ -156,12 +156,12 @@ struct SettingsView: View {
 
     private var calorieGoalText: String {
         guard let goal = environment.profile.settings?.calorieGoal else { return "—" }
-        return "\(Int(goal.rounded())) kcal"
+        return "\(goal.wholeNumberText) kcal"
     }
 
     private func macroText(_ grams: Double?) -> String {
         guard let grams else { return "—" }
-        return "\(Int(grams.rounded())) g"
+        return "\(grams.wholeNumberText) g"
     }
 
     private func nutritionRow(_ title: String, value: String) -> some View {

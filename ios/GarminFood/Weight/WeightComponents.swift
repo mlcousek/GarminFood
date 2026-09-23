@@ -319,7 +319,7 @@ extension Double {
     /// `formattedQuantity` convention for a user-facing numeric value.
     var formattedKg: String {
         let rounded = (self * 10).rounded() / 10
-        return rounded.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(rounded)) : String(format: "%.1f", rounded)
+        return NumberDisplay.quantity(rounded, fractionDigits: 1)
     }
 }
 

@@ -105,7 +105,7 @@ struct MealDetailView: View {
                     tint: section.totals.calories.state.tint(base: Theme.accent)
                 ) {
                     VStack(spacing: 0) {
-                        Text("\(Int(section.totals.calories.consumed.rounded()))")
+                        Text("\(section.totals.calories.consumed.wholeNumberText)")
                             .font(.system(.title2, design: .rounded).weight(.bold).monospacedDigit())
                             .minimumScaleFactor(0.6)
                             .lineLimit(1)
@@ -141,9 +141,9 @@ struct MealDetailView: View {
     }
 
     private func targetText(_ calories: MacroProgress) -> String {
-        let consumed = Int(calories.consumed.rounded())
+        let consumed = calories.consumed.wholeNumberText
         guard let goal = calories.goal else { return "\(consumed) kcal, no target" }
-        return "\(consumed) of \(Int(goal.rounded())) kcal"
+        return "\(consumed) of \(goal.wholeNumberText) kcal"
     }
 }
 

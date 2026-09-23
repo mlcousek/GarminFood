@@ -24,6 +24,11 @@
 // is a local swap of the queued entry. `foodCache` (optional) is fed the
 // food being re-logged so the queued row can show its name and calories
 // before Garmin reads it back.
+//
+// Every path here checks its quantity against `LogQuantity.isValid`
+// (finite, > 0, <= 10 000) BEFORE writing anything, so an absurd typed
+// amount is refused with an error the screen shows instead of being queued
+// (LogQuantity.swift's header has the crash this prevented).
 
 import Foundation
 import GarminKit
@@ -48,7 +53,8 @@ public struct LogEntryCoordinator: Sendable {
 
     /// Confirms a catalog (Garmin-search-backed) food. Returns as soon as
     /// the entry is durably enqueued -- callers may show success
-    /// immediately, per the spec.
+    /// immediately, per the spec. Throws `LogQuantityError.outOfRange`,
+    /// enqueueing nothing, for a quantity outside `LogQuantity.isValid`.
     @discardableResult
     public func confirm(
         food: Food,
@@ -60,6 +66,7 @@ public struct LogEntryCoordinator: Sendable {
         regionCode: String? = nil,
         languageCode: String? = nil
     ) async throws -> OutboxEntry {
+        guard LogQuantity.isValid(numberOfUnits) else { throw LogQuantityError.outOfRange }
         let entry = try await outbox.logFood(
             date: date,
             mealType: mealType,
@@ -101,7 +108,12 @@ public struct LogEntryCoordinator: Sendable {
         regionCode: String? = nil,
         languageCode: String? = nil
     ) async throws -> (entry: OutboxEntry, discrepancyNote: String) {
+        guard LogQuantity.isValid(quantity) else { throw LogQuantityError.outOfRange }
         let target = customFood.resolvedLoggingTarget(quantity: quantity)
+        // The backing amount is the quantity times the custom food's own
+        // multiplier, which may legitimately be large (a "1 g" backing
+        // serving); it only has to be a real, positive number.
+        guard target.numberOfUnits.isFinite, target.numberOfUnits > 0 else { throw LogQuantityError.outOfRange }
         // No `source`: a custom food only records its backing food's id, so
         // the namespace is inferred from that id's shape at delivery.
         let entry = try await outbox.logFood(
@@ -156,6 +168,17 @@ public struct LogEntryCoordinator: Sendable {
         regionCode: String? = nil,
         languageCode: String? = nil
     ) async throws -> [OutboxEntry] {
+        // Checked for every ingredient up front: this path isn't
+        // transactional (see above), so finding a bad quantity halfway
+        // through would leave the ingredients before it already logged.
+        let allValid = preset.ingredients.allSatisfy { ingredient in
+            let quantity = ingredient.quantity * servingsMultiplier
+            guard LogQuantity.isValid(quantity) else { return false }
+            guard let draft = ingredient.customFoodDraft else { return true }
+            let backing = draft.resolvedLoggingTarget(quantity: quantity).numberOfUnits
+            return backing.isFinite && backing > 0
+        }
+        guard allValid else { throw LogQuantityError.outOfRange }
         var entries: [OutboxEntry] = []
         entries.reserveCapacity(preset.ingredients.count)
         for ingredient in preset.ingredients {
@@ -204,7 +227,7 @@ public struct LogEntryCoordinator: Sendable {
         regionCode: String? = nil,
         languageCode: String? = nil
     ) async throws -> OutboxEntry {
-        guard newQuantity.isFinite, newQuantity > 0 else { throw LogEntryEditError.invalidQuantity }
+        guard LogQuantity.isValid(newQuantity) else { throw LogEntryEditError.invalidQuantity }
         guard entry.canRelog, let servingId = entry.servingId, let currentMeal = entry.mealType else {
             throw LogEntryEditError.notEditable
         }
@@ -259,7 +282,7 @@ public struct LogEntryCoordinator: Sendable {
         guard entry.canRelog, let servingId = entry.servingId, let mealType = entry.mealType else {
             throw LogEntryEditError.notEditable
         }
-        guard entry.servingQty.isFinite, entry.servingQty > 0 else { throw LogEntryEditError.invalidQuantity }
+        guard LogQuantity.isValid(entry.servingQty) else { throw LogEntryEditError.invalidQuantity }
         let result = try await outbox.logFood(
             date: date,
             mealType: mealType,
@@ -299,7 +322,7 @@ public struct LogEntryCoordinator: Sendable {
         var entries: [OutboxEntry] = []
         entries.reserveCapacity(items.count)
         for item in items {
-            guard item.servingQty.isFinite, item.servingQty > 0 else { continue }
+            guard LogQuantity.isValid(item.servingQty) else { continue }
             let entry = try await outbox.logFood(
                 date: date,
                 mealType: mealType,

@@ -32,7 +32,7 @@ public enum LogEntryEditError: Error, Sendable, Equatable, LocalizedError {
     /// No food/serving id to log again (a calories-only quick add), or no
     /// Garmin id for a synced entry.
     case notEditable
-    /// Zero, negative or not a number.
+    /// Zero, negative, not a number, or above `LogQuantity.maximum`.
     case invalidQuantity
     /// Same amount and same meal as already logged.
     case noChange
@@ -47,7 +47,7 @@ public enum LogEntryEditError: Error, Sendable, Equatable, LocalizedError {
         case .notEditable:
             return "This entry can't be edited here -- it has no food to log again. You can delete it instead."
         case .invalidQuantity:
-            return "Enter an amount greater than zero."
+            return LogQuantity.invalidMessage
         case .noChange:
             return "Nothing changed."
         case .stillSyncing:

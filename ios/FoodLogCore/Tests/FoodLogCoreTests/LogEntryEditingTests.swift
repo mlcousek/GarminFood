@@ -118,6 +118,18 @@ final class LogEntryEditingTests: XCTestCase {
         }
     }
 
+    func testAnAbsurdlyLargeAmountIsRefused() async throws {
+        let h = makeHarness()
+        await assertEditError(.invalidQuantity) {
+            try await h.coordinator.edit(self.syncedRohlik(), date: self.day, newQuantity: 1e19, newMeal: .lunch)
+        }
+        await assertEditError(.invalidQuantity) {
+            try await h.coordinator.edit(self.syncedRohlik(), date: self.day, newQuantity: .infinity, newMeal: .lunch)
+        }
+        let stored = await h.outbox.allEntries()
+        XCTAssertTrue(stored.isEmpty)
+    }
+
     func testAQuickAddEntryIsNotEditable() async throws {
         let h = makeHarness()
         let quickAdd = MealEntry(

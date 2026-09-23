@@ -63,7 +63,7 @@ struct FavoritesShelf: View {
     private func accessibilityLabel(for food: Food) -> String {
         var label = "\(food.name), favorite"
         if let calories = food.servings.first?.calories {
-            label += ", \(Int(calories.rounded())) kilocalories"
+            label += ", \(calories.wholeNumberText) kilocalories"
         }
         return label
     }

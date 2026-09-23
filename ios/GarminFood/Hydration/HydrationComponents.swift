@@ -185,7 +185,7 @@ extension Double {
     /// "250" / "1,500" -- whole-number milliliters, no decimals, mirroring
     /// `formattedKg`'s "no trailing noise" convention for this unit.
     var formattedML: String {
-        String(Int(self.rounded()))
+        wholeNumberText
     }
 }
 

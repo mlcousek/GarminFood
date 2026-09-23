@@ -208,6 +208,15 @@ struct LogEntryConfirmView: View {
                     }
                 }
 
+                if !isQuantityValid {
+                    // Shown only while the typed amount is out of range
+                    // (`LogQuantity`, FoodLogCore) -- the Log button is
+                    // disabled meanwhile, so say why.
+                    Text(LogQuantity.invalidMessage)
+                        .font(.caption)
+                        .foregroundStyle(Theme.warning)
+                }
+
                 if let caloriesForQuantity {
                     HStack {
                         Text("Calories")
@@ -310,7 +319,14 @@ struct LogEntryConfirmView: View {
     /// quick double-tap logged the same food to Garmin twice.
     /// `MealPresetConfirmView.canConfirm` already guards the same way.
     private var canConfirm: Bool {
-        !didConfirm && !isSaving && (isCustom || selectedServing != nil) && quantity > 0
+        !didConfirm && !isSaving && (isCustom || selectedServing != nil) && isQuantityValid
+    }
+
+    /// The same bound `LogEntryCoordinator` enforces (finite, > 0,
+    /// <= `LogQuantity.maximum`). Checked here too so an absurd typed amount
+    /// disables the button with a reason, rather than only failing on tap.
+    private var isQuantityValid: Bool {
+        LogQuantity.isValid(quantity)
     }
 
     private func confirm() {
@@ -364,16 +380,12 @@ struct LogEntryConfirmView: View {
                 await environment.logConfirmed(food: isCustom ? nil : food, date: dateString)
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
+            } catch let error as LogQuantityError {
+                errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "LogEntryConfirmView", "confirm failed for foodId=\(food.id): \(error)")
                 errorMessage = "Couldn't save this entry. Try again."
             }
         }
-    }
-}
-
-private extension Double {
-    var formattedQuantity: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.2f", self)
     }
 }

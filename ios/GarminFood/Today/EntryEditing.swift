@@ -281,8 +281,12 @@ struct EditEntrySheet: View {
                         }
                     }
                     .accessibilityValue("\(quantity.formattedQuantity)")
-                    if let calories = entry.calories(forQuantity: quantity) {
-                        LabeledContent("Calories", value: "\(Int(calories.rounded())) kcal")
+                    if !LogQuantity.isValid(quantity) {
+                        Text(LogQuantity.invalidMessage)
+                            .font(.footnote)
+                            .foregroundStyle(Theme.warning)
+                    } else if let calories = entry.calories(forQuantity: quantity) {
+                        LabeledContent("Calories", value: "\(calories.wholeNumberText) kcal")
                             .monospacedDigit()
                     }
                 }
@@ -334,7 +338,7 @@ struct EditEntrySheet: View {
     }
 
     private var canSave: Bool {
-        !isSaving && hasChanged && quantity.isFinite && quantity > 0
+        !isSaving && hasChanged && LogQuantity.isValid(quantity)
     }
 
     private func save() {
@@ -474,7 +478,7 @@ struct CopyMealSheet: View {
                 }
                 Spacer(minLength: Theme.Spacing.sm)
                 if let calories = item.calories {
-                    Text("\(Int(calories.rounded())) kcal")
+                    Text("\(calories.wholeNumberText) kcal")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
@@ -531,10 +535,3 @@ struct CopyMealSheet: View {
     }
 }
 
-/// Same as `TodayView`'s own (each screen keeps a private copy; see the
-/// note there).
-private extension Double {
-    var formattedQuantity: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.2f", self)
-    }
-}
