@@ -27,4 +27,20 @@ public enum NutritionDate {
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter.string(from: date)
     }
+
+    /// Whether a day screen showing `selectedDay` should move to today:
+    /// only when it was showing "today" as of `previousToday` and that day
+    /// has since ended (midnight passed while the app was open or in the
+    /// background). A past day the user picked on purpose is never moved.
+    /// The app's `DayLogLoader.rollOverIfNeeded` asks this on foreground and
+    /// on a day-change notification.
+    public static func shouldRollOver(
+        selectedDay: Date,
+        previousToday: Date,
+        now: Date = Date(),
+        calendar: Calendar = .current
+    ) -> Bool {
+        calendar.isDate(selectedDay, inSameDayAs: previousToday)
+            && !calendar.isDate(selectedDay, inSameDayAs: now)
+    }
 }

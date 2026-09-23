@@ -99,6 +99,10 @@ final class AppEnvironment {
     private(set) var undeliveredWeightEntries: [WeightOutboxEntry] = []
     private(set) var undeliveredHydrationEntries: [HydrationOutboxEntry] = []
 
+    /// "Today" as of the last foreground or day-change check -- what
+    /// `DayLogLoader.rollOverIfNeeded` compares against, so the Today tab
+    /// only follows the calendar when it was showing the day that just
+    /// ended (a past day picked on purpose stays put).
     @ObservationIgnored private var lastForegroundDay = Date()
     /// One Garmin health read at a time (foreground, screen appear, and a
     /// post-delivery refresh can all ask at once).
@@ -181,6 +185,24 @@ final class AppEnvironment {
         await syncNotifications()
         // Low priority and never awaited by anything the user sees.
         Task(priority: .background) { await self.backfillUsageMealsIfNeeded() }
+    }
+
+    /// The calendar day changed while the app stayed open (midnight, or a
+    /// clock/time-zone change -- `ContentView` observes both). Foreground
+    /// is the only other place the day rolls over, so without this, after
+    /// 00:00 the Today tab kept showing yesterday: "Add food" pre-filled
+    /// yesterday's date and the today-only "Log again"/"Log a meal"
+    /// shelves disappeared. Deliberately light -- just what depends on
+    /// "today": the rollover (which reloads the new day), the streak/
+    /// challenge state, and the today-based reminders. Same
+    /// `lastForegroundDay` bookkeeping as `refreshOnForeground`; a second
+    /// signal for the same midnight (both notifications, or a foreground
+    /// arriving at once) finds nothing left to roll over.
+    func dayDidChange() async {
+        await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)
+        lastForegroundDay = Date()
+        await gamificationEngine.refresh()
+        await syncNotifications()
     }
 
     /// One-time (until it completes): fills in the meal of usage events
