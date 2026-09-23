@@ -14,6 +14,14 @@
 // no idempotency key of its own (design.md D5), so de-duplication is this
 // package's problem, resolved after the fact by Reconciliation, not
 // prevented up front.
+//
+// add-log-entry-editing (design.md D1): an entry may also carry `replaces`,
+// the Garmin `logId` it supersedes. Garmin has no edit route, so an edit is
+// delivered as "create the corrected entry, THEN delete the old one" --
+// never the reverse, so the worst failure is a temporary, visible duplicate
+// rather than a lost food. The intermediate `.createdAwaitingDelete` state is
+// persisted BEFORE the delete is sent, so a crash between the two requests
+// resumes at the delete and never re-sends the create.
 
 import Foundation
 
@@ -23,12 +31,42 @@ import Foundation
 public protocol FoodLogDelivering: Sendable {
     @discardableResult
     func createFoodLogEntry(_ entry: CreateFoodLogEntryRequest) async throws -> HTTPURLResponse
+    /// DELETE `/nutrition-service/food/logs/{date}` with `{ "logIds": [...] }`
+    /// -- the second half of a replace (add-log-entry-editing D1). The same
+    /// route `DayLogLoader`'s delete and Reconciliation's duplicate removal
+    /// already call; returned 204 in garmin_mcp's live e2e test.
+    @discardableResult
+    func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse
 }
 
+/// Shared by the food, weight and hydration outboxes. Only the food outbox
+/// ever produces `.createdAwaitingDelete`.
+///
+/// Adding a case is decode-safe for every file already on a phone: those
+/// files can only contain the three original raw values, all still here.
 public enum OutboxEntryState: String, Codable, Sendable, Equatable {
     case pending
     case sent
     case failed
+    /// add-log-entry-editing D1: a replace whose corrected entry Garmin has
+    /// already accepted, but whose old entry is not yet deleted. Retried
+    /// with backoff; never marked `.failed` (a manual retry from `.failed`
+    /// would re-send the create and duplicate the food) -- after
+    /// `maxAttempts`, or on a permanent 4xx, it is parked until the user
+    /// retries it from the sync queue.
+    case createdAwaitingDelete
+}
+
+/// The Garmin entry an edit supersedes (add-log-entry-editing D1). `date` is
+/// the delete route's path component; `logId` the hex id from the read-back.
+public struct ReplacedLog: Codable, Sendable, Equatable, Hashable {
+    public let date: String
+    public let logId: String
+
+    public init(date: String, logId: String) {
+        self.date = date
+        self.logId = logId
+    }
 }
 
 /// One queued food-log entry plus its own delivery bookkeeping. Per
@@ -62,6 +100,17 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// falls back to `FoodLogWriteBody`'s hardcoded `"US"`/`"en"`.
     public let regionCode: String?
     public let languageCode: String?
+    /// add-log-entry-editing: set for an edit or a move -- the old Garmin
+    /// entry to delete once this one has been created (design.md D1).
+    /// Optional for the same reason as `source`: files written before this
+    /// field existed must still decode.
+    public let replaces: ReplacedLog?
+    /// add-log-entry-editing: the read-back `logId` this entry was
+    /// duplicated from. That entry pre-dates this one with an identical
+    /// match key, so Reconciliation must never count it as this entry's
+    /// delivery -- or, worse, delete this entry's real delivery as an
+    /// "excess" copy of it (design.md D2). Optional, decode-safe.
+    public let duplicateOf: String?
 
     public var state: OutboxEntryState
     public var attemptCount: Int
