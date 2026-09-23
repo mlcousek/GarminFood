@@ -15,7 +15,7 @@
 ## 3. Sources and engine
 
 - [x] 3.1 `FoodSearchSource` protocol. `LocalFoodSource` covers custom foods, favorites, and `FoodCache` joined with usage history.
-- [x] 3.2 `GarminFoodSource`: paging if 1.1 found it; LRU cache keyed by the normalized term.
+- [x] 3.2 `GarminSearchSource`: paging if 1.1 found it; LRU cache keyed by the normalized term.
 - [x] 3.3 `OpenFoodFactsSource`: Search-a-licious with `search.pl` as fallback; Czech name fields; LRU cache; Czech-only toggle preserved.
 - [x] 3.4 `FoodSearchEngine`: `AsyncStream<SearchSnapshot>`, stable merge (D5), per-source status, back-fill into `FoodCache`.
 - [x] 3.5 Golden relevance suite, `SearchRelevanceTests` (D6): 30+ queries, about 300 fixtures. It must pass.

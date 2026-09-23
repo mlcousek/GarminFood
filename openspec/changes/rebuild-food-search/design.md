@@ -223,7 +223,7 @@ the ranker, since no Swift toolchain is available locally.
   cache is keyed by the typed phrase with diacritics kept (lowercased,
   whitespace collapsed), not the folded one, because the two spellings are
   different requests.
-- **Garmin region.** `GarminFoodSource` sends `regionCode=CZ`, `limit=50`
+- **Garmin region.** `GarminSearchSource` sends `regionCode=CZ`, `limit=50`
   and `start=page×50`. "Show more" pages Garmin; OFF has no second page,
   because 50 hits per spelling exceeds its Czech subset for nearly every
   query probed.
