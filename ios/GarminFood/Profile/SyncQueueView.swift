@@ -135,8 +135,10 @@ struct SyncQueueView: View {
                     }
                 }
             }
-        } message: { _ in
-            Text("It hasn't reached Garmin yet, so nothing is removed there.")
+        } message: { entry in
+            Text(entry.replaces != nil
+                 ? "This cancels the edit. The original entry stays in Garmin Connect at its old amount."
+                 : "It hasn't reached Garmin yet, so nothing is removed there.")
         }
         .alert(
             "Couldn't complete that action",
@@ -178,8 +180,13 @@ private struct QueueEntryRow: View {
         }
         .padding(.vertical, Theme.Spacing.xs)
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button(role: .destructive, action: onDelete) {
-                Label("Delete", systemImage: "trash")
+            // Not for an edit Garmin has half-applied (corrected entry in,
+            // old one not yet removed): dropping it would leave both there.
+            // Retry is the way out for those.
+            if entry.state != .createdAwaitingDelete {
+                Button(role: .destructive, action: onDelete) {
+                    Label("Delete", systemImage: "trash")
+                }
             }
             // A parked edit's retry only re-attempts the old entry's delete
             // (`Outbox.retry`), so it's as safe to offer as a failed create's.

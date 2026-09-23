@@ -347,6 +347,39 @@ public struct LogEntryCoordinator: Sendable {
     /// Below this, two quantities are the same amount.
     static let quantityTolerance = 0.0001
 
+    /// What deleting a still-queued dashboard row still owes Garmin.
+    public enum PendingDeletion: Sendable, Equatable {
+        /// Nothing of it ever reached Garmin; it's gone everywhere.
+        case removed
+        /// It was an edit of an entry that IS in Garmin: the edit is
+        /// cancelled, and the ORIGINAL must now be deleted there too --
+        /// otherwise "Delete" would just undo the edit and bring the old
+        /// amount back (code-review finding, 2026-09-23).
+        case deleteOriginal(date: String, logId: String)
+    }
+
+    /// Removes a row that hasn't reached Garmin yet (`.syncing`/`.failed`
+    /// on the dashboard). Goes through the claim-guarded
+    /// `Outbox.cancelQueued`, never the unconditional `delete(id:)`: if a
+    /// drain is sending it right now, or Garmin already accepted it (an
+    /// edit's corrected entry is in, the old one not yet removed), deleting
+    /// the local record would leave whatever lands in Garmin untracked --
+    /// a duplicate the user explicitly asked to get rid of. Those cases
+    /// throw `.stillSyncing` ("try again in a moment") and change nothing.
+    /// Local only; the caller performs `.deleteOriginal` in Garmin.
+    public func deletePending(outboxId: UUID) async throws -> PendingDeletion {
+        guard let entry = await outbox.entry(id: outboxId) else { throw LogEntryEditError.entryGone }
+        do {
+            try await outbox.cancelQueued(id: outboxId)
+        } catch let error as OutboxEditError {
+            throw Self.editError(for: error)
+        }
+        if let replaced = entry.replaces {
+            return .deleteOriginal(date: replaced.date, logId: replaced.logId)
+        }
+        return .removed
+    }
+
     static func editError(for error: OutboxEditError) -> LogEntryEditError {
         switch error {
         case .entryNotFound:

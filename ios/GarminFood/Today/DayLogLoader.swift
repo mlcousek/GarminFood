@@ -25,6 +25,8 @@ final class DayLogLoader {
     @ObservationIgnored private let client: GarminClient
     @ObservationIgnored private let outbox: Outbox
     @ObservationIgnored private let foodCache: FoodCacheStore
+    /// Deleting a still-queued row goes through it (claim-guarded cancel).
+    @ObservationIgnored private let coordinator: LogEntryCoordinator
     @ObservationIgnored private var logsByDate: [String: DailyFoodLog] = [:]
     @ObservationIgnored private var mealsByDate: [String: [Meal]] = [:]
     @ObservationIgnored private var activeByDate: [String: Double] = [:]
@@ -59,10 +61,11 @@ final class DayLogLoader {
     /// meal when logging starts outside the dashboard.
     private(set) var latestWindows: [MealWindow] = []
 
-    init(client: GarminClient, outbox: Outbox, foodCache: FoodCacheStore, now: Date = Date()) {
+    init(client: GarminClient, outbox: Outbox, foodCache: FoodCacheStore, coordinator: LogEntryCoordinator, now: Date = Date()) {
         self.client = client
         self.outbox = outbox
         self.foodCache = foodCache
+        self.coordinator = coordinator
         let day = Calendar.current.startOfDay(for: now)
         self.selectedDate = day
         self.dashboard = MealDashboard.build(
@@ -234,8 +237,24 @@ final class DayLogLoader {
             }
             await refresh()
         case .syncing(let outboxId), .failed(let outboxId, _):
-            try await outbox.delete(id: outboxId)
+            // Claim-guarded (code-review fix): refuses while a drain is
+            // sending it or Garmin already has it, and for an edit also
+            // deletes the original Garmin entry the edit was replacing.
+            let outcome = try await coordinator.deletePending(outboxId: outboxId)
             await rebuild()
+            if case .deleteOriginal(let date, let logId) = outcome {
+                do {
+                    try await client.deleteFoodLogEntries(logIds: [logId], date: date)
+                } catch GarminClientError.httpError(let statusCode, _) where statusCode == 404 {
+                    // Already gone from Garmin: nothing left to remove.
+                } catch {
+                    // The edit is cancelled, so the original shows again at
+                    // its old amount -- say so; deleting it once more works.
+                    await refresh()
+                    throw DeleteError.garmin(Self.describe(error))
+                }
+                await refresh()
+            }
         }
     }
 
