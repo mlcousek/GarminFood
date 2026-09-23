@@ -272,17 +272,24 @@ actor OutboxStore {
         return dir.appendingPathComponent("outbox-\(processName).json")
     }
 
+    /// An unreadable file (e.g. before first unlock) leaves `loaded` unset,
+    /// so the next access retries instead of keeping an empty queue for the
+    /// rest of this process -- see PersistedJSON.swift's header.
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
-        entries = PersistedJSON.load([OutboxEntry].self, from: fileURL, decoder: JSONDecoder(), category: "OutboxStore") ?? []
+        let result = PersistedJSON.load([OutboxEntry].self, from: fileURL, decoder: JSONDecoder(), category: "OutboxStore")
+        entries = result.value ?? []
+        loaded = !result.isUnreadable
     }
 
     private func persist() throws {
         try write(entries)
     }
 
+    /// Every save funnels through here, so this is the one place that
+    /// refuses to replace a file this process never managed to read.
     private func write(_ list: [OutboxEntry]) throws {
+        try PersistedJSON.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "OutboxStore")
         let data = try JSONEncoder().encode(list)
         try data.write(to: fileURL, options: .atomic)
         // design.md D3's consequence for the desktop-widget requirement:

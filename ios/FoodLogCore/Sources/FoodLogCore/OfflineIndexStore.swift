@@ -113,6 +113,11 @@ public actor OfflineIndexStore {
     private let manifestURL: URL
     private let clock: @Sendable () -> Date
     private var status: OfflineIndexStatus
+    /// `false` only while the status file exists but could not be read
+    /// (e.g. this process started before first unlock): `persistStatus()`
+    /// then refuses to overwrite it, and the next entry point retries the
+    /// read (fix/store-unreadable-latch).
+    private var statusLoaded: Bool
     private var loadAttempted = false
     private var updateInFlight = false
 

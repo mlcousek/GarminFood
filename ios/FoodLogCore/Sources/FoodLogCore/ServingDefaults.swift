@@ -38,14 +38,17 @@ public actor ServingDefaultStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        let decoded = FoodLogCoreStorage.loadPersistedJSON([ServingDefault].self, from: fileURL, decoder: decoder, category: "ServingDefaultStore") ?? []
+        let result = FoodLogCoreStorage.loadPersistedJSON([ServingDefault].self, from: fileURL, decoder: decoder, category: "ServingDefaultStore")
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
+        let decoded = result.value ?? []
         defaultsByFoodId = Dictionary(decoded.map { ($0.foodId, $0) }, uniquingKeysWith: { _, last in last })
     }
 
     private func persist() throws {
+        try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "ServingDefaultStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(Array(defaultsByFoodId.values))

@@ -16,20 +16,37 @@
 // iCloud -- there is none, see openspec/config.yaml), so that wipe was
 // unrecoverable, and it violated CLAUDE.md's "failures must surface" rule.
 //
-// What this does instead, per outcome:
-//   - no file yet            -> `nil`, silently (a normal first launch).
-//   - file unreadable        -> `nil`, logged as an error, file left IN
-//                               PLACE (it may just be locked by data
+// What this does instead, per outcome (`PersistedJSONLoad`):
+//   - no file yet            -> `.missing`, silently (a normal first launch).
+//   - file unreadable        -> `.unreadable`, logged as an error, file left
+//                               IN PLACE (it may just be locked by data
 //                               protection before first unlock -- moving it
 //                               would be wrong, and it will read fine later).
-//   - file doesn't decode    -> `nil`, logged as an error, and the file is
-//                               MOVED ASIDE to
+//   - file doesn't decode    -> `.undecodable`, logged as an error, and the
+//                               file is MOVED ASIDE to
 //                               `<name>.unreadable-<yyyyMMdd-HHmmss>.json`
 //                               in the same directory, so the store's next
 //                               save writes a fresh file instead of
 //                               clobbering the original bytes. The original
 //                               stays on disk, recoverable by hand.
-//   - success                -> the decoded value.
+//   - success                -> `.loaded(value)`.
+//
+// `.unreadable` is deliberately NOT treated like the other two failures
+// (fix/store-unreadable-latch). "It will read fine later" is only true if
+// the store actually reads it again later: every store latches
+// `loaded = true` after its first load, so a process launched before first
+// unlock (a `BGAppRefreshTask`, iOS prewarming) used to keep the EMPTY state
+// for its whole lifetime -- and after the user unlocked and logged a food in
+// that same process, the store's next save atomically replaced the
+// still-intact file with just the new data (every queued, undelivered
+// outbox entry gone). So a store that gets `.unreadable` must:
+//   1. NOT latch `loaded` -- its next access retries the read;
+//   2. call `ensureSafeToWrite(loaded:fileURL:category:)` at the top of
+//      every save path, which throws `PersistedJSONUnreadFileError` instead
+//      of letting a save replace a file whose contents were never read.
+//      Callers already surface a thrown save error (e.g. the confirm
+//      screen's "Couldn't save this entry"), which is the right outcome:
+//      a loud, retryable failure instead of silent data loss.
 //
 // Lives in GarminKit because it has no dependencies of its own and every
 // other package already depends on GarminKit (FoodLogCore directly;
@@ -44,6 +61,50 @@
 
 import Foundation
 
+/// What `PersistedJSON.load` found on disk. See this file's header for the
+/// per-case behaviour; the one that matters to a store is `.unreadable`.
+public enum PersistedJSONLoad<Value> {
+    /// No file yet -- a normal first launch. Start empty, latch.
+    case missing
+    /// The file decoded.
+    case loaded(Value)
+    /// The file exists but did not decode, and was moved aside (or that
+    /// move failed, which is logged). Start empty, latch -- exactly the
+    /// fix-silent-store-wipe behaviour.
+    case undecodable
+    /// The file exists but could not be READ (e.g. data protection before
+    /// first unlock). Start empty for now, but do NOT latch, and refuse
+    /// to save until a later read succeeds.
+    case unreadable
+
+    /// The decoded value, or `nil` for every other case.
+    public var value: Value? {
+        if case .loaded(let value) = self { return value }
+        return nil
+    }
+
+    /// `true` only for `.unreadable` -- the one outcome after which the
+    /// store must not set `loaded = true`.
+    public var isUnreadable: Bool {
+        if case .unreadable = self { return true }
+        return false
+    }
+}
+
+/// Thrown by `PersistedJSON.ensureSafeToWrite` when a store tries to save
+/// while its file exists but has not been successfully read this process.
+public struct PersistedJSONUnreadFileError: Error, LocalizedError, Equatable, Sendable {
+    public let fileName: String
+
+    public init(fileName: String) {
+        self.fileName = fileName
+    }
+
+    public var errorDescription: String? {
+        "\(fileName) exists but could not be read yet (is the device still locked?), so it was not overwritten. Try again."
+    }
+}
+
 public enum PersistedJSON {
     /// Cap on how much of a decoding error's description goes into the
     /// diagnostics log -- `DecodingError` descriptions include the full
@@ -52,9 +113,9 @@ public enum PersistedJSON {
 
     /// Loads and decodes `type` from `fileURL`, quarantining a file that
     /// exists but cannot be decoded -- see this file's header for the exact
-    /// per-outcome behaviour. Returns `nil` for every non-success outcome;
-    /// callers fall back to their own empty state, exactly as before, but
-    /// the original data is no longer at risk of being overwritten.
+    /// per-outcome behaviour. Callers fall back to their own empty state for
+    /// every non-`.loaded` outcome, but on `.unreadable` must also leave
+    /// `loaded` unset and gate saves on `ensureSafeToWrite`.
     ///
     /// `decoder` is passed in (not constructed here) so each store keeps its
     /// own existing configuration (e.g. `.iso8601` dates or not) -- changing
@@ -64,24 +125,24 @@ public enum PersistedJSON {
         from fileURL: URL,
         decoder: JSONDecoder,
         category: String
-    ) -> T? {
+    ) -> PersistedJSONLoad<T> {
         let data: Data
         do {
             data = try Data(contentsOf: fileURL)
         } catch {
             if isFileNotFound(error) {
-                return nil
+                return .missing
             }
             DiagnosticsLog.log(
                 .error,
                 category: category,
-                "could not read \(fileURL.lastPathComponent) (left in place, store starts empty this launch): \(truncated(error))"
+                "could not read \(fileURL.lastPathComponent) (left in place; store reads as empty and refuses to save until a retry succeeds): \(truncated(error))"
             )
-            return nil
+            return .unreadable
         }
 
         do {
-            return try decoder.decode(type, from: data)
+            return .loaded(try decoder.decode(type, from: data))
         } catch {
             let quarantineURL = quarantineDestination(for: fileURL)
             do {
@@ -98,8 +159,23 @@ public enum PersistedJSON {
                     "could not decode \(fileURL.lastPathComponent): \(truncated(error)) -- AND could not move it aside to \(quarantineURL.lastPathComponent): \(truncated(moveError)). The next save to this store may overwrite it."
                 )
             }
-            return nil
+            return .undecodable
         }
+    }
+
+    /// The save-side half of the `.unreadable` contract: call first thing in
+    /// every save path, AFTER that path's `loadIfNeeded()`. `loaded` is the
+    /// store's own latch, which stays `false` only while its file exists but
+    /// could not be read -- so saving now would replace data this process
+    /// has never seen. Throws (and logs) instead.
+    public static func ensureSafeToWrite(loaded: Bool, fileURL: URL, category: String) throws {
+        guard !loaded else { return }
+        DiagnosticsLog.log(
+            .error,
+            category: category,
+            "refused to save \(fileURL.lastPathComponent): it exists but has not been readable this launch, and saving now would overwrite it"
+        )
+        throw PersistedJSONUnreadFileError(fileName: fileURL.lastPathComponent)
     }
 
     // MARK: - Helpers

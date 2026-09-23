@@ -165,13 +165,16 @@ actor WeightOutboxStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        entries = PersistedJSON.load([WeightOutboxEntry].self, from: fileURL, decoder: decoder, category: "WeightOutboxStore") ?? []
+        let result = PersistedJSON.load([WeightOutboxEntry].self, from: fileURL, decoder: decoder, category: "WeightOutboxStore")
+        entries = result.value ?? []
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
     }
 
     private func persist() throws {
+        try PersistedJSON.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "WeightOutboxStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(entries)

@@ -173,11 +173,14 @@ public actor FastingSessionStore {
     /// A missing file (never used the old flow) reads as empty.
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        state = FoodLogCoreStorage.loadPersistedJSON(PersistedState.self, from: fileURL, decoder: decoder, category: "FastingSessionStore")
-            ?? PersistedState(active: nil, history: [])
+        let result = FoodLogCoreStorage.loadPersistedJSON(PersistedState.self, from: fileURL, decoder: decoder, category: "FastingSessionStore")
+        // Read-only store (nothing to guard on save), but an unreadable
+        // file must still be retried rather than latched as "never used" --
+        // `FastingScheduleMigration` would otherwise seed from nothing.
+        loaded = !result.isUnreadable
+        state = result.value ?? PersistedState(active: nil, history: [])
     }
 
     public func active() -> FastingSession? {

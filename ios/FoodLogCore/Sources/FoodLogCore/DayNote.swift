@@ -145,10 +145,12 @@ public actor DayNoteStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        let decoded = FoodLogCoreStorage.loadPersistedJSON([DayNote].self, from: fileURL, decoder: decoder, category: "DayNoteStore") ?? []
+        let result = FoodLogCoreStorage.loadPersistedJSON([DayNote].self, from: fileURL, decoder: decoder, category: "DayNoteStore")
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
+        let decoded = result.value ?? []
         // An empty record can only exist here if the file was edited by
         // hand or written by a future version -- drop it so it never shows
         // a Trends marker for an empty day.
@@ -156,6 +158,7 @@ public actor DayNoteStore {
     }
 
     private func persist() throws {
+        try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "DayNoteStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(Array(notesByDay.values).sorted { $0.day < $1.day })

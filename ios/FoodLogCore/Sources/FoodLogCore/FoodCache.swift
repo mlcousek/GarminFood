@@ -35,12 +35,21 @@ public actor FoodCacheStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
-        let decoded = FoodLogCoreStorage.loadPersistedJSON([Food].self, from: fileURL, decoder: JSONDecoder(), category: "FoodCacheStore") ?? []
+        let result = FoodLogCoreStorage.loadPersistedJSON([Food].self, from: fileURL, decoder: JSONDecoder(), category: "FoodCacheStore")
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
+        let decoded = result.value ?? []
         foodsById = Dictionary(decoded.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
     }
 
+    /// Best-effort, like every write here -- but it still must not replace
+    /// a cache file this process never managed to read.
     private func persist() {
+        do {
+            try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "FoodCacheStore")
+        } catch {
+            return
+        }
         guard let data = try? JSONEncoder().encode(Array(foodsById.values)) else { return }
         try? data.write(to: fileURL, options: .atomic)
     }
