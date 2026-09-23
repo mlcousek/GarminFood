@@ -163,13 +163,16 @@ public actor GarminHealthCacheStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        state = FoodLogCoreStorage.loadPersistedJSON(GarminHealthSnapshot.self, from: fileURL, decoder: decoder, category: "GarminHealthCacheStore") ?? GarminHealthSnapshot()
+        let result = FoodLogCoreStorage.loadPersistedJSON(GarminHealthSnapshot.self, from: fileURL, decoder: decoder, category: "GarminHealthCacheStore")
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
+        state = result.value ?? GarminHealthSnapshot()
     }
 
     private func persist() throws {
+        try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "GarminHealthCacheStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(state)

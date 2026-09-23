@@ -85,16 +85,22 @@ public actor GoalStatusStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
-        let decoded = GamificationStorage.loadPersistedJSON([DailyGoalStatus].self, from: fileURL, decoder: decoder, category: "GoalStatusStore") ?? []
-        for status in decoded {
+        let result = GamificationStorage.loadPersistedJSON([DailyGoalStatus].self, from: fileURL, decoder: decoder, category: "GoalStatusStore")
+        // Unreadable (e.g. before first unlock): don't latch, retry on next
+        // access; `persist()` refuses to overwrite it meanwhile. Start from
+        // scratch each attempt so a retry never appends a day twice.
+        loaded = !result.isUnreadable
+        byDate = [:]
+        order = []
+        for status in result.value ?? [] {
             byDate[status.date] = status
             order.append(status.date)
         }
     }
 
     private func persist() throws {
+        try GamificationStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "GoalStatusStore")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         let data = try encoder.encode(order.compactMap { byDate[$0] })

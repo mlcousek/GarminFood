@@ -184,14 +184,17 @@ public actor CustomFoodStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        let decoded = FoodLogCoreStorage.loadPersistedJSON([CustomFoodDraft].self, from: fileURL, decoder: decoder, category: "CustomFoodStore") ?? []
+        let result = FoodLogCoreStorage.loadPersistedJSON([CustomFoodDraft].self, from: fileURL, decoder: decoder, category: "CustomFoodStore")
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
+        let decoded = result.value ?? []
         foodsById = Dictionary(decoded.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
     }
 
     private func persist() throws {
+        try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "CustomFoodStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(Array(foodsById.values))

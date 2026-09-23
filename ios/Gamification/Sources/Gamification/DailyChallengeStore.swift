@@ -52,11 +52,15 @@ public actor DailyChallengeStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
-        snapshot = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: JSONDecoder(), category: "DailyChallengeStore") ?? snapshot
+        // Unreadable (e.g. before first unlock): don't latch, retry on next
+        // access; `persist()` refuses to overwrite it meanwhile.
+        let result = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: JSONDecoder(), category: "DailyChallengeStore")
+        loaded = !result.isUnreadable
+        snapshot = result.value ?? snapshot
     }
 
     private func persist() throws {
+        try GamificationStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "DailyChallengeStore")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         let data = try encoder.encode(snapshot)

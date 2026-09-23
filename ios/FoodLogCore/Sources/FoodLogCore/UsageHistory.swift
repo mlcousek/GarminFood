@@ -91,13 +91,16 @@ public actor UsageHistoryStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        events = FoodLogCoreStorage.loadPersistedJSON([UsageEvent].self, from: fileURL, decoder: decoder, category: "UsageHistoryStore") ?? []
+        let result = FoodLogCoreStorage.loadPersistedJSON([UsageEvent].self, from: fileURL, decoder: decoder, category: "UsageHistoryStore")
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
+        events = result.value ?? []
     }
 
     private func persist() throws {
+        try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "UsageHistoryStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(events)

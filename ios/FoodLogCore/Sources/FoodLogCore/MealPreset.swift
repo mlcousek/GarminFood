@@ -163,14 +163,17 @@ public actor MealPresetStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        let decoded = FoodLogCoreStorage.loadPersistedJSON([MealPreset].self, from: fileURL, decoder: decoder, category: "MealPresetStore") ?? []
+        let result = FoodLogCoreStorage.loadPersistedJSON([MealPreset].self, from: fileURL, decoder: decoder, category: "MealPresetStore")
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
+        let decoded = result.value ?? []
         presetsById = Dictionary(decoded.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
     }
 
     private func persist() throws {
+        try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "MealPresetStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(Array(presetsById.values))

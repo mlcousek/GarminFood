@@ -110,13 +110,16 @@ actor HydrationOutboxStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        entries = PersistedJSON.load([HydrationOutboxEntry].self, from: fileURL, decoder: decoder, category: "HydrationOutboxStore") ?? []
+        let result = PersistedJSON.load([HydrationOutboxEntry].self, from: fileURL, decoder: decoder, category: "HydrationOutboxStore")
+        entries = result.value ?? []
+        // Unreadable (e.g. before first unlock): retry on next access.
+        loaded = !result.isUnreadable
     }
 
     private func persist() throws {
+        try PersistedJSON.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "HydrationOutboxStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(entries)

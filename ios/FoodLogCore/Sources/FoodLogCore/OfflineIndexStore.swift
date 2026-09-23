@@ -133,7 +133,11 @@ public actor OfflineIndexStore {
             from: directory.appendingPathComponent(Self.statusFileName),
             decoder: JSONDecoder(),
             category: "OfflineIndexStore"
-        ) ?? OfflineIndexStatus()
+        ).value ?? OfflineIndexStatus()
+        // Unlike the other stores this doesn't guard its save against an
+        // unreadable file (fix/store-unreadable-latch): the status is
+        // disposable metadata -- losing it only means the next check
+        // re-downloads the index, never user data.
     }
 
     public static func defaultDirectory() -> URL {

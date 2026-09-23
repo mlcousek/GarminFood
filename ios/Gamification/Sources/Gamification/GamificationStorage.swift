@@ -27,13 +27,22 @@ enum GamificationStorage {
     }
 
     /// See FoodLogCore's `FoodLogCoreStorage.loadPersistedJSON` (and
-    /// GarminKit's `PersistedJSON.load`) for the contract.
+    /// GarminKit's `PersistedJSON.load`) for the contract. On
+    /// `isUnreadable` (the file exists but couldn't be read, e.g. before
+    /// first unlock) the store must NOT latch `loaded`, and `persist()`
+    /// must start with `ensureSafeToWrite` (fix/store-unreadable-latch).
     static func loadPersistedJSON<T: Decodable>(
         _ type: T.Type,
         from fileURL: URL,
         decoder: JSONDecoder,
         category: String
-    ) -> T? {
+    ) -> (value: T?, isUnreadable: Bool) {
         FoodLogCoreStorage.loadPersistedJSON(type, from: fileURL, decoder: decoder, category: category)
+    }
+
+    /// Throws instead of letting a save replace a file this process never
+    /// managed to read. Call first thing in `persist()`.
+    static func ensureSafeToWrite(loaded: Bool, fileURL: URL, category: String) throws {
+        try FoodLogCoreStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: category)
     }
 }
