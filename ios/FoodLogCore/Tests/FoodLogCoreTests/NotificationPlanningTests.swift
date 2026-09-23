@@ -78,89 +78,88 @@ final class NotificationPlanningTests: XCTestCase {
         XCTAssertEqual(plan.first?.minute, 45)
     }
 
-    // MARK: - Fasting reminder
+    // MARK: - Fasting reminders (redesign-fasting-schedule 2.5)
 
-    func testPlanFastingReminderIsNilWhenDisabled() {
-        let now = Date(timeIntervalSince1970: 0)
-        let session = FastingSession(protocolKind: .sixteenEight, startedAt: now)
+    private let on15 = FastingReminderSetting(isEnabled: true, minutesBefore: 15)
+    private let off15 = FastingReminderSetting(isEnabled: false, minutesBefore: 15)
 
-        let planned = NotificationPlanning.planFastingReminder(
-            setting: FastingReminderSetting(isEnabled: false, minutesBefore: 15),
-            activeSession: session,
-            now: now
-        )
-
-        XCTAssertNil(planned)
+    func testNoFastingRemindersWhileFastingIsOff() {
+        let planned = NotificationPlanning.planFastingReminders(schedule: nil, endsSoon: on15, startsSoon: on15)
+        XCTAssertTrue(planned.isEmpty)
     }
 
-    func testPlanFastingReminderIsNilWithNoActiveSession() {
-        let planned = NotificationPlanning.planFastingReminder(
-            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
-            activeSession: nil,
-            now: Date()
-        )
-
-        XCTAssertNil(planned)
+    func testNoFastingRemindersWhenBothAreDisabled() {
+        let planned = NotificationPlanning.planFastingReminders(schedule: .standard, endsSoon: off15, startsSoon: off15)
+        XCTAssertTrue(planned.isEmpty)
     }
 
-    func testPlanFastingReminderFiresBeforeTheFastingPhaseEnds() {
-        let start = Date(timeIntervalSince1970: 0)
-        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start)
-        let now = start.addingTimeInterval(10 * 3600) // 10h into a 16h fast
+    func testFastEndsSoonFiresBeforeTheScheduledEnd() {
+        let planned = NotificationPlanning.planFastingReminders(schedule: .standard, endsSoon: on15, startsSoon: off15)
 
-        let planned = NotificationPlanning.planFastingReminder(
-            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
-            activeSession: session,
-            now: now
-        )
-
-        XCTAssertEqual(planned?.fireDate, start.addingTimeInterval(16 * 3600 - 15 * 60))
-        XCTAssertEqual(planned?.title, "Fasting window ending soon")
+        XCTAssertEqual(planned.count, 1)
+        XCTAssertEqual(planned.first?.hour, 11)
+        XCTAssertEqual(planned.first?.minute, 45)
+        XCTAssertEqual(planned.first?.title, "Fasting window ending soon")
+        XCTAssertEqual(planned.first?.body.contains("12:00"), true)
     }
 
-    func testPlanFastingReminderFiresBeforeTheEatingPhaseEndsOnceFastIsBroken() {
-        let start = Date(timeIntervalSince1970: 0)
-        let brokeFastAt = start.addingTimeInterval(16 * 3600)
-        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start, fastingEndedAt: brokeFastAt)
-        let now = brokeFastAt.addingTimeInterval(3600)
+    func testFastStartsSoonFiresBeforeTheScheduledStart() {
+        let planned = NotificationPlanning.planFastingReminders(schedule: .standard, endsSoon: off15, startsSoon: on15)
 
-        let planned = NotificationPlanning.planFastingReminder(
-            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
-            activeSession: session,
-            now: now
-        )
-
-        XCTAssertEqual(planned?.fireDate, brokeFastAt.addingTimeInterval(8 * 3600 - 15 * 60))
-        XCTAssertEqual(planned?.title, "Eating window ending soon")
+        XCTAssertEqual(planned.count, 1)
+        XCTAssertEqual(planned.first?.hour, 19)
+        XCTAssertEqual(planned.first?.minute, 45)
+        XCTAssertEqual(planned.first?.title, "Fasting starts in 15 min")
+        XCTAssertEqual(planned.first?.body.contains("20:00"), true)
     }
 
-    func testPlanFastingReminderIsNilOnceTheFireDateHasAlreadyPassed() {
-        let start = Date(timeIntervalSince1970: 0)
-        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start)
-        // Only 5 minutes left before the 16h boundary, but the setting wants
-        // 15 minutes of lead time -- the fire date is already in the past.
-        let now = start.addingTimeInterval(16 * 3600 - 5 * 60)
-
-        let planned = NotificationPlanning.planFastingReminder(
-            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
-            activeSession: session,
-            now: now
-        )
-
-        XCTAssertNil(planned)
+    func testBothRemindersHaveDistinctIdentifiers() {
+        let planned = NotificationPlanning.planFastingReminders(schedule: .standard, endsSoon: on15, startsSoon: on15)
+        XCTAssertEqual(Set(planned.map(\.id)).count, 2)
     }
 
-    func testPlanFastingReminderIsNilOnceThePhaseIsAlreadyOverdue() {
-        let start = Date(timeIntervalSince1970: 0)
-        let session = FastingSession(protocolKind: .sixteenEight, startedAt: start)
-        let now = start.addingTimeInterval(20 * 3600) // past the 16h boundary, fast never explicitly broken
+    func testAStartJustAfterMidnightWrapsTheReminderToTheEveningBefore() {
+        let schedule = FastingSchedule(startMinute: 10, endMinute: 8 * 60)!
 
-        let planned = NotificationPlanning.planFastingReminder(
-            setting: FastingReminderSetting(isEnabled: true, minutesBefore: 15),
-            activeSession: session,
-            now: now
+        let planned = NotificationPlanning.planFastingReminders(schedule: schedule, endsSoon: off15, startsSoon: on15)
+
+        XCTAssertEqual(planned.first?.hour, 23)
+        XCTAssertEqual(planned.first?.minute, 55)
+    }
+
+    func testALeadTimeLongerThanThePhaseIsLeftOut() {
+        // A 30-minute fast can't warn 45 minutes before it ends.
+        let shortFast = FastingSchedule(startMinute: 12 * 60, endMinute: 12 * 60 + 30)!
+
+        let planned = NotificationPlanning.planFastingReminders(
+            schedule: shortFast,
+            endsSoon: FastingReminderSetting(isEnabled: true, minutesBefore: 45),
+            startsSoon: off15
         )
 
-        XCTAssertNil(planned)
+        XCTAssertTrue(planned.isEmpty)
+    }
+
+    func testChangingTheLeadTimeOrTheWindowChangesTheIdentifier() {
+        let base = NotificationPlanning.planFastingReminders(schedule: .standard, endsSoon: on15, startsSoon: off15)
+        let longerLead = NotificationPlanning.planFastingReminders(
+            schedule: .standard,
+            endsSoon: FastingReminderSetting(isEnabled: true, minutesBefore: 30),
+            startsSoon: off15
+        )
+        let laterWindow = NotificationPlanning.planFastingReminders(
+            schedule: FastingSchedule(startMinute: 21 * 60, endMinute: 13 * 60)!,
+            endsSoon: on15,
+            startsSoon: off15
+        )
+
+        XCTAssertNotEqual(base.first?.id, longerLead.first?.id)
+        XCTAssertNotEqual(base.first?.id, laterWindow.first?.id)
+    }
+
+    func testDefaultPreferencesHaveBothFastingRemindersOff() {
+        XCTAssertFalse(NotificationPreferences.disabledDefault.fastingReminder.isEnabled)
+        XCTAssertFalse(NotificationPreferences.disabledDefault.fastingStartReminder.isEnabled)
     }
 }
+

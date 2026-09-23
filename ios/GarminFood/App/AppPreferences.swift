@@ -15,6 +15,12 @@ final class AppPreferences {
         static let celebrations = "preferences.celebrations"
         static let garminMealWindows = "preferences.garminMealWindows"
         static let czechOnlySearch = "preferences.czechOnlySearch"
+        // redesign-fasting-schedule: the daily fasting window.
+        static let fastingEnabled = "preferences.fasting.enabled"
+        static let fastingStartMinute = "preferences.fasting.startMinute"
+        static let fastingEndMinute = "preferences.fasting.endMinute"
+        static let fastingTrackedSince = "preferences.fasting.trackedSince"
+        static let fastingLegacyMigrated = "preferences.fasting.legacyMigrated"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -25,6 +31,11 @@ final class AppPreferences {
     private var storedCelebrations: Bool
     private var storedGarminMealWindows: Bool
     private var storedCzechOnlySearch: Bool
+    private var storedFastingEnabled: Bool
+    private var storedFastingStartMinute: Int
+    private var storedFastingEndMinute: Int
+    private var storedFastingTrackedSince: Date?
+    private var storedFastingLegacyMigrated: Bool
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -33,6 +44,13 @@ final class AppPreferences {
         storedGarminMealWindows = defaults.object(forKey: Key.garminMealWindows) as? Bool ?? true
         // On by default, as the catalog's toggle always was.
         storedCzechOnlySearch = defaults.object(forKey: Key.czechOnlySearch) as? Bool ?? true
+        // Off, 20:00-12:00 until set (or seeded once from the retired
+        // manual-fasting file -- AppEnvironment.migrateLegacyFastingIfNeeded).
+        storedFastingEnabled = defaults.object(forKey: Key.fastingEnabled) as? Bool ?? false
+        storedFastingStartMinute = defaults.object(forKey: Key.fastingStartMinute) as? Int ?? 20 * 60
+        storedFastingEndMinute = defaults.object(forKey: Key.fastingEndMinute) as? Int ?? 12 * 60
+        storedFastingTrackedSince = (defaults.object(forKey: Key.fastingTrackedSince) as? Double).map { Date(timeIntervalSince1970: $0) }
+        storedFastingLegacyMigrated = defaults.object(forKey: Key.fastingLegacyMigrated) as? Bool ?? false
     }
 
     var hapticsEnabled: Bool {
@@ -67,6 +85,69 @@ final class AppPreferences {
         set {
             storedCzechOnlySearch = newValue
             defaults.set(newValue, forKey: Key.czechOnlySearch)
+        }
+    }
+
+    // MARK: Fasting (redesign-fasting-schedule)
+    //
+    // Raw values only; the `FastingSchedule` built from them lives in
+    // AppPreferences+Fasting.swift. Any user edit also marks the one-time
+    // legacy migration as done, so a migration still in flight can never
+    // overwrite a choice the user just made.
+
+    /// Turning fasting ON (re)starts kept/broken tracking from now: days
+    /// while it was off were never meant as fasts and aren't judged.
+    var fastingEnabled: Bool {
+        get { storedFastingEnabled }
+        set {
+            if newValue, !storedFastingEnabled {
+                fastingTrackedSince = Date()
+            }
+            storedFastingEnabled = newValue
+            defaults.set(newValue, forKey: Key.fastingEnabled)
+            fastingLegacyMigrated = true
+        }
+    }
+
+    /// Minute of the day the fast starts, `0..<1440`.
+    var fastingStartMinute: Int {
+        get { storedFastingStartMinute }
+        set {
+            storedFastingStartMinute = newValue
+            defaults.set(newValue, forKey: Key.fastingStartMinute)
+            fastingLegacyMigrated = true
+        }
+    }
+
+    /// Minute of the day the fast ends, `0..<1440`.
+    var fastingEndMinute: Int {
+        get { storedFastingEndMinute }
+        set {
+            storedFastingEndMinute = newValue
+            defaults.set(newValue, forKey: Key.fastingEndMinute)
+            fastingLegacyMigrated = true
+        }
+    }
+
+    /// Windows that started before this aren't judged kept or broken.
+    var fastingTrackedSince: Date? {
+        get { storedFastingTrackedSince }
+        set {
+            storedFastingTrackedSince = newValue
+            if let newValue {
+                defaults.set(newValue.timeIntervalSince1970, forKey: Key.fastingTrackedSince)
+            } else {
+                defaults.removeObject(forKey: Key.fastingTrackedSince)
+            }
+        }
+    }
+
+    /// Whether `fasting-sessions.json` has been read once (task 1.3).
+    var fastingLegacyMigrated: Bool {
+        get { storedFastingLegacyMigrated }
+        set {
+            storedFastingLegacyMigrated = newValue
+            defaults.set(newValue, forKey: Key.fastingLegacyMigrated)
         }
     }
 }

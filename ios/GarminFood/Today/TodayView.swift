@@ -6,12 +6,10 @@
 // and macros. Queued entries appear in their meal before they reach Garmin.
 // Adding from a meal pre-selects that meal and day.
 //
-// `FastingTodayCard` (2026-09-22) is a compact, conditionally-shown summary
-// of the active fast -- same "VStack + SectionHeader, shown only when there's
-// something to show" shape `MealPresetShelf`/`QuickPickShelf` already use
-// below, placed higher up (right under the streak strip) since the owner
-// wants this genuinely checked day to day, not buried under the meal cards.
-// Tapping it pushes the full `FastingView` (`GarminFood/Fasting/`).
+// `FastingHomeSection` (redesign-fasting-schedule, `GarminFood/Fasting/
+// FastingHomeCard.swift`) is the always-on fasting card while the daily
+// fasting window is enabled, placed right under the streak strip since the
+// owner checks it day to day. Tapping it pushes `FastingHistoryView`.
 //
 // The "Weight & Water" section (2026-09-22, `TodayWeightHydrationSection.
 // swift`) is the last thing in the scroll view, below the meal-preset
@@ -39,7 +37,6 @@ struct TodayView: View {
 
     @State private var quickPickItems: [QuickPickItem] = []
     @State private var mealPresets: [MealPreset] = []
-    @State private var activeFastingSession: FastingSession?
     @State private var logTarget: LogTarget?
     @State private var mealPresetTarget: MealPreset?
     @State private var catalogContext: LogContext?
@@ -76,16 +73,7 @@ struct TodayView: View {
                     environment.router.selectedTab = .progress
                 }
 
-                if let activeFastingSession {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                        SectionHeader(title: "Fasting")
-                        TimelineView(.periodic(from: .now, by: 60)) { context in
-                            FastingTodayCard(session: activeFastingSession, now: context.date) {
-                                showFasting = true
-                            }
-                        }
-                    }
-                }
+                FastingHomeSection { showFasting = true }
 
                 VStack(spacing: Theme.Spacing.md) {
                     ForEach(dashboard.sections) { section in
@@ -164,7 +152,7 @@ struct TodayView: View {
             MealDetailView(mealType: meal)
         }
         .navigationDestination(isPresented: $showFasting) {
-            FastingView()
+            FastingHistoryView()
         }
         .sheet(isPresented: $isPresentingAddHydration) {
             NavigationStack {
@@ -186,20 +174,9 @@ struct TodayView: View {
             await environment.refreshOnForeground()
             await loadQuickPicks()
             await loadMealPresets()
-            await loadFastingSession()
         }
         .task { await loadQuickPicks() }
         .task { await loadMealPresets() }
-        .task { await loadFastingSession() }
-        .onAppear {
-            // Fasting state changes minute to minute and can also change on
-            // a different screen (starting/ending a fast happens in
-            // `FastingView`, pushed from the card below) -- re-read it every
-            // time this view comes back on screen, not just once via
-            // `.task`, so the card doesn't show a stale phase after
-            // returning from it.
-            Task { await loadFastingSession() }
-        }
         .onChange(of: environment.router.catalogRequested, initial: true) { _, requested in
             guard requested else { return }
             environment.router.catalogRequested = false
@@ -262,10 +239,6 @@ struct TodayView: View {
 
     private func loadMealPresets() async {
         mealPresets = await environment.mealPresetStore.all()
-    }
-
-    private func loadFastingSession() async {
-        activeFastingSession = await environment.fastingStore.active()
     }
 
     /// Mirrors `HydrationView.quickAdd(_:)` exactly (same coordinator call,
@@ -448,67 +421,6 @@ struct ProgressStrip: View {
     /// Motion and the celebrations preference (add-gamification 26.3).
     private var shouldPulse: Bool {
         streak.isAtRiskToday && !reduceMotion && environment.preferences.celebrationsEnabled
-    }
-}
-
-// MARK: - Fasting card
-
-/// The compact Today-tab surface for the active fast (2026-09-22) --
-/// mirrors `ProgressStrip`'s own shape (a `Button` wrapping a `.card()`,
-/// `.buttonStyle(.plain)`, combined accessibility element) since both are
-/// "tap this summary to go see more" rows. Reuses `ProgressRing` at a small
-/// size rather than a bespoke mini-ring. The full ring/actions/history live
-/// in `FastingView` (`GarminFood/Fasting/`), reached by tapping this card.
-struct FastingTodayCard: View {
-    let session: FastingSession
-    let now: Date
-    let onTap: () -> Void
-
-    var body: some View {
-        let phase = session.currentPhase(at: now)
-        let tint = phase.kind == .fasting ? Theme.accent : Theme.success
-
-        Button(action: onTap) {
-            HStack(spacing: Theme.Spacing.md) {
-                ProgressRing(fraction: phase.fraction(at: now), lineWidth: 5, tint: tint) {
-                    Image(systemName: phase.kind == .fasting ? "timer" : "fork.knife")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(tint)
-                }
-                .frame(width: 40, height: 40)
-
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(phase.kind == .fasting ? "Fasting" : "Eating window")
-                        .font(.subheadline.weight(.semibold))
-                    Text(Self.remainingText(phase, now: now))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-            }
-            .card(padding: Theme.Spacing.sm + 4)
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(phase.kind == .fasting ? "Fasting" : "Eating window"). \(Self.remainingText(phase, now: now))")
-        .accessibilityHint("Opens Fasting")
-    }
-
-    private static func remainingText(_ phase: FastingPhase, now: Date) -> String {
-        if phase.isOverdue(at: now) {
-            return "\(Self.hoursMinutes(phase.elapsed(at: now) - phase.duration)) over target"
-        }
-        return "\(Self.hoursMinutes(phase.remaining(at: now))) left"
-    }
-
-    private static func hoursMinutes(_ interval: TimeInterval) -> String {
-        let total = max(0, Int(interval.rounded()))
-        let hours = total / 3600
-        let minutes = (total % 3600) / 60
-        return hours > 0 ? "\(hours)h \(minutes)m" : "\(minutes)m"
     }
 }
 

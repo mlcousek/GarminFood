@@ -29,6 +29,8 @@ final class AppEnvironment {
     let customFoodStore: CustomFoodStore
     let mealPresetStore: MealPresetStore
     let foodCache: FoodCacheStore
+    /// Retired manual-fasting sessions (redesign-fasting-schedule) -- read
+    /// once by `migrateLegacyFastingIfNeeded()`, never written.
     let fastingStore: FastingSessionStore
     /// add-favorite-foods: purely local, see FavoriteFood.swift's header.
     let favoriteFoodStore: FavoriteFoodStore
@@ -124,6 +126,7 @@ final class AppEnvironment {
 
     /// Launch and every return to the foreground.
     func refreshOnForeground() async {
+        await migrateLegacyFastingIfNeeded()
         await authState.refresh()
         await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)
         lastForegroundDay = Date()
@@ -374,6 +377,11 @@ final class AppEnvironment {
         Task { await syncNotifications() }
     }
 
+    func setFastingStartReminder(_ setting: FastingReminderSetting) {
+        notificationPreferences.setFastingStartReminder(setting)
+        Task { await syncNotifications() }
+    }
+
     /// Re-plans and re-syncs local reminders against current state -- see
     /// `NotificationScheduler`'s header for why this needs to re-run
     /// whenever something that could change the plan happens (foreground,
@@ -384,8 +392,8 @@ final class AppEnvironment {
     /// incorrectly re-arm an already-logged meal's reminder -- the next
     /// time the user is back on today, this runs again with the real
     /// state. The fasting half has no such day dependency (it's driven by
-    /// wall-clock time against the active session, not by which day's food
-    /// log is on screen), so it always runs.
+    /// the daily fasting schedule, not by which day's food log is on
+    /// screen), so it always runs.
     func syncNotifications() async {
         if dayLog.isToday {
             let mealsLoggedToday = Set(dayLog.dashboard.sections.filter { !$0.entries.isEmpty }.map(\.mealType))
@@ -395,43 +403,42 @@ final class AppEnvironment {
                 isStreakAtRiskToday: gamificationEngine.streakStatus.isAtRiskToday
             )
         }
-        let activeSession = await fastingStore.active()
-        await NotificationScheduler.shared.syncFastingReminder(
-            setting: notificationPreferences.preferences.fastingReminder,
-            activeSession: activeSession
+        await NotificationScheduler.shared.syncFastingReminders(
+            schedule: preferences.activeFastingSchedule,
+            endsSoon: notificationPreferences.preferences.fastingReminder,
+            startsSoon: notificationPreferences.preferences.fastingStartReminder
         )
     }
 
-    // MARK: - Fasting
+    // MARK: - Fasting (redesign-fasting-schedule)
 
-    /// Thin wrappers around `fastingStore`, mirroring the entry/delete
-    /// methods above: the store call itself, plus the one side effect every
-    /// mutation needs (re-syncing the fasting reminder, since starting/
-    /// ending a fast changes what -- if anything -- should be scheduled).
-    /// Reads (`fastingStore.active()`/`.history()`) don't need a wrapper --
-    /// views call those directly, same as `environment.mealPresetStore.all()`.
-    @discardableResult
-    func startFasting(protocolKind: FastingProtocol, at date: Date = Date()) async throws -> FastingSession {
-        let session = try await fastingStore.start(FastingSession(protocolKind: protocolKind, startedAt: date))
-        await syncNotifications()
-        return session
+    /// The daily fasting window changed in Settings (on/off or a time):
+    /// the fasting reminders are anchored to its exact clock times, so
+    /// re-plan them. Everything else fasting-related (home card, confirm
+    /// note, history) derives from `preferences` on its next render.
+    func fastingScheduleChanged() {
+        Task { await syncNotifications() }
     }
 
-    func breakFast(at date: Date = Date()) async throws {
-        try await fastingStore.endFastingPhase(at: date)
-        await syncNotifications()
-    }
-
-    @discardableResult
-    func endFastingSession(at date: Date = Date()) async throws -> FastingSession {
-        let session = try await fastingStore.endActiveSession(at: date)
-        await syncNotifications()
-        return session
-    }
-
-    func cancelActiveFast() async throws {
-        try await fastingStore.cancelActiveSession()
-        await syncNotifications()
+    /// Task 1.3: reads the retired `fasting-sessions.json` ONCE and seeds
+    /// the daily schedule from the last protocol used (see
+    /// `FastingScheduleMigration`). The file is left on disk untouched.
+    /// Skipped for good once it has run -- or once the user has set
+    /// fasting up themselves, since every fasting setter marks it done.
+    func migrateLegacyFastingIfNeeded() async {
+        guard !preferences.fastingLegacyMigrated else { return }
+        let active = await fastingStore.active()
+        let history = await fastingStore.history()
+        // Re-checked after the reads: the user may have changed fasting
+        // settings while they were in flight, and their choice wins.
+        guard !preferences.fastingLegacyMigrated else { return }
+        let seed = FastingScheduleMigration.seed(active: active, history: history, calendar: .current)
+        preferences.applyFastingMigration(seed)
+        DiagnosticsLog.log(
+            .info,
+            category: "Fasting",
+            "migrated \(history.count + (active == nil ? 0 : 1)) legacy session(s) to a daily window \(seed.schedule.startMinute)-\(seed.schedule.endMinute) min, enabled: \(seed.isEnabled)"
+        )
     }
 
     // MARK: - Private

@@ -37,7 +37,7 @@ import FoodLogCore
 import GarminKit
 
 /// Wraps `WeightHeroCard`'s content in a `NavigationLink` to `WeightView()`,
-/// the same "whole card is one tap target" shape `FastingTodayCard`/
+/// the same "whole card is one tap target" shape `FastingHomeCard`/
 /// `ProgressStrip` (`TodayView.swift`) already use for their own Today-tab
 /// summary rows.
 struct TodayWeightCard: View {

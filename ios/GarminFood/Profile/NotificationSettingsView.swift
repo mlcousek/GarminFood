@@ -2,9 +2,10 @@
 //
 // Reminder settings: a toggle + time picker per reminder (breakfast, lunch,
 // dinner, streak-at-risk, today's challenges), plus a toggle + minutes-before
-// stepper for the fasting-window reminder (2026-09-22 -- see
-// `FastingReminderSetting`'s header for why that one's a stepper, not a time
-// picker). Turning any one of these on for the first time requests
+// stepper for each fasting reminder -- "fast ending soon" and "fast starting
+// soon", both anchored to the daily fasting window from Settings → Fasting
+// (redesign-fasting-schedule; see `FastingReminderSetting`'s header for why
+// those are steppers, not time pickers). Turning any one of these on for the first time requests
 // notification permission; a denied/off system setting is shown plainly
 // with a link to fix it in Settings, per this project's existing
 // loud-failure convention (never a reminder that's silently never going to
@@ -78,9 +79,20 @@ struct NotificationSettingsView: View {
             }
 
             Section {
-                fastingReminderRow
+                fastingReminderRow(
+                    title: "Fast ending soon",
+                    setting: environment.notificationPreferences.preferences.fastingReminder,
+                    onChange: { environment.setFastingReminder($0) }
+                )
+                fastingReminderRow(
+                    title: "Fast starting soon",
+                    setting: environment.notificationPreferences.preferences.fastingStartReminder,
+                    onChange: { environment.setFastingStartReminder($0) }
+                )
+            } header: {
+                Text("Fasting")
             } footer: {
-                Text("Reminds you shortly before your current fasting or eating window ends. Only fires while a fast is running.")
+                Text(fastingFooter)
             }
         }
         .navigationTitle("Reminders")
@@ -117,12 +129,12 @@ struct NotificationSettingsView: View {
     }
 
     /// Same on/off + one-value shape as `reminderRow` above, but the value
-    /// is "minutes before the window ends" rather than a clock time, since
-    /// `FastingReminderSetting` has no hour/minute (see its header) -- a
-    /// `Stepper` instead of `reminderRow`'s `DatePicker`.
+    /// is "minutes before the boundary" rather than a clock time -- the
+    /// boundary itself is the daily fasting window set in Settings → Fasting
+    /// (redesign-fasting-schedule), so a `Stepper` instead of a
+    /// `DatePicker`.
     @ViewBuilder
-    private var fastingReminderRow: some View {
-        let setting = environment.notificationPreferences.preferences.fastingReminder
+    private func fastingReminderRow(title: String, setting: FastingReminderSetting, onChange: @escaping (FastingReminderSetting) -> Void) -> some View {
         let isOnBinding = Binding<Bool>(
             get: { setting.isEnabled },
             set: { newValue in
@@ -132,20 +144,29 @@ struct NotificationSettingsView: View {
                         await refreshStatus()
                     }
                 }
-                environment.setFastingReminder(FastingReminderSetting(isEnabled: newValue, minutesBefore: setting.minutesBefore))
+                onChange(FastingReminderSetting(isEnabled: newValue, minutesBefore: setting.minutesBefore))
             }
         )
         let minutesBinding = Binding<Double>(
             get: { Double(setting.minutesBefore) },
             set: { newValue in
-                environment.setFastingReminder(FastingReminderSetting(isEnabled: setting.isEnabled, minutesBefore: Int(newValue)))
+                onChange(FastingReminderSetting(isEnabled: setting.isEnabled, minutesBefore: Int(newValue)))
             }
         )
 
-        Toggle("Fasting window ending soon", isOn: isOnBinding)
+        Toggle(title, isOn: isOnBinding)
         if setting.isEnabled {
             Stepper("\(setting.minutesBefore) minutes before", value: minutesBinding, in: 5...60, step: 5)
         }
+    }
+
+    private var fastingFooter: String {
+        guard let schedule = environment.preferences.activeFastingSchedule else {
+            return "Turn on a daily fasting window in Settings → Fasting first; these only fire while it's on."
+        }
+        let start = FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.startMinute))
+        let end = FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.endMinute))
+        return "Every day, before your fast ends at \(end) and before it starts at \(start)."
     }
 
     private func refreshStatus() async {

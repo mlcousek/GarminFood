@@ -33,12 +33,12 @@ public struct ReminderSetting: Sendable, Equatable {
     }
 }
 
-/// The fasting-reminder analogue of `ReminderSetting` -- same shape in
-/// spirit (an on/off switch plus one number), but the number is a
-/// minutes-before-the-boundary OFFSET rather than a fixed daily hour/minute.
-/// A daily clock time doesn't fit here: the fasting/eating window boundary
-/// moves with whenever the user actually started fasting, so there is no
-/// single "9am" this could mean.
+/// The fasting-reminder analogue of `ReminderSetting` -- an on/off switch
+/// plus a minutes-before-the-boundary OFFSET rather than a clock time: the
+/// user sets the boundary itself once, as their daily fasting window
+/// (`FastingSchedule`, redesign-fasting-schedule), and this only says how
+/// much warning they want before it. Used for both "fast ends soon" and
+/// "fast starts soon".
 public struct FastingReminderSetting: Sendable, Equatable {
     public var isEnabled: Bool
     public var minutesBefore: Int
@@ -55,7 +55,12 @@ public struct NotificationPreferences: Sendable, Equatable {
     public var dinnerReminder: ReminderSetting
     public var streakReminder: ReminderSetting
     public var dailyChallengeReminder: ReminderSetting
+    /// "Fasting window ending soon" -- before the daily fast ends.
     public var fastingReminder: FastingReminderSetting
+    /// "Fasting starts in 15 min" -- before the daily fast begins
+    /// (redesign-fasting-schedule 2.5). Defaulted in `init` so call sites
+    /// that predate it keep compiling.
+    public var fastingStartReminder: FastingReminderSetting
 
     public init(
         breakfastReminder: ReminderSetting,
@@ -63,7 +68,8 @@ public struct NotificationPreferences: Sendable, Equatable {
         dinnerReminder: ReminderSetting,
         streakReminder: ReminderSetting,
         dailyChallengeReminder: ReminderSetting,
-        fastingReminder: FastingReminderSetting
+        fastingReminder: FastingReminderSetting,
+        fastingStartReminder: FastingReminderSetting = FastingReminderSetting(isEnabled: false, minutesBefore: 15)
     ) {
         self.breakfastReminder = breakfastReminder
         self.lunchReminder = lunchReminder
@@ -71,6 +77,7 @@ public struct NotificationPreferences: Sendable, Equatable {
         self.streakReminder = streakReminder
         self.dailyChallengeReminder = dailyChallengeReminder
         self.fastingReminder = fastingReminder
+        self.fastingStartReminder = fastingStartReminder
     }
 
     /// Off by default, times chosen as reasonable defaults matching
@@ -82,7 +89,8 @@ public struct NotificationPreferences: Sendable, Equatable {
         dinnerReminder: ReminderSetting(isEnabled: false, hour: 19, minute: 30),
         streakReminder: ReminderSetting(isEnabled: false, hour: 21, minute: 0),
         dailyChallengeReminder: ReminderSetting(isEnabled: false, hour: 8, minute: 0),
-        fastingReminder: FastingReminderSetting(isEnabled: false, minutesBefore: 15)
+        fastingReminder: FastingReminderSetting(isEnabled: false, minutesBefore: 15),
+        fastingStartReminder: FastingReminderSetting(isEnabled: false, minutesBefore: 15)
     )
 }
 
@@ -161,53 +169,74 @@ public enum NotificationPlanning {
         )
     }
 
-    /// A single, date-scoped fasting/eating-window reminder -- carries an
-    /// absolute `fireDate` rather than `PlannedNotification`'s hour/minute
-    /// of day, because the boundary it's warning about isn't at a fixed
-    /// daily clock time (see `FastingReminderSetting`'s header). Kept as a
-    /// separate type/function rather than folded into `plan(...)` since it
-    /// answers a different question ("is the CURRENT fasting phase about to
-    /// end") from `plan(...)`'s "what's due today", and needs its own
-    /// `FastingSession` input that the other five reminder kinds have no
-    /// use for.
+    /// A fasting reminder at a fixed clock time, repeating daily
+    /// (redesign-fasting-schedule 2.5).
+    ///
+    /// Unlike every `PlannedNotification` above (one date-scoped request
+    /// per day, re-created on each replan -- add-reminders-and-diagnostics
+    /// design D2), these are meant to be scheduled as REPEATING daily
+    /// requests: the fasting window is the same every day and neither
+    /// reminder has a "skip it today" condition, so there is nothing a
+    /// daily replan would need to suppress -- and a repeating trigger keeps
+    /// firing on days the app isn't opened at all. `id` encodes the fire
+    /// time AND the boundary it warns about, so a change to either produces
+    /// a different id and the scheduler's diff replaces the stale request.
     public struct PlannedFastingReminder: Sendable, Equatable, Identifiable {
         public let id: String
         public let title: String
         public let body: String
-        public let fireDate: Date
+        public let hour: Int
+        public let minute: Int
 
-        public init(id: String, title: String, body: String, fireDate: Date) {
+        public init(id: String, title: String, body: String, hour: Int, minute: Int) {
             self.id = id
             self.title = title
             self.body = body
-            self.fireDate = fireDate
+            self.hour = hour
+            self.minute = minute
         }
     }
 
-    /// `nil` when disabled, when there's no active session, or when the
-    /// computed fire date has already passed (the session's current phase
-    /// is already overdue, or `minutesBefore` is longer than what's left --
-    /// same "don't schedule something in the past" rule
-    /// `NotificationScheduler.sync` applies to the other five kinds).
-    public static func planFastingReminder(
-        setting: FastingReminderSetting,
-        activeSession: FastingSession?,
-        now: Date
-    ) -> PlannedFastingReminder? {
-        guard setting.isEnabled, let activeSession else { return nil }
-        let phase = activeSession.currentPhase(at: now)
-        let fireDate = phase.scheduledEndAt.addingTimeInterval(-Double(setting.minutesBefore) * 60)
-        guard fireDate > now else { return nil }
+    /// Nothing when fasting is off (`schedule == nil`). Each reminder is
+    /// left out when disabled, or when its lead time isn't shorter than the
+    /// phase it would fire in (a 60-minute "ends soon" warning on a
+    /// 45-minute fast would fire before the fast even began).
+    public static func planFastingReminders(
+        schedule: FastingSchedule?,
+        endsSoon: FastingReminderSetting,
+        startsSoon: FastingReminderSetting
+    ) -> [PlannedFastingReminder] {
+        guard let schedule else { return [] }
+        var result: [PlannedFastingReminder] = []
 
-        let isFasting = phase.kind == .fasting
-        return PlannedFastingReminder(
-            id: "fastingReminder",
-            title: isFasting ? "Fasting window ending soon" : "Eating window ending soon",
-            body: isFasting
-                ? "Your fast ends in \(setting.minutesBefore) minutes."
-                : "Your eating window ends in \(setting.minutesBefore) minutes.",
-            fireDate: fireDate
-        )
+        if endsSoon.isEnabled, endsSoon.minutesBefore > 0, endsSoon.minutesBefore < schedule.fastingMinutes {
+            let fire = FastingSchedule.normalized(schedule.endMinute - endsSoon.minutesBefore)
+            result.append(PlannedFastingReminder(
+                id: "ends.\(fire).\(schedule.endMinute)",
+                title: "Fasting window ending soon",
+                body: "Your fast ends at \(clockText(schedule.endMinute)) -- eating opens in \(endsSoon.minutesBefore) minutes.",
+                hour: fire / 60,
+                minute: fire % 60
+            ))
+        }
+        if startsSoon.isEnabled, startsSoon.minutesBefore > 0, startsSoon.minutesBefore < schedule.eatingMinutes {
+            let fire = FastingSchedule.normalized(schedule.startMinute - startsSoon.minutesBefore)
+            result.append(PlannedFastingReminder(
+                id: "starts.\(fire).\(schedule.startMinute)",
+                title: "Fasting starts in \(startsSoon.minutesBefore) min",
+                body: "Your fasting window starts at \(clockText(schedule.startMinute)).",
+                hour: fire / 60,
+                minute: fire % 60
+            ))
+        }
+        return result
+    }
+
+    /// `HH:mm`, 24-hour -- this package has no view-layer locale
+    /// formatting (no UI imports), and notification copy is built here.
+    static func clockText(_ minuteOfDay: Int) -> String {
+        let minute = FastingSchedule.normalized(minuteOfDay)
+        return String(format: "%02d:%02d", minute / 60, minute % 60)
     }
 }
 

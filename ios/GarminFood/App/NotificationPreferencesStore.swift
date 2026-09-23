@@ -33,6 +33,9 @@ final class NotificationPreferencesStore {
         static let challengeMinute = "notifications.dailyChallenge.minute"
         static let fastingEnabled = "notifications.fasting.enabled"
         static let fastingMinutesBefore = "notifications.fasting.minutesBefore"
+        // redesign-fasting-schedule 2.5: "fast starts soon".
+        static let fastingStartEnabled = "notifications.fasting.start.enabled"
+        static let fastingStartMinutesBefore = "notifications.fasting.start.minutesBefore"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -51,6 +54,10 @@ final class NotificationPreferencesStore {
             fastingReminder: FastingReminderSetting(
                 isEnabled: defaults.object(forKey: Key.fastingEnabled) as? Bool ?? fallback.fastingReminder.isEnabled,
                 minutesBefore: defaults.object(forKey: Key.fastingMinutesBefore) as? Int ?? fallback.fastingReminder.minutesBefore
+            ),
+            fastingStartReminder: FastingReminderSetting(
+                isEnabled: defaults.object(forKey: Key.fastingStartEnabled) as? Bool ?? fallback.fastingStartReminder.isEnabled,
+                minutesBefore: defaults.object(forKey: Key.fastingStartMinutesBefore) as? Int ?? fallback.fastingStartReminder.minutesBefore
             )
         )
     }
@@ -84,6 +91,12 @@ final class NotificationPreferencesStore {
         preferences.fastingReminder = setting
         defaults.set(setting.isEnabled, forKey: Key.fastingEnabled)
         defaults.set(setting.minutesBefore, forKey: Key.fastingMinutesBefore)
+    }
+
+    func setFastingStartReminder(_ setting: FastingReminderSetting) {
+        preferences.fastingStartReminder = setting
+        defaults.set(setting.isEnabled, forKey: Key.fastingStartEnabled)
+        defaults.set(setting.minutesBefore, forKey: Key.fastingStartMinutesBefore)
     }
 
     private func write(_ setting: ReminderSetting, _ enabledKey: String, _ hourKey: String, _ minuteKey: String) {
