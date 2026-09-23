@@ -19,13 +19,14 @@
   - Decodes off the main actor.
   - Builds the inverted index (D2) and provides `product(code:)`.
   - Tested with a fixture of about 200 products.
-- [ ] 3.2 Plug `OfflineCzechIndexSource` into `FoodSearchEngine`, and extend the golden relevance tests with the index source.
-- [ ] 3.3 `IndexDownloader` (D3):
+- [x] 3.2 Plug `OfflineCzechIndexSource` into `FoodSearchEngine`, and extend the golden relevance tests with the index source.
+  - Done as `OfflineFoodIndexSearchTests.testPreScoringKeepsTheSameTopResultsAsRankingEverything`: ranking only the top 50 matches ranking the whole index. The golden table in SearchRelevanceTests was left unchanged.
+- [x] 3.3 `IndexDownloader` (D3), built as FoodLogCore `OfflineIndexStore` + `URLSessionOfflineIndexFetcher`, with the app-side `OfflineIndexLoader`:
   - Manifest check, Wi-Fi gating, SHA-256 check, atomic swap, backup exclusion.
   - Tests cover a checksum mismatch and the no-change case.
-- [ ] 3.4 Add the `BackgroundRefresh` hook and a check on foreground.
-- [ ] 3.5 Settings: status row, "Download now", cellular switch, and the About credit.
-- [ ] 3.6 Barcode fallback in `BarcodeResolution` (D4), with tests.
+- [x] 3.4 Add the `BackgroundRefresh` hook and a check on foreground.
+- [x] 3.5 Settings: status row, "Download now", cellular switch, and the About credit.
+- [x] 3.6 Barcode fallback in `BarcodeResolution` (D4), with tests.
 
 ## 4. Verify
 

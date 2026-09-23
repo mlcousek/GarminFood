@@ -63,7 +63,10 @@ ios/
                     and Open Food Facts: SearchText/CzechLightStemmer/
                     SearchRanker/SearchDedup; Local/Garmin/OpenFoodFacts
                     sources; golden suite in SearchRelevanceTests),
-                    OpenFoodFactsClient.
+                    OpenFoodFactsClient, and the offline Czech OFF index
+                    (OfflineFoodIndex/OfflineCzechIndexSource/
+                    OfflineIndexStore; built weekly by
+                    tools/build-czech-food-index + food-index.yml).
   Gamification/     SPM package (depends on FoodLogCore) — streaks, XP/levels,
                     daily/rotating challenges, achievements. App-only, not
                     linked into the widget extension.
