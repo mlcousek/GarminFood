@@ -52,14 +52,12 @@ struct FoodCatalogView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var searchText = ""
-    @State private var searchResults: [Food] = []
-    @State private var isSearching = false
-    @State private var searchErrorMessage: String?
+    /// rebuild-food-search: one ranked list across your own foods, Garmin
+    /// and Open Food Facts -- see SearchResultsSection.swift.
+    @State private var searchModel = FoodSearchModel()
 
-    // Czech (Open Food Facts) results (add-czech-food-catalog task 28.1) --
-    // deliberately separate state from the Garmin search above, never
-    // merged, per design.md D5.
-    /// Persisted in preferences, so the choice survives a relaunch.
+    /// Open Food Facts' "Czech only" filter, persisted in preferences so the
+    /// choice survives a relaunch.
     private var czechOnly: Bool { environment.preferences.czechOnlySearch }
 
     private var czechOnlyBinding: Binding<Bool> {
@@ -68,18 +66,6 @@ struct FoodCatalogView: View {
             set: { environment.preferences.czechOnlySearch = $0 }
         )
     }
-    @State private var czechSearchResults: [Food] = []
-    @State private var isCzechSearching = false
-    @State private var czechSearchErrorMessage: String?
-    /// 2026-09-21: true when the Czech-scoped search came back empty and
-    /// `czechSearchResults` above was filled by an automatic global
-    /// (non-Czech-filtered) retry instead -- see `performCzechSearch()`.
-    /// OFF's Czech tagging is thin enough that plenty of real matches for
-    /// a term simply never got the country tag added; without this, the
-    /// "Czech only" toggle could silently hide a food that genuinely
-    /// exists in Open Food Facts, which read as "the database isn't full"
-    /// even when a match was sitting right there, just untagged.
-    @State private var czechSearchUsedGlobalFallback = false
     @State private var matchingTarget: Food?
 
     @State private var quickPickItems: [QuickPickItem] = []
@@ -125,10 +111,14 @@ struct FoodCatalogView: View {
     /// tap in picker mode never logs a food").
     private var isPicking: Bool { isPickingBackingFood || isPickingIngredient }
 
-    /// Custom foods whose name matches the typed query (task 1.3) -- empty
-    /// while the query is blank, since the full list shows then instead.
-    private var matchingCustomFoods: [CustomFoodDraft] {
-        CustomFoodSearch.filter(customFoods, query: searchText)
+    private var isSearchActive: Bool {
+        !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    /// `pickBackingFood` only ever needs a real Garmin food, so Open Food
+    /// Facts isn't asked at all there.
+    private var searchOptions: SearchOptions {
+        SearchOptions(czechOnly: czechOnly, origins: isPickingBackingFood ? [.local, .garmin] : nil)
     }
 
     var body: some View {
@@ -196,113 +186,24 @@ struct FoodCatalogView: View {
                 }
             }
 
-            // Task 1.3: while a query is typed, the user's own custom foods
-            // whose name matches it, above Garmin's results -- in every mode
-            // that offers custom foods at all (not `pickBackingFood`: a
-            // custom food can't back another custom food, and `customFoods`
-            // is never loaded there). Interim until `rebuild-food-search`.
-            if !matchingCustomFoods.isEmpty {
-                Section {
-                    ForEach(matchingCustomFoods) { draft in
-                        customFoodRow(draft)
-                    }
-                } header: {
-                    SectionHeader(title: "Your custom foods")
-                }
-            }
-
-            Section {
-                if isSearching {
-                    HStack {
-                        ProgressView()
-                        Text("Searching Garmin's food database…")
-                            .foregroundStyle(.secondary)
-                    }
-                } else if let searchErrorMessage {
-                    Text(searchErrorMessage)
-                        .foregroundStyle(.secondary)
-                } else if searchResults.isEmpty, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
-                    EmptyStateView(
-                        systemImage: "magnifyingglass",
-                        title: "No matches",
-                        message: "Garmin's database doesn't have this. You can create it as a custom food instead."
-                    )
-                } else {
-                    ForEach(searchResults) { food in
-                        HStack(spacing: Theme.Spacing.sm) {
-                            Button {
-                                select(food)
-                            } label: {
-                                FoodListRow(food: food, serving: food.servings.first)
-                            }
-                            .buttonStyle(.plain)
-                            if !isPicking {
-                                FavoriteToggleButton(isFavorite: isFoodFavorited(food)) {
-                                    toggleFavorite(food)
-                                }
-                            }
-                        }
-                    }
-                }
-            } header: {
-                if !searchResults.isEmpty { SectionHeader(title: "Results") }
-            }
-
-            // Czech (Open Food Facts) results -- visibly separate from
-            // Garmin's own "Results" section above, per design.md D5 /
-            // the czech-food-catalog spec's "never merged" requirement.
-            // Hidden in `pickBackingFood` mode: that picker's whole job is
-            // finding an existing GARMIN food to back a custom food, so an
-            // OFF result (which itself needs matching/creation) doesn't
-            // belong there. Shown in `pickIngredient` mode since
-            // fix-testing-feedback-quick-wins (task 1.2): the match flow
-            // runs as usual, then hands the matched Garmin food back to the
-            // meal instead of logging it (`matchPickHandler`).
-            if !isPickingBackingFood, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
-                Section {
-                    if isCzechSearching {
-                        HStack {
-                            ProgressView()
-                            Text("Searching Open Food Facts…")
-                                .foregroundStyle(.secondary)
-                        }
-                    } else if let czechSearchErrorMessage {
-                        Text(czechSearchErrorMessage)
-                            .foregroundStyle(.secondary)
-                    } else if czechSearchResults.isEmpty {
-                        EmptyStateView(
-                            systemImage: "magnifyingglass",
-                            title: "No Czech-database matches",
-                            message: "Open Food Facts doesn't have this yet."
-                        )
-                    } else {
-                        if czechSearchUsedGlobalFallback {
-                            Text("No Czech-tagged matches -- showing worldwide Open Food Facts results instead.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        ForEach(czechSearchResults) { food in
-                            Button {
-                                matchingTarget = food
-                            } label: {
-                                FoodListRow(food: food, serving: food.servings.first)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                } header: {
-                    HStack {
-                        Text("Czech database (Open Food Facts)")
-                            .font(.sectionHeader)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Toggle("Czech only", isOn: czechOnlyBinding)
-                            .font(.caption)
-                            .fixedSize()
-                            .accessibilityLabel("Limit Open Food Facts results to Czech products")
-                    }
-                    .accessibilityElement(children: .combine)
-                }
+            // rebuild-food-search: while a query is typed, ONE ranked list
+            // across your own foods, Garmin and Open Food Facts. Taps route
+            // back through the same helpers the shelves use, so the picker
+            // rules hold for every source: a Garmin/local food -> select(),
+            // a custom food -> selectCustomFood(), an Open Food Facts product
+            // -> the match flow (matchingTarget). `pickBackingFood` shows
+            // real Garmin foods only.
+            if isSearchActive {
+                SearchResultsSection(
+                    model: searchModel,
+                    garminFoodsOnly: isPickingBackingFood,
+                    czechOnly: isPickingBackingFood ? nil : czechOnlyBinding,
+                    isFavorite: isPicking ? nil : { isFoodFavorited($0) },
+                    onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
+                    onSelectFood: { select($0) },
+                    onSelectCustomFood: { selectCustomFood($0) },
+                    onSelectOpenFoodFactsFood: { matchingTarget = $0 }
+                )
             }
 
             if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, mealPresets.isEmpty, favoriteFoods.isEmpty, !isPickingBackingFood {
@@ -352,8 +253,9 @@ struct FoodCatalogView: View {
             await loadLocalData()
             presentScannerIfRouteIsPending()
         }
-        .task(id: searchText) { await performSearch() }
-        .task(id: "\(searchText)#\(czechOnly)") { await performCzechSearch() }
+        .task(id: "\(searchText)#\(czechOnly)#\(searchModel.reloadToken)") {
+            await searchModel.run(query: searchText, engine: environment.foodSearchEngine, options: searchOptions)
+        }
         // Wired for add-glanceable-surfaces' barcode-scan Control
         // (Shared/OpenBarcodeScannerIntent.swift): that intent only ever
         // sets `AppNavigationBridge`'s pending route once its `perform()`
@@ -689,82 +591,6 @@ struct FoodCatalogView: View {
     private func deleteMealPreset(_ preset: MealPreset) async {
         try? await environment.mealPresetStore.delete(id: preset.id)
         mealPresets.removeAll { $0.id == preset.id }
-    }
-
-    private func performSearch() async {
-        let trimmed = searchText.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else {
-            searchResults = []
-            searchErrorMessage = nil
-            return
-        }
-
-        // Debounce: `.task(id:)` cancels and restarts this whole task every
-        // time `searchText` changes, so a cancelled sleep here means a newer
-        // keystroke has already superseded this search.
-        do {
-            try await Task.sleep(nanoseconds: 300_000_000)
-        } catch {
-            return
-        }
-        guard !Task.isCancelled else { return }
-
-        isSearching = true
-        defer { isSearching = false }
-        do {
-            searchResults = try await environment.catalogSearch.search(term: trimmed)
-            searchErrorMessage = nil
-        } catch {
-            searchResults = []
-            searchErrorMessage = GarminErrorPresentation.searchErrorMessage(for: error)
-        }
-    }
-
-    /// Task 28.1: the Czech (Open Food Facts) search, "debounced the same
-    /// way the existing Garmin search already is". A completely separate
-    /// `.task(id:)`/debounce from `performSearch()` above -- the two
-    /// sources are independent network calls to independent hosts, per
-    /// design.md D5, so one failing or being slow never blocks the other.
-    private func performCzechSearch() async {
-        let trimmed = searchText.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else {
-            czechSearchResults = []
-            czechSearchErrorMessage = nil
-            czechSearchUsedGlobalFallback = false
-            return
-        }
-
-        do {
-            try await Task.sleep(nanoseconds: 300_000_000)
-        } catch {
-            return
-        }
-        guard !Task.isCancelled else { return }
-
-        isCzechSearching = true
-        defer { isCzechSearching = false }
-        do {
-            let scoped = try await environment.openFoodFactsClient.search(term: trimmed, czechOnly: czechOnly)
-            // 2026-09-21: if the "Czech only" filter is on but came back
-            // empty, retry once against ALL of Open Food Facts before
-            // giving up -- OFF's Czech tagging is too thin to trust an
-            // empty result as "this food doesn't exist in the database."
-            // Skipped entirely when the toggle is already off (that search
-            // WAS the global one) or already found something.
-            if czechOnly, scoped.isEmpty {
-                guard !Task.isCancelled else { return }
-                czechSearchResults = try await environment.openFoodFactsClient.search(term: trimmed, czechOnly: false)
-                czechSearchUsedGlobalFallback = !czechSearchResults.isEmpty
-            } else {
-                czechSearchResults = scoped
-                czechSearchUsedGlobalFallback = false
-            }
-            czechSearchErrorMessage = nil
-        } catch {
-            czechSearchResults = []
-            czechSearchUsedGlobalFallback = false
-            czechSearchErrorMessage = "Couldn't reach Open Food Facts right now. Check your connection or try again."
-        }
     }
 }
 

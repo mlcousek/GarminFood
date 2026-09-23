@@ -58,8 +58,12 @@ ios/
                     Food/Serving, CustomFood, MealDashboard (Today screen's
                     data), LogEntryCoordinator (the confirm-and-commit
                     action), UsageHistory/ServingDefaults (quick-pick
-                    ranking, remembered servings), FoodCatalogSearch,
-                    OpenFoodFactsClient (Czech food search).
+                    ranking, remembered servings), FoodSearchEngine (one
+                    ranked, Czech-aware search over your own foods, Garmin
+                    and Open Food Facts: SearchText/CzechLightStemmer/
+                    SearchRanker/SearchDedup; Local/Garmin/OpenFoodFacts
+                    sources; golden suite in SearchRelevanceTests),
+                    OpenFoodFactsClient.
   Gamification/     SPM package (depends on FoodLogCore) — streaks, XP/levels,
                     daily/rotating challenges, achievements. App-only, not
                     linked into the widget extension.
