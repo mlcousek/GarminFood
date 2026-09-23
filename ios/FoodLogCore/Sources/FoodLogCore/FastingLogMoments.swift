@@ -58,10 +58,19 @@ public enum FastingLogMoments {
     /// but only for days that happen to be cached. Entries with a missing
     /// or unparseable `logTimestamp` are skipped: without a time they can't
     /// be placed inside or outside a window.
+    ///
+    /// Entries THIS app wrote are skipped: every one of them is already in
+    /// the usage history (above) at the moment it was really logged, while
+    /// Garmin's copy of an EDITED or MOVED entry carries the time of the
+    /// edit (a replace re-creates it) -- which would mark a fast as broken
+    /// by fixing yesterday's lunch amount at 21:30 (scenario-review finding,
+    /// 2026-09-23). Trade-off: after a reinstall (empty usage history) this
+    /// app's older logs no longer count; `coverageStart` doesn't know that.
     public static func moments(fromGarminLog log: DailyFoodLog, date: String, calendar: Calendar) -> [Date] {
         let fromMeals = (log.mealDetails ?? []).flatMap { $0.loggedFoods ?? [] }
         let loose = log.loggedFoodsWithServingSizes ?? []
         return (fromMeals + loose).compactMap { food -> Date? in
+            guard !food.isFromThisApp else { return nil }
             guard let raw = food.logTimestamp, let timestamp = parseTimestamp(raw) else { return nil }
             return countsAsEating(timestamp: timestamp, nutritionDay: date, calendar: calendar) ? timestamp : nil
         }

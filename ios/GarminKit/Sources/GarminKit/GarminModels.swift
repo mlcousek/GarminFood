@@ -190,6 +190,12 @@ public struct LoggedFood: Decodable, Sendable {
     /// (task 11.4, deliberately not automated by this package) will settle
     /// which one is authoritative -- see docs/garmin-food-log-contract.md's
     /// "what remains genuinely unconfirmed" list, item 2.
+    /// Whether THIS app wrote the entry (`logSource` "GCW", see
+    /// `FoodLogWriteBody.logSource`), as opposed to Garmin Connect ("GCM").
+    public var isFromThisApp: Bool {
+        logSource == FoodLogWriteBody.logSource
+    }
+
     public func matchesQuantity(_ numberOfUnits: Double, tolerance: Double = 0.001) -> Bool {
         if let servingQty, abs(servingQty - numberOfUnits) < tolerance { return true }
         if let contentUnits = nutritionContent?.numberOfUnits, abs(contentUnits - numberOfUnits) < tolerance { return true }

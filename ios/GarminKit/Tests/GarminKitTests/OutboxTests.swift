@@ -583,4 +583,62 @@ final class OutboxTests: XCTestCase {
         XCTAssertEqual(Outbox.backoffDelay(attempt: 5, jitter: 5, base: 0.5, cap: 8), 8.0, accuracy: 0.0001)
         XCTAssertEqual(Outbox.backoffDelay(attempt: 5, jitter: -5, base: 0.5, cap: 8), 0, accuracy: 0.0001)
     }
+
+    // MARK: - Offline is not a delivery failure (scenario-review finding)
+
+    func testOfflineNeverCountsAnAttemptNorMarksFailed() async throws {
+        let outbox = makeOutbox(maxAttempts: 3)
+        let first = try await outbox.logFood(date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1)
+        let second = try await outbox.logFood(date: "2026-09-14", mealType: .lunch, foodId: "3", servingId: "4", numberOfUnits: 1)
+        let offline = FakeDeliverer.Outcome.fail(URLError(.notConnectedToInternet))
+        let deliverer = FakeDeliverer(outcomes: Array(repeating: offline, count: 10))
+
+        // Far more drains than maxAttempts, all while offline.
+        for _ in 0..<10 {
+            let result = await outbox.drain(using: deliverer, randomJitter: { 1.0 })
+            XCTAssertTrue(result.delivered.isEmpty)
+            XCTAssertTrue(result.failed.isEmpty, "offline never gives up on an entry")
+        }
+        let callsWhileOffline = await deliverer.callCount
+        XCTAssertEqual(callsWhileOffline, 10, "each cycle stops at the first offline error instead of trying every entry")
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.map(\.state), [.pending, .pending])
+        XCTAssertEqual(stored.first?.attemptCount, 0)
+        XCTAssertEqual(stored.first?.lastError?.hasPrefix("offline"), true)
+
+        // Back online: both go out on the very next drain.
+        let result = await outbox.drain(using: deliverer)
+        XCTAssertEqual(Set(result.delivered.map(\.id)), [first.id, second.id])
+    }
+
+    func testTimeoutAndLostConnectionAreOfflineButA500IsNot() {
+        XCTAssertTrue(ConnectivityFailure.matches(URLError(.timedOut)))
+        XCTAssertTrue(ConnectivityFailure.matches(URLError(.networkConnectionLost)))
+        XCTAssertTrue(ConnectivityFailure.matches(URLError(.cannotFindHost)))
+        XCTAssertFalse(ConnectivityFailure.matches(URLError(.cancelled)))
+        XCTAssertFalse(ConnectivityFailure.matches(URLError(.badServerResponse)))
+        XCTAssertFalse(ConnectivityFailure.matches(GarminClientError.httpError(statusCode: 500, body: nil)))
+    }
+
+    func testAReplaceWhoseDeleteHitsOfflineIsNeverParked() async throws {
+        let outbox = makeOutbox(maxAttempts: 2)
+        let entry = try await makeReplace(in: outbox)
+        let offline = FakeDeliverer.Outcome.fail(URLError(.notConnectedToInternet))
+        let deliverer = FakeDeliverer(outcomes: [.succeed], deleteOutcomes: Array(repeating: offline, count: 5))
+
+        for _ in 0..<5 {
+            _ = await outbox.drain(using: deliverer, randomJitter: { 1.0 })
+        }
+
+        let stored = await outbox.entry(id: entry.id)
+        XCTAssertEqual(stored?.state, .createdAwaitingDelete)
+        XCTAssertNil(stored?.parkedAt, "offline doesn't use up the delete's attempts")
+        XCTAssertEqual(stored?.attemptCount, 0)
+        let creates = await deliverer.callCount
+        XCTAssertEqual(creates, 1, "the corrected entry is never created twice")
+
+        let result = await outbox.drain(using: deliverer)
+        XCTAssertEqual(result.delivered.map(\.id), [entry.id])
+    }
 }
