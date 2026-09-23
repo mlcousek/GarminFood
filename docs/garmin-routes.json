@@ -26,9 +26,9 @@
       "operation": "dailyWellnessSummary",
       "method": "GET",
       "path": "/usersummary-service/usersummary/daily?calendarDate={date}",
-      "lastVerified": "2026-09-14",
+      "lastVerified": "2026-09-23",
       "observedStatus": 200,
-      "notes": "Legacy/general daily summary. Exposes consumedKilocalories, remainingKilocalories, activeKilocalories, bmrKilocalories -- but consumedKilocalories was observed null even on a date where nutrition-service/food/logs/{date} showed real logged food. Do not treat this as the nutrition source of truth; it appears to be a separate, disconnected field. Kept only as a control route to confirm auth is alive."
+      "notes": "Legacy/general daily summary. Exposes consumedKilocalories, remainingKilocalories, activeKilocalories, bmrKilocalories -- but consumedKilocalories was observed null even on a date where nutrition-service/food/logs/{date} showed real logged food. Do not treat this as the nutrition source of truth; it appears to be a separate, disconnected field. Kept only as a control route to confirm auth is alive. UPDATE 2026-09-23 (plan-testing-feedback, live probe via tools/garmin-get.mjs): 200, and the calorie fields are confirmed with real values mid-day: activeKilocalories 290, bmrKilocalories 920, totalKilocalories 1210, wellnessActiveKilocalories 290 (same as active), consumedKilocalories null, remainingKilocalories 3237. activeKilocalories is a running partial-day total for today. Planned use: the home screen's 'Active today' line (show-active-calories, in fix-testing-feedback-quick-wins)."
     },
     {
       "operation": "foodSearch",
@@ -114,9 +114,9 @@
       "operation": "nutritionSettings",
       "method": "GET",
       "path": "/nutrition-service/settings/{date}",
-      "lastVerified": "2026-09-16",
+      "lastVerified": "2026-09-23",
       "observedStatus": 200,
-      "notes": "Shape: { weightChangeType (LOSS observed), targetDate, weightChangeRate, activeDailyCalories, userDefinedActiveCalories, calorieGoal, macroGoals: { carbs, fat, protein }, autoCalorieAdjustment, regionCode, languageCode, dailyTimelineStartTime, dailyTimelineEndTime, startingWeight, targetWeightGoal, effectiveDate, nutritionStatus (ACTIVE observed) }. macroGoals are GRAMS: they equalled the daily log's base (non-adjusted) goals exactly on the probed day. Read-only in this app (GarminClient.nutritionSettings); garmin_mcp writes it with PUT to the same path, which this project does not use. UPDATE 2026-09-22 (fix-custom-food-log-region): regionCode/languageCode were part of this confirmed shape from the start but never decoded into the Swift model until now -- a real device 400 logging a just-created custom food ('Custom food nutrition information is missing for the provided food id with region code and language code') traced back to every food-log/custom-food write always hardcoding regionCode='US'/languageCode='en' regardless of the account's real values here. Both are now decoded and threaded through as an optional override on food-log writes and custom-food creation, falling back to the old hardcoded constants when unavailable. Still unconfirmed which actual value this account's regionCode/languageCode carries -- that requires a real device read, not assumed here."
+      "notes": "Shape: { weightChangeType (LOSS observed), targetDate, weightChangeRate, activeDailyCalories, userDefinedActiveCalories, calorieGoal, macroGoals: { carbs, fat, protein }, autoCalorieAdjustment, regionCode, languageCode, dailyTimelineStartTime, dailyTimelineEndTime, startingWeight, targetWeightGoal, effectiveDate, nutritionStatus (ACTIVE observed) }. macroGoals are GRAMS: they equalled the daily log's base (non-adjusted) goals exactly on the probed day. Read-only in this app (GarminClient.nutritionSettings); garmin_mcp writes it with PUT to the same path, which this project does not use. UPDATE 2026-09-22 (fix-custom-food-log-region): regionCode/languageCode were part of this confirmed shape from the start but never decoded into the Swift model until now -- a real device 400 logging a just-created custom food ('Custom food nutrition information is missing for the provided food id with region code and language code') traced back to every food-log/custom-food write always hardcoding regionCode='US'/languageCode='en' regardless of the account's real values here. Both are now decoded and threaded through as an optional override on food-log writes and custom-food creation, falling back to the old hardcoded constants when unavailable. Still unconfirmed which actual value this account's regionCode/languageCode carries -- that requires a real device read, not assumed here. UPDATE 2026-09-23: live read shows the weight-goal fields populated -- weightChangeType LOSS, weightChangeRate 250, startingWeight 80400, targetWeightGoal 76000, calorieGoal 2300. Weights are GRAMS (80400 = 80.4 kg, matching the weight-service's own gram units); weightChangeRate 250 is presumed grams/week. Planned use: the weight goal card (sync-weight-hydration-with-garmin)."
     },
     {
       "operation": "nutritionCurrentStatus",
@@ -138,9 +138,9 @@
       "operation": "socialProfile",
       "method": "GET",
       "path": "/userprofile-service/socialProfile",
-      "lastVerified": "2026-09-16",
+      "lastVerified": "2026-09-23",
       "observedStatus": 200,
-      "notes": "The profile the Garmin Connect app shows: displayName, fullName, userName, location, profileImageUrlSmall/Medium/Large, plus many visibility flags and Garmin's own userLevel/userPoint (unrelated to this app's XP and deliberately not shown). GarminClient.socialProfile decodes only the name, location and photo fields. Same route python-garminconnect uses for get_full_name."
+      "notes": "The profile the Garmin Connect app shows: displayName, fullName, userName, location, profileImageUrlSmall/Medium/Large, plus many visibility flags and Garmin's own userLevel/userPoint (unrelated to this app's XP and deliberately not shown). GarminClient.socialProfile decodes only the name, location and photo fields. Same route python-garminconnect uses for get_full_name. UPDATE 2026-09-23: on this account displayName is a UUID ('f8c8e6e5-...'), NOT a human name -- which is exactly what the Profile header was showing, because it preferred displayName over fullName. fullName carries the real 'first last' name. profileId is also present (numeric). Fix: prefer fullName (fix-testing-feedback-quick-wins)."
     },
     {
       "operation": "getWeighIns",
@@ -148,7 +148,23 @@
       "path": "/weight-service/weight/range/{startdate}/{enddate}?includeAll=true",
       "lastVerified": "2026-09-22",
       "observedStatus": "documented via a third-party OSS client, not exercised by this project",
-      "notes": "add-weight-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's get_weigh_ins (~line 1487), fetched 2026-09-22. Route/params/dates confirmed by that method's own implementation. RESPONSE SHAPE is NOT confirmed for this specific route -- get_weigh_ins returns a bare dict with no field access anywhere in that file. WeightRangeResponse's dateWeightList/WeighInSample.samplePk guess is by analogy with the SIBLING dayview route (get_daily_weigh_ins, GET /weight-service/weight/dayview/{cdate}, not implemented here), whose dateWeightList[].samplePk IS field-confirmed (delete_weigh_ins reads it to build delete_weigh_in's path). Every other WeighInSample field (weight, date, calendarDate) is an unconfirmed guess -- see GarminModels.swift's doc comment. Implemented in GarminClient.getWeighIns but not yet called from the app layer (the History screen reads its own local WeightStore instead)."
+      "notes": "add-weight-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's get_weigh_ins (~line 1487), fetched 2026-09-22. Route/params/dates confirmed by that method's own implementation. RESPONSE SHAPE is NOT confirmed for this specific route -- get_weigh_ins returns a bare dict with no field access anywhere in that file. WeightRangeResponse's dateWeightList/WeighInSample.samplePk guess is by analogy with the SIBLING dayview route (get_daily_weigh_ins, GET /weight-service/weight/dayview/{cdate}, not implemented here), whose dateWeightList[].samplePk IS field-confirmed (delete_weigh_ins reads it to build delete_weigh_in's path). Every other WeighInSample field (weight, date, calendarDate) is an unconfirmed guess -- see GarminModels.swift's doc comment. Implemented in GarminClient.getWeighIns but not yet called from the app layer (the History screen reads its own local WeightStore instead). UPDATE 2026-09-23: superseded for per-day reads by weighInsDayView (live-confirmed below). Note garmin_mcp reads THIS range route as dailyWeightSummaries[].allWeightMetrics[], not dateWeightList -- WeightRangeResponse's dateWeightList guess is probably wrong for this route; re-probe before using it."
+    },
+    {
+      "operation": "weighInsDayView",
+      "method": "GET",
+      "path": "/weight-service/weight/dayview/{date}?includeAll=true",
+      "lastVerified": "2026-09-23",
+      "observedStatus": 200,
+      "notes": "Live-probed 2026-09-23 via tools/garmin-get.mjs. Response: { startDate, endDate, dateWeightList: [{ samplePk (number), date (epoch ms, local wall-clock encoded as if UTC), calendarDate ('yyyy-MM-dd'), weight (GRAMS, e.g. 83900), bmi, bodyFat, bodyWater, boneMass, muscleMass, physiqueRating, visceralFat, metabolicAge (all null for manual entries), sourceType ('MANUAL' observed), timestampGMT (epoch ms UTC), weightDelta (grams vs previous) }], totalAverage: { from, until, weight, ... } }. Returned both of the day's manual weigh-ins, newest first. samplePk is what weighInDelete needs. Source for the Garmin->app weight sync (sync-weight-hydration-with-garmin)."
+    },
+    {
+      "operation": "hydrationDaily",
+      "method": "GET",
+      "path": "/usersummary-service/usersummary/hydration/daily/{date}",
+      "lastVerified": "2026-09-23",
+      "observedStatus": 200,
+      "notes": "Live-probed 2026-09-23 via tools/garmin-get.mjs -- first field-level evidence anywhere (neither python-garminconnect nor garmin_mcp destructures this response). Response: { userId, calendarDate, valueInML (day TOTAL, 1500 observed), goalInML (2800 observed; hydrationAutoGoalEnabled=true in user-settings), dailyAverageinML (null; note lowercase 'in'), lastEntryTimestampLocal ('2026-09-23T09:25:26.387'), sweatLossInML, activityIntakeInML }. It is a day TOTAL only -- there is no per-drink list, so the app can show Garmin's total + goal but not individual Garmin-side drinks. Source for the Garmin->app hydration sync."
     }
   ],
   "write": [
@@ -212,17 +228,25 @@
       "operation": "addWeighIn",
       "method": "POST",
       "path": "/weight-service/user-weight",
-      "lastVerified": "2026-09-22",
-      "observedStatus": "documented via a third-party OSS client, not exercised by this project",
-      "notes": "add-weight-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's add_weigh_in/add_weigh_in_with_timestamps (~lines 1414-1483) and the shared _fmt_ts helper (~line 221), fetched 2026-09-22 -- a real, actively-maintained, widely-used OSS client's actual request shape, not a decompiled string literal or blind guess: { dateTimestamp, gmtTimestamp, unitKey ('kg'|'lbs'), sourceType: 'MANUAL', value }, both timestamps formatted yyyy-MM-dd'T'HH:mm:ss.SSS (naive/no offset), dateTimestamp in local time and gmtTimestamp the same instant in UTC. This app always sends unitKey='kg' (no imperial/metric setting exists anywhere in GarminFood). Never yet called by this project against the real account -- gated the same way createFoodLogEntry is (delivery only via WeightOutbox's durable queue, never a synchronous UI call), NOT gated behind an extra confirmation dialog the way createCustomFood/createCustomMeal are, since logging a weight IS the deliberate user action, same status as a food log entry."
+      "lastVerified": "2026-09-23",
+      "observedStatus": 204,
+      "notes": "add-weight-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's add_weigh_in/add_weigh_in_with_timestamps (~lines 1414-1483) and the shared _fmt_ts helper (~line 221), fetched 2026-09-22 -- a real, actively-maintained, widely-used OSS client's actual request shape, not a decompiled string literal or blind guess: { dateTimestamp, gmtTimestamp, unitKey ('kg'|'lbs'), sourceType: 'MANUAL', value }, both timestamps formatted yyyy-MM-dd'T'HH:mm:ss.SSS (naive/no offset), dateTimestamp in local time and gmtTimestamp the same instant in UTC. This app always sends unitKey='kg' (no imperial/metric setting exists anywhere in GarminFood). Never yet called by this project against the real account -- gated the same way createFoodLogEntry is (delivery only via WeightOutbox's durable queue, never a synchronous UI call), NOT gated behind an extra confirmation dialog the way createCustomFood/createCustomMeal are, since logging a weight IS the deliberate user action, same status as a food log entry. UPDATE 2026-09-23: CONFIRMED. The owner reported device weigh-ins arriving in Garmin, and a live probe (tools/garmin-write-probe.mjs, owner-approved) POSTed {dateTimestamp '2026-09-23T03:03:03.000', gmtTimestamp '2026-09-23T01:03:03.000', unitKey 'kg', sourceType 'MANUAL', value 83.9} -> 204 No Content (empty body), and the sample appeared in weighInsDayView (samplePk 1790152598056). It was then deleted via weighInDelete."
     },
     {
       "operation": "addHydration",
       "method": "PUT",
       "path": "/usersummary-service/usersummary/hydration/log",
-      "lastVerified": "2026-09-22",
-      "observedStatus": "documented via a third-party OSS client, not exercised by this project",
-      "notes": "add-hydration-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's add_hydration_data (~lines 1820-1898), fetched 2026-09-22 -- same evidence tier as addWeighIn above: a real, actively-maintained OSS client's actual request shape, not a decompiled string literal. Body: { calendarDate ('yyyy-MM-dd', local date of the entry), timestampLocal (reuses the same naive-local, millisecond-precision _fmt_ts shape as WeighInWriteBody -- no separate GMT timestamp field for this route, unlike weight), valueInML }. Never yet called by this project against the real account -- gated the same way addWeighIn is (delivery only via HydrationOutbox's durable queue, no extra confirmation dialog, since logging a drink IS the deliberate user action). The sibling READ route (GET /usersummary-service/usersummary/hydration/daily/{date}, garmin_connect_daily_hydration_url in the same source file) exists but its response is NEVER destructured anywhere in that library -- no field-level evidence at all, unlike getWeighIns's dateWeightList/samplePk which at least has a same-service sibling route confirming the field name. Deliberately NOT implemented in GarminClient: this app's own HydrationStore is the sole source of truth for history and today's total, same as WeightStore is for weight."
+      "lastVerified": "2026-09-23",
+      "observedStatus": "exercised on a real device, owner reports entries arriving in Garmin",
+      "notes": "add-hydration-tracking. Source: cyberjunky/python-garminconnect (github.com/cyberjunky/python-garminconnect), garminconnect/__init__.py's add_hydration_data (~lines 1820-1898), fetched 2026-09-22 -- same evidence tier as addWeighIn above: a real, actively-maintained OSS client's actual request shape, not a decompiled string literal. Body: { calendarDate ('yyyy-MM-dd', local date of the entry), timestampLocal (reuses the same naive-local, millisecond-precision _fmt_ts shape as WeighInWriteBody -- no separate GMT timestamp field for this route, unlike weight), valueInML }. Never yet called by this project against the real account -- gated the same way addWeighIn is (delivery only via HydrationOutbox's durable queue, no extra confirmation dialog, since logging a drink IS the deliberate user action). The sibling READ route (GET /usersummary-service/usersummary/hydration/daily/{date}, garmin_connect_daily_hydration_url in the same source file) exists but its response is NEVER destructured anywhere in that library -- no field-level evidence at all, unlike getWeighIns's dateWeightList/samplePk which at least has a same-service sibling route confirming the field name. Deliberately NOT implemented in GarminClient: this app's own HydrationStore is the sole source of truth for history and today's total, same as WeightStore is for weight. UPDATE 2026-09-23: the owner reported device hydration logs arriving in Garmin, and hydrationDaily's valueInML reflects them. The claim above that HydrationStore is the sole source of truth is being reversed by sync-weight-hydration-with-garmin (Garmin's daily total becomes authoritative, now that its read shape is confirmed)."
+    },
+    {
+      "operation": "weighInDelete",
+      "method": "DELETE",
+      "path": "/weight-service/weight/{date}/byversion/{samplePk}",
+      "lastVerified": "2026-09-23",
+      "observedStatus": 204,
+      "notes": "Live-probed 2026-09-23 with the owner's explicit approval: deleted the test sample 1790152598056 on 2026-09-23 -> 204 No Content, and a re-read of weighInsDayView no longer listed it while the two real weigh-ins were untouched. No body needed (the probe sent '{}'). Source: python-garminconnect delete_weigh_in. Used by sync-weight-hydration-with-garmin to delete a weigh-in from the app."
     }
   ],
   "unresolved": [
