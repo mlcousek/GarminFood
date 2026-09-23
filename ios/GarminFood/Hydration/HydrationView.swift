@@ -167,7 +167,8 @@ struct HydrationView: View {
         switch environment.hydrationLoader.outboxState(for: entry) {
         case .pending?, .failed?:
             return "It hasn't reached Garmin yet, so it simply won't be sent."
-        case .sent?, nil:
+        // `.createdAwaitingDelete` is food-outbox-only (add-log-entry-editing).
+        case .sent?, .createdAwaitingDelete?, nil:
             return "Garmin's total for that day is lowered by \(entry.valueInML.formattedML) ml too."
         }
     }

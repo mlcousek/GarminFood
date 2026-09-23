@@ -36,6 +36,9 @@ struct TodayView: View {
     @State private var mealPresetTarget: MealPreset?
     @State private var catalogContext: LogContext?
     @State private var openMeal: MealType?
+    /// add-log-entry-editing: Edit/Move/Duplicate/Delete on a meal card's
+    /// rows and "Copy from…" -- see EntryEditing.swift.
+    @State private var entryEditor = EntryEditor()
     @State private var showFasting = false
     @State private var isPresentingAddHydration = false
     @State private var hydrationActionError: String?
@@ -74,6 +77,7 @@ struct TodayView: View {
                     ForEach(dashboard.sections) { section in
                         MealSectionCard(
                             section: section,
+                            editor: entryEditor,
                             onOpen: { openMeal = section.mealType },
                             onAdd: { startLog(meal: section.mealType) }
                         )
@@ -152,6 +156,7 @@ struct TodayView: View {
         .navigationDestination(item: $openMeal) { meal in
             MealDetailView(mealType: meal)
         }
+        .entryEditing(entryEditor)
         .navigationDestination(isPresented: $showFasting) {
             FastingHistoryView()
         }
@@ -429,6 +434,10 @@ struct ProgressStrip: View {
 
 struct MealSectionCard: View {
     let section: MealSection
+    /// add-log-entry-editing: rows tap to edit and long-press for Move/
+    /// Duplicate/Delete (a card isn't a List, so no swipe here -- that's on
+    /// the meal's detail screen); "Copy from…" sits next to "Add food".
+    let editor: EntryEditor
     let onOpen: () -> Void
     let onAdd: () -> Void
 
@@ -454,19 +463,37 @@ struct MealSectionCard: View {
                 VStack(spacing: Theme.Spacing.xs) {
                     ForEach(section.entries) { entry in
                         MealEntryRow(entry: entry)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                if entry.canRelog {
+                                    editor.editTarget = entry
+                                }
+                            }
+                            .entryActions(entry, editor: editor)
                     }
                 }
             }
 
-            Button(action: onAdd) {
-                Label("Add food", systemImage: "plus")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Button(action: onAdd) {
+                    Label("Add food", systemImage: "plus")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.borderless)
+                .accessibilityLabel("Add food to \(section.mealType.displayName)")
+
+                Button {
+                    editor.copyTarget = CopyMealTarget(mealType: section.mealType)
+                } label: {
+                    Label("Copy from…", systemImage: "doc.on.doc")
+                        .font(.subheadline)
+                }
+                .buttonStyle(.borderless)
+                .accessibilityLabel("Copy a past meal into \(section.mealType.displayName)")
             }
-            .buttonStyle(.borderless)
             .tint(Theme.accent)
             .padding(.top, Theme.Spacing.xs)
-            .accessibilityLabel("Add food to \(section.mealType.displayName)")
         }
         .card()
     }

@@ -90,6 +90,7 @@ final class AppServices {
         let hydrationStore = HydrationStore()
         let hydrationOutbox = HydrationOutbox(processName: "app")
         let garminHealthCache = GarminHealthCacheStore()
+        let foodCache = FoodCacheStore()
 
         self.garminClient = client
         self.outbox = outbox
@@ -98,11 +99,13 @@ final class AppServices {
         self.servingDefaults = servingDefaults
         self.customFoodStore = CustomFoodStore()
         self.mealPresetStore = MealPresetStore()
-        self.foodCache = FoodCacheStore()
+        self.foodCache = foodCache
         self.favoriteFoodStore = FavoriteFoodStore()
         self.fastingStore = FastingSessionStore()
         self.dayNoteStore = DayNoteStore()
-        self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults)
+        // `foodCache` so an edited/duplicated/copied entry can be named in
+        // its meal before Garmin reads it back (add-log-entry-editing).
+        self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults, foodCache: foodCache)
         self.weightStore = weightStore
         self.weightOutbox = weightOutbox
         self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox)

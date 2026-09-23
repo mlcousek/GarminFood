@@ -18,13 +18,19 @@ private actor FakeDeliverer: FoodLogDelivering {
     }
 
     private var outcomes: [Outcome]
+    private var deleteOutcomes: [Outcome]
     private(set) var receivedRequests: [CreateFoodLogEntryRequest] = []
+    /// add-log-entry-editing: every delete call, as (logIds, date).
+    private(set) var receivedDeletes: [(logIds: [String], date: String)] = []
 
-    init(outcomes: [Outcome]) {
+    init(outcomes: [Outcome], deleteOutcomes: [Outcome] = []) {
         self.outcomes = outcomes
+        self.deleteOutcomes = deleteOutcomes
     }
 
     var callCount: Int { receivedRequests.count }
+    var deleteCallCount: Int { receivedDeletes.count }
+    var deletedLogIds: [String] { receivedDeletes.flatMap { $0.logIds } }
 
     func createFoodLogEntry(_ entry: CreateFoodLogEntryRequest) async throws -> HTTPURLResponse {
         receivedRequests.append(entry)
@@ -36,6 +42,41 @@ private actor FakeDeliverer: FoodLogDelivering {
         case .fail(let error):
             throw error
         }
+    }
+
+    func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse {
+        receivedDeletes.append((logIds: logIds, date: date))
+        let index = receivedDeletes.count - 1
+        let outcome = index < deleteOutcomes.count ? deleteOutcomes[index] : .succeed
+        switch outcome {
+        case .succeed:
+            return HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/nutrition-service/food/logs/\(date)")!, statusCode: 204, httpVersion: nil, headerFields: nil)!
+        case .fail(let error):
+            throw error
+        }
+    }
+}
+
+/// add-log-entry-editing: reads the outbox FILE (not the in-memory store)
+/// from inside the delete call, to prove D1's ordering -- the
+/// `.createdAwaitingDelete` state is on disk before the delete goes out.
+private actor FileObservingDeliverer: FoodLogDelivering {
+    private let fileURL: URL
+    private(set) var stateSeenDuringDelete: OutboxEntryState?
+
+    init(fileURL: URL) {
+        self.fileURL = fileURL
+    }
+
+    func createFoodLogEntry(_ entry: CreateFoodLogEntryRequest) async throws -> HTTPURLResponse {
+        HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/nutrition-service/food/logs")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
+
+    func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse {
+        let data = try Data(contentsOf: fileURL)
+        let entries = try JSONDecoder().decode([OutboxEntry].self, from: data)
+        stateSeenDuringDelete = entries.first?.state
+        return HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/nutrition-service/food/logs/\(date)")!, statusCode: 204, httpVersion: nil, headerFields: nil)!
     }
 }
 
@@ -211,6 +252,316 @@ final class OutboxTests: XCTestCase {
         let reloaded = await outbox2.allEntries()
 
         XCTAssertEqual(reloaded.map(\.id), [entry.id])
+    }
+
+    // MARK: - add-log-entry-editing: old files still decode
+
+    func testAnOutboxFileWrittenBeforeEditingExistedStillDecodes() async throws {
+        // Exactly the shape an older build persisted: no `replaces`,
+        // `duplicateOf` or `parkedAt` keys at all. Dates in
+        // JSONEncoder's default (seconds since the reference date).
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-outbox-legacy-\(UUID().uuidString).json")
+        let legacy = """
+        [{"id":"6F9619FF-8B86-D011-B42D-00C04FC964FF","date":"2026-09-14","mealType":"BREAKFAST","foodId":"1","servingId":"2",
+          "numberOfUnits":1.5,"source":"FATSECRET","regionCode":"CZ","languageCode":"en","state":"failed","attemptCount":5,
+          "lastError":"HTTP 500","createdAt":780000000,"nextAttemptAt":780000000}]
+        """
+        try Data(legacy.utf8).write(to: url)
+
+        let entries = await Outbox(store: OutboxStore(fileURL: url)).allEntries()
+
+        XCTAssertEqual(entries.count, 1, "an old outbox file must not be quarantined by the new optional fields")
+        XCTAssertNil(entries.first?.replaces)
+        XCTAssertNil(entries.first?.duplicateOf)
+        XCTAssertNil(entries.first?.parkedAt)
+        XCTAssertEqual(entries.first?.state, .failed)
+        XCTAssertEqual(entries.first?.numberOfUnits, 1.5)
+    }
+
+    func testAReplaceRoundTripsThroughTheFile() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-outbox-replace-\(UUID().uuidString).json")
+        let first = Outbox(store: OutboxStore(fileURL: url))
+        let entry = try await first.logFood(
+            date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 2,
+            replaces: ReplacedLog(date: "2026-09-14", logId: "old-log"), duplicateOf: "source-log"
+        )
+
+        let reloaded = await Outbox(store: OutboxStore(fileURL: url)).allEntries()
+
+        XCTAssertEqual(reloaded.map(\.id), [entry.id])
+        XCTAssertEqual(reloaded.first?.replaces, ReplacedLog(date: "2026-09-14", logId: "old-log"))
+        XCTAssertEqual(reloaded.first?.duplicateOf, "source-log")
+    }
+
+    // MARK: - add-log-entry-editing D1: replace = create, then delete
+
+    private func makeReplace(in outbox: Outbox, logId: String = "old-log") async throws -> OutboxEntry {
+        try await outbox.logFood(
+            date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 2,
+            replaces: ReplacedLog(date: "2026-09-14", logId: logId)
+        )
+    }
+
+    func testAReplaceCreatesTheNewEntryThenDeletesTheOldOne() async throws {
+        let outbox = makeOutbox()
+        let entry = try await makeReplace(in: outbox)
+        let deliverer = FakeDeliverer(outcomes: [.succeed])
+
+        let result = await outbox.drain(using: deliverer)
+
+        let creates = await deliverer.callCount
+        let deletes = await deliverer.receivedDeletes
+        XCTAssertEqual(creates, 1)
+        XCTAssertEqual(deletes.map { $0.logIds }, [["old-log"]])
+        XCTAssertEqual(deletes.map { $0.date }, ["2026-09-14"], "the delete route takes the old entry's date in its path")
+        XCTAssertEqual(result.delivered.map(\.id), [entry.id])
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .sent)
+    }
+
+    func testAFailedCreateNeverDeletesTheOldEntry() async throws {
+        let outbox = makeOutbox(maxAttempts: 3)
+        _ = try await makeReplace(in: outbox)
+        let deliverer = FakeDeliverer(outcomes: [.fail(GarminClientError.httpError(statusCode: 500, body: nil))])
+
+        let result = await outbox.drain(using: deliverer, randomJitter: { 1.0 })
+
+        let deletes = await deliverer.deleteCallCount
+        XCTAssertEqual(deletes, 0, "deleting before the corrected entry exists could lose the food")
+        XCTAssertTrue(result.delivered.isEmpty)
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .pending, "a failed create follows the ordinary retry rules")
+        XCTAssertEqual(stored.first?.attemptCount, 1)
+    }
+
+    func testAFailedDeleteIsRetriedWithoutCreatingAgain() async throws {
+        let outbox = makeOutbox(maxAttempts: 3)
+        let entry = try await makeReplace(in: outbox)
+        let now = Date()
+
+        // Create succeeds, delete fails.
+        let first = FakeDeliverer(outcomes: [.succeed], deleteOutcomes: [.fail(GarminClientError.httpError(statusCode: 503, body: nil))])
+        let firstResult = await outbox.drain(using: first, now: now, randomJitter: { 1.0 })
+
+        XCTAssertTrue(firstResult.delivered.isEmpty)
+        var stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .createdAwaitingDelete)
+        XCTAssertEqual(stored.first?.attemptCount, 1)
+        XCTAssertNotNil(stored.first?.lastError, "the pending removal must be visible in the sync queue")
+        XCTAssertGreaterThan(stored.first!.nextAttemptAt, now, "backs off like any other failure")
+
+        // Next drain (after the backoff): only the delete is retried.
+        let second = FakeDeliverer(outcomes: [])
+        let secondResult = await outbox.drain(using: second, now: now.addingTimeInterval(60))
+
+        let secondCreates = await second.callCount
+        let secondDeletes = await second.deletedLogIds
+        XCTAssertEqual(secondCreates, 0, "the corrected entry is already in Garmin; creating it again would duplicate it")
+        XCTAssertEqual(secondDeletes, ["old-log"])
+        XCTAssertEqual(secondResult.delivered.map(\.id), [entry.id])
+        stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .sent)
+        XCTAssertNil(stored.first?.lastError)
+    }
+
+    func testAReplaceResumesAtTheDeleteAfterARelaunch() async throws {
+        // The crash-between-requests case: the create was accepted and
+        // `.createdAwaitingDelete` persisted, then the process died.
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-outbox-resume-\(UUID().uuidString).json")
+        let beforeCrash = Outbox(store: OutboxStore(fileURL: url))
+        let entry = try await makeReplace(in: beforeCrash)
+        var persisted = entry
+        persisted.state = .createdAwaitingDelete
+        try await beforeCrash.requeue(persisted)
+
+        let afterRelaunch = Outbox(store: OutboxStore(fileURL: url))
+        let deliverer = FakeDeliverer(outcomes: [])
+        let result = await afterRelaunch.drain(using: deliverer)
+
+        let creates = await deliverer.callCount
+        let deletes = await deliverer.deletedLogIds
+        XCTAssertEqual(creates, 0, "a relaunch must never re-send a create Garmin already accepted")
+        XCTAssertEqual(deletes, ["old-log"])
+        XCTAssertEqual(result.delivered.map(\.id), [entry.id])
+    }
+
+    func testTheAwaitingDeleteStateIsPersistedBeforeTheDeleteIsSent() async throws {
+        // Observe the file from inside the delete call: by then a fresh
+        // store on the same file must already read `.createdAwaitingDelete`.
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-outbox-order-\(UUID().uuidString).json")
+        let outbox = Outbox(store: OutboxStore(fileURL: url))
+        _ = try await makeReplace(in: outbox)
+        let spy = FileObservingDeliverer(fileURL: url)
+
+        _ = await outbox.drain(using: spy)
+
+        let observed = await spy.stateSeenDuringDelete
+        XCTAssertEqual(observed, .createdAwaitingDelete)
+    }
+
+    func testA404OnTheDeleteCountsAsSuccess() async throws {
+        let outbox = makeOutbox()
+        let entry = try await makeReplace(in: outbox)
+        let deliverer = FakeDeliverer(outcomes: [.succeed], deleteOutcomes: [.fail(GarminClientError.httpError(statusCode: 404, body: nil))])
+
+        let result = await outbox.drain(using: deliverer)
+
+        XCTAssertEqual(result.delivered.map(\.id), [entry.id], "the old entry is already gone -- exactly what the replace wanted")
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .sent)
+    }
+
+    func testAPermanentlyRejectedDeleteIsParkedNotFailed() async throws {
+        let outbox = makeOutbox()
+        let entry = try await makeReplace(in: outbox)
+        let deliverer = FakeDeliverer(outcomes: [.succeed], deleteOutcomes: [.fail(GarminClientError.httpError(statusCode: 400, body: "nope"))])
+
+        let result = await outbox.drain(using: deliverer)
+
+        XCTAssertEqual(result.failed.map(\.id), [entry.id], "a parked replace needs the user, so it's surfaced")
+        var stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .createdAwaitingDelete, "never `.failed`: a manual retry from there would create the food again")
+        XCTAssertNotNil(stored.first?.parkedAt)
+        XCTAssertEqual(stored.first?.needsManualRetry, true)
+
+        // Parked: a later drain leaves it alone.
+        let idle = FakeDeliverer(outcomes: [])
+        _ = await outbox.drain(using: idle, now: Date().addingTimeInterval(3600))
+        let idleCreates = await idle.callCount
+        let idleDeletes = await idle.deleteCallCount
+        XCTAssertEqual(idleCreates + idleDeletes, 0)
+
+        // Manual retry re-arms ONLY the delete.
+        try await outbox.retry(id: entry.id)
+        stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .createdAwaitingDelete)
+        XCTAssertNil(stored.first?.parkedAt)
+        let retried = FakeDeliverer(outcomes: [])
+        _ = await outbox.drain(using: retried)
+        let retriedCreates = await retried.callCount
+        let retriedDeletes = await retried.deletedLogIds
+        XCTAssertEqual(retriedCreates, 0)
+        XCTAssertEqual(retriedDeletes, ["old-log"])
+        stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .sent)
+    }
+
+    func testARepeatedlyFailingDeleteIsParkedAfterMaxAttempts() async throws {
+        let outbox = makeOutbox(maxAttempts: 2)
+        _ = try await makeReplace(in: outbox)
+        let serverError = GarminClientError.httpError(statusCode: 500, body: nil)
+
+        _ = await outbox.drain(using: FakeDeliverer(outcomes: [.succeed], deleteOutcomes: [.fail(serverError)]), randomJitter: { 0 })
+        var stored = await outbox.allEntries()
+        XCTAssertNil(stored.first?.parkedAt, "one transient failure just backs off")
+
+        _ = await outbox.drain(using: FakeDeliverer(outcomes: [], deleteOutcomes: [.fail(serverError)]), randomJitter: { 0 })
+        stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .createdAwaitingDelete)
+        XCTAssertNotNil(stored.first?.parkedAt)
+    }
+
+    func testAnAuthFailureOnTheDeleteStopsTheCycleWithoutCountingAnAttempt() async throws {
+        let outbox = makeOutbox()
+        _ = try await makeReplace(in: outbox)
+        let deliverer = FakeDeliverer(outcomes: [.succeed], deleteOutcomes: [.fail(GarminAuthError.notSignedIn)])
+
+        let result = await outbox.drain(using: deliverer)
+
+        XCTAssertEqual(result.authOutcome, .notSignedIn)
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.state, .createdAwaitingDelete)
+        XCTAssertEqual(stored.first?.attemptCount, 0)
+        XCTAssertNil(stored.first?.parkedAt)
+    }
+
+    // MARK: - add-log-entry-editing: editing a still-queued entry
+
+    func testReplaceQueuedSwapsAPendingEntryAndKeepsItsIdentity() async throws {
+        let outbox = makeOutbox()
+        let original = try await outbox.logFood(
+            date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1,
+            source: .fatSecret, regionCode: "CZ", languageCode: "cs",
+            replaces: ReplacedLog(date: "2026-09-14", logId: "garmin-original")
+        )
+
+        let replacement = try await outbox.replaceQueued(id: original.id, mealType: .snacks, numberOfUnits: 3)
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.map(\.id), [replacement.id], "one entry, never both and never neither")
+        XCTAssertNotEqual(replacement.id, original.id)
+        XCTAssertEqual(replacement.mealType, .snacks)
+        XCTAssertEqual(replacement.numberOfUnits, 3)
+        XCTAssertEqual(replacement.foodId, "1")
+        XCTAssertEqual(replacement.source, .fatSecret)
+        XCTAssertEqual(replacement.regionCode, "CZ")
+        XCTAssertEqual(replacement.replaces?.logId, "garmin-original", "an edit of an edit must still delete the original Garmin entry")
+        XCTAssertEqual(replacement.state, .pending)
+    }
+
+    func testReplaceQueuedRefusesAnEntryGarminAlreadyAccepted() async throws {
+        let outbox = makeOutbox()
+        var entry = try await outbox.logFood(date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1)
+        entry.state = .sent
+        try await outbox.requeue(entry)
+
+        do {
+            _ = try await outbox.replaceQueued(id: entry.id, mealType: .lunch, numberOfUnits: 2)
+            XCTFail("expected alreadyDelivered")
+        } catch let error as OutboxEditError {
+            XCTAssertEqual(error, .alreadyDelivered)
+        }
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.map(\.id), [entry.id], "a refused edit changes nothing")
+    }
+
+    func testCancelQueuedRemovesAPendingEntry() async throws {
+        let outbox = makeOutbox()
+        let entry = try await outbox.logFood(date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1)
+
+        try await outbox.cancelQueued(id: entry.id)
+
+        let stored = await outbox.allEntries()
+        XCTAssertTrue(stored.isEmpty)
+    }
+
+    func testAnEntryBeingSentCannotBeEditedUnderneathTheDrain() async throws {
+        let store = OutboxStore(fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-outbox-claim-\(UUID().uuidString).json"))
+        let outbox = Outbox(store: store)
+        let entry = try await outbox.logFood(date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1)
+
+        // What `drain` does right before sending.
+        let claimed = await store.claim(id: entry.id, now: Date())
+        XCTAssertEqual(claimed?.id, entry.id)
+
+        do {
+            _ = try await outbox.replaceQueued(id: entry.id, mealType: .lunch, numberOfUnits: 2)
+            XCTFail("expected entryInFlight")
+        } catch let error as OutboxEditError {
+            XCTAssertEqual(error, .entryInFlight)
+        }
+        do {
+            try await outbox.cancelQueued(id: entry.id)
+            XCTFail("expected entryInFlight")
+        } catch let error as OutboxEditError {
+            XCTAssertEqual(error, .entryInFlight)
+        }
+
+        await store.release(id: entry.id)
+        try await outbox.cancelQueued(id: entry.id)
+        let stored = await outbox.allEntries()
+        XCTAssertTrue(stored.isEmpty)
+    }
+
+    func testDrainSkipsAnEntryEditedAwayAfterItsSnapshot() async throws {
+        // An entry that no longer exists when its turn comes is not sent.
+        let store = OutboxStore(fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-outbox-gone-\(UUID().uuidString).json"))
+        let entry = OutboxEntry(date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1)
+        try await store.enqueue(entry)
+        try await store.cancel(id: entry.id)
+
+        let claimed = await store.claim(id: entry.id, now: Date())
+        XCTAssertNil(claimed)
     }
 
     // MARK: - Pure backoff function (task 9.3: "capped at 8s")

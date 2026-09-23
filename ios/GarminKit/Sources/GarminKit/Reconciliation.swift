@@ -12,6 +12,20 @@
 // servingId from `LoggedFood`, numberOfUnits via `LoggedFood.matchesQuantity`
 // (see GarminModels.swift for why that comparison is deliberately tolerant
 // of either candidate quantity field).
+//
+// add-log-entry-editing (design.md D2) adds three kinds of Garmin entries
+// that match a key without being "this group's delivery":
+//   - the OLD entry of any replace still in the outbox (`replaces.logId`) --
+//     expected to vanish, deleted by the replace itself, so never counted
+//     here and never deleted here;
+//   - the SOURCE of a duplicate (`duplicateOf`) -- an older entry with the
+//     same key, which would otherwise make the duplicate's own delivery look
+//     like an excess copy and get it deleted;
+//   - the corrected entry a `.createdAwaitingDelete` replace already created
+//     -- a legitimately expected copy, so the temporary duplicate it forms
+//     with an identical `.sent` entry is not "deleted again".
+// The first two are excluded only while that doesn't make a delivered entry
+// look missing (see `resolveGroup`): a false "missing" would re-send it.
 
 import Foundation
 
@@ -81,6 +95,10 @@ public actor Reconciliation {
         guard !delivered.isEmpty else { return [] }
 
         var outcomes: [ReconciliationOutcome] = []
+        // add-log-entry-editing D2: what else in this outbox explains a
+        // Garmin entry (see this file's header).
+        let queued = await outbox.allEntries()
+        let deliveredIds = Set(delivered.map(\.id))
         // Fetch each distinct date's log at most once, even if several
         // entries landed on the same day this cycle.
         let entriesByDate = Dictionary(grouping: delivered, by: \.date)
@@ -100,8 +118,25 @@ public actor Reconciliation {
             // every entry that shares a full (date, mealType, foodId,
             // servingId, numberOfUnits) key is resolved as one unit.
             let entriesByKey = Dictionary(grouping: entriesForDate, by: MatchKey.init)
-            for (_, group) in entriesByKey {
-                let groupOutcomes = await resolveGroup(group, in: log, date: date, using: client)
+            let expectedToVanish = Set(queued.compactMap { entry -> String? in
+                guard let replaced = entry.replaces, replaced.date == date else { return nil }
+                return replaced.logId
+            })
+            for (key, group) in entriesByKey {
+                let alsoExpected = queued.filter {
+                    $0.state == .createdAwaitingDelete
+                        && $0.date == date
+                        && !deliveredIds.contains($0.id)
+                        && MatchKey($0) == key
+                }.count
+                let groupOutcomes = await resolveGroup(
+                    group,
+                    in: log,
+                    date: date,
+                    expectedToVanish: expectedToVanish,
+                    alsoExpected: alsoExpected,
+                    using: client
+                )
                 outcomes.append(contentsOf: groupOutcomes)
             }
         }
@@ -126,10 +161,20 @@ public actor Reconciliation {
     /// ever-growing array on every future mutation for no benefit. Entries
     /// re-queued as missing are deliberately NOT removed; they go back to
     /// `.pending` instead (via `Outbox.requeue`).
+    ///
+    /// add-log-entry-editing D2: `expectedToVanish` (old entries of pending
+    /// replaces) and the group's `duplicateOf` sources are left out of M,
+    /// unless leaving them out would make M < N (see
+    /// `excludingExplained`); `alsoExpected` (corrected entries that
+    /// `.createdAwaitingDelete` replaces already created under this key)
+    /// raises the number of copies that may exist before any is "excess".
+    /// With neither, this is exactly the N-vs-M rule above.
     private func resolveGroup(
         _ group: [OutboxEntry],
         in log: DailyFoodLog?,
         date: String,
+        expectedToVanish: Set<String>,
+        alsoExpected: Int,
         using client: some FoodLogReconciling
     ) async -> [ReconciliationOutcome] {
         guard let representative = group.first else { return [] }
@@ -140,14 +185,17 @@ public actor Reconciliation {
         let earliestCreated = sortedGroup.first?.createdAt ?? Date()
         let matches = Self.matchingLoggedFoods(for: representative, in: log)
             .filter { Self.couldBeThisAppsDelivery($0, notBefore: earliestCreated) }
-        let sortedMatches = Self.sortedByTimestamp(matches)
-
         let n = sortedGroup.count
-        let m = sortedMatches.count
+        let excluded = expectedToVanish.union(sortedGroup.compactMap(\.duplicateOf))
+        let sortedMatches = Self.excludingExplained(Self.sortedByTimestamp(matches), excluded: excluded, keepAtLeast: n)
 
-        if m == n {
-            // Exactly as many Garmin entries as locally expected (this also
-            // covers the ordinary N == 1, M == 1 happy path) -- nothing to
+        let m = sortedMatches.count
+        let expectedTotal = n + max(0, alsoExpected)
+
+        if m >= n && m <= expectedTotal {
+            // As many Garmin entries as locally expected (this also covers
+            // the ordinary N == 1, M == 1 happy path), plus at most the
+            // copies awaiting-delete replaces account for -- nothing to
             // delete, nothing missing.
             let outcomes = zip(sortedGroup, sortedMatches).map { entry, match in
                 ReconciliationOutcome(entryId: entry.id, date: date, verdict: .confirmed(logId: match.logId))
@@ -156,16 +204,16 @@ public actor Reconciliation {
             return outcomes
         }
 
-        if m > n {
-            // More Garmin entries than locally expected: exactly (m - n)
-            // are excess duplicates (e.g. a drain that retried after a
-            // successful-but-unacknowledged POST). Keep the n
+        if m > expectedTotal {
+            // More Garmin entries than locally expected: exactly
+            // (m - expectedTotal) are excess duplicates (e.g. a drain that
+            // retried after a successful-but-unacknowledged POST). Keep the
             // earliest-logged copies (deterministic tie-break: sort by
             // logTimestamp, falling back to logId), delete the rest --
             // never "down to 1" regardless of how many entries share this
             // key.
-            let toKeep = Array(sortedMatches.prefix(n))
-            let toDelete = sortedMatches.dropFirst(n).compactMap(\.logId)
+            let toKeep = Array(sortedMatches.prefix(expectedTotal))
+            let toDelete = sortedMatches.dropFirst(expectedTotal).compactMap(\.logId)
 
             if !toDelete.isEmpty {
                 do {
@@ -227,6 +275,28 @@ public actor Reconciliation {
         for entry in entries {
             try? await outbox.delete(id: entry.id)
         }
+    }
+
+    /// add-log-entry-editing D2: drops the Garmin entries whose `logId` is in
+    /// `excluded` (an old entry a replace will delete, or a duplicate's
+    /// source) -- but only down to `keepAtLeast`. If this group's own
+    /// deliveries can't all be accounted for without them, the earliest
+    /// excluded ones are put back: an edit or duplicate of an entry whose
+    /// OWN delivery hadn't been reconciled yet would otherwise make that
+    /// delivery look missing, and a "missing" entry is sent again. Putting
+    /// them back never pushes the count above `keepAtLeast`, so an excluded
+    /// entry is never deleted as an excess copy either. `sorted` must
+    /// already be in `sortedByTimestamp` order; so is the result.
+    static func excludingExplained(_ sorted: [LoggedFood], excluded: Set<String>, keepAtLeast: Int) -> [LoggedFood] {
+        guard !excluded.isEmpty else { return sorted }
+        func isExcluded(_ food: LoggedFood) -> Bool {
+            guard let logId = food.logId else { return false }
+            return excluded.contains(logId)
+        }
+        let kept = sorted.filter { !isExcluded($0) }
+        guard kept.count < keepAtLeast else { return kept }
+        let restored = sorted.filter { isExcluded($0) }.prefix(keepAtLeast - kept.count)
+        return sortedByTimestamp(kept + Array(restored))
     }
 
     /// Groups entries by the parts of the match key beyond `date` (which the

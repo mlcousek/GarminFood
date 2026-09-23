@@ -11,6 +11,11 @@
 // be retried here; a queued Garmin delete can also be cancelled (the
 // weigh-in then stays in Garmin). Removing an add or a drink is done from
 // the Weight/Water screens, which keep their local records consistent.
+//
+// add-log-entry-editing: an edit whose corrected entry is already in Garmin
+// but whose old entry isn't removed yet (`.createdAwaitingDelete`) is listed
+// here too, so the temporary duplicate is never silent -- and, once parked
+// (the delete gave up), offered a retry that only re-attempts the delete.
 
 import SwiftUI
 import GarminKit
@@ -176,7 +181,9 @@ private struct QueueEntryRow: View {
             Button(role: .destructive, action: onDelete) {
                 Label("Delete", systemImage: "trash")
             }
-            if entry.state == .failed {
+            // A parked edit's retry only re-attempts the old entry's delete
+            // (`Outbox.retry`), so it's as safe to offer as a failed create's.
+            if entry.needsManualRetry {
                 Button(action: onRetry) {
                     Label("Retry", systemImage: "arrow.clockwise")
                 }
@@ -198,10 +205,15 @@ private struct QueueEntryRow: View {
             case .failed:
                 Image(systemName: "exclamationmark.triangle.fill")
                 Text("Failed after \(entry.attemptCount) attempts")
+            case .createdAwaitingDelete:
+                // add-log-entry-editing D1: the corrected entry is in Garmin,
+                // the old one not yet removed -- a temporary duplicate there.
+                Image(systemName: entry.isParkedReplace ? "exclamationmark.triangle.fill" : "arrow.triangle.2.circlepath")
+                Text(entry.isParkedReplace ? "Edited, but the old entry is still in Garmin" : "Edited, removing the old entry…")
             }
         }
         .font(.caption)
-        .foregroundStyle(entry.state == .failed ? Theme.warning : .secondary)
+        .foregroundStyle(entry.needsManualRetry ? Theme.warning : .secondary)
     }
 }
 
@@ -316,6 +328,10 @@ private struct QueueStatusLine: View {
             case .failed:
                 Image(systemName: "exclamationmark.triangle.fill")
                 Text("Failed after \(attemptCount) attempts")
+            case .createdAwaitingDelete:
+                // Food-outbox-only (add-log-entry-editing); weight and water
+                // entries never reach it.
+                EmptyView()
             }
         }
         .font(.caption)
