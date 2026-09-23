@@ -51,4 +51,27 @@ final class CalorieBandTests: XCTestCase {
     func testNothingEatenYetIsLow() {
         XCTAssertEqual(MacroProgress(consumed: 0, goal: 2300).calorieBand, .low)
     }
+
+    // Gamification's "calorie goal met" is exactly the ring's green band
+    // (owner, 2026-09-23), so the two can never disagree about a day.
+    func testCalorieGoalMetIsExactlyTheGreenBand() {
+        XCTAssertTrue(CalorieBand.isGoalMet(consumed: 2185, goal: 2300), "exactly 95%")
+        XCTAssertTrue(CalorieBand.isGoalMet(consumed: 2300, goal: 2300))
+        XCTAssertTrue(CalorieBand.isGoalMet(consumed: 2415, goal: 2300), "exactly 105%")
+        XCTAssertFalse(CalorieBand.isGoalMet(consumed: 2150, goal: 2300), "93.5% was 'met' under the old +/-15% rule")
+        XCTAssertFalse(CalorieBand.isGoalMet(consumed: 2600, goal: 2300), "113% was 'met' under the old +/-15% rule")
+    }
+
+    func testCalorieGoalIsNotMetWithoutDataOrAUsableGoal() {
+        XCTAssertFalse(CalorieBand.isGoalMet(consumed: nil, goal: 2300))
+        XCTAssertFalse(CalorieBand.isGoalMet(consumed: 2300, goal: nil))
+        XCTAssertFalse(CalorieBand.isGoalMet(consumed: 0, goal: 0))
+    }
+
+    func testCalorieGoalMetAgreesWithTheRingForEveryPercent() {
+        for consumed in stride(from: 0.0, through: 3000.0, by: 1.0) {
+            let progress = MacroProgress(consumed: consumed, goal: 2300)
+            XCTAssertEqual(CalorieBand.isGoalMet(consumed: consumed, goal: 2300), progress.calorieBand == .onTarget, "\(consumed) kcal")
+        }
+    }
 }

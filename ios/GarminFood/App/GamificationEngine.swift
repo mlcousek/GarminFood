@@ -208,14 +208,14 @@ final class GamificationEngine {
     /// anything else, and simply leaves `goalStatusStore` with whatever it
     /// already had cached (possibly nothing, possibly stale by a day).
     ///
-    /// ASSUMPTION, stated plainly because nothing in the probed contract
-    /// says this explicitly: "met" for calories is treated as landing
-    /// within +/-15% of the goal (there is no local signal for whether the
-    /// account is targeting a deficit, a surplus, or maintenance, so
-    /// neither "at or under" nor "at or over" is defensible as the one
-    /// true rule). "Met" for protein/carbs/fat is treated as "at or above"
-    /// the goal, matching the common real-world framing of a macro target
-    /// as a minimum to hit, protein especially.
+    /// "Met" for calories is the home ring's green band, 95-105% of the
+    /// Target (`CalorieBand.isGoalMet`, owner decision 2026-09-23) -- it
+    /// used to be a separate +/-15% tolerance, so a day at 90% counted as
+    /// "goal met" here while the ring showed it yellow. Two-sided because
+    /// there is no local signal for whether the account is targeting a
+    /// deficit, a surplus, or maintenance. "Met" for protein/carbs/fat is
+    /// treated as "at or above" the goal, matching the common real-world
+    /// framing of a macro target as a minimum to hit, protein especially.
     func refreshGoalStatus(for date: Date = Date()) async {
         let dateString = NutritionDate.string(from: date)
         guard let log = try? await garminClient.dailyFoodLog(date: dateString),
@@ -230,7 +230,7 @@ final class GamificationEngine {
         // fallback for a payload with no base value (`MealDashboard.target`).
         let status = DailyGoalStatus(
             date: dateString,
-            metCalorieGoal: Self.metWithinTolerance(actual: content.calories, goal: goals.calories ?? goals.adjustedCalories),
+            metCalorieGoal: CalorieBand.isGoalMet(consumed: content.calories, goal: goals.calories ?? goals.adjustedCalories),
             metProteinGoal: Self.metAtLeast(actual: content.protein, goal: goals.protein ?? goals.adjustedProtein),
             metCarbGoal: Self.metAtLeast(actual: content.carbs, goal: goals.carbs ?? goals.adjustedCarbs),
             metFatGoal: Self.metAtLeast(actual: content.fat, goal: goals.fat ?? goals.adjustedFat)
@@ -460,10 +460,5 @@ final class GamificationEngine {
     private static func metAtLeast(actual: Double?, goal: Double?) -> Bool {
         guard let actual, let goal, goal > 0 else { return false }
         return actual >= goal
-    }
-
-    private static func metWithinTolerance(actual: Double?, goal: Double?, tolerance: Double = 0.15) -> Bool {
-        guard let actual, let goal, goal > 0 else { return false }
-        return abs(actual - goal) <= goal * tolerance
     }
 }
