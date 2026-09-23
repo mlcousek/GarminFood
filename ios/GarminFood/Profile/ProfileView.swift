@@ -86,7 +86,7 @@ private struct ProfileHeader: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.sm) {
             avatar
-            Text(profile?.displayName ?? profile?.fullName ?? "GarminFood")
+            Text(headerName)
                 .font(.title2.weight(.bold))
             if let location = profile?.location, !location.isEmpty {
                 Text(location)
@@ -101,6 +101,20 @@ private struct ProfileHeader: View {
         .frame(maxWidth: .infinity)
         .padding(.top, Theme.Spacing.md)
         .accessibilityElement(children: .combine)
+    }
+
+    /// `fullName` first (fix-testing-feedback-quick-wins): on the owner's
+    /// account `socialProfile.displayName` is a UUID (live-probed
+    /// 2026-09-23), so preferring it showed an opaque id instead of a name.
+    /// An empty string counts as missing, so it falls through too.
+    private var headerName: String {
+        if let fullName = profile?.fullName, !fullName.trimmingCharacters(in: .whitespaces).isEmpty {
+            return fullName
+        }
+        if let displayName = profile?.displayName, !displayName.trimmingCharacters(in: .whitespaces).isEmpty {
+            return displayName
+        }
+        return "GarminFood"
     }
 
     @ViewBuilder

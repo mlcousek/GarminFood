@@ -11,7 +11,8 @@
 //
 // Evidence behind the rules (probed 2026-09-16):
 // - every `mealDetails[]` item carries `mealNutritionGoals`, including
-//   `adjusted*` variants that add burned calories on top of the plan;
+//   `adjusted*` variants that add burned calories on top of the plan
+//   (deliberately NOT used as the target since 2026-09-23 -- see `target`);
 // - a meal with nothing logged returns an EMPTY `mealNutritionContent`;
 // - `meal.startTime`/`endTime` exist for breakfast, lunch and dinner, and
 //   not for snacks.
@@ -565,10 +566,17 @@ public enum MealDashboard {
 
     // MARK: Helpers
 
-    /// Garmin's own page shows the adjusted target when auto-adjustment is
-    /// on; the base value is the fallback.
+    /// The fixed, base goal (Garmin `calorieGoal` and its macro split), NOT
+    /// the `adjusted*` value -- owner decision 2026-09-23 (fix-testing-
+    /// feedback-quick-wins, today-dashboard spec "The home Target is the
+    /// fixed calorie goal"): `adjusted*` is the goal PLUS burned calories,
+    /// which silently moved the Target after every run. Burned calories are
+    /// shown separately, for information only ("Active today"). Macros
+    /// follow the same rule so their bars stay consistent with the calorie
+    /// Target. The adjusted value is only a fallback for a payload that
+    /// somehow carries no base value at all.
     static func target(_ adjusted: Double?, _ base: Double?) -> Double? {
-        adjusted ?? base
+        base ?? adjusted
     }
 
     static func sum(_ entries: [MealEntry], _ value: KeyPath<MealEntry, Double?>) -> Double {

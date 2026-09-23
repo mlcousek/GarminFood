@@ -33,8 +33,12 @@ struct FoodCatalogView: View {
         /// Reused by the meal-preset editor to add an ingredient -- either a
         /// real catalog food+serving, or one of the user's own custom foods,
         /// in which case the third argument carries the draft the preset
-        /// needs to log it correctly later (see MealPreset.swift).
-        case pickIngredient(onPick: (Food, Serving, CustomFoodDraft?) -> Void)
+        /// needs to log it correctly later (see MealPreset.swift). The
+        /// fourth is the starting quantity multiplier: a Quick pick card's
+        /// own remembered quantity, `1` for every other source
+        /// (fix-testing-feedback-quick-wins, food-catalog spec "Quick pick
+        /// tapped while adding an ingredient").
+        case pickIngredient(onPick: (Food, Serving, CustomFoodDraft?, Double) -> Void)
     }
 
     var mode: Mode = .logFood
@@ -108,11 +112,18 @@ struct FoodCatalogView: View {
     }
 
     /// True for either "pick something for another screen" mode -- neither
-    /// should show meal presets (a preset is a group of separately-logged
-    /// entries, not itself a pickable food/serving) or the Czech search
-    /// section (that flow ends in Garmin matching/creation, not a plain
-    /// food+serving pick).
+    /// shows meal presets (a preset is a group of separately-logged
+    /// entries, not itself a pickable food/serving) or favorite toggles.
+    /// Every tap in either mode hands the food back to the caller and never
+    /// logs anything (fix-testing-feedback-quick-wins, food-catalog spec "A
+    /// tap in picker mode never logs a food").
     private var isPicking: Bool { isPickingBackingFood || isPickingIngredient }
+
+    /// Custom foods whose name matches the typed query (task 1.3) -- empty
+    /// while the query is blank, since the full list shows then instead.
+    private var matchingCustomFoods: [CustomFoodDraft] {
+        CustomFoodSearch.filter(customFoods, query: searchText)
+    }
 
     var body: some View {
         List {
@@ -121,11 +132,10 @@ struct FoodCatalogView: View {
                     Section {
                         QuickPickShelf(
                             items: quickPickItems,
-                            onTap: { item in
-                                logTarget = .catalog(food: item.food, initialServing: item.serving)
-                            },
+                            onTap: { item in selectQuickPick(item) },
                             isFavorite: isPicking ? nil : { isFoodFavorited($0) },
-                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) }
+                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
+                            cardAccessibilityHint: isPickingIngredient ? "Adds this to the meal" : "Logs this again"
                         )
                         .listRowInsets(EdgeInsets())
                         .listRowSeparator(.hidden)
@@ -158,19 +168,7 @@ struct FoodCatalogView: View {
                 if !customFoods.isEmpty {
                     Section {
                         ForEach(customFoods) { draft in
-                            HStack(spacing: Theme.Spacing.sm) {
-                                Button {
-                                    selectCustomFood(draft)
-                                } label: {
-                                    FoodListRow(food: draft.asFood(), serving: draft.asFood().servings.first)
-                                }
-                                .buttonStyle(.plain)
-                                if !isPicking {
-                                    FavoriteToggleButton(isFavorite: isFoodFavorited(draft.asFood())) {
-                                        toggleFavorite(draft.asFood())
-                                    }
-                                }
-                            }
+                            customFoodRow(draft)
                         }
                     } header: {
                         SectionHeader(title: "Your custom foods")
@@ -206,6 +204,21 @@ struct FoodCatalogView: View {
                     } header: {
                         SectionHeader(title: "Your meals")
                     }
+                }
+            }
+
+            // Task 1.3: while a query is typed, the user's own custom foods
+            // whose name matches it, above Garmin's results -- in every mode
+            // that offers custom foods at all (not `pickBackingFood`: a
+            // custom food can't back another custom food, and `customFoods`
+            // is never loaded there). Interim until `rebuild-food-search`.
+            if !matchingCustomFoods.isEmpty {
+                Section {
+                    ForEach(matchingCustomFoods) { draft in
+                        customFoodRow(draft)
+                    }
+                } header: {
+                    SectionHeader(title: "Your custom foods")
                 }
             }
 
@@ -252,8 +265,11 @@ struct FoodCatalogView: View {
             // Hidden in `pickBackingFood` mode: that picker's whole job is
             // finding an existing GARMIN food to back a custom food, so an
             // OFF result (which itself needs matching/creation) doesn't
-            // belong there.
-            if !isPicking, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+            // belong there. Shown in `pickIngredient` mode since
+            // fix-testing-feedback-quick-wins (task 1.2): the match flow
+            // runs as usual, then hands the matched Garmin food back to the
+            // meal instead of logging it (`matchPickHandler`).
+            if !isPickingBackingFood, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
                 Section {
                     if isCzechSearching {
                         HStack {
@@ -399,7 +415,12 @@ struct FoodCatalogView: View {
         // Task 28.2: picking a Czech-database result routes into the
         // matching flow instead of straight to the confirm screen.
         .navigationDestination(item: $matchingTarget) { offFood in
-            MatchConfirmationView(offFood: offFood, presetMealType: logContext.mealType, presetDate: logContext.date)
+            MatchConfirmationView(
+                offFood: offFood,
+                presetMealType: logContext.mealType,
+                presetDate: logContext.date,
+                onPickMatched: matchPickHandler
+            )
         }
         .navigationDestination(item: $mealPresetTarget) { preset in
             MealPresetConfirmView(preset: preset, presetMealType: logContext.mealType, presetDate: logContext.date)
@@ -425,7 +446,97 @@ struct FoodCatalogView: View {
         isPresentingBarcodeScanner = true
     }
 
+    /// One row of the custom-food list, shared by the full list (empty
+    /// query) and the name-matched list (typed query).
+    @ViewBuilder
+    private func customFoodRow(_ draft: CustomFoodDraft) -> some View {
+        HStack(spacing: Theme.Spacing.sm) {
+            Button {
+                selectCustomFood(draft)
+            } label: {
+                FoodListRow(food: draft.asFood(), serving: draft.asFood().servings.first)
+            }
+            .buttonStyle(.plain)
+            if !isPicking {
+                FavoriteToggleButton(isFavorite: isFoodFavorited(draft.asFood())) {
+                    toggleFavorite(draft.asFood())
+                }
+            }
+        }
+    }
+
+    /// Hands a matched (or newly created) Garmin food from the OFF match
+    /// flow back through the same path a picked serving takes, so an OFF
+    /// product becomes a meal ingredient instead of a log entry. `nil`
+    /// outside `pickIngredient`, which keeps `MatchConfirmationView` on its
+    /// normal log-it path.
+    private var matchPickHandler: ((Food, Serving) -> Void)? {
+        guard isPickingIngredient else { return nil }
+        return { food, serving in
+            handleServingPicked(food: food, serving: serving)
+        }
+    }
+
+    /// The Quick pick shelf's tap (fix-testing-feedback-quick-wins task
+    /// 1.1). It used to set `logTarget` unconditionally, so tapping a card
+    /// while adding a meal ingredient LOGGED the food instead. Now:
+    /// `pickIngredient` hands the card's food, serving AND quantity back;
+    /// `logFood` opens the confirm screen as before. A custom food on the
+    /// shelf (cached as a `.custom`-source `Food`) is resolved back to its
+    /// `CustomFoodDraft` first in every mode, so it is never treated as a
+    /// Garmin food id.
+    private func selectQuickPick(_ item: QuickPickItem) {
+        Task {
+            let draft = await customDraft(for: item.food)
+            // A custom food whose draft was deleted: its id means nothing to
+            // Garmin, so neither logging nor adding it is possible.
+            if item.food.source == .custom, draft == nil { return }
+            let food = draft?.asFood() ?? item.food
+            let serving = food.servings.first(where: { $0.id == item.serving.id }) ?? item.serving
+
+            switch mode {
+            case .pickIngredient(let onPick):
+                onPick(food, serving, draft, item.numberOfUnits)
+                dismiss()
+            case .pickBackingFood(let onPick):
+                // The shelf isn't shown in this mode; if it ever is, only a
+                // real Garmin food can back a custom food.
+                guard draft == nil else { return }
+                onPick(food, serving)
+                dismiss()
+            case .logFood:
+                if let draft {
+                    logTarget = .custom(draft)
+                } else {
+                    logTarget = .catalog(food: food, initialServing: serving)
+                }
+            }
+        }
+    }
+
+    /// The `CustomFoodDraft` behind a `.custom`-source `Food` (a custom food
+    /// reached via the Quick pick or Favorites shelf, which only store the
+    /// `Food`), or `nil` for any other food. Falls back to the store when
+    /// `customFoods` isn't loaded (yet, or at all in `pickBackingFood`).
+    private func customDraft(for food: Food) async -> CustomFoodDraft? {
+        guard food.source == .custom else { return nil }
+        if let loaded = customFoods.first(where: { $0.id.uuidString == food.id }) {
+            return loaded
+        }
+        return await environment.customFoodStore.all().first(where: { $0.id.uuidString == food.id })
+    }
+
     private func select(_ food: Food) {
+        // A custom food from the Favorites shelf routes through its draft,
+        // exactly like tapping it in the custom-food list.
+        if food.source == .custom {
+            Task {
+                if let draft = await customDraft(for: food) {
+                    selectCustomFood(draft)
+                }
+            }
+            return
+        }
         switch mode {
         case .pickBackingFood, .pickIngredient:
             foodAwaitingServingPick = food
@@ -447,7 +558,7 @@ struct FoodCatalogView: View {
             onPick(food, serving)
             dismiss()
         case .pickIngredient(let onPick):
-            onPick(food, serving, nil)
+            onPick(food, serving, nil, 1)
             dismiss()
         case .logFood:
             logTarget = .catalog(food: food, initialServing: serving)
@@ -462,9 +573,13 @@ struct FoodCatalogView: View {
         case .pickIngredient(let onPick):
             let asFood = draft.asFood()
             guard let serving = asFood.servings.first else { return }
-            onPick(asFood, serving, draft)
+            onPick(asFood, serving, draft, 1)
             dismiss()
-        case .pickBackingFood, .logFood:
+        case .pickBackingFood:
+            // A custom food can't back another custom food (its own backing
+            // must be a real Garmin food), and a picker tap must never log.
+            return
+        case .logFood:
             logTarget = .custom(draft)
         }
     }

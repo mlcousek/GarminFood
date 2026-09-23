@@ -165,8 +165,8 @@ struct MealPresetEditorView: View {
         }
         .sheet(isPresented: $isPresentingIngredientPicker) {
             NavigationStack {
-                FoodCatalogView(mode: .pickIngredient(onPick: { food, serving, customFoodDraft in
-                    ingredients.append(MealPresetIngredient(food: food, serving: serving, quantity: 1, customFoodDraft: customFoodDraft))
+                FoodCatalogView(mode: .pickIngredient(onPick: { food, serving, customFoodDraft, quantity in
+                    ingredients.append(MealPresetIngredient(food: food, serving: serving, quantity: quantity, customFoodDraft: customFoodDraft))
                 }))
             }
         }

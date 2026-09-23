@@ -5,7 +5,9 @@
 // tapping a card logs the exact food+serving+quantity it was last logged
 // with, in as close to one tap as this app gets (the confirm screen still
 // appears, so the meal type/date/quantity stay reviewable and editable, per
-// the food-log-entry spec).
+// the food-log-entry spec). What a tap does is entirely the caller's
+// `onTap`: in `FoodCatalogView`'s ingredient picker it adds the card to the
+// meal instead of logging (fix-testing-feedback-quick-wins).
 
 import SwiftUI
 import FoodLogCore
@@ -21,6 +23,10 @@ struct QuickPickShelf: View {
     /// isn't offered.
     var isFavorite: ((Food) -> Bool)? = nil
     var onToggleFavorite: ((Food) -> Void)? = nil
+    /// What a tap does, for VoiceOver. `FoodCatalogView` passes "Adds this
+    /// to the meal" in its ingredient picker, where a tap no longer logs
+    /// (fix-testing-feedback-quick-wins).
+    var cardAccessibilityHint: String = "Logs this again"
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -30,7 +36,7 @@ struct QuickPickShelf: View {
                         Button {
                             onTap(item)
                         } label: {
-                            QuickPickCard(item: item)
+                            QuickPickCard(item: item, hint: cardAccessibilityHint)
                         }
                         .buttonStyle(.plain)
                         // A sibling of the Button above, not nested inside
@@ -53,6 +59,7 @@ struct QuickPickShelf: View {
 
 private struct QuickPickCard: View {
     let item: QuickPickItem
+    let hint: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -72,7 +79,7 @@ private struct QuickPickCard: View {
         .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.md))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(item.food.name), \(item.numberOfUnits.formattedQuantity) times \(item.serving.displayLabel)")
-        .accessibilityHint("Logs this again")
+        .accessibilityHint(hint)
     }
 }
 

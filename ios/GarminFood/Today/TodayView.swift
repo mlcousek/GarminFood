@@ -61,7 +61,13 @@ struct TodayView: View {
                     onToday: { Task { await environment.goToToday() } }
                 )
 
-                DaySummaryCard(dashboard: dashboard, isStale: dayLog.isStale, isLoading: dayLog.isLoading)
+                DaySummaryCard(
+                    dashboard: dashboard,
+                    isStale: dayLog.isStale,
+                    isLoading: dayLog.isLoading,
+                    activeKilocalories: dayLog.activeKilocalories,
+                    isToday: dayLog.isToday
+                )
 
                 ProgressStrip(
                     streak: environment.gamificationEngine.streakStatus,
@@ -96,7 +102,7 @@ struct TodayView: View {
                         SectionHeader(title: "Log again")
                             .padding(.horizontal, Theme.Spacing.md)
                         QuickPickShelf(items: quickPickItems) { item in
-                            logTarget = .catalog(food: item.food, initialServing: item.serving)
+                            logAgain(item)
                         }
                     }
                     .padding(.horizontal, -Theme.Spacing.md)
@@ -224,6 +230,25 @@ struct TodayView: View {
         catalogContext = LogContext(mealType: meal, date: environment.dayLog.selectedDate)
     }
 
+    /// "Log again" tap. A custom food on the shelf is cached as a
+    /// `.custom`-source `Food` whose id is the draft's local UUID -- which
+    /// means nothing to Garmin -- so it must route through its
+    /// `CustomFoodDraft` (logged as its backing food), exactly like
+    /// `FoodCatalogView.selectQuickPick`. A custom food whose draft was
+    /// deleted can't be logged at all, so the tap does nothing.
+    private func logAgain(_ item: QuickPickItem) {
+        guard item.food.source == .custom else {
+            logTarget = .catalog(food: item.food, initialServing: item.serving)
+            return
+        }
+        Task {
+            let drafts = await environment.customFoodStore.all()
+            if let draft = drafts.first(where: { $0.id.uuidString == item.food.id }) {
+                logTarget = .custom(draft)
+            }
+        }
+    }
+
     private func loadQuickPicks() async {
         let events = await environment.usageHistory.all()
         let cache = await environment.foodCache.all()
@@ -260,10 +285,20 @@ struct TodayView: View {
 // MARK: - Day summary
 
 /// The day against its target: a calorie ring and the three macro bars.
+///
+/// The Target is the fixed base goal and the ring is coloured by
+/// `CalorieBand`'s stepped scale (fix-testing-feedback-quick-wins,
+/// today-dashboard spec). Active calories are shown under the Target for
+/// information only -- they never change the Target (no eat-back).
 struct DaySummaryCard: View {
     let dashboard: DayDashboard
     let isStale: Bool
     let isLoading: Bool
+    /// The selected day's active kcal, or `nil` to hide the line (not
+    /// loaded yet, or the read failed -- never shown as an error).
+    var activeKilocalories: Double? = nil
+    /// Picks the line's wording: "Active today" vs. a past day's "Active".
+    var isToday: Bool = true
 
     @ScaledMetric(relativeTo: .largeTitle) private var ringSize: CGFloat = 132
 
@@ -274,7 +309,7 @@ struct DaySummaryCard: View {
                 ProgressRing(
                     fraction: calories.fraction ?? 0,
                     lineWidth: 12,
-                    tint: calories.state.tint(base: Theme.accent)
+                    tint: calories.calorieBand?.tint ?? Theme.accent
                 ) {
                     VStack(spacing: 0) {
                         Text("\(Int(calories.consumed.rounded()))")
@@ -299,6 +334,12 @@ struct DaySummaryCard: View {
                         Text("Target \(Int(goal.rounded())) kcal")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                    }
+                    if let activeKilocalories {
+                        Label(activeText(activeKilocalories), systemImage: "flame")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .accessibilityLabel(activeAccessibility(activeKilocalories))
                     }
                     statusLine
                 }
@@ -339,7 +380,20 @@ struct DaySummaryCard: View {
     private func caloriesAccessibility(_ calories: MacroProgress) -> String {
         let consumed = Int(calories.consumed.rounded())
         guard let goal = calories.goal else { return "\(consumed) kilocalories" }
-        return "\(consumed) of \(Int(goal.rounded())) kilocalories"
+        let base = "\(consumed) of \(Int(goal.rounded())) kilocalories"
+        guard let band = calories.calorieBand else { return base }
+        return "\(base), \(band.accessibilityDescription)"
+    }
+
+    private func activeText(_ kilocalories: Double) -> String {
+        let value = Int(kilocalories.rounded())
+        return isToday ? "Active today: \(value) kcal" : "Active: \(value) kcal"
+    }
+
+    private func activeAccessibility(_ kilocalories: Double) -> String {
+        let value = Int(kilocalories.rounded())
+        let when = isToday ? "today" : "that day"
+        return "Active calories burned \(when): \(value) kilocalories. For information only, not added to the target."
     }
 }
 
