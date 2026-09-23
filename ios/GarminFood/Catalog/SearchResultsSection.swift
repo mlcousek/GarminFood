@@ -244,8 +244,11 @@ struct SearchResultsSection: View {
         let allOnlineUnavailable = !askedOnline.isEmpty
             && askedOnline.allSatisfy { origin in unavailable.contains(origin) }
         if allOnlineUnavailable {
+            let hasOfflineResults = snapshot.results.contains { $0.origin == .offlineIndex }
             notes.append(SearchFootnote(
-                text: "Online food databases are unavailable right now, so these are foods you already have.",
+                text: hasOfflineResults
+                    ? "Online food databases are unavailable right now, so these are your foods and the offline Czech database."
+                    : "Online food databases are unavailable right now, so these are foods you already have.",
                 systemImage: "wifi.slash",
                 isWarning: false
             ))

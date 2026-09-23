@@ -9,6 +9,7 @@
 import BackgroundTasks
 import Foundation
 import GarminKit
+import FoodLogCore
 
 enum BackgroundRefresh {
     /// Must match `BGTaskSchedulerPermittedIdentifiers` in project.yml.
