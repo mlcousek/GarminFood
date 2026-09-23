@@ -70,6 +70,51 @@ final class LogEntryCoordinatorTests: XCTestCase {
         XCTAssertEqual(stored.first?.languageCode, "cs")
     }
 
+    func testAFoodsOwnRegionWinsOverTheAccountWideOne() async throws {
+        // The food's own region/language is the exact tuple a Garmin custom
+        // food's nutrition is stored under; the account-wide value is only
+        // a fallback for foods that don't carry one.
+        let (coordinator, outbox, _, _) = makeCoordinator()
+        let customGarminFood = Food(
+            id: "0123456789abcdef0123456789abcdef", name: "Ginger shot", source: .garmin,
+            servings: [Serving(id: "s1", unit: "shot", numberOfUnits: 1)],
+            regionCode: "CZ", languageCode: "cs"
+        )
+
+        _ = try await coordinator.confirm(
+            food: customGarminFood, serving: customGarminFood.servings[0], numberOfUnits: 1,
+            mealType: .breakfast, date: "2026-09-14",
+            regionCode: "US", languageCode: "en"
+        )
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.regionCode, "CZ")
+        XCTAssertEqual(stored.first?.languageCode, "cs")
+    }
+
+    func testConfirmCustomFoodUsesTheBackingFoodsOwnRegion() async throws {
+        let (coordinator, outbox, _, _) = makeCoordinator()
+        let customFood = CustomFoodDraft(
+            name: "Ginger shot",
+            servingUnit: "shot",
+            numberOfUnits: 1,
+            backingFoodId: "0123456789abcdef0123456789abcdef",
+            backingFoodName: "Ginger shot (Garmin)",
+            backingServingId: "s1",
+            backingRegionCode: "CZ",
+            backingLanguageCode: "cs"
+        )
+
+        _ = try await coordinator.confirmCustomFood(
+            customFood, quantity: 1, mealType: .snacks, date: "2026-09-14",
+            regionCode: "US", languageCode: "en"
+        )
+
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first?.regionCode, "CZ")
+        XCTAssertEqual(stored.first?.languageCode, "cs")
+    }
+
     func testConfirmUpdatesUsageHistoryInTheSameAction() async throws {
         let (coordinator, _, usageHistory, _) = makeCoordinator()
 

@@ -70,6 +70,14 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
     /// A free-text note -- e.g. a scanned-but-unresolved barcode (design.md
     /// D3's fallback path) -- shown alongside the food, not sent to Garmin.
     public var note: String?
+    /// The backing food's own region/language as Garmin reported them when
+    /// it was picked (`Food.regionCode`/`.languageCode`). Matters when the
+    /// backing food is itself a Garmin custom food: its nutrition record is
+    /// looked up by exactly this tuple at log time. Optional so drafts saved
+    /// before these fields existed still decode (`nil` = fall back to the
+    /// account's region/language).
+    public var backingRegionCode: String?
+    public var backingLanguageCode: String?
 
     public init(
         id: UUID = UUID(),
@@ -90,7 +98,9 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
         backingFoodName: String,
         backingServingId: String,
         backingQuantityMultiplier: Double = 1,
-        note: String? = nil
+        note: String? = nil,
+        backingRegionCode: String? = nil,
+        backingLanguageCode: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -111,6 +121,8 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
         self.backingServingId = backingServingId
         self.backingQuantityMultiplier = backingQuantityMultiplier
         self.note = note
+        self.backingRegionCode = backingRegionCode
+        self.backingLanguageCode = backingLanguageCode
     }
 
     /// This custom food as a `Food`/`Serving` pair -- so the log-entry flow,

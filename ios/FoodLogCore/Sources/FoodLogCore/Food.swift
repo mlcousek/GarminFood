@@ -377,6 +377,18 @@ public struct Food: Codable, Sendable, Equatable, Hashable, Identifiable {
     /// the quick-pick ranking itself.
     public let garminIsFavorite: Bool?
     public let garminIsRecent: Bool?
+    /// The region/language Garmin itself reports this food under
+    /// (`foodMetaData.regionCode`/`.languageCode` on every search result).
+    /// A Garmin CUSTOM food's nutrition record is looked up by exactly this
+    /// `(foodId, regionCode, languageCode)` tuple when it's logged -- sending
+    /// any other pair 400s with "Custom food nutrition information is
+    /// missing for the provided food id with region code and language code"
+    /// (the owner's real 2026-09-22 device error). `nil` for a food that
+    /// didn't come from Garmin, or one persisted before these fields
+    /// existed; the log write then falls back to the account's own
+    /// region/language, then to the hardcoded default.
+    public let regionCode: String?
+    public let languageCode: String?
 
     public init(
         id: String,
@@ -386,7 +398,9 @@ public struct Food: Codable, Sendable, Equatable, Hashable, Identifiable {
         servings: [Serving],
         imageURL: String? = nil,
         garminIsFavorite: Bool? = nil,
-        garminIsRecent: Bool? = nil
+        garminIsRecent: Bool? = nil,
+        regionCode: String? = nil,
+        languageCode: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -396,6 +410,8 @@ public struct Food: Codable, Sendable, Equatable, Hashable, Identifiable {
         self.imageURL = imageURL
         self.garminIsFavorite = garminIsFavorite
         self.garminIsRecent = garminIsRecent
+        self.regionCode = regionCode
+        self.languageCode = languageCode
     }
 
     /// Adapts a `GarminKit.FoodSearchResult` (the confirmed-live
@@ -417,7 +433,9 @@ public struct Food: Codable, Sendable, Equatable, Hashable, Identifiable {
             servings: servings,
             imageURL: nil,
             garminIsFavorite: searchResult.isFavorite,
-            garminIsRecent: searchResult.isRecent
+            garminIsRecent: searchResult.isRecent,
+            regionCode: meta.regionCode,
+            languageCode: meta.languageCode
         )
     }
 }
