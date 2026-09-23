@@ -91,7 +91,7 @@ struct OfflineIndexSettingsSection: View {
         }
     }
 
-    private static func message(for outcome: OfflineIndexUpdateOutcome) -> String? {
+    nonisolated private static func message(for outcome: OfflineIndexUpdateOutcome) -> String? {
         switch outcome {
         case .checkedRecently, .alreadyRunning:
             return nil
