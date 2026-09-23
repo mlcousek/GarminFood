@@ -3,7 +3,8 @@
 // Delivers queued entries while the app isn't open (add-garmin-auth-and-sync
 // 9.5, design D10). iOS decides when, and whether, a refresh actually runs.
 // For a sideloaded app that is a device check, not an assumption. The
-// foreground drain keeps working regardless.
+// foreground drain keeps working regardless. It also runs the Czech
+// offline index's daily update check (add-offline-czech-food-index).
 
 import BackgroundTasks
 import Foundation
@@ -42,5 +43,10 @@ enum BackgroundRefresh {
         if waiting {
             schedule()
         }
+        // add-offline-czech-food-index D3: the at-most-daily index check,
+        // piggybacking on whatever background time iOS grants. Throttled
+        // and Wi-Fi-gated by the store itself; a no-op most of the time.
+        let allowsCellular = UserDefaults.standard.bool(forKey: AppPreferences.Key.offlineIndexAllowsCellular)
+        _ = await services.offlineIndexStore.checkForUpdate(allowsCellular: allowsCellular)
     }
 }

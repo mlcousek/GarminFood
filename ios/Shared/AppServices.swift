@@ -76,6 +76,14 @@ final class AppServices {
     /// header) -- one shared instance per process, same reason as
     /// `fastingStore` above.
     let dayNoteStore: DayNoteStore
+    /// add-offline-czech-food-index: the downloaded Czech Open Food Facts
+    /// index. `offlineIndex` is the in-memory copy that search
+    /// (`OfflineCzechIndexSource`) and the barcode fallback read without
+    /// ever waiting. `offlineIndexStore` downloads, verifies and installs
+    /// new versions into it. It is decoded lazily, so a process that never
+    /// searches (the widget extension) never pays for it.
+    let offlineIndex: OfflineFoodIndexHolder
+    let offlineIndexStore: OfflineIndexStore
 
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
@@ -91,6 +99,7 @@ final class AppServices {
         let hydrationOutbox = HydrationOutbox(processName: "app")
         let garminHealthCache = GarminHealthCacheStore()
         let foodCache = FoodCacheStore()
+        let offlineIndex = OfflineFoodIndexHolder()
 
         self.garminClient = client
         self.outbox = outbox
@@ -114,6 +123,8 @@ final class AppServices {
         self.hydrationLogCoordinator = HydrationLogCoordinator(store: hydrationStore, outbox: hydrationOutbox)
         self.garminHealthCache = garminHealthCache
         self.garminHealthSync = GarminHealthSync(cache: garminHealthCache, reader: client)
+        self.offlineIndex = offlineIndex
+        self.offlineIndexStore = OfflineIndexStore(holder: offlineIndex)
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`
