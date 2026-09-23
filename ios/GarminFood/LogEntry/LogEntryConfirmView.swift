@@ -300,8 +300,14 @@ struct LogEntryConfirmView: View {
         mealType = MealWindowDefaulting.mealType(at: Date(), windows: environment.dayLog.latestWindows)
     }
 
+    /// `!isSaving` is load-bearing, not redundant with the button's own
+    /// `isDisabled`: that's applied on the next render, so a second tap
+    /// landing before SwiftUI redraws still reaches `confirm()`, and
+    /// `didConfirm` only flips after the awaited commit -- without this, a
+    /// quick double-tap logged the same food to Garmin twice.
+    /// `MealPresetConfirmView.canConfirm` already guards the same way.
     private var canConfirm: Bool {
-        !didConfirm && (isCustom || selectedServing != nil) && quantity > 0
+        !didConfirm && !isSaving && (isCustom || selectedServing != nil) && quantity > 0
     }
 
     private func confirm() {
