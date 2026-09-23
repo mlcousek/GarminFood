@@ -72,13 +72,23 @@ public struct GarminClient: Sendable {
 
     // MARK: - Reads
 
-    /// GET `/nutrition-service/food/search?searchExpression={term}`.
-    /// Confirmed live 2026-09-14 -- Czech search terms return real results.
-    public func searchFood(term: String) async throws -> FoodSearchResponse {
-        let (data, response) = try await get(
-            path: "/nutrition-service/food/search",
-            query: [URLQueryItem(name: "searchExpression", value: term)]
-        )
+    /// GET `/nutrition-service/food/search?searchExpression={term}&start=&limit=[&regionCode=]`.
+    /// Confirmed live 2026-09-14; paging and region re-probed read-only
+    /// 2026-09-23 (docs/garmin-routes.json `foodSearch`): `limit` is at most
+    /// 50 and `start` must be divisible by it (400 otherwise);
+    /// `moreDataAvailable` says whether another page exists. `regionCode`
+    /// (e.g. "CZ") selects FatSecret's regional catalogue; `languageCode`
+    /// "cs" is rejected, so it is never sent.
+    public func searchFood(term: String, start: Int, limit: Int, regionCode: String?) async throws -> FoodSearchResponse {
+        var query = [
+            URLQueryItem(name: "searchExpression", value: term),
+            URLQueryItem(name: "start", value: String(start)),
+            URLQueryItem(name: "limit", value: String(limit))
+        ]
+        if let regionCode, !regionCode.isEmpty {
+            query.append(URLQueryItem(name: "regionCode", value: regionCode))
+        }
+        let (data, response) = try await get(path: "/nutrition-service/food/search", query: query)
         try Self.throwIfNotSuccessful(response, data: data)
         do {
             return try Self.decoder.decode(FoodSearchResponse.self, from: data)
@@ -530,7 +540,12 @@ public struct GarminClient: Sendable {
         do {
             (data, response) = try await urlSession.data(for: request)
         } catch {
-            DiagnosticsLog.log(.error, category: "GarminClient", "\(request.httpMethod ?? "?") \(request.url?.path ?? "?") failed: \(error.localizedDescription)")
+            // A request cancelled on purpose (search-as-you-type drops the
+            // previous keystroke's request) is not a failure worth logging.
+            let cancelled = error is CancellationError || (error as? URLError)?.code == .cancelled
+            if !cancelled {
+                DiagnosticsLog.log(.error, category: "GarminClient", "\(request.httpMethod ?? "?") \(request.url?.path ?? "?") failed: \(error.localizedDescription)")
+            }
             throw error
         }
         guard let http = response as? HTTPURLResponse else {

@@ -6,9 +6,9 @@
 // normal serving-picker/confirm flow -- selecting a Garmin result is
 // unchanged.
 //
-// Re-searches Garmin for the OFF product's own name (via the existing
-// `AppEnvironment.catalogSearch`, no new network client needed for that
-// half), runs the pure `GarminFoodMatching.match` heuristic against the
+// Re-searches Garmin for the OFF product's own name (via
+// `AppEnvironment.foodSearchEngine`, rebuild-food-search), runs the pure
+// `GarminFoodMatching.match` heuristic against the
 // results, and ALWAYS shows the outcome to the user before anything is
 // logged or created -- design.md D3's "never resolved invisibly" rule.
 // Once a real Garmin food is settled on (an existing match, or one just
@@ -185,15 +185,24 @@ struct MatchConfirmationView: View {
         }
     }
 
+    /// rebuild-food-search task 4.2: searches for the product's own words
+    /// (brand and pack size stripped, `GarminFoodMatching.searchQuery`)
+    /// through the unified engine, so candidates arrive ranked and the
+    /// user's own logged Garmin foods count too. Only real Garmin foods are
+    /// candidates -- never a custom food or another Open Food Facts product.
     private func runMatch() async {
-        do {
-            let candidates = try await environment.catalogSearch.search(term: offFood.name)
-            switch GarminFoodMatching.match(offFood: offFood, garminCandidates: candidates) {
-            case .matched(let food): state = .matched(food)
-            case .noMatch: state = .noMatch
-            }
-        } catch {
-            state = .error(GarminErrorPresentation.searchErrorMessage(for: error))
+        let query = GarminFoodMatching.searchQuery(for: offFood)
+        let snapshot = await environment.foodSearchEngine.search(query, options: SearchOptions(origins: [.local, .garmin]))
+        let candidates = snapshot.results
+            .filter { $0.origin.isDirectlyLoggable && $0.customDraft == nil && $0.food.source != .custom }
+            .map(\.food)
+        if candidates.isEmpty, case .failed(let failure)? = snapshot.statuses[.garmin] {
+            state = .error(GarminErrorPresentation.searchFailureMessage(for: failure))
+            return
+        }
+        switch GarminFoodMatching.match(offFood: offFood, garminCandidates: candidates) {
+        case .matched(let food): state = .matched(food)
+        case .noMatch: state = .noMatch
         }
     }
 }

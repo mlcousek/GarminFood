@@ -7,9 +7,9 @@
 // or (design.md D4) a new one is created with explicit confirmation.
 //
 // Pure and synchronous: this does no searching itself. The caller
-// (MatchConfirmationView) re-searches Garmin for the OFF product's own
-// name via the existing `FoodCatalogSearch`/`GarminClient` seam and hands
-// the results in here -- this file has no network dependency at all,
+// (MatchConfirmationView) searches Garmin for `searchQuery(for:)` via
+// `FoodSearchEngine` and hands the ranked results in here -- this file has
+// no network dependency at all,
 // which is what makes it trivially unit-testable (task 29.2) without a
 // fake server.
 //
@@ -78,6 +78,16 @@ public enum GarminFoodMatching {
         }
 
         return .noMatch
+    }
+
+    /// What to search Garmin for when matching `offFood` (rebuild-food-search
+    /// task 4.2): the product's own words without its brand or pack size,
+    /// diacritics kept, via the shared `SearchText` pipeline. The full OFF
+    /// name ("Rohlíky Krehké Celozrné 250G Active Bonavita") used to be sent
+    /// verbatim, and the brand/pack-size words only diluted Garmin's own
+    /// matching.
+    public static func searchQuery(for offFood: Food) -> String {
+        SearchText.matchQuery(name: offFood.name, brand: offFood.brandName)
     }
 
     /// Lowercases, strips diacritics (`folding(options: .diacriticInsensitive,

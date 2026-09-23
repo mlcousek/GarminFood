@@ -40,7 +40,7 @@ public enum BarcodeNormalization {
 }
 
 /// The subset of `GarminClient` barcode resolution needs -- same
-/// testability rationale as `FoodSearching`.
+/// testability rationale as `GarminFoodSearching`.
 public protocol BarcodeFoodLookup: Sendable {
     /// `GET /nutrition-service/food/search/barCode?barCode={ean}` (route
     /// confirmed to exist 2026-09-14; success payload shape UNCONFIRMED --

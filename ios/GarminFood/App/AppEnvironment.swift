@@ -37,12 +37,11 @@ final class AppEnvironment {
     /// add-day-notes: purely local, see DayNote.swift's header. Written by
     /// `DayNoteCard` (Today), read by `TrendsView` for its chart markers.
     let dayNoteStore: DayNoteStore
-    let catalogSearch: FoodCatalogSearch
-    /// The Czech (Open Food Facts) search source (add-czech-food-catalog) --
-    /// a completely separate network client from `garminClient`/
-    /// `catalogSearch`, per proposal.md's "two sources, never silently
-    /// merged" design.
-    let openFoodFactsClient: OpenFoodFactsClient
+    /// rebuild-food-search: the one food search -- the user's own foods,
+    /// Garmin and Open Food Facts, ranked together (FoodSearchEngine.swift).
+    /// One instance per app process, so its remote term cache is shared by
+    /// every catalog screen and the OFF -> Garmin match flow.
+    let foodSearchEngine: FoodSearchEngine
     let logEntryCoordinator: LogEntryCoordinator
     /// add-weight-tracking: mirrors `outbox`/`logEntryCoordinator` above,
     /// plus a loader (`weightLoader`) since, unlike the food dashboard,
@@ -102,8 +101,13 @@ final class AppEnvironment {
         self.fastingStore = services.fastingStore
         self.favoriteFoodStore = services.favoriteFoodStore
         self.dayNoteStore = services.dayNoteStore
-        self.catalogSearch = FoodCatalogSearch(searcher: client, foodCache: services.foodCache)
-        self.openFoodFactsClient = OpenFoodFactsClient()
+        self.foodSearchEngine = FoodSearchEngine.standard(
+            garmin: client,
+            customFoods: services.customFoodStore,
+            favorites: services.favoriteFoodStore,
+            foodCache: services.foodCache,
+            usageHistory: services.usageHistory
+        )
         self.logEntryCoordinator = services.logEntryCoordinator
         self.weightOutbox = services.weightOutbox
         self.weightLogCoordinator = services.weightLogCoordinator

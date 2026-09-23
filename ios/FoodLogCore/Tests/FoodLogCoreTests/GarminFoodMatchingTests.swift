@@ -136,4 +136,17 @@ final class GarminFoodMatchingTests: XCTestCase {
             return XCTFail("expected two near-zero-calorie products to still match, got \(result)")
         }
     }
+
+    /// rebuild-food-search task 4.2: the Garmin search for an OFF product
+    /// drops its brand and pack size and keeps diacritics.
+    func testSearchQueryStripsBrandAndPackSize() {
+        let product = Food(
+            id: "off-2",
+            name: "Rohlíky Krehké Celozrné 250G Active Bonavita",
+            brandName: "Bonavita",
+            source: .openFoodFacts,
+            servings: []
+        )
+        XCTAssertEqual(GarminFoodMatching.searchQuery(for: product), "rohlíky krehké celozrné active")
+    }
 }

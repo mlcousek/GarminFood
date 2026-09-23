@@ -1,91 +1,49 @@
 // OpenFoodFactsClient.swift
 //
-// The second search source (proposal.md / design.md D1-D2, task group 27):
-// Open Food Facts's legacy free-text search endpoint, chosen specifically
-// because it's the only OFF endpoint confirmed to support free-text search
-// today -- the documented v2/v3 API is tag/field-filtered only, and the
-// newer Search-a-licious replacement has no confirmed request/response
-// shape yet (design.md D2). Confirmed live 2026-09-16: a country-filtered
-// search for "tvaroh" returned 134 real Czech products (Pilos, Milko z
-// Poděbrad) with full per-100g macros.
+// The Open Food Facts wire layer (add-czech-food-catalog, rebuilt by
+// rebuild-food-search task 3.3). It only fetches and decodes; ranking is
+// `SearchRanker`'s job and orchestration is `OpenFoodFactsSource`'s.
+// Output is the same `Food`/`Serving` domain model Garmin results use, per
+// the czech-food-catalog spec, plus the product's other names so a query
+// can match a Czech product by its English name and vice versa.
 //
-// Deliberately independent of `GarminClient`/`FoodCatalogSearch` -- this
-// hits a completely different host with a completely different wire
-// format -- but the OUTPUT is the same `Food`/`Serving` domain model
-// `FoodCatalogSearch` already produces, per the czech-food-catalog spec's
-// "decoded into the same Food/Serving shape... so the rest of the
-// logging flow treats a Czech-database food identically once selected."
+// Endpoints, in order:
+//   1. Search-a-licious, `GET https://search.openfoodfacts.org/search`
+//      (probed read-only 2026-09-23, rebuild-food-search design.md):
+//      public, no auth, 60-260 ms, Elasticsearch-backed. `q` takes Lucene
+//      syntax, so the Czech-only filter is `countries_tags:"en:czech-
+//      republic"` inside `q`. `brands` comes back as an ARRAY (the legacy
+//      endpoint sends a comma-separated string); `product_name` is the
+//      product's main-language name (Czech for most Czech products, whose
+//      `lang` is "cs" -- `product_name_cs` was absent from every hit in 13
+//      sampled queries for exactly that reason) and `product_name_en` /
+//      `product_name_cs` appear when a translation exists.
+//   2. The legacy `GET /cgi/search.pl` on world.openfoodfacts.org, as the
+//      fallback whenever Search-a-licious errors. Still flaky: it returned
+//      503 on 7 of 13 probes on 2026-09-23 (and throughout 2026-09-22).
+// Both searches are diacritic-sensitive in practice, which is why
+// `OpenFoodFactsSource` sends two spellings.
 //
-// 2026-09-22 (implement-micronutrients): re-verified live against this
-// exact endpoint that OFF's real `nutriments` object is far richer than the
-// handful of macros originally decoded here -- a fortified-cereal search
-// result came back with real declared calcium, iron, vitamin B1/B2/B6,
-// vitamin D and pantothenic acid (B5) values, none of which this file used
-// to extract even though they were already present in every response. See
-// `OFFNutriments`'s own header comment below for the full field list this
-// pass adds, and `Serving`'s header comment in Food.swift for why some
-// overlapping-sounding fields (calcium/iron) are deliberately NOT mapped
-// from OFF despite existing in the response.
+// The client-side `rerank` that used to live here (a two-bucket "name
+// contains the whole term" partition, added 2026-09-22 after OFF's own
+// ranking let the grocery brand "Rohlík" swamp real bread rolls) is gone:
+// `SearchRanker` now weighs brand matches at half a name match for every
+// source.
 //
-// =====================================================================
-// UNCONFIRMED: the `User-Agent` header below needs live re-verification
-// =====================================================================
-// design.md's Context section, read carefully before touching `userAgent`:
-// during this change's research (2026-09-16), sending a plain/default
-// User-Agent worked, while a custom one containing certain strings
-// appeared to trigger a block (an HTML challenge page came back instead of
-// JSON). That result is NOT trusted as the long-term-correct answer --
-// sending no identifying UA at all is not good citizenship on a public,
-// donation-funded API OFF's own etiquette guidance explicitly asks
-// integrators to identify themselves. `userAgent` below is written as a
-// single named constant specifically so this can be flipped back to "no
-// custom header" in one place if live device testing (not possible in
-// this environment -- no network access here either) reconfirms the
-// block. Matches this project's existing convention for flagging
-// unverified assumptions loudly and in one place (see
-// GarminKit/GarminAuthSession.swift's file header for the same pattern).
+// 2026-09-22 (implement-micronutrients): every OFF `*_100g` numeric field is
+// in OFF's raw base unit -- GRAMS, even for vitamins (live: `vitamin-d_100g:
+// 3.4e-06` is 3.4 µg). `milligrams(fromGrams:)`/`micrograms(fromGrams:)`
+// convert at decode time; this also fixed `sodium`, which used to be passed
+// through as grams into a field documented as mg. OFF's calcium/iron are
+// deliberately NOT mapped onto `Serving.calcium`/`.iron`, which hold
+// Garmin's %-of-daily-value convention (see `Serving`'s header in Food.swift).
 //
-// 2026-09-22 (fix-czech-search-name-ranking): re-tested live from this
-// dev machine. This exact `userAgent` string got a real 200 JSON response
-// for `search_terms=rohlik` on the FIRST attempt; every attempt after that
-// (same UA, different terms, waits up to 20s between tries) came back 503
-// with OFF's own "Page temporarily unavailable" HTML page -- and a plain
-// curl default UA against the same query in the same session also got 503.
-// That rules out "this UA gets blocked" as the explanation for the 503s
-// (the one success used this UA; the one no-custom-UA attempt failed the
-// same way) -- reads as the endpoint being genuinely flaky/overloaded
-// right now, not a UA-based challenge. Still not enough evidence to
-// declare the UA question closed either way; leaving `userAgent` as-is.
-//
-// The one successful capture, however, answered a DIFFERENT open question
-// (see `rerank(_:forSearchTerm:)` below): a live `search_terms=rohlik`
-// query returned 10 products, ALL of them carrying brand "Rohlik"/"Rohlík"
-// (a real Czech online grocery-delivery retailer's private label -- same
-// spelling as the bread-roll word) and NONE with "rohlík" anywhere in
-// `product_name` -- e.g. "Jahodový nanuk" (strawberry popsicle), "Turkey
-// Ham", "Carrot Cake". Confirmed independently against OFF's own newer
-// Search-a-licious engine (https://search.openfoodfacts.org/search, also
-// live-reachable this session even while `search.pl` was 503ing): its
-// response includes the actual Elasticsearch query it ran, an explicit
-// `bool.should` matching `product_name.en`, `generic_name.en`,
-// `categories.en`, `labels.en` and `brands` all at equal boost (2.0 for a
-// phrase match) plus an unweighted `multi_match` across the same fields --
-// i.e. OFF's own search, old and new engine alike, does NOT rank a
-// product-name match above a brand match; they're weighted the same or
-// brand can win on tie-breaking/popularity. That's a real, cited
-// explanation for "brand beats name": `search_terms` matching `brands` at
-// parity with `product_name` lets an unrelated but popular/well-tagged
-// brand's entire catalog crowd out genuine name matches for the same word.
-// Fixed client-side below since neither engine's own ranking can be
-// trusted to fix this server-side. Search-a-licious itself is a much
-// bigger potential fix (a real, richer full-text engine) but switching to
-// it is out of scope here -- new host, new response shape, no country-
-// filter equivalent verified yet, and it returned a suspiciously small
-// total count (6) for "rohlik" in this one live sample, so its Czech
-// coverage is itself unverified. Left as a candidate for a future,
-// dedicated change, not folded into this fix.
+// User-Agent: OFF asks integrators to identify themselves. A descriptive UA
+// got normal 200s from both endpoints on 2026-09-23; the 503s above hit a
+// default curl UA just the same, so they are server load, not UA blocking.
 
 import Foundation
+import GarminKit
 
 public enum OpenFoodFactsError: Error, Sendable, Equatable {
     case invalidURL
@@ -94,58 +52,87 @@ public enum OpenFoodFactsError: Error, Sendable, Equatable {
     case decodingFailed(description: String)
 }
 
-/// The subset of behaviour `FoodCatalogView` needs -- exists so the UI
-/// layer and tests can depend on a protocol rather than the concrete
-/// network type, same rationale as GarminKit's `FoodSearching` seam.
+/// One decoded Open Food Facts product.
+public struct OFFSearchHit: Sendable, Equatable {
+    public let food: Food
+    /// The product's other non-empty names (English, generic), for matching.
+    public let alternateNames: [String]
+
+    public init(food: Food, alternateNames: [String] = []) {
+        self.food = food
+        self.alternateNames = alternateNames
+    }
+}
+
+/// The seam `OpenFoodFactsSource` (and its tests) depend on.
 public protocol OpenFoodFactsSearching: Sendable {
-    func search(term: String, czechOnly: Bool) async throws -> [Food]
+    /// One page (up to 50) of products for `term`, optionally limited to
+    /// products sold in Czechia. Never re-ranked.
+    func search(term: String, czechOnly: Bool) async throws -> [OFFSearchHit]
 }
 
 public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
-    /// UNCONFIRMED -- see this file's header. A descriptive UA per OFF's
-    /// own etiquette guidance (name - platform - version - contact URL),
-    /// not the actual live-tested value.
     static let userAgent = "GarminFood - iOS - Version 1.0 - https://github.com/mlcousek/GarminFood"
+    static let pageSize = 50
+    static let czechCountryTag = "en:czech-republic"
 
     private let urlSession: URLSession
-    private let baseURL: String
+    private let searchALiciousBaseURL: String
+    private let legacyBaseURL: String
 
-    public init(urlSession: URLSession = .shared, baseURL: String = "https://world.openfoodfacts.org") {
+    public init(
+        urlSession: URLSession = .shared,
+        searchALiciousBaseURL: String = "https://search.openfoodfacts.org",
+        legacyBaseURL: String = "https://world.openfoodfacts.org"
+    ) {
         self.urlSession = urlSession
-        self.baseURL = baseURL
+        self.searchALiciousBaseURL = searchALiciousBaseURL
+        self.legacyBaseURL = legacyBaseURL
+    }
+
+    /// Search-a-licious first; the legacy endpoint when it fails (czech-
+    /// food-catalog spec "Primary endpoint down"). Cancellation is passed
+    /// straight through, never treated as a failure to fall back from.
+    public func search(term: String, czechOnly: Bool = true) async throws -> [OFFSearchHit] {
+        let trimmed = term.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [] }
+        do {
+            return try await searchALicious(term: trimmed, czechOnly: czechOnly)
+        } catch {
+            if Task.isCancelled || Self.isCancellation(error) { throw error }
+            DiagnosticsLog.log(.warning, category: "OpenFoodFacts", "Search-a-licious failed, falling back to search.pl: \(error)")
+            return try await searchLegacy(term: trimmed, czechOnly: czechOnly)
+        }
+    }
+
+    /// `GET /search?q=<term>[ countries_tags:"en:czech-republic"]&langs=cs,en&page_size=50&fields=...`
+    func searchALicious(term: String, czechOnly: Bool) async throws -> [OFFSearchHit] {
+        guard var components = URLComponents(string: searchALiciousBaseURL + "/search") else {
+            throw OpenFoodFactsError.invalidURL
+        }
+        components.queryItems = [
+            URLQueryItem(name: "q", value: Self.searchALiciousQuery(term: term, czechOnly: czechOnly)),
+            URLQueryItem(name: "langs", value: "cs,en"),
+            URLQueryItem(name: "page_size", value: String(Self.pageSize)),
+            URLQueryItem(name: "fields", value: "code,product_name,product_name_cs,product_name_en,generic_name,generic_name_cs,lang,brands,quantity,nutriments")
+        ]
+        guard let url = components.url else { throw OpenFoodFactsError.invalidURL }
+        let data = try await fetch(url)
+        return try Self.decodeSearchALicious(data)
     }
 
     /// `GET /cgi/search.pl?search_terms={term}&json=1&page_size=50&fields=...`,
-    /// with `&tagtype_0=countries&tag_contains_0=contains&tag_0=czech-republic`
-    /// appended when `czechOnly` is true (default, per task 27.2). `term` is
-    /// URL-encoded automatically by `URLComponents`.
-    ///
-    /// 2026-09-21: `page_size` raised from 20 to 50 (the owner's own
-    /// complaint: "the databases are not full") -- OFF's Czech-specific
-    /// tagging is genuinely thin (~1,300 products manufactured-in-CZ at
-    /// last count), so a search term that DOES have real matches was
-    /// sometimes silently truncating them at the old cap. 50 stays well
-    /// under what the legacy `search.pl` endpoint comfortably returns in
-    /// one page without materially slowing the debounced per-keystroke
-    /// search this feeds.
-    ///
-    /// 2026-09-22 (fix-czech-search-name-ranking): the decoded results are
-    /// now passed through `rerank(_:forSearchTerm:)` before returning --
-    /// see that function's doc comment and this file's header for why (the
-    /// owner's own complaint: "it find by brand but i want to find it also
-    /// by name of food").
-    public func search(term: String, czechOnly: Bool = true) async throws -> [Food] {
-        let trimmed = term.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return [] }
-
-        guard var components = URLComponents(string: baseURL + "/cgi/search.pl") else {
+    /// with the `tagtype_0=countries` filter when `czechOnly` (confirmed live
+    /// 2026-09-16: "tvaroh" -> 134 Czech products).
+    func searchLegacy(term: String, czechOnly: Bool) async throws -> [OFFSearchHit] {
+        guard var components = URLComponents(string: legacyBaseURL + "/cgi/search.pl") else {
             throw OpenFoodFactsError.invalidURL
         }
         var query = [
-            URLQueryItem(name: "search_terms", value: trimmed),
+            URLQueryItem(name: "search_terms", value: term),
             URLQueryItem(name: "json", value: "1"),
-            URLQueryItem(name: "page_size", value: "50"),
-            URLQueryItem(name: "fields", value: "code,product_name,brands,nutriments,quantity")
+            URLQueryItem(name: "page_size", value: String(Self.pageSize)),
+            URLQueryItem(name: "fields", value: "code,product_name,product_name_cs,generic_name_cs,lang,brands,nutriments,quantity")
         ]
         if czechOnly {
             query.append(contentsOf: [
@@ -156,87 +143,100 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
         }
         components.queryItems = query
         guard let url = components.url else { throw OpenFoodFactsError.invalidURL }
+        let data = try await fetch(url)
+        return try Self.decodeLegacy(data)
+    }
 
+    private func fetch(_ url: URL) async throws -> Data {
         var request = URLRequest(url: url)
         request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
-
         let (data, response) = try await urlSession.data(for: request)
         guard let http = response as? HTTPURLResponse else {
             throw OpenFoodFactsError.noHTTPResponse
         }
         guard (200..<300).contains(http.statusCode) else {
-            throw OpenFoodFactsError.httpError(statusCode: http.statusCode, body: String(data: data, encoding: .utf8))
+            throw OpenFoodFactsError.httpError(statusCode: http.statusCode, body: String(data: data, encoding: .utf8).map { String($0.prefix(300)) })
         }
-        return Self.rerank(try Self.decode(data), forSearchTerm: trimmed)
+        return data
     }
 
-    /// Client-side re-rank: pushes every product whose `name` actually
-    /// contains the search term above every product that only matched some
-    /// other way (brand, category, etc.) -- see this file's header comment
-    /// (2026-09-22 entry) for the live evidence that OFF's own ranking,
-    /// legacy `search.pl` and the newer Search-a-licious engine alike,
-    /// weights a brand match the same as a product-name match, so a
-    /// popular/well-tagged brand that happens to share spelling with a
-    /// genuine food-name search term (the live example: brand "Rohlík", a
-    /// Czech grocery retailer, crowding out actual "rohlík" bread rolls)
-    /// swamps the results the user actually typed the term to find.
-    ///
-    /// Deliberately a plain stable partition (matches, then non-matches),
-    /// not a full relevance sort -- neither `Food` nor `OFFProduct` carries
-    /// anything resembling a real relevance/popularity score to sort by, so
-    /// preserving OFF's own within-group order is the only sound default.
-    /// Case- and diacritic-insensitive (`.folding`) because Czech search
-    /// terms and product names both routinely mix diacritic and
-    /// non-diacritic spelling (e.g. "rohlik" vs "Rohlíky").
-    static func rerank(_ foods: [Food], forSearchTerm term: String) -> [Food] {
-        let normalizedTerm = normalizeForMatching(term)
-        guard !normalizedTerm.isEmpty else { return foods }
-        let nameMatches = foods.filter { normalizeForMatching($0.name).contains(normalizedTerm) }
-        let otherMatches = foods.filter { !normalizeForMatching($0.name).contains(normalizedTerm) }
-        return nameMatches + otherMatches
+    /// Search-a-licious reads `q` as Lucene syntax: the user's words have
+    /// every Lucene operator character removed so a stray ":" or quote
+    /// can't turn into a field query or a syntax error.
+    static func searchALiciousQuery(term: String, czechOnly: Bool) -> String {
+        let operators = Set("+-!(){}[]^\"~*?:\\/&|")
+        let cleaned = String(term.map { operators.contains($0) ? " " : $0 })
+            .split(whereSeparator: { $0.isWhitespace })
+            .joined(separator: " ")
+        return czechOnly ? "\(cleaned) countries_tags:\"\(czechCountryTag)\"" : cleaned
     }
 
-    private static func normalizeForMatching(_ text: String) -> String {
-        text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale(identifier: "cs_CZ"))
+    static func isCancellation(_ error: Error) -> Bool {
+        if error is CancellationError { return true }
+        if let urlError = error as? URLError, urlError.code == .cancelled { return true }
+        return false
     }
 
-    /// Pure decoding, split out from `search(term:czechOnly:)` specifically
-    /// so task 27.4 ("Unit test the response-decoding against a captured
-    /// fixture... pure decoding logic, no network needed for the test
-    /// itself") can call it directly with a hand-written JSON fixture.
+    // MARK: - Decoding (pure, fixture-tested)
+
+    /// The legacy `search.pl` shape (`{ count, products: [...] }`) as plain foods.
     static func decode(_ data: Data) throws -> [Food] {
+        try decodeLegacy(data).map(\.food)
+    }
+
+    static func decodeLegacy(_ data: Data) throws -> [OFFSearchHit] {
         let decoded: OFFSearchResponse
         do {
             decoded = try JSONDecoder().decode(OFFSearchResponse.self, from: data)
         } catch {
             throw OpenFoodFactsError.decodingFailed(description: String(describing: error))
         }
-        return (decoded.products ?? []).compactMap(Self.food(from:))
+        return (decoded.products ?? []).compactMap(Self.hit(from:))
     }
 
-    /// Maps one OFF product into this package's `Food`/`Serving` shape as a
-    /// single, implicit 100g serving -- OFF's `nutriments` fields are
-    /// already per-100g-suffixed (`*_100g`), matching how Garmin's own
-    /// servings are already modeled elsewhere in this codebase (task 27.3).
-    /// Fails only when OFF's own required identifiers (`code`, a non-empty
-    /// `product_name`) are unusable -- an unnamed/uncoded "product" isn't
-    /// useful to show or later create in Garmin against, mirroring
-    /// `Food.init(searchResult:)`'s own failure rule for Garmin results.
-    ///
-    /// 2026-09-22 (implement-micronutrients): every OFF `*_100g` numeric
-    /// field is in OFF's own raw base SI unit -- **grams**, even for a
-    /// nutrient whose natural display unit is mg or µg (confirmed live:
-    /// `vitamin-d_100g: 3.4e-06` on a real captured 2026-09-22 product is
-    /// 3.4 µg, not 3.4 g). `milligrams(fromGrams:)`/`micrograms(fromGrams:)`
-    /// below convert at the point every new field is read. This also fixes
-    /// a real latent bug in `sodium` (pre-existing field, not new): it used
-    /// to pass OFF's raw grams straight into `Serving.sodium` uncoverted,
-    /// while that field is documented (and Garmin's own reads confirm) as
-    /// mg -- invisible until now only because nothing displayed a
-    /// `Serving`'s own `sodium` anywhere in the app yet.
-    private static func food(from product: OFFProduct) -> Food? {
+    /// The Search-a-licious shape (`{ hits: [...], page, page_count, count, ... }`).
+    static func decodeSearchALicious(_ data: Data) throws -> [OFFSearchHit] {
+        let decoded: SearchALiciousResponse
+        do {
+            decoded = try JSONDecoder().decode(SearchALiciousResponse.self, from: data)
+        } catch {
+            throw OpenFoodFactsError.decodingFailed(description: String(describing: error))
+        }
+        return (decoded.hits ?? []).compactMap(Self.hit(from:))
+    }
+
+    /// Which name to show, best first: `product_name_cs`, the main
+    /// `product_name` when the product's language is Czech, `generic_name_cs`,
+    /// then any `product_name`/`product_name_en`/`generic_name`. The rest
+    /// become alternate names for matching.
+    static func names(for product: OFFProduct) -> (display: String, alternates: [String])? {
+        func clean(_ value: String?) -> String? {
+            guard let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else { return nil }
+            return trimmed
+        }
+        let czechMainName = product.lang == "cs" ? clean(product.productName) : nil
+        let ordered = [
+            clean(product.productNameCs),
+            czechMainName,
+            clean(product.genericNameCs),
+            clean(product.productName),
+            clean(product.productNameEn),
+            clean(product.genericName)
+        ].compactMap { $0 }
+        guard let display = ordered.first else { return nil }
+        var alternates: [String] = []
+        for name in ordered.dropFirst() where name != display && !alternates.contains(name) {
+            alternates.append(name)
+        }
+        return (display, alternates)
+    }
+
+    /// Maps one OFF product into `Food` with a single implicit 100 g
+    /// serving (OFF's `*_100g` fields). Skips products without a code or
+    /// any usable name, mirroring `Food.init(searchResult:)`'s own rule.
+    static func hit(from product: OFFProduct) -> OFFSearchHit? {
         guard let code = product.code, !code.isEmpty else { return nil }
-        guard let name = product.productName?.trimmingCharacters(in: .whitespacesAndNewlines), !name.isEmpty else { return nil }
+        guard let names = names(for: product) else { return nil }
 
         let brand = product.brands?.trimmingCharacters(in: .whitespacesAndNewlines)
         let n = product.nutriments
@@ -251,20 +251,11 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
             fiber: n?.fiber100g,
             sugar: n?.sugars100g,
             saturatedFat: n?.saturatedFat100g,
-            // Fixed 2026-09-22: was the raw OFF gram value, unconverted --
-            // see this function's header comment.
             cholesterol: milligrams(fromGrams: n?.cholesterol100g),
             sodium: milligrams(fromGrams: n?.sodium100g),
             potassium: milligrams(fromGrams: n?.potassium100g),
-            // vitaminA/vitaminC/calcium/iron deliberately NOT populated from
-            // OFF here -- those four fields on `Serving` are documented
-            // (Food.swift) as Garmin/FatSecret's %-of-daily-value
-            // convention. OFF has no percent-DV nutrients at all, only
-            // absolute per-100g values, so writing an OFF value into those
-            // fields would silently swap the unit under the same field name
-            // -- exactly the misleading-as-real data this project won't
-            // ship. OFF's own calcium/iron DO exist in the raw response but
-            // are intentionally left undecoded here for that reason.
+            // vitaminA/vitaminC/calcium/iron deliberately not populated --
+            // see this file's header.
             vitaminB1: milligrams(fromGrams: n?.vitaminB1_100g),
             vitaminB2: milligrams(fromGrams: n?.vitaminB2_100g),
             vitaminB3: milligrams(fromGrams: n?.vitaminB3_100g),
@@ -286,13 +277,14 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
             omega6: milligrams(fromGrams: n?.omega6Fat100g)
         )
 
-        return Food(
+        let food = Food(
             id: code,
-            name: name,
+            name: names.display,
             brandName: (brand?.isEmpty ?? true) ? nil : brand,
             source: .openFoodFacts,
             servings: [serving]
         )
+        return OFFSearchHit(food: food, alternateNames: names.alternates)
     }
 
     private static func milligrams(fromGrams grams: Double?) -> Double? {
@@ -304,16 +296,41 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
     }
 }
 
-// MARK: - Wire format (confirmed live 2026-09-16, real captured "tvaroh" response)
+// MARK: - Wire format
 
+/// Legacy `search.pl` (confirmed live 2026-09-16, "tvaroh").
 struct OFFSearchResponse: Decodable, Sendable {
     let count: Int?
     let products: [OFFProduct]?
 }
 
+/// Search-a-licious (probed 2026-09-23). Only the fields this app reads;
+/// the response also carries `aggregations`, `facets`, `debug`, `took` ...
+struct SearchALiciousResponse: Decodable, Sendable {
+    let hits: [OFFProduct]?
+    let count: Int?
+    let page: Int?
+    let pageCount: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case hits
+        case count
+        case page
+        case pageCount = "page_count"
+    }
+}
+
+/// One product, in either endpoint's shape. Every field is decoded
+/// leniently: a single odd value (Search-a-licious sends `brands` as an
+/// array, search.pl as a string) must never drop the whole product.
 struct OFFProduct: Decodable, Sendable {
     let code: String?
     let productName: String?
+    let productNameCs: String?
+    let productNameEn: String?
+    let genericName: String?
+    let genericNameCs: String?
+    let lang: String?
     let brands: String?
     let quantity: String?
     let nutriments: OFFNutriments?
@@ -321,9 +338,45 @@ struct OFFProduct: Decodable, Sendable {
     enum CodingKeys: String, CodingKey {
         case code
         case productName = "product_name"
+        case productNameCs = "product_name_cs"
+        case productNameEn = "product_name_en"
+        case genericName = "generic_name"
+        case genericNameCs = "generic_name_cs"
+        case lang
         case brands
         case quantity
         case nutriments
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        code = Self.lenientString(container, .code)
+        productName = Self.lenientString(container, .productName)
+        productNameCs = Self.lenientString(container, .productNameCs)
+        productNameEn = Self.lenientString(container, .productNameEn)
+        genericName = Self.lenientString(container, .genericName)
+        genericNameCs = Self.lenientString(container, .genericNameCs)
+        lang = Self.lenientString(container, .lang)
+        quantity = Self.lenientString(container, .quantity)
+        if let list = try? container.decodeIfPresent([String].self, forKey: .brands) {
+            let cleaned = list.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+            brands = cleaned.isEmpty ? nil : cleaned.joined(separator: ", ")
+        } else {
+            brands = Self.lenientString(container, .brands)
+        }
+        nutriments = try? container.decodeIfPresent(OFFNutriments.self, forKey: .nutriments)
+    }
+
+    /// A string, or a number rendered as a string (OFF has sent numeric
+    /// barcodes), or nil for anything else.
+    private static func lenientString(_ container: KeyedDecodingContainer<CodingKeys>, _ key: CodingKeys) -> String? {
+        if let value = try? container.decodeIfPresent(String.self, forKey: key) {
+            return value
+        }
+        if let number = try? container.decodeIfPresent(Int64.self, forKey: key) {
+            return String(number)
+        }
+        return nil
     }
 }
 
