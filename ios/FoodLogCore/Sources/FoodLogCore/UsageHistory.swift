@@ -14,11 +14,17 @@
 //   Shape:  a JSON ARRAY of objects, oldest first, each:
 //             { "foodId": "<string>", "servingId": "<string>",
 //               "numberOfUnits": <number>, "timestamp": "<ISO 8601 string>",
-//               "nutritionDay": "<yyyy-MM-dd>" }
+//               "nutritionDay": "<yyyy-MM-dd>", "mealType": "<MEAL>" }
 //   `nutritionDay` (added 2026-09-16) is the date the entry was logged FOR,
 //   the same date sent to Garmin, which the user can edit. Files written
 //   before it existed lack the key; readers must treat it as optional and
 //   fall back to `timestamp`.
+//   `mealType` (added 2026-09-23, improve-log-food-shelves) is the meal the
+//   entry was logged under, as `GarminKit.MealType`'s raw value
+//   ("BREAKFAST" / "LUNCH" / "SNACKS" / "DINNER"). Optional for the same
+//   reason: files written before it existed lack the key, and it is omitted
+//   (not written as null) when unknown. Events without it simply don't
+//   count toward any meal's "Usual for <meal>" shelf (MealUsualRanker).
 //   Nothing else is in this file -- no wrapper object, no metadata header.
 //   Encoded with `JSONEncoder.dateEncodingStrategy = .iso8601` specifically
 //   so a non-Swift reader (or a Swift reader that doesn't want to import
@@ -30,6 +36,7 @@
 //   lifetime.
 
 import Foundation
+import GarminKit
 
 public struct UsageEvent: Codable, Sendable, Equatable {
     public let foodId: String
@@ -41,13 +48,25 @@ public struct UsageEvent: Codable, Sendable, Equatable {
     /// happened to be pressed. `nil` for events recorded before the field
     /// existed.
     public let nutritionDay: String?
+    /// The meal this entry was logged under. `nil` for events recorded
+    /// before the field existed (2026-09-23) -- those never count toward a
+    /// per-meal ranking, rather than being guessed from the clock.
+    public let mealType: MealType?
 
-    public init(foodId: String, servingId: String, numberOfUnits: Double, timestamp: Date, nutritionDay: String? = nil) {
+    public init(
+        foodId: String,
+        servingId: String,
+        numberOfUnits: Double,
+        timestamp: Date,
+        nutritionDay: String? = nil,
+        mealType: MealType? = nil
+    ) {
         self.foodId = foodId
         self.servingId = servingId
         self.numberOfUnits = numberOfUnits
         self.timestamp = timestamp
         self.nutritionDay = nutritionDay
+        self.mealType = mealType
     }
 }
 
@@ -102,7 +121,8 @@ public actor UsageHistoryStore {
         servingId: String,
         numberOfUnits: Double,
         timestamp: Date = Date(),
-        nutritionDay: String? = nil
+        nutritionDay: String? = nil,
+        mealType: MealType? = nil
     ) throws {
         loadIfNeeded()
         events.append(UsageEvent(
@@ -110,7 +130,8 @@ public actor UsageHistoryStore {
             servingId: servingId,
             numberOfUnits: numberOfUnits,
             timestamp: timestamp,
-            nutritionDay: nutritionDay
+            nutritionDay: nutritionDay,
+            mealType: mealType
         ))
         if events.count > Self.maxStoredEvents {
             events.removeFirst(events.count - Self.maxStoredEvents)

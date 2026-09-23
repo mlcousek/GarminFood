@@ -148,4 +148,20 @@ final class StreakHistoryTests: XCTestCase {
         XCTAssertEqual(events.count, 1)
         XCTAssertNil(events[0].nutritionDay)
     }
+
+    /// improve-log-food-shelves (2026-09-23) added an optional `mealType`
+    /// key to usage-history.json. This package reads the same file, so a
+    /// file mixing old and new events must still decode and still count.
+    func testUsageFilesWithTheNewMealTypeFieldStillDecodeAndCount() throws {
+        let json = #"[{"foodId":"f","servingId":"s","numberOfUnits":1,"timestamp":"2026-01-05T12:00:00Z","nutritionDay":"2026-01-05","mealType":"LUNCH"},{"foodId":"g","servingId":"s","numberOfUnits":1,"timestamp":"2026-01-05T18:00:00Z"}]"#
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        let events = try decoder.decode([UsageEvent].self, from: Data(json.utf8))
+
+        XCTAssertEqual(events.count, 2)
+        XCTAssertNotNil(events[0].mealType)
+        XCTAssertNil(events[1].mealType)
+        XCTAssertEqual(NutritionDayBoundary.nutritionDay(for: events[0], calendar: calendar), day(5))
+    }
 }

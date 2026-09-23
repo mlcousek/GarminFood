@@ -1,102 +1,79 @@
 // MealPresetComponents.swift
 //
 // Small, composable views for meal presets (config.yaml's "small,
-// composable views" principle), shared between `FoodCatalogView`'s "Your
-// meals" list and `TodayView`'s "Log a meal" shelf.
+// composable views" principle), shared between `FoodCatalogView`'s "Meals"
+// shelf and `TodayView`'s "Log a meal" shelf.
+//
+// improve-log-food-shelves: the catalog's vertical "Your meals" list (and
+// its `MealPresetRow`) is gone -- presets are cards on the shared
+// `FoodShelf` (Catalog/FoodShelf.swift) like every other shelf, with Edit
+// and Delete moved from swipe actions to the card's long-press menu.
 
 import SwiftUI
 import FoodLogCore
 
-/// One row in a list -- mirrors `FoodListRow`'s shape (name, a secondary
-/// line, trailing calories) but for a preset: the secondary line is an
-/// ingredient count instead of a brand/serving, since a preset has no
-/// single serving of its own.
-struct MealPresetRow: View {
-    let preset: MealPreset
-
-    var body: some View {
-        HStack(spacing: Theme.Spacing.md) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(preset.name)
-                    .font(.foodTitle)
-                    .foregroundStyle(.primary)
-                    .lineLimit(2)
-                Text("\(preset.ingredients.count) ingredient\(preset.ingredients.count == 1 ? "" : "s")")
-                    .font(.foodSubtitle)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer(minLength: Theme.Spacing.sm)
-            MacroBadge(value: preset.totals().calories, unit: " kcal", accessibleUnit: "kilocalories")
-        }
-        .padding(.vertical, Theme.Spacing.xs)
-        .accessibilityElement(children: .combine)
-    }
-}
-
-/// The horizontally-scrolling "Log a meal" shelf on the Today tab -- same
-/// shape/interaction as `QuickPickShelf` (tapping opens the confirm screen,
-/// meal type/date stay reviewable there), but for presets.
+/// The horizontally-scrolling preset shelf -- same shape/interaction as
+/// `QuickPickShelf` (tapping opens the confirm screen, meal type/date stay
+/// reviewable there), but for presets. `onEdit`/`onDelete` are optional:
+/// the Today tab's "Log a meal" shelf passes neither, so its cards have no
+/// long-press menu.
 struct MealPresetShelf: View {
     let presets: [MealPreset]
     let onTap: (MealPreset) -> Void
+    var onEdit: ((MealPreset) -> Void)? = nil
+    var onDelete: ((MealPreset) -> Void)? = nil
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Theme.Spacing.sm) {
-                ForEach(presets) { preset in
-                    Button {
-                        onTap(preset)
-                    } label: {
-                        MealPresetCard(preset: preset)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal, Theme.Spacing.md)
-            .padding(.vertical, Theme.Spacing.xs)
+        FoodShelf(items: presets) { preset in
+            FoodShelfCard(
+                title: preset.name,
+                subtitle: ingredientCountText(preset),
+                calories: preset.totals().calories,
+                accessibilityLabel: "\(preset.name), \(ingredientCountText(preset)), \(Int(preset.totals().calories.rounded())) kilocalories",
+                accessibilityHint: "Opens this meal to log it",
+                actions: actions(for: preset),
+                onTap: { onTap(preset) }
+            )
         }
+    }
+
+    private func ingredientCountText(_ preset: MealPreset) -> String {
+        "\(preset.ingredients.count) ingredient\(preset.ingredients.count == 1 ? "" : "s")"
+    }
+
+    private func actions(for preset: MealPreset) -> [FoodShelfCardAction] {
+        var actions: [FoodShelfCardAction] = []
+        if let onEdit {
+            actions.append(FoodShelfCardAction(title: "Edit", systemImage: "pencil", perform: { onEdit(preset) }))
+        }
+        if let onDelete {
+            actions.append(FoodShelfCardAction(title: "Delete", systemImage: "trash", isDestructive: true, perform: { onDelete(preset) }))
+        }
+        return actions
     }
 }
 
-private struct MealPresetCard: View {
-    let preset: MealPreset
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            Text(preset.name)
-                .font(.foodTitle)
-                .lineLimit(2)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text("\(preset.ingredients.count) ingredient\(preset.ingredients.count == 1 ? "" : "s")")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            MacroBadge(value: preset.totals().calories, unit: " kcal", accessibleUnit: "kilocalories")
-        }
-        .padding(Theme.Spacing.sm)
-        .frame(width: 140, alignment: .leading)
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.md))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(preset.name), \(preset.ingredients.count) ingredients")
-        .accessibilityHint("Logs this meal")
-    }
-}
-
-#Preview("MealPresetRow") {
-    List {
-        MealPresetRow(preset: MealPreset(
-            name: "Breakfast bowl",
-            ingredients: [
-                MealPresetIngredient(
-                    food: Food(id: "1", name: "Oats", source: .fatSecret, servings: []),
-                    serving: Serving(id: "s1", unit: "g", numberOfUnits: 40, calories: 150),
-                    quantity: 1
-                ),
-                MealPresetIngredient(
-                    food: Food(id: "2", name: "Banana", source: .garmin, servings: []),
-                    serving: Serving(id: "s2", unit: "medium", numberOfUnits: 1, calories: 105),
-                    quantity: 1
-                ),
-            ]
-        ))
-    }
+#Preview("MealPresetShelf") {
+    MealPresetShelf(
+        presets: [
+            MealPreset(
+                name: "Breakfast bowl",
+                ingredients: [
+                    MealPresetIngredient(
+                        food: Food(id: "1", name: "Oats", source: .fatSecret, servings: []),
+                        serving: Serving(id: "s1", unit: "g", numberOfUnits: 40, calories: 150),
+                        quantity: 1
+                    ),
+                    MealPresetIngredient(
+                        food: Food(id: "2", name: "Banana", source: .garmin, servings: []),
+                        serving: Serving(id: "s2", unit: "medium", numberOfUnits: 1, calories: 105),
+                        quantity: 1
+                    ),
+                ]
+            )
+        ],
+        onTap: { _ in },
+        onEdit: { _ in },
+        onDelete: { _ in }
+    )
 }

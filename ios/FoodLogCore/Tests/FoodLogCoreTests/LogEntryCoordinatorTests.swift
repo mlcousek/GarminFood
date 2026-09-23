@@ -216,4 +216,46 @@ final class LogEntryCoordinatorTests: XCTestCase {
         let events = await usageHistory.all()
         XCTAssertTrue(events.contains { $0.foodId == customFood.id.uuidString }, "usage history still tracks the custom food's own identity")
     }
+
+    // MARK: - Meal type in usage history (improve-log-food-shelves 1.1)
+
+    func testConfirmRecordsTheMealTypeInUsageHistory() async throws {
+        let (coordinator, _, usageHistory, _) = makeCoordinator()
+
+        _ = try await coordinator.confirm(food: food, serving: food.servings[0], numberOfUnits: 1, mealType: .breakfast, date: "2026-09-23")
+
+        let events = await usageHistory.all()
+        XCTAssertEqual(events.map(\.mealType), [.breakfast])
+    }
+
+    func testConfirmCustomFoodRecordsTheMealTypeInUsageHistory() async throws {
+        let (coordinator, _, usageHistory, _) = makeCoordinator()
+        let customFood = CustomFoodDraft(
+            name: "Domácí tvaroh",
+            servingUnit: "bowl",
+            numberOfUnits: 1,
+            backingFoodId: "garmin-42",
+            backingFoodName: "Cottage cheese",
+            backingServingId: "garmin-serving-7"
+        )
+
+        _ = try await coordinator.confirmCustomFood(customFood, quantity: 1, mealType: .dinner, date: "2026-09-23")
+
+        let events = await usageHistory.all()
+        XCTAssertEqual(events.map(\.mealType), [.dinner])
+    }
+
+    func testConfirmMealPresetRecordsTheMealTypeForEveryIngredient() async throws {
+        let (coordinator, _, usageHistory, _) = makeCoordinator()
+        let secondFood = Food(id: "food-2", name: "Banana", source: .garmin, servings: [Serving(id: "serving-2", unit: "medium", numberOfUnits: 1)])
+        let preset = MealPreset(name: "Lunch bowl", ingredients: [
+            MealPresetIngredient(food: food, serving: food.servings[0], quantity: 1),
+            MealPresetIngredient(food: secondFood, serving: secondFood.servings[0], quantity: 1),
+        ])
+
+        _ = try await coordinator.confirmMealPreset(preset, mealType: .lunch, date: "2026-09-23")
+
+        let events = await usageHistory.all()
+        XCTAssertEqual(events.map(\.mealType), [.lunch, .lunch])
+    }
 }

@@ -8,6 +8,13 @@
 // the food-log-entry spec). What a tap does is entirely the caller's
 // `onTap`: in `FoodCatalogView`'s ingredient picker it adds the card to the
 // meal instead of logging (fix-testing-feedback-quick-wins).
+//
+// Since improve-log-food-shelves this is a thin adapter onto the shared
+// `FoodShelf`/`FoodShelfCard` (FoodShelf.swift), and it also renders the
+// "Usual for <meal>" and "Recent" shelves: all three show a remembered
+// food+serving+quantity (`QuickPickItem`) and differ only in how
+// `FoodCatalogView` ranks the items (`QuickPick`, `MealUsualRanker`,
+// `RecentRanker` in FoodLogCore) -- so they share one card and one tap path.
 
 import SwiftUI
 import FoodLogCore
@@ -29,63 +36,30 @@ struct QuickPickShelf: View {
     var cardAccessibilityHint: String = "Logs this again"
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Theme.Spacing.sm) {
-                ForEach(items) { item in
-                    ZStack(alignment: .topTrailing) {
-                        Button {
-                            onTap(item)
-                        } label: {
-                            QuickPickCard(item: item, hint: cardAccessibilityHint)
-                        }
-                        .buttonStyle(.plain)
-                        // A sibling of the Button above, not nested inside
-                        // its label -- see FavoriteToggleButton's own doc
-                        // comment (Components.swift) for why.
-                        if let isFavorite, let onToggleFavorite {
-                            FavoriteToggleButton(isFavorite: isFavorite(item.food)) {
-                                onToggleFavorite(item.food)
-                            }
-                            .padding(4)
-                        }
-                    }
-                }
-            }
-            .padding(.horizontal, Theme.Spacing.md)
-            .padding(.vertical, Theme.Spacing.xs)
+        FoodShelf(items: items) { item in
+            FoodShelfCard(
+                title: item.food.name,
+                subtitle: "\(item.serving.displayLabel) · \(item.numberOfUnits.shelfQuantityText)×",
+                calories: item.serving.calories.map { $0 * item.numberOfUnits },
+                accessibilityLabel: accessibilityLabel(for: item),
+                accessibilityHint: cardAccessibilityHint,
+                favorite: favorite(for: item),
+                onTap: { onTap(item) }
+            )
         }
     }
-}
 
-private struct QuickPickCard: View {
-    let item: QuickPickItem
-    let hint: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            Text(item.food.name)
-                .font(.foodTitle)
-                .lineLimit(2)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text("\(item.serving.displayLabel) · \(item.numberOfUnits.formattedQuantity)×")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            if let calories = item.serving.calories {
-                MacroBadge(value: calories * item.numberOfUnits, unit: " kcal", accessibleUnit: "kilocalories")
-            }
-        }
-        .padding(Theme.Spacing.sm)
-        .frame(width: 140, alignment: .leading)
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.md))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(item.food.name), \(item.numberOfUnits.formattedQuantity) times \(item.serving.displayLabel)")
-        .accessibilityHint(hint)
+    private func favorite(for item: QuickPickItem) -> FoodShelfFavorite? {
+        guard let isFavorite, let onToggleFavorite else { return nil }
+        return FoodShelfFavorite(isFavorite: isFavorite(item.food), toggle: { onToggleFavorite(item.food) })
     }
-}
 
-private extension Double {
-    var formattedQuantity: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.1f", self)
+    private func accessibilityLabel(for item: QuickPickItem) -> String {
+        var label = "\(item.food.name), \(item.numberOfUnits.shelfQuantityText) times \(item.serving.displayLabel)"
+        if let calories = item.serving.calories {
+            label += ", \(Int((calories * item.numberOfUnits).rounded())) kilocalories"
+        }
+        return label
     }
 }
 
