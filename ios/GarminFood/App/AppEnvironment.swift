@@ -388,6 +388,18 @@ final class AppEnvironment {
         await drainAndReconcile()
     }
 
+    /// Gives up on a failed drink or correction (sync queue only), leaving
+    /// the local list matching Garmin: a dropped correction lists its drink
+    /// again; a dropped drink disappears (`HydrationLogCoordinator.
+    /// discardQueued`). Without this a correction Garmin keeps rejecting
+    /// could never leave the queue or clear the failure banner.
+    func discardHydrationQueued(_ entry: HydrationOutboxEntry) async throws {
+        guard entry.state != .sent else { return }
+        try await hydrationLogCoordinator.discardQueued(entry)
+        await hydrationLoader.refresh()
+        await refreshQueueState()
+    }
+
     /// Day navigation, routed through here rather than calling `dayLog`
     /// directly (as `TodayView` did until 2026-09-17) so goal status gets
     /// recomputed for whichever day is actually being looked at. Without

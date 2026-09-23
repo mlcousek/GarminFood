@@ -93,6 +93,70 @@ public struct HydrationLogCoordinator: Sendable {
         try await store.delete(id: entry.id)
         return .correctionQueued
     }
+
+    /// The sync queue's way out for a water entry Garmin keeps rejecting
+    /// (2026-09-23 review fix: a failed entry could only be retried, so a
+    /// correction Garmin never accepts -- the negative write is not
+    /// live-confirmed -- stayed failed forever, with the banner up and the
+    /// shown total drifting). Local writes only; leaves local state matching
+    /// what Garmin actually has:
+    ///
+    /// - A correction: dropped, and the drink it would have removed is
+    ///   listed again (Garmin still counts it). Restored under the
+    ///   correction's own id, so repeating a half-done discard can't list
+    ///   it twice; linked to the delivered drink (`correctsEntryId`) so
+    ///   removing it later queues a fresh correction.
+    /// - A drink: dropped, never sent, and its local record removed.
+    ///
+    /// Refused (rethrown, local state rolled back) if the entry reached
+    /// Garmin meanwhile (`OutboxEditError.alreadyDelivered`). If it is in
+    /// flight right now, the drain compensates (`OutboxCancellation`).
+    @discardableResult
+    public func discardQueued(_ outboxEntry: HydrationOutboxEntry, now: Date = Date()) async throws -> HydrationDiscard {
+        if outboxEntry.isCorrection {
+            let restored = HydrationEntry(
+                id: outboxEntry.id,
+                valueInML: -outboxEntry.valueInML,
+                loggedAt: outboxEntry.loggedAt,
+                createdAt: now,
+                outboxEntryId: outboxEntry.correctsEntryId
+            )
+            try await store.upsert(restored)
+            do {
+                try await outbox.cancelQueued(id: outboxEntry.id)
+            } catch let error as OutboxEditError where error == .entryNotFound {
+                // Already gone from the queue: nothing left to discard.
+            } catch {
+                try? await store.delete(id: restored.id)
+                throw error
+            }
+            return .drinkRestored
+        }
+
+        let linked = await store.all().filter { $0.outboxEntryId == outboxEntry.id }
+        for local in linked {
+            try await store.delete(id: local.id)
+        }
+        do {
+            try await outbox.cancelQueued(id: outboxEntry.id)
+        } catch let error as OutboxEditError where error == .entryNotFound {
+            // Already gone from the queue: nothing left to discard.
+        } catch {
+            for local in linked {
+                _ = try? await store.upsert(local)
+            }
+            throw error
+        }
+        return .drinkDiscarded
+    }
+}
+
+/// What `HydrationLogCoordinator.discardQueued(_:)` did.
+public enum HydrationDiscard: Sendable, Equatable {
+    /// A correction was dropped; the drink it targeted is listed again.
+    case drinkRestored
+    /// An undelivered drink was dropped along with its local record.
+    case drinkDiscarded
 }
 
 /// What `HydrationLogCoordinator.removeHydration(_:)` did.

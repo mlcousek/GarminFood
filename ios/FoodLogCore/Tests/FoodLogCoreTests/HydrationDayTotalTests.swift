@@ -87,6 +87,13 @@ final class HydrationDayTotalTests: XCTestCase {
         XCTAssertEqual(total(garmin: 100, fetchedAt: today, [drink(-250, state: .pending)]), 0)
     }
 
+    /// 2026-09-23 review fix: a correction Garmin gave up on was still
+    /// subtracted, so the total diverged from Garmin for good.
+    func testAFailedCorrectionIsNotApplied() {
+        XCTAssertEqual(total(garmin: 1750, fetchedAt: today, [drink(-250, state: .failed)]), 1750)
+        XCTAssertEqual(total(garmin: 1750, fetchedAt: today, [drink(-250, state: .pending)]), 1500, "a pending one still counts at once")
+    }
+
     /// 2026-09-23 race fix: a drink removed while its delivery is in flight
     /// counts for nothing until the drain settles it.
     func testADrinkRemovedMidFlightCountsForNothingUntilSettled() {

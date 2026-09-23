@@ -127,6 +127,71 @@ final class HydrationLogCoordinatorTests: XCTestCase {
         )
     }
 
+    // MARK: - Discarding a failed entry (2026-09-23 review fix)
+
+    /// A correction Garmin keeps rejecting used to stay `.failed` forever:
+    /// retry was the only action, the total subtracted it anyway, and the
+    /// failure banner never cleared.
+    func testAPermanentlyFailedCorrectionIsNotAppliedAndDiscardingItRestoresTheDrink() async throws {
+        let (coordinator, store, outbox) = makeCoordinator()
+        let loggedAt = Date()
+        let drink = try await coordinator.logHydration(valueInML: 250, loggedAt: loggedAt)
+        _ = await outbox.drain(using: AlwaysSucceedsHydrationDeliverer())
+        try await coordinator.removeHydration(drink)
+        // `HydrationOutbox(processName:)` gives up after 5 attempts.
+        for _ in 0..<5 {
+            _ = await outbox.drain(using: AlwaysFailsHydrationDeliverer(), randomJitter: { 0 })
+        }
+        let entries = await outbox.allEntries()
+        let correction = try XCTUnwrap(entries.first { $0.isCorrection })
+        XCTAssertEqual(correction.state, .failed, "precondition: Garmin rejected the negative write for good")
+        XCTAssertEqual(correction.correctsEntryId, drink.outboxEntryId)
+
+        // Garmin read after the drink landed: 1750 includes it.
+        let garmin = HydrationDaily(valueInML: 1750, goalInML: 2800)
+        let fetchedAt = Date().addingTimeInterval(60)
+        XCTAssertEqual(
+            HydrationDayTotal.total(garminDaily: garmin, garminFetchedAt: fetchedAt, outboxEntries: entries, on: loggedAt),
+            1750,
+            "a failed correction is not applied -- Garmin still counts the drink"
+        )
+
+        let result = try await coordinator.discardQueued(correction)
+
+        XCTAssertEqual(result, .drinkRestored)
+        let after = await outbox.allEntries()
+        XCTAssertEqual(after.map(\.id), [drink.outboxEntryId].compactMap { $0 }, "only the delivered drink is left; nothing failed remains")
+        let restored = await store.all()
+        XCTAssertEqual(restored.count, 1, "the drink Garmin still has is listed again")
+        XCTAssertEqual(restored.first?.valueInML, 250)
+        XCTAssertEqual(restored.first?.loggedAt, loggedAt)
+        XCTAssertEqual(restored.first?.outboxEntryId, drink.outboxEntryId, "removing it again queues a fresh correction")
+
+        // Discarding twice (e.g. a retried tap) never lists it twice.
+        try await coordinator.discardQueued(correction)
+        let restoredAgain = await store.all()
+        XCTAssertEqual(restoredAgain.count, 1)
+    }
+
+    func testDiscardingAFailedDrinkDropsItAndItsLocalRecord() async throws {
+        let (coordinator, store, outbox) = makeCoordinator()
+        _ = try await coordinator.logHydration(valueInML: 250)
+        for _ in 0..<5 {
+            _ = await outbox.drain(using: AlwaysFailsHydrationDeliverer(), randomJitter: { 0 })
+        }
+        let queued = await outbox.allEntries()
+        let failed = try XCTUnwrap(queued.first)
+        XCTAssertEqual(failed.state, .failed)
+
+        let result = try await coordinator.discardQueued(failed)
+
+        XCTAssertEqual(result, .drinkDiscarded)
+        let outboxEntries = await outbox.allEntries()
+        XCTAssertTrue(outboxEntries.isEmpty)
+        let storedEntries = await store.all()
+        XCTAssertTrue(storedEntries.isEmpty)
+    }
+
     // MARK: - Removal racing an in-flight delivery (2026-09-23 race fix)
 
     /// Before the fix: `removeHydration` saw the drink as not `.sent`,
@@ -168,6 +233,13 @@ final class HydrationLogCoordinatorTests: XCTestCase {
             1500,
             "delivered after the read: +500 and -500 both counted on top of Garmin's 1500"
         )
+    }
+}
+
+/// Always fails with a server error -- drives an entry to `.failed`.
+private struct AlwaysFailsHydrationDeliverer: HydrationDelivering {
+    func addHydration(_ request: AddHydrationRequest) async throws -> HTTPURLResponse {
+        throw GarminClientError.httpError(statusCode: 500, body: nil)
     }
 }
 
