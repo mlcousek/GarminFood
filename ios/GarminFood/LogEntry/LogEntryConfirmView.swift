@@ -80,7 +80,7 @@ struct LogEntryConfirmView: View {
         // down to 50 rather than incrementing, which read as the app
         // randomly jumping to "50 servings" the moment you touched it.
         // A remembered amount outside `LogQuantity`'s bound falls back to 1.
-        _quantity = State(initialValue: initialQuantity.flatMap { LogQuantity.isValid($0) ? $0 : nil } ?? 1)
+        _quantity = State(initialValue: initialQuantity.map { LogQuantity.isValid($0) ? $0 : 1 } ?? 1)
         // 2026-09-21 bug fix: `presetMealType` is applied HERE, directly in
         // `init`, rather than corrected afterward in `applyContextOnce()` --
         // the previous version always started `mealType` at the time-of-day
