@@ -180,14 +180,23 @@ final class ReconciliationTests: XCTestCase {
     }
 
     func testReconcileDeletesAllButOneDuplicate() async throws {
+        // One outbox entry, created 06:00:00.000, whose create was sent
+        // twice (a retry after a lost 2xx). Every send carries the entry's
+        // `createdAt` as `logTimestamp`, so both copies read back with it --
+        // that shared timestamp is what proves the second is a re-send.
+        // (Until 2026-09-23 these fixtures were 06:00 and 06:05 against an
+        // entry queued at 05:00: two entries logged at DIFFERENT moments,
+        // i.e. two separate logs -- deleting one of them is the bug
+        // `testASecondIdenticalLogWithinTheClockToleranceIsNeverDeleted`
+        // pins down.)
         let log = makeLog([
-            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-a", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00Z"),
-            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-b", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:05:00Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-a", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00.000Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-b", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00.000Z"),
         ])
         let client = FakeReconcilingClient(log: log)
         let outbox = Outbox(store: OutboxStore(fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("garminkit-reconcile-\(UUID().uuidString).json")))
         let reconciliation = Reconciliation(outbox: outbox)
-        let entry = OutboxEntry(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, state: .sent, createdAt: queuedBeforeFixtures)
+        let entry = OutboxEntry(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, state: .sent, createdAt: instant("2026-09-14T06:00:00.000Z"))
 
         let outcomes = await reconciliation.reconcile(delivered: [entry], using: client)
 
@@ -195,7 +204,7 @@ final class ReconciliationTests: XCTestCase {
         guard case .duplicateResolved(let kept, let deleted) = outcomes[0].verdict else {
             return XCTFail("expected .duplicateResolved, got \(outcomes[0].verdict)")
         }
-        XCTAssertEqual(kept, "log-a", "the earliest-timestamped copy should be kept")
+        XCTAssertEqual(kept, "log-a", "equal timestamps: the deterministic logId tie-break keeps the first copy")
         XCTAssertEqual(deleted, ["log-b"])
         let actuallyDeleted = await client.deletedLogIds
         XCTAssertEqual(actuallyDeleted, ["log-b"])
@@ -525,6 +534,110 @@ final class ReconciliationTests: XCTestCase {
         XCTAssertEqual(confirmedLogIds, ["copy-1", "copy-2"], "each copy is confirmed against its own delivery, not an original")
         let deleted = await client.deletedLogIds
         XCTAssertTrue(deleted.isEmpty, "neither the originals nor the copies may be deleted")
+    }
+
+    func testAReSentDeliveryIsStillCleanedUpButASeparateLogBesideItIsNot() async throws {
+        // The design's reason for deleting at all: a create sent twice
+        // (retried after a lost 2xx) is two Garmin entries with this
+        // entry's own `createdAt`. An earlier, separately logged identical
+        // entry inside the clock tolerance sits beside them. Exactly the
+        // re-sent copy goes; the separate log stays.
+        let createdAt = instant("2026-09-14T08:05:00.123Z")
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "earlier-log", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:00:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "ours", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:05:00.123Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "resent", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:05:00.123Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        var entry = try await outbox.logFood(date: "2026-09-14", mealType: .breakfast, foodId: "1", servingId: "2", numberOfUnits: 1.0, createdAt: createdAt)
+        entry.state = .sent
+        try await outbox.requeue(entry)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: [entry], using: client)
+
+        XCTAssertEqual(outcomes.map(\.verdict), [.duplicateResolved(keptLogId: "ours", deletedLogIds: ["resent"])])
+        let deleted = await client.deletedLogIds
+        XCTAssertEqual(deleted, ["resent"], "only the re-sent copy of this delivery; never the separate earlier log")
+        let remaining = await outbox.allEntries()
+        XCTAssertTrue(remaining.isEmpty)
+    }
+
+    func testAReSendOfOneCopiedEntryRemovesOnlyThatOneCopy() async throws {
+        // Two entries created in the same instant (copyMeal / a meal preset
+        // with the same item twice) own two copies with that timestamp; one
+        // of them was also re-sent, making a third. Only the third goes --
+        // and not the original the meal was copied from.
+        let copiedAt = instant("2026-09-14T08:06:00.000Z")
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        var copies: [OutboxEntry] = []
+        for _ in 0..<2 {
+            var copy = try await outbox.logFood(date: "2026-09-14", mealType: .breakfast, foodId: "1", servingId: "2", numberOfUnits: 1.0, createdAt: copiedAt)
+            copy.state = .sent
+            try await outbox.requeue(copy)
+            copies.append(copy)
+        }
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "original", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:00:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "copy-a", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:06:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "copy-b", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:06:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "copy-c", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:06:00.000Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: copies, using: client)
+
+        XCTAssertEqual(outcomes.count, 2)
+        var keptLogIds: Set<String> = []
+        for outcome in outcomes {
+            guard case .duplicateResolved(let kept?, let deletedIds) = outcome.verdict else {
+                return XCTFail("expected .duplicateResolved, got \(outcome.verdict)")
+            }
+            XCTAssertEqual(deletedIds, ["copy-c"])
+            keptLogIds.insert(kept)
+        }
+        XCTAssertEqual(keptLogIds, ["copy-a", "copy-b"])
+        let deleted = await client.deletedLogIds
+        XCTAssertEqual(deleted, ["copy-c"])
+    }
+
+    func testCopiesWithoutAReadableTimestampAreNeverDeletedOnGuesswork() async throws {
+        // Without a timestamp nothing proves a copy is a re-send rather than
+        // a separate log. It still COUNTS (so the delivery isn't re-sent as
+        // missing), but it is never deleted.
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-a", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "t"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "log-b", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "t"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        var entry = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0, createdAt: instant("2026-09-14T09:00:00Z"))
+        entry.state = .sent
+        try await outbox.requeue(entry)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: [entry], using: client)
+
+        XCTAssertEqual(outcomes.count, 1)
+        guard case .confirmed = outcomes[0].verdict else {
+            return XCTFail("expected .confirmed, got \(outcomes[0].verdict)")
+        }
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty)
+        let remaining = await outbox.allEntries()
+        XCTAssertTrue(remaining.isEmpty, "confirmed, not re-queued as missing")
+    }
+
+    func testOnlyTheExactLoggingInstantProvesADelivery() {
+        let createdAt = instant("2026-09-14T08:05:00.123Z")
+
+        XCTAssertTrue(Reconciliation.isOwnDelivery(loggedFood(timestamp: "2026-09-14T08:05:00.123Z"), ofEntryCreatedAt: createdAt))
+        XCTAssertTrue(
+            Reconciliation.isOwnDelivery(loggedFood(timestamp: FoodLogWriteBody.logTimestampString(createdAt.addingTimeInterval(0.0004))), ofEntryCreatedAt: createdAt.addingTimeInterval(0.0004)),
+            "the sub-millisecond part the wire format drops must not break the match"
+        )
+        XCTAssertFalse(Reconciliation.isOwnDelivery(loggedFood(timestamp: "2026-09-14T08:05:01.123Z"), ofEntryCreatedAt: createdAt))
+        XCTAssertFalse(Reconciliation.isOwnDelivery(loggedFood(timestamp: "2026-09-14T08:00:00.000Z"), ofEntryCreatedAt: createdAt))
+        XCTAssertFalse(Reconciliation.isOwnDelivery(loggedFood(timestamp: "t"), ofEntryCreatedAt: createdAt), "fails closed")
     }
 
     // MARK: - Missed deliveries are bounded

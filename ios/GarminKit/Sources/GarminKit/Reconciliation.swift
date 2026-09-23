@@ -26,6 +26,25 @@
 //     with an identical `.sent` entry is not "deleted again".
 // The first two are excluded only while that doesn't make a delivered entry
 // look missing (see `resolveGroup`): a false "missing" would re-send it.
+//
+// What gets DELETED is decided far more narrowly than what gets COUNTED
+// (fix/reconcile-duplicate-delete, 2026-09-23). Counting is generous on
+// purpose -- `couldBeThisAppsDelivery` lets an entry logged up to 10 minutes
+// before a delivery count toward it, so clock skew never makes a real
+// delivery look missing and get re-sent. But that same generosity used to
+// decide deletion too: a second coffee logged 5 minutes after the first
+// (from search/Usual/Recent, a move into that meal, a same-day copyMeal)
+// found "2 copies, 1 expected" and the LATER one -- the one just logged --
+// was deleted from Garmin; for a move, whose old entry is already gone,
+// that lost the food entirely. The only duplicate this file exists to clean
+// up is one of THIS app's own deliveries sent twice (a create retried after
+// a lost 2xx, a re-send after a "missing" verdict, a replace re-created
+// after a crash) -- and every such re-send carries the SAME `createdAt` as
+// its `logTimestamp`. So only a Garmin entry whose timestamp is exactly a
+// locally-expected entry's `createdAt`, left over once each such entry has
+// its own copy, is ever deleted (`provableRetryCopies`). Anything that
+// can't be proven a re-send is kept: a leftover duplicate is visible and
+// one tap to remove, a deleted real log is silent data loss.
 
 import Foundation
 
@@ -128,7 +147,7 @@ public actor Reconciliation {
                         && $0.date == date
                         && !deliveredIds.contains($0.id)
                         && MatchKey($0) == key
-                }.count
+                }
                 let groupOutcomes = await resolveGroup(
                     group,
                     in: log,
@@ -149,8 +168,12 @@ public actor Reconciliation {
     ///
     /// For N locally-expected entries and M matching Garmin entries:
     ///   - M == N: every entry is confirmed 1:1 against a Garmin entry.
-    ///   - M >  N: exactly (M - N) excess remote entries are deleted -- not
-    ///     "delete down to 1" regardless of how many entries share the key.
+    ///   - M >  N: AT MOST (M - N) remote entries are deleted -- not "delete
+    ///     down to 1" regardless of how many entries share the key -- and
+    ///     only those that are provably re-sent copies of this group's own
+    ///     deliveries (`provableRetryCopies`). If none are, M > N just means
+    ///     the user has other identical entries (logged earlier, moved in,
+    ///     copied in): every entry is confirmed and nothing is deleted.
     ///   - M <  N: exactly (N - M) entries are re-queued as missing; the
     ///     rest are confirmed.
     ///
@@ -165,16 +188,17 @@ public actor Reconciliation {
     /// add-log-entry-editing D2: `expectedToVanish` (old entries of pending
     /// replaces) and the group's `duplicateOf` sources are left out of M,
     /// unless leaving them out would make M < N (see
-    /// `excludingExplained`); `alsoExpected` (corrected entries that
-    /// `.createdAwaitingDelete` replaces already created under this key)
-    /// raises the number of copies that may exist before any is "excess".
+    /// `excludingExplained`); `alsoExpected` (`.createdAwaitingDelete`
+    /// replaces whose corrected entry already exists under this key) raises
+    /// the number of copies that may exist before any is "excess", and each
+    /// one's own copy is protected from deletion like the group's own.
     /// With neither, this is exactly the N-vs-M rule above.
     private func resolveGroup(
         _ group: [OutboxEntry],
         in log: DailyFoodLog?,
         date: String,
         expectedToVanish: Set<String>,
-        alsoExpected: Int,
+        alsoExpected: [OutboxEntry],
         using client: some FoodLogReconciling
     ) async -> [ReconciliationOutcome] {
         guard let representative = group.first else { return [] }
@@ -190,14 +214,14 @@ public actor Reconciliation {
         let sortedMatches = Self.excludingExplained(Self.sortedByTimestamp(matches), excluded: excluded, keepAtLeast: n)
 
         let m = sortedMatches.count
-        let expectedTotal = n + max(0, alsoExpected)
+        let expectedTotal = n + alsoExpected.count
 
         if m >= n && m <= expectedTotal {
             // As many Garmin entries as locally expected (this also covers
             // the ordinary N == 1, M == 1 happy path), plus at most the
             // copies awaiting-delete replaces account for -- nothing to
             // delete, nothing missing.
-            let outcomes = zip(sortedGroup, sortedMatches).map { entry, match in
+            let outcomes = Self.pairedWithOwnDelivery(sortedGroup, among: sortedMatches).map { entry, match in
                 ReconciliationOutcome(entryId: entry.id, date: date, verdict: .confirmed(logId: match.logId))
             }
             await removeConfirmed(sortedGroup)
@@ -205,32 +229,52 @@ public actor Reconciliation {
         }
 
         if m > expectedTotal {
-            // More Garmin entries than locally expected: exactly
-            // (m - expectedTotal) are excess duplicates (e.g. a drain that
-            // retried after a successful-but-unacknowledged POST). Keep the
-            // earliest-logged copies (deterministic tie-break: sort by
-            // logTimestamp, falling back to logId), delete the rest --
-            // never "down to 1" regardless of how many entries share this
-            // key.
-            let toKeep = Array(sortedMatches.prefix(expectedTotal))
-            let toDelete = sortedMatches.dropFirst(expectedTotal).compactMap(\.logId)
+            // More Garmin entries than locally expected. That alone proves
+            // nothing: the extra ones may be the user's own separate,
+            // identical logs (an earlier coffee inside the clock tolerance,
+            // a move or copy into this meal). Only a re-sent copy of one of
+            // THIS group's deliveries (e.g. a drain that retried after a
+            // successful-but-unacknowledged create) is deleted, and never
+            // more than (m - expectedTotal) of them.
+            let toDelete = Self.provableRetryCopies(
+                in: sortedMatches,
+                expectedCreatedAt: (sortedGroup + alsoExpected).map(\.createdAt),
+                protected: excluded,
+                limit: m - expectedTotal
+            ).compactMap(\.logId)
 
-            if !toDelete.isEmpty {
-                do {
-                    try await client.deleteFoodLogEntries(logIds: Array(toDelete), date: date)
-                    // 2026-09-21 security fix: no longer embeds `foodId`
-                    // (which food was actually logged) -- NSLog output is
-                    // readable via Console.app/sysdiagnose with only brief
-                    // physical/USB access to an unlocked device, no
-                    // debugger needed. The meal category + date + counts
-                    // are still enough to diagnose a reconciliation issue.
-                    Self.logLoudly("deleted \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue) on \(date) (\(n) locally expected, \(m) found on Garmin).")
-                } catch {
-                    Self.logLoudly("found \(toDelete.count) excess duplicate(s) for \(representative.mealType.rawValue) on \(date) (\(n) locally expected, \(m) found on Garmin) but failed to delete: \(error)")
+            if toDelete.isEmpty {
+                // Nothing provably a re-send: keep every entry. A real
+                // leftover duplicate stays visible for the user to remove;
+                // guessing wrong here would silently delete a real log.
+                Self.logLoudly("kept \(m - expectedTotal) more identical \(representative.mealType.rawValue) entr(ies) on \(date) than expected (\(n) locally expected, \(m) found on Garmin); none is provably a re-sent copy of this delivery.")
+                let outcomes = Self.pairedWithOwnDelivery(sortedGroup, among: sortedMatches).map { entry, match in
+                    ReconciliationOutcome(entryId: entry.id, date: date, verdict: .confirmed(logId: match.logId))
                 }
+                await removeConfirmed(sortedGroup)
+                return outcomes
             }
-            let outcomes = zip(sortedGroup, toKeep).map { entry, match in
-                ReconciliationOutcome(entryId: entry.id, date: date, verdict: .duplicateResolved(keptLogId: match.logId, deletedLogIds: Array(toDelete)))
+
+            let deletedSet = Set(toDelete)
+            let toKeep = sortedMatches.filter { match in
+                guard let logId = match.logId else { return true }
+                return !deletedSet.contains(logId)
+            }
+
+            do {
+                try await client.deleteFoodLogEntries(logIds: toDelete, date: date)
+                // 2026-09-21 security fix: no longer embeds `foodId` (which
+                // food was actually logged) -- NSLog output is readable via
+                // Console.app/sysdiagnose with only brief physical/USB
+                // access to an unlocked device, no debugger needed. The
+                // meal category + date + counts are still enough to
+                // diagnose a reconciliation issue.
+                Self.logLoudly("deleted \(toDelete.count) re-sent duplicate(s) for \(representative.mealType.rawValue) on \(date) (\(n) locally expected, \(m) found on Garmin).")
+            } catch {
+                Self.logLoudly("found \(toDelete.count) re-sent duplicate(s) for \(representative.mealType.rawValue) on \(date) (\(n) locally expected, \(m) found on Garmin) but failed to delete: \(error)")
+            }
+            let outcomes = Self.pairedWithOwnDelivery(sortedGroup, among: toKeep).map { entry, match in
+                ReconciliationOutcome(entryId: entry.id, date: date, verdict: .duplicateResolved(keptLogId: match.logId, deletedLogIds: toDelete))
             }
             await removeConfirmed(sortedGroup)
             return outcomes
@@ -299,6 +343,97 @@ public actor Reconciliation {
         return sortedByTimestamp(kept + Array(restored))
     }
 
+    /// How close a Garmin entry's `logTimestamp` must be to a local entry's
+    /// `createdAt` to be that entry's own delivery (or a re-send of it).
+    /// This app sends `createdAt` itself as `logTimestamp`, to the
+    /// millisecond (`FoodLogWriteBody.logTimestampString`), and Garmin reads
+    /// it back as sent (docs/garmin-food-log-contract.md, 2026-09-16) -- the
+    /// slack only absorbs the sub-millisecond part the wire format drops.
+    /// If Garmin ever stopped echoing it, nothing would match: duplicates
+    /// would be left for the user rather than real logs deleted.
+    static let ownDeliveryTimestampTolerance: TimeInterval = 0.002
+
+    /// Whether `food` carries exactly the `logTimestamp` this app sends for
+    /// a local entry created at `createdAt`. Unlike
+    /// `couldBeThisAppsDelivery`, this fails CLOSED: a missing or
+    /// unparseable timestamp proves nothing, and this is what licenses a
+    /// delete.
+    static func isOwnDelivery(_ food: LoggedFood, ofEntryCreatedAt createdAt: Date) -> Bool {
+        guard let raw = food.logTimestamp, let logged = parseLogTimestamp(raw) else { return false }
+        return abs(logged.timeIntervalSince(createdAt)) <= ownDeliveryTimestampTolerance
+    }
+
+    /// The Garmin entries that are provably surplus re-sends of locally
+    /// expected deliveries, latest first to go, at most `limit` of them.
+    ///
+    /// Every re-send of one outbox entry (a create retried after a lost
+    /// 2xx, a re-send after a "missing" verdict, a replace re-created after
+    /// a crash) carries that entry's one `createdAt` as its timestamp. So:
+    /// each expected local entry first claims one Garmin entry with its own
+    /// timestamp -- the copy it really is (two entries created in the same
+    /// instant, e.g. by `copyMeal`, claim two) -- and only entries with such
+    /// a timestamp left over after that are candidates. An entry logged at
+    /// any other moment -- earlier the same morning, moved or copied in --
+    /// is never one, however close in time; nor is anything in `protected`
+    /// (an old entry a replace deletes itself, a duplicate's source), nor
+    /// anything without a `logId` to delete by. `sorted` must be in
+    /// `sortedByTimestamp` order, so the earliest-`logId` copy is the one
+    /// kept.
+    static func provableRetryCopies(
+        in sorted: [LoggedFood],
+        expectedCreatedAt: [Date],
+        protected: Set<String>,
+        limit: Int
+    ) -> [LoggedFood] {
+        guard limit > 0 else { return [] }
+        var claimed = Set<Int>()
+        for createdAt in expectedCreatedAt.sorted() {
+            let own = sorted.indices.first { index in
+                !claimed.contains(index) && isOwnDelivery(sorted[index], ofEntryCreatedAt: createdAt)
+            }
+            if let own {
+                claimed.insert(own)
+            }
+        }
+        let candidates = sorted.indices.filter { index in
+            let food = sorted[index]
+            guard !claimed.contains(index), let logId = food.logId, !protected.contains(logId) else { return false }
+            return expectedCreatedAt.contains { isOwnDelivery(food, ofEntryCreatedAt: $0) }
+        }
+        return candidates.suffix(limit).map { sorted[$0] }
+    }
+
+    /// Pairs each local entry (in `sortedByCreation` order) with the Garmin
+    /// entry an outcome reports for it: its own delivery when one can be
+    /// told apart by timestamp (`isOwnDelivery`), otherwise the earliest
+    /// one still unpaired -- which is exactly the old positional pairing
+    /// when no timestamp matches. Only chooses which `logId` a verdict
+    /// names; never decides what is deleted. Returns one pair per entry as
+    /// long as `matches` has at least as many elements as `entries`.
+    static func pairedWithOwnDelivery(_ entries: [OutboxEntry], among matches: [LoggedFood]) -> [(OutboxEntry, LoggedFood)] {
+        var used = Set<Int>()
+        var ownIndex: [Int?] = []
+        for entry in entries {
+            let own = matches.indices.first { index in
+                !used.contains(index) && isOwnDelivery(matches[index], ofEntryCreatedAt: entry.createdAt)
+            }
+            if let own {
+                used.insert(own)
+            }
+            ownIndex.append(own)
+        }
+        var pairs: [(OutboxEntry, LoggedFood)] = []
+        for (entry, own) in zip(entries, ownIndex) {
+            if let own {
+                pairs.append((entry, matches[own]))
+            } else if let next = matches.indices.first(where: { !used.contains($0) }) {
+                used.insert(next)
+                pairs.append((entry, matches[next]))
+            }
+        }
+        return pairs
+    }
+
     /// Groups entries by the parts of the match key beyond `date` (which the
     /// caller already groups by separately to fetch each day's log once).
     private struct MatchKey: Hashable {
@@ -357,6 +492,12 @@ public actor Reconciliation {
     /// Fails open: a missing or unparseable timestamp can't rule anything
     /// out, so it still counts, which is exactly the behaviour before this
     /// check existed.
+    ///
+    /// This decides only what COUNTS toward a delivery (so skew never makes
+    /// a real delivery look missing and get re-sent) -- never what may be
+    /// deleted. An entry inside the tolerance can still be the user's own
+    /// separate log; deletion additionally requires `isOwnDelivery`, via
+    /// `provableRetryCopies`.
     static func couldBeThisAppsDelivery(_ food: LoggedFood, notBefore earliestCreated: Date) -> Bool {
         guard let raw = food.logTimestamp, let logged = parseLogTimestamp(raw) else { return true }
         return logged >= earliestCreated.addingTimeInterval(-deliveryClockTolerance)
