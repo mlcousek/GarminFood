@@ -15,8 +15,8 @@
 // background refresh -- simply try again.
 //
 // `GarminClient.perform` rethrows `URLSession` errors unchanged, so a raw
-// `URLError` is what reaches the outboxes. Depended on by: Outbox.swift
-// (and meant for WeightSync/HydrationSync's drains too).
+// `URLError` is what reaches the outboxes. Depended on by: Outbox.swift,
+// WeightSync.swift and HydrationSync.swift (all three drains).
 
 import Foundation
 

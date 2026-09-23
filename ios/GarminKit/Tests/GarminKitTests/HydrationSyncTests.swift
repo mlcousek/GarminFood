@@ -244,6 +244,25 @@ final class HydrationSyncTests: XCTestCase {
         XCTAssertNil(entries.first?.correctsEntryId)
     }
 
+    // MARK: - Offline (ConnectivityFailure, same rule as the food outbox)
+
+    func testOfflineStopsTheCycleWithoutCountingAnAttempt() async throws {
+        let outbox = makeOutbox(maxAttempts: 1)
+        let first = try await outbox.logHydration(valueInML: 250)
+        let second = try await outbox.logHydration(valueInML: 500)
+        let deliverer = FakeHydrationDeliverer(outcomes: [.fail(URLError(.notConnectedToInternet))])
+
+        let result = await outbox.drain(using: deliverer)
+
+        XCTAssertTrue(result.failed.isEmpty, "being offline never marks an entry failed, even at maxAttempts 1")
+        let callCount = await deliverer.callCount
+        XCTAssertEqual(callCount, 1, "the rest of the cycle is skipped")
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first { $0.id == first.id }?.state, .pending)
+        XCTAssertEqual(stored.first { $0.id == first.id }?.attemptCount, 0)
+        XCTAssertEqual(stored.first { $0.id == second.id }?.state, .pending)
+    }
+
     // MARK: - Removal vs an in-flight delivery (2026-09-23 race fix)
 
     func testCancellingADrinkThatIsNotInFlightRemovesIt() async throws {

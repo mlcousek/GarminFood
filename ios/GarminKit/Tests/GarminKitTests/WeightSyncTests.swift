@@ -394,6 +394,25 @@ final class WeightSyncTests: XCTestCase {
         XCTAssertEqual(stored.first?.state, .sent)
     }
 
+    // MARK: - Offline (ConnectivityFailure, same rule as the food outbox)
+
+    func testOfflineStopsTheCycleWithoutCountingAnAttempt() async throws {
+        let outbox = makeOutbox(maxAttempts: 1)
+        let add = try await outbox.logWeight(weightKg: 83.9)
+        let delete = try await outbox.logDelete(samplePk: 42, calendarDate: "2026-09-23", weightKg: 83.9, loggedAt: morning)
+        let deliverer = FakeWeighInDeliverer(outcomes: [.fail(URLError(.timedOut))])
+
+        let result = await outbox.drain(using: deliverer)
+
+        XCTAssertTrue(result.failed.isEmpty, "being offline never marks an entry failed, even at maxAttempts 1")
+        let callCount = await deliverer.callCount
+        XCTAssertEqual(callCount, 1, "the rest of the cycle is skipped")
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.first { $0.id == add.id }?.state, .pending)
+        XCTAssertEqual(stored.first { $0.id == add.id }?.attemptCount, 0)
+        XCTAssertEqual(stored.first { $0.id == delete.id }?.state, .pending)
+    }
+
     // MARK: - Deleting vs an in-flight delivery (2026-09-23 race fix)
 
     func testCancellingAnIdleAddRemovesIt() async throws {

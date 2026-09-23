@@ -77,7 +77,7 @@ public struct HydrationOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// For a correction: the `id` of the drink entry it cancels out, when
     /// known. Lets a correction Garmin keeps rejecting be discarded with
     /// the drink restored to the local list (FoodLogCore's
-    /// `HydrationLogCoordinator.discardFailed`). Optional for the same
+    /// `HydrationLogCoordinator.discardQueued`). Optional for the same
     /// decode reason.
     public let correctsEntryId: UUID?
 
@@ -436,6 +436,12 @@ public actor HydrationOutbox {
             } catch GarminAuthError.notSignedIn {
                 entry.lastError = "auth: not signed in"
                 authOutcome = .notSignedIn
+                stop = true
+            } catch let error as URLError where ConnectivityFailure.matches(error) {
+                // Offline is not a delivery failure (ConnectivityFailure.swift,
+                // same rule as `Outbox.drain`): no attempt counted, no
+                // backoff, rest of the cycle skipped -- the next drain retries.
+                entry.lastError = "offline: " + String(error.localizedDescription.prefix(200))
                 stop = true
             } catch {
                 entry.attemptCount += 1

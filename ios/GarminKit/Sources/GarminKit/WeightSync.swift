@@ -627,6 +627,12 @@ public actor WeightOutbox {
                 entry.lastError = "auth: not signed in"
                 authOutcome = .notSignedIn
                 stop = true
+            } catch let error as URLError where ConnectivityFailure.matches(error) {
+                // Offline is not a delivery failure (ConnectivityFailure.swift,
+                // same rule as `Outbox.drain`): no attempt counted, no
+                // backoff, rest of the cycle skipped -- the next drain retries.
+                entry.lastError = "offline: " + String(error.localizedDescription.prefix(200))
+                stop = true
             } catch {
                 entry.attemptCount += 1
                 entry.lastError = String(String(describing: error).prefix(300))
