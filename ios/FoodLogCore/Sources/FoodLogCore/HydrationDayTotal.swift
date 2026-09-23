@@ -42,7 +42,18 @@ public enum HydrationDayTotal {
         on day: Date,
         calendar: Calendar = .current
     ) -> Double {
-        let sameDay = outboxEntries.filter { calendar.isDate($0.loggedAt, inSameDayAs: day) }
+        // A drink removed while its delivery was in flight counts for
+        // nothing until it settles (dropped, or delivered + corrected). A
+        // correction Garmin gave up on (`.failed`) is NOT applied: Garmin
+        // still counts the drink, so the total must too, until the user
+        // retries it or discards it from the sync queue
+        // (`HydrationLogCoordinator.discardQueued`). A failed DRINK still
+        // counts -- it is the user's own entry, listed with a Retry.
+        let sameDay = outboxEntries.filter { entry in
+            !entry.isWithdrawn
+                && !(entry.isCorrection && entry.state == .failed)
+                && calendar.isDate(entry.loggedAt, inSameDayAs: day)
+        }
 
         guard let garminDaily, let garminFetchedAt else {
             return max(sameDay.reduce(0) { $0 + $1.valueInML }, 0)
@@ -53,6 +64,17 @@ public enum HydrationDayTotal {
             // Delivered: Garmin's number includes it only if the read came
             // after the delivery. A delivery by an older build has no
             // `deliveredAt`; it happened before any read this build made.
+            //
+            // Both stamps are chosen so a race errs small: `garminFetchedAt`
+            // is taken BEFORE the read starts, `deliveredAt` when Garmin's
+            // response ARRIVED (2026-09-23 fix -- it used to be the drain's
+            // start, so a read racing the drain was wrongly taken to include
+            // a drink accepted after it: an undercount until the next read).
+            // No extra grace here, unlike `WeightHistoryMerge` rule 4: for a
+            // total, "not in Garmin yet" is added ON TOP of Garmin's number,
+            // so over-assuming it double counts. The only remaining window is
+            // Garmin committing a drink before its response reaches the phone
+            // while a read is in flight -- counted twice until the next read.
             return (entry.deliveredAt ?? .distantPast) > garminFetchedAt
         }
         let garminValue = garminDaily.valueInML ?? 0

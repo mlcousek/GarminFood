@@ -201,6 +201,22 @@ final class WeightHistoryMergeTests: XCTestCase {
         XCTAssertEqual(rows.map(\.syncState), [.synced], "no blink-out between delivery and the next Garmin read")
     }
 
+    /// 2026-09-23 fix: a read that started only just after the weigh-in was
+    /// accepted may not list it yet -- it must not make the weigh-in vanish.
+    /// Keeping it can't double count: a listed sample matches in rule 3.
+    func testAReadStartedJustAfterAcceptanceDoesNotDropTheWeighIn() {
+        let outboxId = UUID()
+        let acceptedAt = morning.addingTimeInterval(5)
+        let rows = WeightHistoryMerge.merge(
+            garminWeighIns: [],
+            garminDayFetchedAt: ["2026-09-23": acceptedAt.addingTimeInterval(20)],
+            localEntries: [local(kg: 83.9, at: morning, outboxId: outboxId)],
+            outboxEntries: [outbox(outboxId, state: .sent, kg: 83.9, at: morning, deliveredAt: acceptedAt)],
+            calendar: calendar
+        )
+        XCTAssertEqual(rows.map(\.syncState), [.synced])
+    }
+
     func testOfflineWithNoGarminReadEverShowsLocalEntries() {
         let outboxId = UUID()
         let rows = WeightHistoryMerge.merge(
@@ -267,5 +283,38 @@ final class WeightHistoryMergeTests: XCTestCase {
         )
         let delta = try XCTUnwrap(WeightHistory.delta(latest: rows[0], previous: rows[1]))
         XCTAssertEqual(delta, 1.1, accuracy: 0.0001)
+    }
+
+    // MARK: - Delete by match (2026-09-23 review fix)
+
+    func testAPendingDeleteByMatchHidesOnlyTheSampleItWillResolveTo() {
+        let byMatch = WeightOutboxEntry(weightKg: 83.9, loggedAt: morning, operation: .delete, calendarDate: "2026-09-23")
+        let rows = WeightHistoryMerge.merge(
+            garminWeighIns: [
+                garmin(9, kg: 83.9, at: morning.addingTimeInterval(3)),
+                garmin(10, kg: 83.9, at: morning.addingTimeInterval(60)),  // also matches, but further away
+                garmin(11, kg: 80.0, at: morning.addingTimeInterval(3_600))
+            ],
+            garminDayFetchedAt: ["2026-09-23": morning.addingTimeInterval(600)],
+            localEntries: [],
+            outboxEntries: [byMatch],
+            calendar: calendar
+        )
+        XCTAssertEqual(rows.map(\.id).sorted(), ["garmin-10", "garmin-11"], "the closest match, same as the drain picks")
+    }
+
+    func testAFailedDeleteByMatchFlagsItsSampleWithTheDeleteToRetry() {
+        let failedId = UUID()
+        let byMatch = WeightOutboxEntry(id: failedId, weightKg: 83.9, loggedAt: morning, state: .failed, operation: .delete, calendarDate: "2026-09-23")
+        let rows = WeightHistoryMerge.merge(
+            garminWeighIns: [garmin(9, kg: 83.9, at: morning.addingTimeInterval(3))],
+            garminDayFetchedAt: ["2026-09-23": morning.addingTimeInterval(600)],
+            localEntries: [],
+            outboxEntries: [byMatch],
+            calendar: calendar
+        )
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.syncState, .deleteFailed, "still in Garmin -- shown again, flagged")
+        XCTAssertEqual(rows.first?.outboxEntryId, failedId)
     }
 }

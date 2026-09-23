@@ -31,6 +31,26 @@
 // of being lost. Every new field on `WeightOutboxEntry` is OPTIONAL, so an
 // outbox file written by an older build (adds only, no `operation`) still
 // decodes: a missing `operation` means `.add`.
+//
+// 2026-09-23 review fixes:
+// - DELETE BY MATCH. A weigh-in that reached Garmin but is still shown as
+//   the app's own row (Garmin not re-read since, so its `samplePk` is
+//   unknown -- the add route returns none) used to be deleted locally only:
+//   it stayed in Garmin and reappeared on the next read. Deleting it now
+//   queues a `.delete` WITHOUT a `samplePk`; the drain resolves it from the
+//   live-confirmed dayview read (`weighInSamples(on:)`) with design.md D1's
+//   same-weigh-in rule (`WeighInMatching`: |dt| <= 2 min, |dw| <= 0.05 kg),
+//   stores the resolved `samplePk` BEFORE sending the DELETE (so a retry
+//   after a lost response 404s instead of matching a second sample), and
+//   retries -- then surfaces as `.failed` -- when no sample matches yet. An
+//   older build decodes such an entry and marks it failed as malformed
+//   rather than quarantining the whole file.
+// - IN-FLIGHT CLAIM, same as HydrationSync.swift/the food `OutboxStore`:
+//   deleting a weigh-in whose add is being POSTed right now flags it
+//   (`removalRequested`); if Garmin accepts the add, `settle` queues a
+//   delete-by-match for it in the same write, and the same drain sends it.
+//   A queued DELETE that is in flight can't be cancelled ("Keep in Garmin")
+//   -- that is refused with `OutboxEditError.entryInFlight`.
 
 import Foundation
 
@@ -46,6 +66,32 @@ public protocol WeighInDelivering: Sendable {
     /// live-confirmed 2026-09-23 (see `GarminClient.deleteWeighIn`).
     @discardableResult
     func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse
+
+    /// `GET /weight-service/weight/dayview/{date}?includeAll=true`'s
+    /// samples -- live-probed read-only 2026-09-23 (`GarminClient.
+    /// weighIns(on:)`). Only used to resolve a delete-by-match's `samplePk`.
+    func weighInSamples(on date: String) async throws -> [GarminWeighIn]
+}
+
+/// design.md D1's "same weigh-in" rule, shared by this outbox's
+/// delete-by-match and FoodLogCore's `WeightHistoryMerge`, so the sample a
+/// delete resolves to is exactly the one the merged history showed as that
+/// weigh-in.
+public enum WeighInMatching {
+    public static let timeTolerance: TimeInterval = 120
+    public static let weightToleranceKg: Double = 0.05
+
+    public static func isSame(weightKg: Double, at date: Date, as sample: GarminWeighIn) -> Bool {
+        abs(date.timeIntervalSince(sample.timestamp)) <= timeTolerance
+            && abs(weightKg - sample.weightKg) <= weightToleranceKg + 1e-9
+    }
+
+    /// The matching sample closest in time, skipping `excluded` samplePks.
+    public static func closest(weightKg: Double, at date: Date, in samples: [GarminWeighIn], excluding excluded: Set<Int> = []) -> GarminWeighIn? {
+        samples
+            .filter { !excluded.contains($0.samplePk) && isSame(weightKg: weightKg, at: date, as: $0) }
+            .min { abs(date.timeIntervalSince($0.timestamp)) < abs(date.timeIntervalSince($1.timestamp)) }
+    }
 }
 
 /// What a `WeightOutboxEntry` asks Garmin to do.
@@ -86,8 +132,10 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// `nil` in files written before 2026-09-23 -- read `kind` instead,
     /// which maps `nil` to `.add`.
     public let operation: WeightOutboxOperation?
-    /// `.delete` only: the Garmin sample to delete. `nil` for `.add`.
-    public let samplePk: Int?
+    /// `.delete` only: the Garmin sample to delete. `nil` for `.add`, and
+    /// for a delete-by-match until the drain resolves it (see this file's
+    /// header) -- then `weightKg`/`loggedAt` are what it is matched on.
+    public var samplePk: Int?
     /// `.delete` only: the sample's own Garmin `calendarDate`
     /// (`yyyy-MM-dd`), the `{date}` segment of the delete route.
     public let calendarDate: String?
@@ -98,6 +146,12 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// the last read, so the read can't contain it yet" from "delivered
     /// before the last read, so the read is authoritative".
     public var deliveredAt: Date?
+    /// `.add` only: `true` once the user deleted this weigh-in while a drain
+    /// was sending it (`WeightOutbox.cancelQueued` ->
+    /// `.compensateAfterDelivery`). That drain drops it, or -- if Garmin
+    /// accepted it -- queues a delete-by-match for it. Optional so older
+    /// outbox files still decode.
+    public var removalRequested: Bool?
 
     public init(
         id: UUID = UUID(),
@@ -110,7 +164,8 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
         operation: WeightOutboxOperation? = nil,
         samplePk: Int? = nil,
         calendarDate: String? = nil,
-        deliveredAt: Date? = nil
+        deliveredAt: Date? = nil,
+        removalRequested: Bool? = nil
     ) {
         self.id = id
         self.weightKg = weightKg
@@ -123,10 +178,15 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
         self.samplePk = samplePk
         self.calendarDate = calendarDate
         self.deliveredAt = deliveredAt
+        self.removalRequested = removalRequested
     }
 
     /// The operation, with a pre-2026-09-23 `nil` read as `.add`.
     public var kind: WeightOutboxOperation { operation ?? .add }
+
+    /// A `.delete` whose `samplePk` is not known yet -- resolved by the
+    /// drain from Garmin's day view (see this file's header).
+    public var isDeleteByMatch: Bool { kind == .delete && samplePk == nil }
 
     var addRequest: AddWeighInRequest {
         AddWeighInRequest(weightKg: weightKg, loggedAt: loggedAt)
@@ -134,10 +194,23 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
 }
 
 /// Thrown (and recorded as the entry's `lastError`) when a `.delete` entry
-/// is missing the `samplePk`/`calendarDate` it needs -- only possible from a
-/// hand-edited file, since `logDelete` always sets both.
+/// is missing the `calendarDate` it needs -- only possible from a
+/// hand-edited file, since `logDelete`/`logDeleteMatching` always set it.
 struct WeightOutboxMalformedEntry: Error, CustomStringConvertible {
-    var description: String { "delete entry is missing samplePk/calendarDate" }
+    var description: String { "delete entry is missing its calendarDate" }
+}
+
+/// A delete-by-match found no Garmin sample matching the weigh-in (yet --
+/// Garmin may not list a just-accepted add immediately). Retried with the
+/// normal backoff, then surfaced as `.failed` in the sync queue.
+struct WeighInToDeleteNotFound: Error, CustomStringConvertible {
+    let weightKg: Double
+    let loggedAt: Date
+    let calendarDate: String
+
+    var description: String {
+        "couldn't find the \(weightKg) kg weigh-in at \(loggedAt) in Garmin's \(calendarDate) weigh-ins to delete it"
+    }
 }
 
 // MARK: - Persistence
@@ -150,6 +223,9 @@ actor WeightOutboxStore {
     private let fileURL: URL
     private var entries: [WeightOutboxEntry] = []
     private var loaded = false
+    /// Entries a drain is sending right now -- see `HydrationOutboxStore.
+    /// claimedIds` / the food `OutboxStore`'s.
+    private var claimedIds: Set<UUID> = []
 
     init(fileURL: URL = WeightOutboxStore.defaultFileURL()) {
         self.fileURL = fileURL
@@ -174,10 +250,14 @@ actor WeightOutboxStore {
     }
 
     private func persist() throws {
+        try write(entries)
+    }
+
+    private func write(_ list: [WeightOutboxEntry]) throws {
         try PersistedJSON.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "WeightOutboxStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(entries)
+        let data = try encoder.encode(list)
         try data.write(to: fileURL, options: .atomic)
         // Matches `OutboxStore.persist()`: readable before first unlock in a
         // session (a background drain), still encrypted at rest once the
@@ -218,6 +298,96 @@ actor WeightOutboxStore {
         entries.removeAll { $0.id == id }
         try persist()
     }
+
+    /// Marks `id` in flight and returns its CURRENT value, or `nil` if it
+    /// is gone, already claimed, or no longer due.
+    func claim(id: UUID, now: Date) -> WeightOutboxEntry? {
+        loadIfNeeded()
+        guard !claimedIds.contains(id),
+              let entry = entries.first(where: { $0.id == id }),
+              entry.state == .pending,
+              entry.nextAttemptAt <= now
+        else { return nil }
+        claimedIds.insert(id)
+        return entry
+    }
+
+    /// Writes back a claimed entry after one delivery attempt and releases
+    /// the claim -- `HydrationOutboxStore.settle`'s twin. A flagged add
+    /// Garmin did NOT accept is dropped; one Garmin DID accept is stored as
+    /// `.sent` with a delete-by-match for it appended in the same write, due
+    /// at once so the same drain sends it.
+    func settle(_ attempted: WeightOutboxEntry, accepted: Bool) -> WeightSettlement {
+        loadIfNeeded()
+        claimedIds.remove(attempted.id)
+        guard let index = entries.firstIndex(where: { $0.id == attempted.id }) else { return .gone }
+        let settlement: WeightSettlement
+        if entries[index].removalRequested == true {
+            if accepted {
+                var sent = attempted
+                sent.removalRequested = true
+                entries[index] = sent
+                if attempted.kind == .add {
+                    entries.append(WeightOutboxEntry(
+                        weightKg: attempted.weightKg,
+                        loggedAt: attempted.loggedAt,
+                        nextAttemptAt: attempted.nextAttemptAt,
+                        operation: .delete,
+                        samplePk: nil,
+                        calendarDate: WeightOutbox.localCalendarDate(of: attempted.loggedAt)
+                    ))
+                    settlement = .deleteQueued
+                } else {
+                    settlement = .written
+                }
+            } else {
+                entries.remove(at: index)
+                settlement = .dropped
+            }
+        } else {
+            entries[index] = attempted
+            settlement = .written
+        }
+        do {
+            try persist()
+        } catch {
+            DiagnosticsLog.log(.error, category: "WeightOutboxStore", "couldn't persist a delivery result: \(error)")
+        }
+        return settlement
+    }
+
+    /// Removes a not-yet-delivered entry. If a drain is sending it right
+    /// now, an ADD is flagged instead (see `settle`), while a DELETE is
+    /// refused with `OutboxEditError.entryInFlight` -- a sample can't be
+    /// un-deleted. `.alreadyDelivered` for a `.sent` entry, `.entryNotFound`
+    /// for an unknown id; nothing changes when it throws.
+    func cancel(id: UUID) throws -> OutboxCancellation {
+        loadIfNeeded()
+        guard let index = entries.firstIndex(where: { $0.id == id }) else { throw OutboxEditError.entryNotFound }
+        guard entries[index].state != .sent else { throw OutboxEditError.alreadyDelivered }
+        var updated = entries
+        let result: OutboxCancellation
+        if claimedIds.contains(id) {
+            guard entries[index].kind == .add else { throw OutboxEditError.entryInFlight }
+            updated[index].removalRequested = true
+            result = .compensateAfterDelivery
+        } else {
+            updated.remove(at: index)
+            result = .removed
+        }
+        try write(updated)
+        entries = updated
+        return result
+    }
+}
+
+/// How `WeightOutboxStore.settle` resolved one delivery attempt.
+enum WeightSettlement: Sendable, Equatable {
+    case written
+    case dropped
+    case deleteQueued
+    /// The entry vanished while claimed (only an unconditional `delete`).
+    case gone
 }
 
 // MARK: - Drain
@@ -295,6 +465,44 @@ public actor WeightOutbox {
         return try await store.enqueue(entry)
     }
 
+    /// Enqueues deleting the Garmin copy of a weigh-in whose `samplePk` is
+    /// not known (delivered, but Garmin not re-read since). The drain
+    /// resolves it from Garmin's `calendarDate` day view by `weightKg` +
+    /// `loggedAt` (`WeighInMatching`). Durable on return, no network call.
+    @discardableResult
+    public func logDeleteMatching(weightKg: Double, loggedAt: Date, calendarDate: String) async throws -> WeightOutboxEntry {
+        let entry = WeightOutboxEntry(
+            weightKg: weightKg,
+            loggedAt: loggedAt,
+            operation: .delete,
+            samplePk: nil,
+            calendarDate: calendarDate
+        )
+        return try await store.enqueue(entry)
+    }
+
+    /// Removes an entry Garmin has not accepted yet -- or, for an add a
+    /// drain is sending right now, flags it so that drain drops it or
+    /// deletes it again from Garmin (`OutboxCancellation`). Local only.
+    /// Throws `OutboxEditError.alreadyDelivered`, `.entryNotFound`, or
+    /// `.entryInFlight` (a DELETE being sent right now); nothing changes
+    /// when it throws.
+    @discardableResult
+    public func cancelQueued(id: UUID) async throws -> OutboxCancellation {
+        try await store.cancel(id: id)
+    }
+
+    /// `yyyy-MM-dd` of `date` in the device's time zone -- the day a weigh-in
+    /// logged here lands on in Garmin (same as FoodLogCore's `NutritionDate`).
+    static func localCalendarDate(of date: Date, timeZone: TimeZone = .current) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = timeZone
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
+    }
+
     public func allEntries() async -> [WeightOutboxEntry] {
         await store.all()
     }
@@ -326,7 +534,8 @@ public actor WeightOutbox {
     public func drain(
         using deliverer: some WeighInDelivering,
         now: Date = Date(),
-        randomJitter: @Sendable () -> Double = { Double.random(in: 0..<1) }
+        randomJitter: @Sendable () -> Double = { Double.random(in: 0..<1) },
+        clock: @Sendable () -> Date = { Date() }
     ) async -> WeightDrainResult {
         guard !isDraining else {
             return WeightDrainResult(delivered: [], failed: [], stoppedDueToRateLimit: false, authOutcome: .none)
@@ -338,15 +547,48 @@ public actor WeightOutbox {
         var failed: [WeightOutboxEntry] = []
         var stoppedDueToRateLimit = false
         var authOutcome: DrainAuthOutcome = .none
+        // Re-read every step, each entry attempted at most once -- same as
+        // `HydrationOutbox.drain`, so a delete `settle` queues for an add
+        // deleted mid-flight goes out in this same drain.
+        var attempted = Set<UUID>()
 
-        for var entry in await store.pending(now: now) {
+        while true {
+            guard let next = await store.pending(now: now).first(where: { !attempted.contains($0.id) }) else { break }
+            attempted.insert(next.id)
+            guard var entry = await store.claim(id: next.id, now: now) else { continue }
+
+            var accepted = false
+            var stop = false
             do {
                 switch entry.kind {
                 case .add:
                     try await deliverer.addWeighIn(entry.addRequest)
                 case .delete:
-                    guard let samplePk = entry.samplePk, let calendarDate = entry.calendarDate else {
+                    guard let calendarDate = entry.calendarDate else {
                         throw WeightOutboxMalformedEntry()
+                    }
+                    let samplePk: Int
+                    if let known = entry.samplePk {
+                        samplePk = known
+                    } else {
+                        // Delete-by-match: resolve against Garmin's own
+                        // list for that day. Stored on `entry` (written back
+                        // by `settle` whatever happens next), so a retry
+                        // after a lost DELETE response re-sends THIS
+                        // samplePk (404 -> done) instead of matching again.
+                        let samples = try await deliverer.weighInSamples(on: calendarDate)
+                        // Never a sample another delete already targets
+                        // (Garmin may still list one it just deleted).
+                        let entryId = entry.id
+                        let queued = await store.all()
+                        let targeted = Set(queued.compactMap { other -> Int? in
+                            other.id != entryId && other.kind == .delete ? other.samplePk : nil
+                        })
+                        guard let match = WeighInMatching.closest(weightKg: entry.weightKg, at: entry.loggedAt, in: samples, excluding: targeted) else {
+                            throw WeighInToDeleteNotFound(weightKg: entry.weightKg, loggedAt: entry.loggedAt, calendarDate: calendarDate)
+                        }
+                        samplePk = match.samplePk
+                        entry.samplePk = match.samplePk
                     }
                     do {
                         try await deliverer.deleteWeighIn(date: calendarDate, samplePk: samplePk)
@@ -361,44 +603,62 @@ public actor WeightOutbox {
                         DiagnosticsLog.log(.info, category: "WeightOutbox", "delete of sample \(samplePk) on \(calendarDate) returned 404 -- treating as already deleted")
                     }
                 }
+                accepted = true
                 entry.state = .sent
                 entry.lastError = nil
-                entry.deliveredAt = now
-                try? await store.update(entry)
-                delivered.append(entry)
+                // When Garmin ACCEPTED it, not when this drain started:
+                // FoodLogCore compares it with when Garmin was last read
+                // (see `deliveredAt`), and a read that started mid-drain
+                // must not be taken to include an entry accepted after it.
+                entry.deliveredAt = clock()
             } catch GarminClientError.rateLimited(let retryAfterSeconds) {
                 entry.attemptCount += 1
                 entry.lastError = "rate limited (429)"
                 entry.nextAttemptAt = now.addingTimeInterval(
                     retryAfterSeconds ?? Outbox.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                 )
-                try? await store.update(entry)
                 stoppedDueToRateLimit = true
-                break
+                stop = true
             } catch GarminAuthError.longLivedTokenExpired {
                 entry.lastError = "auth: long-lived token expired"
-                try? await store.update(entry)
                 authOutcome = .longLivedTokenExpired
-                break
+                stop = true
             } catch GarminAuthError.notSignedIn {
                 entry.lastError = "auth: not signed in"
-                try? await store.update(entry)
                 authOutcome = .notSignedIn
-                break
+                stop = true
+            } catch let error as URLError where ConnectivityFailure.matches(error) {
+                // Offline is not a delivery failure (ConnectivityFailure.swift,
+                // same rule as `Outbox.drain`): no attempt counted, no
+                // backoff, rest of the cycle skipped -- the next drain retries.
+                entry.lastError = "offline: " + String(error.localizedDescription.prefix(200))
+                stop = true
             } catch {
                 entry.attemptCount += 1
                 entry.lastError = String(String(describing: error).prefix(300))
                 if entry.attemptCount >= maxAttempts {
                     entry.state = .failed
-                    try? await store.update(entry)
-                    failed.append(entry)
                 } else {
                     entry.nextAttemptAt = now.addingTimeInterval(
                         Outbox.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                     )
-                    try? await store.update(entry)
                 }
             }
+
+            switch await store.settle(entry, accepted: accepted) {
+            case .written, .gone:
+                if accepted {
+                    delivered.append(entry)
+                } else if entry.state == .failed {
+                    failed.append(entry)
+                }
+            case .deleteQueued:
+                delivered.append(entry)
+            case .dropped:
+                // Deleted by the user mid-flight and never accepted.
+                break
+            }
+            if stop { break }
         }
 
         if !delivered.isEmpty || !failed.isEmpty || authOutcome != .none {

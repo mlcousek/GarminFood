@@ -166,6 +166,76 @@ final class WeightLogCoordinatorTests: XCTestCase {
         XCTAssertEqual(after.first?.state, .pending)
         XCTAssertEqual(after.first?.attemptCount, 0)
     }
+
+    // MARK: - Delivered but not yet matched (2026-09-23 review fix)
+
+    private var prague: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Europe/Prague")!
+        return calendar
+    }
+
+    /// Before the fix this only removed the local record: the weigh-in
+    /// stayed in Garmin and came back on the next read.
+    func testDeletingADeliveredButUnmatchedWeighInDeletesItFromGarminByMatch() async throws {
+        let (coordinator, store, outbox) = makeCoordinator()
+        let morning = Date(timeIntervalSince1970: 1_790_149_291.732)
+        let local = try await coordinator.logWeight(weightKg: 83.9, loggedAt: morning)
+        _ = await outbox.drain(using: AlwaysSucceedsWeighInDeliverer())
+        // Garmin not re-read since the delivery: shown as the app's own row.
+        let row = WeighInDisplayEntry(source: .local(local), syncState: .synced, outboxEntryId: nil)
+
+        let result = try await coordinator.delete(row, calendar: prague)
+
+        XCTAssertEqual(result, .garminDeleteQueued)
+        let storedEntries = await store.all()
+        XCTAssertTrue(storedEntries.isEmpty)
+        let deletes = await outbox.allEntries().filter { $0.kind == .delete }
+        XCTAssertEqual(deletes.count, 1)
+        let queued = try XCTUnwrap(deletes.first)
+        XCTAssertTrue(queued.isDeleteByMatch, "its samplePk isn't known yet")
+        XCTAssertEqual(queued.calendarDate, "2026-09-23")
+        XCTAssertEqual(queued.weightKg, 83.9)
+        XCTAssertEqual(queued.loggedAt, morning)
+
+        // Garmin re-read before the delete is delivered: its copy stays hidden.
+        let theirs = sample(pk: 55, kg: 83.9, at: morning.addingTimeInterval(1))
+        let unrelated = sample(pk: 56, kg: 70, at: morning.addingTimeInterval(3600))
+        let localAfter = await store.all()
+        let outboxAfter = await outbox.allEntries()
+        let merged = WeightHistoryMerge.merge(
+            garminWeighIns: [theirs, unrelated],
+            garminDayFetchedAt: ["2026-09-23": Date()],
+            localEntries: localAfter,
+            outboxEntries: outboxAfter,
+            calendar: prague
+        )
+        XCTAssertEqual(merged.map(\.id), ["garmin-56"])
+
+        // The drain resolves it to exactly that sample.
+        let deliverer = RecordingWeighInDeliverer(samples: [theirs, unrelated])
+        _ = await outbox.drain(using: deliverer)
+        let deleted = await deliverer.deletedSamplePks
+        XCTAssertEqual(deleted, [55])
+    }
+
+    func testDeletingARowWhoseDeleteByMatchFailedRetriesThatDelete() async throws {
+        let (coordinator, _, outbox) = makeCoordinator()
+        let morning = Date(timeIntervalSince1970: 1_790_149_291.732)
+        let byMatch = try await outbox.logDeleteMatching(weightKg: 83.9, loggedAt: morning, calendarDate: "2026-09-23")
+        for _ in 0..<5 {
+            _ = await outbox.drain(using: AlwaysFailsWeighInDeliverer(), randomJitter: { 0 })
+        }
+        let failed = await outbox.allEntries()
+        XCTAssertEqual(failed.first?.state, .failed, "precondition: the delete gave up")
+        let row = WeighInDisplayEntry(source: .garmin(sample(pk: 55, kg: 83.9, at: morning), matchedLocalEntry: nil), syncState: .deleteFailed, outboxEntryId: byMatch.id)
+
+        try await coordinator.delete(row)
+
+        let after = await outbox.allEntries()
+        XCTAssertEqual(after.map(\.id), [byMatch.id], "retried, not queued a second time")
+        XCTAssertEqual(after.first?.state, .pending)
+    }
 }
 
 /// A `WeighInDelivering` fake that always succeeds -- lets a test drive a
@@ -174,12 +244,43 @@ final class WeightLogCoordinatorTests: XCTestCase {
 /// deliberately has no way to do -- `retry(id:)` only ever resets TO
 /// `.pending`).
 private struct AlwaysSucceedsWeighInDeliverer: WeighInDelivering {
+    /// What Garmin's day view lists (for a delete-by-match).
+    var samples: [GarminWeighIn] = []
+
     func addWeighIn(_ request: AddWeighInRequest) async throws -> HTTPURLResponse {
         HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/weight-service/user-weight")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
 
     func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse {
         HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/weight-service/weight/\(date)/byversion/\(samplePk)")!, statusCode: 204, httpVersion: nil, headerFields: nil)!
+    }
+
+    func weighInSamples(on date: String) async throws -> [GarminWeighIn] {
+        samples.filter { $0.calendarDate == date }
+    }
+}
+
+/// Records which samples were deleted -- for asserting what a
+/// delete-by-match resolved to.
+private actor RecordingWeighInDeliverer: WeighInDelivering {
+    private let samples: [GarminWeighIn]
+    private(set) var deletedSamplePks: [Int] = []
+
+    init(samples: [GarminWeighIn]) {
+        self.samples = samples
+    }
+
+    func addWeighIn(_ request: AddWeighInRequest) async throws -> HTTPURLResponse {
+        HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/weight-service/user-weight")!, statusCode: 204, httpVersion: nil, headerFields: nil)!
+    }
+
+    func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse {
+        deletedSamplePks.append(samplePk)
+        return HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/weight-service/weight/\(date)/byversion/\(samplePk)")!, statusCode: 204, httpVersion: nil, headerFields: nil)!
+    }
+
+    func weighInSamples(on date: String) async throws -> [GarminWeighIn] {
+        samples.filter { $0.calendarDate == date }
     }
 }
 
@@ -190,6 +291,10 @@ private struct AlwaysFailsWeighInDeliverer: WeighInDelivering {
     }
 
     func deleteWeighIn(date: String, samplePk: Int) async throws -> HTTPURLResponse {
+        throw GarminClientError.httpError(statusCode: 500, body: nil)
+    }
+
+    func weighInSamples(on date: String) async throws -> [GarminWeighIn] {
         throw GarminClientError.httpError(statusCode: 500, body: nil)
     }
 }

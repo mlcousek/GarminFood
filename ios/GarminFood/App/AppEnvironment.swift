@@ -347,10 +347,12 @@ final class AppEnvironment {
     /// Gives up on a queued Garmin DELETE (sync queue only): the weigh-in
     /// stays in Garmin and reappears in the history. Adds aren't cancelled
     /// here -- deleting the weigh-in from the Weight screen does that and
-    /// keeps the local record consistent.
+    /// keeps the local record consistent. Refused with
+    /// `OutboxEditError.entryInFlight` while a drain is sending that very
+    /// DELETE (a sample can't be un-deleted) -- 2026-09-23 race fix.
     func cancelWeightDelete(_ entry: WeightOutboxEntry) async throws {
         guard entry.kind == .delete, entry.state != .sent else { return }
-        try await weightOutbox.delete(id: entry.id)
+        try await weightOutbox.cancelQueued(id: entry.id)
         await weightLoader.refresh()
         await refreshQueueState()
     }
@@ -384,6 +386,18 @@ final class AppEnvironment {
         await hydrationLoader.refresh()
         await refreshQueueState()
         await drainAndReconcile()
+    }
+
+    /// Gives up on a failed drink or correction (sync queue only), leaving
+    /// the local list matching Garmin: a dropped correction lists its drink
+    /// again; a dropped drink disappears (`HydrationLogCoordinator.
+    /// discardQueued`). Without this a correction Garmin keeps rejecting
+    /// could never leave the queue or clear the failure banner.
+    func discardHydrationQueued(_ entry: HydrationOutboxEntry) async throws {
+        guard entry.state != .sent else { return }
+        try await hydrationLogCoordinator.discardQueued(entry)
+        await hydrationLoader.refresh()
+        await refreshQueueState()
     }
 
     /// Day navigation, routed through here rather than calling `dayLog`

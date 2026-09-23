@@ -10,7 +10,11 @@
 // (spec: a failed weigh-in delete "is visible in the sync queue"). They can
 // be retried here; a queued Garmin delete can also be cancelled (the
 // weigh-in then stays in Garmin). Removing an add or a drink is done from
-// the Weight/Water screens, which keep their local records consistent.
+// the Weight/Water screens, which keep their local records consistent. A
+// FAILED water entry can also be discarded here (2026-09-23), through
+// `HydrationLogCoordinator.discardQueued`, which keeps the local list
+// consistent too -- the only way out for a correction Garmin keeps
+// rejecting.
 //
 // add-log-entry-editing: an edit whose corrected entry is already in Garmin
 // but whose old entry isn't removed yet (`.createdAwaitingDelete`) is listed
@@ -49,6 +53,8 @@ struct SyncQueueView: View {
                             Task {
                                 do {
                                     try await environment.cancelWeightDelete(entry)
+                                } catch OutboxEditError.entryInFlight {
+                                    actionError = "This delete is being sent to Garmin right now, so it can't be cancelled."
                                 } catch {
                                     actionError = "Couldn't cancel this delete: \(error.localizedDescription)"
                                 }
@@ -62,6 +68,16 @@ struct SyncQueueView: View {
                                     try await environment.retryHydrationQueued(id: entry.id)
                                 } catch {
                                     actionError = "Couldn't retry this entry: \(error.localizedDescription)"
+                                }
+                            }
+                        } onDiscard: {
+                            Task {
+                                do {
+                                    try await environment.discardHydrationQueued(entry)
+                                } catch OutboxEditError.alreadyDelivered {
+                                    actionError = "This entry reached Garmin in the meantime, so there's nothing to discard."
+                                } catch {
+                                    actionError = "Couldn't discard this entry: \(error.localizedDescription)"
                                 }
                             }
                         }
@@ -275,10 +291,13 @@ private struct WeightQueueRow: View {
     }
 }
 
-/// One queued drink, or a negative correction for a removed drink.
+/// One queued drink, or a negative correction for a removed drink. A failed
+/// one can be retried or discarded (2026-09-23: before, only retried -- a
+/// correction Garmin keeps rejecting was stuck in the queue forever).
 private struct HydrationQueueRow: View {
     let entry: HydrationOutboxEntry
     let onRetry: () -> Void
+    let onDiscard: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -302,6 +321,14 @@ private struct HydrationQueueRow: View {
         .padding(.vertical, Theme.Spacing.xs)
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             if entry.state == .failed {
+                // A dropped correction leaves the drink in Garmin (and
+                // lists it again); a dropped drink is never sent.
+                Button(role: .destructive, action: onDiscard) {
+                    Label(
+                        entry.isCorrection ? "Keep in Garmin" : "Discard",
+                        systemImage: entry.isCorrection ? "arrow.uturn.backward" : "trash"
+                    )
+                }
                 Button(action: onRetry) {
                     Label("Retry", systemImage: "arrow.clockwise")
                 }

@@ -91,9 +91,18 @@ public struct WeighInDisplayEntry: Sendable, Equatable, Identifiable {
 
 public enum WeightHistoryMerge {
     /// A delivered local entry and a Garmin sample are the same weigh-in
-    /// when both their times and weights agree this closely (D1).
-    public static let matchTimeTolerance: TimeInterval = 120
-    public static let matchWeightToleranceKg: Double = 0.05
+    /// when both their times and weights agree this closely (D1). Defined
+    /// in GarminKit's `WeighInMatching`, because `WeightOutbox.drain`
+    /// resolves a delete-by-match with the very same rule.
+    public static let matchTimeTolerance: TimeInterval = WeighInMatching.timeTolerance
+    public static let matchWeightToleranceKg: Double = WeighInMatching.weightToleranceKg
+
+    /// Rule 4's margin: a Garmin read must have started at least this long
+    /// after a weigh-in was accepted (`WeightOutboxEntry.deliveredAt`,
+    /// stamped at acceptance since 2026-09-23) before a missing sample
+    /// means "deleted in Garmin". Covers a read racing the delivery and
+    /// Garmin not listing a just-accepted write at once.
+    public static let readAfterDeliveryGrace: TimeInterval = 60
 
     /// Merges Garmin's weigh-ins with the app's own, newest first.
     ///
@@ -106,7 +115,9 @@ public enum WeightHistoryMerge {
     /// Rules:
     /// 1. A Garmin sample with a `.pending`/`.sent` delete in the outbox is
     ///    hidden (deleted here at once, D3). With a `.failed` delete it is
-    ///    shown again as `.deleteFailed`.
+    ///    shown again as `.deleteFailed`. A delete-by-match (no `samplePk`
+    ///    yet -- `WeightOutbox.logDeleteMatching`) applies to the closest
+    ///    sample matching its weight/time, the one the drain will resolve.
     /// 2. A local entry whose add is `.pending`/`.failed` is shown as such
     ///    -- never de-duplicated, it isn't in Garmin yet.
     /// 3. A delivered local entry (outbox `.sent`, or its outbox entry gone,
@@ -130,8 +141,12 @@ public enum WeightHistoryMerge {
         // Rule 1: deletes by samplePk.
         var hiddenSamplePks = Set<Int>()
         var failedDeleteBySamplePk: [Int: UUID] = [:]
+        var deletesByMatch: [WeightOutboxEntry] = []
         for entry in outboxEntries where entry.kind == .delete {
-            guard let samplePk = entry.samplePk else { continue }
+            guard let samplePk = entry.samplePk else {
+                deletesByMatch.append(entry)
+                continue
+            }
             if entry.state == .failed {
                 failedDeleteBySamplePk[samplePk] = entry.id
             } else {
@@ -141,6 +156,19 @@ public enum WeightHistoryMerge {
 
         var seenSamplePks = Set<Int>()
         let samples = garminWeighIns.filter { seenSamplePks.insert($0.samplePk).inserted }
+
+        // Rule 1, delete-by-match: each claims its own closest sample among
+        // those no other delete already targets.
+        var targetedSamplePks = hiddenSamplePks.union(failedDeleteBySamplePk.keys)
+        for entry in deletesByMatch {
+            guard let sample = WeighInMatching.closest(weightKg: entry.weightKg, at: entry.loggedAt, in: samples, excluding: targetedSamplePks) else { continue }
+            targetedSamplePks.insert(sample.samplePk)
+            if entry.state == .failed {
+                failedDeleteBySamplePk[sample.samplePk] = entry.id
+            } else {
+                hiddenSamplePks.insert(sample.samplePk)
+            }
+        }
 
         var claimedSamplePks = Set<Int>()
         var matchedLocalBySamplePk: [Int: WeightEntry] = [:]
@@ -169,10 +197,14 @@ public enum WeightHistoryMerge {
                 continue
             }
 
-            // Rule 4.
+            // Rule 4. Only a read that started comfortably AFTER Garmin
+            // accepted the weigh-in may drop it: erring the other way can't
+            // double count (a sample that IS there already matched in rule
+            // 3), it only keeps a Connect-deleted weigh-in one read longer.
             let day = NutritionDate.string(from: local.loggedAt, calendar: calendar)
             let deliveredAt = outboxEntry?.deliveredAt ?? .distantPast
-            if let fetchedAt = garminDayFetchedAt[day], fetchedAt > deliveredAt {
+            if let fetchedAt = garminDayFetchedAt[day],
+               fetchedAt > deliveredAt.addingTimeInterval(readAfterDeliveryGrace) {
                 continue
             }
             rows.append(WeighInDisplayEntry(source: .local(local), syncState: .synced, outboxEntryId: nil))
@@ -195,14 +227,11 @@ public enum WeightHistoryMerge {
 
     /// Whether `local` and `sample` are the same weigh-in (D1 tolerances).
     public static func isSameWeighIn(_ local: WeightEntry, _ sample: GarminWeighIn) -> Bool {
-        abs(local.loggedAt.timeIntervalSince(sample.timestamp)) <= matchTimeTolerance
-            && abs(local.weightKg - sample.weightKg) <= matchWeightToleranceKg + 1e-9
+        WeighInMatching.isSame(weightKg: local.weightKg, at: local.loggedAt, as: sample)
     }
 
     private static func closestMatch(for local: WeightEntry, in samples: [GarminWeighIn], excluding claimed: Set<Int>) -> GarminWeighIn? {
-        samples
-            .filter { !claimed.contains($0.samplePk) && isSameWeighIn(local, $0) }
-            .min { abs(local.loggedAt.timeIntervalSince($0.timestamp)) < abs(local.loggedAt.timeIntervalSince($1.timestamp)) }
+        WeighInMatching.closest(weightKg: local.weightKg, at: local.loggedAt, in: samples, excluding: claimed)
     }
 }
 

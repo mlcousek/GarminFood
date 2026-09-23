@@ -661,5 +661,11 @@ public struct GarminClient: Sendable {
 
 extension GarminClient: FoodLogDelivering {}
 extension GarminClient: FoodLogReconciling {}
-extension GarminClient: WeighInDelivering {}
+extension GarminClient: WeighInDelivering {
+    /// The dayview read's samples (`weighIns(on:)`, live-probed read-only
+    /// 2026-09-23) -- how `WeightOutbox.drain` resolves a delete-by-match.
+    public func weighInSamples(on date: String) async throws -> [GarminWeighIn] {
+        try await weighIns(on: date).weighIns
+    }
+}
 extension GarminClient: HydrationDelivering {}

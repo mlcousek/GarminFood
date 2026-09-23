@@ -141,7 +141,7 @@ struct WeightView: View {
         case .pending, .failed:
             return "It hasn't reached Garmin yet, so it simply won't be sent."
         case .synced, .deleteFailed:
-            return "Removes it from this phone. It already reached Garmin; once Garmin has been re-read it shows up here again and can be deleted there too."
+            return "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online."
         }
     }
 
