@@ -240,6 +240,20 @@ public struct MealEntry: Sendable, Equatable, Identifiable {
     public let protein: Double?
     public let fat: Double?
     public let status: Status
+    /// add-log-entry-editing: what re-logging this entry needs (an edit's
+    /// replacement, a duplicate). `nil` when unknown -- then the entry can
+    /// only be deleted, like a calories-only quick add.
+    public let mealType: MealType?
+    public let servingId: String?
+    /// One serving's nutrition, as Garmin read it back (or the cached food's
+    /// serving for a queued entry) -- the edit sheet's live kcal.
+    public let serving: Serving?
+    public let source: GarminFoodSource?
+    public let regionCode: String?
+    public let languageCode: String?
+    /// Set while this row is a queued edit of a Garmin entry: the `logId`
+    /// the edit replaces (design.md D3's "marked pending").
+    public let replacesLogId: String?
 
     public init(
         id: String,
@@ -252,7 +266,14 @@ public struct MealEntry: Sendable, Equatable, Identifiable {
         carbs: Double?,
         protein: Double?,
         fat: Double?,
-        status: Status
+        status: Status,
+        mealType: MealType? = nil,
+        servingId: String? = nil,
+        serving: Serving? = nil,
+        source: GarminFoodSource? = nil,
+        regionCode: String? = nil,
+        languageCode: String? = nil,
+        replacesLogId: String? = nil
     ) {
         self.id = id
         self.foodId = foodId
@@ -265,11 +286,41 @@ public struct MealEntry: Sendable, Equatable, Identifiable {
         self.protein = protein
         self.fat = fat
         self.status = status
+        self.mealType = mealType
+        self.servingId = servingId
+        self.serving = serving
+        self.source = source
+        self.regionCode = regionCode
+        self.languageCode = languageCode
+        self.replacesLogId = replacesLogId
     }
 
     public var isSynced: Bool {
         if case .synced = status { return true }
         return false
+    }
+
+    /// The Garmin `logId`, for a synced entry that has one.
+    public var syncedLogId: String? {
+        guard case .synced(let logId) = status, !logId.isEmpty else { return nil }
+        return logId
+    }
+
+    /// Whether this entry carries enough identity to be logged again with
+    /// a different amount or meal (add-log-entry-editing). Quick-add
+    /// entries (no food or serving id) can only be deleted.
+    public var canRelog: Bool {
+        guard !foodId.isEmpty, let servingId, !servingId.isEmpty, mealType != nil else { return false }
+        if case .synced = status { return syncedLogId != nil }
+        return true
+    }
+
+    /// Calories for `quantity` servings, from the per-serving nutrition, or
+    /// by scaling this entry's own total when that is all there is.
+    public func calories(forQuantity quantity: Double) -> Double? {
+        if let perServing = serving?.calories { return perServing * quantity }
+        guard let calories, servingQty > 0 else { return nil }
+        return calories / servingQty * quantity
     }
 }
 
@@ -358,16 +409,39 @@ public enum MealDashboard {
 
         let order = mealOrder(details: detailByType, meals: mealByType)
         let queued = outboxEntries.filter { $0.date == date }
+        // add-log-entry-editing D3: an edit overlays Garmin's read-back --
+        // the entry it replaces is hidden (and its share taken off Garmin's
+        // totals) until the replace lands. Not while the replace is parked:
+        // then the old entry really is still in Garmin, and hiding it would
+        // make the duplicate silent.
+        let hiddenLogIds = Set(queued.compactMap { entry -> String? in
+            guard let replaced = entry.replaces, replaced.date == date, !entry.isParkedReplace else { return nil }
+            return replaced.logId
+        })
+        var loggedById: [String: LoggedFood] = [:]
+        for detail in details {
+            for food in detail.loggedFoods ?? [] {
+                guard let logId = food.logId, !logId.isEmpty, loggedById[logId] == nil else { continue }
+                loggedById[logId] = food
+            }
+        }
 
         var sections: [MealSection] = []
+        var hiddenAll: [MealEntry] = []
         for type in order {
             let detail = detailByType[type]
             let meal = detail?.meal ?? mealByType[type]
-            let synced = syncedEntries(detail?.loggedFoods ?? [])
+            let logged = detail?.loggedFoods ?? []
+            let visible = logged.filter { !isHidden($0, hiddenLogIds) }
+            let hidden = syncedEntries(logged.filter { isHidden($0, hiddenLogIds) }, mealType: type)
+            hiddenAll.append(contentsOf: hidden)
+            let synced = syncedEntries(visible, mealType: type)
             let pending = pendingEntries(
                 queued.filter { $0.mealType == type },
-                logged: detail?.loggedFoods ?? [],
-                foods: foods
+                logged: visible,
+                foods: foods,
+                mealType: type,
+                loggedById: loggedById
             )
             sections.append(section(
                 type: type,
@@ -375,7 +449,8 @@ public enum MealDashboard {
                 content: detail?.mealNutritionContent,
                 goals: detail?.mealNutritionGoals,
                 synced: synced,
-                pending: pending
+                pending: pending,
+                hidden: hidden
             ))
         }
 
@@ -383,10 +458,10 @@ public enum MealDashboard {
         let dayGoals = log?.dailyNutritionGoals
         let pendingAll = sections.flatMap(\.entries).filter { !$0.isSynced }
         let totals = NutrientTotals(
-            calories: MacroProgress(consumed: (dayContent?.calories ?? 0) + sum(pendingAll, \.calories), goal: target(dayGoals?.adjustedCalories, dayGoals?.calories)),
-            carbs: MacroProgress(consumed: (dayContent?.carbs ?? 0) + sum(pendingAll, \.carbs), goal: target(dayGoals?.adjustedCarbs, dayGoals?.carbs)),
-            protein: MacroProgress(consumed: (dayContent?.protein ?? 0) + sum(pendingAll, \.protein), goal: target(dayGoals?.adjustedProtein, dayGoals?.protein)),
-            fat: MacroProgress(consumed: (dayContent?.fat ?? 0) + sum(pendingAll, \.fat), goal: target(dayGoals?.adjustedFat, dayGoals?.fat))
+            calories: MacroProgress(consumed: (dayContent?.calories ?? 0) - sum(hiddenAll, \.calories) + sum(pendingAll, \.calories), goal: target(dayGoals?.adjustedCalories, dayGoals?.calories)),
+            carbs: MacroProgress(consumed: (dayContent?.carbs ?? 0) - sum(hiddenAll, \.carbs) + sum(pendingAll, \.carbs), goal: target(dayGoals?.adjustedCarbs, dayGoals?.carbs)),
+            protein: MacroProgress(consumed: (dayContent?.protein ?? 0) - sum(hiddenAll, \.protein) + sum(pendingAll, \.protein), goal: target(dayGoals?.adjustedProtein, dayGoals?.protein)),
+            fat: MacroProgress(consumed: (dayContent?.fat ?? 0) - sum(hiddenAll, \.fat) + sum(pendingAll, \.fat), goal: target(dayGoals?.adjustedFat, dayGoals?.fat))
         )
 
         return DayDashboard(date: date, totals: totals, sections: sections, hasGarminData: log != nil)
@@ -415,12 +490,15 @@ public enum MealDashboard {
         content: DailyNutritionContent?,
         goals: NutritionGoals?,
         synced: [MealEntry],
-        pending: [MealEntry]
+        pending: [MealEntry],
+        hidden: [MealEntry] = []
     ) -> MealSection {
-        let pendingCalories = sum(pending, \.calories)
-        let pendingCarbs = sum(pending, \.carbs)
-        let pendingProtein = sum(pending, \.protein)
-        let pendingFat = sum(pending, \.fat)
+        // `hidden`: Garmin entries an edit replaces (D3). Still inside
+        // Garmin's own meal total, so their share comes off it here.
+        let pendingCalories = sum(pending, \.calories) - sum(hidden, \.calories)
+        let pendingCarbs = sum(pending, \.carbs) - sum(hidden, \.carbs)
+        let pendingProtein = sum(pending, \.protein) - sum(hidden, \.protein)
+        let pendingFat = sum(pending, \.fat) - sum(hidden, \.fat)
 
         let totals = NutrientTotals(
             calories: MacroProgress(consumed: (content?.calories ?? 0) + pendingCalories, goal: target(goals?.adjustedCalories, goals?.calories)),
@@ -492,25 +570,37 @@ public enum MealDashboard {
 
     // MARK: Entries
 
-    static func syncedEntries(_ logged: [LoggedFood]) -> [MealEntry] {
+    static func isHidden(_ food: LoggedFood, _ hiddenLogIds: Set<String>) -> Bool {
+        guard let logId = food.logId, !logId.isEmpty else { return false }
+        return hiddenLogIds.contains(logId)
+    }
+
+    static func syncedEntries(_ logged: [LoggedFood], mealType: MealType? = nil) -> [MealEntry] {
         var entries: [MealEntry] = []
         for (index, food) in logged.enumerated() {
             let logId = food.logId ?? ""
             let qty = food.servingQty ?? 1
             let content = food.nutritionContent
             let serving = servingDescription(unit: content?.servingUnit, numberOfUnits: content?.numberOfUnits)
+            let meta = food.foodMetaData
             entries.append(MealEntry(
                 id: logId.isEmpty ? "synced-\(index)-\(food.foodId ?? "")" : logId,
                 foodId: food.foodId ?? "",
-                name: food.foodMetaData?.foodName ?? "Unnamed food",
-                brandName: food.foodMetaData?.brandName,
+                name: meta?.foodName ?? "Unnamed food",
+                brandName: meta?.brandName,
                 servingQty: qty,
                 servingDescription: serving,
                 calories: content?.calories.map { $0 * qty },
                 carbs: content?.carbs.map { $0 * qty },
                 protein: content?.protein.map { $0 * qty },
                 fat: content?.fat.map { $0 * qty },
-                status: .synced(logId: logId)
+                status: .synced(logId: logId),
+                mealType: mealType,
+                servingId: food.servingId,
+                serving: content.flatMap(Serving.init(loggedContent:)),
+                source: GarminFoodSource(readBackSource: meta?.source),
+                regionCode: meta?.regionCode,
+                languageCode: meta?.languageCode
             ))
         }
         return entries
@@ -518,18 +608,36 @@ public enum MealDashboard {
 
     /// Queued entries for one meal. A `.sent` entry is already accepted by
     /// Garmin; it's shown only while it can't be matched to an entry in the
-    /// loaded log, so a delivered entry never appears twice.
-    static func pendingEntries(_ queued: [OutboxEntry], logged: [LoggedFood], foods: [String: Food]) -> [MealEntry] {
+    /// loaded log, so a delivered entry never appears twice. The same goes
+    /// for a replace whose corrected entry is already created
+    /// (`.createdAwaitingDelete`, add-log-entry-editing) -- and a duplicate
+    /// is never matched to the very entry it was copied from.
+    ///
+    /// `loggedById` (every read-back entry of the day) names and sizes an
+    /// edit or duplicate from the entry it came from when the food isn't
+    /// in the local cache.
+    static func pendingEntries(
+        _ queued: [OutboxEntry],
+        logged: [LoggedFood],
+        foods: [String: Food],
+        mealType: MealType? = nil,
+        loggedById: [String: LoggedFood] = [:]
+    ) -> [MealEntry] {
         var unmatched = logged
         var entries: [MealEntry] = []
         for entry in queued.sorted(by: { $0.createdAt < $1.createdAt }) {
-            if entry.state == .sent {
-                if let index = unmatched.firstIndex(where: { matches($0, entry) }) {
+            if entry.state == .sent || entry.state == .createdAwaitingDelete {
+                let index = unmatched.firstIndex { food in
+                    matches(food, entry) && (entry.duplicateOf == nil || food.logId != entry.duplicateOf)
+                }
+                if let index {
                     unmatched.remove(at: index)
                     continue
                 }
             }
-            entries.append(pendingEntry(entry, food: foods[entry.foodId]))
+            let origin = entry.replaces.flatMap { loggedById[$0.logId] }
+                ?? entry.duplicateOf.flatMap { loggedById[$0] }
+            entries.append(pendingEntry(entry, food: foods[entry.foodId], origin: origin, mealType: mealType))
         }
         return entries
     }
@@ -540,8 +648,15 @@ public enum MealDashboard {
             && logged.matchesQuantity(entry.numberOfUnits)
     }
 
-    static func pendingEntry(_ entry: OutboxEntry, food: Food?) -> MealEntry {
-        let serving = food?.servings.first { $0.id == entry.servingId }
+    /// `origin`: the read-back entry an edit replaces or a duplicate copies
+    /// -- same food and serving, so its per-serving nutrition is this
+    /// entry's too when the food isn't cached.
+    static func pendingEntry(_ entry: OutboxEntry, food: Food?, origin: LoggedFood? = nil, mealType: MealType? = nil) -> MealEntry {
+        let cachedServing = food?.servings.first { $0.id == entry.servingId }
+        let originContent = origin?.servingId == entry.servingId ? origin?.nutritionContent : nil
+        let serving = cachedServing ?? originContent.flatMap(Serving.init(loggedContent:))
+        let description = cachedServing?.displayLabel
+            ?? servingDescription(unit: originContent?.servingUnit, numberOfUnits: originContent?.numberOfUnits)
         let qty = entry.numberOfUnits
         let status: MealEntry.Status
         if entry.state == .failed {
@@ -552,15 +667,22 @@ public enum MealDashboard {
         return MealEntry(
             id: entry.id.uuidString,
             foodId: entry.foodId,
-            name: food?.name ?? "Syncing…",
-            brandName: food?.brandName,
+            name: food?.name ?? origin?.foodMetaData?.foodName ?? "Syncing…",
+            brandName: food?.brandName ?? origin?.foodMetaData?.brandName,
             servingQty: qty,
-            servingDescription: serving?.displayLabel,
+            servingDescription: description,
             calories: serving?.calories.map { $0 * qty },
             carbs: serving?.carbs.map { $0 * qty },
             protein: serving?.protein.map { $0 * qty },
             fat: serving?.fat.map { $0 * qty },
-            status: status
+            status: status,
+            mealType: mealType ?? entry.mealType,
+            servingId: entry.servingId,
+            serving: serving,
+            source: entry.source ?? GarminFoodSource(readBackSource: origin?.foodMetaData?.source),
+            regionCode: entry.regionCode ?? origin?.foodMetaData?.regionCode,
+            languageCode: entry.languageCode ?? origin?.foodMetaData?.languageCode,
+            replacesLogId: entry.replaces?.logId
         )
     }
 

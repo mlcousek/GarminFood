@@ -325,6 +325,112 @@ final class ReconciliationTests: XCTestCase {
         )
     }
 
+    // MARK: - add-log-entry-editing D2
+
+    func testAReplacedEntrysOldCopyIsNeverCountedOrDeleted() async throws {
+        // The user edited "old" (1 serving) to 2 servings; the replace is
+        // still queued, so "old" is expected to vanish. An unrelated `.sent`
+        // entry X with the same key as "old" must not see it as an excess
+        // copy of itself -- deleting the LATER copy (X's own delivery) and
+        // then having the replace delete "old" too would lose both.
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        _ = try await outbox.logFood(
+            date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 2,
+            replaces: ReplacedLog(date: "2026-09-14", logId: "old")
+        )
+        var x = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1, createdAt: queuedBeforeFixtures)
+        x.state = .sent
+        try await outbox.requeue(x)
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "old", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "x-delivery", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:05:00Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: [x], using: client)
+
+        XCTAssertEqual(outcomes.map(\.verdict), [.confirmed(logId: "x-delivery")])
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty, "the replace deletes its own old entry; reconciliation must not delete anything here")
+    }
+
+    func testATemporaryDuplicateFromAnAwaitingDeleteReplaceIsNotDeletedAgain() async throws {
+        // A replace already created its corrected entry ("r-created", same
+        // key as X) and is waiting to delete "old-half". X is `.sent`. Two
+        // copies of the key are exactly what's expected right now.
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        var replace = try await outbox.logFood(
+            date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1,
+            replaces: ReplacedLog(date: "2026-09-14", logId: "old-half"), createdAt: queuedBeforeFixtures
+        )
+        replace.state = .createdAwaitingDelete
+        try await outbox.requeue(replace)
+        var x = try await outbox.logFood(date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1, createdAt: queuedBeforeFixtures)
+        x.state = .sent
+        try await outbox.requeue(x)
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "x-delivery", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "r-created", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:05:00Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "old-half", servingQty: 0.5, contentNumberOfUnits: 100, timestamp: "2026-09-14T05:30:00Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: [x], using: client)
+
+        XCTAssertEqual(outcomes.count, 1)
+        guard case .confirmed = outcomes[0].verdict else {
+            return XCTFail("expected confirmed, got \(outcomes[0].verdict)")
+        }
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty, "the replace's own corrected entry is not an excess copy")
+        let remaining = await outbox.allEntries()
+        XCTAssertEqual(remaining.map(\.id), [replace.id], "X is done; the replace still owes its delete")
+    }
+
+    func testADuplicatesSourceIsNotMistakenForItsDelivery() async throws {
+        // "Second coffee": duplicated 2 minutes after the first, well inside
+        // the clock tolerance, so the source would otherwise count -- and
+        // the excess copy deleted would be the duplicate itself.
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "source", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T09:00:00.000Z"),
+            LoggedEntryFixture(mealName: "SNACKS", foodId: "1", servingId: "2", logId: "dup", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T09:02:00.000Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+        let reconciliation = Reconciliation(outbox: Outbox(store: OutboxStore(fileURL: tempStoreURL())))
+        let entry = OutboxEntry(
+            date: "2026-09-14", mealType: .snacks, foodId: "1", servingId: "2", numberOfUnits: 1.0,
+            duplicateOf: "source", state: .sent, createdAt: instant("2026-09-14T09:02:00Z")
+        )
+
+        let outcomes = await reconciliation.reconcile(delivered: [entry], using: client)
+
+        XCTAssertEqual(outcomes.map(\.verdict), [.confirmed(logId: "dup")])
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty)
+    }
+
+    func testAnExcludedEntryIsStillCountedWhenItIsTheOnlyWayToAccountForADelivery() async throws {
+        // O was delivered as "o-delivery" but not reconciled yet; the user
+        // already edited that row, so a replace names it. Excluding it would
+        // make O look missing and send it AGAIN.
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        var o = try await outbox.logFood(date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1, createdAt: queuedBeforeFixtures)
+        o.state = .sent
+        try await outbox.requeue(o)
+        _ = try await outbox.logFood(
+            date: "2026-09-14", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 2,
+            replaces: ReplacedLog(date: "2026-09-14", logId: "o-delivery")
+        )
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "LUNCH", foodId: "1", servingId: "2", logId: "o-delivery", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T06:00:00Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: [o], using: client)
+
+        XCTAssertEqual(outcomes.map(\.verdict), [.confirmed(logId: "o-delivery")], "must not be re-queued as missing")
+    }
+
     // MARK: - Missed deliveries are bounded
 
     func testAnEntryThatKeepsGoingMissingIsEventuallyMarkedFailed() async throws {

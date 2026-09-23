@@ -11,6 +11,11 @@
 // be retried here; a queued Garmin delete can also be cancelled (the
 // weigh-in then stays in Garmin). Removing an add or a drink is done from
 // the Weight/Water screens, which keep their local records consistent.
+//
+// add-log-entry-editing: an edit whose corrected entry is already in Garmin
+// but whose old entry isn't removed yet (`.createdAwaitingDelete`) is listed
+// here too, so the temporary duplicate is never silent -- and, once parked
+// (the delete gave up), offered a retry that only re-attempts the delete.
 
 import SwiftUI
 import GarminKit

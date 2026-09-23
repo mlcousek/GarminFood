@@ -161,7 +161,9 @@ struct HydrationRow: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.caption)
                 .foregroundStyle(Theme.warning)
-        case .sent, .none:
+        // `.createdAwaitingDelete` is food-outbox-only (add-log-entry-
+        // editing); a drink never reaches it.
+        case .sent, .createdAwaitingDelete, .none:
             EmptyView()
         }
     }
@@ -171,7 +173,7 @@ struct HydrationRow: View {
         switch syncState {
         case .pending: label += ", waiting to sync"
         case .failed: label += ", sync failed"
-        case .sent, .none: break
+        case .sent, .createdAwaitingDelete, .none: break
         }
         return label
     }
