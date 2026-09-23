@@ -148,7 +148,7 @@ final class AppEnvironment {
         self.garminHealthSync = services.garminHealthSync
         self.trendsLoader = MacroTrendLoader(client: client)
         self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
-        self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache)
+        self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache, coordinator: services.logEntryCoordinator)
         self.preferences = preferences
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
@@ -515,8 +515,21 @@ final class AppEnvironment {
         await drainAndReconcile()
     }
 
+    /// Sync queue "Delete". Claim-guarded (code-review fix): refuses while
+    /// a drain is sending the entry, and never drops an edit whose
+    /// corrected entry Garmin already has (`.createdAwaitingDelete`) --
+    /// that would leave both the old and the corrected entry in Garmin,
+    /// untracked. The sync queue offers only Retry for those.
     func deleteQueued(_ entry: OutboxEntry) async throws {
-        try await outbox.delete(id: entry.id)
+        do {
+            try await outbox.cancelQueued(id: entry.id)
+        } catch OutboxEditError.entryNotFound {
+            // Already delivered and confirmed, or removed: nothing to do.
+        } catch OutboxEditError.entryInFlight {
+            throw LogEntryEditError.stillSyncing
+        } catch OutboxEditError.alreadyDelivered {
+            throw LogEntryEditError.stillSyncing
+        }
         await donations.entryDeleted(foodId: entry.foodId, date: entry.date)
         await refreshQueueState()
         await dayLog.rebuild()

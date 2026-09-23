@@ -385,11 +385,11 @@ final class LogEntryEditingTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func assertEditError(
+    private func assertEditError<T>(
         _ expected: LogEntryEditError,
         file: StaticString = #filePath,
         line: UInt = #line,
-        _ body: () async throws -> OutboxEntry
+        _ body: () async throws -> T
     ) async {
         do {
             _ = try await body()
@@ -398,6 +398,59 @@ final class LogEntryEditingTests: XCTestCase {
             XCTAssertEqual(error, expected, file: file, line: line)
         } catch {
             XCTFail("expected \(expected), got \(error)", file: file, line: line)
+        }
+    }
+
+    // MARK: - Deleting a still-queued row (code-review fix)
+
+    func testDeletingAPendingCreateRemovesIt() async throws {
+        let h = makeHarness()
+        let entry = try await h.outbox.logFood(date: "2026-09-23", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 1)
+
+        let outcome = try await h.coordinator.deletePending(outboxId: entry.id)
+
+        XCTAssertEqual(outcome, .removed)
+        let remaining = await h.outbox.allEntries()
+        XCTAssertTrue(remaining.isEmpty)
+    }
+
+    func testDeletingAPendingEditAlsoDeletesTheOriginalInGarmin() async throws {
+        let h = makeHarness()
+        let edit = try await h.outbox.logFood(
+            date: "2026-09-23", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 2,
+            replaces: ReplacedLog(date: "2026-09-23", logId: "original-log")
+        )
+
+        let outcome = try await h.coordinator.deletePending(outboxId: edit.id)
+
+        XCTAssertEqual(outcome, .deleteOriginal(date: "2026-09-23", logId: "original-log"),
+                       "Delete must not merely undo the edit and bring the old amount back")
+        let remaining = await h.outbox.allEntries()
+        XCTAssertTrue(remaining.isEmpty, "the corrected entry will never be created")
+    }
+
+    func testAnEditGarminHasHalfAppliedIsNotDeletedLocally() async throws {
+        let h = makeHarness()
+        let edit = try await h.outbox.logFood(
+            date: "2026-09-23", mealType: .lunch, foodId: "1", servingId: "2", numberOfUnits: 2,
+            replaces: ReplacedLog(date: "2026-09-23", logId: "original-log")
+        )
+        // Corrected entry created, old one's delete refused and parked.
+        _ = await h.outbox.drain(using: HalfAppliedEditDeliverer())
+        let parked = await h.outbox.entry(id: edit.id)
+        XCTAssertEqual(parked?.state, .createdAwaitingDelete)
+
+        await assertEditError(.stillSyncing) {
+            try await h.coordinator.deletePending(outboxId: edit.id)
+        }
+        let kept = await h.outbox.entry(id: edit.id)
+        XCTAssertNotNil(kept, "still tracked, so Retry can finish removing the old entry")
+    }
+
+    func testDeletingARowThatIsAlreadyGoneSaysSo() async throws {
+        let h = makeHarness()
+        await assertEditError(.entryGone) {
+            try await h.coordinator.deletePending(outboxId: UUID())
         }
     }
 }
@@ -411,5 +464,17 @@ private struct AlwaysSucceedsFoodDeliverer: FoodLogDelivering {
 
     func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse {
         HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/nutrition-service/food/logs/\(date)")!, statusCode: 204, httpVersion: nil, headerFields: nil)!
+    }
+}
+
+/// Creates fine, but Garmin refuses the old entry's delete permanently (403),
+/// so a replace parks in `.createdAwaitingDelete`.
+private struct HalfAppliedEditDeliverer: FoodLogDelivering {
+    func createFoodLogEntry(_ entry: CreateFoodLogEntryRequest) async throws -> HTTPURLResponse {
+        HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/nutrition-service/food/logs")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
+
+    func deleteFoodLogEntries(logIds: [String], date: String) async throws -> HTTPURLResponse {
+        throw GarminClientError.httpError(statusCode: 403, body: nil)
     }
 }
