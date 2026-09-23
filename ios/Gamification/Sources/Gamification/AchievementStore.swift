@@ -26,13 +26,17 @@ public actor AchievementStore {
 
     private func loadIfNeeded() {
         guard !loaded else { return }
-        loaded = true
+        // Unreadable (e.g. before first unlock): don't latch, retry on next
+        // access; `persist()` refuses to overwrite it meanwhile.
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        snapshot = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: decoder, category: "AchievementStore") ?? snapshot
+        let result = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: decoder, category: "AchievementStore")
+        loaded = !result.isUnreadable
+        snapshot = result.value ?? snapshot
     }
 
     private func persist() throws {
+        try GamificationStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "AchievementStore")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         encoder.outputFormatting = [.sortedKeys]

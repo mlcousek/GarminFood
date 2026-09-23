@@ -43,7 +43,9 @@ final class PersistedJSONTests: XCTestCase {
 
         let loaded = PersistedJSON.load([Sample].self, from: url, decoder: JSONDecoder(), category: "Test")
 
-        XCTAssertNil(loaded)
+        XCTAssertNil(loaded.value)
+        guard case .missing = loaded else { return XCTFail("expected .missing, got \(loaded)") }
+        XCTAssertFalse(loaded.isUnreadable)
         XCTAssertFalse(FileManager.default.fileExists(atPath: url.path))
         XCTAssertTrue(try FileManager.default.contentsOfDirectory(atPath: directory.path).isEmpty)
     }
@@ -55,7 +57,8 @@ final class PersistedJSONTests: XCTestCase {
 
         let loaded = PersistedJSON.load([Sample].self, from: url, decoder: JSONDecoder(), category: "Test")
 
-        XCTAssertEqual(loaded, value)
+        XCTAssertEqual(loaded.value, value)
+        XCTAssertFalse(loaded.isUnreadable)
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
         XCTAssertTrue(try quarantinedFiles(for: "sample").isEmpty)
     }
@@ -67,7 +70,8 @@ final class PersistedJSONTests: XCTestCase {
 
         let loaded = PersistedJSON.load([Sample].self, from: url, decoder: JSONDecoder(), category: "Test")
 
-        XCTAssertNil(loaded)
+        XCTAssertNil(loaded.value)
+        guard case .undecodable = loaded else { return XCTFail("expected .undecodable, got \(loaded)") }
         XCTAssertFalse(FileManager.default.fileExists(atPath: url.path), "the undecodable file must no longer sit where the next save would overwrite it")
         let quarantined = try quarantinedFiles(for: "sample")
         XCTAssertEqual(quarantined.count, 1)
@@ -83,7 +87,8 @@ final class PersistedJSONTests: XCTestCase {
 
         let loaded = PersistedJSON.load([Sample].self, from: url, decoder: JSONDecoder(), category: "Test")
 
-        XCTAssertNil(loaded)
+        XCTAssertNil(loaded.value)
+        XCTAssertFalse(loaded.isUnreadable)
         XCTAssertFalse(FileManager.default.fileExists(atPath: url.path))
         let quarantined = try quarantinedFiles(for: "sample")
         XCTAssertEqual(quarantined.count, 1)
@@ -101,6 +106,70 @@ final class PersistedJSONTests: XCTestCase {
         XCTAssertNotEqual(first, second)
         XCTAssertTrue(second.lastPathComponent.hasPrefix("sample.unreadable-"))
         XCTAssertEqual(second.pathExtension, "json")
+    }
+
+    // MARK: - Unreadable file (fix/store-unreadable-latch)
+
+    /// A directory where the file should be makes `Data(contentsOf:)` fail
+    /// with an error that is NOT "no such file" -- a deterministic stand-in
+    /// for a data-protected file before first unlock.
+    private func makeUnreadable(_ url: URL) throws {
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+    }
+
+    func testUnreadableFileIsReportedAndLeftInPlace() throws {
+        let url = directory.appendingPathComponent("sample.json")
+        try makeUnreadable(url)
+
+        let loaded = PersistedJSON.load([Sample].self, from: url, decoder: JSONDecoder(), category: "Test")
+
+        XCTAssertTrue(loaded.isUnreadable)
+        XCTAssertNil(loaded.value)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: url.path), "never moved or deleted")
+        XCTAssertTrue(try quarantinedFiles(for: "sample").isEmpty, "not quarantined: it may just be locked")
+    }
+
+    func testEnsureSafeToWriteThrowsOnlyWhileNotLoaded() {
+        let url = directory.appendingPathComponent("sample.json")
+        XCTAssertNoThrow(try PersistedJSON.ensureSafeToWrite(loaded: true, fileURL: url, category: "Test"))
+        XCTAssertThrowsError(try PersistedJSON.ensureSafeToWrite(loaded: false, fileURL: url, category: "Test")) { error in
+            XCTAssertEqual(error as? PersistedJSONUnreadFileError, PersistedJSONUnreadFileError(fileName: "sample.json"))
+        }
+    }
+
+    /// The actual bug: a store that couldn't read its file (e.g. launched
+    /// before first unlock) must neither keep the empty state for the rest
+    /// of the process nor overwrite the file on its next save.
+    func testUnreadableOutboxRefusesToSaveThenRecoversOnceReadable() async throws {
+        // A real queued entry, written by one outbox to a scratch file.
+        let sourceURL = directory.appendingPathComponent("outbox-source.json")
+        let original = try await Outbox(store: OutboxStore(fileURL: sourceURL), maxAttempts: 3, backoffBase: 0.5, backoffCap: 8)
+            .logFood(date: "2026-09-23", mealType: .breakfast, foodId: "1", servingId: "2", numberOfUnits: 1)
+        let originalBytes = try Data(contentsOf: sourceURL)
+
+        let url = directory.appendingPathComponent("outbox-locked.json")
+        try makeUnreadable(url)
+        let outbox = Outbox(store: OutboxStore(fileURL: url), maxAttempts: 3, backoffBase: 0.5, backoffCap: 8)
+
+        let whileLocked = await outbox.allEntries()
+        XCTAssertTrue(whileLocked.isEmpty)
+        do {
+            _ = try await outbox.logFood(date: "2026-09-23", mealType: .lunch, foodId: "3", servingId: "4", numberOfUnits: 1)
+            XCTFail("saving over a file that was never read must throw")
+        } catch {
+            XCTAssertTrue(error is PersistedJSONUnreadFileError, "got \(error)")
+        }
+
+        // "Unlock": the real file becomes readable.
+        try FileManager.default.removeItem(at: url)
+        try originalBytes.write(to: url)
+
+        let afterUnlock = await outbox.allEntries()
+        XCTAssertEqual(afterUnlock.map(\.id), [original.id], "the store re-reads instead of keeping the empty state")
+
+        let next = try await outbox.logFood(date: "2026-09-23", mealType: .lunch, foodId: "3", servingId: "4", numberOfUnits: 1)
+        let reloaded = await Outbox(store: OutboxStore(fileURL: url), maxAttempts: 3, backoffBase: 0.5, backoffCap: 8).allEntries()
+        XCTAssertEqual(Set(reloaded.map(\.id)), [original.id, next.id], "the queued entry survived the next save")
     }
 
     // MARK: - Store-level regression (the actual bug)

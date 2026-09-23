@@ -138,7 +138,7 @@ public actor OfflineIndexStore {
             from: directory.appendingPathComponent(Self.statusFileName),
             decoder: JSONDecoder(),
             category: "OfflineIndexStore"
-        ) ?? OfflineIndexStatus()
+        ).value ?? OfflineIndexStatus()
     }
 
     public static func defaultDirectory() -> URL {
