@@ -431,6 +431,102 @@ final class ReconciliationTests: XCTestCase {
         XCTAssertEqual(outcomes.map(\.verdict), [.confirmed(logId: "o-delivery")], "must not be re-queued as missing")
     }
 
+    // MARK: - Separate identical logs are never deleted (only provable retries are)
+
+    func testASecondIdenticalLogWithinTheClockToleranceIsNeverDeleted() async throws {
+        // Coffee to BREAKFAST at 08:00 -- delivered, reconciled, gone from
+        // the outbox. The same coffee again at 08:05 from search / Usual /
+        // Recent (an ordinary add, no `duplicateOf`). The 08:00 entry is
+        // inside `deliveryClockTolerance` of the 08:05 one, so it counts as
+        // "could be ours": 1 expected, 2 found. Treating that as an excess
+        // copy deletes the LATER one -- the coffee just logged.
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "first-coffee", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:00:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "second-coffee", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:05:00.000Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        var second = try await outbox.logFood(
+            date: "2026-09-14", mealType: .breakfast, foodId: "1", servingId: "2", numberOfUnits: 1.0,
+            createdAt: instant("2026-09-14T08:05:00.000Z")
+        )
+        second.state = .sent
+        try await outbox.requeue(second)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: [second], using: client)
+
+        XCTAssertEqual(outcomes.map(\.verdict), [.confirmed(logId: "second-coffee")])
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty, "a second, separately logged coffee is not a copy of anything -- deleting it loses a real log")
+        let remaining = await outbox.allEntries()
+        XCTAssertTrue(remaining.isEmpty, "the delivery is confirmed and done")
+    }
+
+    func testMovingAnEntryIntoAMealWithAnIdenticalItemDeletesNothing() async throws {
+        // Coffee in BREAKFAST at 08:00; the same coffee logged to LUNCH by
+        // mistake, then moved to BREAKFAST at 08:04. The move is a replace:
+        // create in BREAKFAST, then delete the LUNCH entry -- both done by
+        // the time it's delivered. Deleting its BREAKFAST copy as "excess"
+        // would lose the food entirely, since the LUNCH one is gone too.
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        var move = try await outbox.logFood(
+            date: "2026-09-14", mealType: .breakfast, foodId: "1", servingId: "2", numberOfUnits: 1.0,
+            replaces: ReplacedLog(date: "2026-09-14", logId: "lunch-old"),
+            createdAt: instant("2026-09-14T08:04:00.000Z")
+        )
+        move.state = .sent
+        try await outbox.requeue(move)
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "breakfast-coffee", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:00:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "moved-coffee", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:04:00.000Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: [move], using: client)
+
+        XCTAssertEqual(outcomes.map(\.verdict), [.confirmed(logId: "moved-coffee")])
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty, "a moved entry is a real log, not a copy of the identical one already in that meal")
+    }
+
+    func testCopyingAMealIntoItselfTheSameDayDeletesNothing() async throws {
+        // BREAKFAST holds two identical coffees (08:00 and 08:01). At 08:06
+        // the user copies today's BREAKFAST into today's BREAKFAST.
+        // `LogEntryCoordinator.copyMeal` enqueues ordinary adds -- no
+        // `duplicateOf` -- sharing one `createdAt`. 2 expected, 4 found, and
+        // the two originals are within the clock tolerance.
+        let outbox = Outbox(store: OutboxStore(fileURL: tempStoreURL()))
+        let copiedAt = instant("2026-09-14T08:06:00.000Z")
+        var copies: [OutboxEntry] = []
+        for _ in 0..<2 {
+            var copy = try await outbox.logFood(date: "2026-09-14", mealType: .breakfast, foodId: "1", servingId: "2", numberOfUnits: 1.0, createdAt: copiedAt)
+            copy.state = .sent
+            try await outbox.requeue(copy)
+            copies.append(copy)
+        }
+        let log = makeLog([
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "original-1", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:00:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "original-2", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:01:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "copy-1", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:06:00.000Z"),
+            LoggedEntryFixture(mealName: "BREAKFAST", foodId: "1", servingId: "2", logId: "copy-2", servingQty: 1.0, contentNumberOfUnits: 100, timestamp: "2026-09-14T08:06:00.000Z"),
+        ])
+        let client = FakeReconcilingClient(log: log)
+
+        let outcomes = await Reconciliation(outbox: outbox).reconcile(delivered: copies, using: client)
+
+        XCTAssertEqual(outcomes.count, 2)
+        var confirmedLogIds: Set<String> = []
+        for outcome in outcomes {
+            guard case .confirmed(let logId?) = outcome.verdict else {
+                return XCTFail("a copied meal's entries must be confirmed, not resolved as duplicates; got \(outcome.verdict)")
+            }
+            confirmedLogIds.insert(logId)
+        }
+        XCTAssertEqual(confirmedLogIds, ["copy-1", "copy-2"], "each copy is confirmed against its own delivery, not an original")
+        let deleted = await client.deletedLogIds
+        XCTAssertTrue(deleted.isEmpty, "neither the originals nor the copies may be deleted")
+    }
+
     // MARK: - Missed deliveries are bounded
 
     func testAnEntryThatKeepsGoingMissingIsEventuallyMarkedFailed() async throws {
