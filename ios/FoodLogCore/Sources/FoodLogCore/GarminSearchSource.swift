@@ -1,4 +1,4 @@
-// GarminFoodSource.swift
+// GarminSearchSource.swift
 //
 // Garmin's food database as a `FoodSearchSource` (rebuild-food-search task
 // 3.2), replacing `FoodCatalogSearch`, which used only Garmin's first page
@@ -26,7 +26,7 @@
 // with a "Garmin unavailable" footnote; a signed-out session stays loud.
 //
 // Depends on GarminKit's `GarminClient` through `GarminFoodSearching` (so
-// tests use a fake). Tested by GarminFoodSourceTests.
+// tests use a fake). Tested by GarminSearchSourceTests.
 
 import Foundation
 import GarminKit
@@ -38,7 +38,7 @@ public protocol GarminFoodSearching: Sendable {
 
 extension GarminClient: GarminFoodSearching {}
 
-public struct GarminFoodSource: FoodSearchSource {
+public struct GarminSearchSource: FoodSearchSource {
     /// Garmin's maximum page size for FatSecret search (probed 2026-09-23).
     public static let pageSize = 50
     /// Czech FatSecret catalogue -- see this file's header.
@@ -47,7 +47,7 @@ public struct GarminFoodSource: FoodSearchSource {
     private let searcher: any GarminFoodSearching
     private let regionCode: String?
 
-    public init(searcher: any GarminFoodSearching, regionCode: String? = GarminFoodSource.defaultRegionCode) {
+    public init(searcher: any GarminFoodSearching, regionCode: String? = GarminSearchSource.defaultRegionCode) {
         self.searcher = searcher
         self.regionCode = regionCode
     }

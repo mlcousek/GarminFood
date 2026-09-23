@@ -119,7 +119,7 @@ final class LocalFoodSourceTests: XCTestCase {
     }
 }
 
-// MARK: - GarminFoodSource
+// MARK: - GarminSearchSource
 
 private actor FakeGarmin: GarminFoodSearching {
     struct Request: Equatable {
@@ -145,13 +145,13 @@ private actor FakeGarmin: GarminFoodSearching {
     }
 }
 
-final class GarminFoodSourceTests: XCTestCase {
+final class GarminSearchSourceTests: XCTestCase {
     func testSendsBothSpellingsInTheCzechRegionAndMergesThem() async throws {
         let garmin = FakeGarmin(answers: [
             "bílý jogurt": garminResponse([("1", "Jogurt Bílý"), ("2", "Řecký Jogurt Bílý")], more: false),
             "bily jogurt": garminResponse([("3", "Bily Jogurt Klasik"), ("1", "Jogurt Bílý")], more: true)
         ])
-        let source = GarminFoodSource(searcher: garmin)
+        let source = GarminSearchSource(searcher: garmin)
 
         let result = try await source.search(SearchQuery("Bílý jogurt"), page: 0, options: SearchOptions())
 
@@ -167,7 +167,7 @@ final class GarminFoodSourceTests: XCTestCase {
 
     func testLaterPagesStartAtAMultipleOfTheLimit() async throws {
         let garmin = FakeGarmin(answers: [:])
-        let source = GarminFoodSource(searcher: garmin)
+        let source = GarminSearchSource(searcher: garmin)
 
         _ = try await source.search(SearchQuery("tvaroh"), page: 2, options: SearchOptions())
 
@@ -177,7 +177,7 @@ final class GarminFoodSourceTests: XCTestCase {
 
     func testOneFailingSpellingDoesNotHideTheOther() async throws {
         let garmin = FakeGarmin(answers: ["mléko": garminResponse([("1", "Mléko")], more: false)], failingTerms: ["mleko"])
-        let source = GarminFoodSource(searcher: garmin)
+        let source = GarminSearchSource(searcher: garmin)
 
         let result = try await source.search(SearchQuery("mleko"), page: 0, options: SearchOptions())
 
@@ -186,7 +186,7 @@ final class GarminFoodSourceTests: XCTestCase {
 
     func testEverySpellingFailingThrows() async {
         let garmin = FakeGarmin(answers: [:], failingTerms: ["tvaroh"])
-        let source = GarminFoodSource(searcher: garmin)
+        let source = GarminSearchSource(searcher: garmin)
 
         do {
             _ = try await source.search(SearchQuery("tvaroh"), page: 0, options: SearchOptions())

@@ -85,7 +85,7 @@ public actor FoodSearchEngine {
     ) -> FoodSearchEngine {
         let local = LocalFoodSource(customFoods: customFoods, favorites: favorites, foodCache: foodCache, usageHistory: usageHistory)
         return FoodSearchEngine(
-            sources: [local, GarminFoodSource(searcher: garmin), OpenFoodFactsSource(client: openFoodFacts)],
+            sources: [local, GarminSearchSource(searcher: garmin), OpenFoodFactsSource(client: openFoodFacts)],
             personalization: { await local.personalContext() },
             foodCache: foodCache
         )
