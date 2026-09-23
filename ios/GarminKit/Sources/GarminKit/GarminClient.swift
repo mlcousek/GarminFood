@@ -207,6 +207,26 @@ public struct GarminClient: Sendable {
         }
     }
 
+    /// GET `/usersummary-service/usersummary/daily?calendarDate={date}`
+    /// (`YYYY-MM-DD`). The route itself was confirmed live 2026-09-14 as an
+    /// auth control probe; its calorie fields (`activeKilocalories` et al.)
+    /// were confirmed with real values 2026-09-23 (docs/garmin-routes.json
+    /// `dailyWellnessSummary`). Read-only. Powers the home screen's
+    /// informational "Active today" line (fix-testing-feedback-quick-wins);
+    /// callers treat any failure as "hide the line", never as an error.
+    public func dailyUserSummary(date: String) async throws -> DailyUserSummary {
+        let (data, response) = try await get(
+            path: "/usersummary-service/usersummary/daily",
+            query: [URLQueryItem(name: "calendarDate", value: date)]
+        )
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode(DailyUserSummary.self, from: data)
+        } catch {
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
     // MARK: - Writes (create confirmed 2026-09-16; delete not yet exercised)
 
     /// PUT `/nutrition-service/food/logs`, body per `FoodLogWriteBody`.

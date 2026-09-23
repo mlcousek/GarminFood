@@ -16,6 +16,13 @@
 // EXACT SAME `LogEntryConfirmView`/`LogTarget.catalog` path a normal
 // Garmin search result already uses -- a matched/created OFF food is
 // indistinguishable from any other Garmin food from that point on.
+//
+// Picker variant (fix-testing-feedback-quick-wins task 1.2): when
+// `FoodCatalogView` is open to add a meal-preset ingredient it passes
+// `onPickMatched`, and the settled Garmin food is handed back through it
+// (after a serving pick) instead of reaching `LogEntryConfirmView` --
+// nothing is logged. The match itself, and the explicit-tap-only
+// create-in-Garmin fallback, are unchanged.
 
 import SwiftUI
 import FoodLogCore
@@ -35,13 +42,20 @@ struct MatchConfirmationView: View {
     /// (meal-dashboard spec) -- see LogContext.swift's header.
     var presetMealType: MealType? = nil
     var presetDate: Date? = nil
+    /// Set only by the ingredient picker: the matched Garmin food and the
+    /// serving the user chose go here instead of to the log-entry flow.
+    var onPickMatched: ((Food, Serving) -> Void)? = nil
 
     @Environment(AppEnvironment.self) private var environment
+    @Environment(\.dismiss) private var dismiss
 
     @State private var state: MatchState = .loading
     @State private var logTarget: LogTarget?
     @State private var isPresentingCreateInGarmin = false
     @State private var isPresentingFallbackSearch = false
+    @State private var foodAwaitingServingPick: Food?
+
+    private var isPicking: Bool { onPickMatched != nil }
 
     var body: some View {
         content
@@ -53,11 +67,36 @@ struct MatchConfirmationView: View {
                 LogEntryConfirmView(target: target, presetMealType: presetMealType, presetDate: presetDate)
             }
             .navigationDestination(isPresented: $isPresentingCreateInGarmin) {
-                CreateInGarminConfirmView(offFood: offFood, presetMealType: presetMealType, presetDate: presetDate)
+                CreateInGarminConfirmView(
+                    offFood: offFood,
+                    presetMealType: presetMealType,
+                    presetDate: presetDate,
+                    onPickCreated: onPickMatched
+                )
             }
             .navigationDestination(isPresented: $isPresentingFallbackSearch) {
                 FoodCatalogView(logContext: LogContext(mealType: presetMealType, date: presetDate))
             }
+            .sheet(item: $foodAwaitingServingPick) { food in
+                ServingPickerSheet(food: food) { serving in
+                    onPickMatched?(food, serving)
+                }
+            }
+    }
+
+    /// "Use a different Garmin food": the logging flow pushes a fresh
+    /// catalog to search in; the picker instead pops back to the picker's
+    /// own search, which is already the right place (and never logs).
+    private func chooseDifferentGarminFood() {
+        if isPicking {
+            dismiss()
+        } else {
+            isPresentingFallbackSearch = true
+        }
+    }
+
+    private var differentFoodTitle: String {
+        isPicking ? "Pick a different Garmin food instead" : "Log anyway with a different Garmin food"
     }
 
     @ViewBuilder
@@ -100,7 +139,11 @@ struct MatchConfirmationView: View {
             }
 
             PrimaryButton(title: "Use this match") {
-                logTarget = .catalog(food: candidate, initialServing: candidate.servings.first)
+                if isPicking {
+                    foodAwaitingServingPick = candidate
+                } else {
+                    logTarget = .catalog(food: candidate, initialServing: candidate.servings.first)
+                }
             }
 
             VStack(spacing: Theme.Spacing.sm) {
@@ -110,8 +153,8 @@ struct MatchConfirmationView: View {
                 .font(.foodSubtitle)
                 .foregroundStyle(.secondary)
 
-                Button("Log anyway with a different Garmin food") {
-                    isPresentingFallbackSearch = true
+                Button(differentFoodTitle) {
+                    chooseDifferentGarminFood()
                 }
                 .font(.foodSubtitle)
             }
@@ -133,8 +176,8 @@ struct MatchConfirmationView: View {
                 isPresentingCreateInGarmin = true
             }
 
-            Button("Log anyway with a different Garmin food") {
-                isPresentingFallbackSearch = true
+            Button(differentFoodTitle) {
+                chooseDifferentGarminFood()
             }
             .font(.foodSubtitle)
 
@@ -169,6 +212,11 @@ struct CreateInGarminConfirmView: View {
     /// (meal-dashboard spec) -- see LogContext.swift's header.
     var presetMealType: MealType? = nil
     var presetDate: Date? = nil
+    /// The ingredient picker's hand-back (see `MatchConfirmationView.
+    /// onPickMatched`): when set, the newly created food goes here with the
+    /// one serving just sent to Garmin, instead of to the log-entry flow.
+    /// The create call itself still needs the same explicit tap.
+    var onPickCreated: ((Food, Serving) -> Void)? = nil
 
     @Environment(AppEnvironment.self) private var environment
     @State private var isCreating = false
@@ -256,6 +304,16 @@ struct CreateInGarminConfirmView: View {
                 )
                 guard let createdFood = Food(searchResult: result) else {
                     errorMessage = "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead."
+                    return
+                }
+                // Picker variant: hand the created food back as an
+                // ingredient; nothing is logged.
+                if let onPickCreated {
+                    guard let createdServing = createdFood.servings.first else {
+                        errorMessage = "Garmin created the food but returned no serving for it. Pick a different Garmin food instead."
+                        return
+                    }
+                    onPickCreated(createdFood, createdServing)
                     return
                 }
                 // Task 30.3: the created food is treated exactly like any

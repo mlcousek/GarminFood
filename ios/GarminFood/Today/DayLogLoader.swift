@@ -8,6 +8,11 @@
 // the last good copy (marked stale) instead of blanking the day. Queued
 // entries come from the outbox on every rebuild, so a log appears in its
 // meal immediately, before any network call.
+//
+// Also carries the selected day's active calories (`activeKilocalories`,
+// fix-testing-feedback-quick-wins) for the summary card's informational
+// "Active today" line -- one extra read per refresh, run concurrently with
+// the food log and silently dropped on failure.
 
 import Foundation
 import Observation
@@ -22,9 +27,18 @@ final class DayLogLoader {
     @ObservationIgnored private let foodCache: FoodCacheStore
     @ObservationIgnored private var logsByDate: [String: DailyFoodLog] = [:]
     @ObservationIgnored private var mealsByDate: [String: [Meal]] = [:]
+    @ObservationIgnored private var activeByDate: [String: Double] = [:]
 
     private(set) var selectedDate: Date
     private(set) var dashboard: DayDashboard
+    /// The selected day's active (burned) calories, for the home screen's
+    /// informational "Active today" line (fix-testing-feedback-quick-wins,
+    /// today-dashboard spec). Read from GET /usersummary-service/usersummary/
+    /// daily (calorie fields confirmed live 2026-09-23). `nil` whenever the
+    /// last read for this day failed or had no value -- the spec says hide
+    /// the line then, never show an error. Informational only: it never
+    /// feeds the Target (owner decision 2026-09-23, no eat-back).
+    private(set) var activeKilocalories: Double?
     /// 2026-09-21 bug fix: this used to be a single loader-wide `Bool`, so
     /// `refresh()`'s reentrancy guard (needed to stop two concurrent
     /// refreshes of the SAME day from clobbering each other) also blocked
@@ -121,6 +135,10 @@ final class DayLogLoader {
         loadingDates.insert(date)
         defer { loadingDates.remove(date) }
 
+        // Fetched alongside the food log, not after it, so the extra read
+        // never lengthens "Updating…"; its failure is swallowed inside.
+        async let activeLoad: Void = loadActiveCalories(date: date)
+
         do {
             if let log = try await client.dailyFoodLog(date: date) {
                 logsByDate[date] = log
@@ -134,6 +152,7 @@ final class DayLogLoader {
             if date == dateString { isStale = logsByDate[date] != nil }
             await loadMealsIfNeeded(date: date)
         }
+        await activeLoad
         await rebuild()
     }
 
@@ -152,6 +171,7 @@ final class DayLogLoader {
         )
         guard date == dateString else { return }
         dashboard = built
+        activeKilocalories = activeByDate[date]
         if !built.windows.isEmpty {
             latestWindows = built.windows
         }
@@ -161,6 +181,19 @@ final class DayLogLoader {
         guard mealsByDate[date] == nil,
               let meals = try? await client.mealsForDate(date: date).meals else { return }
         mealsByDate[date] = meals
+    }
+
+    /// Any failure -- network, auth, decode, or simply no value for the
+    /// day -- clears this day's figure so the line hides, per the spec's
+    /// "Route unavailable" scenario. Never throws: this is an optional
+    /// extra and must not affect the rest of the day's refresh.
+    private func loadActiveCalories(date: String) async {
+        if let summary = try? await client.dailyUserSummary(date: date),
+           let active = summary.activeKilocalories {
+            activeByDate[date] = active
+        } else {
+            activeByDate.removeValue(forKey: date)
+        }
     }
 
     // MARK: - Deleting

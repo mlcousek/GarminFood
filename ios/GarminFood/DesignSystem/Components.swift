@@ -242,6 +242,38 @@ extension TodaySummary.GoalState {
     }
 }
 
+// MARK: - Calorie ring colour (fix-testing-feedback-quick-wins)
+
+extension CalorieBand {
+    /// The home calorie ring's stepped scale (today-dashboard spec). Only
+    /// the ring uses this; the macro bars and meal cards keep the coarser
+    /// `GoalState.tint` above. Reuses existing tokens where one already
+    /// means the right thing; yellow and red have no token of their own, so
+    /// they are defined here, next to the only place that draws them.
+    var tint: Color {
+        switch self {
+        case .low: return Theme.grace
+        case .building, .slightlyOver: return Theme.ember
+        case .approaching: return Color(red: 0.96, green: 0.79, blue: 0.18)
+        case .onTarget: return Theme.success
+        case .over: return Color(red: 0.86, green: 0.24, blue: 0.23)
+        }
+    }
+
+    /// Spoken with the ring's value, so the colour's meaning isn't
+    /// sight-only (config.yaml's accessibility baseline).
+    var accessibilityDescription: String {
+        switch self {
+        case .low: return "under half of target"
+        case .building: return "building toward target"
+        case .approaching: return "approaching target"
+        case .onTarget: return "on target"
+        case .slightlyOver: return "slightly over target"
+        case .over: return "well over target"
+        }
+    }
+}
+
 // MARK: - ProgressRing
 
 /// A circular progress ring with content in the middle.
@@ -262,6 +294,10 @@ struct ProgressRing<Center: View>: View {
                 .stroke(tint, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .animation(reduceMotion ? nil : .spring(response: 0.6, dampingFraction: 0.85), value: fraction)
+                // A tint step (e.g. the home ring crossing into its green
+                // goal band) cross-fades rather than snapping; an instant
+                // change under Reduce Motion, same as the fill above.
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.35), value: tint)
             center()
         }
     }

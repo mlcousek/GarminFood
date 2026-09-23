@@ -329,6 +329,40 @@ public struct SocialProfile: Decodable, Sendable {
     public let profileImageUrlLarge: String?
 }
 
+// MARK: - Daily user summary (GET /usersummary-service/usersummary/daily?calendarDate=) -- calorie fields confirmed live 2026-09-23
+
+/// The day's burned-calorie figures, as Garmin's general daily summary
+/// reports them (fix-testing-feedback-quick-wins, the home screen's
+/// "Active today" line). Probed read-only 2026-09-23 for 2026-09-22: 200,
+/// `activeKilocalories` 1031, `bmrKilocalories` 2252, `totalKilocalories`
+/// 3283 -- plain JSON integers, decoded as `Double` like every other
+/// calorie value in this file. For TODAY these are running partial-day
+/// totals (an earlier mid-day probe the same date saw active 290).
+///
+/// Only these three fields: the real payload has dozens more (steps, stress,
+/// body battery...), and `consumedKilocalories` there is NOT the nutrition
+/// source of truth (it was observed null on days with real logged food --
+/// see docs/garmin-routes.json `dailyWellnessSummary`). All optional,
+/// because a day with no device sync can omit or null any of them.
+public struct DailyUserSummary: Decodable, Sendable, Equatable {
+    public let calendarDate: String?
+    public let activeKilocalories: Double?
+    public let bmrKilocalories: Double?
+    public let totalKilocalories: Double?
+
+    public init(
+        calendarDate: String? = nil,
+        activeKilocalories: Double? = nil,
+        bmrKilocalories: Double? = nil,
+        totalKilocalories: Double? = nil
+    ) {
+        self.calendarDate = calendarDate
+        self.activeKilocalories = activeKilocalories
+        self.bmrKilocalories = bmrKilocalories
+        self.totalKilocalories = totalKilocalories
+    }
+}
+
 // MARK: - Create / delete (PUT/DELETE /nutrition-service/food/logs) -- create confirmed by a real write 2026-09-16; delete not yet exercised
 
 /// Confirmed values: all four names below are returned by
