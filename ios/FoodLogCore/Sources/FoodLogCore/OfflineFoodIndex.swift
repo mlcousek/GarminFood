@@ -201,6 +201,8 @@ public struct OfflineFoodIndex: Sendable {
     private let sortedTerms: [String]
 
     private struct Entry: Sendable {
+        /// `SearchText.fold(name)`, for the tie-break `SearchRanker.isRankedBefore` uses.
+        let foldedName: String
         let nameTokens: [SearchToken]
         let alternateTokens: [SearchToken]
         let brandTokens: [SearchToken]
@@ -219,6 +221,7 @@ public struct OfflineFoodIndex: Sendable {
 
         for (row, product) in products.enumerated() {
             let entry = Entry(
+                foldedName: SearchText.fold(product.name),
                 nameTokens: SearchText.tokenize(product.name),
                 alternateTokens: SearchText.tokenize(product.alternateName ?? ""),
                 brandTokens: SearchText.tokenize(product.brand ?? "").filter { !$0.isQuantity }
@@ -314,9 +317,14 @@ public struct OfflineFoodIndex: Sendable {
                 scored.append(ScoredRow(row: row, relevance: relevance))
             }
         }
+        // Same order as SearchRanker.isRankedBefore (score, then folded
+        // name, then id), so the cap cuts where the final ranking would.
         scored.sort { lhs, rhs in
             if lhs.relevance != rhs.relevance { return lhs.relevance > rhs.relevance }
-            return lhs.row < rhs.row
+            let lhsName = entries[lhs.row].foldedName
+            let rhsName = entries[rhs.row].foldedName
+            if lhsName != rhsName { return lhsName < rhsName }
+            return products[lhs.row].code < products[rhs.row].code
         }
         return scored.prefix(limit).map { item in
             let product = products[item.row]
