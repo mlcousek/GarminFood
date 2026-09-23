@@ -15,7 +15,7 @@
 
 ## 3. App (FoodLogCore + app)
 
-- [ ] 3.1 `OfflineFoodIndex`:
+- [x] 3.1 `OfflineFoodIndex`:
   - Decodes off the main actor.
   - Builds the inverted index (D2) and provides `product(code:)`.
   - Tested with a fixture of about 200 products.
