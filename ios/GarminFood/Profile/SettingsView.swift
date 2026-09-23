@@ -104,6 +104,9 @@ struct SettingsView: View {
             // redesign-fasting-schedule 2.1 (FastingSettingsSection.swift).
             FastingSettingsSection()
 
+            // add-offline-czech-food-index 3.5 (OfflineIndexSettingsSection.swift).
+            OfflineIndexSettingsSection()
+
             Section {
                 HStack {
                     Text("Version")
@@ -111,10 +114,18 @@ struct SettingsView: View {
                     Text(versionText)
                         .foregroundStyle(.secondary)
                 }
+                // add-offline-czech-food-index D5: OFF data (live search and
+                // the offline database) is ODbL-licensed and must be credited.
+                Link(destination: URL(string: "https://world.openfoodfacts.org")!) {
+                    Label("Open Food Facts (ODbL)", systemImage: "leaf")
+                }
+                Link(destination: URL(string: "https://opendatacommons.org/licenses/odbl/1-0/")!) {
+                    Label("Open Database License 1.0", systemImage: "doc.text")
+                }
             } header: {
                 Text("About")
             } footer: {
-                Text("GarminFood logs food in two taps and syncs it to Garmin Connect.")
+                Text("GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
             }
         }
         .navigationTitle("Settings")

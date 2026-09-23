@@ -73,19 +73,27 @@ public actor FoodSearchEngine {
         self.termCache = SearchTermCache(capacity: cacheCapacity, lifetime: cacheLifetime)
     }
 
-    /// The app's standard wiring: your own foods, Garmin (Czech region) and
-    /// Open Food Facts, personalized from the same local stores.
+    /// The app's standard wiring: your own foods, Garmin (Czech region),
+    /// the downloaded Czech offline index (when a holder is passed; it
+    /// answers empty until an index is loaded) and live Open Food Facts,
+    /// personalized from the same local stores.
     public static func standard(
         garmin: any GarminFoodSearching,
         customFoods: CustomFoodStore,
         favorites: FavoriteFoodStore,
         foodCache: FoodCacheStore,
         usageHistory: UsageHistoryStore,
-        openFoodFacts: any OpenFoodFactsSearching = OpenFoodFactsClient()
+        openFoodFacts: any OpenFoodFactsSearching = OpenFoodFactsClient(),
+        offlineIndex: OfflineFoodIndexHolder? = nil
     ) -> FoodSearchEngine {
         let local = LocalFoodSource(customFoods: customFoods, favorites: favorites, foodCache: foodCache, usageHistory: usageHistory)
+        var sources: [any FoodSearchSource] = [local, GarminSearchSource(searcher: garmin)]
+        if let offlineIndex {
+            sources.append(OfflineCzechIndexSource(holder: offlineIndex))
+        }
+        sources.append(OpenFoodFactsSource(client: openFoodFacts))
         return FoodSearchEngine(
-            sources: [local, GarminSearchSource(searcher: garmin), OpenFoodFactsSource(client: openFoodFacts)],
+            sources: sources,
             personalization: { await local.personalContext() },
             foodCache: foodCache
         )

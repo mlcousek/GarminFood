@@ -116,7 +116,14 @@ struct BarcodeScanScreen: View {
         Task {
             defer { isResolving = false }
             do {
-                if let food = try await BarcodeResolution.resolve(scannedCode: code, using: environment.garminClient) {
+                // add-offline-czech-food-index D4: after a Garmin miss, the
+                // downloaded Czech OFF index. Its hit is an `.openFoodFacts`
+                // food, which the caller sends through the Garmin-match flow.
+                if let food = try await BarcodeResolution.resolve(
+                    scannedCode: code,
+                    using: environment.garminClient,
+                    offlineIndex: environment.offlineIndex
+                ) {
                     onResolved(food)
                 } else {
                     onUnresolved(code)

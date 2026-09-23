@@ -290,7 +290,14 @@ struct FoodCatalogView: View {
             BarcodeScanScreen(
                 onResolved: { food in
                     isPresentingBarcodeScanner = false
-                    select(food)
+                    // A hit from the offline Czech index (add-offline-czech-
+                    // food-index D4) is an Open Food Facts product: like a
+                    // tapped OFF search result, it needs its Garmin match first.
+                    if food.source == .openFoodFacts {
+                        matchingTarget = food
+                    } else {
+                        select(food)
+                    }
                 },
                 onUnresolved: { code in
                     isPresentingBarcodeScanner = false

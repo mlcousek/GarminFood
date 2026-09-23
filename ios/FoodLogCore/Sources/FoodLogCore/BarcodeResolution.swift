@@ -22,6 +22,10 @@
 // `BarcodeResolution.resolve` below unchanged (same candidates, same
 // GarminClient lookup); this is only the pre-flight "is this worth a
 // network round trip" gate for whatever the user typed.
+//
+// `add-offline-czech-food-index` (design.md D4) added the fallback step:
+// after Garmin misses, the downloaded Czech OFF index is asked via
+// `OfflineBarcodeLookup` (OfflineCzechIndexSource.swift).
 
 import Foundation
 import GarminKit
@@ -53,14 +57,37 @@ public protocol BarcodeFoodLookup: Sendable {
 extension GarminClient: BarcodeFoodLookup {}
 
 public enum BarcodeResolution {
-    /// Tries every normalisation candidate in order, returning the first
-    /// food resolved. `nil` means genuinely unresolved -- the food-catalog
-    /// spec's "offer custom-food creation" scenario, not an error condition.
-    public static func resolve(scannedCode: String, using lookup: some BarcodeFoodLookup) async throws -> Food? {
-        for candidate in BarcodeNormalization.candidates(forScanned: scannedCode) {
-            if let result = try await lookup.searchFoodByBarcode(ean: candidate), let food = Food(searchResult: result) {
+    /// Tries every normalisation candidate against Garmin in order,
+    /// returning the first food resolved. When Garmin has no product for
+    /// the code, `offlineIndex` (add-offline-czech-food-index design.md D4)
+    /// is asked next: Garmin misses most Czech EANs, and the downloaded
+    /// Czech Open Food Facts index often has them. Its hit is an
+    /// `.openFoodFacts` food, which the caller routes through the Garmin-
+    /// match flow like any live OFF result. If Garmin THROWS (offline, auth,
+    /// server), an offline hit is still returned, because it needs no
+    /// network. Without one, the original error propagates, so a transient
+    /// failure is never mistaken for "no product".
+    /// `nil` means genuinely unresolved -- the food-catalog spec's "offer
+    /// custom-food creation" scenario, not an error condition.
+    public static func resolve(
+        scannedCode: String,
+        using lookup: some BarcodeFoodLookup,
+        offlineIndex: (any OfflineBarcodeLookup)? = nil
+    ) async throws -> Food? {
+        do {
+            for candidate in BarcodeNormalization.candidates(forScanned: scannedCode) {
+                if let result = try await lookup.searchFoodByBarcode(ean: candidate), let food = Food(searchResult: result) {
+                    return food
+                }
+            }
+        } catch {
+            if let offlineIndex, let food = await offlineIndex.food(forBarcode: scannedCode) {
                 return food
             }
+            throw error
+        }
+        if let offlineIndex {
+            return await offlineIndex.food(forBarcode: scannedCode)
         }
         return nil
     }

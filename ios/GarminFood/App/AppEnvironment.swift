@@ -42,6 +42,12 @@ final class AppEnvironment {
     /// One instance per app process, so its remote term cache is shared by
     /// every catalog screen and the OFF -> Garmin match flow.
     let foodSearchEngine: FoodSearchEngine
+    /// add-offline-czech-food-index: the in-memory Czech offline index that
+    /// `foodSearchEngine` and the barcode fallback read (never waiting on
+    /// it), and the loader that keeps it downloaded and shows its status in
+    /// Settings (OfflineIndexLoader.swift).
+    let offlineIndex: OfflineFoodIndexHolder
+    let offlineIndexLoader: OfflineIndexLoader
     let logEntryCoordinator: LogEntryCoordinator
     /// add-weight-tracking: mirrors `outbox`/`logEntryCoordinator` above,
     /// plus a loader (`weightLoader`) since, unlike the food dashboard,
@@ -122,8 +128,11 @@ final class AppEnvironment {
             customFoods: services.customFoodStore,
             favorites: services.favoriteFoodStore,
             foodCache: services.foodCache,
-            usageHistory: services.usageHistory
+            usageHistory: services.usageHistory,
+            offlineIndex: services.offlineIndex
         )
+        self.offlineIndex = services.offlineIndex
+        self.offlineIndexLoader = OfflineIndexLoader(store: services.offlineIndexStore, preferences: preferences)
         self.logEntryCoordinator = services.logEntryCoordinator
         self.weightOutbox = services.weightOutbox
         self.weightLogCoordinator = services.weightLogCoordinator
@@ -147,6 +156,11 @@ final class AppEnvironment {
 
     /// Launch and every return to the foreground.
     func refreshOnForeground() async {
+        // Unstructured on purpose: loading the Czech offline index and its
+        // at-most-daily update check must never hold up anything below or
+        // any search (add-offline-czech-food-index D3).
+        let offlineIndexLoader = self.offlineIndexLoader
+        Task { await offlineIndexLoader.loadAndCheckIfDue() }
         await migrateLegacyFastingIfNeeded()
         await authState.refresh()
         await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)

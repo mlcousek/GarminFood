@@ -15,6 +15,8 @@ final class AppPreferences {
         static let celebrations = "preferences.celebrations"
         static let garminMealWindows = "preferences.garminMealWindows"
         static let czechOnlySearch = "preferences.czechOnlySearch"
+        // add-offline-czech-food-index D3: download the index on cellular too.
+        static let offlineIndexAllowsCellular = "preferences.offlineIndex.allowsCellular"
         // redesign-fasting-schedule: the daily fasting window.
         static let fastingEnabled = "preferences.fasting.enabled"
         static let fastingStartMinute = "preferences.fasting.startMinute"
@@ -36,6 +38,7 @@ final class AppPreferences {
     private var storedCelebrations: Bool
     private var storedGarminMealWindows: Bool
     private var storedCzechOnlySearch: Bool
+    private var storedOfflineIndexAllowsCellular: Bool
     private var storedFastingEnabled: Bool
     private var storedFastingStartMinute: Int
     private var storedFastingEndMinute: Int
@@ -52,6 +55,8 @@ final class AppPreferences {
         storedGarminMealWindows = defaults.object(forKey: Key.garminMealWindows) as? Bool ?? true
         // On by default, as the catalog's toggle always was.
         storedCzechOnlySearch = defaults.object(forKey: Key.czechOnlySearch) as? Bool ?? true
+        // Off: Wi-Fi only until the user allows cellular.
+        storedOfflineIndexAllowsCellular = defaults.object(forKey: Key.offlineIndexAllowsCellular) as? Bool ?? false
         // Off, 20:00-12:00 until set (or seeded once from the retired
         // manual-fasting file -- AppEnvironment.migrateLegacyFastingIfNeeded).
         storedFastingEnabled = defaults.object(forKey: Key.fastingEnabled) as? Bool ?? false
@@ -96,6 +101,16 @@ final class AppPreferences {
         set {
             storedCzechOnlySearch = newValue
             defaults.set(newValue, forKey: Key.czechOnlySearch)
+        }
+    }
+
+    /// Let the Czech offline database download over cellular, not just
+    /// Wi-Fi (add-offline-czech-food-index D3). Low Data Mode still wins.
+    var offlineIndexAllowsCellular: Bool {
+        get { storedOfflineIndexAllowsCellular }
+        set {
+            storedOfflineIndexAllowsCellular = newValue
+            defaults.set(newValue, forKey: Key.offlineIndexAllowsCellular)
         }
     }
 

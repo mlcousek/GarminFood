@@ -1,0 +1,91 @@
+# Build and publish the Czech offline food index
+# (openspec/changes/add-offline-czech-food-index, tasks 2.2-2.3).
+#
+# Why this exists: live Open Food Facts search is slow and flaky, so the app
+# downloads a slim, weekly-refreshed copy of the Czech OFF products and
+# searches it on the device. The index is built here, never on the phone,
+# and hosted for free as assets on a rolling GitHub Release ("food-index")
+# of this public repo. The app reads:
+#   https://github.com/mlcousek/GarminFood/releases/download/food-index/manifest.json
+#
+# Deliberately separate from build.yml: it never runs on pushes or PRs, and
+# it is the ONLY workflow granted `contents: write` (needed to create or
+# update the release).
+#
+# Failure is safe: if the build fails, nothing is uploaded, and the previous
+# release assets (and every installed index) stay as they are.
+# Upload order matters: the .gz goes first, then the manifest. A client
+# that reads the old manifest mid-upload sees a SHA-256 mismatch, discards
+# the download and keeps its current index (design.md D3).
+
+name: Build Czech food index
+
+on:
+  schedule:
+    # Mondays 03:17 UTC (off the top of the hour, when runners are busiest).
+    - cron: "17 3 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: food-index
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OUT_DIR: dist/food-index
+      TAG: food-index
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Test the transform
+        run: node --test tools/build-czech-food-index/transform.test.mjs
+
+      - name: Build the index
+        run: node tools/build-czech-food-index/build.mjs --out "$OUT_DIR"
+
+      - name: Write release notes
+        run: |
+          COUNT=$(node -p "require('./$OUT_DIR/manifest.json').count")
+          BUILT=$(node -p "require('./$OUT_DIR/manifest.json').builtAt")
+          BYTES=$(node -p "require('./$OUT_DIR/manifest.json').bytes")
+          cat > "$OUT_DIR/notes.md" <<EOF
+          Czech offline food database for the GarminFood app, rebuilt weekly by
+          \`.github/workflows/food-index.yml\`.
+
+          - Products: **$COUNT**
+          - Built: $BUILT
+          - Size: $BYTES bytes (gzipped JSON)
+
+          Contains data from **Open Food Facts** (https://world.openfoodfacts.org),
+          products sold in Czechia. © Open Food Facts contributors.
+          The data and this derived index are available under the
+          [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
+          EOF
+          cat "$OUT_DIR/notes.md"
+
+      - name: Publish to the rolling release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "Czech offline food index" \
+              --notes-file "$OUT_DIR/notes.md" \
+              --prerelease \
+              --target "$GITHUB_SHA"
+          fi
+          gh release upload "$TAG" "$OUT_DIR/czech-food-index-v1.json.gz" --clobber
+          gh release upload "$TAG" "$OUT_DIR/manifest.json" --clobber
+          gh release edit "$TAG" --notes-file "$OUT_DIR/notes.md"
