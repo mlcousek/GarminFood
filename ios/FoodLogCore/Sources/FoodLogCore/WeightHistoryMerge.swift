@@ -155,7 +155,9 @@ public enum WeightHistoryMerge {
             case .failed?:
                 rows.append(WeighInDisplayEntry(source: .local(local), syncState: .failed, outboxEntryId: outboxEntry?.id))
                 continue
-            case .sent?, nil:
+            // `.createdAwaitingDelete` is food-outbox-only (add-log-entry-
+            // editing); a weigh-in never reaches it.
+            case .sent?, .createdAwaitingDelete?, nil:
                 break
             }
 

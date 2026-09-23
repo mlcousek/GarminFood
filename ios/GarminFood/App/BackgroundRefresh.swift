@@ -34,7 +34,11 @@ enum BackgroundRefresh {
         if !result.delivered.isEmpty {
             _ = await services.reconciliation.reconcile(delivered: result.delivered, using: services.garminClient)
         }
-        let waiting = await services.outbox.allEntries().contains { $0.state == .pending }
+        // An unparked edit still owing its old entry's delete
+        // (add-log-entry-editing) needs another drain just like a pending create.
+        let waiting = await services.outbox.allEntries().contains {
+            $0.state == .pending || ($0.state == .createdAwaitingDelete && !$0.isParkedReplace)
+        }
         if waiting {
             schedule()
         }
