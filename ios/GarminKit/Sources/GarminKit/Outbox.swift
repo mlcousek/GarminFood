@@ -638,6 +638,10 @@ public actor Outbox {
         case needsUser
         case stoppedRateLimited
         case stoppedAuth(DrainAuthOutcome)
+        /// No connection: the entry stays pending with its attempt count
+        /// untouched, and the rest of this cycle is skipped
+        /// (`ConnectivityFailure`).
+        case stoppedOffline
     }
 
     /// Attempts delivery of every currently-due entry once.
@@ -646,6 +650,9 @@ public actor Outbox {
     ///   the garmin-sync spec, stops attempting delivery ENTIRELY for the
     ///   rest of this drain cycle on the first 429 -- entries not yet
     ///   attempted this cycle are left untouched and pending.
+    /// - On a connectivity failure (`ConnectivityFailure`: offline, DNS,
+    ///   timeout), stops the cycle WITHOUT counting an attempt -- being
+    ///   offline is normal for a local-first app, not a delivery failure.
     /// - On any other failure, backs off exponentially with jitter (capped
     ///   at `backoffCap`) before that specific entry is eligible again, and
     ///   marks it `.failed` once `maxAttempts` is reached.
@@ -701,6 +708,8 @@ public actor Outbox {
             case .stoppedAuth(let outcome):
                 authOutcome = outcome
                 stop = true
+            case .stoppedOffline:
+                stop = true
             }
             if stop { break }
         }
@@ -742,6 +751,12 @@ public actor Outbox {
                 entry.lastError = "auth: not signed in"
                 try? await store.update(entry)
                 return .stoppedAuth(.notSignedIn)
+            } catch let error as URLError where ConnectivityFailure.matches(error) {
+                // Offline is not a delivery failure: no attempt counted, no
+                // backoff -- the next drain just tries again.
+                entry.lastError = "offline: " + String(error.localizedDescription.prefix(200))
+                try? await store.update(entry)
+                return .stoppedOffline
             } catch {
                 entry.attemptCount += 1
                 // Truncated to 300 chars, matching
@@ -830,6 +845,10 @@ public actor Outbox {
             entry.lastError = "auth: not signed in"
             try? await store.update(entry)
             return .stoppedAuth(.notSignedIn)
+        } catch let error as URLError where ConnectivityFailure.matches(error) {
+            entry.lastError = "old entry not removed yet: offline"
+            try? await store.update(entry)
+            return .stoppedOffline
         } catch {
             entry.attemptCount += 1
             entry.lastError = "old entry not removed yet: " + String(String(describing: error).prefix(260))

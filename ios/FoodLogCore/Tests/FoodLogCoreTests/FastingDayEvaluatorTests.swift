@@ -249,6 +249,28 @@ final class FastingDayEvaluatorTests: XCTestCase {
         XCTAssertEqual(moments, [local(2026, 9, 23, 9), local(2026, 9, 23, 10)])
     }
 
+    /// Scenario-review finding: an edit re-creates the entry in Garmin at
+    /// the time of the edit, so reading this app's own ("GCW") entries back
+    /// would count "fixed lunch's amount at 21:30" as eating at 21:30. Those
+    /// entries are already in the usage history at their real time.
+    func testGarminLogSkipsEntriesThisAppWrote() throws {
+        let json = """
+        {
+          "mealDetails": [
+            { "loggedFoods": [
+              { "logTimestamp": "2026-09-23T07:00:00.000Z", "logSource": "GCM" },
+              { "logTimestamp": "2026-09-23T19:30:00.000Z", "logSource": "GCW" }
+            ] }
+          ]
+        }
+        """
+        let log = try JSONDecoder().decode(DailyFoodLog.self, from: Data(json.utf8))
+
+        let moments = FastingLogMoments.moments(fromGarminLog: log, date: "2026-09-23", calendar: prague)
+
+        XCTAssertEqual(moments, [local(2026, 9, 23, 9)], "only the Garmin Connect entry counts")
+    }
+
     func testCoverageIsCompleteUntilTheUsageHistoryHasTrimmed() {
         let events = (0..<3).map { index in
             UsageEvent(foodId: "f\(index)", servingId: "s", numberOfUnits: 1, timestamp: local(2026, 9, 20 + index, 9))
