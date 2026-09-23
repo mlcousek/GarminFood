@@ -266,7 +266,8 @@ private struct IngredientRow: View {
                 .multilineTextAlignment(.trailing)
                 .frame(width: 50)
                 .onChange(of: quantityText) { _, newValue in
-                    if let value = Double(newValue), value > 0 {
+                    // `DecimalInput`: accepts the Czech decimal comma ("0,5").
+                    if let value = DecimalInput.parse(newValue), value > 0 {
                         ingredient.quantity = value
                     }
                 }

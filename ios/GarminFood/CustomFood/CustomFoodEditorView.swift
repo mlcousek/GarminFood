@@ -38,12 +38,34 @@ struct CustomFoodEditorView: View {
     @State private var isSaving = false
     @State private var saveErrorMessage: String?
 
+    /// Every number here goes through `DecimalInput.parse` (FoodLogCore), so
+    /// a Czech decimal comma ("0,5") is accepted rather than rejected.
     private var isValid: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty
-            && Double(numberOfUnits) != nil
+            && parsedPositive(numberOfUnits) != nil
             && backingFood != nil
             && backingServing != nil
-            && Double(backingMultiplier) != nil
+            && parsedPositive(backingMultiplier) != nil
+            && macroFieldsAreValid
+    }
+
+    /// A macro field may be left empty (the nutrient is then unknown, not
+    /// zero), but anything typed must be a real, non-negative number --
+    /// otherwise it used to be dropped silently on save.
+    private var macroFieldsAreValid: Bool {
+        [calories, carbs, protein, fat, sugar, sodium].allSatisfy { text in
+            text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || macroValue(text) != nil
+        }
+    }
+
+    private func parsedPositive(_ text: String) -> Double? {
+        guard let value = DecimalInput.parse(text), value > 0 else { return nil }
+        return value
+    }
+
+    private func macroValue(_ text: String) -> Double? {
+        guard let value = DecimalInput.parse(text), value >= 0 else { return nil }
+        return value
     }
 
     var body: some View {
@@ -151,7 +173,7 @@ struct CustomFoodEditorView: View {
     }
 
     private func save() async {
-        guard let backingFood, let backingServing, let quantity = Double(numberOfUnits), let multiplier = Double(backingMultiplier) else { return }
+        guard isValid, let backingFood, let backingServing, let quantity = parsedPositive(numberOfUnits), let multiplier = parsedPositive(backingMultiplier) else { return }
         isSaving = true
         defer { isSaving = false }
 
@@ -160,12 +182,12 @@ struct CustomFoodEditorView: View {
             brandName: brandName.isEmpty ? nil : brandName,
             servingUnit: servingUnit.isEmpty ? "serving" : servingUnit,
             numberOfUnits: quantity,
-            calories: Double(calories),
-            carbs: Double(carbs),
-            protein: Double(protein),
-            fat: Double(fat),
-            sugar: Double(sugar),
-            sodium: Double(sodium),
+            calories: macroValue(calories),
+            carbs: macroValue(carbs),
+            protein: macroValue(protein),
+            fat: macroValue(fat),
+            sugar: macroValue(sugar),
+            sodium: macroValue(sodium),
             backingFoodId: backingFood.id,
             backingFoodName: backingFood.name,
             backingServingId: backingServing.id,

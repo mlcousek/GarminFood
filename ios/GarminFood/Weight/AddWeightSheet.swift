@@ -25,13 +25,10 @@ struct AddWeightSheet: View {
     @FocusState private var weightFieldFocused: Bool
 
     /// Accepts either "." or "," as the decimal separator (a Czech keyboard
-    /// defaults to a comma on the decimal pad) -- same normalization
-    /// `MealPresetEditorView`'s quantity field implicitly avoids needing
-    /// only because a quantity multiplier is usually a whole number; a body
-    /// weight virtually never is.
+    /// defaults to a comma on the decimal pad) via `DecimalInput.parse`, the
+    /// same shared parser every other editor uses.
     private var weightValue: Double? {
-        let normalized = weightText.replacingOccurrences(of: ",", with: ".")
-        guard let value = Double(normalized), value > 0, value < 500 else { return nil }
+        guard let value = DecimalInput.parse(weightText), value > 0, value < 500 else { return nil }
         return value
     }
 

@@ -128,7 +128,7 @@ struct HydrationView: View {
                 .keyboardType(.numberPad)
             Button("Cancel", role: .cancel) {}
             Button("Save") {
-                if let value = Double(goalText), value > 0 {
+                if let value = DecimalInput.parse(goalText), value > 0 {
                     environment.preferences.waterGoalOverrideML = value
                 }
             }
