@@ -6,7 +6,7 @@
 ## 2. Builder + CI
 
 - [x] 2.1 Add `tools/build-czech-food-index/` (script and README). Output must be deterministic, sorted by code.
-- [ ] 2.2 Add `.github/workflows/food-index.yml`:
+- [x] 2.2 Add `.github/workflows/food-index.yml`:
   - Triggers: weekly cron and `workflow_dispatch`.
   - Builds the index and writes the manifest.
   - Uploads both to the rolling `food-index` release (`gh release upload --clobber`).
