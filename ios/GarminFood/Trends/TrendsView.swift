@@ -13,6 +13,10 @@
 // `environment.hydrationLoader.entries` (already refreshed elsewhere;
 // hydration's own trend math is pure and local, so nothing extra is
 // fetched for it here).
+//
+// add-day-notes: tagged days from `environment.dayNoteStore` (local, no
+// network) are drawn as emoji markers on every daily chart; tapping one
+// opens `DayNoteRevealSheet` (see DayNoteChartMarkers.swift).
 
 import SwiftUI
 import FoodLogCore
@@ -31,6 +35,9 @@ struct TrendsView: View {
     /// a phone screen without crowding, roughly 3 weeks of habit data.
     private let hydrationDaysBack = 21
 
+    @State private var noteMarkers: [DayNoteChartMarker] = []
+    @State private var revealedNote: DayNote?
+
     var body: some View {
         let macroLoader = environment.trendsLoader
         let hydrationEntries = environment.hydrationLoader.entries
@@ -46,9 +53,14 @@ struct TrendsView: View {
         .navigationTitle("Trends")
         .navigationBarTitleDisplayMode(.inline)
         .task { await macroLoader.refresh() }
+        .task { await loadDayNotes() }
         .refreshable {
             await macroLoader.refresh()
             await environment.hydrationLoader.refresh()
+            await loadDayNotes()
+        }
+        .sheet(item: $revealedNote) { note in
+            DayNoteRevealSheet(note: note)
         }
     }
 
@@ -83,10 +95,10 @@ struct TrendsView: View {
                 .card()
             } else {
                 VStack(spacing: Theme.Spacing.md) {
-                    MacroLineChartView(title: "Calories", unit: "kcal", tint: Theme.accent, days: loader.days, actual: { $0.calories }, goal: { $0.calorieGoal })
-                    MacroLineChartView(title: "Protein", unit: "g", tint: Theme.protein, days: loader.days, actual: { $0.proteinG }, goal: { $0.proteinGoalG })
-                    MacroLineChartView(title: "Carbs", unit: "g", tint: Theme.carbs, days: loader.days, actual: { $0.carbsG }, goal: { $0.carbsGoalG })
-                    MacroLineChartView(title: "Fat", unit: "g", tint: Theme.fat, days: loader.days, actual: { $0.fatG }, goal: { $0.fatGoalG })
+                    MacroLineChartView(title: "Calories", unit: "kcal", tint: Theme.accent, days: loader.days, actual: { $0.calories }, goal: { $0.calorieGoal }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
+                    MacroLineChartView(title: "Protein", unit: "g", tint: Theme.protein, days: loader.days, actual: { $0.proteinG }, goal: { $0.proteinGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
+                    MacroLineChartView(title: "Carbs", unit: "g", tint: Theme.carbs, days: loader.days, actual: { $0.carbsG }, goal: { $0.carbsGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
+                    MacroLineChartView(title: "Fat", unit: "g", tint: Theme.fat, days: loader.days, actual: { $0.fatG }, goal: { $0.fatGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
                 }
                 .card()
             }
@@ -106,9 +118,17 @@ struct TrendsView: View {
                 StatTile(value: "\(streak)", label: "Day streak", systemImage: "flame.fill", tint: Theme.carbs)
                 StatTile(value: hydrationGoalML.formattedML, label: "ml goal", systemImage: "target", tint: Theme.carbs)
             }
-            HydrationTrendChartView(points: points, goalML: hydrationGoalML)
+            HydrationTrendChartView(points: points, goalML: hydrationGoalML, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
                 .card()
         }
+    }
+
+    /// Local only (`DayNoteStore`), so it's cheap to re-read every time the
+    /// screen appears -- a note written on Today since the last visit shows
+    /// up straight away.
+    private func loadDayNotes() async {
+        let notes = await environment.dayNoteStore.all()
+        noteMarkers = DayNoteChartMarker.markers(from: notes)
     }
 
     /// `hydrationDaysBack` local-midnight days ending today, oldest first --
