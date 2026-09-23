@@ -534,7 +534,8 @@ public actor WeightOutbox {
     public func drain(
         using deliverer: some WeighInDelivering,
         now: Date = Date(),
-        randomJitter: @Sendable () -> Double = { Double.random(in: 0..<1) }
+        randomJitter: @Sendable () -> Double = { Double.random(in: 0..<1) },
+        clock: @Sendable () -> Date = { Date() }
     ) async -> WeightDrainResult {
         guard !isDraining else {
             return WeightDrainResult(delivered: [], failed: [], stoppedDueToRateLimit: false, authOutcome: .none)
@@ -605,7 +606,11 @@ public actor WeightOutbox {
                 accepted = true
                 entry.state = .sent
                 entry.lastError = nil
-                entry.deliveredAt = now
+                // When Garmin ACCEPTED it, not when this drain started:
+                // FoodLogCore compares it with when Garmin was last read
+                // (see `deliveredAt`), and a read that started mid-drain
+                // must not be taken to include an entry accepted after it.
+                entry.deliveredAt = clock()
             } catch GarminClientError.rateLimited(let retryAfterSeconds) {
                 entry.attemptCount += 1
                 entry.lastError = "rate limited (429)"

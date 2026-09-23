@@ -204,13 +204,14 @@ final class HydrationSyncTests: XCTestCase {
         let correction = try await outbox.logHydration(valueInML: -250, loggedAt: loggedAt)
         XCTAssertTrue(correction.isCorrection)
         let now = Date()
+        let acceptedAt = now.addingTimeInterval(7) // a slow request: accepted well after the drain started
 
-        let result = await outbox.drain(using: FakeHydrationDeliverer(outcomes: [.succeed]), now: now)
+        let result = await outbox.drain(using: FakeHydrationDeliverer(outcomes: [.succeed]), now: now, clock: { acceptedAt })
 
         XCTAssertEqual(result.delivered.map(\.id), [correction.id])
         let stored = await outbox.allEntries()
         XCTAssertEqual(stored.first?.valueInML, -250)
-        XCTAssertEqual(stored.first?.deliveredAt, now, "deliveredAt is stamped on delivery")
+        XCTAssertEqual(stored.first?.deliveredAt, acceptedAt, "deliveredAt is stamped when Garmin accepted it")
     }
 
     func testNegativeCorrectionWireBodyCarriesTheNegativeValue() {

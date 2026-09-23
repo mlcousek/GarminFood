@@ -229,7 +229,8 @@ final class WeightSyncTests: XCTestCase {
         let deliverer = FakeWeighInDeliverer(outcomes: [.succeed])
 
         let now = Date()
-        let result = await outbox.drain(using: deliverer, now: now)
+        let acceptedAt = now.addingTimeInterval(7) // a slow request: accepted well after the drain started
+        let result = await outbox.drain(using: deliverer, now: now, clock: { acceptedAt })
 
         XCTAssertEqual(result.delivered.map(\.id), [entry.id])
         let deletes = await deliverer.receivedDeletes
@@ -242,7 +243,7 @@ final class WeightSyncTests: XCTestCase {
         let stored = await outbox.allEntries()
         XCTAssertEqual(stored.first?.state, .sent)
         XCTAssertEqual(stored.first?.kind, .delete)
-        XCTAssertEqual(stored.first?.deliveredAt, now, "deliveredAt is stamped on delivery")
+        XCTAssertEqual(stored.first?.deliveredAt, acceptedAt, "deliveredAt is stamped when Garmin accepted it")
     }
 
     func testDeleteThatFailsIsRetriedAndThenSurfacedAsFailed() async throws {
@@ -277,12 +278,13 @@ final class WeightSyncTests: XCTestCase {
         let outbox = makeOutbox()
         _ = try await outbox.logWeight(weightKg: 80)
         let now = Date()
+        let acceptedAt = now.addingTimeInterval(7)
 
-        _ = await outbox.drain(using: FakeWeighInDeliverer(outcomes: [.succeed]), now: now)
+        _ = await outbox.drain(using: FakeWeighInDeliverer(outcomes: [.succeed]), now: now, clock: { acceptedAt })
 
         let stored = await outbox.allEntries()
         XCTAssertEqual(stored.first?.kind, .add)
-        XCTAssertEqual(stored.first?.deliveredAt, now)
+        XCTAssertEqual(stored.first?.deliveredAt, acceptedAt, "not the drain start")
     }
 
     // MARK: - Backward compatibility with outbox files on the owner's phone

@@ -97,6 +97,13 @@ public enum WeightHistoryMerge {
     public static let matchTimeTolerance: TimeInterval = WeighInMatching.timeTolerance
     public static let matchWeightToleranceKg: Double = WeighInMatching.weightToleranceKg
 
+    /// Rule 4's margin: a Garmin read must have started at least this long
+    /// after a weigh-in was accepted (`WeightOutboxEntry.deliveredAt`,
+    /// stamped at acceptance since 2026-09-23) before a missing sample
+    /// means "deleted in Garmin". Covers a read racing the delivery and
+    /// Garmin not listing a just-accepted write at once.
+    public static let readAfterDeliveryGrace: TimeInterval = 60
+
     /// Merges Garmin's weigh-ins with the app's own, newest first.
     ///
     /// - `garminWeighIns`: every cached Garmin sample.
@@ -190,10 +197,14 @@ public enum WeightHistoryMerge {
                 continue
             }
 
-            // Rule 4.
+            // Rule 4. Only a read that started comfortably AFTER Garmin
+            // accepted the weigh-in may drop it: erring the other way can't
+            // double count (a sample that IS there already matched in rule
+            // 3), it only keeps a Connect-deleted weigh-in one read longer.
             let day = NutritionDate.string(from: local.loggedAt, calendar: calendar)
             let deliveredAt = outboxEntry?.deliveredAt ?? .distantPast
-            if let fetchedAt = garminDayFetchedAt[day], fetchedAt > deliveredAt {
+            if let fetchedAt = garminDayFetchedAt[day],
+               fetchedAt > deliveredAt.addingTimeInterval(readAfterDeliveryGrace) {
                 continue
             }
             rows.append(WeighInDisplayEntry(source: .local(local), syncState: .synced, outboxEntryId: nil))

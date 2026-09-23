@@ -55,6 +55,17 @@ public enum HydrationDayTotal {
             // Delivered: Garmin's number includes it only if the read came
             // after the delivery. A delivery by an older build has no
             // `deliveredAt`; it happened before any read this build made.
+            //
+            // Both stamps are chosen so a race errs small: `garminFetchedAt`
+            // is taken BEFORE the read starts, `deliveredAt` when Garmin's
+            // response ARRIVED (2026-09-23 fix -- it used to be the drain's
+            // start, so a read racing the drain was wrongly taken to include
+            // a drink accepted after it: an undercount until the next read).
+            // No extra grace here, unlike `WeightHistoryMerge` rule 4: for a
+            // total, "not in Garmin yet" is added ON TOP of Garmin's number,
+            // so over-assuming it double counts. The only remaining window is
+            // Garmin committing a drink before its response reaches the phone
+            // while a read is in flight -- counted twice until the next read.
             return (entry.deliveredAt ?? .distantPast) > garminFetchedAt
         }
         let garminValue = garminDaily.valueInML ?? 0

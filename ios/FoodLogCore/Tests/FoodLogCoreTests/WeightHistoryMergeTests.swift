@@ -201,6 +201,22 @@ final class WeightHistoryMergeTests: XCTestCase {
         XCTAssertEqual(rows.map(\.syncState), [.synced], "no blink-out between delivery and the next Garmin read")
     }
 
+    /// 2026-09-23 fix: a read that started only just after the weigh-in was
+    /// accepted may not list it yet -- it must not make the weigh-in vanish.
+    /// Keeping it can't double count: a listed sample matches in rule 3.
+    func testAReadStartedJustAfterAcceptanceDoesNotDropTheWeighIn() {
+        let outboxId = UUID()
+        let acceptedAt = morning.addingTimeInterval(5)
+        let rows = WeightHistoryMerge.merge(
+            garminWeighIns: [],
+            garminDayFetchedAt: ["2026-09-23": acceptedAt.addingTimeInterval(20)],
+            localEntries: [local(kg: 83.9, at: morning, outboxId: outboxId)],
+            outboxEntries: [outbox(outboxId, state: .sent, kg: 83.9, at: morning, deliveredAt: acceptedAt)],
+            calendar: calendar
+        )
+        XCTAssertEqual(rows.map(\.syncState), [.synced])
+    }
+
     func testOfflineWithNoGarminReadEverShowsLocalEntries() {
         let outboxId = UUID()
         let rows = WeightHistoryMerge.merge(

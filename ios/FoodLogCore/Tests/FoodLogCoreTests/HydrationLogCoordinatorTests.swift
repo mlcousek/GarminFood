@@ -104,6 +104,29 @@ final class HydrationLogCoordinatorTests: XCTestCase {
         XCTAssertEqual(after, 1500, "the queued -250 counts immediately, before it is even delivered")
     }
 
+    /// 2026-09-23 fix: `deliveredAt` used to be the drain's START, so a
+    /// Garmin read that started mid-drain (before Garmin accepted the drink,
+    /// so its total can't include it) was taken to include it -- the drink
+    /// vanished from the total until the next read.
+    func testAReadRacingTheDrainDoesNotSwallowADrinkAcceptedAfterIt() async throws {
+        let (coordinator, _, outbox) = makeCoordinator()
+        let loggedAt = Date()
+        try await coordinator.logHydration(valueInML: 250, loggedAt: loggedAt)
+        let drainStart = Date()
+        let readStart = drainStart.addingTimeInterval(2)
+        let accepted = drainStart.addingTimeInterval(5)
+
+        _ = await outbox.drain(using: AlwaysSucceedsHydrationDeliverer(), now: drainStart, clock: { accepted })
+
+        let entries = await outbox.allEntries()
+        XCTAssertEqual(entries.first?.deliveredAt, accepted)
+        let garmin = HydrationDaily(valueInML: 1500, goalInML: 2800)  // read before the drink landed
+        XCTAssertEqual(
+            HydrationDayTotal.total(garminDaily: garmin, garminFetchedAt: readStart, outboxEntries: entries, on: loggedAt),
+            1750
+        )
+    }
+
     // MARK: - Removal racing an in-flight delivery (2026-09-23 race fix)
 
     /// Before the fix: `removeHydration` saw the drink as not `.sent`,
