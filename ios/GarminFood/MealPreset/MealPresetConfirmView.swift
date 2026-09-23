@@ -103,6 +103,9 @@ struct MealPresetConfirmView: View {
                 DatePicker("Date", selection: $date, displayedComponents: .date)
             }
 
+            // redesign-fasting-schedule 2.4: a note, never a block.
+            FastingLogNoteSection(logDate: date)
+
             if let errorMessage {
                 Section {
                     Text(errorMessage).foregroundStyle(.red)

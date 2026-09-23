@@ -243,6 +243,9 @@ struct LogEntryConfirmView: View {
                 DatePicker("Date", selection: $date, displayedComponents: .date)
             }
 
+            // redesign-fasting-schedule 2.4: a note, never a block.
+            FastingLogNoteSection(logDate: date)
+
             if let discrepancyNote {
                 Section {
                     Label(discrepancyNote, systemImage: "info.circle")

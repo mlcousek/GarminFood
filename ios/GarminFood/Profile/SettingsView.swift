@@ -98,6 +98,9 @@ struct SettingsView: View {
                 environment.preferencesChanged()
             }
 
+            // redesign-fasting-schedule 2.1 (FastingSettingsSection.swift).
+            FastingSettingsSection()
+
             Section {
                 HStack {
                     Text("Version")

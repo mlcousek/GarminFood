@@ -19,12 +19,14 @@
 // same "replan and reconcile" shape `Reconciliation`/`Outbox` already use
 // for Garmin delivery, applied to local notifications instead.
 //
-// `syncFastingReminder(...)` (2026-09-22) is a second, independent
-// replan-and-diff cycle for the one fasting/eating-window reminder -- kept
-// separate from `sync(...)` rather than folded in, because it schedules at
-// most ONE request off an absolute `fireDate` (the current fasting session's
-// phase boundary, which moves with when the user actually started fasting),
-// not five off fixed daily hour/minute settings.
+// `syncFastingReminders(...)` is a second, independent replan-and-diff
+// cycle for the "fast ends soon" / "fast starts soon" reminders
+// (redesign-fasting-schedule 2.5). Kept separate from `sync(...)` because
+// these are REPEATING daily requests anchored to the fixed daily fasting
+// window, not today-only ones (see `NotificationPlanning.
+// PlannedFastingReminder`'s header for why that exception to design D2 is
+// safe here): they have no "skip it today" condition, so a repeating
+// trigger keeps them firing even on days the app isn't opened.
 
 import Foundation
 import UserNotifications
@@ -133,26 +135,21 @@ final class NotificationScheduler {
         Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: date)
     }
 
-    // MARK: - Fasting reminder
+    // MARK: - Fasting reminders
 
     /// Deliberately does NOT start with `identifierPrefix` ("reminder.") --
     /// `sync(...)`'s own stale-cleanup above matches anything with THAT
     /// prefix that isn't in ITS plan and removes it, so a shared prefix
-    /// would make `sync(...)` delete this reminder's pending request out
-    /// from under it every time it runs (found while writing this: the
-    /// first draft used "reminder.fastingReminder." and would have done
-    /// exactly that). A disjoint prefix keeps the two identifier
-    /// namespaces -- and the two independent replan cycles -- from
-    /// stepping on each other.
+    /// would make `sync(...)` delete these requests out from under this
+    /// cycle every time it runs. A disjoint prefix keeps the two identifier
+    /// namespaces -- and the two independent replan cycles -- apart.
     ///
-    /// Every identifier this schedules also carries the fire date's own
-    /// epoch second, unlike the day-scoped requests above -- there's no
-    /// single "today" to scope a request to (a fast can span past
-    /// midnight), and baking the target moment into the identifier itself
-    /// means a changed plan (session ended, setting edited, phase moved to
-    /// eating) naturally produces a DIFFERENT identifier, so the stale one
-    /// is recognized and removed below rather than needing its own
-    /// separate diff bookkeeping.
+    /// Each planned reminder's `id` already encodes its fire time and the
+    /// boundary it warns about, so any change to the schedule or a lead
+    /// time yields a different identifier and the stale request is removed
+    /// by the diff below. Requests left over from the retired
+    /// manual-session reminder ("fastingReminder.<epoch>") share this
+    /// prefix and are cleaned up by the same diff on the first run.
     private static let fastingIdentifierPrefix = "fastingReminder."
 
     /// Reentrancy guard, same reasoning as `isSyncing` above -- `sync` and
@@ -161,10 +158,12 @@ final class NotificationScheduler {
     /// rather than sharing `isSyncing`.
     private var isSyncingFasting = false
 
-    func syncFastingReminder(
-        setting: FastingReminderSetting,
-        activeSession: FastingSession?,
-        now: Date = Date()
+    /// - Parameter schedule: the ACTIVE fasting window (`nil` while fasting
+    ///   is off, which removes both reminders).
+    func syncFastingReminders(
+        schedule: FastingSchedule?,
+        endsSoon: FastingReminderSetting,
+        startsSoon: FastingReminderSetting
     ) async {
         guard !isSyncingFasting else { return }
         isSyncingFasting = true
@@ -173,37 +172,37 @@ final class NotificationScheduler {
         let status = await center.notificationSettings().authorizationStatus
         guard status == .authorized || status == .provisional else { return }
 
-        let planned = NotificationPlanning.planFastingReminder(setting: setting, activeSession: activeSession, now: now)
+        let planned = NotificationPlanning.planFastingReminders(schedule: schedule, endsSoon: endsSoon, startsSoon: startsSoon)
+        var plannedByIdentifier: [String: NotificationPlanning.PlannedFastingReminder] = [:]
+        for item in planned {
+            plannedByIdentifier[Self.fastingIdentifierPrefix + item.id] = item
+        }
 
         let pending = await center.pendingNotificationRequests()
         let ourPending = pending.map(\.identifier).filter { $0.hasPrefix(Self.fastingIdentifierPrefix) }
+        let stale = ourPending.filter { plannedByIdentifier[$0] == nil }
+        if !stale.isEmpty {
+            center.removePendingNotificationRequests(withIdentifiers: stale)
+        }
 
-        guard let planned else {
-            if !ourPending.isEmpty {
-                center.removePendingNotificationRequests(withIdentifiers: ourPending)
+        let alreadyPending = Set(ourPending)
+        for (identifier, item) in plannedByIdentifier where !alreadyPending.contains(identifier) {
+            let content = UNMutableNotificationContent()
+            content.title = item.title
+            content.body = item.body
+            content.sound = .default
+            // Wall-clock hour/minute, repeating daily -- the system keeps it
+            // on the same clock time across DST changes by itself.
+            var components = DateComponents()
+            components.hour = item.hour
+            components.minute = item.minute
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            do {
+                try await center.add(request)
+            } catch {
+                DiagnosticsLog.log(.warning, category: "NotificationScheduler", "couldn't schedule \(identifier): \(error)")
             }
-            return
-        }
-
-        let identifier = Self.fastingIdentifierPrefix + String(Int(planned.fireDate.timeIntervalSince1970))
-        guard !ourPending.contains(identifier) else { return }
-        if !ourPending.isEmpty {
-            // The plan changed (different fire date than whatever's
-            // currently pending) -- out with the old one.
-            center.removePendingNotificationRequests(withIdentifiers: ourPending)
-        }
-
-        let content = UNMutableNotificationContent()
-        content.title = planned.title
-        content.body = planned.body
-        content.sound = .default
-        let interval = max(planned.fireDate.timeIntervalSince(now), 1)
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        do {
-            try await center.add(request)
-        } catch {
-            DiagnosticsLog.log(.warning, category: "NotificationScheduler", "couldn't schedule \(identifier): \(error)")
         }
     }
 }

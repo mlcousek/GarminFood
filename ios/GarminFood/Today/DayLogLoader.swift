@@ -81,6 +81,14 @@ final class DayLogLoader {
         Calendar.current.isDateInToday(selectedDate)
     }
 
+    /// Every Garmin day log fetched so far this session, keyed by
+    /// `yyyy-MM-dd`. Read-only, for `FastingHistoryView`
+    /// (redesign-fasting-schedule 2.3), which judges past fasts from
+    /// whatever is already cached here rather than fetching 30 days.
+    var cachedFoodLogs: [String: DailyFoodLog] {
+        logsByDate
+    }
+
     // MARK: - Navigation
 
     func step(byDays days: Int) async {
