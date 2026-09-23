@@ -239,5 +239,121 @@ final class HydrationSyncTests: XCTestCase {
         XCTAssertEqual(entries.map(\.valueInML), [250, 500])
         XCTAssertNil(entries.first?.deliveredAt)
         XCTAssertEqual(entries.first?.state, .sent)
+        XCTAssertNil(entries.first?.removalRequested, "fields added by the 2026-09-23 race fix are optional too")
+        XCTAssertNil(entries.first?.correctsEntryId)
+    }
+
+    // MARK: - Removal vs an in-flight delivery (2026-09-23 race fix)
+
+    func testCancellingADrinkThatIsNotInFlightRemovesIt() async throws {
+        let outbox = makeOutbox()
+        let drink = try await outbox.logHydration(valueInML: 500)
+
+        let cancellation = try await outbox.cancelQueued(id: drink.id)
+
+        XCTAssertEqual(cancellation, .removed)
+        let stored = await outbox.allEntries()
+        XCTAssertTrue(stored.isEmpty)
+    }
+
+    func testCancellingADeliveredDrinkIsRefusedSoTheCallerQueuesACorrection() async throws {
+        let outbox = makeOutbox()
+        let drink = try await outbox.logHydration(valueInML: 500)
+        _ = await outbox.drain(using: FakeHydrationDeliverer(outcomes: [.succeed]))
+
+        do {
+            try await outbox.cancelQueued(id: drink.id)
+            XCTFail("expected alreadyDelivered")
+        } catch let error as OutboxEditError {
+            XCTAssertEqual(error, .alreadyDelivered)
+        }
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.map(\.state), [.sent], "nothing changes when it is refused")
+    }
+
+    /// The reviewed race: the drink is removed while its POST is on the
+    /// wire and Garmin then ACCEPTS it. Before the fix the entry was deleted
+    /// mid-flight and Garmin kept the 500 ml forever. Now the same drain
+    /// sends the -500 correction right after.
+    func testRemovingADrinkWhileItsPostIsInFlightSendsACorrectionOnceGarminAcceptsIt() async throws {
+        let outbox = makeOutbox()
+        let loggedAt = Date(timeIntervalSince1970: 1_789_000_000)
+        let drink = try await outbox.logHydration(valueInML: 500, loggedAt: loggedAt)
+        let deliverer = GatedHydrationDeliverer()
+
+        let drain = Task { await outbox.drain(using: deliverer) }
+        await deliverer.waitUntilFirstCallIsInFlight()
+
+        let cancellation = try await outbox.cancelQueued(id: drink.id)
+        XCTAssertEqual(cancellation, .compensateAfterDelivery, "in flight: flagged, not deleted out from under the POST")
+        let flagged = await outbox.allEntries()
+        XCTAssertEqual(flagged.first?.isWithdrawn, true)
+
+        deliverer.releaseFirstCall()
+        let result = await drain.value
+
+        let requests = await deliverer.receivedRequests
+        XCTAssertEqual(requests.map(\.valueInML), [500, -500], "Garmin got the drink, then its correction, in the same drain")
+        XCTAssertEqual(requests.last?.loggedAt, loggedAt, "the correction lands on the drink's own day")
+        XCTAssertEqual(result.delivered.count, 2)
+        let stored = await outbox.allEntries()
+        XCTAssertEqual(stored.count, 2)
+        XCTAssertTrue(stored.allSatisfy { $0.state == .sent })
+        let correction = try XCTUnwrap(stored.first { $0.isCorrection })
+        XCTAssertEqual(correction.correctsEntryId, drink.id)
+    }
+
+    /// Same race, but Garmin REJECTS the in-flight POST: the removed drink is
+    /// dropped instead of retried, and no correction is sent.
+    func testRemovingADrinkWhileItsPostIsInFlightDropsItIfGarminRejectsIt() async throws {
+        let outbox = makeOutbox()
+        let drink = try await outbox.logHydration(valueInML: 500)
+        let deliverer = GatedHydrationDeliverer(firstCallFailsWith: GarminClientError.httpError(statusCode: 500, body: "boom"))
+
+        let drain = Task { await outbox.drain(using: deliverer) }
+        await deliverer.waitUntilFirstCallIsInFlight()
+        try await outbox.cancelQueued(id: drink.id)
+        deliverer.releaseFirstCall()
+        let result = await drain.value
+
+        let requests = await deliverer.receivedRequests
+        XCTAssertEqual(requests.count, 1, "no correction for a drink Garmin never accepted")
+        XCTAssertTrue(result.delivered.isEmpty)
+        XCTAssertTrue(result.failed.isEmpty)
+        let stored = await outbox.allEntries()
+        XCTAssertTrue(stored.isEmpty, "never retried after the user removed it")
+    }
+}
+
+/// Holds the FIRST `addHydration` call open until the test releases it, so
+/// a test can act while a delivery is genuinely in flight; later calls
+/// succeed at once. Signalled with `AsyncStream`s (buffered, so neither
+/// side can miss the other's signal) rather than sleeps.
+private actor GatedHydrationDeliverer: HydrationDelivering {
+    private(set) var receivedRequests: [AddHydrationRequest] = []
+    private let firstCallError: Error?
+    private let started = AsyncStream<Void>.makeStream()
+    private let release = AsyncStream<Void>.makeStream()
+
+    init(firstCallFailsWith error: Error? = nil) {
+        self.firstCallError = error
+    }
+
+    nonisolated func waitUntilFirstCallIsInFlight() async {
+        _ = await started.stream.first(where: { _ in true })
+    }
+
+    nonisolated func releaseFirstCall() {
+        release.continuation.yield(())
+    }
+
+    func addHydration(_ request: AddHydrationRequest) async throws -> HTTPURLResponse {
+        receivedRequests.append(request)
+        if receivedRequests.count == 1 {
+            started.continuation.yield(())
+            _ = await release.stream.first(where: { _ in true })
+            if let firstCallError { throw firstCallError }
+        }
+        return HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/usersummary-service/usersummary/hydration/log")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
 }

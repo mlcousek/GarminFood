@@ -86,4 +86,18 @@ final class HydrationDayTotalTests: XCTestCase {
     func testTheTotalNeverGoesNegative() {
         XCTAssertEqual(total(garmin: 100, fetchedAt: today, [drink(-250, state: .pending)]), 0)
     }
+
+    /// 2026-09-23 race fix: a drink removed while its delivery is in flight
+    /// counts for nothing until the drain settles it.
+    func testADrinkRemovedMidFlightCountsForNothingUntilSettled() {
+        let withdrawn = HydrationOutboxEntry(valueInML: 500, loggedAt: today, state: .pending, removalRequested: true)
+        XCTAssertEqual(total(garmin: 1500, fetchedAt: today.addingTimeInterval(-60), [withdrawn]), 1500)
+        XCTAssertEqual(total(garmin: nil, fetchedAt: nil, [withdrawn]), 0, "same without any Garmin read")
+
+        // Settled as delivered: it counts again, and so does its correction.
+        let deliveredAt = today.addingTimeInterval(10)
+        let sent = HydrationOutboxEntry(valueInML: 500, loggedAt: today, state: .sent, deliveredAt: deliveredAt, removalRequested: true)
+        let correction = drink(-500, state: .pending)
+        XCTAssertEqual(total(garmin: 2000, fetchedAt: deliveredAt.addingTimeInterval(30), [sent, correction]), 1500, "Garmin's read includes the 500; the queued -500 takes it back out")
+    }
 }

@@ -103,6 +103,75 @@ final class HydrationLogCoordinatorTests: XCTestCase {
         let after = HydrationDayTotal.total(garminDaily: garmin, garminFetchedAt: fetchedAt, outboxEntries: entriesAfter, on: loggedAt)
         XCTAssertEqual(after, 1500, "the queued -250 counts immediately, before it is even delivered")
     }
+
+    // MARK: - Removal racing an in-flight delivery (2026-09-23 race fix)
+
+    /// Before the fix: `removeHydration` saw the drink as not `.sent`,
+    /// deleted its outbox entry while the POST was on the wire, the POST
+    /// succeeded, and Garmin kept 500 ml the app no longer tracked.
+    func testRemovingADrinkWhoseDeliveryIsInFlightEndsWithGarminCorrected() async throws {
+        let (coordinator, store, outbox) = makeCoordinator()
+        let loggedAt = Date()
+        let entry = try await coordinator.logHydration(valueInML: 500, loggedAt: loggedAt)
+        // Garmin was read BEFORE anything was delivered: 1500 ml.
+        let garmin = HydrationDaily(valueInML: 1500, goalInML: 2800)
+        let fetchedAt = Date().addingTimeInterval(-60)
+        let deliverer = GatedHydrationDeliverer()
+
+        let drain = Task { await outbox.drain(using: deliverer) }
+        await deliverer.waitUntilFirstCallIsInFlight()
+
+        let result = try await coordinator.removeHydration(entry)
+
+        XCTAssertEqual(result, .correctionFollowsDelivery)
+        let storedEntries = await store.all()
+        XCTAssertTrue(storedEntries.isEmpty, "the drink leaves the list at once")
+        let midFlight = await outbox.allEntries()
+        XCTAssertEqual(
+            HydrationDayTotal.total(garminDaily: garmin, garminFetchedAt: fetchedAt, outboxEntries: midFlight, on: loggedAt),
+            1500,
+            "the removed drink stops counting at once, even mid-flight"
+        )
+
+        deliverer.releaseFirstCall()
+        _ = await drain.value
+
+        let requests = await deliverer.receivedRequests
+        XCTAssertEqual(requests.map(\.valueInML), [500, -500], "Garmin's net change is zero")
+        let settled = await outbox.allEntries()
+        XCTAssertTrue(settled.allSatisfy { $0.state == .sent })
+        XCTAssertEqual(
+            HydrationDayTotal.total(garminDaily: garmin, garminFetchedAt: fetchedAt, outboxEntries: settled, on: loggedAt),
+            1500,
+            "delivered after the read: +500 and -500 both counted on top of Garmin's 1500"
+        )
+    }
+}
+
+/// Holds the FIRST `addHydration` call open until the test releases it
+/// (same helper as GarminKitTests/HydrationSyncTests.swift's), so a test can
+/// act while a delivery is genuinely in flight.
+private actor GatedHydrationDeliverer: HydrationDelivering {
+    private(set) var receivedRequests: [AddHydrationRequest] = []
+    private let started = AsyncStream<Void>.makeStream()
+    private let release = AsyncStream<Void>.makeStream()
+
+    nonisolated func waitUntilFirstCallIsInFlight() async {
+        _ = await started.stream.first(where: { _ in true })
+    }
+
+    nonisolated func releaseFirstCall() {
+        release.continuation.yield(())
+    }
+
+    func addHydration(_ request: AddHydrationRequest) async throws -> HTTPURLResponse {
+        receivedRequests.append(request)
+        if receivedRequests.count == 1 {
+            started.continuation.yield(())
+            _ = await release.stream.first(where: { _ in true })
+        }
+        return HTTPURLResponse(url: URL(string: "https://connectapi.garmin.com/usersummary-service/usersummary/hydration/log")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
 }
 
 /// A `HydrationDelivering` fake that always succeeds -- lets a test drive a

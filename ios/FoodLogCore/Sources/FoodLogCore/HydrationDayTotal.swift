@@ -42,7 +42,9 @@ public enum HydrationDayTotal {
         on day: Date,
         calendar: Calendar = .current
     ) -> Double {
-        let sameDay = outboxEntries.filter { calendar.isDate($0.loggedAt, inSameDayAs: day) }
+        // A drink removed while its delivery was in flight counts for
+        // nothing until it settles (dropped, or delivered + corrected).
+        let sameDay = outboxEntries.filter { !$0.isWithdrawn && calendar.isDate($0.loggedAt, inSameDayAs: day) }
 
         guard let garminDaily, let garminFetchedAt else {
             return max(sameDay.reduce(0) { $0 + $1.valueInML }, 0)

@@ -96,6 +96,22 @@ public enum OutboxEditError: Error, Sendable, Equatable {
     case alreadyDelivered
 }
 
+/// What `HydrationOutbox.cancelQueued` / `WeightOutbox.cancelQueued` did with
+/// a not-yet-delivered entry (2026-09-23 race fix, sync-weight-hydration-
+/// with-garmin). Before it, those outboxes had no in-flight claim: removing
+/// a drink (or a weigh-in) while a drain was POSTing it deleted the entry,
+/// the POST still landed, and Garmin kept something the app no longer knew
+/// about.
+public enum OutboxCancellation: Sendable, Equatable {
+    /// Removed from the queue: never sent, and never will be.
+    case removed
+    /// A drain is sending it right now. It is flagged (`removalRequested`)
+    /// and that drain settles it: dropped if Garmin did NOT accept it, or --
+    /// if Garmin did -- followed automatically by a compensating entry (a
+    /// negative hydration correction / a weigh-in delete) in the same queue.
+    case compensateAfterDelivery
+}
+
 /// One queued food-log entry plus its own delivery bookkeeping. Per
 /// design.md D5, the entry IS the outbox record -- this package has no UI
 /// layer of its own, so there's no separate "food entry" model to keep in

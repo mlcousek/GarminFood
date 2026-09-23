@@ -57,20 +57,39 @@ public struct HydrationLogCoordinator: Sendable {
     ///   `HydrationDayTotal` counts the queued correction at once, so the
     ///   shown total drops immediately.
     ///
+    /// - Being sent RIGHT NOW (a drain holds it): the outbox flags it
+    ///   instead (`OutboxCancellation.compensateAfterDelivery`); that drain
+    ///   drops it if Garmin rejects it, or queues and sends the correction
+    ///   itself if Garmin accepts it. 2026-09-23 race fix: this used to be a
+    ///   separate "is it `.sent`?" read followed by a delete, so a drink
+    ///   removed mid-POST was deleted from the queue, the POST landed anyway,
+    ///   and Garmin kept it with no correction ever queued.
+    ///
     /// The correction is enqueued BEFORE the local record is removed: if
     /// the second write failed, the drink would still be listed with its
     /// correction queued -- visible and fixable -- rather than silently gone
     /// from the list while Garmin keeps counting it.
     @discardableResult
     public func removeHydration(_ entry: HydrationEntry) async throws -> HydrationRemoval {
-        let outboxEntries = await outbox.allEntries()
-        if let outboxEntryId = entry.outboxEntryId,
-           outboxEntries.contains(where: { $0.id == outboxEntryId && $0.state != .sent }) {
-            try await outbox.delete(id: outboxEntryId)
-            try await store.delete(id: entry.id)
-            return .cancelledBeforeDelivery
+        if let outboxEntryId = entry.outboxEntryId {
+            do {
+                // "Is it delivered / in flight?" and "cancel it" happen in
+                // one step inside the outbox's store -- never check-then-act
+                // from out here.
+                let cancellation = try await outbox.cancelQueued(id: outboxEntryId)
+                try await store.delete(id: entry.id)
+                switch cancellation {
+                case .removed:
+                    return .cancelledBeforeDelivery
+                case .compensateAfterDelivery:
+                    return .correctionFollowsDelivery
+                }
+            } catch let error as OutboxEditError where error == .alreadyDelivered || error == .entryNotFound {
+                // Delivered (`.sent`, or its outbox entry is gone, which
+                // only happens after delivery): correct it below.
+            }
         }
-        try await outbox.logHydration(valueInML: -entry.valueInML, loggedAt: entry.loggedAt)
+        try await outbox.logHydration(valueInML: -entry.valueInML, loggedAt: entry.loggedAt, correctsEntryId: entry.outboxEntryId)
         try await store.delete(id: entry.id)
         return .correctionQueued
     }
@@ -82,4 +101,8 @@ public enum HydrationRemoval: Sendable, Equatable {
     case cancelledBeforeDelivery
     /// A negative correction is queued for Garmin's total.
     case correctionQueued
+    /// Its delivery was in flight: the drain sending it drops it if Garmin
+    /// rejects it, or follows it with a correction if Garmin accepts it.
+    /// Nothing for the caller to trigger -- that drain is already running.
+    case correctionFollowsDelivery
 }
