@@ -103,10 +103,12 @@ struct MacroTrendDay: Identifiable {
                     proteinG: content?.protein,
                     carbsG: content?.carbs,
                     fatG: content?.fat,
-                    calorieGoal: goals?.adjustedCalories ?? goals?.calories,
-                    proteinGoalG: goals?.adjustedProtein ?? goals?.protein,
-                    carbsGoalG: goals?.adjustedCarbs ?? goals?.carbs,
-                    fatGoalG: goals?.adjustedFat ?? goals?.fat
+                    // Fixed goal, matching the Today Target (see
+                    // `MealDashboard.target`); adjusted is only a fallback.
+                    calorieGoal: goals?.calories ?? goals?.adjustedCalories,
+                    proteinGoalG: goals?.protein ?? goals?.adjustedProtein,
+                    carbsGoalG: goals?.carbs ?? goals?.adjustedCarbs,
+                    fatGoalG: goals?.fat ?? goals?.adjustedFat
                 )
             }
             .sorted { $0.date < $1.date }

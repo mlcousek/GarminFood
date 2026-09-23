@@ -223,12 +223,17 @@ final class GamificationEngine {
               let content = log.dailyNutritionContent
         else { return }
 
+        // The FIXED goal, same as the Today Target (today-dashboard spec,
+        // owner decision 2026-09-23): the `adjusted*` values include burned
+        // calories, so "goal met" used to move after every workout while
+        // the home screen showed a different target. Adjusted is only the
+        // fallback for a payload with no base value (`MealDashboard.target`).
         let status = DailyGoalStatus(
             date: dateString,
-            metCalorieGoal: Self.metWithinTolerance(actual: content.calories, goal: goals.adjustedCalories ?? goals.calories),
-            metProteinGoal: Self.metAtLeast(actual: content.protein, goal: goals.adjustedProtein ?? goals.protein),
-            metCarbGoal: Self.metAtLeast(actual: content.carbs, goal: goals.adjustedCarbs ?? goals.carbs),
-            metFatGoal: Self.metAtLeast(actual: content.fat, goal: goals.adjustedFat ?? goals.fat)
+            metCalorieGoal: Self.metWithinTolerance(actual: content.calories, goal: goals.calories ?? goals.adjustedCalories),
+            metProteinGoal: Self.metAtLeast(actual: content.protein, goal: goals.protein ?? goals.adjustedProtein),
+            metCarbGoal: Self.metAtLeast(actual: content.carbs, goal: goals.carbs ?? goals.adjustedCarbs),
+            metFatGoal: Self.metAtLeast(actual: content.fat, goal: goals.fat ?? goals.adjustedFat)
         )
         try? await goalStatusStore.record(status)
         try? await lifetimeStatsStore.recordGoalStatus(status)
