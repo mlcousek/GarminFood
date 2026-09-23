@@ -259,8 +259,10 @@ public struct Serving: Codable, Sendable, Equatable, Hashable, Identifiable {
         return "\(Self.formattedQuantity(numberOfUnits)) \(trimmedUnit)"
     }
 
+    /// Non-trapping (`NumberDisplay`): a custom food's typed serving size
+    /// can be any number, and `String(Int(value))` crashed past ~9.2e18.
     private static func formattedQuantity(_ value: Double) -> String {
-        value.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(value)) : String(format: "%.1f", value)
+        NumberDisplay.quantity(value, fractionDigits: 1)
     }
 
     init?(nutritionContent: NutritionContent) {

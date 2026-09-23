@@ -24,6 +24,7 @@
 // adapters from their own item types onto this.
 
 import SwiftUI
+import FoodLogCore
 
 struct FoodShelf<Item: Identifiable, Card: View>: View {
     private let items: [Item]
@@ -182,7 +183,7 @@ struct FoodShelfCard: View {
 /// Shared by every shelf's accessibility label ("2 times 100 g").
 extension Double {
     var shelfQuantityText: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.1f", self)
+        NumberDisplay.quantity(self, fractionDigits: 1)
     }
 }
 

@@ -110,11 +110,11 @@ final class DayLogLoader {
     }
 
     /// Keeps "today" meaning today after midnight passes while the app is
-    /// open or in the background.
+    /// open (`AppEnvironment.dayDidChange`) or in the background
+    /// (`refreshOnForeground`). The rule is `NutritionDate.shouldRollOver`
+    /// (FoodLogCore, unit-tested).
     func rollOverIfNeeded(previousToday: Date) async {
-        let calendar = Calendar.current
-        guard calendar.isDate(selectedDate, inSameDayAs: previousToday),
-              !calendar.isDateInToday(selectedDate) else { return }
+        guard NutritionDate.shouldRollOver(selectedDay: selectedDate, previousToday: previousToday) else { return }
         await goToToday()
     }
 

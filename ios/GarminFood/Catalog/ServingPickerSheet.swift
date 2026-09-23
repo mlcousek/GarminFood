@@ -31,7 +31,7 @@ struct ServingPickerSheet: View {
                                 .font(.foodTitle)
                                 .foregroundStyle(.primary)
                             if let calories = serving.calories {
-                                Text("\(Int(calories.rounded())) kcal")
+                                Text("\(calories.wholeNumberText) kcal")
                                     .font(.foodSubtitle)
                                     .foregroundStyle(.secondary)
                             }

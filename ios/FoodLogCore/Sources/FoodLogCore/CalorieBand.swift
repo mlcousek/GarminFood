@@ -58,3 +58,17 @@ extension MacroProgress {
         return CalorieBand.band(forPercent: percent)
     }
 }
+
+extension CalorieBand {
+    /// Whether a day's calories count as "goal met" for gamification
+    /// (streak challenges, daily challenges, lifetime stats). Deliberately
+    /// the ring's own green band, not a separate tolerance: the owner's rule
+    /// (2026-09-23) is "95-105% of the Target is green", and a day the ring
+    /// shows green must never be a day a challenge says was missed, or the
+    /// reverse. `false` without a usable goal (`goal > 0`), same as the ring
+    /// having no band.
+    public static func isGoalMet(consumed: Double?, goal: Double?) -> Bool {
+        guard let consumed else { return false }
+        return MacroProgress(consumed: consumed, goal: goal).calorieBand == .onTarget
+    }
+}

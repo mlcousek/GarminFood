@@ -22,10 +22,10 @@ struct MacroBadge: View {
     let accessibleUnit: String
 
     var body: some View {
-        Text("\(Int(value.rounded()))\(unit)")
+        Text("\(value.wholeNumberText)\(unit)")
             .font(.macroBadge)
             .foregroundStyle(.secondary)
-            .accessibilityLabel("\(Int(value.rounded())) \(accessibleUnit)")
+            .accessibilityLabel("\(value.wholeNumberText) \(accessibleUnit)")
     }
 }
 
@@ -344,15 +344,15 @@ struct MacroBar: View {
     }
 
     private var valueText: String {
-        let consumed = Int(progress.consumed.rounded())
+        let consumed = progress.consumed.wholeNumberText
         guard let goal = progress.goal else { return "\(consumed) \(unit)" }
-        return "\(consumed) / \(Int(goal.rounded())) \(unit)"
+        return "\(consumed) / \(goal.wholeNumberText) \(unit)"
     }
 
     private var accessibilityText: String {
-        let consumed = Int(progress.consumed.rounded())
+        let consumed = progress.consumed.wholeNumberText
         guard let goal = progress.goal else { return "\(consumed) \(unit)" }
-        return "\(consumed) of \(Int(goal.rounded())) \(unit)"
+        return "\(consumed) of \(goal.wholeNumberText) \(unit)"
     }
 }
 

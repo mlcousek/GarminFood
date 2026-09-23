@@ -45,7 +45,13 @@ struct MealPresetConfirmView: View {
 
     private var totals: MealPreset.Totals { preset.totals(servingsMultiplier: portions) }
 
-    private var canConfirm: Bool { !didConfirm && !isSaving && portions > 0 && !preset.ingredients.isEmpty }
+    private var canConfirm: Bool { !didConfirm && !isSaving && !preset.ingredients.isEmpty && portionsAreValid }
+
+    /// Every ingredient's scaled amount within `LogQuantity`'s bound -- the
+    /// same check `LogEntryCoordinator.confirmMealPreset` makes up front.
+    private var portionsAreValid: Bool {
+        LogQuantity.isValid(portions) && preset.ingredients.allSatisfy { LogQuantity.isValid($0.quantity * portions) }
+    }
 
     var body: some View {
         Form {
@@ -169,16 +175,12 @@ struct MealPresetConfirmView: View {
                 await environment.logConfirmed(food: nil, date: dateString)
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
+            } catch let error as LogQuantityError {
+                errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "MealPresetConfirmView", "confirmMealPreset failed for preset=\(preset.name): \(error)")
                 errorMessage = "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue."
             }
         }
-    }
-}
-
-private extension Double {
-    var formattedQuantity: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.2f", self)
     }
 }

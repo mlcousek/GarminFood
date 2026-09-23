@@ -87,7 +87,7 @@ struct HydrationView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Button {
-                        goalText = String(Int(loader.goalML.rounded()))
+                        goalText = loader.goalML.wholeNumberText
                         isPresentingGoalEditor = true
                     } label: {
                         Label("Edit goal", systemImage: "target")
@@ -128,7 +128,7 @@ struct HydrationView: View {
                 .keyboardType(.numberPad)
             Button("Cancel", role: .cancel) {}
             Button("Save") {
-                if let value = Double(goalText), value > 0 {
+                if let value = DecimalInput.parse(goalText), value > 0, value <= 20_000 {
                     environment.preferences.waterGoalOverrideML = value
                 }
             }

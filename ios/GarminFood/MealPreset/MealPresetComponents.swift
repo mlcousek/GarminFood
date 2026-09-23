@@ -29,7 +29,7 @@ struct MealPresetShelf: View {
                 title: preset.name,
                 subtitle: ingredientCountText(preset),
                 calories: preset.totals().calories,
-                accessibilityLabel: "\(preset.name), \(ingredientCountText(preset)), \(Int(preset.totals().calories.rounded())) kilocalories",
+                accessibilityLabel: "\(preset.name), \(ingredientCountText(preset)), \(preset.totals().calories.wholeNumberText) kilocalories",
                 accessibilityHint: "Opens this meal to log it",
                 actions: actions(for: preset),
                 onTap: { onTap(preset) }

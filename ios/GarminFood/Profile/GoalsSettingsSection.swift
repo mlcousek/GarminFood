@@ -49,7 +49,7 @@ struct GoalsSettingsSection: View {
                     get: { preferences.waterGoalOverrideML ?? water.goalML },
                     set: { preferences.waterGoalOverrideML = $0 }
                 ), in: 500...6000, step: 100) {
-                    Text("My goal: \(Int((preferences.waterGoalOverrideML ?? water.goalML).rounded())) ml")
+                    Text("My goal: \((preferences.waterGoalOverrideML ?? water.goalML).wholeNumberText) ml")
                 }
             }
 

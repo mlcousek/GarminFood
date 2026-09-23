@@ -60,13 +60,18 @@ struct LogEntryConfirmView: View {
         self.target = target
         self.presetMealType = presetMealType
         self.presetDate = presetDate
+        let initialQuantity: Double?
         switch target {
-        case .catalog(_, let serving):
+        case .catalog(_, let serving, let remembered):
             _selectedServing = State(initialValue: serving)
-        case .custom(let draft):
+            initialQuantity = remembered
+        case .custom(let draft, let remembered):
             _selectedServing = State(initialValue: draft.asFood().servings.first)
+            initialQuantity = remembered
         }
-        // One full serving, always -- see `quantity`'s own doc comment.
+        // One full serving unless the target carries a remembered amount
+        // (a Quick pick / Usual / Recent card's "2×"; see `LogTarget`) --
+        // always a MULTIPLIER, see `quantity`'s own doc comment.
         // 2026-09-18 bug, fixed before any user could rely on the wrong
         // value: this used to default to the SERVING's own defined amount
         // (e.g. 100 for a "100g" serving), while the Stepper below it was
@@ -74,7 +79,8 @@ struct LogEntryConfirmView: View {
         // its own control's valid range. The first tap of "+" snapped it
         // down to 50 rather than incrementing, which read as the app
         // randomly jumping to "50 servings" the moment you touched it.
-        _quantity = State(initialValue: 1)
+        // A remembered amount outside `LogQuantity`'s bound falls back to 1.
+        _quantity = State(initialValue: initialQuantity.map { LogQuantity.isValid($0) ? $0 : 1 } ?? 1)
         // 2026-09-21 bug fix: `presetMealType` is applied HERE, directly in
         // `init`, rather than corrected afterward in `applyContextOnce()` --
         // the previous version always started `mealType` at the time-of-day
@@ -91,8 +97,8 @@ struct LogEntryConfirmView: View {
 
     private var food: Food {
         switch target {
-        case .catalog(let food, _): return food
-        case .custom(let draft): return draft.asFood()
+        case .catalog(let food, _, _): return food
+        case .custom(let draft, _): return draft.asFood()
         }
     }
 
@@ -208,6 +214,15 @@ struct LogEntryConfirmView: View {
                     }
                 }
 
+                if !isQuantityValid {
+                    // Shown only while the typed amount is out of range
+                    // (`LogQuantity`, FoodLogCore) -- the Log button is
+                    // disabled meanwhile, so say why.
+                    Text(LogQuantity.invalidMessage)
+                        .font(.caption)
+                        .foregroundStyle(Theme.warning)
+                }
+
                 if let caloriesForQuantity {
                     HStack {
                         Text("Calories")
@@ -310,7 +325,14 @@ struct LogEntryConfirmView: View {
     /// quick double-tap logged the same food to Garmin twice.
     /// `MealPresetConfirmView.canConfirm` already guards the same way.
     private var canConfirm: Bool {
-        !didConfirm && !isSaving && (isCustom || selectedServing != nil) && quantity > 0
+        !didConfirm && !isSaving && (isCustom || selectedServing != nil) && isQuantityValid
+    }
+
+    /// The same bound `LogEntryCoordinator` enforces (finite, > 0,
+    /// <= `LogQuantity.maximum`). Checked here too so an absurd typed amount
+    /// disables the button with a reason, rather than only failing on tap.
+    private var isQuantityValid: Bool {
+        LogQuantity.isValid(quantity)
     }
 
     private func confirm() {
@@ -334,7 +356,7 @@ struct LogEntryConfirmView: View {
                         regionCode: environment.profile.settings?.regionCode,
                         languageCode: environment.profile.settings?.languageCode
                     )
-                case .custom(let draft):
+                case .custom(let draft, _):
                     let (_, note) = try await environment.logEntryCoordinator.confirmCustomFood(
                         draft,
                         quantity: quantity,
@@ -364,16 +386,12 @@ struct LogEntryConfirmView: View {
                 await environment.logConfirmed(food: isCustom ? nil : food, date: dateString)
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
+            } catch let error as LogQuantityError {
+                errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "LogEntryConfirmView", "confirm failed for foodId=\(food.id): \(error)")
                 errorMessage = "Couldn't save this entry. Try again."
             }
         }
-    }
-}
-
-private extension Double {
-    var formattedQuantity: String {
-        truncatingRemainder(dividingBy: 1) == 0 ? String(Int(self)) : String(format: "%.2f", self)
     }
 }

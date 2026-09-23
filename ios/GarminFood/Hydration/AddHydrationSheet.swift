@@ -27,7 +27,7 @@ struct AddHydrationSheet: View {
     private let presets: [Double] = [100, 250, 500]
 
     private var amountValue: Double? {
-        guard let value = Double(amountText), value > 0, value < 5000 else { return nil }
+        guard let value = DecimalInput.parse(amountText), value > 0, value < 5000 else { return nil }
         return value
     }
 
