@@ -145,6 +145,30 @@
         }
       }
     },
+    "Keep Your Streak": {
+      "comment": "Widget gallery name of the streak-themed widget (Streak = Série, glossary).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Udrž sérii"
+          }
+        }
+      }
+    },
+    "Keep your streak going": {
+      "comment": "Streak widget headline and VoiceOver label. Short: small widget.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Udrž svou sérii"
+          }
+        }
+      }
+    },
     "Log Food": {
       "comment": "Home Screen / Lock Screen widget name, label and VoiceOver label: opens the food catalog.",
       "extractionState": "manual",
@@ -205,6 +229,18 @@
         }
       }
     },
+    "Log today": {
+      "comment": "Streak widget subtitle: log today's food. Very short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš dnešek"
+          }
+        }
+      }
+    },
     "Logs your #1 most-used food in GarminFood.": {
       "comment": "Shortcuts action description (quick pick rank 1 / 'Log Usual Food').",
       "extractionState": "manual",
@@ -213,6 +249,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapíše do GarminFood tvoje nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #2 most-used food": {
+      "comment": "Control action hint (quick log #2).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje druhé nejčastější jídlo"
           }
         }
       }
@@ -229,6 +277,30 @@
         }
       }
     },
+    "Logs your #2 most-used food. Briefly opens GarminFood to do it.": {
+      "comment": "Control gallery description (quick log #2).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje druhé nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
+          }
+        }
+      }
+    },
+    "Logs your #3 most-used food": {
+      "comment": "Control action hint (quick log #3).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje třetí nejčastější jídlo"
+          }
+        }
+      }
+    },
     "Logs your #3 most-used food in GarminFood.": {
       "comment": "Shortcuts action description (quick pick rank 3).",
       "extractionState": "manual",
@@ -241,6 +313,30 @@
         }
       }
     },
+    "Logs your #3 most-used food. Briefly opens GarminFood to do it.": {
+      "comment": "Control gallery description (quick log #3).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje třetí nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
+          }
+        }
+      }
+    },
+    "Logs your #4 most-used food": {
+      "comment": "Control action hint (quick log #4).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje čtvrté nejčastější jídlo"
+          }
+        }
+      }
+    },
     "Logs your #4 most-used food in GarminFood.": {
       "comment": "Shortcuts action description (quick pick rank 4).",
       "extractionState": "manual",
@@ -249,6 +345,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapíše do GarminFood tvoje čtvrté nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #4 most-used food. Briefly opens GarminFood to do it.": {
+      "comment": "Control gallery description (quick log #4).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje čtvrté nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
+          }
+        }
+      }
+    },
+    "Logs your most-used food": {
+      "comment": "Control action hint (quick log #1).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje nejčastější jídlo"
+          }
+        }
+      }
+    },
+    "Logs your most-used food. Briefly opens GarminFood to do it.": {
+      "comment": "Control gallery description (quick log #1).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tvoje nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
           }
         }
       }
@@ -277,6 +409,42 @@
         }
       }
     },
+    "One tap opens GarminFood's food catalog so you can keep your streak going.": {
+      "comment": "Widget gallery description of the streak widget.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedním klepnutím otevřeš katalog jídel v GarminFood, ať udržíš svou sérii."
+          }
+        }
+      }
+    },
+    "One tap opens GarminFood's food catalog, ready to log.": {
+      "comment": "Widget gallery description of the Home Screen and Lock Screen 'Log Food' widgets.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedním klepnutím otevřeš katalog jídel v GarminFood a můžeš hned zapisovat."
+          }
+        }
+      }
+    },
+    "Opens GarminFood": {
+      "comment": "VoiceOver hint on the Home Screen / Lock Screen 'Log Food' widget.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře GarminFood"
+          }
+        }
+      }
+    },
     "Opens GarminFood directly into the barcode scanner.": {
       "comment": "Shortcuts intent description and Control gallery description for the barcode-scan action.",
       "extractionState": "manual",
@@ -289,6 +457,18 @@
         }
       }
     },
+    "Opens GarminFood to log today": {
+      "comment": "VoiceOver hint on the streak widget.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře GarminFood, ať můžeš zapsat dnešek"
+          }
+        }
+      }
+    },
     "Pastel": {
       "comment": "Theme name (widget theme option).",
       "extractionState": "manual",
@@ -297,6 +477,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Quick Log #1": {
+      "comment": "Control Center / Lock Screen control name and label: logs the most-used food. Keep short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlý zápis 1"
+          }
+        }
+      }
+    },
+    "Quick Log #2": {
+      "comment": "Control name and label: logs the 2nd most-used food. Keep short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlý zápis 2"
+          }
+        }
+      }
+    },
+    "Quick Log #3": {
+      "comment": "Control name and label: logs the 3rd most-used food. Keep short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlý zápis 3"
+          }
+        }
+      }
+    },
+    "Quick Log #4": {
+      "comment": "Control name and label: logs the 4th most-used food. Keep short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlý zápis 4"
           }
         }
       }
