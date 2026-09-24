@@ -193,3 +193,50 @@
 
 /* Offline food database update error. %lld is the HTTP status code. */
 "The index server answered HTTP %lld." = "Server s databází odpověděl HTTP %lld.";
+
+/* ---- Notifications (NotificationPlanning.swift) ---- */
+
+/* Streak-at-risk reminder notification title. */
+"Keep your streak alive" = "Udrž svou sérii";
+
+/* Streak-at-risk reminder notification body. */
+"You haven't logged anything today yet -- don't lose your streak." = "Dnes zatím nemáš nic zapsáno – nepřijď o svou sérii.";
+
+/* Daily-challenge reminder notification title. */
+"Today's challenges are ready" = "Dnešní výzvy jsou připravené";
+
+/* Daily-challenge reminder notification body. */
+"Check today's challenges in GarminFood." = "Mrkni na dnešní výzvy v GarminFood.";
+
+/* Meal reminder notification title (one full sentence per meal: Czech accusative). */
+"Log your breakfast" = "Zapiš si snídani";
+
+/* Meal reminder notification title. */
+"Log your lunch" = "Zapiš si oběd";
+
+/* Meal reminder notification title. */
+"Log your dinner" = "Zapiš si večeři";
+
+/* Meal reminder notification title (Garmin's Snacks meal slot). */
+"Log your snacks" = "Zapiš si svačinu";
+
+/* Meal reminder notification body. */
+"Don't forget to log breakfast today." = "Nezapomeň si dnes zapsat snídani.";
+
+/* Meal reminder notification body. */
+"Don't forget to log lunch today." = "Nezapomeň si dnes zapsat oběd.";
+
+/* Meal reminder notification body. */
+"Don't forget to log dinner today." = "Nezapomeň si dnes zapsat večeři.";
+
+/* Meal reminder notification body (Garmin's Snacks meal slot). */
+"Don't forget to log snacks today." = "Nezapomeň si dnes zapsat svačinu.";
+
+/* Fasting reminder notification title, shortly before the daily fast ends. */
+"Fasting window ending soon" = "Půst brzy končí";
+
+/* Fasting reminder notification title, shortly before the fast starts. %lld is minutes; 'min' is a unit symbol, so no plural. */
+"Fasting starts in %lld min" = "Půst začíná za %lld min";
+
+/* Fasting reminder notification body. %@ is a 24-hour clock time (HH:mm). */
+"Your fasting window starts at %@." = "Tvůj půst začíná v %@.";

@@ -23,6 +23,7 @@
 // without a multi-turn conversation. The entry stays editable in the app.
 
 import AppIntents
+import Foundation
 import GarminKit
 import FoodLogCore
 
@@ -66,7 +67,10 @@ struct LogNamedFoodIntent: AppIntent {
             let names = candidates.map { result in
                 result.food.brandName.map { "\(result.food.name) (\($0))" } ?? result.food.name
             }
-            return .result(dialog: "Nothing logged -- \"\(foodName)\" could be \(names.joined(separator: ", or ")). Say the full name to log one.")
+            // add-localization: a locale-aware "A, B, or C" list ("A, B nebo C"
+            // in Czech) instead of gluing a translated ", or " fragment.
+            let candidateList = names.formatted(.list(type: .or))
+            return .result(dialog: "Nothing logged -- \"\(foodName)\" could be \(candidateList). Say the full name to log one.")
         case .confident(let top):
             food = top.food
         }
