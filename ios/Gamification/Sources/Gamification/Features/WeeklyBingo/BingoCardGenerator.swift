@@ -15,7 +15,8 @@
 //      card; a difficulty that runs short is filled from the next easier
 //      one; the family rule is relaxed last;
 //   4. seeded layout around the FREE centre, re-permuted (up to 16 times)
-//      until no line holds two hard tasks.
+//      until no line holds two hard tasks -- then, instead of the design's
+//      "accept", a deterministic swap so the rule holds on every card.
 //
 // Depends on: BingoTask, BingoTaskCatalog, BingoLine, DeterministicRandom,
 // WeekKey, DataRequirement. Depended on by: WeeklyBingoFeature,
@@ -118,9 +119,27 @@ public enum BingoCardGenerator {
         var layout = taskPositions
         for _ in 0..<maxLayoutAttempts {
             layout = rng.shuffled(taskPositions)
-            if !hardTasksShareLine(picks: picks, layout: layout) { break }
+            if !hardTasksShareLine(picks: picks, layout: layout) { return layout }
         }
-        return layout
+        return repairedLayout(layout, picks: picks)
+    }
+
+    /// Deterministic fallback after `maxLayoutAttempts` unlucky
+    /// permutations: with exactly two hard tasks, move the second one to
+    /// the first position (reading order) that shares no line with the
+    /// first, swapping with whatever sits there. Every non-centre square
+    /// has such a partner, so the rule always holds for the normal card.
+    static func repairedLayout(_ layout: [Int], picks: [BingoTask]) -> [Int] {
+        let hardOffsets = picks.indices.filter { picks[$0].difficulty == .hard && $0 < layout.count }
+        guard hardOffsets.count == 2 else { return layout }
+        let anchor = layout[hardOffsets[0]]
+        let moving = hardOffsets[1]
+        guard let target = taskPositions.first(where: { position in
+            position != anchor && !BingoLine.all.contains { $0.indices.contains(anchor) && $0.indices.contains(position) }
+        }), let occupant = layout.firstIndex(of: target) else { return layout }
+        var repaired = layout
+        repaired.swapAt(moving, occupant)
+        return repaired
     }
 
     static func hardTasksShareLine(picks: [BingoTask], layout: [Int]) -> Bool {
