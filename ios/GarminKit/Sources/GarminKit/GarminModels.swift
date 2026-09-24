@@ -29,7 +29,7 @@ public struct FoodSearchResult: Decodable, Sendable {
     public let logTimestamp: String?
 }
 
-public struct FoodMetaData: Decodable, Sendable {
+public struct FoodMetaData: Decodable, Sendable, Equatable {
     public let foodId: String
     public let foodName: String?
     public let foodType: String?
@@ -67,7 +67,7 @@ public struct NutritionContent: Decodable, Sendable {
 
 // MARK: - Daily food log (GET /nutrition-service/food/logs/{date}) -- confirmed live 2026-09-14
 
-public struct DailyFoodLog: Decodable, Sendable {
+public struct DailyFoodLog: Decodable, Sendable, Equatable {
     public let mealDate: String?
     /// "04:00:00" observed -- the nutrition day is NOT calendar
     /// midnight-to-midnight. Any "today" logic MUST read this from the
@@ -82,7 +82,7 @@ public struct DailyFoodLog: Decodable, Sendable {
     public let loggedFoodsWithServingSizes: [LoggedFood]?
 }
 
-public struct NutritionGoals: Decodable, Sendable {
+public struct NutritionGoals: Decodable, Sendable, Equatable {
     public let calories: Double?
     public let adjustedCalories: Double?
     public let carbs: Double?
@@ -98,7 +98,7 @@ public struct NutritionGoals: Decodable, Sendable {
 /// with food logged; the daily total carries only the first few. A meal
 /// with nothing logged comes back as an EMPTY object, so every field is
 /// optional and an absent value means "nothing", not "unknown".
-public struct DailyNutritionContent: Decodable, Sendable {
+public struct DailyNutritionContent: Decodable, Sendable, Equatable {
     public let calories: Double?
     public let carbs: Double?
     public let fat: Double?
@@ -119,14 +119,14 @@ public struct DailyNutritionContent: Decodable, Sendable {
     public let iron: Double?
 }
 
-public struct MealDetail: Decodable, Sendable {
+public struct MealDetail: Decodable, Sendable, Equatable {
     public let meal: Meal?
     public let mealNutritionContent: DailyNutritionContent?
     public let mealNutritionGoals: NutritionGoals?
     public let loggedFoods: [LoggedFood]?
 }
 
-public struct Meal: Decodable, Sendable {
+public struct Meal: Decodable, Sendable, Equatable {
     public let mealId: Int?
     public let mealIndex: Int?
     /// Confirmed values via real reads: BREAKFAST, LUNCH, SNACKS. DINNER is
@@ -142,7 +142,7 @@ public struct Meal: Decodable, Sendable {
 
 /// A single logged food entry, as it comes back from `dailyFoodLog` or
 /// `loggedFoodsWithServingSizes`.
-public struct LoggedFood: Decodable, Sendable {
+public struct LoggedFood: Decodable, Sendable, Equatable {
     /// "appears to equal foodId" per the contract -- not relied on as a
     /// distinct identifier anywhere in this package.
     public let id: String?
@@ -203,7 +203,7 @@ public struct LoggedFood: Decodable, Sendable {
     }
 }
 
-public struct LoggedNutritionContent: Decodable, Sendable {
+public struct LoggedNutritionContent: Decodable, Sendable, Equatable {
     public let servingId: String?
     public let servingUnit: String?
     public let numberOfUnits: Double?
@@ -224,7 +224,7 @@ public struct LoggedNutritionContent: Decodable, Sendable {
 /// logged on it. The write needs this: Garmin files an entry under a meal
 /// INSTANCE (`mealId`, numeric, different for every date), not under a meal
 /// name, and an entry queued offline cannot know that id until delivery.
-public struct MealsForDate: Decodable, Sendable {
+public struct MealsForDate: Decodable, Sendable, Equatable {
     public let meals: [Meal]?
     public let dailyTimelineStartTime: String?
     public let dailyTimelineEndTime: String?
@@ -293,7 +293,7 @@ public struct NutritionSettings: Decodable, Sendable {
 /// nothing in this app needs them; `JSONDecoder` ignores JSON keys a
 /// `Decodable` type doesn't declare, so omitting them does not affect
 /// decoding the fields that ARE modeled.
-public struct CalorieSummaryDailyResponse: Decodable, Sendable {
+public struct CalorieSummaryDailyResponse: Decodable, Sendable, Equatable {
     public let startDate: String?
     public let endDate: String?
     public let caloriesBurned: Double?
@@ -314,7 +314,7 @@ public struct CalorieSummaryDailyResponse: Decodable, Sendable {
 /// goal values (2300/3128/316/430/64/87/115/156 kcal/g) matched exactly, so
 /// the two routes' per-day shapes are confirmed identical, not just
 /// similar.
-public struct CalorieSummaryDay: Decodable, Sendable {
+public struct CalorieSummaryDay: Decodable, Sendable, Equatable {
     public let mealDate: String?
     public let nutritionContent: DailyNutritionContent?
     public let nutritionGoals: NutritionGoals?
