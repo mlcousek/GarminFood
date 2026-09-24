@@ -14,7 +14,7 @@ import UIKit
 
 @MainActor
 struct AppIconPickerView: View {
-    @State private var selected: AppIconOption = AppIconPickerView.currentOption()
+    @State private var selected: AppIconOption = AppIconSwitcher.current
     @State private var errorMessage: String?
 
     var body: some View {
@@ -70,27 +70,12 @@ struct AppIconPickerView: View {
 
     private func select(_ option: AppIconOption) {
         guard option != selected else { return }
-        guard UIApplication.shared.supportsAlternateIcons else {
-            errorMessage = "This device doesn't support alternate app icons."
-            return
-        }
-        UIApplication.shared.setAlternateIconName(option.alternateIconName) { error in
-            Task { @MainActor in
-                if let error {
-                    errorMessage = error.localizedDescription
-                } else {
-                    selected = option
-                }
+        AppIconSwitcher.set(option) { error in
+            if let error {
+                errorMessage = error.localizedDescription
+            } else {
+                selected = option
             }
         }
-    }
-
-    /// `UIApplication.shared.alternateIconName` is `nil` for the default
-    /// icon; matched back to its `AppIconOption` by raw value, falling back
-    /// to `.default` for a name this enum doesn't recognise (e.g. a stale
-    /// value from a build that has since removed an icon).
-    private static func currentOption() -> AppIconOption {
-        guard let name = UIApplication.shared.alternateIconName else { return .default }
-        return AppIconOption(rawValue: name) ?? .default
     }
 }

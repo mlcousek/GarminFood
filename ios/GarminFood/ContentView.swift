@@ -47,6 +47,7 @@ struct ContentView: View {
             environment.router.handle(url: url)
         }
         .task {
+            AppIconSwitcher.resetRemovedAlternateIfNeeded()
             environment.router.applyPendingRoute()
             await environment.refreshOnForeground()
         }
