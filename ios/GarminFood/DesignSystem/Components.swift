@@ -161,14 +161,31 @@ private struct Tag: View {
 /// The one CTA style this app uses for its "log it" / "save" / "confirm"
 /// actions -- defined once (config.yaml's design-system principle) rather
 /// than styled ad hoc per screen.
+///
+/// Localization: `init(title:)` takes a `LocalizedStringKey`, so a literal
+/// call site (`PrimaryButton(title: "Log it")`) is a catalog key; text that
+/// is already a `String` (runtime or pre-localized) goes through
+/// `init(verbatim:)` and is shown as is.
 struct PrimaryButton: View {
-    let title: String
-    var isDisabled = false
-    let action: () -> Void
+    private let title: Text
+    private let isDisabled: Bool
+    private let action: () -> Void
+
+    init(title: LocalizedStringKey, isDisabled: Bool = false, action: @escaping () -> Void) {
+        self.title = Text(title)
+        self.isDisabled = isDisabled
+        self.action = action
+    }
+
+    init(verbatim title: String, isDisabled: Bool = false, action: @escaping () -> Void) {
+        self.title = Text(verbatim: title)
+        self.isDisabled = isDisabled
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {
-            Text(title)
+            title
                 .font(.headline)
                 .foregroundStyle(isDisabled ? Color.secondary : Theme.onAccent)
                 .frame(maxWidth: .infinity)
@@ -185,21 +202,37 @@ struct PrimaryButton: View {
 /// A deliberate empty state (config.yaml: "states (loading, empty, error,
 /// success) are designed on purpose, not left as whatever SwiftUI does by
 /// default"), not a blank screen.
+///
+/// Localization: like `PrimaryButton`, literal `title`/`message` are
+/// catalog keys; `init(systemImage:verbatim:message:)` shows `String`s
+/// (runtime or pre-localized) as is.
 struct EmptyStateView: View {
-    let systemImage: String
-    let title: String
-    let message: String
+    private let systemImage: String
+    private let title: Text
+    private let message: Text
 
     @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 36
+
+    init(systemImage: String, title: LocalizedStringKey, message: LocalizedStringKey) {
+        self.systemImage = systemImage
+        self.title = Text(title)
+        self.message = Text(message)
+    }
+
+    init(systemImage: String, verbatim title: String, message: String) {
+        self.systemImage = systemImage
+        self.title = Text(verbatim: title)
+        self.message = Text(verbatim: message)
+    }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.sm) {
             Image(systemName: systemImage)
                 .font(.system(size: iconSize))
                 .foregroundStyle(.tertiary)
-            Text(title)
+            title
                 .font(.headline)
-            Text(message)
+            message
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

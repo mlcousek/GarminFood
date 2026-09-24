@@ -565,6 +565,18 @@
         }
       }
     },
+    "Back to today": {
+      "comment": "Day switcher button returning to today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zpět na dnešek"
+          }
+        }
+      }
+    },
     "Barcode digits": {
       "comment": "Text field placeholder: the digits of a barcode.",
       "extractionState": "manual",
@@ -609,6 +621,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Snídaně"
+          }
+        }
+      }
+    },
+    "by Jirka": {
+      "comment": "Credit line under the app's GF monogram (the author's nickname).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "od Jirky"
           }
         }
       }
@@ -1113,6 +1137,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlašovací stránku Garminu se nepodařilo načíst. Zkontroluj připojení a zkus to znovu."
+          }
+        }
+      }
+    },
+    "Couldn't load trends": {
+      "comment": "Trends empty state title when loading failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trendy se nepodařilo načíst"
           }
         }
       }
@@ -1993,6 +2029,18 @@
         }
       }
     },
+    "GarminFood, by Jirka": {
+      "comment": "VoiceOver label of the app wordmark.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GarminFood od Jirky"
+          }
+        }
+      }
+    },
     "GF Teal": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -2269,6 +2317,18 @@
         }
       }
     },
+    "Log a few days of food to see your macro trends here.": {
+      "comment": "Trends empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapisuj jídlo pár dní a uvidíš tu trendy svých makroživin."
+          }
+        }
+      }
+    },
     "Log a meal": {
       "comment": "Today screen section header above the per-meal cards.",
       "extractionState": "manual",
@@ -2313,6 +2373,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapsat jídlo"
+          }
+        }
+      }
+    },
+    "Log it": {
+      "comment": "Primary button confirming a food entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat"
+          }
+        }
+      }
+    },
+    "Logged!": {
+      "comment": "Primary button title right after an entry was logged.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsáno!"
           }
         }
       }
@@ -2605,6 +2689,18 @@
         }
       }
     },
+    "Next day": {
+      "comment": "VoiceOver label of the day switcher's forward arrow.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další den"
+          }
+        }
+      }
+    },
     "No calorie target": {
       "comment": "Calorie ring headline when Garmin has no calorie goal set.",
       "extractionState": "manual",
@@ -2613,6 +2709,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bez cíle kalorií"
+          }
+        }
+      }
+    },
+    "No data yet": {
+      "comment": "Trends empty state title before anything was logged.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádná data"
           }
         }
       }
@@ -2649,6 +2757,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nic nenalezeno"
+          }
+        }
+      }
+    },
+    "No results": {
+      "comment": "Empty state title (design-system preview).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádné výsledky"
           }
         }
       }
@@ -3013,6 +3133,18 @@
         }
       }
     },
+    "Previous day": {
+      "comment": "VoiceOver label of the day switcher's back arrow.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předchozí den"
+          }
+        }
+      }
+    },
     "Profile": {
       "comment": "Tab label and navigation title of the Profile screen.",
       "extractionState": "manual",
@@ -3045,6 +3177,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bílkoviny"
+          }
+        }
+      }
+    },
+    "Pull to refresh to try again.": {
+      "comment": "Trends empty state message after a load failure.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhni dolů pro obnovení a zkus to znovu."
           }
         }
       }
@@ -4017,6 +4161,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dnešní výzvy"
+          }
+        }
+      }
+    },
+    "Try a different search term.": {
+      "comment": "Empty state message (design-system preview).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkus jiný hledaný výraz."
           }
         }
       }

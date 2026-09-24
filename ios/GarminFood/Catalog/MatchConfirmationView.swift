@@ -117,8 +117,8 @@ struct MatchConfirmationView: View {
             noMatchView
         case .error(let message):
             VStack(spacing: Theme.Spacing.lg) {
-                EmptyStateView(systemImage: "wifi.exclamationmark", title: String(localized: "Couldn't check Garmin"), message: message)
-                PrimaryButton(title: String(localized: "Try again")) {
+                EmptyStateView(systemImage: "wifi.exclamationmark", verbatim: String(localized: "Couldn't check Garmin"), message: message)
+                PrimaryButton(title: "Try again") {
                     state = .loading
                     Task { await runMatch() }
                 }
@@ -140,7 +140,7 @@ struct MatchConfirmationView: View {
                     .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.md))
             }
 
-            PrimaryButton(title: String(localized: "Use this match")) {
+            PrimaryButton(title: "Use this match") {
                 if isPicking {
                     foodAwaitingServingPick = candidate
                 } else {
@@ -170,11 +170,11 @@ struct MatchConfirmationView: View {
         VStack(spacing: Theme.Spacing.lg) {
             EmptyStateView(
                 systemImage: "questionmark.circle",
-                title: String(localized: "No match found"),
-                message: String(localized: "Garmin's database doesn't seem to have \"\(offFood.name)\". You can create it there, or log against a different Garmin food instead.")
+                title: "No match found",
+                message: "Garmin's database doesn't seem to have \"\(offFood.name)\". You can create it there, or log against a different Garmin food instead."
             )
 
-            PrimaryButton(title: String(localized: "Create in Garmin")) {
+            PrimaryButton(title: "Create in Garmin") {
                 isPresentingCreateInGarmin = true
             }
 
@@ -272,7 +272,7 @@ struct CreateInGarminConfirmView: View {
         .navigationTitle("Create in Garmin")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
-            PrimaryButton(title: String(localized: "Create in Garmin"), isDisabled: isCreating || serving?.calories == nil) {
+            PrimaryButton(title: "Create in Garmin", isDisabled: isCreating || serving?.calories == nil) {
                 createInGarmin()
             }
             .padding(Theme.Spacing.md)
@@ -286,8 +286,8 @@ struct CreateInGarminConfirmView: View {
             if serving?.calories == nil {
                 EmptyStateView(
                     systemImage: "exclamationmark.triangle",
-                    title: String(localized: "Missing calories"),
-                    message: String(localized: "This item has no calorie value from Open Food Facts, so it can't be created in Garmin.")
+                    title: "Missing calories",
+                    message: "This item has no calorie value from Open Food Facts, so it can't be created in Garmin."
                 )
             }
         }
