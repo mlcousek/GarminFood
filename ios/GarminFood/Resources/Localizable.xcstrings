@@ -655,6 +655,18 @@
         }
       }
     },
+    "Couldn't load Garmin's sign-in page. Check your connection and try again.": {
+      "comment": "Error shown when the Garmin sign-in web page fails to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlašovací stránku Garminu se nepodařilo načíst. Zkontroluj připojení a zkus to znovu."
+          }
+        }
+      }
+    },
     "Couldn't load from Garmin": {
       "comment": "Profile header: the Garmin profile failed to load.",
       "extractionState": "manual",
@@ -2115,6 +2127,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Břidlice"
+          }
+        }
+      }
+    },
+    "Snacks": {
+      "comment": "Meal name: the snacks meal (Garmin's fourth meal slot). Shown as a label on its own.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svačina"
           }
         }
       }

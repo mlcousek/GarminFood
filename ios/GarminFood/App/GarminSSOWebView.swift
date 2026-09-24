@@ -85,7 +85,7 @@ private final class GarminSSOWebViewController: UIViewController, WKNavigationDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Sign in to Garmin"
+        title = String(localized: "Sign in to Garmin")
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .cancel,
             target: self,
@@ -151,7 +151,7 @@ private final class GarminSSOWebViewController: UIViewController, WKNavigationDe
     private func handleNavigationFailure(_ error: Error) {
         activityIndicator.stopAnimating()
         guard !Self.isBenignNavigationInterruption(error) else { return }
-        resolveFailure("Couldn't load Garmin's sign-in page. Check your connection and try again.")
+        resolveFailure(String(localized: "Couldn't load Garmin's sign-in page. Check your connection and try again."))
     }
 
     /// WebKit reports a navigation that was SUPERSEDED through the same
