@@ -127,12 +127,15 @@ final class FeatureHost {
             )
         }
 
-        let weightGoal: WeightGoalSignal?
-        if preferences.weightGoalStartKg != nil || preferences.weightGoalOverrideKg != nil {
-            weightGoal = WeightGoalSignal(startKg: preferences.weightGoalStartKg, targetKg: preferences.weightGoalOverrideKg)
-        } else {
-            weightGoal = nil
-        }
+        // The EFFECTIVE weight goal (ProfileSignals' contract): the local
+        // override, else Garmin's cached nutrition-settings plan -- the same
+        // resolution the Weight screen uses (`WeightLoader.goal`). Sport &
+        // body milestones read it (add-sport-and-body-achievements).
+        let weightGoal = WeightAndWaterOverview.weightGoal(
+            snapshot: health,
+            targetSource: preferences.weightGoalSource,
+            startOverrideKg: preferences.weightGoalStartKg
+        ).map { WeightGoalSignal(startKg: $0.startKg, targetKg: $0.targetKg) }
 
         let input = SignalsInput(
             events: events,

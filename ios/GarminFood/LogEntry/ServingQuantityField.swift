@@ -123,9 +123,11 @@ struct ServingQuantityField: View {
 
     private var accessibilityLabel: String {
         if mode == .amount, let size = input.size {
-            return size.unit == .grams ? "Amount in grams" : "Amount in millilitres"
+            return size.unit == .grams
+                ? String(localized: "Amount in grams")
+                : String(localized: "Amount in millilitres")
         }
-        return "Number of servings"
+        return String(localized: "Number of servings")
     }
 
     /// "= 1.5 × 100g" while typing grams, "= 150 g" while typing servings;

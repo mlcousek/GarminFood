@@ -86,7 +86,7 @@ struct FoodListRow: View {
             }
             Spacer(minLength: Theme.Spacing.sm)
             if let calories = serving?.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
+                MacroBadge(value: calories, unit: " kcal", accessibleUnit: String(localized: "kilocalories"))
             }
         }
         .padding(.vertical, Theme.Spacing.xs)
@@ -97,13 +97,13 @@ struct FoodListRow: View {
     private var badges: some View {
         HStack(spacing: Theme.Spacing.xs) {
             if food.source == .custom {
-                Tag(text: "Custom", color: Theme.warning)
+                Tag(text: String(localized: "Custom", comment: "Tag on a food row: a locally created custom food."), color: Theme.warning)
             }
             if food.garminIsFavorite == true {
-                Tag(text: "Favorite", color: Theme.accent)
+                Tag(text: String(localized: "Favorite", comment: "Tag on a food row: marked favorite in Garmin."), color: Theme.accent)
             }
             if food.garminIsRecent == true {
-                Tag(text: "Recent", color: .secondary)
+                Tag(text: String(localized: "Recent", comment: "Tag on a food row: recently used in Garmin."), color: .secondary)
             }
         }
     }
@@ -161,14 +161,31 @@ private struct Tag: View {
 /// The one CTA style this app uses for its "log it" / "save" / "confirm"
 /// actions -- defined once (config.yaml's design-system principle) rather
 /// than styled ad hoc per screen.
+///
+/// Localization: `init(title:)` takes a `LocalizedStringKey`, so a literal
+/// call site (`PrimaryButton(title: "Log it")`) is a catalog key; text that
+/// is already a `String` (runtime or pre-localized) goes through
+/// `init(verbatim:)` and is shown as is.
 struct PrimaryButton: View {
-    let title: String
-    var isDisabled = false
-    let action: () -> Void
+    private let title: Text
+    private let isDisabled: Bool
+    private let action: () -> Void
+
+    init(title: LocalizedStringKey, isDisabled: Bool = false, action: @escaping () -> Void) {
+        self.title = Text(title)
+        self.isDisabled = isDisabled
+        self.action = action
+    }
+
+    init(verbatim title: String, isDisabled: Bool = false, action: @escaping () -> Void) {
+        self.title = Text(verbatim: title)
+        self.isDisabled = isDisabled
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {
-            Text(title)
+            title
                 .font(.headline)
                 .foregroundStyle(isDisabled ? Color.secondary : Theme.onAccent)
                 .frame(maxWidth: .infinity)
@@ -185,21 +202,37 @@ struct PrimaryButton: View {
 /// A deliberate empty state (config.yaml: "states (loading, empty, error,
 /// success) are designed on purpose, not left as whatever SwiftUI does by
 /// default"), not a blank screen.
+///
+/// Localization: like `PrimaryButton`, literal `title`/`message` are
+/// catalog keys; `init(systemImage:verbatim:message:)` shows `String`s
+/// (runtime or pre-localized) as is.
 struct EmptyStateView: View {
-    let systemImage: String
-    let title: String
-    let message: String
+    private let systemImage: String
+    private let title: Text
+    private let message: Text
 
     @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 36
+
+    init(systemImage: String, title: LocalizedStringKey, message: LocalizedStringKey) {
+        self.systemImage = systemImage
+        self.title = Text(title)
+        self.message = Text(message)
+    }
+
+    init(systemImage: String, verbatim title: String, message: String) {
+        self.systemImage = systemImage
+        self.title = Text(verbatim: title)
+        self.message = Text(verbatim: message)
+    }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.sm) {
             Image(systemName: systemImage)
                 .font(.system(size: iconSize))
                 .foregroundStyle(.tertiary)
-            Text(title)
+            title
                 .font(.headline)
-            Text(message)
+            message
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -301,12 +334,12 @@ extension CalorieBand {
     /// sight-only (config.yaml's accessibility baseline).
     var accessibilityDescription: String {
         switch self {
-        case .low: return "under half of target"
-        case .building: return "building toward target"
-        case .approaching: return "approaching target"
-        case .onTarget: return "on target"
-        case .slightlyOver: return "slightly over target"
-        case .over: return "well over target"
+        case .low: return String(localized: "under half of target")
+        case .building: return String(localized: "building toward target")
+        case .approaching: return String(localized: "approaching target")
+        case .onTarget: return String(localized: "on target")
+        case .slightlyOver: return String(localized: "slightly over target")
+        case .over: return String(localized: "well over target")
         }
     }
 }

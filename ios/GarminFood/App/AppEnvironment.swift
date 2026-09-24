@@ -21,6 +21,10 @@ import Gamification
 @Observable
 final class AppEnvironment {
     let garminClient: GarminClient
+    /// add-standalone-mode D3: every nutrition READ the day log, Trends,
+    /// gamification and copy-meal make. The very same `garminClient` value
+    /// for now; wave 2 swaps in a local reader in standalone mode.
+    let nutritionReader: any NutritionLogReading
     let authState: GarminAuthState
     let outbox: Outbox
     let reconciliation: Reconciliation
@@ -48,7 +52,7 @@ final class AppEnvironment {
     /// Settings (OfflineIndexLoader.swift).
     let offlineIndex: OfflineFoodIndexHolder
     let offlineIndexLoader: OfflineIndexLoader
-    let logEntryCoordinator: LogEntryCoordinator
+    let logEntryCoordinator: ModeRoutingFoodLogging
     /// add-weight-tracking: mirrors `outbox`/`logEntryCoordinator` above,
     /// plus a loader (`weightLoader`) since, unlike the food dashboard,
     /// there's no existing `dayLog`-shaped object weight can piggyback on.
@@ -127,6 +131,8 @@ final class AppEnvironment {
         let preferences = AppPreferences()
 
         self.garminClient = client
+        let reader: any NutritionLogReading = client
+        self.nutritionReader = reader
         self.authState = GarminAuthState()
         self.outbox = services.outbox
         self.reconciliation = services.reconciliation
@@ -156,7 +162,7 @@ final class AppEnvironment {
         self.hydrationLogCoordinator = services.hydrationLogCoordinator
         self.hydrationLoader = HydrationLoader(store: services.hydrationStore, outbox: services.hydrationOutbox, cache: services.garminHealthCache, preferences: preferences)
         self.garminHealthSync = services.garminHealthSync
-        self.trendsLoader = MacroTrendLoader(client: client)
+        self.trendsLoader = MacroTrendLoader(client: reader)
         self.dayLogDigestStore = services.dayLogDigestStore
         self.activityCacheStore = services.activityCacheStore
         self.foodProvenanceStore = services.foodProvenanceStore
@@ -174,11 +180,12 @@ final class AppEnvironment {
         ))
         self.gamificationEngine = GamificationEngine(
             usageHistory: services.usageHistory,
-            garminClient: client,
+            garminClient: reader,
             featureHost: featureHost,
             dayLogDigestStore: services.dayLogDigestStore
         )
         self.dayLog = DayLogLoader(
+            reader: reader,
             client: client,
             outbox: services.outbox,
             foodCache: services.foodCache,
@@ -204,6 +211,7 @@ final class AppEnvironment {
         // any search (add-offline-czech-food-index D3).
         let offlineIndexLoader = self.offlineIndexLoader
         Task { await offlineIndexLoader.loadAndCheckIfDue() }
+        await classifyDataModeIfNeeded()
         await migrateLegacyFastingIfNeeded()
         await authState.refresh()
         await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)
@@ -645,7 +653,7 @@ final class AppEnvironment {
         if let cached = dayLog.cachedFoodLogs[dateString] {
             log = cached
         } else {
-            log = try await garminClient.dailyFoodLog(date: dateString)
+            log = try await nutritionReader.dailyFoodLog(date: dateString)
         }
         return CopyMealPlanner.plan(log: log, mealType: mealType)
     }
@@ -791,6 +799,42 @@ final class AppEnvironment {
             category: "Fasting",
             "migrated \(history.count + (active == nil ? 0 : 1)) legacy session(s) to a daily window \(seed.schedule.startMinute)-\(seed.schedule.endMinute) min, enabled: \(seed.isEnabled)"
         )
+    }
+
+    // MARK: - Data mode (add-standalone-mode D1)
+
+    /// Once per install: an install that predates `dataMode.v1` and has a
+    /// Garmin token or any local history is the owner's phone, so it is
+    /// stored as `.garminConnected` silently (`DataModeMigration`). A fresh
+    /// install stays unset (onboarding, wave 5). A Keychain read that
+    /// throws (e.g. before first unlock) skips classification until the
+    /// next foreground rather than guessing "no token". Nothing reads the
+    /// mode to change behaviour in wave 1.
+    func classifyDataModeIfNeeded() async {
+        guard preferences.dataMode == nil else { return }
+        let hasGarminToken: Bool
+        do {
+            hasGarminToken = try await TokenProvider.shared.loadOAuth1Token() != nil
+        } catch {
+            DiagnosticsLog.log(.warning, category: "DataMode", "Couldn't read the Garmin token, will classify next foreground: \(error)")
+            return
+        }
+        let services = AppServices.shared
+        let outboxEntries = await outbox.allEntries()
+        let usageEvents = await usageHistory.all()
+        let weightEntries = await services.weightStore.all()
+        let hydrationEntries = await services.hydrationStore.all()
+        let hasLocalHistory = !outboxEntries.isEmpty || !usageEvents.isEmpty
+            || !weightEntries.isEmpty || !hydrationEntries.isEmpty
+        // Re-checked after the reads, like the fasting migration below.
+        guard preferences.dataMode == nil else { return }
+        guard let decided = DataModeMigration.decide(
+            storedMode: nil,
+            hasGarminToken: hasGarminToken,
+            hasLocalHistory: hasLocalHistory
+        ) else { return }
+        preferences.dataMode = decided
+        DiagnosticsLog.log(.info, category: "DataMode", "Classified as \(decided.rawValue) (token: \(hasGarminToken), local history: \(hasLocalHistory)).")
     }
 
     // MARK: - Private

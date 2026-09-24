@@ -10,7 +10,10 @@ import FoodLogCore
 final class GamificationFeatureRegistryTests: XCTestCase {
     /// Wave-2 features that have replaced their stub (each change adds its
     /// id here) -- they are tested in their own *Tests.swift files.
-    private let implemented: Set<String> = [SeasonalEventsFeature.id]
+    private let implemented: Set<String> = [
+        SeasonalEventsFeature.id, FoodCollectionsFeature.id, JourneysFeature.id, PersonalRecordsFeature.id,
+        SportAndBodyFeature.id,
+    ]
 
     private func tempDirectory() -> URL {
         FileManager.default.temporaryDirectory.appendingPathComponent("features-\(UUID().uuidString)", isDirectory: true)

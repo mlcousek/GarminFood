@@ -88,7 +88,7 @@ struct TodayView: View {
 
                 if dayLog.isToday, !quickPickItems.isEmpty {
                     VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                        SectionHeader(title: "Log again")
+                        SectionHeader(title: String(localized: "Log again"))
                             .padding(.horizontal, Theme.Spacing.md)
                         QuickPickShelf(items: quickPickItems) { item in
                             logAgain(item)
@@ -99,7 +99,7 @@ struct TodayView: View {
 
                 if dayLog.isToday, !mealPresets.isEmpty {
                     VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                        SectionHeader(title: "Log a meal")
+                        SectionHeader(title: String(localized: "Log a meal"))
                             .padding(.horizontal, Theme.Spacing.md)
                         MealPresetShelf(presets: mealPresets) { preset in
                             mealPresetTarget = preset
@@ -109,7 +109,7 @@ struct TodayView: View {
                 }
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                    SectionHeader(title: "Weight & Water")
+                    SectionHeader(title: String(localized: "Weight & Water"))
                     TodayWeightCard(
                         latest: environment.weightLoader.latest,
                         previous: environment.weightLoader.previous,
@@ -262,7 +262,7 @@ struct TodayView: View {
             _ = try await environment.hydrationLogCoordinator.logHydration(valueInML: amount)
             await environment.hydrationLogged()
         } catch {
-            hydrationActionError = "Couldn't save this entry."
+            hydrationActionError = String(localized: "Couldn't save this entry.")
         }
     }
 }
@@ -331,9 +331,9 @@ struct DaySummaryCard: View {
             }
 
             VStack(spacing: Theme.Spacing.sm) {
-                MacroBar(title: "Carbs", progress: dashboard.totals.carbs, unit: "g", tint: Theme.carbs)
-                MacroBar(title: "Protein", progress: dashboard.totals.protein, unit: "g", tint: Theme.protein)
-                MacroBar(title: "Fat", progress: dashboard.totals.fat, unit: "g", tint: Theme.fat)
+                MacroBar(title: String(localized: "Carbs"), progress: dashboard.totals.carbs, unit: "g", tint: Theme.carbs)
+                MacroBar(title: String(localized: "Protein"), progress: dashboard.totals.protein, unit: "g", tint: Theme.protein)
+                MacroBar(title: String(localized: "Fat"), progress: dashboard.totals.fat, unit: "g", tint: Theme.fat)
             }
         }
         .card()
@@ -357,28 +357,29 @@ struct DaySummaryCard: View {
     }
 
     private func remainingText(_ calories: MacroProgress) -> String {
-        guard let remaining = calories.remaining else { return "No calorie target" }
+        guard let remaining = calories.remaining else { return String(localized: "No calorie target") }
         let value = abs(remaining).wholeNumberText
-        return remaining >= 0 ? "\(value) kcal left" : "\(value) kcal over"
+        return remaining >= 0 ? String(localized: "\(value) kcal left") : String(localized: "\(value) kcal over")
     }
 
     private func caloriesAccessibility(_ calories: MacroProgress) -> String {
         let consumed = calories.consumed.wholeNumberText
-        guard let goal = calories.goal else { return "\(consumed) kilocalories" }
-        let base = "\(consumed) of \(goal.wholeNumberText) kilocalories"
+        guard let goal = calories.goal else { return String(localized: "Kilocalories: \(consumed)") }
+        let base = String(localized: "\(consumed) of \(goal.wholeNumberText) kilocalories")
         guard let band = calories.calorieBand else { return base }
         return "\(base), \(band.accessibilityDescription)"
     }
 
     private func activeText(_ kilocalories: Double) -> String {
         let value = kilocalories.wholeNumberText
-        return isToday ? "Active today: \(value) kcal" : "Active: \(value) kcal"
+        return isToday ? String(localized: "Active today: \(value) kcal") : String(localized: "Active: \(value) kcal")
     }
 
     private func activeAccessibility(_ kilocalories: Double) -> String {
         let value = kilocalories.wholeNumberText
-        let when = isToday ? "today" : "that day"
-        return "Active calories burned \(when): \(value) kilocalories. For information only, not added to the target."
+        return isToday
+            ? String(localized: "Active calories burned today: \(value) kilocalories. For information only, not added to the target.")
+            : String(localized: "Active calories burned that day: \(value) kilocalories. For information only, not added to the target.")
     }
 }
 
@@ -400,9 +401,15 @@ struct ProgressStrip: View {
                     Image(systemName: "flame.fill")
                         .foregroundStyle(streak.length > 0 ? AnyShapeStyle(Theme.flameGradient) : AnyShapeStyle(Color.secondary))
                         .symbolEffect(.pulse, options: .repeating, isActive: shouldPulse)
-                    Text("\(streak.length)")
+                    let parts = streakParts
+                    if !parts.before.isEmpty {
+                        Text(verbatim: parts.before)
+                            .font(.streakLabel)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(verbatim: parts.number)
                         .font(.streakNumber)
-                    Text(streak.length == 1 ? "day" : "days")
+                    Text(verbatim: parts.after)
                         .font(.streakLabel)
                         .foregroundStyle(.secondary)
                 }
@@ -425,8 +432,34 @@ struct ProgressStrip: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Streak \(streak.length) days, level \(level.level). \(streak.isAtRiskToday ? "Log something today to keep the streak." : "")")
+        .accessibilityLabel(accessibilityText)
         .accessibilityHint("Opens Progress")
+    }
+
+    /// "5 days" as ONE plural-aware key (Czech: 1 den / 2 dny / 5 dní),
+    /// split around the number so the number keeps its big streak style.
+    /// Falls back to the whole phrase as the label if a translation ever
+    /// drops the plain number.
+    private var streakParts: (before: String, number: String, after: String) {
+        let number = String(streak.length)
+        let full = String(localized: "\(streak.length) days", comment: "Streak strip on Today: consecutive logged days. Plural. The number is shown larger than the word.")
+        guard let range = full.range(of: number) else { return ("", "", full) }
+        let before = full[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
+        let after = full[range.upperBound...].trimmingCharacters(in: .whitespaces)
+        return (before, number, after)
+    }
+
+    private var accessibilityText: String {
+        // Whole sentences joined by a space: each is its own key, so the
+        // plural only ever depends on one number.
+        var sentences = [
+            String(localized: "Streak: \(streak.length) days in a row.", comment: "VoiceOver, Today's streak strip. Plural."),
+            String(localized: "Level \(level.level).", comment: "VoiceOver, Today's streak strip: current level."),
+        ]
+        if streak.isAtRiskToday {
+            sentences.append(String(localized: "Log something today to keep the streak."))
+        }
+        return sentences.joined(separator: " ")
     }
 
     /// The at-risk pulse is a repeating animation, so it respects Reduce
@@ -456,11 +489,11 @@ struct MealSectionCard: View {
             .accessibilityHint("Opens \(section.mealType.displayName) details")
 
             HStack(spacing: Theme.Spacing.sm) {
-                MacroBar(title: "C", progress: section.totals.carbs, unit: "g", tint: Theme.carbs, compact: true)
+                MacroBar(title: String(localized: "C", comment: "One-letter abbreviation of Carbs on a compact macro bar."), progress: section.totals.carbs, unit: "g", tint: Theme.carbs, compact: true)
                     .accessibilityLabel("Carbs")
-                MacroBar(title: "P", progress: section.totals.protein, unit: "g", tint: Theme.protein, compact: true)
+                MacroBar(title: String(localized: "P", comment: "One-letter abbreviation of Protein on a compact macro bar."), progress: section.totals.protein, unit: "g", tint: Theme.protein, compact: true)
                     .accessibilityLabel("Protein")
-                MacroBar(title: "F", progress: section.totals.fat, unit: "g", tint: Theme.fat, compact: true)
+                MacroBar(title: String(localized: "F", comment: "One-letter abbreviation of Fat on a compact macro bar."), progress: section.totals.fat, unit: "g", tint: Theme.fat, compact: true)
                     .accessibilityLabel("Fat")
             }
 
@@ -562,7 +595,7 @@ struct MealEntryRow: View {
             Spacer(minLength: Theme.Spacing.sm)
             statusIcon
             if let calories = entry.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
+                MacroBadge(value: calories, unit: " kcal", accessibleUnit: String(localized: "kilocalories"))
             }
         }
         .accessibilityElement(children: .combine)
