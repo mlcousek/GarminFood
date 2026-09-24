@@ -86,7 +86,7 @@ struct FoodListRow: View {
             }
             Spacer(minLength: Theme.Spacing.sm)
             if let calories = serving?.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
+                MacroBadge(value: calories, unit: " kcal", accessibleUnit: String(localized: "kilocalories"))
             }
         }
         .padding(.vertical, Theme.Spacing.xs)
@@ -97,13 +97,13 @@ struct FoodListRow: View {
     private var badges: some View {
         HStack(spacing: Theme.Spacing.xs) {
             if food.source == .custom {
-                Tag(text: "Custom", color: Theme.warning)
+                Tag(text: String(localized: "Custom", comment: "Tag on a food row: a locally created custom food."), color: Theme.warning)
             }
             if food.garminIsFavorite == true {
-                Tag(text: "Favorite", color: Theme.accent)
+                Tag(text: String(localized: "Favorite", comment: "Tag on a food row: marked favorite in Garmin."), color: Theme.accent)
             }
             if food.garminIsRecent == true {
-                Tag(text: "Recent", color: .secondary)
+                Tag(text: String(localized: "Recent", comment: "Tag on a food row: recently used in Garmin."), color: .secondary)
             }
         }
     }
@@ -334,12 +334,12 @@ extension CalorieBand {
     /// sight-only (config.yaml's accessibility baseline).
     var accessibilityDescription: String {
         switch self {
-        case .low: return "under half of target"
-        case .building: return "building toward target"
-        case .approaching: return "approaching target"
-        case .onTarget: return "on target"
-        case .slightlyOver: return "slightly over target"
-        case .over: return "well over target"
+        case .low: return String(localized: "under half of target")
+        case .building: return String(localized: "building toward target")
+        case .approaching: return String(localized: "approaching target")
+        case .onTarget: return String(localized: "on target")
+        case .slightlyOver: return String(localized: "slightly over target")
+        case .over: return String(localized: "well over target")
         }
     }
 }

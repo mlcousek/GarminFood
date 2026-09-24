@@ -121,6 +121,60 @@
         }
       }
     },
+    "%lld days": {
+      "comment": "Streak strip on Today: consecutive logged days. Plural. The number is shown larger than the word.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dne"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld den"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dní"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld days left": {
       "comment": "Challenge status: whole days remaining (1 or more). Plural.",
       "extractionState": "manual",
@@ -421,6 +475,30 @@
         }
       }
     },
+    "Add food": {
+      "comment": "Button on a meal card / meal detail adding a food to that meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat jídlo"
+          }
+        }
+      }
+    },
+    "Add food to %@": {
+      "comment": "VoiceOver label of a meal card's Add food button; %@ = meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat jídlo (%@)"
+          }
+        }
+      }
+    },
     "Add ingredient": {
       "comment": "Navigation title when picking an ingredient for a saved meal.",
       "extractionState": "manual",
@@ -429,6 +507,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přidat surovinu"
+          }
+        }
+      }
+    },
+    "Add to favorites": {
+      "comment": "VoiceOver label of the star button on a food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat do oblíbených"
           }
         }
       }
@@ -613,6 +703,18 @@
         }
       }
     },
+    "approaching target": {
+      "comment": "VoiceOver: calorie ring band.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "těsně pod cílem"
+          }
+        }
+      }
+    },
     "Back to today": {
       "comment": "Day switcher button returning to today.",
       "extractionState": "manual",
@@ -669,6 +771,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Snídaně"
+          }
+        }
+      }
+    },
+    "building toward target": {
+      "comment": "VoiceOver: calorie ring band.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "blíží se k cíli"
           }
         }
       }
@@ -997,6 +1111,18 @@
         }
       }
     },
+    "Copy a past meal into %@": {
+      "comment": "VoiceOver label of a meal card's Copy from button; %@ = meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírovat dřívější jídlo (%@)"
+          }
+        }
+      }
+    },
     "Copy all": {
       "comment": "Diagnostics menu item: copy the whole log.",
       "extractionState": "manual",
@@ -1017,6 +1143,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zkopírovat kód"
+          }
+        }
+      }
+    },
+    "Copy from…": {
+      "comment": "Button on a meal card copying a past meal into it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat z…"
           }
         }
       }
@@ -1281,6 +1419,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktuální série"
+          }
+        }
+      }
+    },
+    "Custom": {
+      "comment": "Tag on a food row: a locally created custom food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastní"
           }
         }
       }
@@ -1813,6 +1963,18 @@
         }
       }
     },
+    "Favorite": {
+      "comment": "Tag on a food row: marked favorite in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oblíbené"
+          }
+        }
+      }
+    },
     "Favorites": {
       "comment": "Log Food screen: shelf title for starred foods.",
       "extractionState": "manual",
@@ -2257,6 +2419,18 @@
         }
       }
     },
+    "kcal": {
+      "comment": "Unit under the calorie number in Today's ring.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kcal"
+          }
+        }
+      }
+    },
     "Keep in Garmin": {
       "comment": "Swipe action: drop a queued delete/correction so the entry stays in Garmin.",
       "extractionState": "manual",
@@ -2353,6 +2527,18 @@
         }
       }
     },
+    "Level %lld.": {
+      "comment": "VoiceOver, Today's streak strip: current level.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úroveň %lld."
+          }
+        }
+      }
+    },
     "Light": {
       "comment": "Settings -> Appearance page. Appearance option: light mode.",
       "extractionState": "manual",
@@ -2385,6 +2571,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapisuj jídlo pár dní a uvidíš tu trendy svých makroživin."
+          }
+        }
+      }
+    },
+    "Log a food": {
+      "comment": "Today toolbar button starting a new food log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo"
           }
         }
       }
@@ -2445,6 +2643,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapsat"
+          }
+        }
+      }
+    },
+    "Log something today to keep the streak.": {
+      "comment": "VoiceOver, Today's streak strip, when the streak is at risk.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš dnes něco, ať si udržíš sérii."
           }
         }
       }
@@ -2869,6 +3079,18 @@
         }
       }
     },
+    "Not delivered": {
+      "comment": "VoiceOver label of an entry whose delivery to Garmin failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedoručeno"
+          }
+        }
+      }
+    },
     "Not downloaded": {
       "comment": "Settings: offline database not installed yet.",
       "extractionState": "manual",
@@ -2877,6 +3099,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nestaženo"
+          }
+        }
+      }
+    },
+    "Not loaded from Garmin yet": {
+      "comment": "Today status line before any Garmin data arrived for the day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z Garminu zatím nenačteno"
           }
         }
       }
@@ -3001,6 +3235,18 @@
         }
       }
     },
+    "on target": {
+      "comment": "VoiceOver: calorie ring band.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v cíli"
+          }
+        }
+      }
+    },
     "Online food databases are unavailable right now, so these are foods you already have.": {
       "comment": "Search footnote when offline; only already-known foods are shown.",
       "extractionState": "manual",
@@ -3097,6 +3343,18 @@
         }
       }
     },
+    "Opens %@ details": {
+      "comment": "VoiceOver hint of a meal card; %@ = meal name, e.g. 'Breakfast'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře podrobnosti (%@)"
+          }
+        }
+      }
+    },
     "Opens Garmin's real sign-in page in-app and captures the sign-in automatically once it completes.": {
       "comment": "Sign-in sheet: explanation under the sign-in button.",
       "extractionState": "manual",
@@ -3105,6 +3363,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře skutečnou přihlašovací stránku Garminu přímo v aplikaci a po dokončení přihlášení ho automaticky převezme."
+          }
+        }
+      }
+    },
+    "Opens Progress": {
+      "comment": "VoiceOver hint of Today's streak strip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře Pokrok"
           }
         }
       }
@@ -3345,6 +3615,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odebrat %@ ml vody"
+          }
+        }
+      }
+    },
+    "Remove from favorites": {
+      "comment": "VoiceOver label of the star button on a favorite food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat z oblíbených"
           }
         }
       }
@@ -3721,6 +4003,18 @@
         }
       }
     },
+    "Showing the last loaded numbers": {
+      "comment": "Today status line when the refresh failed and cached numbers are shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazuji naposledy načtená čísla"
+          }
+        }
+      }
+    },
     "Sign in to Garmin": {
       "comment": "Button: open the Garmin sign-in sheet.",
       "extractionState": "manual",
@@ -3841,6 +4135,18 @@
         }
       }
     },
+    "slightly over target": {
+      "comment": "VoiceOver: calorie ring band.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mírně přes cíl"
+          }
+        }
+      }
+    },
     "Snacks": {
       "comment": "Meal name: the snacks meal (Garmin's fourth meal slot). Shown as a label on its own.",
       "extractionState": "manual",
@@ -3913,6 +4219,60 @@
         }
       }
     },
+    "Streak: %lld days in a row.": {
+      "comment": "VoiceOver, Today's streak strip. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série: %lld dny v řadě."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série: %lld dne v řadě."
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série: %lld den v řadě."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série: %lld dní v řadě."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Streak: %lld day in a row."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Streak: %lld days in a row."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Sunset": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -3949,6 +4309,18 @@
         }
       }
     },
+    "Syncing": {
+      "comment": "Status on a meal/entry still being delivered to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizuje se"
+          }
+        }
+      }
+    },
     "System": {
       "comment": "Settings -> Appearance page. Appearance option: follow the system light/dark setting.",
       "extractionState": "manual",
@@ -3957,6 +4329,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Systém"
+          }
+        }
+      }
+    },
+    "Target %@ kcal": {
+      "comment": "Today's calorie target; %@ = whole kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl %@ kcal"
           }
         }
       }
@@ -4321,6 +4705,18 @@
         }
       }
     },
+    "under half of target": {
+      "comment": "VoiceOver: calorie ring band, spoken after '<n> of <goal> kilocalories, '.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "méně než polovina cíle"
+          }
+        }
+      }
+    },
     "Updated": {
       "comment": "Settings: when the offline database was last installed.",
       "extractionState": "manual",
@@ -4341,6 +4737,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktualizuje se"
+          }
+        }
+      }
+    },
+    "Updating…": {
+      "comment": "Today status line while the day is reloading from Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizuji…"
           }
         }
       }
@@ -4533,6 +4941,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cíl váhy"
+          }
+        }
+      }
+    },
+    "well over target": {
+      "comment": "VoiceOver: calorie ring band.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "výrazně přes cíl"
           }
         }
       }

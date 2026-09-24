@@ -399,9 +399,15 @@ struct ProgressStrip: View {
                     Image(systemName: "flame.fill")
                         .foregroundStyle(streak.length > 0 ? AnyShapeStyle(Theme.flameGradient) : AnyShapeStyle(Color.secondary))
                         .symbolEffect(.pulse, options: .repeating, isActive: shouldPulse)
-                    Text("\(streak.length)")
+                    let parts = streakParts
+                    if !parts.before.isEmpty {
+                        Text(verbatim: parts.before)
+                            .font(.streakLabel)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(verbatim: parts.number)
                         .font(.streakNumber)
-                    Text(streak.length == 1 ? "day" : "days")
+                    Text(verbatim: parts.after)
                         .font(.streakLabel)
                         .foregroundStyle(.secondary)
                 }
@@ -424,8 +430,34 @@ struct ProgressStrip: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Streak \(streak.length) days, level \(level.level). \(streak.isAtRiskToday ? "Log something today to keep the streak." : "")")
+        .accessibilityLabel(accessibilityText)
         .accessibilityHint("Opens Progress")
+    }
+
+    /// "5 days" as ONE plural-aware key (Czech: 1 den / 2 dny / 5 dní),
+    /// split around the number so the number keeps its big streak style.
+    /// Falls back to the whole phrase as the label if a translation ever
+    /// drops the plain number.
+    private var streakParts: (before: String, number: String, after: String) {
+        let number = String(streak.length)
+        let full = String(localized: "\(streak.length) days", comment: "Streak strip on Today: consecutive logged days. Plural. The number is shown larger than the word.")
+        guard let range = full.range(of: number) else { return ("", "", full) }
+        let before = full[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
+        let after = full[range.upperBound...].trimmingCharacters(in: .whitespaces)
+        return (before, number, after)
+    }
+
+    private var accessibilityText: String {
+        // Whole sentences joined by a space: each is its own key, so the
+        // plural only ever depends on one number.
+        var sentences = [
+            String(localized: "Streak: \(streak.length) days in a row.", comment: "VoiceOver, Today's streak strip. Plural."),
+            String(localized: "Level \(level.level).", comment: "VoiceOver, Today's streak strip: current level."),
+        ]
+        if streak.isAtRiskToday {
+            sentences.append(String(localized: "Log something today to keep the streak."))
+        }
+        return sentences.joined(separator: " ")
     }
 
     /// The at-risk pulse is a repeating animation, so it respects Reduce
