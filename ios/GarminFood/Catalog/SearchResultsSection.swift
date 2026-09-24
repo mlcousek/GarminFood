@@ -287,7 +287,7 @@ private struct SearchSourceBadges: View {
                 .background(result.origin.badgeColor.opacity(0.15), in: Capsule())
                 .foregroundStyle(result.origin.badgeColor)
             if !result.alsoIn.isEmpty {
-                Text("also in " + result.alsoIn.map { $0.displayName }.joined(separator: ", "))
+                Text("also in \(alsoInList)")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -297,37 +297,45 @@ private struct SearchSourceBadges: View {
     }
 
     private var accessibilityText: String {
-        let source = "From \(result.origin.displayName)"
-        guard !result.alsoIn.isEmpty else { return source }
-        return source + ", also in " + result.alsoIn.map { $0.displayName }.joined(separator: ", ")
+        let source = result.origin.displayName
+        guard !result.alsoIn.isEmpty else { return String(localized: "From \(source)") }
+        return String(localized: "From \(source), also in \(alsoInList)")
+    }
+
+    private var alsoInList: String {
+        result.alsoIn.map { $0.displayName }.joined(separator: ", ")
     }
 }
 
 private extension SearchOrigin {
+    /// A list-item name, only ever used after a colon-style lead-in
+    /// ("Searching: …", "also in: …") so Czech can keep it in the
+    /// nominative instead of declining it per sentence.
     var displayName: String {
         switch self {
-        case .local: return "your foods"
+        case .local: return String(localized: "your foods")
         case .garmin: return "Garmin"
-        case .offlineIndex: return "the offline Czech database"
+        case .offlineIndex: return String(localized: "the offline Czech database")
         case .openFoodFacts: return "Open Food Facts"
         }
     }
 
-    /// `displayName` for the start of a sentence.
-    var sentenceName: String {
+    /// "<source> is unavailable right now…" as one whole-sentence key per
+    /// source (no glued-in name: Czech needs per-source gender/case).
+    var unavailableNote: String {
         switch self {
-        case .local: return "Your foods"
-        case .garmin: return "Garmin"
-        case .offlineIndex: return "The offline Czech database"
-        case .openFoodFacts: return "Open Food Facts"
+        case .local: return String(localized: "Your foods are unavailable right now, so their results are missing.")
+        case .garmin: return String(localized: "Garmin is unavailable right now, so its results are missing.")
+        case .offlineIndex: return String(localized: "The offline Czech database is unavailable right now, so its results are missing.")
+        case .openFoodFacts: return String(localized: "Open Food Facts is unavailable right now, so its results are missing.")
         }
     }
 
     var badgeTitle: String {
         switch self {
-        case .local: return "Yours"
+        case .local: return String(localized: "Yours")
         case .garmin: return "Garmin"
-        case .offlineIndex: return "Czech DB"
+        case .offlineIndex: return String(localized: "Czech DB")
         case .openFoodFacts: return "Open Food Facts"
         }
     }
