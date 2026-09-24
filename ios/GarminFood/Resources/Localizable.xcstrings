@@ -1,6 +1,30 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ fast · %@ eating": {
+      "comment": "Fasting schedule split, e.g. 16 h fast · 8 h eating.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ půst · %@ jídlo"
+          }
+        }
+      }
+    },
+    "%@ in · eating opens at %@": {
+      "comment": "Fasting card detail: elapsed, clock time eating opens.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ půstu · jídlo od %@"
+          }
+        }
+      }
+    },
     "%@ kcal": {
       "comment": "Energy of a serving, e.g. '290 kcal'. %@ = whole-number value.",
       "extractionState": "manual",
@@ -303,6 +327,42 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld h": {
+      "comment": "Fasting duration in whole hours, e.g. 16 h.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld h"
+          }
+        }
+      }
+    },
+    "%lld h %lld m": {
+      "comment": "Fasting duration, e.g. 15 h 30 m.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld h %lld min"
+          }
+        }
+      }
+    },
+    "%lld m": {
+      "comment": "Fasting duration in minutes, e.g. 45 m.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
           }
         }
       }
@@ -1039,6 +1099,18 @@
         }
       }
     },
+    "closes at %@ (%@)": {
+      "comment": "Eating-window card detail: clock time it closes, time remaining.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "končí v %@ (%@)"
+          }
+        }
+      }
+    },
     "Colour-blind safe": {
       "comment": "Settings -> Appearance page. Macro colors option.",
       "extractionState": "manual",
@@ -1639,6 +1711,18 @@
         }
       }
     },
+    "Days kept in a row": {
+      "comment": "Fasting stat tile label (number shown separately).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dní v řadě dodrženo"
+          }
+        }
+      }
+    },
     "Days logged": {
       "comment": "Profile stat tile: number of days with at least one entry.",
       "extractionState": "manual",
@@ -1869,6 +1953,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Duplikovat"
+          }
+        }
+      }
+    },
+    "Eating window": {
+      "comment": "Fasting card title while eating is allowed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okno pro jídlo"
           }
         }
       }
@@ -2731,6 +2827,60 @@
         }
       }
     },
+    "Kept, last %lld days": {
+      "comment": "Fasting stat tile label; %lld = days in the window.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Kept, last %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Kept, last %lld days"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Dodrženo za poslední %lld den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Dodrženo za poslední %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Dodrženo za posledních %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Dodrženo za posledních %lld dní"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "kilocalories": {
       "comment": "Spoken unit after an energy value (VoiceOver), e.g. '290 kilocalories'.",
       "extractionState": "manual",
@@ -2751,6 +2901,60 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kilokalorie: %@"
+          }
+        }
+      }
+    },
+    "Last %lld days": {
+      "comment": "Fasting history section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Last %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Last %lld days"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Poslední %lld den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Poslední %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Posledních %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Posledních %lld dní"
+                }
+              }
+            }
           }
         }
       }
