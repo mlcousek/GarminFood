@@ -6,6 +6,7 @@
 
 import Foundation
 import Observation
+import FoodLogCore
 
 @MainActor
 @Observable
@@ -28,6 +29,8 @@ final class AppPreferences {
         static let waterGoalOverrideML = "goals.water.overrideML"
         static let weightGoalOverrideKg = "goals.weight.overrideKg"
         static let weightGoalStartKg = "goals.weight.startKg"
+        // amount-in-grams: type grams or servings in quantity fields.
+        static let quantityInputMode = "preferences.quantityInputMode"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -47,6 +50,7 @@ final class AppPreferences {
     private var storedWaterGoalOverrideML: Double?
     private var storedWeightGoalOverrideKg: Double?
     private var storedWeightGoalStartKg: Double?
+    private var storedQuantityInputMode: QuantityInputMode
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -67,6 +71,10 @@ final class AppPreferences {
         storedWaterGoalOverrideML = defaults.object(forKey: Key.waterGoalOverrideML) as? Double
         storedWeightGoalOverrideKg = defaults.object(forKey: Key.weightGoalOverrideKg) as? Double
         storedWeightGoalStartKg = defaults.object(forKey: Key.weightGoalStartKg) as? Double
+        // Grams by default: the owner asked to always be able to type 150
+        // for 150 g, never 1,5 (see FoodLogCore/ServingAmount.swift).
+        storedQuantityInputMode = (defaults.string(forKey: Key.quantityInputMode))
+            .flatMap(QuantityInputMode.init(rawValue:)) ?? .amount
     }
 
     var hapticsEnabled: Bool {
@@ -93,6 +101,17 @@ final class AppPreferences {
         set {
             storedGarminMealWindows = newValue
             defaults.set(newValue, forKey: Key.garminMealWindows)
+        }
+    }
+
+    /// How a quantity field is typed for a serving with a known gram/ml
+    /// size: the amount in g/ml, or a multiplier of the serving. The last
+    /// choice made on any quantity field sticks (`ServingQuantityField`).
+    var quantityInputMode: QuantityInputMode {
+        get { storedQuantityInputMode }
+        set {
+            storedQuantityInputMode = newValue
+            defaults.set(newValue.rawValue, forKey: Key.quantityInputMode)
         }
     }
 
