@@ -82,8 +82,8 @@ struct BarcodeScanScreen: View {
                 } else {
                     EmptyStateView(
                         systemImage: "barcode.viewfinder",
-                        title: "Scanner unavailable",
-                        message: "Barcode scanning isn't supported on this device or OS version. Search by name instead, or note that Garmin's barcode coverage for Czech products is limited anyway."
+                        title: String(localized: "Scanner unavailable"),
+                        message: String(localized: "Barcode scanning isn't supported on this device or OS version. Search by name instead, or note that Garmin's barcode coverage for Czech products is limited anyway.")
                     )
                 }
             }
@@ -134,7 +134,7 @@ struct BarcodeScanScreen: View {
                 // distinct "cannot be resolved" scenario) -- surface it and
                 // let the user retry the scan, rather than silently
                 // treating a transient failure as "offer a custom food".
-                resolutionErrorMessage = "Couldn't look that up right now. Try again."
+                resolutionErrorMessage = String(localized: "Couldn't look that up right now. Try again.")
             }
         }
     }

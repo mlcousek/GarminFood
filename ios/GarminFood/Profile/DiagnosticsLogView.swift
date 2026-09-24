@@ -21,8 +21,8 @@ struct DiagnosticsLogView: View {
             if entries.isEmpty {
                 EmptyStateView(
                     systemImage: "checkmark.circle",
-                    title: "Nothing logged",
-                    message: "Errors and warnings from Garmin sync and logging actions will show up here."
+                    title: String(localized: "Nothing logged"),
+                    message: String(localized: "Errors and warnings from Garmin sync and logging actions will show up here.")
                 )
                 .listRowSeparator(.hidden)
             } else {
@@ -54,7 +54,7 @@ struct DiagnosticsLogView: View {
                     Button {
                         copyAll()
                     } label: {
-                        Label(didCopy ? "Copied!" : "Copy all", systemImage: "doc.on.doc")
+                        Label(didCopy ? String(localized: "Copied!") : String(localized: "Copy all"), systemImage: "doc.on.doc")
                     }
                     Button(role: .destructive) {
                         isConfirmingClear = true

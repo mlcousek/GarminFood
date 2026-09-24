@@ -38,31 +38,37 @@ import SwiftUI
 
 struct GarminFoodStreakEntry: TimelineEntry {
     let date: Date
+    /// This widget's own Edit Widget theme (WidgetTheme.swift, D13).
+    var theme: WidgetThemeOption = .standard
 }
 
-struct GarminFoodStreakProvider: TimelineProvider {
+struct GarminFoodStreakProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> GarminFoodStreakEntry {
         GarminFoodStreakEntry(date: .now)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (GarminFoodStreakEntry) -> Void) {
-        completion(GarminFoodStreakEntry(date: .now))
+    func snapshot(for configuration: WidgetThemeIntent, in context: Context) async -> GarminFoodStreakEntry {
+        GarminFoodStreakEntry(date: .now, theme: configuration.theme)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<GarminFoodStreakEntry>) -> Void) {
+    func timeline(for configuration: WidgetThemeIntent, in context: Context) async -> Timeline<GarminFoodStreakEntry> {
         // `.never`: same rationale as GarminFoodHomeWidget.swift -- this
         // process has nothing it could ever fetch, so there is nothing to
         // refresh towards. Requesting a future reload would only spend
         // WidgetKit's limited per-widget daily reload budget for a widget
         // that could never have anything new to show anyway.
-        completion(Timeline(entries: [GarminFoodStreakEntry(date: .now)], policy: .never))
+        Timeline(entries: [GarminFoodStreakEntry(date: .now, theme: configuration.theme)], policy: .never)
     }
 }
 
 struct GarminFoodStreakWidgetView: View {
+    let entry: GarminFoodStreakEntry
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
+        // The widget's own theme, not `Theme.*` (WidgetTheme.swift).
+        let colors = WidgetThemeColors(option: entry.theme, colorScheme: colorScheme)
         Group {
             switch family {
             case .systemMedium:
@@ -90,14 +96,13 @@ struct GarminFoodStreakWidgetView: View {
                 }
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(colors.label)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
-            // Theme lives in Shared/, compiled into this extension too, so
-            // the widget and the app can't drift apart. `flameGradient` is
-            // the same ember -> coral ramp the app's own streak UI uses, so
-            // this widget reads as "the streak thing" at a glance.
-            Theme.flameGradient
+            // The same ember -> flame tip ramp as the app's own
+            // `Theme.flameGradient`, in this widget's theme, so it reads as
+            // "the streak thing" at a glance.
+            colors.flameBackground
         }
         .widgetURL(GarminFoodDeepLink.logFoodURL)
         .accessibilityElement(children: .combine)
@@ -110,11 +115,15 @@ struct GarminFoodStreakWidget: Widget {
     static let kind = "com.mlcousek.garminfood.widget.streak"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: Self.kind, provider: GarminFoodStreakProvider()) { _ in
-            GarminFoodStreakWidgetView()
+        // Same `kind` as the former StaticConfiguration (D13).
+        AppIntentConfiguration(kind: Self.kind, intent: WidgetThemeIntent.self, provider: GarminFoodStreakProvider()) { entry in
+            GarminFoodStreakWidgetView(entry: entry)
         }
         .configurationDisplayName("Keep Your Streak")
-        .description("A flame-themed shortcut straight into GarminFood's food catalog, ready to log. Shows no live streak count -- there is no way for a widget to read that on this account (design.md D2).")
+        // User-facing gallery text (add-localization 5.2). Shows no live
+        // streak count -- there is no way for a widget to read that on this
+        // account (design.md D2).
+        .description("One tap opens GarminFood's food catalog so you can keep your streak going.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

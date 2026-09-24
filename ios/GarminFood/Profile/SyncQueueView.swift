@@ -46,7 +46,7 @@ struct SyncQueueView: View {
                                 do {
                                     try await environment.retryWeightQueued(id: entry.id)
                                 } catch {
-                                    actionError = "Couldn't retry this entry: \(error.localizedDescription)"
+                                    actionError = String(localized: "Couldn't retry this entry: \(error.localizedDescription)")
                                 }
                             }
                         } onCancelDelete: {
@@ -54,9 +54,9 @@ struct SyncQueueView: View {
                                 do {
                                     try await environment.cancelWeightDelete(entry)
                                 } catch OutboxEditError.entryInFlight {
-                                    actionError = "This delete is being sent to Garmin right now, so it can't be cancelled."
+                                    actionError = String(localized: "This delete is being sent to Garmin right now, so it can't be cancelled.")
                                 } catch {
-                                    actionError = "Couldn't cancel this delete: \(error.localizedDescription)"
+                                    actionError = String(localized: "Couldn't cancel this delete: \(error.localizedDescription)")
                                 }
                             }
                         }
@@ -67,7 +67,7 @@ struct SyncQueueView: View {
                                 do {
                                     try await environment.retryHydrationQueued(id: entry.id)
                                 } catch {
-                                    actionError = "Couldn't retry this entry: \(error.localizedDescription)"
+                                    actionError = String(localized: "Couldn't retry this entry: \(error.localizedDescription)")
                                 }
                             }
                         } onDiscard: {
@@ -75,9 +75,9 @@ struct SyncQueueView: View {
                                 do {
                                     try await environment.discardHydrationQueued(entry)
                                 } catch OutboxEditError.alreadyDelivered {
-                                    actionError = "This entry reached Garmin in the meantime, so there's nothing to discard."
+                                    actionError = String(localized: "This entry reached Garmin in the meantime, so there's nothing to discard.")
                                 } catch {
-                                    actionError = "Couldn't discard this entry: \(error.localizedDescription)"
+                                    actionError = String(localized: "Couldn't discard this entry: \(error.localizedDescription)")
                                 }
                             }
                         }
@@ -89,8 +89,8 @@ struct SyncQueueView: View {
                 Section {
                     EmptyStateView(
                         systemImage: "checkmark.circle",
-                        title: "All synced",
-                        message: "Every logged entry has reached Garmin."
+                        title: String(localized: "All synced"),
+                        message: String(localized: "Every logged entry has reached Garmin.")
                     )
                 }
             } else if !entries.isEmpty {
@@ -101,7 +101,7 @@ struct SyncQueueView: View {
                                 do {
                                     try await environment.retryQueued(id: entry.id)
                                 } catch {
-                                    actionError = "Couldn't retry this entry: \(error.localizedDescription)"
+                                    actionError = String(localized: "Couldn't retry this entry: \(error.localizedDescription)")
                                 }
                             }
                         } onDelete: {
@@ -147,14 +147,14 @@ struct SyncQueueView: View {
                     do {
                         try await environment.deleteQueued(entry)
                     } catch {
-                        actionError = "Couldn't delete this entry: \(error.localizedDescription)"
+                        actionError = String(localized: "Couldn't delete this entry: \(error.localizedDescription)")
                     }
                 }
             }
         } message: { entry in
             Text(entry.replaces != nil
-                 ? "This cancels the edit. The original entry stays in Garmin Connect at its old amount."
-                 : "It hasn't reached Garmin yet, so nothing is removed there.")
+                 ? String(localized: "This cancels the edit. The original entry stays in Garmin Connect at its old amount.")
+                 : String(localized: "It hasn't reached Garmin yet, so nothing is removed there."))
         }
         .alert(
             "Couldn't complete that action",
@@ -232,7 +232,9 @@ private struct QueueEntryRow: View {
                 // add-log-entry-editing D1: the corrected entry is in Garmin,
                 // the old one not yet removed -- a temporary duplicate there.
                 Image(systemName: entry.isParkedReplace ? "exclamationmark.triangle.fill" : "arrow.triangle.2.circlepath")
-                Text(entry.isParkedReplace ? "Edited, but the old entry is still in Garmin" : "Edited, removing the old entry…")
+                Text(entry.isParkedReplace
+                     ? String(localized: "Edited, but the old entry is still in Garmin")
+                     : String(localized: "Edited, removing the old entry…"))
             }
         }
         .font(.caption)
@@ -285,8 +287,8 @@ private struct WeightQueueRow: View {
 
     private var title: String {
         switch entry.kind {
-        case .add: return "Weigh-in \(entry.weightKg.formattedKg) kg"
-        case .delete: return "Delete weigh-in \(entry.weightKg.formattedKg) kg"
+        case .add: return String(localized: "Weigh-in \(entry.weightKg.formattedKg) kg")
+        case .delete: return String(localized: "Delete weigh-in \(entry.weightKg.formattedKg) kg")
         }
     }
 }
@@ -325,7 +327,7 @@ private struct HydrationQueueRow: View {
                 // lists it again); a dropped drink is never sent.
                 Button(role: .destructive, action: onDiscard) {
                     Label(
-                        entry.isCorrection ? "Keep in Garmin" : "Discard",
+                        entry.isCorrection ? String(localized: "Keep in Garmin") : String(localized: "Discard"),
                         systemImage: entry.isCorrection ? "arrow.uturn.backward" : "trash"
                     )
                 }
@@ -340,8 +342,8 @@ private struct HydrationQueueRow: View {
 
     private var title: String {
         entry.isCorrection
-            ? "Remove \(abs(entry.valueInML).formattedML) ml of water"
-            : "Water \(entry.valueInML.formattedML) ml"
+            ? String(localized: "Remove \(abs(entry.valueInML).formattedML) ml of water")
+            : String(localized: "Water \(entry.valueInML.formattedML) ml")
     }
 }
 

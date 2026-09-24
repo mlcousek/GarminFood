@@ -25,12 +25,12 @@ struct ProfileView: View {
                 ProfileHeader(profile: profile.profile, failed: profile.profileFailed, isLoading: profile.isLoading)
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Theme.Spacing.sm) {
-                    StatTile(value: "\(engine.levelProgress.level)", label: "Level", systemImage: "sparkles")
-                    StatTile(value: "\(engine.streakStatus.length)", label: "Current streak", systemImage: "flame.fill", tint: Theme.ember)
-                    StatTile(value: "\(engine.streakSummary.longestLength)", label: "Longest streak", systemImage: "trophy.fill")
-                    StatTile(value: "\(engine.totalLogCount)", label: "Foods logged", systemImage: "fork.knife")
-                    StatTile(value: "\(engine.streakSummary.loggedDayCount)", label: "Days logged", systemImage: "calendar")
-                    StatTile(value: "\(engine.completedChallenges.count)", label: "Challenges done", systemImage: "checkmark.seal.fill")
+                    StatTile(value: "\(engine.levelProgress.level)", label: String(localized: "Level"), systemImage: "sparkles")
+                    StatTile(value: "\(engine.streakStatus.length)", label: String(localized: "Current streak"), systemImage: "flame.fill", tint: Theme.ember)
+                    StatTile(value: "\(engine.streakSummary.longestLength)", label: String(localized: "Longest streak"), systemImage: "trophy.fill")
+                    StatTile(value: "\(engine.totalLogCount)", label: String(localized: "Foods logged"), systemImage: "fork.knife")
+                    StatTile(value: "\(engine.streakSummary.loggedDayCount)", label: String(localized: "Days logged"), systemImage: "calendar")
+                    StatTile(value: "\(engine.completedChallenges.count)", label: String(localized: "Challenges done"), systemImage: "checkmark.seal.fill")
                 }
 
                 NavigationLink {

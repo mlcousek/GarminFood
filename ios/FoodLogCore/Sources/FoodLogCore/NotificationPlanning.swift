@@ -140,8 +140,8 @@ public enum NotificationPlanning {
         if preferences.streakReminder.isEnabled, isStreakAtRiskToday {
             result.append(PlannedNotification(
                 id: "streakReminder",
-                title: "Keep your streak alive",
-                body: "You haven't logged anything today yet -- don't lose your streak.",
+                title: String(localized: "Keep your streak alive", bundle: .module, comment: "Streak-at-risk reminder notification title."),
+                body: String(localized: "You haven't logged anything today yet -- don't lose your streak.", bundle: .module, comment: "Streak-at-risk reminder notification body."),
                 hour: preferences.streakReminder.hour,
                 minute: preferences.streakReminder.minute
             ))
@@ -149,8 +149,8 @@ public enum NotificationPlanning {
         if preferences.dailyChallengeReminder.isEnabled {
             result.append(PlannedNotification(
                 id: "dailyChallengeReminder",
-                title: "Today's challenges are ready",
-                body: "Check today's challenges in GarminFood.",
+                title: String(localized: "Today's challenges are ready", bundle: .module, comment: "Daily-challenge reminder notification title."),
+                body: String(localized: "Check today's challenges in GarminFood.", bundle: .module, comment: "Daily-challenge reminder notification body."),
                 hour: preferences.dailyChallengeReminder.hour,
                 minute: preferences.dailyChallengeReminder.minute
             ))
@@ -162,8 +162,8 @@ public enum NotificationPlanning {
     private static func mealReminder(_ mealType: MealType, _ setting: ReminderSetting) -> PlannedNotification {
         PlannedNotification(
             id: "mealReminder.\(mealType.rawValue.lowercased())",
-            title: "Log your \(mealType.displayNameLowercased)",
-            body: "Don't forget to log \(mealType.displayNameLowercased) today.",
+            title: mealType.reminderTitle,
+            body: mealType.reminderBody,
             hour: setting.hour,
             minute: setting.minute
         )
@@ -213,8 +213,8 @@ public enum NotificationPlanning {
             let fire = FastingSchedule.normalized(schedule.endMinute - endsSoon.minutesBefore)
             result.append(PlannedFastingReminder(
                 id: "ends.\(fire).\(schedule.endMinute)",
-                title: "Fasting window ending soon",
-                body: "Your fast ends at \(clockText(schedule.endMinute)) -- eating opens in \(endsSoon.minutesBefore) minutes.",
+                title: String(localized: "Fasting window ending soon", bundle: .module, comment: "Fasting reminder notification title, shortly before the daily fast ends."),
+                body: String(localized: "Your fast ends at \(clockText(schedule.endMinute)) -- eating opens in \(endsSoon.minutesBefore) minutes.", bundle: .module, comment: "Fasting reminder notification body. %@ is a 24-hour clock time (HH:mm), %lld the minutes until eating opens (plural in Localizable.stringsdict)."),
                 hour: fire / 60,
                 minute: fire % 60
             ))
@@ -223,8 +223,8 @@ public enum NotificationPlanning {
             let fire = FastingSchedule.normalized(schedule.startMinute - startsSoon.minutesBefore)
             result.append(PlannedFastingReminder(
                 id: "starts.\(fire).\(schedule.startMinute)",
-                title: "Fasting starts in \(startsSoon.minutesBefore) min",
-                body: "Your fasting window starts at \(clockText(schedule.startMinute)).",
+                title: String(localized: "Fasting starts in \(startsSoon.minutesBefore) min", bundle: .module, comment: "Fasting reminder notification title, shortly before the daily fast starts. %lld is minutes; 'min' is a unit symbol, so no plural."),
+                body: String(localized: "Your fasting window starts at \(clockText(schedule.startMinute)).", bundle: .module, comment: "Fasting reminder notification body. %@ is a 24-hour clock time (HH:mm)."),
                 hour: fire / 60,
                 minute: fire % 60
             ))
@@ -241,17 +241,26 @@ public enum NotificationPlanning {
 }
 
 extension MealType {
-    /// Used only for notification copy -- the app layer's own
-    /// `MealType.displayName` (GarminFood/App/LogContext.swift) is
-    /// capitalized for UI labels, which reads oddly mid-sentence ("Log your
-    /// Breakfast today"). FoodLogCore has no UI-facing display name of its
-    /// own otherwise, so this stays a small, private-to-this-purpose helper.
-    fileprivate var displayNameLowercased: String {
+    /// Meal reminder copy, one full sentence per meal type (add-localization
+    /// design.md D5): Czech needs the meal name in the accusative
+    /// ("Zapiš si snídani"), so a meal name can't be inserted into a shared
+    /// "Log your %@" template. Private to notification copy -- the app
+    /// layer's own `MealType.displayName` is a capitalized UI label.
+    fileprivate var reminderTitle: String {
         switch self {
-        case .breakfast: return "breakfast"
-        case .lunch: return "lunch"
-        case .dinner: return "dinner"
-        case .snacks: return "snacks"
+        case .breakfast: return String(localized: "Log your breakfast", bundle: .module, comment: "Meal reminder notification title.")
+        case .lunch: return String(localized: "Log your lunch", bundle: .module, comment: "Meal reminder notification title.")
+        case .dinner: return String(localized: "Log your dinner", bundle: .module, comment: "Meal reminder notification title.")
+        case .snacks: return String(localized: "Log your snacks", bundle: .module, comment: "Meal reminder notification title (Garmin's Snacks meal slot).")
+        }
+    }
+
+    fileprivate var reminderBody: String {
+        switch self {
+        case .breakfast: return String(localized: "Don't forget to log breakfast today.", bundle: .module, comment: "Meal reminder notification body.")
+        case .lunch: return String(localized: "Don't forget to log lunch today.", bundle: .module, comment: "Meal reminder notification body.")
+        case .dinner: return String(localized: "Don't forget to log dinner today.", bundle: .module, comment: "Meal reminder notification body.")
+        case .snacks: return String(localized: "Don't forget to log snacks today.", bundle: .module, comment: "Meal reminder notification body (Garmin's Snacks meal slot).")
         }
     }
 }

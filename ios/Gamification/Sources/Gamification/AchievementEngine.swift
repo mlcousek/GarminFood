@@ -25,9 +25,13 @@ public enum AchievementEngine {
             }
         }
 
-        guard !nonMeta.isEmpty else { return newlyUnlocked }
-        let unlockedAfterFirstPass = alreadyUnlocked.union(newlyUnlocked.map(\.id)).intersection(nonMeta.map(\.id))
-        let fractionUnlocked = Double(unlockedAfterFirstPass.count) / Double(nonMeta.count)
+        // add-gamification-signals D9: the denominator is the CORE catalog
+        // only -- feature badges (`.featureEvaluated`) never count, even
+        // when `catalog` is `BadgeRegistry.all`.
+        let core = nonMeta.filter(\.isCoreCatalogBadge)
+        guard !core.isEmpty else { return newlyUnlocked }
+        let unlockedAfterFirstPass = alreadyUnlocked.union(newlyUnlocked.map(\.id)).intersection(core.map(\.id))
+        let fractionUnlocked = Double(unlockedAfterFirstPass.count) / Double(core.count)
         for definition in metaDefinitions where !alreadyUnlocked.contains(definition.id) {
             guard case .unlockedFractionOfOthers(let fraction) = definition.condition else { continue }
             if fractionUnlocked >= fraction {
@@ -72,6 +76,9 @@ public enum AchievementEngine {
             return context.yearsSinceFirstLog >= years
         case .unlockedFractionOfOthers:
             // Only ever evaluated by the meta pass above, never here.
+            return false
+        case .featureEvaluated:
+            // Unlocked by its GamificationFeature via the app's FeatureHost.
             return false
         }
     }

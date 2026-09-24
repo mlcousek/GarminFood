@@ -1,6 +1,114 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ +%lld XP": {
+      "comment": "Celebration card: a gamification feature's message (already localized) followed by the XP it awarded.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ +%lld XP"
+          }
+        }
+      }
+    },
+    "%@ has no serving Garmin can log.": {
+      "comment": "Siri reply. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ nemá žádnou porci, kterou by šlo zapsat do Garminu."
+          }
+        }
+      }
+    },
+    "%@ kcal": {
+      "comment": "Energy of a serving, e.g. '290 kcal'. %@ = whole-number value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kcal"
+          }
+        }
+      }
+    },
+    "%@ kg": {
+      "comment": "A weight in kilograms; %@ is the formatted number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kg"
+          }
+        }
+      }
+    },
+    "%@ ml": {
+      "comment": "An amount of water in millilitres; %@ is the formatted number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ml"
+          }
+        }
+      }
+    },
+    "%@, %@ times %@": {
+      "comment": "VoiceOver label of a quick-pick card. %1$@ = food name, %2$@ = usual quantity (e.g. 2), %3$@ = serving (e.g. 100 g).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@krát %3$@"
+          }
+        }
+      }
+    },
+    "%@, %@ times %@, %@ kilocalories": {
+      "comment": "VoiceOver label of a quick-pick card. %1$@ = food name, %2$@ = quantity, %3$@ = serving, %4$@ = total energy (whole number).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@krát %3$@, %4$@ kilokalorií"
+          }
+        }
+      }
+    },
+    "%@, favorite": {
+      "comment": "VoiceOver label of a favorite food card. %@ = food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, oblíbené"
+          }
+        }
+      }
+    },
+    "%@, favorite, %@ kilocalories": {
+      "comment": "VoiceOver label of a favorite food card. 1st %@ = food name, 2nd %@ = energy per serving (whole number).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, oblíbené, %2$@ kilokalorií"
+          }
+        }
+      }
+    },
     "%lld days left": {
       "comment": "Challenge status: whole days remaining (1 or more). Plural.",
       "extractionState": "manual",
@@ -55,6 +163,204 @@
         }
       }
     },
+    "%lld entries haven't reached Garmin yet": {
+      "comment": "Sync banner: number of logged entries not yet delivered to Garmin. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamy se ještě nedostaly do Garminu"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamu se ještě nedostalo do Garminu"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznam se ještě nedostal do Garminu"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamů se ještě nedostalo do Garminu"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entry hasn't reached Garmin yet"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entries haven't reached Garmin yet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld minutes before": {
+      "comment": "Fasting reminder stepper: minutes before the fasting boundary. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minutu předem"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minuty předem"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minuty předem"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minut předem"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minute before"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minutes before"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld products": {
+      "comment": "Settings: number of products in the offline database. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produkt"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produkty"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produktu"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produktů"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld product"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld products"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "A daily nudge to check today's challenges.": {
+      "comment": "Reminders screen footer under the challenges reminder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každodenní připomenutí, ať se podíváš na dnešní výzvy."
+          }
+        }
+      }
+    },
+    "A secret achievement. Keep logging to reveal it.": {
+      "comment": "Detail sheet text of a locked secret achievement.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajný odznak. Zapisuj dál a odhalíš ho."
+          }
+        }
+      }
+    },
+    "About": {
+      "comment": "Settings section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O aplikaci"
+          }
+        }
+      }
+    },
     "Accent color": {
       "comment": "Settings -> Appearance page. Color picker label and section header.",
       "extractionState": "manual",
@@ -63,6 +369,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Barva zvýraznění"
+          }
+        }
+      }
+    },
+    "Add ingredient": {
+      "comment": "Navigation title when picking an ingredient for a saved meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat surovinu"
+          }
+        }
+      }
+    },
+    "Adds this to the meal": {
+      "comment": "VoiceOver hint on a food card while picking an ingredient for a saved meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidá tuto položku do jídla"
           }
         }
       }
@@ -91,6 +421,42 @@
         }
       }
     },
+    "All synced": {
+      "comment": "Sync queue empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vše synchronizováno"
+          }
+        }
+      }
+    },
+    "Allow on cellular": {
+      "comment": "Settings toggle: allow the offline database download on cellular.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povolit přes mobilní data"
+          }
+        }
+      }
+    },
+    "Already up to date.": {
+      "comment": "Settings footer after a manual offline database check found nothing new.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Už je aktuální."
+          }
+        }
+      }
+    },
     "App icon": {
       "comment": "Settings -> Appearance page. Section header above the icon grid.",
       "extractionState": "manual",
@@ -115,6 +481,66 @@
         }
       }
     },
+    "Apply": {
+      "comment": "Import theme preview: applies the previewed theme.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít"
+          }
+        }
+      }
+    },
+    "Applying replaces your theme, accent color, style and macro colors.": {
+      "comment": "Import theme preview: footer under the previewed theme.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použitím nahradíš svůj motiv, barvu zvýraznění, styl i barvy maker."
+          }
+        }
+      }
+    },
+    "Barcode digits": {
+      "comment": "Text field placeholder: the digits of a barcode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Číslice čárového kódu"
+          }
+        }
+      }
+    },
+    "Barcode Scanner": {
+      "comment": "App Intents value (Shared/OpenBarcodeScannerIntent.swift): the one screen the scan intent can open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skener čárových kódů"
+          }
+        }
+      }
+    },
+    "Barcode scanning isn't supported on this device or OS version. Search by name instead, or note that Garmin's barcode coverage for Czech products is limited anyway.": {
+      "comment": "Empty-state message when barcode scanning is unsupported.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skenování čárových kódů není na tomto zařízení nebo verzi systému podporováno. Hledej raději podle názvu — Garmin má čárové kódy českých výrobků stejně jen v omezené míře."
+          }
+        }
+      }
+    },
     "Berry": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -123,6 +549,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bobule"
+          }
+        }
+      }
+    },
+    "Breakfast": {
+      "comment": "Meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snídaně"
+          }
+        }
+      }
+    },
+    "Calorie goal": {
+      "comment": "Settings: nutrition plan row, daily calorie goal from Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl kalorií"
+          }
+        }
+      }
+    },
+    "Calories": {
+      "comment": "Form label: energy of the food, in kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie"
           }
         }
       }
@@ -139,6 +601,18 @@
         }
       }
     },
+    "Carbs": {
+      "comment": "Macro name: carbohydrates.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sacharidy"
+          }
+        }
+      }
+    },
     "Card style": {
       "comment": "Settings -> Appearance page. Picker label.",
       "extractionState": "manual",
@@ -147,6 +621,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Styl karet"
+          }
+        }
+      }
+    },
+    "Celebration animations": {
+      "comment": "Settings toggle: level-up and streak celebrations.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oslavné animace"
+          }
+        }
+      }
+    },
+    "Challenges done": {
+      "comment": "Profile stat tile: completed challenges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněné výzvy"
+          }
+        }
+      }
+    },
+    "Checking Garmin's database for a match…": {
+      "comment": "Loading text while searching Garmin for a matching food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledám shodu v databázi Garminu…"
+          }
+        }
+      }
+    },
+    "Checking…": {
+      "comment": "Button label while the offline database update runs.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontroluje se…"
           }
         }
       }
@@ -171,6 +693,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klasický korál"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "comment": "Destructive confirmation button: clear the diagnostics log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vymazat"
+          }
+        }
+      }
+    },
+    "Clear log": {
+      "comment": "Diagnostics menu item: clear the log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vymazat záznam"
+          }
+        }
+      }
+    },
+    "Clear the diagnostics log?": {
+      "comment": "Confirmation dialog title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vymazat diagnostický záznam?"
+          }
+        }
+      }
+    },
+    "Close": {
+      "comment": "Generic toolbar button closing a sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zavřít"
           }
         }
       }
@@ -235,6 +805,90 @@
         }
       }
     },
+    "Complete sign-in with pasted ticket": {
+      "comment": "Sign-in sheet: button submitting a manually pasted ticket.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dokončit přihlášení vloženým ticketem"
+          }
+        }
+      }
+    },
+    "Connect Garmin": {
+      "comment": "Sign-in sheet: navigation title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojit Garmin"
+          }
+        }
+      }
+    },
+    "Connected": {
+      "comment": "Settings: Garmin connection status.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojeno"
+          }
+        }
+      }
+    },
+    "Copied": {
+      "comment": "Share theme sheet: confirmation after copying the code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírováno"
+          }
+        }
+      }
+    },
+    "Copied!": {
+      "comment": "Diagnostics menu item right after copying the log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírováno!"
+          }
+        }
+      }
+    },
+    "Copy all": {
+      "comment": "Diagnostics menu item: copy the whole log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat vše"
+          }
+        }
+      }
+    },
+    "Copy code": {
+      "comment": "Share theme sheet: copies the theme code to the clipboard.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírovat kód"
+          }
+        }
+      }
+    },
     "Coral": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -259,6 +913,30 @@
         }
       }
     },
+    "Couldn't build Garmin's exchange URL. That's an app bug -- retrying won't help.": {
+      "comment": "Sign-in error: internal bug building the URL.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se sestavit URL pro výměnu tokenu u Garminu. Je to chyba aplikace – opakování nepomůže."
+          }
+        }
+      }
+    },
+    "Couldn't cancel this delete: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazání se nepodařilo zrušit: %@"
+          }
+        }
+      }
+    },
     "Couldn't change the app icon": {
       "comment": "Alert title when iOS refuses an icon change.",
       "extractionState": "manual",
@@ -267,6 +945,210 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ikonu aplikace se nepodařilo změnit"
+          }
+        }
+      }
+    },
+    "Couldn't check Garmin": {
+      "comment": "Error title: the Garmin match lookup failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin se nepodařilo ověřit"
+          }
+        }
+      }
+    },
+    "Couldn't complete that action": {
+      "comment": "Alert title for a failed sync-queue action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akci se nepodařilo dokončit"
+          }
+        }
+      }
+    },
+    "Couldn't create this food in Garmin. Try again, or log against a different Garmin food instead.": {
+      "comment": "Error: creating the custom food in Garmin failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo se v Garminu nepodařilo vytvořit. Zkus to znovu, nebo ho zapiš jako jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "Couldn't delete this entry: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo smazat: %@"
+          }
+        }
+      }
+    },
+    "Couldn't discard this entry: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo zahodit: %@"
+          }
+        }
+      }
+    },
+    "Couldn't fetch Garmin's public consumer key (%@). Check your connection and try again.": {
+      "comment": "Sign-in error. %@ = 'HTTP 503' or 'no HTTP response'. 'Consumer key' is an OAuth term.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se stáhnout veřejný consumer key Garminu (%@). Zkontroluj připojení a zkus to znovu."
+          }
+        }
+      }
+    },
+    "Couldn't find \"%@\" in your foods or Garmin's food database.": {
+      "comment": "Siri reply: no match. %@ is the spoken food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„%@“ se nenašlo ve tvých jídlech ani v databázi potravin Garminu."
+          }
+        }
+      }
+    },
+    "Couldn't load from Garmin": {
+      "comment": "Profile header: the Garmin profile failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z Garminu se nepodařilo načíst"
+          }
+        }
+      }
+    },
+    "Couldn't load from Garmin.": {
+      "comment": "Settings: footer when the nutrition plan failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z Garminu se to nepodařilo načíst."
+          }
+        }
+      }
+    },
+    "Couldn't load Garmin's sign-in page. Check your connection and try again.": {
+      "comment": "Error shown when the Garmin sign-in web page fails to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlašovací stránku Garminu se nepodařilo načíst. Zkontroluj připojení a zkus to znovu."
+          }
+        }
+      }
+    },
+    "Couldn't look that up right now. Try again.": {
+      "comment": "Error: resolving a scanned barcode failed (network/auth), not 'no product'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teď se to nepodařilo vyhledat. Zkus to znovu."
+          }
+        }
+      }
+    },
+    "Couldn't reach Garmin right now. Check your connection or try again.": {
+      "comment": "Food search error: Garmin unreachable.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin teď není dostupný. Zkontroluj připojení nebo to zkus znovu."
+          }
+        }
+      }
+    },
+    "Couldn't read the code": {
+      "comment": "Import theme preview: title when a pasted/opened theme code is invalid.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kód se nepodařilo přečíst"
+          }
+        }
+      }
+    },
+    "Couldn't retry this entry: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo zkusit znovu: %@"
+          }
+        }
+      }
+    },
+    "Couldn't search Garmin: sign in again in GarminFood first.": {
+      "comment": "Siri reply: food search failed because the Garmin sign-in expired.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin nejde prohledat: nejdřív se v GarminFood znovu přihlas."
+          }
+        }
+      }
+    },
+    "Create in Garmin": {
+      "comment": "Button / navigation title: create this Open Food Facts item as a custom food in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit v Garminu"
+          }
+        }
+      }
+    },
+    "Current streak": {
+      "comment": "Profile stat tile: consecutive logged days now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuální série"
           }
         }
       }
@@ -295,6 +1177,18 @@
         }
       }
     },
+    "Czech foods": {
+      "comment": "Settings: offline database row label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "České potraviny"
+          }
+        }
+      }
+    },
     "Dark": {
       "comment": "Settings -> Appearance page. Appearance option: dark mode.",
       "extractionState": "manual",
@@ -303,6 +1197,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tmavý"
+          }
+        }
+      }
+    },
+    "Days logged": {
+      "comment": "Profile stat tile: number of days with at least one entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsané dny"
           }
         }
       }
@@ -319,6 +1225,54 @@
         }
       }
     },
+    "Default meal from Garmin's schedule": {
+      "comment": "Settings toggle: preselect the meal from Garmin's meal time windows.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výchozí jídlo podle rozvrhu v Garminu"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "comment": "Destructive button / swipe action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat"
+          }
+        }
+      }
+    },
+    "Delete this entry?": {
+      "comment": "Confirmation dialog title in the sync queue.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat tento záznam?"
+          }
+        }
+      }
+    },
+    "Delete weigh-in %@ kg": {
+      "comment": "Sync queue row title for a queued weigh-in delete; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat vážení %@ kg"
+          }
+        }
+      }
+    },
     "Density": {
       "comment": "Settings -> Appearance page. Picker label for spacing density.",
       "extractionState": "manual",
@@ -327,6 +1281,144 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hustota"
+          }
+        }
+      }
+    },
+    "Diagnostics": {
+      "comment": "Settings row / screen title: in-app diagnostics log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diagnostika"
+          }
+        }
+      }
+    },
+    "Dinner": {
+      "comment": "Meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Večeře"
+          }
+        }
+      }
+    },
+    "Discard": {
+      "comment": "Swipe action: drop a queued drink that was never sent.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zahodit"
+          }
+        }
+      }
+    },
+    "Done": {
+      "comment": "Toolbar button closing a sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotovo"
+          }
+        }
+      }
+    },
+    "Download now": {
+      "comment": "Button: download the offline database now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhnout nyní"
+          }
+        }
+      }
+    },
+    "Downloaded %lld products.": {
+      "comment": "Settings footer after a manual offline database download. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Stažen %lld produkt."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženy %lld produkty."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženo %lld produktu."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženo %lld produktů."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Downloaded %lld product."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Downloaded %lld products."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Edited, but the old entry is still in Garmin": {
+      "comment": "Sync queue row status: an edit whose old entry couldn't be removed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upraveno, ale původní záznam je v Garminu pořád"
+          }
+        }
+      }
+    },
+    "Edited, removing the old entry…": {
+      "comment": "Sync queue row status: an edit in progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upraveno, odstraňuje se původní záznam…"
           }
         }
       }
@@ -351,6 +1443,216 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukončeno"
+          }
+        }
+      }
+    },
+    "Enter barcode": {
+      "comment": "Navigation title of the manual barcode entry sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadat čárový kód"
+          }
+        }
+      }
+    },
+    "Enter barcode manually": {
+      "comment": "Button on the camera scanner: type the barcode digits instead.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadat čárový kód ručně"
+          }
+        }
+      }
+    },
+    "Entries here are still saved on this phone and will keep retrying, or you can retry or delete them.": {
+      "comment": "Sync queue footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy tady zůstávají uložené v telefonu a budou se dál zkoušet odeslat. Můžeš je také zkusit znovu nebo smazat."
+          }
+        }
+      }
+    },
+    "Entries still save locally and will sync once you reconnect.": {
+      "comment": "Auth banner subtitle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy se dál ukládají v telefonu a synchronizují se, jakmile se znovu připojíš."
+          }
+        }
+      }
+    },
+    "Entries waiting to sync stay queued and send once you sign in again.": {
+      "comment": "Sign-out confirmation message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy čekající na synchronizaci zůstanou ve frontě a odešlou se, až se znovu přihlásíš."
+          }
+        }
+      }
+    },
+    "Errors and warnings from Garmin sync and logging actions will show up here.": {
+      "comment": "Diagnostics empty state message. (The log entries themselves stay in English.)",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tady se objeví chyby a varování ze synchronizace s Garminem a ze zapisování."
+          }
+        }
+      }
+    },
+    "Every day, before your fast ends at %@ and before it starts at %@.": {
+      "comment": "Reminders screen footer; first %@ is the fast's end time, second its start time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každý den před koncem půstu v %@ a před jeho začátkem v %@."
+          }
+        }
+      }
+    },
+    "Every logged entry has reached Garmin.": {
+      "comment": "Sync queue empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny zapsané záznamy dorazily do Garminu."
+          }
+        }
+      }
+    },
+    "Failed after %lld attempts": {
+      "comment": "Sync queue row status: delivery failed after N attempts. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusu"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusech"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusu"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusech"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Failed after %lld attempt"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Failed after %lld attempts"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Fast ending soon": {
+      "comment": "Reminder toggle: before the fasting window ends.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst brzy končí"
+          }
+        }
+      }
+    },
+    "Fast starting soon": {
+      "comment": "Reminder toggle: before the fasting window starts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst brzy začíná"
+          }
+        }
+      }
+    },
+    "Fasting": {
+      "comment": "Section header / screen title for intermittent fasting.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst"
+          }
+        }
+      }
+    },
+    "Fat": {
+      "comment": "Macro name: fat.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuky"
+          }
+        }
+      }
+    },
+    "Favorites": {
+      "comment": "Log Food screen: shelf title for starred foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oblíbené"
           }
         }
       }
@@ -391,6 +1693,30 @@
         }
       }
     },
+    "Food name": {
+      "comment": "Shortcuts parameter title: the name of the food to log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název jídla"
+          }
+        }
+      }
+    },
+    "Foods logged": {
+      "comment": "Profile stat tile: total number of food entries logged.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsaná jídla"
+          }
+        }
+      }
+    },
     "Forest": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -399,6 +1725,162 @@
           "stringUnit": {
             "state": "translated",
             "value": "Les"
+          }
+        }
+      }
+    },
+    "Found a match in Garmin": {
+      "comment": "Headline: a matching Garmin food was found.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V Garminu je shoda"
+          }
+        }
+      }
+    },
+    "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.": {
+      "comment": "Error: Garmin created the food but the response could not be parsed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin jídlo přijal, ale vrátil odpověď, které nerozumíme. Zkus ho raději zapsat jako jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "Garmin accepted the ticket but sent back a response this app couldn't read.": {
+      "comment": "Sign-in error: unreadable token-exchange response.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin ticket přijal, ale vrátil odpověď, které aplikace nerozumí."
+          }
+        }
+      }
+    },
+    "Garmin account": {
+      "comment": "Settings section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Účet Garmin"
+          }
+        }
+      }
+    },
+    "Garmin created the food but returned no serving for it. Pick a different Garmin food instead.": {
+      "comment": "Error: the created Garmin food has no serving.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin jídlo vytvořil, ale nevrátil k němu žádnou porci. Vyber raději jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "Garmin rejected the sign-in ticket (%@): %@": {
+      "comment": "Sign-in error. First %@ = 'HTTP 401' or 'no HTTP response'; second %@ = short server detail.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin odmítl přihlašovací ticket (%1$@): %2$@"
+          }
+        }
+      }
+    },
+    "Garmin rejected the sign-in ticket (%@).": {
+      "comment": "Sign-in error. %@ = 'HTTP 401' or 'no HTTP response'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin odmítl přihlašovací ticket (%@)."
+          }
+        }
+      }
+    },
+    "Garmin sign-in expired": {
+      "comment": "Auth banner title: the stored Garmin session is no longer valid.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení ke Garminu vypršelo"
+          }
+        }
+      }
+    },
+    "Garmin's database doesn't seem to have \"%@\". You can create it there, or log against a different Garmin food instead.": {
+      "comment": "Empty-state message. %@ = food name from Open Food Facts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Databáze Garminu zřejmě neobsahuje „%@“. Můžeš ho tam vytvořit, nebo ho zapsat jako jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "Garmin's water goal: %@ ml.": {
+      "comment": "Settings goals footer sentence; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl vody v Garminu: %@ ml."
+          }
+        }
+      }
+    },
+    "Garmin's weight goal: %@ kg.": {
+      "comment": "Settings goals footer sentence; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl váhy v Garminu: %@ kg."
+          }
+        }
+      }
+    },
+    "GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
+      "comment": "Settings: About footer with the required ODbL attribution.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GarminFood zapíše jídlo na dvě ťuknutí a synchronizuje ho do Garmin Connect. Data českých produktů © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+          }
+        }
+      }
+    },
+    "GarminFood Screen": {
+      "comment": "App Intents type name (Shared/OpenBarcodeScannerIntent.swift): the kind of screen the scan intent opens, shown in the Shortcuts app.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrazovka GarminFood"
           }
         }
       }
@@ -423,6 +1905,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sklo"
+          }
+        }
+      }
+    },
+    "Goals": {
+      "comment": "Settings section header: water and weight goals.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíle"
           }
         }
       }
@@ -463,6 +1957,18 @@
         }
       }
     },
+    "Haptic feedback": {
+      "comment": "Settings toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haptická odezva"
+          }
+        }
+      }
+    },
     "High Contrast": {
       "comment": "Theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -471,6 +1977,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vysoký kontrast"
+          }
+        }
+      }
+    },
+    "If the sign-in page above doesn't complete automatically, sign in to Garmin Connect in a regular browser instead, then copy the \"ticket\" value from the redirect URL here.": {
+      "comment": "Sign-in sheet: instructions for the manual fallback. 'ticket' is the literal URL parameter name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokud se přihlašovací stránka výše nedokončí automaticky, přihlas se ke Garmin Connect v běžném prohlížeči a sem zkopíruj hodnotu „ticket“ z URL přesměrování."
+          }
+        }
+      }
+    },
+    "Import theme": {
+      "comment": "Settings -> Appearance: row with a Paste button for a theme code; also the import preview's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importovat motiv"
           }
         }
       }
@@ -495,6 +2025,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indigová noc"
+          }
+        }
+      }
+    },
+    "It hasn't reached Garmin yet, so nothing is removed there.": {
+      "comment": "Sync queue delete confirmation for a queued new entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do Garminu ještě nedorazil, takže se tam nic nemaže."
+          }
+        }
+      }
+    },
+    "Keep in Garmin": {
+      "comment": "Swipe action: drop a queued delete/correction so the entry stays in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponechat v Garminu"
+          }
+        }
+      }
+    },
+    "kilocalories": {
+      "comment": "Spoken unit after an energy value (VoiceOver), e.g. '290 kilocalories'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kilokalorií"
           }
         }
       }
@@ -535,6 +2101,18 @@
         }
       }
     },
+    "Level": {
+      "comment": "Profile stat tile: current gamification level.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úroveň"
+          }
+        }
+      }
+    },
     "Level %lld": {
       "comment": "Current gamification level on the Today streak card.",
       "extractionState": "manual",
@@ -555,6 +2133,282 @@
           "stringUnit": {
             "state": "translated",
             "value": "Světlý"
+          }
+        }
+      }
+    },
+    "Limited edition %lld/%lld": {
+      "comment": "Achievements screen: section header for seasonal limited-edition badges, unlocked/total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limitovaná edice %lld/%lld"
+          }
+        }
+      }
+    },
+    "Log ${foodName} in GarminFood": {
+      "comment": "Shortcuts parameter summary (LogNamedFoodIntent.parameterSummary). ${foodName} is the food-name parameter; keep it verbatim.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat ${foodName} do GarminFood"
+          }
+        }
+      }
+    },
+    "Log a Food": {
+      "comment": "App Shortcut short title (Spotlight/Shortcuts tile). Keep very short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo"
+          }
+        }
+      }
+    },
+    "Log a Food by Name": {
+      "comment": "Siri/Shortcuts action title (LogNamedFoodIntent.swift).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo podle názvu"
+          }
+        }
+      }
+    },
+    "Log anyway with a different Garmin food": {
+      "comment": "Button: skip the suggested match and log against another Garmin food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesto zapsat s jiným jídlem z Garminu"
+          }
+        }
+      }
+    },
+    "Log Food": {
+      "comment": "Navigation title of the food search/log screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo"
+          }
+        }
+      }
+    },
+    "Log Quick Pick #1": {
+      "comment": "Shortcuts action title: logs the user's most-used food (rank 1).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 1"
+          }
+        }
+      }
+    },
+    "Log Quick Pick #2": {
+      "comment": "Shortcuts action title: logs the user's 2nd most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 2"
+          }
+        }
+      }
+    },
+    "Log Quick Pick #3": {
+      "comment": "Shortcuts action title: logs the user's 3rd most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 3"
+          }
+        }
+      }
+    },
+    "Log Quick Pick #4": {
+      "comment": "Shortcuts action title: logs the user's 4th most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 4"
+          }
+        }
+      }
+    },
+    "Log Usual": {
+      "comment": "App Shortcut short title (Spotlight/Shortcuts tile). Keep very short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé jídlo"
+          }
+        }
+      }
+    },
+    "Log Usual Food": {
+      "comment": "Siri/Shortcuts action title (GarminFood/Shortcuts/LogTopQuickPickIntent.swift): logs the most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat obvyklé jídlo"
+          }
+        }
+      }
+    },
+    "Logged %@ to Garmin.": {
+      "comment": "Siri reply: logged and delivered. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: zapsáno do Garminu."
+          }
+        }
+      }
+    },
+    "Logged your usual.": {
+      "comment": "Siri reply after logging the user's most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé jídlo je zapsané."
+          }
+        }
+      }
+    },
+    "Logs this again": {
+      "comment": "VoiceOver hint on a quick-pick/recent food card (re-logs it).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše ji znovu"
+          }
+        }
+      }
+    },
+    "Logs this food": {
+      "comment": "VoiceOver hint on a favorite food card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tuto potravinu"
+          }
+        }
+      }
+    },
+    "Logs your #1 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 1 / 'Log Usual Food').",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #2 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 2).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje druhé nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #3 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 3).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje třetí nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #4 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 4).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje čtvrté nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Longest streak": {
+      "comment": "Profile stat tile: longest run of logged days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdelší série"
+          }
+        }
+      }
+    },
+    "Look Up": {
+      "comment": "Button: look up the typed barcode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyhledat"
+          }
+        }
+      }
+    },
+    "Looking up…": {
+      "comment": "Progress label while a scanned barcode is being resolved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyhledávám…"
           }
         }
       }
@@ -607,6 +2461,18 @@
         }
       }
     },
+    "Lunch": {
+      "comment": "Meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oběd"
+          }
+        }
+      }
+    },
     "Macro colors": {
       "comment": "Settings -> Appearance page. Picker label: which colors draw carbs/protein/fat.",
       "extractionState": "manual",
@@ -615,6 +2481,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Barvy živin"
+          }
+        }
+      }
+    },
+    "Manual fallback": {
+      "comment": "Sign-in sheet: section header for the manual ticket-paste path.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruční náhradní postup"
           }
         }
       }
@@ -631,6 +2509,66 @@
         }
       }
     },
+    "Match in Garmin": {
+      "comment": "Navigation title: finding the Garmin food matching an Open Food Facts result.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoda v Garminu"
+          }
+        }
+      }
+    },
+    "Meal reminders": {
+      "comment": "Reminders screen section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomínky jídel"
+          }
+        }
+      }
+    },
+    "Meals": {
+      "comment": "Log Food screen: shelf title for saved multi-food meals (presets).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídla"
+          }
+        }
+      }
+    },
+    "Mine": {
+      "comment": "Settings: small label saying a goal is the user's own override (masculine, 'cíl').",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Můj"
+          }
+        }
+      }
+    },
+    "Missing calories": {
+      "comment": "Empty-state title: the Open Food Facts item has no calorie value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chybí kalorie"
+          }
+        }
+      }
+    },
     "Monospaced": {
       "comment": "Settings -> Appearance page. Number font option.",
       "extractionState": "manual",
@@ -639,6 +2577,210 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neproporcionální"
+          }
+        }
+      }
+    },
+    "My GarminFood look. Paste the code in Settings > Appearance > Import theme, or open the link on your iPhone.": {
+      "comment": "First line of the shared theme message; the code and the link follow on their own lines.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Můj vzhled GarminFood. Vlož kód v Nastavení > Vzhled > Importovat motiv, nebo otevři odkaz v iPhonu."
+          }
+        }
+      }
+    },
+    "My goal: %@ ml": {
+      "comment": "Settings stepper label for the local water goal; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Můj cíl: %@ ml"
+          }
+        }
+      }
+    },
+    "Name": {
+      "comment": "Form label: food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název"
+          }
+        }
+      }
+    },
+    "New custom food": {
+      "comment": "Toolbar menu item: create a custom food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nová vlastní potravina"
+          }
+        }
+      }
+    },
+    "New meal": {
+      "comment": "Toolbar menu item: create a saved multi-food meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nové jídlo"
+          }
+        }
+      }
+    },
+    "no HTTP response": {
+      "comment": "Sign-in error detail used inside parentheses when no HTTP status came back, e.g. 'Garmin rejected the sign-in ticket (no HTTP response).'",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "žádná HTTP odpověď"
+          }
+        }
+      }
+    },
+    "No match found": {
+      "comment": "Empty-state title: Garmin has no food matching the Open Food Facts item.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoda nenalezena"
+          }
+        }
+      }
+    },
+    "No servings": {
+      "comment": "Serving picker empty state title (food has no servings).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádné porce"
+          }
+        }
+      }
+    },
+    "Not connected": {
+      "comment": "Settings: Garmin connection status when signed out.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepřipojeno"
+          }
+        }
+      }
+    },
+    "Not connected to Garmin": {
+      "comment": "Auth banner title: never signed in to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepřipojeno ke Garminu"
+          }
+        }
+      }
+    },
+    "Not downloaded": {
+      "comment": "Settings: offline database not installed yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nestaženo"
+          }
+        }
+      }
+    },
+    "Not set": {
+      "comment": "Settings: no weight goal set.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenastaveno"
+          }
+        }
+      }
+    },
+    "Nothing logged": {
+      "comment": "Diagnostics empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nezaznamenáno"
+          }
+        }
+      }
+    },
+    "Nothing logged -- \"%@\" could be %@. Say the full name to log one.": {
+      "comment": "Siri reply: ambiguous match, nothing logged. First %@ is the spoken food name, second %@ is a locale-formatted 'A, B, or C' list of candidate food names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nezapsáno – „%@“ může být %@. Řekni celý název jídla, které chceš zapsat."
+          }
+        }
+      }
+    },
+    "Nothing logged yet": {
+      "comment": "Log Food screen empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nic nezapsáno"
+          }
+        }
+      }
+    },
+    "Nothing logged yet to quick-pick from -- log a food from the app first.": {
+      "comment": "Error shown by a quick-log Control/Shortcut when there is no logging history yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nemáš nic zapsáno, z čeho by šlo rychle vybírat – nejdřív zapiš jídlo v aplikaci."
+          }
+        }
+      }
+    },
+    "Notifications are off for GarminFood in iOS Settings, so reminders below won't fire.": {
+      "comment": "Reminders screen: warning when iOS notification permission is off.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oznámení pro GarminFood jsou v Nastavení iOS vypnutá, takže se připomínky níže nezobrazí."
           }
         }
       }
@@ -655,14 +2797,14 @@
         }
       }
     },
-    "OK": {
-      "comment": "Generic alert dismiss button.",
+    "Nutrition plan": {
+      "comment": "Settings section header: goals set in Garmin Connect.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "OK"
+            "value": "Nutriční plán"
           }
         }
       }
@@ -679,6 +2821,102 @@
         }
       }
     },
+    "Offline food database": {
+      "comment": "Settings section header: the downloadable Czech food index.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline databáze potravin"
+          }
+        }
+      }
+    },
+    "OK": {
+      "comment": "Generic alert dismiss button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Only fires on a day you haven't logged anything yet, if you have a streak to lose.": {
+      "comment": "Reminders screen footer under the streak reminder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ozve se jen v den, kdy ještě nemáš nic zapsané, a jen pokud máš sérii, o kterou můžeš přijít."
+          }
+        }
+      }
+    },
+    "Open Database License 1.0": {
+      "comment": "Settings: link to the license text (proper name of the license).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Database License 1.0"
+          }
+        }
+      }
+    },
+    "Open Food Facts (ODbL)": {
+      "comment": "Settings: link to the Open Food Facts site (product name, license).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Food Facts (ODbL)"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "comment": "Button: open the iOS Settings app.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevřít Nastavení"
+          }
+        }
+      }
+    },
+    "Opens Garmin's real sign-in page in-app and captures the sign-in automatically once it completes.": {
+      "comment": "Sign-in sheet: explanation under the sign-in button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře skutečnou přihlašovací stránku Garminu přímo v aplikaci a po dokončení přihlášení ho automaticky převezme."
+          }
+        }
+      }
+    },
+    "Opens GarminFood directly into the barcode scanner.": {
+      "comment": "Shortcuts intent description and Control gallery description for the barcode-scan action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře GarminFood rovnou ve skeneru čárových kódů."
+          }
+        }
+      }
+    },
     "Outlined": {
       "comment": "Settings -> Appearance page. Card style option (border only).",
       "extractionState": "manual",
@@ -691,6 +2929,18 @@
         }
       }
     },
+    "Paste service ticket": {
+      "comment": "Sign-in sheet: placeholder of the manual ticket text field. 'Service ticket' is Garmin's SSO term.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlož service ticket"
+          }
+        }
+      }
+    },
     "Pastel": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -699,6 +2949,162 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Pick a different Garmin food instead": {
+      "comment": "Button (ingredient picker): skip the suggested match and search Garmin foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat raději jiné jídlo z Garminu"
+          }
+        }
+      }
+    },
+    "Pick closest match": {
+      "comment": "Navigation title when picking the Garmin food that backs a custom food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyber nejbližší shodu"
+          }
+        }
+      }
+    },
+    "Point your camera at a barcode": {
+      "comment": "Hint over the camera viewfinder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namiř fotoaparát na čárový kód"
+          }
+        }
+      }
+    },
+    "Preferences": {
+      "comment": "Settings section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Profile": {
+      "comment": "Tab label and navigation title of the Profile screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
+          }
+        }
+      }
+    },
+    "Progress": {
+      "comment": "Tab bar item: the Progress screen (streak, level, challenges).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokrok"
+          }
+        }
+      }
+    },
+    "Protein": {
+      "comment": "Macro name: protein.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bílkoviny"
+          }
+        }
+      }
+    },
+    "QR code with the theme link": {
+      "comment": "VoiceOver label of the QR code on the Share theme sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kód s odkazem na motiv"
+          }
+        }
+      }
+    },
+    "Quick pick": {
+      "comment": "Log Food screen: shelf title for the most-logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlý výběr"
+          }
+        }
+      }
+    },
+    "Recent": {
+      "comment": "Log Food screen: shelf title for recently logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávné"
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "comment": "Settings row / screen title: local notification settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomínky"
+          }
+        }
+      }
+    },
+    "Reminds you at the chosen time only if that meal hasn't been logged yet that day.": {
+      "comment": "Reminders screen footer under meal reminders.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomene se ve zvolený čas, jen pokud to jídlo ještě ten den nemáš zapsané."
+          }
+        }
+      }
+    },
+    "Remove %@ ml of water": {
+      "comment": "Sync queue row title for a queued water correction; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat %@ ml vody"
           }
         }
       }
@@ -739,6 +3145,18 @@
         }
       }
     },
+    "Retry": {
+      "comment": "Swipe action: retry sending a queued entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
     "Round": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -763,6 +3181,234 @@
         }
       }
     },
+    "Saved %@, but it can't reach Garmin until you sign in again in GarminFood.": {
+      "comment": "Siri reply: saved locally, Garmin sign-in expired. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: uloženo, ale do Garminu se to nedostane, dokud se v GarminFood znovu nepřihlásíš."
+          }
+        }
+      }
+    },
+    "Saved %@. It will sync to Garmin in a moment.": {
+      "comment": "Siri reply after saving a food locally. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: uloženo. Do Garminu se to synchronizuje za chvíli."
+          }
+        }
+      }
+    },
+    "Saved %@. It will sync to Garmin when Garmin accepts it.": {
+      "comment": "Siri reply: saved locally, Garmin didn't accept it yet. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: uloženo. Do Garminu se to synchronizuje, jakmile to Garmin přijme."
+          }
+        }
+      }
+    },
+    "Saved in GarminFood, but not sent: sign in to Garmin again in the app.": {
+      "comment": "Error shown by a quick-log Control/Shortcut: the entry is saved locally but the Garmin sign-in expired.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloženo v GarminFood, ale neodesláno: v aplikaci se znovu přihlas ke Garminu."
+          }
+        }
+      }
+    },
+    "Scan barcode": {
+      "comment": "Navigation title of the camera barcode scanner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenovat čárový kód"
+          }
+        }
+      }
+    },
+    "Scan Barcode": {
+      "comment": "Siri/Shortcuts intent title and Control Center control name/label (Shared/OpenBarcodeScannerIntent.swift, ScanBarcodeControl.swift). Keep short: Control label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenovat čárový kód"
+          }
+        }
+      }
+    },
+    "Scan the QR code with the iPhone Camera, or send the code. It contains only appearance settings, never food or personal data.": {
+      "comment": "Share theme sheet: explanation under the QR code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenuj QR kód Fotoaparátem v iPhonu, nebo pošli kód. Obsahuje jen nastavení vzhledu, nikdy jídlo ani osobní údaje."
+          }
+        }
+      }
+    },
+    "Scanned barcode: %@ (not found in Garmin's database)": {
+      "comment": "Prefilled note on a new custom food after an unknown barcode scan. %@ = the barcode digits.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenovaný čárový kód: %@ (v databázi Garminu nenalezen)"
+          }
+        }
+      }
+    },
+    "Scanner unavailable": {
+      "comment": "Empty-state title: this device can't scan barcodes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skener není k dispozici"
+          }
+        }
+      }
+    },
+    "Screen": {
+      "comment": "Shortcuts parameter title of the scan intent: which app screen to open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrazovka"
+          }
+        }
+      }
+    },
+    "Search Czech foods only": {
+      "comment": "Settings toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledat jen české potraviny"
+          }
+        }
+      }
+    },
+    "Search Czech products instantly, even offline. Updates weekly, on Wi-Fi unless cellular is allowed. Data from Open Food Facts (ODbL).": {
+      "comment": "Settings footer of the offline database section (with the required ODbL attribution).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledej české produkty okamžitě, i offline. Aktualizuje se jednou týdně přes Wi-Fi, pokud nepovolíš mobilní data. Data z Open Food Facts (ODbL)."
+          }
+        }
+      }
+    },
+    "Search foods (rohlík, chleba, tvaroh…)": {
+      "comment": "Search field placeholder on the Log Food screen (Czech food examples stay).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledat potraviny (rohlík, chleba, tvaroh…)"
+          }
+        }
+      }
+    },
+    "Search for a food to get started -- your most-logged foods will show up here as a quick pick.": {
+      "comment": "Log Food screen empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Začni vyhledáním potraviny – nejčastěji zapisované potraviny se tu pak objeví v rychlém výběru."
+          }
+        }
+      }
+    },
+    "Searches your foods and Garmin's food database for a name and logs the clear best match in GarminFood.": {
+      "comment": "Shortcuts action description (LogNamedFoodIntent.swift).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyhledá název ve tvých jídlech a v databázi potravin Garminu a jednoznačně nejlepší shodu zapíše do GarminFood."
+          }
+        }
+      }
+    },
+    "Secret %lld/%lld": {
+      "comment": "Achievements screen: section header for secret badges, unlocked/total (titles stay hidden until unlocked).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajné %lld/%lld"
+          }
+        }
+      }
+    },
+    "Secret achievement, locked": {
+      "comment": "Accessibility label of a locked secret achievement tile (title hidden).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajný odznak, zamčený"
+          }
+        }
+      }
+    },
+    "Sent": {
+      "comment": "Sync queue row status for a weigh-in or drink.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odesláno"
+          }
+        }
+      }
+    },
+    "Sent, confirming…": {
+      "comment": "Sync queue row status: sent, awaiting Garmin's confirmation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odesláno, ověřuje se…"
+          }
+        }
+      }
+    },
     "Serif": {
       "comment": "Settings -> Appearance page. Number font option.",
       "extractionState": "manual",
@@ -771,6 +3417,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "Patkové"
+          }
+        }
+      }
+    },
+    "Serving": {
+      "comment": "Form label: the serving (portion) of a food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce"
+          }
+        }
+      }
+    },
+    "Set in Garmin Connect. GarminFood only displays it.": {
+      "comment": "Settings: footer under the read-only nutrition plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavuje se v Garmin Connect. GarminFood ho jen zobrazuje."
+          }
+        }
+      }
+    },
+    "Settings": {
+      "comment": "Navigation title of the Settings screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavení"
+          }
+        }
+      }
+    },
+    "Share": {
+      "comment": "Settings -> Appearance: section header for sharing and importing a theme code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílení"
+          }
+        }
+      }
+    },
+    "Share code": {
+      "comment": "Share theme sheet: opens the system share sheet with the code and link.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílet kód"
+          }
+        }
+      }
+    },
+    "Share theme": {
+      "comment": "Settings -> Appearance: button that opens the theme share sheet; also that sheet's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílet motiv"
+          }
+        }
+      }
+    },
+    "Share your look as a code, link or QR code. Importing always shows a preview first.": {
+      "comment": "Settings -> Appearance: footer under Share theme / Import theme.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílej svůj vzhled jako kód, odkaz nebo QR kód. Import vždy nejdřív ukáže náhled."
           }
         }
       }
@@ -787,6 +3517,102 @@
         }
       }
     },
+    "Sign in to Garmin": {
+      "comment": "Button: open the Garmin sign-in sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se ke Garminu"
+          }
+        }
+      }
+    },
+    "Sign in to Garmin to search its food database.": {
+      "comment": "Food search error: signed out of Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlas se ke Garminu, abys mohl hledat v jeho databázi potravin."
+          }
+        }
+      }
+    },
+    "Sign in with Garmin": {
+      "comment": "Sign-in sheet: button opening Garmin's web sign-in page.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se přes Garmin"
+          }
+        }
+      }
+    },
+    "Sign out": {
+      "comment": "Button: sign out of the Garmin account.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit se"
+          }
+        }
+      }
+    },
+    "Sign out of Garmin?": {
+      "comment": "Confirmation dialog title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit se z Garminu?"
+          }
+        }
+      }
+    },
+    "Sign-in expired": {
+      "comment": "Settings: Garmin connection status when the session must be renewed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení vypršelo"
+          }
+        }
+      }
+    },
+    "Sign-in failed: %@": {
+      "comment": "Sign-in error fallback. %@ = system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení selhalo: %@"
+          }
+        }
+      }
+    },
+    "Size": {
+      "comment": "Settings: offline database size on disk.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velikost"
+          }
+        }
+      }
+    },
     "Slate": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -795,6 +3621,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Břidlice"
+          }
+        }
+      }
+    },
+    "Snacks": {
+      "comment": "Meal name: the snacks meal (Garmin's fourth meal slot). Shown as a label on its own.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svačina"
+          }
+        }
+      }
+    },
+    "Some settings in this code aren't supported by this version and keep their defaults.": {
+      "comment": "Import theme preview warning: some values in the code were not recognised.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některá nastavení v tomto kódu tato verze nepodporuje, zůstanou výchozí."
           }
         }
       }
@@ -811,6 +3661,42 @@
         }
       }
     },
+    "Starting weight: %@ kg": {
+      "comment": "Settings stepper label for the local starting weight; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počáteční váha: %@ kg"
+          }
+        }
+      }
+    },
+    "Status": {
+      "comment": "Settings: label of the Garmin connection status row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stav"
+          }
+        }
+      }
+    },
+    "Streak at risk": {
+      "comment": "Reminder toggle: warn when the logging streak is about to break.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série v ohrožení"
+          }
+        }
+      }
+    },
     "Sunset": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -823,6 +3709,30 @@
         }
       }
     },
+    "Sync now": {
+      "comment": "Sync queue toolbar button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizovat teď"
+          }
+        }
+      }
+    },
+    "Sync queue": {
+      "comment": "Settings row / screen title: entries not yet delivered to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fronta synchronizace"
+          }
+        }
+      }
+    },
     "System": {
       "comment": "Settings -> Appearance page. Appearance option: follow the system light/dark setting.",
       "extractionState": "manual",
@@ -831,6 +3741,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "Systém"
+          }
+        }
+      }
+    },
+    "Target: %@ kg": {
+      "comment": "Settings stepper label for the local target weight; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cílová váha: %@ kg"
+          }
+        }
+      }
+    },
+    "That field is empty. Paste the redirect URL, or just the ticket value from it.": {
+      "comment": "Sign-in sheet error: the manual ticket field was empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole je prázdné. Vlož URL přesměrování, nebo jen hodnotu ticketu z ní."
+          }
+        }
+      }
+    },
+    "That food's details aren't saved locally yet -- open the app and log it once from there.": {
+      "comment": "Error shown by a quick-log Control/Shortcut when the ranked food isn't cached on the device.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podrobnosti tohoto jídla ještě nejsou uložené v telefonu – otevři aplikaci a jednou ho zapiš odtud."
+          }
+        }
+      }
+    },
+    "That isn't a GarminFood theme code. Nothing was changed.": {
+      "comment": "Import theme: the pasted text is not a theme code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle není kód motivu GarminFood. Nic se nezměnilo."
+          }
+        }
+      }
+    },
+    "That's not right — no match found": {
+      "comment": "Button: the suggested Garmin match is wrong; treat as no match.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To nesedí — shoda nenalezena"
+          }
+        }
+      }
+    },
+    "The code is incomplete or damaged. Copy it again. Nothing was changed.": {
+      "comment": "Import theme: the code is truncated, tampered with or too long.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kód je neúplný nebo poškozený. Zkopíruj ho znovu. Nic se nezměnilo."
+          }
+        }
+      }
+    },
+    "the response was an HTML page rather than an API error, most likely a Cloudflare challenge": {
+      "comment": "Sign-in error detail shown after a colon in 'Garmin rejected the sign-in ticket (HTTP 403): …'. Lowercase start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "odpověď byla HTML stránka místo chyby API, nejspíš ověření Cloudflare"
           }
         }
       }
@@ -859,6 +3853,54 @@
         }
       }
     },
+    "This cancels the edit. The original entry stays in Garmin Connect at its old amount.": {
+      "comment": "Sync queue delete confirmation for a queued edit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tím se úprava zruší. Původní záznam zůstane v Garmin Connect s původním množstvím."
+          }
+        }
+      }
+    },
+    "This code comes from a newer version of GarminFood. Update the app to import it. Nothing was changed.": {
+      "comment": "Import theme: the code has a newer format version.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento kód pochází z novější verze GarminFood. Pro import aplikaci aktualizuj. Nic se nezměnilo."
+          }
+        }
+      }
+    },
+    "This code uses a theme this version doesn't have (%@). The rest of its settings apply on Classic Coral.": {
+      "comment": "Import theme preview warning. %@ is the unknown theme's id from a newer app version.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento kód používá motiv, který tato verze nemá (%@). Zbytek nastavení se použije s motivem Klasický korál."
+          }
+        }
+      }
+    },
+    "This delete is being sent to Garmin right now, so it can't be cancelled.": {
+      "comment": "Sync queue error when cancelling an in-flight delete.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazání se právě odesílá do Garminu, takže ho už nejde zrušit."
+          }
+        }
+      }
+    },
     "This device doesn't support alternate app icons.": {
       "comment": "Shown when iOS reports alternate icons are unsupported.",
       "extractionState": "manual",
@@ -867,6 +3909,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Toto zařízení nepodporuje alternativní ikony aplikace."
+          }
+        }
+      }
+    },
+    "This entry reached Garmin in the meantime, so there's nothing to discard.": {
+      "comment": "Sync queue error when discarding an entry that was already delivered.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam mezitím do Garminu dorazil, takže není co zahodit."
+          }
+        }
+      }
+    },
+    "This food has no serving information to log against.": {
+      "comment": "Serving picker empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato potravina nemá žádné údaje o porcích, podle kterých by šla zapsat."
+          }
+        }
+      }
+    },
+    "This is an experimental, best-effort write — Garmin's exact expected request shape for creating a food has never been confirmed. If it fails, nothing is created, and you can log against a different Garmin food instead.": {
+      "comment": "Footnote warning that creating a food in Garmin is experimental.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jde o experimentální zápis bez záruky — přesný formát požadavku, který Garmin pro vytvoření jídla očekává, nikdy nebyl ověřen. Pokud selže, nic se nevytvoří a můžeš jídlo zapsat jako jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "This item has no calorie value from Open Food Facts, so it can't be created in Garmin.": {
+      "comment": "Empty-state message: calories are required to create a food in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle položka nemá v Open Food Facts hodnotu kalorií, takže ji v Garminu nejde vytvořit."
           }
         }
       }
@@ -895,6 +3985,306 @@
         }
       }
     },
+    "This will be sent to Garmin": {
+      "comment": "Form section header: the values that will be uploaded to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle se odešle do Garminu"
+          }
+        }
+      }
+    },
+    "Time": {
+      "comment": "Reminder time picker label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čas"
+          }
+        }
+      }
+    },
+    "Today": {
+      "comment": "Tab bar item: the Today (home) screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnes"
+          }
+        }
+      }
+    },
+    "Today's challenges": {
+      "comment": "Reminder toggle: daily nudge about challenges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnešní výzvy"
+          }
+        }
+      }
+    },
+    "Try again": {
+      "comment": "Button: retry a failed action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
+    "Turn on a daily fasting window in Settings → Fasting first; these only fire while it's on.": {
+      "comment": "Reminders screen footer when no fasting window is set.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdřív si zapni denní okno půstu v Nastavení → Půst. Tyto připomínky fungují jen, když je zapnuté."
+          }
+        }
+      }
+    },
+    "Type the digits printed under the barcode -- usually 8 to 14 numbers.": {
+      "comment": "Help text under the manual barcode field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opiš číslice vytištěné pod čárovým kódem — obvykle 8 až 14 číslic."
+          }
+        }
+      }
+    },
+    "Updated": {
+      "comment": "Settings: when the offline database was last installed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizováno"
+          }
+        }
+      }
+    },
+    "Updating": {
+      "comment": "Accessibility label of the offline database progress indicator.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizuje se"
+          }
+        }
+      }
+    },
+    "Use Garmin's water goal": {
+      "comment": "Settings toggle: follow Garmin's water goal instead of a local override.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít cíl vody z Garminu"
+          }
+        }
+      }
+    },
+    "Use Garmin's weight goal": {
+      "comment": "Settings toggle: follow Garmin's weight goal instead of a local override.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít cíl váhy z Garminu"
+          }
+        }
+      }
+    },
+    "Use this match": {
+      "comment": "Button: accept the matched Garmin food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít tuto shodu"
+          }
+        }
+      }
+    },
+    "Usual for breakfast": {
+      "comment": "Log Food screen: shelf title of foods usually logged at breakfast.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle k snídani"
+          }
+        }
+      }
+    },
+    "Usual for dinner": {
+      "comment": "Log Food screen: shelf title of foods usually logged at dinner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle k večeři"
+          }
+        }
+      }
+    },
+    "Usual for lunch": {
+      "comment": "Log Food screen: shelf title of foods usually logged at lunch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle k obědu"
+          }
+        }
+      }
+    },
+    "Usual for snacks": {
+      "comment": "Log Food screen: shelf title of foods usually logged as a snack.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle ke svačině"
+          }
+        }
+      }
+    },
+    "Version": {
+      "comment": "Settings: app version row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verze"
+          }
+        }
+      }
+    },
+    "Waiting for Wi-Fi. Turn on “Allow on cellular” to download now.": {
+      "comment": "Settings footer when the download waits for Wi-Fi; quotes the toggle's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čeká se na Wi-Fi. Pro okamžité stažení zapni „Povolit přes mobilní data“."
+          }
+        }
+      }
+    },
+    "Waiting to sync": {
+      "comment": "Sync queue row status.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čeká na synchronizaci"
+          }
+        }
+      }
+    },
+    "Water %@ ml": {
+      "comment": "Sync queue row title for a queued drink; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voda %@ ml"
+          }
+        }
+      }
+    },
+    "Water goal": {
+      "comment": "Settings: daily water goal row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl vody"
+          }
+        }
+      }
+    },
+    "Weigh-in %@ kg": {
+      "comment": "Sync queue row title for a queued weigh-in; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vážení %@ kg"
+          }
+        }
+      }
+    },
+    "Weight & water": {
+      "comment": "Sync queue section header: queued weigh-ins and drinks.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váha a voda"
+          }
+        }
+      }
+    },
+    "Weight goal": {
+      "comment": "Settings: weight goal row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl váhy"
+          }
+        }
+      }
+    },
+    "Widgets don't change with the app's theme. Touch and hold a widget, then Edit Widget, to pick its theme.": {
+      "comment": "Settings -> Appearance: footer under the theme gallery. \"Edit Widget\" is the iOS menu item's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widgety se s motivem aplikace nemění. Motiv widgetu vybereš tak, že widget podržíš a zvolíš Upravit widget."
+          }
+        }
+      }
+    },
     "With matching on, picking a theme also switches the Home Screen icon.": {
       "comment": "Settings -> Appearance page. Footer under the icon grid.",
       "extractionState": "manual",
@@ -907,6 +4297,30 @@
         }
       }
     },
+    "Your custom foods": {
+      "comment": "Log Food screen: section header listing the user's custom foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje vlastní potraviny"
+          }
+        }
+      }
+    },
+    "Your own goals stay on this phone; Garmin Connect isn't changed.": {
+      "comment": "Settings goals footer sentence.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje vlastní cíle zůstávají v tomto telefonu, Garmin Connect se nemění."
+          }
+        }
+      }
+    },
     "Your saved look couldn't be read and was reset.": {
       "comment": "Settings -> Appearance page. One-time notice after a corrupt settings blob was quarantined.",
       "extractionState": "manual",
@@ -915,6 +4329,222 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uložený vzhled nešel načíst, proto byl obnoven na výchozí."
+          }
+        }
+      }
+    },
+    "Seasonal event": {
+      "comment": "Today banner eyebrow: a Czech seasonal food event is running.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sezónní událost"
+          }
+        }
+      }
+    },
+    "Until %@": {
+      "comment": "Seasonal event: runs until a date. %@ = a date like \"31 October\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do %@"
+          }
+        }
+      }
+    },
+    "Starts %@": {
+      "comment": "Seasonal event: starts on a date. %@ = a date like \"8 November\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Začíná %@"
+          }
+        }
+      }
+    },
+    "Event complete!": {
+      "comment": "Seasonal event: all required quests done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Událost splněna!"
+          }
+        }
+      }
+    },
+    "Bonus +25 XP": {
+      "comment": "Seasonal event: tag on an optional bonus quest.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonus +25 XP"
+          }
+        }
+      }
+    },
+    "%lld of %lld": {
+      "comment": "Progress: current of target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld z %lld"
+          }
+        }
+      }
+    },
+    "Seasonal events": {
+      "comment": "Progress card / screen title for Czech seasonal food events.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sezónní události"
+          }
+        }
+      }
+    },
+    "No seasonal event right now.": {
+      "comment": "Seasonal events card when nothing is active or upcoming.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Právě neběží žádná sezónní událost."
+          }
+        }
+      }
+    },
+    "Limited badges earned: %lld of %lld": {
+      "comment": "Seasonal events card: limited-edition badges earned so far out of the total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Získané limitované odznaky: %lld z %lld"
+          }
+        }
+      }
+    },
+    "Opens seasonal events": {
+      "comment": "VoiceOver hint on the seasonal events card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře sezónní události"
+          }
+        }
+      }
+    },
+    "This year": {
+      "comment": "Seasonal events screen: section with this year’s events.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letos"
+          }
+        }
+      }
+    },
+    "Limited-edition badges": {
+      "comment": "Seasonal events screen: badge showcase section.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limitované odznaky"
+          }
+        }
+      }
+    },
+    "Unlocked": {
+      "comment": "Badge state for VoiceOver.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odemčeno"
+          }
+        }
+      }
+    },
+    "Locked": {
+      "comment": "Badge state for VoiceOver.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zamčeno"
+          }
+        }
+      }
+    },
+    "Earned %@": {
+      "comment": "Limited-edition badge: the years it was earned. %@ = e.g. \"2026, 2027\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Získáno %@"
+          }
+        }
+      }
+    },
+    "Active": {
+      "comment": "Seasonal event state: inside its window now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probíhá"
+          }
+        }
+      }
+    },
+    "Missed": {
+      "comment": "Seasonal event state: window ended without completing it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Propásnuto"
+          }
+        }
+      }
+    },
+    "Later": {
+      "comment": "Seasonal event state: later this year.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Později"
           }
         }
       }

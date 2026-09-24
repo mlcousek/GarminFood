@@ -198,6 +198,32 @@ extension OfflineIndexError: CustomStringConvertible {
     }
 }
 
+/// User-facing text for the same errors (add-localization wave 3.2).
+/// `description` above deliberately stays English: `OfflineIndexStore`
+/// interpolates it into `DiagnosticsLog` messages, which are never
+/// localized. The technical `detail` payloads (e.g. "CRC mismatch") are
+/// left untranslated inside the parentheses.
+extension OfflineIndexError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .notGzip:
+            return String(localized: "The downloaded index isn't a gzip file.", bundle: .module, comment: "Offline food database update error.")
+        case .corruptGzip(let detail):
+            return String(localized: "The downloaded index is corrupted (\(detail)).", bundle: .module, comment: "Offline food database update error. %@ is a technical detail in English.")
+        case .unsupportedSchema(let schema):
+            return String(localized: "The index uses format \(schema), which needs a newer app.", bundle: .module, comment: "Offline food database update error. %lld is the format version number.")
+        case .decodingFailed(let detail):
+            return String(localized: "The index couldn't be read (\(detail)).", bundle: .module, comment: "Offline food database update error. %@ is a technical detail in English.")
+        case .checksumMismatch:
+            return String(localized: "The downloaded index failed its checksum.", bundle: .module, comment: "Offline food database update error.")
+        case .invalidManifest(let detail):
+            return String(localized: "The index manifest is invalid (\(detail)).", bundle: .module, comment: "Offline food database update error. %@ is a technical detail in English.")
+        case .httpStatus(let code):
+            return String(localized: "The index server answered HTTP \(code).", bundle: .module, comment: "Offline food database update error. %lld is the HTTP status code.")
+        }
+    }
+}
+
 // MARK: - The index
 
 public struct OfflineFoodIndex: Sendable {

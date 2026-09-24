@@ -36,7 +36,9 @@ struct QuickPickControl1: ControlWidget {
             }
         }
         .displayName("Quick Log #1")
-        .description("Logs your most-used food. Briefly opens GarminFood to do it -- there is no App Group on this account, so the real work can only happen there (design.md D1).")
+        // Briefly opens the app because there is no App Group on this
+        // account, so the real work can only happen there (design.md D1).
+        .description("Logs your most-used food. Briefly opens GarminFood to do it.")
     }
 }
 
@@ -52,7 +54,7 @@ struct QuickPickControl2: ControlWidget {
             }
         }
         .displayName("Quick Log #2")
-        .description("Logs your #2 most-used food. Briefly opens GarminFood to do it (design.md D1).")
+        .description("Logs your #2 most-used food. Briefly opens GarminFood to do it.")
     }
 }
 
@@ -68,7 +70,7 @@ struct QuickPickControl3: ControlWidget {
             }
         }
         .displayName("Quick Log #3")
-        .description("Logs your #3 most-used food. Briefly opens GarminFood to do it (design.md D1).")
+        .description("Logs your #3 most-used food. Briefly opens GarminFood to do it.")
     }
 }
 
@@ -84,6 +86,6 @@ struct QuickPickControl4: ControlWidget {
             }
         }
         .displayName("Quick Log #4")
-        .description("Logs your #4 most-used food. Briefly opens GarminFood to do it (design.md D1).")
+        .description("Logs your #4 most-used food. Briefly opens GarminFood to do it.")
     }
 }

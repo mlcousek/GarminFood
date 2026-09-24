@@ -95,7 +95,10 @@ struct GarminFoodLockScreenWidget: Widget {
             GarminFoodLockScreenWidgetView()
         }
         .configurationDisplayName("Log Food")
-        .description("A Lock Screen shortcut straight into GarminFood's food catalog, ready to log. Shows no live total (design.md D2) and has no interactive element (Lock Screen widget buttons are inert while locked, per Apple's own documentation).")
+        // User-facing gallery text (add-localization 5.2). Shows no live total
+        // (design.md D2) and has no interactive element (Lock Screen widget
+        // buttons are inert while locked, per Apple's own documentation).
+        .description("One tap opens GarminFood's food catalog, ready to log.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline])
     }
 }

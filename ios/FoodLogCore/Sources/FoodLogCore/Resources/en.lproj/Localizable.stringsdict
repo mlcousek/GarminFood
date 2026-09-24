@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  FoodLogCore plurals, English (add-localization design.md D3). Every key
+  here must also be in cs.lproj/Localizable.stringsdict. Keys are the
+  English source text exactly as `String(localized:bundle: .module)`
+  generates it.
+-->
+<plist version="1.0">
+<dict>
+	<!-- Fasting reminder notification body (NotificationPlanning.swift). %@ is a 24-hour clock time (HH:mm), the plural variable is the minutes until eating opens. -->
+	<key>Your fast ends at %@ -- eating opens in %lld minutes.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>Your fast ends at %@ -- eating opens in %#@minutes@.</string>
+		<key>minutes</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld minute</string>
+			<key>other</key>
+			<string>%lld minutes</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

@@ -37,10 +37,10 @@ struct SettingsView: View {
             }
 
             Section {
-                nutritionRow("Calorie goal", value: calorieGoalText)
-                nutritionRow("Carbs", value: macroText(environment.profile.settings?.macroGoals?.carbs))
-                nutritionRow("Protein", value: macroText(environment.profile.settings?.macroGoals?.protein))
-                nutritionRow("Fat", value: macroText(environment.profile.settings?.macroGoals?.fat))
+                nutritionRow(String(localized: "Calorie goal"), value: calorieGoalText)
+                nutritionRow(String(localized: "Carbs"), value: macroText(environment.profile.settings?.macroGoals?.carbs))
+                nutritionRow(String(localized: "Protein"), value: macroText(environment.profile.settings?.macroGoals?.protein))
+                nutritionRow(String(localized: "Fat"), value: macroText(environment.profile.settings?.macroGoals?.fat))
                 ForEach(environment.dayLog.latestWindows.sorted { $0.mealType.rawValue < $1.mealType.rawValue }, id: \.mealType) { window in
                     nutritionRow(window.mealType.displayName, value: window.displayText)
                 }
@@ -150,9 +150,9 @@ struct SettingsView: View {
 
     private var statusText: String {
         switch environment.authState.state {
-        case .authenticated: return "Connected"
-        case .needsSignIn: return "Sign-in expired"
-        case .signedOut: return "Not connected"
+        case .authenticated: return String(localized: "Connected")
+        case .needsSignIn: return String(localized: "Sign-in expired")
+        case .signedOut: return String(localized: "Not connected")
         }
     }
 

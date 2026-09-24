@@ -31,28 +31,37 @@ import SwiftUI
 
 struct GarminFoodHomeEntry: TimelineEntry {
     let date: Date
+    /// This widget's own Edit Widget theme (WidgetTheme.swift, D13).
+    var theme: WidgetThemeOption = .standard
 }
 
-struct GarminFoodHomeProvider: TimelineProvider {
+struct GarminFoodHomeProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> GarminFoodHomeEntry {
         GarminFoodHomeEntry(date: .now)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (GarminFoodHomeEntry) -> Void) {
-        completion(GarminFoodHomeEntry(date: .now))
+    func snapshot(for configuration: WidgetThemeIntent, in context: Context) async -> GarminFoodHomeEntry {
+        GarminFoodHomeEntry(date: .now, theme: configuration.theme)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<GarminFoodHomeEntry>) -> Void) {
+    func timeline(for configuration: WidgetThemeIntent, in context: Context) async -> Timeline<GarminFoodHomeEntry> {
         // `.never`: there is nothing to refresh towards (see file header).
         // Requesting a future reload here would only spend WidgetKit's
         // limited per-widget daily reload budget for a widget that could
-        // never have anything new to show anyway.
-        completion(Timeline(entries: [GarminFoodHomeEntry(date: .now)], policy: .never))
+        // never have anything new to show anyway. Editing the widget's
+        // theme reloads it by itself.
+        Timeline(entries: [GarminFoodHomeEntry(date: .now, theme: configuration.theme)], policy: .never)
     }
 }
 
 struct GarminFoodHomeWidgetView: View {
+    let entry: GarminFoodHomeEntry
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
+        // The widget's own theme from AppearanceKit, not `Theme.*`: the
+        // app's theme can't reach this process (WidgetTheme.swift).
+        let colors = WidgetThemeColors(option: entry.theme, colorScheme: colorScheme)
         VStack(spacing: 6) {
             Image(systemName: "fork.knife.circle.fill")
                 .font(.system(size: 30, weight: .semibold))
@@ -60,16 +69,10 @@ struct GarminFoodHomeWidgetView: View {
             Text("Log Food")
                 .font(.caption.weight(.semibold))
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(colors.label)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
-            // Theme lives in Shared/, compiled into this extension too, so
-            // the widget and the app can't drift apart.
-            LinearGradient(
-                colors: [Theme.accent, Theme.accentDeep],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            colors.accentBackground
         }
         .widgetURL(GarminFoodDeepLink.logFoodURL)
         .accessibilityElement(children: .combine)
@@ -82,11 +85,16 @@ struct GarminFoodHomeWidget: Widget {
     static let kind = "com.mlcousek.garminfood.widget.home"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: Self.kind, provider: GarminFoodHomeProvider()) { _ in
-            GarminFoodHomeWidgetView()
+        // Same `kind` as the former StaticConfiguration, so placed widgets
+        // stay put and start on the intent's default theme (D13).
+        AppIntentConfiguration(kind: Self.kind, intent: WidgetThemeIntent.self, provider: GarminFoodHomeProvider()) { entry in
+            GarminFoodHomeWidgetView(entry: entry)
         }
         .configurationDisplayName("Log Food")
-        .description("A one-tap shortcut straight into GarminFood's food catalog, ready to log. Shows no live calorie data -- there is no way for a widget to read that on this account (design.md D2).")
+        // User-facing gallery text (add-localization 5.2). Shows no live
+        // calorie data -- there is no way for a widget to read that on this
+        // account (design.md D2).
+        .description("One tap opens GarminFood's food catalog, ready to log.")
         .supportedFamilies([.systemSmall])
     }
 }

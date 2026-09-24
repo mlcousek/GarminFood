@@ -39,7 +39,7 @@ struct HydrationHeroCard: View {
                 .kerning(0.6)
             HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
                 Text(todayTotalML.formattedML)
-                    .font(.heroNumber)
+                    .heroNumberFont()
                     .minimumScaleFactor(0.6)
                     .lineLimit(1)
                 Text("ml")

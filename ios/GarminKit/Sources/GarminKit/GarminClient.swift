@@ -245,6 +245,32 @@ public struct GarminClient: Sendable {
         }
     }
 
+    /// GET `/activitylist-service/activities/search/activities?startDate=&endDate=&limit=`
+    /// (dates `yyyy-MM-dd`). READ-ONLY -- confirmed 200 by a read-only probe
+    /// against the owner's live account on 2026-09-24 (docs/garmin-routes.json
+    /// `activitiesSearch`): a bare JSON array of activities, see
+    /// `GarminActivity`. Keep `limit` <= 20 (the probe could only see 20 KB of
+    /// body; larger pages are unverified). Used only by the app's
+    /// `GamificationSignalsSync` on refresh -- never on a confirm path.
+    /// NOT yet device-verified from this project's own code.
+    public func activities(startDate: String, endDate: String, limit: Int) async throws -> [GarminActivity] {
+        let (data, response) = try await get(
+            path: "/activitylist-service/activities/search/activities",
+            query: [
+                URLQueryItem(name: "startDate", value: startDate),
+                URLQueryItem(name: "endDate", value: endDate),
+                URLQueryItem(name: "limit", value: String(limit))
+            ]
+        )
+        try Self.throwIfNotSuccessful(response, data: data)
+        do {
+            return try Self.decoder.decode([GarminActivity].self, from: data)
+        } catch {
+            DiagnosticsLog.log(.error, category: "GarminClient", "activities \(startDate)..\(endDate) did not decode: \(String(describing: error).prefix(300))")
+            throw GarminClientError.decodingFailed(description: String(describing: error))
+        }
+    }
+
     // MARK: - Writes (create confirmed 2026-09-16; delete not yet exercised)
 
     /// PUT `/nutrition-service/food/logs`, body per `FoodLogWriteBody`.

@@ -71,9 +71,35 @@ public struct XPAwardResult: Equatable, Sendable {
     public let xpAwarded: Int
     public let streakBonusAwarded: Bool
     public let goalBonusAwarded: Bool
+    /// add-gamification-signals D10: the highest level ever reached,
+    /// before and after this award (`nil` only for results built without a
+    /// store, e.g. in tests).
+    public let peakLevelBefore: Int?
+    public let peakLevelAfter: Int?
 
-    public var levelBefore: LevelCurve.Progress { LevelCurve.level(forTotalXP: totalXPBefore) }
-    public var levelAfter: LevelCurve.Progress { LevelCurve.level(forTotalXP: totalXPAfter) }
+    public init(
+        totalXPBefore: Int,
+        totalXPAfter: Int,
+        xpAwarded: Int,
+        streakBonusAwarded: Bool,
+        goalBonusAwarded: Bool,
+        peakLevelBefore: Int? = nil,
+        peakLevelAfter: Int? = nil
+    ) {
+        self.totalXPBefore = totalXPBefore
+        self.totalXPAfter = totalXPAfter
+        self.xpAwarded = xpAwarded
+        self.streakBonusAwarded = streakBonusAwarded
+        self.goalBonusAwarded = goalBonusAwarded
+        self.peakLevelBefore = peakLevelBefore
+        self.peakLevelAfter = peakLevelAfter
+    }
+
+    /// The displayed levels: never below the peak (design D10).
+    public var levelBefore: LevelCurve.Progress { LevelCurve.level(forTotalXP: totalXPBefore, peakLevel: peakLevelBefore) }
+    public var levelAfter: LevelCurve.Progress { LevelCurve.level(forTotalXP: totalXPAfter, peakLevel: peakLevelAfter) }
+    /// Fires only when the curve level rises ABOVE the previous peak, so a
+    /// level that was already reached is never celebrated twice.
     public var didLevelUp: Bool { levelAfter.level > levelBefore.level }
 }
 
@@ -82,6 +108,11 @@ public actor XPStore {
         var totalXP: Int
         var lastStreakBonusDay: String?
         var lastGoalBonusDay: String?
+        /// add-gamification-signals D10: the highest level ever displayed.
+        /// Optional so pre-change files decode; seeded on load (see
+        /// `loadIfNeeded`) from the larger of the old-curve and new-curve
+        /// level, so the 1.045 -> 1.0505 retune never lowers anyone.
+        var peakLevel: Int?
     }
 
     private let fileURL: URL
@@ -103,6 +134,35 @@ public actor XPStore {
         let result = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: JSONDecoder(), category: "XPStore")
         loaded = !result.isUnreadable
         snapshot = result.value ?? snapshot
+        if snapshot.peakLevel == nil {
+            let legacy = LevelCurve.level(forTotalXP: snapshot.totalXP, growthFactor: LevelCurve.legacyGrowthFactor).level
+            let current = LevelCurve.level(forTotalXP: snapshot.totalXP).level
+            snapshot.peakLevel = max(legacy, current)
+        }
+    }
+
+    /// Adds `xp` and raises the peak if the curve level passed it.
+    /// Returns the peak before the change.
+    private func add(_ xp: Int) -> (peakBefore: Int, peakAfter: Int) {
+        let peakBefore = snapshot.peakLevel ?? 1
+        snapshot.totalXP += xp
+        let curveLevel = LevelCurve.level(forTotalXP: snapshot.totalXP).level
+        let peakAfter = max(peakBefore, curveLevel)
+        snapshot.peakLevel = peakAfter
+        return (peakBefore, peakAfter)
+    }
+
+    /// The highest level ever reached (never lowered by a curve change).
+    public func peakLevel() -> Int {
+        loadIfNeeded()
+        return snapshot.peakLevel ?? 1
+    }
+
+    /// The level to display: `max(curve level, peakLevel)` with progress
+    /// toward the next level on the current curve.
+    public func currentProgress() -> LevelCurve.Progress {
+        loadIfNeeded()
+        return LevelCurve.level(forTotalXP: snapshot.totalXP, peakLevel: snapshot.peakLevel)
     }
 
     private func persist() throws {
@@ -150,7 +210,7 @@ public actor XPStore {
             goalBonusAwarded = true
         }
 
-        snapshot.totalXP += awarded
+        let peaks = add(awarded)
         try persist()
 
         return XPAwardResult(
@@ -158,7 +218,9 @@ public actor XPStore {
             totalXPAfter: snapshot.totalXP,
             xpAwarded: awarded,
             streakBonusAwarded: streakBonusAwarded,
-            goalBonusAwarded: goalBonusAwarded
+            goalBonusAwarded: goalBonusAwarded,
+            peakLevelBefore: peaks.peakBefore,
+            peakLevelAfter: peaks.peakAfter
         )
     }
 
@@ -167,8 +229,16 @@ public actor XPStore {
     public func recordChallengeCompletion(xp: Int = XPAward.challengeCompletionBonus) throws -> XPAwardResult {
         loadIfNeeded()
         let before = snapshot.totalXP
-        snapshot.totalXP += xp
+        let peaks = add(xp)
         try persist()
-        return XPAwardResult(totalXPBefore: before, totalXPAfter: snapshot.totalXP, xpAwarded: xp, streakBonusAwarded: false, goalBonusAwarded: false)
+        return XPAwardResult(
+            totalXPBefore: before,
+            totalXPAfter: snapshot.totalXP,
+            xpAwarded: xp,
+            streakBonusAwarded: false,
+            goalBonusAwarded: false,
+            peakLevelBefore: peaks.peakBefore,
+            peakLevelAfter: peaks.peakAfter
+        )
     }
 }

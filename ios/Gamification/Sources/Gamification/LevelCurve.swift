@@ -33,7 +33,19 @@ public enum LevelCurve {
     /// three, and level 100 around six years in -- with levels past ~150
     /// staying honestly aspirational, the same "may never be reached in
     /// practice" role `maxLevel` below already plays.
-    public static let growthFactor: Double = 1.045
+    ///
+    /// 2026-09-24 (`add-gamification-signals` design D10): 1.045 -> 1.0505.
+    /// The new sources (bingo, boss, records, collections, journeys) add
+    /// ~31 XP/day on average; the steeper curve keeps level 84 about three
+    /// years away (≈ 116 k XP instead of ≈ 84 k). Because a steeper curve
+    /// can map an existing XP total to a LOWER level, `XPStore` remembers
+    /// the highest level ever reached (`peakLevel`) and the displayed level
+    /// is never below it -- see `level(forTotalXP:peakLevel:)`.
+    public static let growthFactor: Double = 1.0505
+
+    /// The pre-2026-09-24 factor, only used to seed `XPStore.peakLevel` for
+    /// an XP ledger written before the retune (so nobody loses a level).
+    public static let legacyGrowthFactor: Double = 1.045
 
     /// A safety ceiling, not a design statement -- purely so
     /// `level(forTotalXP:)` always terminates. At `growthFactor` 1.3 this
@@ -43,9 +55,19 @@ public enum LevelCurve {
 
     /// XP required to advance from `level` to `level + 1`.
     public static func xpRequired(afterLevel level: Int) -> Int {
+        xpRequired(afterLevel: level, growthFactor: growthFactor)
+    }
+
+    static func xpRequired(afterLevel level: Int, growthFactor factor: Double) -> Int {
         precondition(level >= 1, "levels start at 1")
-        let raw = baseXPForFirstLevelUp * pow(growthFactor, Double(level - 1))
+        let raw = baseXPForFirstLevelUp * pow(factor, Double(level - 1))
         return max(1, Int(raw.rounded()))
+    }
+
+    /// Total XP at which `level` is reached (0 for level 1).
+    public static func threshold(forLevel level: Int) -> Int {
+        guard level > 1 else { return 0 }
+        return (1..<min(level, maxLevel)).reduce(0) { $0 + xpRequired(afterLevel: $1) }
     }
 
     public struct Progress: Equatable, Sendable {
@@ -75,15 +97,36 @@ public enum LevelCurve {
     /// same `totalXP` always yields the same `Progress`, with no
     /// configuration or randomness involved.
     public static func level(forTotalXP totalXP: Int) -> Progress {
+        level(forTotalXP: totalXP, growthFactor: growthFactor)
+    }
+
+    /// add-gamification-signals D10: the DISPLAYED level -- never below
+    /// `peakLevel` (a level once reached is never taken away). When the
+    /// peak is above the curve level, progress is measured toward
+    /// `peakLevel + 1` on the current curve (0 into the band until the XP
+    /// total catches up).
+    public static func level(forTotalXP totalXP: Int, peakLevel: Int?) -> Progress {
+        let curve = level(forTotalXP: totalXP)
+        guard let peak = peakLevel.map({ min($0, maxLevel) }), peak > curve.level else { return curve }
+        let bandWidth = peak < maxLevel ? xpRequired(afterLevel: peak) : 0
+        return Progress(
+            level: peak,
+            totalXP: totalXP,
+            xpIntoCurrentLevel: max(0, totalXP - threshold(forLevel: peak)),
+            xpNeededForNextLevel: bandWidth
+        )
+    }
+
+    static func level(forTotalXP totalXP: Int, growthFactor factor: Double) -> Progress {
         var level = 1
         var thresholdForCurrentLevel = 0
         while level < maxLevel {
-            let bandWidth = xpRequired(afterLevel: level)
+            let bandWidth = xpRequired(afterLevel: level, growthFactor: factor)
             if totalXP < thresholdForCurrentLevel + bandWidth { break }
             thresholdForCurrentLevel += bandWidth
             level += 1
         }
-        let bandWidth = level < maxLevel ? xpRequired(afterLevel: level) : 0
+        let bandWidth = level < maxLevel ? xpRequired(afterLevel: level, growthFactor: factor) : 0
         return Progress(
             level: level,
             totalXP: totalXP,

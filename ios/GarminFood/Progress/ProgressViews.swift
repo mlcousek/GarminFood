@@ -34,6 +34,8 @@ struct ProgressHomeView: View {
                 }
                 .buttonStyle(.plain)
 
+                ProgressSlotHost() // add-gamification-signals D12: feature cards
+
                 NavigationLink {
                     ChallengesView()
                 } label: {
@@ -532,6 +534,7 @@ struct LevelDetailView: View {
     @Environment(AppEnvironment.self) private var environment
 
     @ScaledMetric(relativeTo: .largeTitle) private var ringSize: CGFloat = 160
+    @ScaledMetric(relativeTo: .largeTitle) private var levelNumberSize: CGFloat = 48
 
     var body: some View {
         let progress = environment.gamificationEngine.levelProgress
@@ -549,7 +552,7 @@ struct LevelDetailView: View {
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
                             Text("\(progress.level)")
-                                .font(.system(size: 48, weight: .bold, design: .rounded))
+                                .font(.system(size: levelNumberSize, weight: .bold, design: .rounded))
                                 .minimumScaleFactor(0.5)
                         }
                     }
@@ -625,7 +628,9 @@ struct LevelDetailView: View {
     private func upcomingLevels(from progress: LevelCurve.Progress, count: Int = 5) -> [UpcomingLevel] {
         guard progress.xpNeededForNextLevel > 0 else { return [] }
         var result: [UpcomingLevel] = []
-        var total = progress.totalXP + (progress.xpNeededForNextLevel - progress.xpIntoCurrentLevel)
+        // Absolute thresholds (not totalXP + remaining): correct also when
+        // the displayed level is a held peak above the curve (design D10).
+        var total = LevelCurve.threshold(forLevel: progress.level + 1)
         var level = progress.level + 1
         while result.count < count, level <= LevelCurve.maxLevel {
             result.append(UpcomingLevel(level: level, totalXP: total))

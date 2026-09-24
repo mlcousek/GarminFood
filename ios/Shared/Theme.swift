@@ -157,8 +157,13 @@ extension Font {
     // number the user is meant to feel good about, while still a system
     // font). Tabular digits in every design so the count never jitters
     // horizontally as it changes.
+    /// Fixed 72 pt. Views use `.heroNumberFont()` (below), which scales it
+    /// with Dynamic Type; this stays for anything that needs a plain `Font`.
     static var heroNumber: Font {
-        Font.system(size: 72, weight: .bold, design: ThemeRuntime.shared.numberDesign).monospacedDigit()
+        heroNumber(size: 72)
+    }
+    static func heroNumber(size: CGFloat) -> Font {
+        Font.system(size: size, weight: .bold, design: ThemeRuntime.shared.numberDesign).monospacedDigit()
     }
     static var heroUnit: Font {
         Font.system(.title3, design: ThemeRuntime.shared.numberDesign).weight(.semibold)
@@ -169,5 +174,24 @@ extension Font {
     static let streakLabel = Font.system(.subheadline, design: .rounded).weight(.medium)
     static var macroValue: Font {
         Font.system(.subheadline, design: ThemeRuntime.shared.numberDesign).weight(.semibold).monospacedDigit()
+    }
+}
+
+/// The hero number (weight, hydration) at 72 pt scaled with Dynamic Type,
+/// relative to Large Title (add-themes-and-layout D6, task 2.5; spec
+/// "Large text"). `@ScaledMetric` needs a view, hence a modifier rather
+/// than a `Font` constant.
+struct HeroNumberFont: ViewModifier {
+    @ScaledMetric(relativeTo: .largeTitle) private var size: CGFloat = 72
+
+    func body(content: Content) -> some View {
+        content.font(.heroNumber(size: size))
+    }
+}
+
+extension View {
+    /// `.font(.heroNumber)`, but growing with the user's text size.
+    func heroNumberFont() -> some View {
+        modifier(HeroNumberFont())
     }
 }

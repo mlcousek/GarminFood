@@ -57,13 +57,13 @@ public enum DayNoteTag: String, Codable, Sendable, CaseIterable, Identifiable, H
 
     public var title: String {
         switch self {
-        case .race: return "Race"
-        case .training: return "Training"
-        case .celebration: return "Celebration"
-        case .sick: return "Sick"
-        case .travel: return "Travel"
-        case .party: return "Party"
-        case .restDay: return "Rest day"
+        case .race: return String(localized: "Race", bundle: .module, comment: "Day note tag (what kind of day it was), shown on a chip.")
+        case .training: return String(localized: "Training", bundle: .module, comment: "Day note tag (what kind of day it was), shown on a chip.")
+        case .celebration: return String(localized: "Celebration", bundle: .module, comment: "Day note tag (what kind of day it was), shown on a chip.")
+        case .sick: return String(localized: "Sick", bundle: .module, comment: "Day note tag (what kind of day it was), shown on a chip.")
+        case .travel: return String(localized: "Travel", bundle: .module, comment: "Day note tag (what kind of day it was), shown on a chip.")
+        case .party: return String(localized: "Party", bundle: .module, comment: "Day note tag (what kind of day it was), shown on a chip.")
+        case .restDay: return String(localized: "Rest day", bundle: .module, comment: "Day note tag (what kind of day it was), shown on a chip.")
         }
     }
 

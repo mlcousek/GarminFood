@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Widget extension display name (Info.plist key; the English value 'GarminFood Widget' is in ios/project.yml). GarminFood is the app name, never translated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widget GarminFood"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

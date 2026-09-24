@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSCameraUsageDescription" : {
+      "comment" : "Camera permission prompt (Info.plist key; the English text is the value in ios/project.yml). Shown before barcode scanning.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GarminFood používá fotoaparát ke skenování čárového kódu výrobku a k jeho vyhledání v databázi potravin Garminu."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

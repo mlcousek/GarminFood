@@ -11,6 +11,5 @@ GarminFood/Profile/AppIconOption.swift:case \.indigo  # enum case name, not a co
 GarminFood/Progress/ProgressViews.swift:foregroundStyle\(\.white\)  # StreakDot glyph on its ember/grace fill in every theme
 GarminFood/Profile/ProfileView.swift:tint\(\.white\)  # loading spinner drawn over the avatar photo
 GarminFood/Profile/SettingsView.swift:foregroundStyle\(\.white\)  # sync-queue count badge on the warning fill
-GarminFoodWidget/GarminFoodHomeWidget.swift:foregroundStyle\(\.white\)  # widget fallback: fixed white on the accent gradient (the widget never loads settings, R4)
-GarminFoodWidget/GarminFoodStreakWidget.swift:foregroundStyle\(\.white\)  # widget fallback: fixed white on the flame gradient (R4)
 GarminFood/Profile/Appearance/ThemeDisplayName.swift:case \.(teal|indigo)  # BuiltInTheme case names, not colors
+GarminFoodWidget/WidgetTheme.swift:\.(teal|indigo)  # WidgetThemeOption / BuiltInTheme case names, not colors
