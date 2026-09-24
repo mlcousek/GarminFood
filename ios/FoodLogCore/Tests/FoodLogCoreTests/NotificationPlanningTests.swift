@@ -161,5 +161,88 @@ final class NotificationPlanningTests: XCTestCase {
         XCTAssertFalse(NotificationPreferences.disabledDefault.fastingReminder.isEnabled)
         XCTAssertFalse(NotificationPreferences.disabledDefault.fastingStartReminder.isEnabled)
     }
+
+    // MARK: - diff (add-localization 3.3b)
+
+    private typealias Text = NotificationPlanning.NotificationText
+    private let english = Text(title: "Log your breakfast", body: "Don't forget to log breakfast today.")
+    private let czech = Text(title: "Zapiš si snídani", body: "Nezapomeň si dnes zapsat snídani.")
+
+    func testDiffAddsAPlannedNotificationThatIsNotPending() {
+        let diff = NotificationPlanning.diff(
+            planned: ["reminder.mealReminder.breakfast.2026-09-25": english],
+            pending: [:],
+            ownedPrefix: "reminder."
+        )
+
+        XCTAssertEqual(diff, NotificationPlanning.PendingDiff(toRemove: [], toAdd: ["reminder.mealReminder.breakfast.2026-09-25"]))
+    }
+
+    func testDiffLeavesAnUnchangedPendingNotificationAlone() {
+        let id = "reminder.mealReminder.breakfast.2026-09-25"
+
+        let diff = NotificationPlanning.diff(planned: [id: english], pending: [id: english], ownedPrefix: "reminder.")
+
+        XCTAssertEqual(diff, NotificationPlanning.PendingDiff(toRemove: [], toAdd: []), "a no-op replan must not touch the system")
+    }
+
+    /// Spec "Pending reminder after language change": same identifier,
+    /// scheduled in English, planned in Czech -> re-added with the Czech
+    /// text (the add replaces the pending request).
+    func testDiffReAddsAPendingNotificationWhoseTextChanged() {
+        let id = "reminder.mealReminder.breakfast.2026-09-25"
+
+        let diff = NotificationPlanning.diff(planned: [id: czech], pending: [id: english], ownedPrefix: "reminder.")
+
+        XCTAssertEqual(diff, NotificationPlanning.PendingDiff(toRemove: [], toAdd: [id]))
+    }
+
+    func testDiffNoticesABodyOnlyChange() {
+        let id = "fastingReminder.ends.765.780"
+        let old = Text(title: "Fasting window ending soon", body: "Your fast ends at 13:00 -- eating opens in 15 minutes.")
+        let new = Text(title: "Fasting window ending soon", body: "Your fast ends at 13:00 – eating opens in 15 minutes.")
+
+        let diff = NotificationPlanning.diff(planned: [id: new], pending: [id: old], ownedPrefix: "fastingReminder.")
+
+        XCTAssertEqual(diff.toAdd, [id])
+    }
+
+    func testDiffRemovesOwnedPendingNotificationsThatAreNoLongerPlanned() {
+        let diff = NotificationPlanning.diff(
+            planned: [:],
+            pending: [
+                "reminder.mealReminder.lunch.2026-09-24": english,
+                "reminder.streakReminder.2026-09-25": english
+            ],
+            ownedPrefix: "reminder."
+        )
+
+        XCTAssertEqual(diff.toRemove, ["reminder.mealReminder.lunch.2026-09-24", "reminder.streakReminder.2026-09-25"])
+        XCTAssertEqual(diff.toAdd, [])
+    }
+
+    /// The meal cycle ("reminder.") and the fasting cycle
+    /// ("fastingReminder.") diff independently; neither may remove the
+    /// other's requests, nor anything it doesn't own.
+    func testDiffIgnoresPendingRequestsOutsideItsPrefix() {
+        let diff = NotificationPlanning.diff(
+            planned: [:],
+            pending: [
+                "fastingReminder.ends.765.780": english,
+                "somethingElse.1": english
+            ],
+            ownedPrefix: "reminder."
+        )
+
+        XCTAssertEqual(diff, NotificationPlanning.PendingDiff(toRemove: [], toAdd: []))
+    }
+
+    func testPlannedItemsExposeTheirTextForTheDiff() throws {
+        let reminder = try XCTUnwrap(
+            NotificationPlanning.planFastingReminders(schedule: .standard, endsSoon: on15, startsSoon: off15).first
+        )
+
+        XCTAssertEqual(reminder.text, Text(title: reminder.title, body: reminder.body))
+    }
 }
 
