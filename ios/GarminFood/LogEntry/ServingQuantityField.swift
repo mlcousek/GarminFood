@@ -80,6 +80,23 @@ struct ServingQuantityField: View {
                         .labelsHidden()
                 }
             }
+            // On the always-present row, not the Group: a Group's modifiers
+            // are applied to EACH of its rows inside a Form.
+            .onAppear {
+                guard !didLoad else { return }
+                didLoad = true
+                show(quantity)
+            }
+            .onChange(of: serving) { _, _ in
+                show(quantity)
+            }
+            .onChange(of: text) { _, newValue in
+                if newValue == writtenText {
+                    quantity = writtenQuantity
+                } else {
+                    quantity = input.quantity(fromText: newValue, mode: mode)
+                }
+            }
 
             if quantity == nil {
                 // The caller's confirm/save button is disabled meanwhile,
@@ -93,21 +110,6 @@ struct ServingQuantityField: View {
                 Text(caption)
                     .font(.caption)
                     .foregroundStyle(.tertiary)
-            }
-        }
-        .onAppear {
-            guard !didLoad else { return }
-            didLoad = true
-            show(quantity)
-        }
-        .onChange(of: serving) { _, _ in
-            show(quantity)
-        }
-        .onChange(of: text) { _, newValue in
-            if newValue == writtenText {
-                quantity = writtenQuantity
-            } else {
-                quantity = input.quantity(fromText: newValue, mode: mode)
             }
         }
     }
