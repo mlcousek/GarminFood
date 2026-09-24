@@ -13,6 +13,30 @@
         }
       }
     },
+    "%@ kcal left": {
+      "comment": "Calorie ring headline; %@ = whole kcal still available today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá %@ kcal"
+          }
+        }
+      }
+    },
+    "%@ kcal over": {
+      "comment": "Calorie ring headline; %@ = whole kcal above today's target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kcal přes cíl"
+          }
+        }
+      }
+    },
     "%@ kg": {
       "comment": "A weight in kilograms; %@ is the formatted number.",
       "extractionState": "manual",
@@ -33,6 +57,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ ml"
+          }
+        }
+      }
+    },
+    "%@ of %@ kilocalories": {
+      "comment": "VoiceOver value of the calorie ring; first %@ = consumed, second %@ = target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ z %2$@ kilokalorií"
           }
         }
       }
@@ -337,6 +373,54 @@
         }
       }
     },
+    "Active calories burned that day: %@ kilocalories. For information only, not added to the target.": {
+      "comment": "VoiceOver label for a past day's active-calories line; %@ = kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivní kalorie spálené ten den: %@ kilokalorií. Jen pro informaci, k cíli se nepřičítají."
+          }
+        }
+      }
+    },
+    "Active calories burned today: %@ kilocalories. For information only, not added to the target.": {
+      "comment": "VoiceOver label for today's active-calories line; %@ = kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnes spálené aktivní kalorie: %@ kilokalorií. Jen pro informaci, k cíli se nepřičítají."
+          }
+        }
+      }
+    },
+    "Active today: %@ kcal": {
+      "comment": "Info line under the calorie ring: active calories burned today; %@ = kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivní dnes: %@ kcal"
+          }
+        }
+      }
+    },
+    "Active: %@ kcal": {
+      "comment": "Info line under the calorie ring for a past day: active calories burned; %@ = kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivní: %@ kcal"
+          }
+        }
+      }
+    },
     "Add ingredient": {
       "comment": "Navigation title when picking an ingredient for a saved meal.",
       "extractionState": "manual",
@@ -513,6 +597,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Snídaně"
+          }
+        }
+      }
+    },
+    "C": {
+      "comment": "One-letter abbreviation of Carbs on a compact macro bar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S"
           }
         }
       }
@@ -1057,6 +1153,18 @@
         }
       }
     },
+    "Couldn't save this entry.": {
+      "comment": "Error shown when a water entry couldn't be saved locally.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento záznam se nepodařilo uložit."
+          }
+        }
+      }
+    },
     "Create in Garmin": {
       "comment": "Button / navigation title: create this Open Food Facts item as a custom food in Garmin.",
       "extractionState": "manual",
@@ -1467,6 +1575,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Všechny zapsané záznamy dorazily do Garminu."
+          }
+        }
+      }
+    },
+    "F": {
+      "comment": "One-letter abbreviation of Fat on a compact macro bar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "T"
           }
         }
       }
@@ -1969,6 +2089,18 @@
         }
       }
     },
+    "Kilocalories: %@": {
+      "comment": "VoiceOver value of the calorie ring when there is no target; %@ = consumed kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilokalorie: %@"
+          }
+        }
+      }
+    },
     "Last day": {
       "comment": "Challenge status: today is the final day of its window.",
       "extractionState": "manual",
@@ -2037,6 +2169,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Světlý"
+          }
+        }
+      }
+    },
+    "Log a meal": {
+      "comment": "Today screen section header above the per-meal cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš jídlo"
+          }
+        }
+      }
+    },
+    "Log again": {
+      "comment": "Today screen section header above the quick 'log it again' foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat znovu"
           }
         }
       }
@@ -2353,6 +2509,18 @@
         }
       }
     },
+    "No calorie target": {
+      "comment": "Calorie ring headline when Garmin has no calorie goal set.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez cíle kalorií"
+          }
+        }
+      }
+    },
     "no HTTP response": {
       "comment": "Sign-in error detail used inside parentheses when no HTTP status came back, e.g. 'Garmin rejected the sign-in ticket (no HTTP response).'",
       "extractionState": "manual",
@@ -2601,6 +2769,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Obrysové"
+          }
+        }
+      }
+    },
+    "P": {
+      "comment": "One-letter abbreviation of Protein on a compact macro bar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "B"
           }
         }
       }
@@ -3807,6 +3987,18 @@
     },
     "Weight & water": {
       "comment": "Sync queue section header: queued weigh-ins and drinks.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váha a voda"
+          }
+        }
+      }
+    },
+    "Weight & Water": {
+      "comment": "Today screen section header above the weight and water cards.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
