@@ -1,7 +1,7 @@
 ## 1. Route registry (docs only, READ-ONLY route)
 
-- [ ] 1.1 Add `activitiesSearch` to `docs/garmin-routes.json` `read[]`: GET `/activitylist-service/activities/search/activities?startDate={yyyy-MM-dd}&endDate={yyyy-MM-dd}&limit={n}`, `lastVerified` "2026-09-24", `observedStatus` 200, notes: JSON array, 78 keys per item, fields used (`activityId`, `startTimeLocal` "2026-09-23 19:22:08", `startTimeGMT`, `activityType.typeKey`, `duration` s, `calories`, `distance` m), probe body truncated at 20 KB so keep `limit` ≤ 20, READ-ONLY, used by gamification signals.
-- [ ] 1.2 Add a note to the existing `dailyWellnessSummary` and `dailyFoodLog` entries that gamification now caches their values (no new request).
+- [x] 1.1 Add `activitiesSearch` to `docs/garmin-routes.json` `read[]`: GET `/activitylist-service/activities/search/activities?startDate={yyyy-MM-dd}&endDate={yyyy-MM-dd}&limit={n}`, `lastVerified` "2026-09-24", `observedStatus` 200, notes: JSON array, 78 keys per item, fields used (`activityId`, `startTimeLocal` "2026-09-23 19:22:08", `startTimeGMT`, `activityType.typeKey`, `duration` s, `calories`, `distance` m), probe body truncated at 20 KB so keep `limit` ≤ 20, READ-ONLY, used by gamification signals.
+- [x] 1.2 Add a note to the existing `dailyWellnessSummary` and `dailyFoodLog` entries that gamification now caches their values (no new request).
 
 ## 2. GarminKit (read only)
 
