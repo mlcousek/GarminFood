@@ -11,12 +11,12 @@
 
 ## 3. FoodLogCore — tagging
 
-- [ ] 3.1 `FoodTag` (open struct) + core constants (D1).
-- [ ] 3.2 `FoodTagRule`, `FoodTagRuleSet`, token-boundary phrase matcher over `SearchText` + `CzechLightStemmer` (D2).
-- [ ] 3.3 `FoodTagRules+Core.swift`: core dictionary (food groups, colours, cuisines, drinks) with exclusions.
-- [ ] 3.4 `CzechBrands.swift`: brand list + EAN-859 helper.
-- [ ] 3.5 `FoodTagRuleRegistry.all` = core + three empty stub sets (`+Seasonal`, `+Collections`, `+Sport`) in their own files.
-- [ ] 3.6 `FoodTaggerTests` golden suite: ≥ 120 fixtures incl. the traps listed in design D13.
+- [x] 3.1 `FoodTag` (open struct) + core constants (D1).
+- [x] 3.2 `FoodTagRule`, `FoodTagRuleSet`, token-boundary phrase matcher over `SearchText` + `CzechLightStemmer` (D2).
+- [x] 3.3 `FoodTagRules+Core.swift`: core dictionary (food groups, colours, cuisines, drinks) with exclusions.
+- [x] 3.4 `CzechBrands.swift`: brand list + EAN-859 helper.
+- [x] 3.5 `FoodTagRuleRegistry.all` = core + three empty stub sets (`+Seasonal`, `+Collections`, `+Sport`) in their own files.
+- [x] 3.6 `FoodTaggerTests` golden suite: ≥ 120 fixtures incl. the traps listed in design D13.
 
 ## 4. FoodLogCore — caches and signals
 
