@@ -223,6 +223,9 @@ public enum DaySignalsBuilder {
 - **Water**: max(local hydration total, Garmin `valueInML`) for the day,
   goal from Garmin `goalInML` else the app's water goal preference, passed
   in by the app.
+- **ProfileSignals.weightGoal**: the app's `EffectiveWeightGoal`
+  (`GoalResolution`: local override, else Garmin nutrition settings
+  `startingWeight`/`targetWeight`), passed in as plain kilograms.
 - **ProfileSignals.firstName**: first whitespace-separated token of
   `socialProfile.fullName`, cached in `AppPreferences` by
   `GamificationSignalsSync` (so the widget-free, offline path still has it).
@@ -309,7 +312,11 @@ public struct FeatureMoment: Sendable, Equatable {
   and applies results: grants via `RewardLedger`, badges via the existing
   `AchievementStore.unlock(ids:now:)` (plus `XPAward.achievementBonus` for
   each newly unlocked badge — exactly what the engine already does for core
-  achievements), moments appended to `pendingMoments`. A feature that throws
+  achievements), moments appended to `pendingMoments`. For each newly
+  unlocked badge the host also queues the standard `.achievementUnlocked`
+  moment — **except** secret badges, whose feature supplies its own
+  `.secret` reveal moment (so a secret title is never shown twice, and never
+  by generic code before the reveal). A feature that throws
   or misbehaves is caught, logged to `DiagnosticsLog`, and skipped; the rest
   still run.
 - **Confirm path cost**: the host runs *after* the entry is committed to the
@@ -544,7 +551,7 @@ may edit; anything else shared needs a follow-up change.
 | `add-food-collections` | `Features/Collections/*`, `Signals/FoodTagRules+Collections.swift`, `Signals/FoodTag+Collections.swift` (new), `Progress/Slots/CollectionsSlotView.swift`, `Progress/Collections/*` | none |
 | `add-journeys-and-records` | `Features/Journeys/*`, `Features/Records/*`, `Progress/Slots/{JourneysSlotView,RecordsSlotView}.swift`, `Progress/Journeys/*`, `Progress/Records/*` | none |
 | `add-secret-achievements` | `Features/Secret/*`, `Progress/Slots/SecretsSlotView.swift` | none |
-| `add-sport-and-body-achievements` | `Features/SportBody/*`, `Signals/FoodTagRules+Sport.swift`, `Progress/Slots/SportBodySlotView.swift`, `Progress/SportBody/*` | none |
+| `add-sport-and-body-achievements` | `Features/SportBody/*`, `Signals/FoodTagRules+Sport.swift`, `Signals/FoodTag+Sport.swift` (new), `Progress/Slots/SportBodySlotView.swift`, `Progress/SportBody/*` | none |
 
 Tests: each change adds its own files under the package's `Tests/…Tests/`
 named after its feature (`WeeklyBingo*Tests.swift`, …). No shared test

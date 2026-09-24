@@ -55,7 +55,9 @@ jar of vinegar and onion"; kimchi: "Korea's spicy answer to kysané zelí").
 Special entry rules:
 - **Vepřo-knedlo-zelo** is discovered either by one food matching the
   phrase or by a single day containing `meat` + `knedlik` + a
-  sauerkraut/cabbage (`zeli`) entry — the dish is often logged as parts.
+  sauerkraut/cabbage entry (tag `dish.zeli`, declared in this change's
+  `FoodTag+Collections.swift`; `meat` and `knedlik` are core tags) — the
+  dish is often logged as parts.
 - **Brands** match `brand` text only (not the name), so "Jogurt s příchutí
   Kofoly" (unlikely but possible) does not count as Kofola.
 
