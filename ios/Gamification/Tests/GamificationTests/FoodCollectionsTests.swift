@@ -402,6 +402,15 @@ final class FoodCollectionsTests: XCTestCase {
         XCTAssertEqual(reread, state)
     }
 
+    func testStoreSaveBeforeLoadReplacesAnExistingFile() async throws {
+        let url = directory.appendingPathComponent("collections.json")
+        try await CollectionsStore(fileURL: url).save(CollectionsState(rainbowDayKeys: ["2026-09-01"]))
+        // A fresh instance saving without an explicit load first.
+        try await CollectionsStore(fileURL: url).save(CollectionsState(rainbowDayKeys: ["2026-09-02"]))
+        let reread = await CollectionsStore(fileURL: url).load()
+        XCTAssertEqual(reread?.rainbowDayKeys, ["2026-09-02"])
+    }
+
     func testStoreDecodesAnOldMinimalFile() async throws {
         let url = directory.appendingPathComponent("collections.json")
         try Data(#"{"discovered":{"pho":{"day":"2026-08-30"}}}"#.utf8).write(to: url)

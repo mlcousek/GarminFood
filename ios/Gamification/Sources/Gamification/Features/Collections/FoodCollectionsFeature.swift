@@ -22,7 +22,7 @@
 //
 // The grant namespace is the feature id ("collections."), because
 // FeatureHost drops grants outside `<featureId>.`; the design's sketch
-// wrote `collection.found.<id>`.
+// originally wrote `collection.found.<id>` (design.md now matches).
 //
 // The UI reads `overview()`, computed from the store alone, so it works
 // before this launch's first run.

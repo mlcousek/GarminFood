@@ -110,6 +110,9 @@ public actor CollectionsStore {
     }
 
     public func save(_ newState: CollectionsState) throws {
+        // Load lazily first: a save before any load would otherwise find
+        // `loaded == false` and refuse to replace an existing file.
+        if !loaded { _ = load() }
         try GamificationStorage.ensureSafeToWrite(loaded: loaded, fileURL: fileURL, category: "CollectionsStore")
         let capped = newState.capped()
         try FileManager.default.createDirectory(
