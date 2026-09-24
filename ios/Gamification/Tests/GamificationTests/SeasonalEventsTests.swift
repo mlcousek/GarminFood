@@ -128,6 +128,7 @@ final class SeasonalEventsTests: XCTestCase {
         }
         XCTAssertEqual(try event("masopust").window(year: 2026, nameDay: nil), date("2026-02-12")...date("2026-02-17"))
         XCTAssertEqual(try event("easter").window(year: 2027, nameDay: nil), date("2027-03-25")...date("2027-03-29"))
+        XCTAssertEqual(try event("masopust").window(year: 2027, nameDay: nil), date("2027-02-04")...date("2027-02-09"))
         XCTAssertEqual(try event("grill").window(year: 2026, nameDay: nil), date("2026-06-21")...date("2026-08-31"))
     }
 
@@ -152,6 +153,29 @@ final class SeasonalEventsTests: XCTestCase {
         XCTAssertEqual(SeasonalEvaluator.phase(today: date("2026-11-17"), window: window), .ended)
     }
 
+    func testTeaserShowsStartInThreeDays() async throws {
+        let feature = SeasonalEventsFeature(directory: directory)
+        let upcoming = await feature.upcomingEvents(now: noon("2026-11-05"), calendar: Self.calendar)
+        let martin = try XCTUnwrap(upcoming.first { $0.eventId == "st-martin" })
+        XCTAssertEqual(martin.phase, .upcoming)
+        XCTAssertEqual(martin.daysUntilStart, 3)
+        let banner = await feature.bannerEvent(now: noon("2026-11-05"), calendar: Self.calendar)
+        XCTAssertEqual(banner?.eventId, "st-martin")
+        // New Year's Day is teased from 29 December of the year before.
+        let newYear = await feature.upcomingEvents(now: noon("2026-12-29"), calendar: Self.calendar)
+        XCTAssertTrue(newYear.contains { $0.eventId == "novy-rok" && $0.year == 2027 })
+    }
+
+    func testGooseAfterTheWindowDoesNotProgress() throws {
+        let martin = try event("st-martin")
+        let window = try XCTUnwrap(martin.window(year: 2026, nameDay: nil))
+        let marks = SeasonalEvaluator.mergedMarks(
+            event: martin, year: 2026, window: window,
+            snapshot: snapshot(["2026-11-20": ["Pečená husa"]], today: "2026-11-20"), stored: [:]
+        )
+        XCTAssertTrue(marks.values.allSatisfy(\.isEmpty))
+    }
+
     func testEntriesOutsideTheWindowDoNotCount() throws {
         XCTAssertFalse(try completes("mushrooms", year: 2026, ["2026-08-31": ["Houbová polévka"], "2026-11-01": ["Smaženice"]]))
         XCTAssertTrue(try completes("mushrooms", year: 2026, [
@@ -165,6 +189,7 @@ final class SeasonalEventsTests: XCTestCase {
         XCTAssertTrue(try completes("stedry-den", year: 2026, ["2026-12-24": ["Vepřový řízek", "Bramborový salát"]]))
         XCTAssertTrue(try completes("stedry-den", year: 2026, ["2026-12-24": ["Smažený kapr", "Bramborový salát s majonézou"]]))
         XCTAssertFalse(try completes("stedry-den", year: 2026, ["2026-12-24": ["Bramborový salát"]]))
+        XCTAssertFalse(try completes("stedry-den", year: 2026, ["2026-12-24": ["Kapary", "Bramborový salát"]]))
         XCTAssertFalse(try completes("stedry-den", year: 2026, [
             "2026-12-23": ["Smažený kapr"], "2026-12-24": ["Bramborový salát"]
         ]))
