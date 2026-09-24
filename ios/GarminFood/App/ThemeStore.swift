@@ -136,6 +136,7 @@ final class ThemeStore {
 /// The root of the themed view tree (design R4): tint, forced scheme for
 /// single-scheme themes / the user's Light-Dark choice, and the
 /// accessibility inputs handed to the store.
+@MainActor
 struct ThemeRootModifier: ViewModifier {
     let store: ThemeStore
     @Environment(\.colorSchemeContrast) private var contrast

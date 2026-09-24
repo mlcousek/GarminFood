@@ -55,6 +55,66 @@
         }
       }
     },
+    "Accent color": {
+      "comment": "Settings -> Appearance page. Color picker label and section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barva zvýraznění"
+          }
+        }
+      }
+    },
+    "Adjusted for dark mode to stay readable.": {
+      "comment": "Settings -> Appearance page. Note under a custom accent that was lightened for contrast.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upraveno pro tmavý režim, aby zůstalo čitelné."
+          }
+        }
+      }
+    },
+    "Adjusted for light mode to stay readable.": {
+      "comment": "Settings -> Appearance page. Note under a custom accent that was darkened for contrast.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upraveno pro světlý režim, aby zůstalo čitelné."
+          }
+        }
+      }
+    },
+    "App icon": {
+      "comment": "Settings -> Appearance page. Section header above the icon grid.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ikona aplikace"
+          }
+        }
+      }
+    },
+    "Appearance": {
+      "comment": "Settings row and page title for theme/icon/style customization.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vzhled"
+          }
+        }
+      }
+    },
     "Berry": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -63,6 +123,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bobule"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "comment": "Generic cancel button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zrušit"
+          }
+        }
+      }
+    },
+    "Card style": {
+      "comment": "Settings -> Appearance page. Picker label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl karet"
           }
         }
       }
@@ -79,6 +163,78 @@
         }
       }
     },
+    "Classic Coral": {
+      "comment": "Theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasický korál"
+          }
+        }
+      }
+    },
+    "Colour-blind safe": {
+      "comment": "Settings -> Appearance page. Macro colors option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro barvoslepé"
+          }
+        }
+      }
+    },
+    "Colour-blind safe colors are also used whenever Differentiate Without Color is on.": {
+      "comment": "Settings -> Appearance page. Footer; names the iOS accessibility setting.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barvy pro barvoslepé se použijí také vždy, když je zapnuté Rozlišovat bez barev."
+          }
+        }
+      }
+    },
+    "Comfortable": {
+      "comment": "Settings -> Appearance page. Density option (default spacing).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vzdušná"
+          }
+        }
+      }
+    },
+    "Coming soon": {
+      "comment": "Settings -> Appearance page. Trailing label on a not-yet-available row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Již brzy"
+          }
+        }
+      }
+    },
+    "Compact": {
+      "comment": "Settings -> Appearance page. Density option (tighter spacing).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kompaktní"
+          }
+        }
+      }
+    },
     "Coral": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -91,6 +247,102 @@
         }
       }
     },
+    "Corners": {
+      "comment": "Settings -> Appearance page. Picker label for corner roundness.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rohy"
+          }
+        }
+      }
+    },
+    "Couldn't change the app icon": {
+      "comment": "Alert title when iOS refuses an icon change.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ikonu aplikace se nepodařilo změnit"
+          }
+        }
+      }
+    },
+    "Custom accent color": {
+      "comment": "Settings -> Appearance page. Toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastní barva zvýraznění"
+          }
+        }
+      }
+    },
+    "Customize layout": {
+      "comment": "Settings -> Appearance page. Disabled row for the future layout editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit rozložení"
+          }
+        }
+      }
+    },
+    "Dark": {
+      "comment": "Settings -> Appearance page. Appearance option: dark mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tmavý"
+          }
+        }
+      }
+    },
+    "Default": {
+      "comment": "Settings -> Appearance page. Number font option: the system default typeface.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výchozí"
+          }
+        }
+      }
+    },
+    "Density": {
+      "comment": "Settings -> Appearance page. Picker label for spacing density.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hustota"
+          }
+        }
+      }
+    },
+    "Elevated": {
+      "comment": "Settings -> Appearance page. Card style option (with shadow).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vystouplé"
+          }
+        }
+      }
+    },
     "Ended": {
       "comment": "Challenge status: its time window is over.",
       "extractionState": "manual",
@@ -99,6 +351,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukončeno"
+          }
+        }
+      }
+    },
+    "Filled": {
+      "comment": "Settings -> Appearance page. Card style option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyplněné"
+          }
+        }
+      }
+    },
+    "Fine-tune": {
+      "comment": "Settings -> Appearance page. Section header for style options.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doladění"
           }
         }
       }
@@ -139,6 +415,18 @@
         }
       }
     },
+    "Glass": {
+      "comment": "Settings -> Appearance page. Card style option (translucent material).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sklo"
+          }
+        }
+      }
+    },
     "Gold": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -147,6 +435,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zlatá"
+          }
+        }
+      }
+    },
+    "Gradient header": {
+      "comment": "Settings -> Appearance page. Toggle: colored gradient behind the top of Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přechodové záhlaví"
           }
         }
       }
@@ -163,6 +463,18 @@
         }
       }
     },
+    "High Contrast": {
+      "comment": "Theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vysoký kontrast"
+          }
+        }
+      }
+    },
     "Indigo": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -171,6 +483,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indigo"
+          }
+        }
+      }
+    },
+    "Indigo Night": {
+      "comment": "Theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indigová noc"
           }
         }
       }
@@ -187,6 +511,30 @@
         }
       }
     },
+    "Layout": {
+      "comment": "Settings -> Appearance page. Section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozložení"
+          }
+        }
+      }
+    },
+    "Legible": {
+      "comment": "Settings -> Appearance page. Macro colors option: higher-contrast versions.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čitelné"
+          }
+        }
+      }
+    },
     "Level %lld": {
       "comment": "Current gamification level on the Today streak card.",
       "extractionState": "manual",
@@ -195,6 +543,126 @@
           "stringUnit": {
             "state": "translated",
             "value": "Úroveň %lld"
+          }
+        }
+      }
+    },
+    "Light": {
+      "comment": "Settings -> Appearance page. Appearance option: light mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Světlý"
+          }
+        }
+      }
+    },
+    "Looks like the carbs color. Bars may be harder to tell apart.": {
+      "comment": "Settings -> Appearance page. Warning: custom accent too close to a macro color.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomíná barvu sacharidů. Pruhy se mohou hůř rozlišovat."
+          }
+        }
+      }
+    },
+    "Looks like the fat color. Bars may be harder to tell apart.": {
+      "comment": "Settings -> Appearance page. Warning: custom accent too close to a macro color.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomíná barvu tuků. Pruhy se mohou hůř rozlišovat."
+          }
+        }
+      }
+    },
+    "Looks like the protein color. Bars may be harder to tell apart.": {
+      "comment": "Settings -> Appearance page. Warning: custom accent too close to a macro color.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomíná barvu bílkovin. Pruhy se mohou hůř rozlišovat."
+          }
+        }
+      }
+    },
+    "Looks like the water color. Bars may be harder to tell apart.": {
+      "comment": "Settings -> Appearance page. Warning: custom accent too close to the hydration color.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomíná barvu vody. Pruhy se mohou hůř rozlišovat."
+          }
+        }
+      }
+    },
+    "Macro colors": {
+      "comment": "Settings -> Appearance page. Picker label: which colors draw carbs/protein/fat.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barvy živin"
+          }
+        }
+      }
+    },
+    "Match app icon to theme": {
+      "comment": "Settings -> Appearance page. Toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sladit ikonu aplikace s motivem"
+          }
+        }
+      }
+    },
+    "Monospaced": {
+      "comment": "Settings -> Appearance page. Number font option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neproporcionální"
+          }
+        }
+      }
+    },
+    "Number font": {
+      "comment": "Settings -> Appearance page. Picker label for the typeface of big numbers.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Písmo čísel"
+          }
+        }
+      }
+    },
+    "OK": {
+      "comment": "Generic alert dismiss button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
@@ -211,6 +679,18 @@
         }
       }
     },
+    "Outlined": {
+      "comment": "Settings -> Appearance page. Card style option (border only).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrysové"
+          }
+        }
+      }
+    },
     "Pastel": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -219,6 +699,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Reset": {
+      "comment": "Confirmation button that resets settings to defaults.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit"
+          }
+        }
+      }
+    },
+    "Reset all appearance": {
+      "comment": "Settings -> Appearance page. Destructive button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit výchozí vzhled"
+          }
+        }
+      }
+    },
+    "Reset all appearance settings?": {
+      "comment": "Settings -> Appearance page. Confirmation dialog title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit všechna nastavení vzhledu?"
+          }
+        }
+      }
+    },
+    "Round": {
+      "comment": "Settings -> Appearance page. Corner option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oblé"
+          }
+        }
+      }
+    },
+    "Rounded": {
+      "comment": "Settings -> Appearance page. Number font option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaoblené"
+          }
+        }
+      }
+    },
+    "Serif": {
+      "comment": "Settings -> Appearance page. Number font option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patkové"
+          }
+        }
+      }
+    },
+    "Sharp": {
+      "comment": "Settings -> Appearance page. Corner option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ostré"
           }
         }
       }
@@ -235,6 +799,18 @@
         }
       }
     },
+    "Standard": {
+      "comment": "Settings -> Appearance page. Corner option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standardní"
+          }
+        }
+      }
+    },
     "Sunset": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -247,6 +823,42 @@
         }
       }
     },
+    "System": {
+      "comment": "Settings -> Appearance page. Appearance option: follow the system light/dark setting.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systém"
+          }
+        }
+      }
+    },
+    "Theme": {
+      "comment": "Settings -> Appearance page. Section header above the theme gallery.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motiv"
+          }
+        }
+      }
+    },
+    "Theme colors": {
+      "comment": "Settings -> Appearance page. Macro colors option: the theme's own.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barvy motivu"
+          }
+        }
+      }
+    },
     "This device doesn't support alternate app icons.": {
       "comment": "Shown when iOS reports alternate icons are unsupported.",
       "extractionState": "manual",
@@ -255,6 +867,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Toto zařízení nepodporuje alternativní ikony aplikace."
+          }
+        }
+      }
+    },
+    "This theme is dark only.": {
+      "comment": "Settings -> Appearance page. Why the light/dark picker is disabled.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento motiv je jen tmavý."
+          }
+        }
+      }
+    },
+    "This theme is light only.": {
+      "comment": "Settings -> Appearance page. Why the light/dark picker is disabled.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento motiv je jen světlý."
+          }
+        }
+      }
+    },
+    "With matching on, picking a theme also switches the Home Screen icon.": {
+      "comment": "Settings -> Appearance page. Footer under the icon grid.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Při zapnutém sladění výběr motivu přepne i ikonu na ploše."
+          }
+        }
+      }
+    },
+    "Your saved look couldn't be read and was reset.": {
+      "comment": "Settings -> Appearance page. One-time notice after a corrupt settings blob was quarantined.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložený vzhled nešel načíst, proto byl obnoven na výchozí."
           }
         }
       }
