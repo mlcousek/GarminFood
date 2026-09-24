@@ -41,7 +41,8 @@ Wave 6 adds one Settings row that opens `UIApplication.openSettingsURLString`.
 because it's a separate bundle). Later `AppShortcuts.xcstrings` (Siri phrases
 must live there, keyed with `${applicationName}`) and `InfoPlist.xcstrings`
 (keys = plist key names). `Shared/` files are compiled into both targets, so
-their strings must exist in **both** catalogs — the checker enforces it.
+their strings must exist in **both** catalogs — the checker fails when a
+`Shared/` literal is in one catalog but not the other.
 Project settings: `options.developmentLanguage: en`; base build settings
 `LOCALIZATION_PREFERS_STRING_CATALOGS: YES`, `SWIFT_EMIT_LOC_STRINGS: YES`;
 Info.plist `CFBundleDevelopmentRegion: en`, `CFBundleLocalizations: [en, cs]`
@@ -54,14 +55,18 @@ Because plain `swift test` can't compile catalogs (Context), packages use
 `Localizable.stringsdict` for plurals) and `resources: [.process("Resources")]`,
 `defaultLocalization: "en"`. Code: `String(localized: "English source",
 bundle: .module, comment: "…")`. This is the only format where CI can prove
-Czech resolves in a package. `en.lproj` holds only plural (`.stringsdict`)
-entries — English singular strings fall back to the key. Revisit when
-SwiftPM CLI compiles `.xcstrings` or package tests move to `xcodebuild test`;
-conversion is mechanical.
+Czech resolves in a package. `en.lproj` lists **every** key mapped to
+itself (plus English plurals in `.stringsdict`): it must exist, or a phone
+preferring English would get the only localization present — Czech — and
+the checker enforces en/cs key parity. Revisit when SwiftPM CLI compiles
+`.xcstrings` or package tests move to `xcodebuild test`; conversion is
+mechanical.
 
-Fallback if even `.lproj` resources misbehave under `swift test`: the
-package tests `XCTSkip` with a clear message and the check moves to the
-app's CI build (never silently green).
+The Wave 1 package tests fail loudly if the `.lproj` resources don't ship
+under `swift test`. If that turns out to be a SwiftPM limitation rather
+than a mistake, the fallback is `XCTSkip` with a clear message and moving
+the assertion to the app's CI build (the "Show the app's compiled
+localizations" step) — never a silently green test.
 
 ### D4 — Keys are the English source text
 
