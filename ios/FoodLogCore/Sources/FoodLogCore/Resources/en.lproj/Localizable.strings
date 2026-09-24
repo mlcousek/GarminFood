@@ -10,3 +10,122 @@
 
 /* Validation error under a quantity field. %@ is the maximum number of servings, e.g. 10000. */
 "Enter an amount greater than zero and at most %@." = "Enter an amount greater than zero and at most %@.";
+
+/* ---- Nutrients (MealDashboard.swift) ---- */
+
+/* Nutrient name (row label in a nutrition breakdown). */
+"Calories" = "Calories";
+
+/* Nutrient name. */
+"Carbohydrates" = "Carbohydrates";
+
+/* Nutrient name. */
+"Fiber" = "Fiber";
+
+/* Nutrient name. */
+"Sugar" = "Sugar";
+
+/* Nutrient name. */
+"Protein" = "Protein";
+
+/* Nutrient name. */
+"Fat" = "Fat";
+
+/* Nutrient name. */
+"Saturated fat" = "Saturated fat";
+
+/* Nutrient name. */
+"Monounsaturated fat" = "Monounsaturated fat";
+
+/* Nutrient name. */
+"Polyunsaturated fat" = "Polyunsaturated fat";
+
+/* Nutrient name. */
+"Cholesterol" = "Cholesterol";
+
+/* Nutrient name. */
+"Sodium" = "Sodium";
+
+/* Nutrient name. */
+"Potassium" = "Potassium";
+
+/* Nutrient name. */
+"Vitamin A" = "Vitamin A";
+
+/* Nutrient name. */
+"Vitamin C" = "Vitamin C";
+
+/* Nutrient name. */
+"Calcium" = "Calcium";
+
+/* Nutrient name. */
+"Iron" = "Iron";
+
+/* Nutrient name. */
+"Vitamin B1 (Thiamin)" = "Vitamin B1 (Thiamin)";
+
+/* Nutrient name. */
+"Vitamin B2 (Riboflavin)" = "Vitamin B2 (Riboflavin)";
+
+/* Nutrient name. */
+"Vitamin B3 (Niacin)" = "Vitamin B3 (Niacin)";
+
+/* Nutrient name. */
+"Vitamin B5 (Pantothenic acid)" = "Vitamin B5 (Pantothenic acid)";
+
+/* Nutrient name. */
+"Vitamin B6" = "Vitamin B6";
+
+/* Nutrient name. */
+"Folate (B9)" = "Folate (B9)";
+
+/* Nutrient name. */
+"Vitamin B12" = "Vitamin B12";
+
+/* Nutrient name. */
+"Vitamin D" = "Vitamin D";
+
+/* Nutrient name. */
+"Vitamin E" = "Vitamin E";
+
+/* Nutrient name. */
+"Vitamin K" = "Vitamin K";
+
+/* Nutrient name. */
+"Magnesium" = "Magnesium";
+
+/* Nutrient name. */
+"Zinc" = "Zinc";
+
+/* Nutrient name. */
+"Phosphorus" = "Phosphorus";
+
+/* Nutrient name. */
+"Selenium" = "Selenium";
+
+/* Nutrient name. */
+"Copper" = "Copper";
+
+/* Nutrient name. */
+"Manganese" = "Manganese";
+
+/* Nutrient name. */
+"Iodine" = "Iodine";
+
+/* Nutrient name (omega-3 fatty acids). */
+"Omega-3" = "Omega-3";
+
+/* Nutrient name (omega-6 fatty acids). */
+"Omega-6" = "Omega-6";
+
+/* Section header in a nutrition breakdown (calories). */
+"Energy" = "Energy";
+
+/* Section header in a nutrition breakdown. */
+"Macronutrients" = "Macronutrients";
+
+/* Section header in a nutrition breakdown. */
+"Vitamins" = "Vitamins";
+
+/* Section header in a nutrition breakdown. */
+"Minerals" = "Minerals";

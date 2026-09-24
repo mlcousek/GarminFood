@@ -6,3 +6,122 @@
 
 /* Validation error under a quantity field. %@ is the maximum number of servings, e.g. 10000. */
 "Enter an amount greater than zero and at most %@." = "Zadej množství větší než nula a nejvýše %@.";
+
+/* ---- Nutrients (MealDashboard.swift) ---- */
+
+/* Nutrient name (row label in a nutrition breakdown). */
+"Calories" = "Kalorie";
+
+/* Nutrient name. */
+"Carbohydrates" = "Sacharidy";
+
+/* Nutrient name. */
+"Fiber" = "Vláknina";
+
+/* Nutrient name. */
+"Sugar" = "Cukry";
+
+/* Nutrient name. */
+"Protein" = "Bílkoviny";
+
+/* Nutrient name. */
+"Fat" = "Tuky";
+
+/* Nutrient name. */
+"Saturated fat" = "Nasycené tuky";
+
+/* Nutrient name. */
+"Monounsaturated fat" = "Mononenasycené tuky";
+
+/* Nutrient name. */
+"Polyunsaturated fat" = "Polynenasycené tuky";
+
+/* Nutrient name. */
+"Cholesterol" = "Cholesterol";
+
+/* Nutrient name. */
+"Sodium" = "Sodík";
+
+/* Nutrient name. */
+"Potassium" = "Draslík";
+
+/* Nutrient name. */
+"Vitamin A" = "Vitamín A";
+
+/* Nutrient name. */
+"Vitamin C" = "Vitamín C";
+
+/* Nutrient name. */
+"Calcium" = "Vápník";
+
+/* Nutrient name. */
+"Iron" = "Železo";
+
+/* Nutrient name. */
+"Vitamin B1 (Thiamin)" = "Vitamín B1 (thiamin)";
+
+/* Nutrient name. */
+"Vitamin B2 (Riboflavin)" = "Vitamín B2 (riboflavin)";
+
+/* Nutrient name. */
+"Vitamin B3 (Niacin)" = "Vitamín B3 (niacin)";
+
+/* Nutrient name. */
+"Vitamin B5 (Pantothenic acid)" = "Vitamín B5 (kyselina pantothenová)";
+
+/* Nutrient name. */
+"Vitamin B6" = "Vitamín B6";
+
+/* Nutrient name. */
+"Folate (B9)" = "Folát (B9)";
+
+/* Nutrient name. */
+"Vitamin B12" = "Vitamín B12";
+
+/* Nutrient name. */
+"Vitamin D" = "Vitamín D";
+
+/* Nutrient name. */
+"Vitamin E" = "Vitamín E";
+
+/* Nutrient name. */
+"Vitamin K" = "Vitamín K";
+
+/* Nutrient name. */
+"Magnesium" = "Hořčík";
+
+/* Nutrient name. */
+"Zinc" = "Zinek";
+
+/* Nutrient name. */
+"Phosphorus" = "Fosfor";
+
+/* Nutrient name. */
+"Selenium" = "Selen";
+
+/* Nutrient name. */
+"Copper" = "Měď";
+
+/* Nutrient name. */
+"Manganese" = "Mangan";
+
+/* Nutrient name. */
+"Iodine" = "Jód";
+
+/* Nutrient name (omega-3 fatty acids). */
+"Omega-3" = "Omega-3";
+
+/* Nutrient name (omega-6 fatty acids). */
+"Omega-6" = "Omega-6";
+
+/* Section header in a nutrition breakdown (calories). */
+"Energy" = "Energie";
+
+/* Section header in a nutrition breakdown. */
+"Macronutrients" = "Makroživiny";
+
+/* Section header in a nutrition breakdown. */
+"Vitamins" = "Vitamíny";
+
+/* Section header in a nutrition breakdown. */
+"Minerals" = "Minerály";

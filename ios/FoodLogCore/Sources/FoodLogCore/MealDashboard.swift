@@ -104,41 +104,41 @@ public enum NutrientKind: String, Sendable, Equatable, Hashable, CaseIterable, I
 
     public var displayName: String {
         switch self {
-        case .calories: return "Calories"
-        case .carbs: return "Carbohydrates"
-        case .fiber: return "Fiber"
-        case .sugar: return "Sugar"
-        case .protein: return "Protein"
-        case .fat: return "Fat"
-        case .saturatedFat: return "Saturated fat"
-        case .monounsaturatedFat: return "Monounsaturated fat"
-        case .polyunsaturatedFat: return "Polyunsaturated fat"
-        case .cholesterol: return "Cholesterol"
-        case .sodium: return "Sodium"
-        case .potassium: return "Potassium"
-        case .vitaminA: return "Vitamin A"
-        case .vitaminC: return "Vitamin C"
-        case .calcium: return "Calcium"
-        case .iron: return "Iron"
-        case .vitaminB1: return "Vitamin B1 (Thiamin)"
-        case .vitaminB2: return "Vitamin B2 (Riboflavin)"
-        case .vitaminB3: return "Vitamin B3 (Niacin)"
-        case .vitaminB5: return "Vitamin B5 (Pantothenic acid)"
-        case .vitaminB6: return "Vitamin B6"
-        case .vitaminB9: return "Folate (B9)"
-        case .vitaminB12: return "Vitamin B12"
-        case .vitaminD: return "Vitamin D"
-        case .vitaminE: return "Vitamin E"
-        case .vitaminK: return "Vitamin K"
-        case .magnesium: return "Magnesium"
-        case .zinc: return "Zinc"
-        case .phosphorus: return "Phosphorus"
-        case .selenium: return "Selenium"
-        case .copper: return "Copper"
-        case .manganese: return "Manganese"
-        case .iodine: return "Iodine"
-        case .omega3: return "Omega-3"
-        case .omega6: return "Omega-6"
+        case .calories: return String(localized: "Calories", bundle: .module, comment: "Nutrient name.")
+        case .carbs: return String(localized: "Carbohydrates", bundle: .module, comment: "Nutrient name.")
+        case .fiber: return String(localized: "Fiber", bundle: .module, comment: "Nutrient name.")
+        case .sugar: return String(localized: "Sugar", bundle: .module, comment: "Nutrient name.")
+        case .protein: return String(localized: "Protein", bundle: .module, comment: "Nutrient name.")
+        case .fat: return String(localized: "Fat", bundle: .module, comment: "Nutrient name.")
+        case .saturatedFat: return String(localized: "Saturated fat", bundle: .module, comment: "Nutrient name.")
+        case .monounsaturatedFat: return String(localized: "Monounsaturated fat", bundle: .module, comment: "Nutrient name.")
+        case .polyunsaturatedFat: return String(localized: "Polyunsaturated fat", bundle: .module, comment: "Nutrient name.")
+        case .cholesterol: return String(localized: "Cholesterol", bundle: .module, comment: "Nutrient name.")
+        case .sodium: return String(localized: "Sodium", bundle: .module, comment: "Nutrient name.")
+        case .potassium: return String(localized: "Potassium", bundle: .module, comment: "Nutrient name.")
+        case .vitaminA: return String(localized: "Vitamin A", bundle: .module, comment: "Nutrient name.")
+        case .vitaminC: return String(localized: "Vitamin C", bundle: .module, comment: "Nutrient name.")
+        case .calcium: return String(localized: "Calcium", bundle: .module, comment: "Nutrient name.")
+        case .iron: return String(localized: "Iron", bundle: .module, comment: "Nutrient name.")
+        case .vitaminB1: return String(localized: "Vitamin B1 (Thiamin)", bundle: .module, comment: "Nutrient name.")
+        case .vitaminB2: return String(localized: "Vitamin B2 (Riboflavin)", bundle: .module, comment: "Nutrient name.")
+        case .vitaminB3: return String(localized: "Vitamin B3 (Niacin)", bundle: .module, comment: "Nutrient name.")
+        case .vitaminB5: return String(localized: "Vitamin B5 (Pantothenic acid)", bundle: .module, comment: "Nutrient name.")
+        case .vitaminB6: return String(localized: "Vitamin B6", bundle: .module, comment: "Nutrient name.")
+        case .vitaminB9: return String(localized: "Folate (B9)", bundle: .module, comment: "Nutrient name.")
+        case .vitaminB12: return String(localized: "Vitamin B12", bundle: .module, comment: "Nutrient name.")
+        case .vitaminD: return String(localized: "Vitamin D", bundle: .module, comment: "Nutrient name.")
+        case .vitaminE: return String(localized: "Vitamin E", bundle: .module, comment: "Nutrient name.")
+        case .vitaminK: return String(localized: "Vitamin K", bundle: .module, comment: "Nutrient name.")
+        case .magnesium: return String(localized: "Magnesium", bundle: .module, comment: "Nutrient name.")
+        case .zinc: return String(localized: "Zinc", bundle: .module, comment: "Nutrient name.")
+        case .phosphorus: return String(localized: "Phosphorus", bundle: .module, comment: "Nutrient name.")
+        case .selenium: return String(localized: "Selenium", bundle: .module, comment: "Nutrient name.")
+        case .copper: return String(localized: "Copper", bundle: .module, comment: "Nutrient name.")
+        case .manganese: return String(localized: "Manganese", bundle: .module, comment: "Nutrient name.")
+        case .iodine: return String(localized: "Iodine", bundle: .module, comment: "Nutrient name.")
+        case .omega3: return String(localized: "Omega-3", bundle: .module, comment: "Nutrient name.")
+        case .omega6: return String(localized: "Omega-6", bundle: .module, comment: "Nutrient name.")
         }
     }
 
@@ -196,10 +196,10 @@ public enum NutrientGroup: String, Sendable, Equatable, CaseIterable {
 
     public var displayName: String {
         switch self {
-        case .energy: return "Energy"
-        case .macronutrient: return "Macronutrients"
-        case .vitamin: return "Vitamins"
-        case .mineral: return "Minerals"
+        case .energy: return String(localized: "Energy", bundle: .module, comment: "Section header in a nutrition breakdown.")
+        case .macronutrient: return String(localized: "Macronutrients", bundle: .module, comment: "Section header in a nutrition breakdown.")
+        case .vitamin: return String(localized: "Vitamins", bundle: .module, comment: "Section header in a nutrition breakdown.")
+        case .mineral: return String(localized: "Minerals", bundle: .module, comment: "Section header in a nutrition breakdown.")
         }
     }
 }
