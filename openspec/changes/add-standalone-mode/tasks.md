@@ -21,7 +21,7 @@ Relative size per wave: S / M / L.
 - [x] 1.2 GarminKit: `NutritionLogReading` protocol; `extension GarminClient: NutritionLogReading {}`; additive `public init` on `DailyFoodLog`, `MealDetail`, `Meal`, `LoggedFood`, `LoggedNutritionContent`, `FoodMetaData`, `DailyNutritionContent`, `NutritionGoals`, calorie-summary DTOs. Tests: inits build values equal to decoded fixtures.
 - [x] 1.3 Consumers hold `any NutritionLogReading`: `DayLogLoader`, `MacroTrendLoader`, `GamificationEngine`, `AppEnvironment.copyMealPlan` (same `GarminClient` instance in Garmin mode).
 - [x] 1.4 `FoodLogging` protocol (FoodLogCore) = `LogEntryCoordinator`'s public API + `deleteCommitted(logId:date:)` (moved from `DayLogLoader.delete`'s synced branch); `LogEntryCoordinator` conforms; `ModeRoutingFoodLogging` in `AppServices` (always Garmin until wave 2).
-- [ ] 1.5 Hidden Diagnostics toggle "Force standalone mode (testing)" (English only; developer surface).
+- [x] 1.5 Hidden Diagnostics toggle "Force standalone mode (testing)" (English only; developer surface).
 - [ ] 1.6 On-device: the owner's phone behaves exactly as before (log, edit, delete, copy meal, Trends, goals).
 
 ## 2. Wave 2 — Local food log (L)

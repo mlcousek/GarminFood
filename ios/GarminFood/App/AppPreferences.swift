@@ -34,6 +34,9 @@ final class AppPreferences {
         // add-standalone-mode D1: which system of record this install uses.
         // Absent = not yet classified (AppEnvironment.classifyDataModeIfNeeded).
         static let dataMode = "dataMode.v1"
+        // add-standalone-mode 1.5: developer-only switch (Diagnostics menu)
+        // so each wave can be tried on a device before onboarding exists.
+        static let forceStandaloneMode = "developer.forceStandaloneMode.v1"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -55,6 +58,7 @@ final class AppPreferences {
     private var storedWeightGoalStartKg: Double?
     private var storedQuantityInputMode: QuantityInputMode
     private var storedDataMode: DataMode?
+    private var storedForceStandaloneMode: Bool
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -80,6 +84,7 @@ final class AppPreferences {
         storedQuantityInputMode = (defaults.string(forKey: Key.quantityInputMode))
             .flatMap(QuantityInputMode.init(rawValue:)) ?? .amount
         storedDataMode = defaults.string(forKey: Key.dataMode).flatMap(DataMode.init(rawValue:))
+        storedForceStandaloneMode = defaults.object(forKey: Key.forceStandaloneMode) as? Bool ?? false
     }
 
     /// add-standalone-mode D1: the install's system of record, or `nil`
@@ -95,6 +100,18 @@ final class AppPreferences {
             } else {
                 defaults.removeObject(forKey: Key.dataMode)
             }
+        }
+    }
+
+    /// add-standalone-mode 1.5: "Force standalone mode (testing)", a hidden
+    /// Diagnostics toggle. Wave 1 only STORES it -- nothing reads it, so the
+    /// app behaves exactly as before whichever way it is set. A later wave
+    /// makes the effective data mode honour it for on-device checks.
+    var forceStandaloneMode: Bool {
+        get { storedForceStandaloneMode }
+        set {
+            storedForceStandaloneMode = newValue
+            defaults.set(newValue, forKey: Key.forceStandaloneMode)
         }
     }
 
