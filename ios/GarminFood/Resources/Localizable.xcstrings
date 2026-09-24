@@ -397,6 +397,18 @@
         }
       }
     },
+    "Calories": {
+      "comment": "Form label: energy of the food, in kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie"
+          }
+        }
+      }
+    },
     "Cancel": {
       "comment": "Generic cancel button.",
       "extractionState": "manual",
@@ -453,6 +465,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Splněné výzvy"
+          }
+        }
+      }
+    },
+    "Checking Garmin's database for a match…": {
+      "comment": "Loading text while searching Garmin for a matching food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledám shodu v databázi Garminu…"
           }
         }
       }
@@ -721,6 +745,18 @@
         }
       }
     },
+    "Couldn't check Garmin": {
+      "comment": "Error title: the Garmin match lookup failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin se nepodařilo ověřit"
+          }
+        }
+      }
+    },
     "Couldn't complete that action": {
       "comment": "Alert title for a failed sync-queue action.",
       "extractionState": "manual",
@@ -729,6 +765,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Akci se nepodařilo dokončit"
+          }
+        }
+      }
+    },
+    "Couldn't create this food in Garmin. Try again, or log against a different Garmin food instead.": {
+      "comment": "Error: creating the custom food in Garmin failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo se v Garminu nepodařilo vytvořit. Zkus to znovu, nebo ho zapiš jako jiné jídlo z Garminu."
           }
         }
       }
@@ -825,6 +873,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Záznam se nepodařilo zkusit znovu: %@"
+          }
+        }
+      }
+    },
+    "Create in Garmin": {
+      "comment": "Button / navigation title: create this Open Food Facts item as a custom food in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit v Garminu"
           }
         }
       }
@@ -1357,6 +1417,30 @@
         }
       }
     },
+    "Found a match in Garmin": {
+      "comment": "Headline: a matching Garmin food was found.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V Garminu je shoda"
+          }
+        }
+      }
+    },
+    "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.": {
+      "comment": "Error: Garmin created the food but the response could not be parsed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin jídlo přijal, ale vrátil odpověď, které nerozumíme. Zkus ho raději zapsat jako jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
     "Garmin accepted the ticket but sent back a response this app couldn't read.": {
       "comment": "Sign-in error: unreadable token-exchange response.",
       "extractionState": "manual",
@@ -1377,6 +1461,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Účet Garmin"
+          }
+        }
+      }
+    },
+    "Garmin created the food but returned no serving for it. Pick a different Garmin food instead.": {
+      "comment": "Error: the created Garmin food has no serving.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin jídlo vytvořil, ale nevrátil k němu žádnou porci. Vyber raději jiné jídlo z Garminu."
           }
         }
       }
@@ -1413,6 +1509,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlášení ke Garminu vypršelo"
+          }
+        }
+      }
+    },
+    "Garmin's database doesn't seem to have \"%@\". You can create it there, or log against a different Garmin food instead.": {
+      "comment": "Empty-state message. %@ = food name from Open Food Facts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Databáze Garminu zřejmě neobsahuje „%@“. Můžeš ho tam vytvořit, nebo ho zapsat jako jiné jídlo z Garminu."
           }
         }
       }
@@ -1681,6 +1789,18 @@
         }
       }
     },
+    "Log anyway with a different Garmin food": {
+      "comment": "Button: skip the suggested match and log against another Garmin food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesto zapsat s jiným jídlem z Garminu"
+          }
+        }
+      }
+    },
     "Longest streak": {
       "comment": "Profile stat tile: longest run of logged days.",
       "extractionState": "manual",
@@ -1789,6 +1909,18 @@
         }
       }
     },
+    "Match in Garmin": {
+      "comment": "Navigation title: finding the Garmin food matching an Open Food Facts result.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoda v Garminu"
+          }
+        }
+      }
+    },
     "Meal reminders": {
       "comment": "Reminders screen section header.",
       "extractionState": "manual",
@@ -1809,6 +1941,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Můj"
+          }
+        }
+      }
+    },
+    "Missing calories": {
+      "comment": "Empty-state title: the Open Food Facts item has no calorie value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chybí kalorie"
           }
         }
       }
@@ -1837,6 +1981,18 @@
         }
       }
     },
+    "Name": {
+      "comment": "Form label: food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název"
+          }
+        }
+      }
+    },
     "no HTTP response": {
       "comment": "Sign-in error detail used inside parentheses when no HTTP status came back, e.g. 'Garmin rejected the sign-in ticket (no HTTP response).'",
       "extractionState": "manual",
@@ -1845,6 +2001,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "žádná HTTP odpověď"
+          }
+        }
+      }
+    },
+    "No match found": {
+      "comment": "Empty-state title: Garmin has no food matching the Open Food Facts item.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoda nenalezena"
           }
         }
       }
@@ -2077,6 +2245,18 @@
         }
       }
     },
+    "Pick a different Garmin food instead": {
+      "comment": "Button (ingredient picker): skip the suggested match and search Garmin foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat raději jiné jídlo z Garminu"
+          }
+        }
+      }
+    },
     "Preferences": {
       "comment": "Settings section header.",
       "extractionState": "manual",
@@ -2289,6 +2469,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Patkové"
+          }
+        }
+      }
+    },
+    "Serving": {
+      "comment": "Form label: the serving (portion) of a food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce"
           }
         }
       }
@@ -2569,6 +2761,18 @@
         }
       }
     },
+    "That's not right — no match found": {
+      "comment": "Button: the suggested Garmin match is wrong; treat as no match.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To nesedí — shoda nenalezena"
+          }
+        }
+      }
+    },
     "the response was an HTML page rather than an API error, most likely a Cloudflare challenge": {
       "comment": "Sign-in error detail shown after a colon in 'Garmin rejected the sign-in ticket (HTTP 403): …'. Lowercase start.",
       "extractionState": "manual",
@@ -2653,6 +2857,30 @@
         }
       }
     },
+    "This is an experimental, best-effort write — Garmin's exact expected request shape for creating a food has never been confirmed. If it fails, nothing is created, and you can log against a different Garmin food instead.": {
+      "comment": "Footnote warning that creating a food in Garmin is experimental.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jde o experimentální zápis bez záruky — přesný formát požadavku, který Garmin pro vytvoření jídla očekává, nikdy nebyl ověřen. Pokud selže, nic se nevytvoří a můžeš jídlo zapsat jako jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "This item has no calorie value from Open Food Facts, so it can't be created in Garmin.": {
+      "comment": "Empty-state message: calories are required to create a food in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle položka nemá v Open Food Facts hodnotu kalorií, takže ji v Garminu nejde vytvořit."
+          }
+        }
+      }
+    },
     "This theme is dark only.": {
       "comment": "Settings -> Appearance page. Why the light/dark picker is disabled.",
       "extractionState": "manual",
@@ -2673,6 +2901,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tento motiv je jen světlý."
+          }
+        }
+      }
+    },
+    "This will be sent to Garmin": {
+      "comment": "Form section header: the values that will be uploaded to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle se odešle do Garminu"
           }
         }
       }
@@ -2709,6 +2949,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dnešní výzvy"
+          }
+        }
+      }
+    },
+    "Try again": {
+      "comment": "Button: retry a failed action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkusit znovu"
           }
         }
       }
@@ -2769,6 +3021,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Použít cíl váhy z Garminu"
+          }
+        }
+      }
+    },
+    "Use this match": {
+      "comment": "Button: accept the matched Garmin food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít tuto shodu"
           }
         }
       }
