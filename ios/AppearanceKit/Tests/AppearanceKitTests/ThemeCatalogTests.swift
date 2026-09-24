@@ -31,7 +31,7 @@ final class ThemeCatalogTests: XCTestCase {
     func testIconNames() {
         let expected: [BuiltInTheme: String] = [
             .teal: "Default", .classic: "AppIcon-Coral", .ocean: "AppIcon-Ocean", .forest: "AppIcon-Forest",
-            .sunset: "AppIcon-Sunset", .slate: "AppIcon-Slate", .indigoNight: "AppIcon-Indigo",
+            .sunset: "AppIcon-Sunset", .slate: "AppIcon-Slate", .indigo: "AppIcon-Indigo",
             .berry: "AppIcon-Berry", .graphite: "AppIcon-Graphite", .gold: "AppIcon-Gold",
             .pastel: "AppIcon-Pastel", .citrus: "AppIcon-Citrus", .highContrast: "Default"
         ]
@@ -42,7 +42,7 @@ final class ThemeCatalogTests: XCTestCase {
     }
 
     func testSupportedSchemes() {
-        let darkOnly: Set<BuiltInTheme> = [.indigoNight, .berry, .graphite, .gold]
+        let darkOnly: Set<BuiltInTheme> = [.indigo, .berry, .graphite, .gold]
         let lightOnly: Set<BuiltInTheme> = [.pastel, .citrus]
         for theme in BuiltInTheme.allCases {
             let expected: [ThemeColorScheme]

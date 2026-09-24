@@ -126,9 +126,8 @@ final class PaletteResolverStepsTests: XCTestCase {
 
     // MARK: resolve(settings:environment:)
 
-    func testSettingsPickThemeAndPerThemeAppearance() {
-        var settings = AppearanceSettings(themeID: "ocean")
-        settings.setAppearance(.dark, for: "ocean")
+    func testSettingsPickThemeAndAppearance() {
+        let settings = AppearanceSettings(themeID: "ocean", appearance: .dark)
         let palette = PaletteResolver.resolve(settings: settings, environment: AppearanceEnvironment(systemScheme: .light))
         XCTAssertEqual(palette.themeID, "ocean")
         XCTAssertEqual(palette.scheme, .dark)

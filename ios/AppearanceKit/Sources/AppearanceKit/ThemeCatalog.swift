@@ -38,7 +38,7 @@ public enum BuiltInTheme: String, CaseIterable, Sendable {
     case forest
     case sunset
     case slate
-    case indigoNight
+    case indigo
     case berry
     case graphite
     case gold
@@ -54,7 +54,7 @@ public enum BuiltInTheme: String, CaseIterable, Sendable {
         case .forest: return ThemeCatalog.forest
         case .sunset: return ThemeCatalog.sunset
         case .slate: return ThemeCatalog.slate
-        case .indigoNight: return ThemeCatalog.indigoNight
+        case .indigo: return ThemeCatalog.indigo
         case .berry: return ThemeCatalog.berry
         case .graphite: return ThemeCatalog.graphite
         case .gold: return ThemeCatalog.gold
@@ -207,8 +207,8 @@ public enum ThemeCatalog {
         ))
     )
 
-    static let indigoNight = ThemeSpec(
-        id: BuiltInTheme.indigoNight.rawValue,
+    static let indigo = ThemeSpec(
+        id: BuiltInTheme.indigo.rawValue,
         iconName: "AppIcon-Indigo",
         light: nil,
         dark: legibleTable(.dark, brand(
