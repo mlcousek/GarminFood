@@ -132,6 +132,24 @@ Two smaller cross-cutting pieces worth knowing about:
   is not unit-tested (no local way to run XCTest against it meaningfully
   without previews/simulator) — keep it thin, push logic down into
   `FoodLogCore`/`Gamification` so it's actually verifiable.
+- **Localization (English + Czech, more later).** All new user-facing text
+  is localizable and translated from day one — see
+  `openspec/changes/add-localization/design.md` and
+  `docs/localization-analysis.md`:
+  - App/widget: fixed copy as string *literals* in SwiftUI APIs
+    (`Text("…")`, `Label`, `.navigationTitle`, …, which are keys), or
+    `String(localized: "…")` when a `String` must be built; never
+    `Text(someEnglishString)` for fixed copy. Add the key + Czech to
+    `GarminFood/Resources/Localizable.xcstrings` (or the widget's). Keys are
+    the English text; `Int` → `%lld`, `Double` → `%lf`, `String` → `%@`.
+  - Packages: `String(localized: "…", bundle: .module, comment: "…")`, with
+    the key in BOTH `Resources/en.lproj` and `Resources/cs.lproj`
+    `Localizable.strings` (`.stringsdict` for plurals) — not `.xcstrings`,
+    which `swift test` can't compile.
+  - Counts use plural variations (Czech: one/few/many/other), never
+    `n == 1 ? … : …`; no sentences glued from translated fragments; stores
+    persist ids, never display text; `DiagnosticsLog` stays English.
+  - `node tools/check-localizations.mjs` (CI job `localization`) must pass.
 - **Test file/helper conventions**: see `FoodLogCoreTests/LogEntryCoordinatorTests.swift`
   for the pattern — real `GarminKit.Outbox`/store instances pointed at a
   unique temp file per test (never mocked), `XCTest`, one assertion group per
