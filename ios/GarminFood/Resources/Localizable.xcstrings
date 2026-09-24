@@ -4332,6 +4332,222 @@
           }
         }
       }
+    },
+    "Seasonal event": {
+      "comment": "Today banner eyebrow: a Czech seasonal food event is running.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sezónní událost"
+          }
+        }
+      }
+    },
+    "Until %@": {
+      "comment": "Seasonal event: runs until a date. %@ = a date like \"31 October\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do %@"
+          }
+        }
+      }
+    },
+    "Starts %@": {
+      "comment": "Seasonal event: starts on a date. %@ = a date like \"8 November\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Začíná %@"
+          }
+        }
+      }
+    },
+    "Event complete!": {
+      "comment": "Seasonal event: all required quests done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Událost splněna!"
+          }
+        }
+      }
+    },
+    "Bonus +25 XP": {
+      "comment": "Seasonal event: tag on an optional bonus quest.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonus +25 XP"
+          }
+        }
+      }
+    },
+    "%lld of %lld": {
+      "comment": "Progress: current of target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld z %lld"
+          }
+        }
+      }
+    },
+    "Seasonal events": {
+      "comment": "Progress card / screen title for Czech seasonal food events.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sezónní události"
+          }
+        }
+      }
+    },
+    "No seasonal event right now.": {
+      "comment": "Seasonal events card when nothing is active or upcoming.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Právě neběží žádná sezónní událost."
+          }
+        }
+      }
+    },
+    "Limited badges earned: %lld of %lld": {
+      "comment": "Seasonal events card: limited-edition badges earned so far out of the total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Získané limitované odznaky: %lld z %lld"
+          }
+        }
+      }
+    },
+    "Opens seasonal events": {
+      "comment": "VoiceOver hint on the seasonal events card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře sezónní události"
+          }
+        }
+      }
+    },
+    "This year": {
+      "comment": "Seasonal events screen: section with this year’s events.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letos"
+          }
+        }
+      }
+    },
+    "Limited-edition badges": {
+      "comment": "Seasonal events screen: badge showcase section.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limitované odznaky"
+          }
+        }
+      }
+    },
+    "Unlocked": {
+      "comment": "Badge state for VoiceOver.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odemčeno"
+          }
+        }
+      }
+    },
+    "Locked": {
+      "comment": "Badge state for VoiceOver.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zamčeno"
+          }
+        }
+      }
+    },
+    "Earned %@": {
+      "comment": "Limited-edition badge: the years it was earned. %@ = e.g. \"2026, 2027\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Získáno %@"
+          }
+        }
+      }
+    },
+    "Active": {
+      "comment": "Seasonal event state: inside its window now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probíhá"
+          }
+        }
+      }
+    },
+    "Missed": {
+      "comment": "Seasonal event state: window ended without completing it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Propásnuto"
+          }
+        }
+      }
+    },
+    "Later": {
+      "comment": "Seasonal event state: later this year.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Později"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
