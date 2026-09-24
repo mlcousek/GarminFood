@@ -27,12 +27,33 @@ on:
     paths:
       - "ios/**"
       - ".github/workflows/build.yml"
+      - "tools/check-localizations.mjs"
   pull_request:
     paths:
       - "ios/**"
+      - "tools/check-localizations.mjs"
   workflow_dispatch: {}
 
 jobs:
+  localization:
+    # add-localization design.md D9.1: every catalog / package .lproj is
+    # hand-authored (no Mac, so no Xcode String Catalog editor), and a
+    # missing Czech string or a "%d" where Swift generates "%lld" fails
+    # nothing else -- it just shows English on the phone. This job turns
+    # those into a red check. Plain Node on Linux: seconds, no macOS minutes.
+    # `--scan` only REPORTS untranslated SwiftUI literals (the backlog); it
+    # never fails the job.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check translations
+        run: node tools/check-localizations.mjs --scan
+
   build:
     runs-on: macos-latest
     defaults:
@@ -51,6 +72,25 @@ jobs:
         run: |
           xcodebuild -version
           swift --version
+
+      - name: Compile String Catalogs with xcstringstool (non-blocking)
+        # add-localization design.md D9.2: proves each hand-written
+        # .xcstrings compiles with Apple's own tool, and prints the Czech
+        # output. NON-BLOCKING until one green run confirms the CLI flags
+        # (xcstringstool's usage isn't publicly documented; `--help` is
+        # printed first so a failure is diagnosable from the log) -- then
+        # drop `continue-on-error` (tasks.md 1.9).
+        continue-on-error: true
+        run: |
+          set -e
+          xcrun xcstringstool compile --help || true
+          for f in GarminFood/Resources/Localizable.xcstrings GarminFoodWidget/Resources/Localizable.xcstrings; do
+            out="build/xcstrings/${f%%/*}"
+            mkdir -p "$out"
+            xcrun xcstringstool compile "$f" --output-directory "$out"
+          done
+          find build/xcstrings -type f | sort
+          for s in build/xcstrings/*/cs.lproj/*; do echo "== $s"; plutil -p "$s"; done
 
       - name: Run GarminKit unit tests
         # Pure logic (OAuth1 signing, outbox, reconciliation) -- no simulator
@@ -132,4 +172,41 @@ jobs:
         with:
           name: GarminFood-unsigned-ipa
           path: ios/build/GarminFood-unsigned.ipa
+          retention-days: 14
+
+      - name: Show the app's compiled localizations (non-blocking)
+        # add-localization tasks.md 1.9: evidence that Xcode compiled the app
+        # and widget catalogs AND the packages' .lproj resources into the
+        # shipped bundle -- the Czech .strings/.stringsdict printed here are
+        # exactly what the phone will read.
+        continue-on-error: true
+        run: |
+          APP="build/GarminFood.xcarchive/Products/Applications/GarminFood.app"
+          find "$APP" -name "*.lproj" -maxdepth 4 | sort
+          find "$APP" -path "*cs.lproj/*" \( -name "*.strings" -o -name "*.stringsdict" \) | while read -r f; do
+            echo "== $f"; plutil -p "$f"
+          done
+
+      - name: Export localizations (compiler-extracted keys, non-blocking)
+        # add-localization design.md D9.2: the authoritative list of every
+        # localizable key the Swift compiler actually produced (exact
+        # "%lld"/"%@" specifiers), as an .xcloc -- what translation work on
+        # Windows is checked against, since nobody can run Xcode's catalog
+        # sync here. Last in the job so it never delays the .ipa artifact.
+        continue-on-error: true
+        run: |
+          xcodebuild -exportLocalizations \
+            -project GarminFood.xcodeproj \
+            -localizationPath build/l10n-export \
+            -exportLanguage cs \
+            CODE_SIGNING_ALLOWED=NO
+          find build/l10n-export -maxdepth 4 | sort | head -80
+
+      - name: Upload localization export
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: GarminFood-localizations-cs
+          path: ios/build/l10n-export
+          if-no-files-found: warn
           retention-days: 14

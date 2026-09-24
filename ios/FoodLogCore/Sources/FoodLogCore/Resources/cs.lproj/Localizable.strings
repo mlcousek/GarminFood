@@ -1,0 +1,8 @@
+/*
+  FoodLogCore — Czech. Informal "ty" register (add-localization design.md D5).
+  Every key here must also be in en.lproj/Localizable.strings, with the same
+  format specifiers (checked by tools/check-localizations.mjs).
+*/
+
+/* Validation error under a quantity field. %@ is the maximum number of servings, e.g. 10000. */
+"Enter an amount greater than zero and at most %@." = "Zadej množství větší než nula a nejvýše %@.";

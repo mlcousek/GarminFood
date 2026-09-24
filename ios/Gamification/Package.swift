@@ -35,6 +35,13 @@ import PackageDescription
 
 let package = Package(
     name: "Gamification",
+    // add-localization (openspec/changes/add-localization/design.md D3):
+    // same scheme as FoodLogCore/Package.swift -- English source strings are
+    // the keys, translations in Sources/Gamification/Resources/<lang>.lproj/
+    // Localizable.strings(dict), looked up with `bundle: .module`; .lproj
+    // rather than .xcstrings because plain `swift test` can't compile
+    // catalogs.
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
@@ -53,7 +60,8 @@ let package = Package(
             name: "Gamification",
             dependencies: [
                 .product(name: "FoodLogCore", package: "FoodLogCore")
-            ]
+            ],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "GamificationTests",

@@ -77,6 +77,11 @@ options:
   bundleIdPrefix: com.mlcousek
   deploymentTarget:
     iOS: "17.0"
+  # add-localization (Wave 1): English is the development language. Czech
+  # (and any later language) is NOT listed here: XcodeGen >= 2.39 adds every
+  # locale it finds in a .xcstrings catalog to knownRegions by itself
+  # (XcodeGen PR #1421) -- see openspec/changes/add-localization/design.md D2.
+  developmentLanguage: en
 
 packages:
   GarminKit:
@@ -91,6 +96,14 @@ settings:
     SWIFT_VERSION: "5.0"
     DEVELOPMENT_TEAM: "" # signing happens locally via AltStore, not in CI — see D9
     CODE_SIGN_STYLE: Automatic
+    # add-localization D2: XcodeGen-generated projects don't inherit Xcode
+    # 15's new-project defaults, so these are set explicitly. The first makes
+    # new localizable resources default to String Catalogs; the second makes
+    # the Swift compiler emit the localizable-string tables that
+    # `xcodebuild -exportLocalizations` (a CI artifact, see build.yml) reads --
+    # the only compiler-accurate list of catalog keys available without a Mac.
+    LOCALIZATION_PREFERS_STRING_CATALOGS: "YES"
+    SWIFT_EMIT_LOC_STRINGS: "YES"
 
 targets:
   GarminFood:
@@ -104,6 +117,14 @@ targets:
       path: GarminFood/Info.plist
       properties:
         UILaunchScreen: {}
+        # add-localization D1/D2: declaring both localizations is what makes
+        # iOS show Settings > GarminFood > Language, and makes system UI
+        # inside the app (pickers, share sheets, permission alerts) follow the
+        # app's language. A new language goes here AND in the widget below.
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations:
+          - en
+          - cs
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSCameraUsageDescription: "GarminFood uses the camera to scan a product barcode and look it up in Garmin's food database."
@@ -181,6 +202,12 @@ targets:
       path: GarminFoodWidget/Info.plist
       properties:
         CFBundleDisplayName: GarminFood Widget
+        # add-localization: same two keys as the app (see there). The widget is
+        # its own bundle with its own Resources/Localizable.xcstrings.
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations:
+          - en
+          - cs
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:

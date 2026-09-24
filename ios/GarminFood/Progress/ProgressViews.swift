@@ -352,14 +352,17 @@ private struct TrendsSummaryCard: View {
 }
 
 /// "3 days left" / "Last day" for a challenge's final nutrition day.
+/// Localized via Resources/Localizable.xcstrings; "%lld days left" is a
+/// plural-variation entry there (Czech: Zbývá 1 den / Zbývají 3 dny /
+/// Zbývá 5 dní -- the verb agrees too), so there is deliberately no
+/// `case 1` special-case any more (add-localization design.md D5).
 func timeLeftText(until end: Date, now: Date = Date()) -> String {
     let calendar = Calendar.current
     let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: now), to: calendar.startOfDay(for: end)).day ?? 0
     switch days {
-    case ..<0: return "Ended"
-    case 0: return "Last day"
-    case 1: return "1 day left"
-    default: return "\(days) days left"
+    case ..<0: return String(localized: "Ended", comment: "Challenge status: its time window is over.")
+    case 0: return String(localized: "Last day", comment: "Challenge status: today is the final day of its window.")
+    default: return String(localized: "\(days) days left", comment: "Challenge status: whole days remaining (1 or more). Plural.")
     }
 }
 

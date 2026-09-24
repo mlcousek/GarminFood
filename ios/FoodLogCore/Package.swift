@@ -33,6 +33,14 @@ import PackageDescription
 
 let package = Package(
     name: "FoodLogCore",
+    // add-localization (openspec/changes/add-localization/design.md D3):
+    // English source strings are the keys; translations live in
+    // Sources/FoodLogCore/Resources/<lang>.lproj/Localizable.strings(dict),
+    // looked up with `String(localized:bundle: .module)`. Deliberately NOT a
+    // .xcstrings catalog: plain `swift test` (how CI tests this package)
+    // does not compile catalogs -- only Xcode does -- so Czech would be
+    // untestable here, while .lproj files behave the same in both.
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
@@ -51,7 +59,8 @@ let package = Package(
             name: "FoodLogCore",
             dependencies: [
                 .product(name: "GarminKit", package: "GarminKit")
-            ]
+            ],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "FoodLogCoreTests",
