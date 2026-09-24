@@ -46,8 +46,10 @@ final class OfflineIndexLoader {
         await runCheck(force: false)
     }
 
-    /// Settings' "Download now": skips the 24 h throttle, still honours the
-    /// cellular switch.
+    /// Settings' "Download now": skips the 24 h throttle and may use any
+    /// network (cellular, hotspot, Low Data Mode) -- a deliberate tap is
+    /// not held to the automatic check's Wi-Fi-only rule
+    /// (`OfflineIndexStore.checkForUpdate(force:)`).
     func downloadNow() async {
         lastManualOutcome = nil
         lastManualOutcome = await runCheck(force: true)
