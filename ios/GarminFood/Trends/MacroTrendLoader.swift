@@ -24,7 +24,8 @@ import Gamification
 @MainActor
 @Observable
 final class MacroTrendLoader {
-    @ObservationIgnored private let client: GarminClient
+    /// add-standalone-mode D3: any nutrition reader (the GarminClient today).
+    @ObservationIgnored private let client: any NutritionLogReading
 
     /// Oldest first, ready for Swift Charts to draw left-to-right.
     private(set) var days: [MacroTrendDay] = []
@@ -34,7 +35,7 @@ final class MacroTrendLoader {
     /// no logged days, which is a normal, non-error `days.isEmpty`.
     private(set) var loadFailed = false
 
-    init(client: GarminClient) {
+    init(client: any NutritionLogReading) {
         self.client = client
     }
 

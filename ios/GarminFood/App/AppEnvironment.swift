@@ -21,6 +21,10 @@ import Gamification
 @Observable
 final class AppEnvironment {
     let garminClient: GarminClient
+    /// add-standalone-mode D3: every nutrition READ the day log, Trends,
+    /// gamification and copy-meal make. The very same `garminClient` value
+    /// for now; wave 2 swaps in a local reader in standalone mode.
+    let nutritionReader: any NutritionLogReading
     let authState: GarminAuthState
     let outbox: Outbox
     let reconciliation: Reconciliation
@@ -120,6 +124,8 @@ final class AppEnvironment {
         let preferences = AppPreferences()
 
         self.garminClient = client
+        let reader: any NutritionLogReading = client
+        self.nutritionReader = reader
         self.authState = GarminAuthState()
         self.outbox = services.outbox
         self.reconciliation = services.reconciliation
@@ -149,9 +155,9 @@ final class AppEnvironment {
         self.hydrationLogCoordinator = services.hydrationLogCoordinator
         self.hydrationLoader = HydrationLoader(store: services.hydrationStore, outbox: services.hydrationOutbox, cache: services.garminHealthCache, preferences: preferences)
         self.garminHealthSync = services.garminHealthSync
-        self.trendsLoader = MacroTrendLoader(client: client)
-        self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
-        self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache, coordinator: services.logEntryCoordinator)
+        self.trendsLoader = MacroTrendLoader(client: reader)
+        self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: reader)
+        self.dayLog = DayLogLoader(reader: reader, client: client, outbox: services.outbox, foodCache: services.foodCache, coordinator: services.logEntryCoordinator)
         self.preferences = preferences
         self.themeStore = ThemeStore()
         self.notificationPreferences = NotificationPreferencesStore()
@@ -601,7 +607,7 @@ final class AppEnvironment {
         if let cached = dayLog.cachedFoodLogs[dateString] {
             log = cached
         } else {
-            log = try await garminClient.dailyFoodLog(date: dateString)
+            log = try await nutritionReader.dailyFoodLog(date: dateString)
         }
         return CopyMealPlanner.plan(log: log, mealType: mealType)
     }

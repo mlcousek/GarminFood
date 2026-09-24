@@ -29,7 +29,8 @@ import Gamification
 @Observable
 final class GamificationEngine {
     private let usageHistory: UsageHistoryStore
-    private let garminClient: GarminClient
+    /// add-standalone-mode D3: any nutrition reader; the app's GarminClient.
+    private let garminClient: any NutritionLogReading
     private let xpStore: XPStore
     private let goalStatusStore: GoalStatusStore
     private let challengeStore: ChallengeStore
@@ -91,7 +92,7 @@ final class GamificationEngine {
 
     init(
         usageHistory: UsageHistoryStore,
-        garminClient: GarminClient,
+        garminClient: any NutritionLogReading,
         xpStore: XPStore = XPStore(),
         goalStatusStore: GoalStatusStore = GoalStatusStore(),
         challengeStore: ChallengeStore = ChallengeStore(),

@@ -22,6 +22,9 @@ import FoodLogCore
 @MainActor
 @Observable
 final class DayLogLoader {
+    /// add-standalone-mode D3: the day log, meal windows and active
+    /// calories. The app's GarminClient today.
+    @ObservationIgnored private let reader: any NutritionLogReading
     @ObservationIgnored private let client: GarminClient
     @ObservationIgnored private let outbox: Outbox
     @ObservationIgnored private let foodCache: FoodCacheStore
@@ -61,7 +64,8 @@ final class DayLogLoader {
     /// meal when logging starts outside the dashboard.
     private(set) var latestWindows: [MealWindow] = []
 
-    init(client: GarminClient, outbox: Outbox, foodCache: FoodCacheStore, coordinator: LogEntryCoordinator, now: Date = Date()) {
+    init(reader: any NutritionLogReading, client: GarminClient, outbox: Outbox, foodCache: FoodCacheStore, coordinator: LogEntryCoordinator, now: Date = Date()) {
+        self.reader = reader
         self.client = client
         self.outbox = outbox
         self.foodCache = foodCache
@@ -151,7 +155,7 @@ final class DayLogLoader {
         async let activeLoad: Void = loadActiveCalories(date: date)
 
         do {
-            if let log = try await client.dailyFoodLog(date: date) {
+            if let log = try await reader.dailyFoodLog(date: date) {
                 logsByDate[date] = log
                 if date == dateString { isStale = false }
             } else {
@@ -190,7 +194,7 @@ final class DayLogLoader {
 
     private func loadMealsIfNeeded(date: String) async {
         guard mealsByDate[date] == nil,
-              let meals = try? await client.mealsForDate(date: date).meals else { return }
+              let meals = try? await reader.mealsForDate(date: date).meals else { return }
         mealsByDate[date] = meals
     }
 
