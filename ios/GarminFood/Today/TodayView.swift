@@ -375,8 +375,9 @@ struct DaySummaryCard: View {
 
     private func activeAccessibility(_ kilocalories: Double) -> String {
         let value = kilocalories.wholeNumberText
-        let when = isToday ? "today" : "that day"
-        return "Active calories burned \(when): \(value) kilocalories. For information only, not added to the target."
+        return isToday
+            ? String(localized: "Active calories burned today: \(value) kilocalories. For information only, not added to the target.")
+            : String(localized: "Active calories burned that day: \(value) kilocalories. For information only, not added to the target.")
     }
 }
 
