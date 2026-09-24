@@ -325,6 +325,18 @@
         }
       }
     },
+    "A secret achievement. Keep logging to reveal it.": {
+      "comment": "Detail sheet text of a locked secret achievement.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajný odznak. Zapisuj dál a odhalíš ho."
+          }
+        }
+      }
+    },
     "About": {
       "comment": "Settings section header.",
       "extractionState": "manual",
@@ -2053,6 +2065,18 @@
         }
       }
     },
+    "Limited edition %lld/%lld": {
+      "comment": "Achievements screen: section header for seasonal limited-edition badges, unlocked/total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limitovaná edice %lld/%lld"
+          }
+        }
+      }
+    },
     "Log anyway with a different Garmin food": {
       "comment": "Button: skip the suggested match and log against another Garmin food.",
       "extractionState": "manual",
@@ -2961,6 +2985,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Začni vyhledáním potraviny – nejčastěji zapisované potraviny se tu pak objeví v rychlém výběru."
+          }
+        }
+      }
+    },
+    "Secret %lld/%lld": {
+      "comment": "Achievements screen: section header for secret badges, unlocked/total (titles stay hidden until unlocked).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajné %lld/%lld"
+          }
+        }
+      }
+    },
+    "Secret achievement, locked": {
+      "comment": "Accessibility label of a locked secret achievement tile (title hidden).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajný odznak, zamčený"
           }
         }
       }
