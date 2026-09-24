@@ -8,6 +8,10 @@ import FoodLogCore
 @testable import Gamification
 
 final class GamificationFeatureRegistryTests: XCTestCase {
+    /// Wave-2 features that have replaced their stub (each change adds its
+    /// id here) -- they are tested in their own *Tests.swift files.
+    private let implemented: Set<String> = [FoodCollectionsFeature.id]
+
     private func tempDirectory() -> URL {
         FileManager.default.temporaryDirectory.appendingPathComponent("features-\(UUID().uuidString)", isDirectory: true)
     }
@@ -30,7 +34,8 @@ final class GamificationFeatureRegistryTests: XCTestCase {
             unlockedBadgeIds: [],
             isConfirmPath: false
         )
-        for feature in GamificationFeatureRegistry.makeAll(directory: tempDirectory()) {
+        for feature in GamificationFeatureRegistry.makeAll(directory: tempDirectory())
+        where !implemented.contains(feature.featureId) {
             let update = await feature.update(context)
             XCTAssertEqual(update, .empty, feature.featureId)
             XCTAssertTrue(feature.badges.isEmpty, feature.featureId)
