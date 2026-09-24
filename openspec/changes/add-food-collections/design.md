@@ -77,7 +77,9 @@ Special entry rules:
 
 ### D4 — Rewards
 
-- Each new discovery: `collection.found.<entryId>` → 5 XP.
+- Each new discovery: grant `collections.found.<entryId>` → 5 XP (grant keys
+  must start with the feature id `collections.` -- FeatureHost drops any
+  other prefix; badge ids keep the `collection.*` namespace).
 - Per collection: `collection.<id>.25`, `.50`, `.100` badges (common /
   rare / epic; Rainbow uses 50 % and 100 % only).
 - `collection.rainbow-day`: all six colours on one day (rare);
