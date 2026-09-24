@@ -39,6 +39,9 @@ struct AppearanceSettingsView: View {
                 ThemeGalleryView(store: store)
             } header: {
                 Text("Theme")
+            } footer: {
+                // D13: widgets can't read the app's settings (no App Group).
+                Text("Widgets don't change with the app's theme. Touch and hold a widget, then Edit Widget, to pick its theme.")
             }
 
             appearanceSection

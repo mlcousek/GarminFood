@@ -1,6 +1,126 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Berry" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bobule"
+          }
+        }
+      }
+    },
+    "Choose the colors of this widget." : {
+      "comment" : "Description of the widget configuration (Edit Widget).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyber barvy tohoto widgetu."
+          }
+        }
+      }
+    },
+    "Citrus" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Citrus"
+          }
+        }
+      }
+    },
+    "Classic Coral" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasický korál"
+          }
+        }
+      }
+    },
+    "Forest" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les"
+          }
+        }
+      }
+    },
+    "GF Teal" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GF tyrkys"
+          }
+        }
+      }
+    },
+    "Gold" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zlatá"
+          }
+        }
+      }
+    },
+    "Graphite" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grafit"
+          }
+        }
+      }
+    },
+    "High Contrast" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vysoký kontrast"
+          }
+        }
+      }
+    },
+    "Indigo Night" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indigová noc"
+          }
+        }
+      }
+    },
     "Log Food" : {
       "comment" : "Home Screen / Lock Screen widget name, label and VoiceOver label: opens the food catalog.",
       "extractionState" : "manual",
@@ -9,6 +129,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zapsat jídlo"
+          }
+        }
+      }
+    },
+    "Ocean" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oceán"
+          }
+        }
+      }
+    },
+    "Pastel" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastel"
+          }
+        }
+      }
+    },
+    "Slate" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Břidlice"
+          }
+        }
+      }
+    },
+    "Sunset" : {
+      "comment" : "Theme name (widget theme option).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Západ slunce"
+          }
+        }
+      }
+    },
+    "Theme" : {
+      "comment" : "Edit Widget: name of the widget's theme option.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Motiv"
+          }
+        }
+      }
+    },
+    "Widget theme" : {
+      "comment" : "Title of the widget configuration (Edit Widget).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Motiv widgetu"
           }
         }
       }

@@ -1123,6 +1123,18 @@
         }
       }
     },
+    "Widgets don't change with the app's theme. Touch and hold a widget, then Edit Widget, to pick its theme.": {
+      "comment": "Settings -> Appearance: footer under the theme gallery. \"Edit Widget\" is the iOS menu item's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widgety se s motivem aplikace nemění. Motiv widgetu vybereš tak, že widget podržíš a zvolíš Upravit widget."
+          }
+        }
+      }
+    },
     "With matching on, picking a theme also switches the Home Screen icon.": {
       "comment": "Settings -> Appearance page. Footer under the icon grid.",
       "extractionState": "manual",
