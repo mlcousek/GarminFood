@@ -626,7 +626,9 @@ struct LevelDetailView: View {
     private func upcomingLevels(from progress: LevelCurve.Progress, count: Int = 5) -> [UpcomingLevel] {
         guard progress.xpNeededForNextLevel > 0 else { return [] }
         var result: [UpcomingLevel] = []
-        var total = progress.totalXP + (progress.xpNeededForNextLevel - progress.xpIntoCurrentLevel)
+        // Absolute thresholds (not totalXP + remaining): correct also when
+        // the displayed level is a held peak above the curve (design D10).
+        var total = LevelCurve.threshold(forLevel: progress.level + 1)
         var level = progress.level + 1
         while result.count < count, level <= LevelCurve.maxLevel {
             result.append(UpcomingLevel(level: level, totalXP: total))

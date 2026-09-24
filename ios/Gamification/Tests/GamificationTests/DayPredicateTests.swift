@@ -118,6 +118,23 @@ final class DayPredicateTests: XCTestCase {
                                              history: F.snapshot([unknownFibre]), calendar: calendar))
     }
 
+    func testMealMacroAtLeast() {
+        let day = F.day(2026, 9, 22, entries: [
+            F.entry("eggs", at: at(7), meal: .breakfast, protein: 14),
+            F.entry("skyr", at: at(8), meal: .breakfast, protein: 9),
+            F.entry("steak", at: at(19), meal: .dinner, protein: 40),
+        ])
+        XCTAssertEqual(eval(.mealMacroAtLeast(.breakfast, .protein, grams: 20), day), true)
+        XCTAssertEqual(eval(.mealMacroAtLeast(.breakfast, .protein, grams: 30), day), false)
+        XCTAssertEqual(eval(.mealMacroAtLeast(.lunch, .protein, grams: 1), day), false)
+        let unknown = F.day(2026, 9, 22, entries: [
+            F.entry("eggs", at: at(7), meal: .breakfast, protein: 14),
+            F.entry("mystery", at: at(8), meal: .breakfast, protein: nil),
+        ])
+        XCTAssertNil(eval(.mealMacroAtLeast(.breakfast, .protein, grams: 20), unknown))
+        XCTAssertEqual(DayPredicate.mealMacroAtLeast(.breakfast, .protein, grams: 20).requirement, .macros)
+    }
+
     func testWaterGoal() {
         XCTAssertEqual(eval(.waterGoalMet, F.day(2026, 9, 22, waterML: 2600, waterGoalML: 2500)), true)
         XCTAssertEqual(eval(.waterGoalMet, F.day(2026, 9, 22, waterML: 1200, waterGoalML: 2500)), false)

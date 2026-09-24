@@ -123,7 +123,8 @@ final class GamificationEngine {
         lastKnownGoalStatuses = goalStatuses
 
         streakStatus = StreakEngine.status(events: events, now: now, boundaryHour: boundaryHour)
-        levelProgress = LevelCurve.level(forTotalXP: await xpStore.currentTotal())
+        // add-gamification-signals D10: never below the peak level reached.
+        levelProgress = await xpStore.currentProgress()
         updateHistory(events: events, goalStatuses: goalStatuses, now: now)
         completedChallenges = await challengeHistoryStore.all()
         try? await lifetimeStatsStore.backfillIfEmpty(events: events, goalStatuses: goalStatuses)
