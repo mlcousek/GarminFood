@@ -26,10 +26,11 @@
 // Rounding: a gram-derived multiplier is rounded to `quantityFractionDigits`
 // (3) decimals. Garmin stores `servingQty` as a 32-bit float (read back as
 // 0.699999988079071 for 0.7, 2026-09-24 read of the owner's own log), about
-// 7 significant digits, so 3 decimals survive the round trip for every
-// quantity up to `LogQuantity.maximum`, well inside `LoggedFood.
-// matchesQuantity`'s 0.001 tolerance. On a 100 g serving that is 0.1 g
-// resolution.
+// 7 significant digits: 3 decimals survive exactly below 8192, and above it
+// (float32 step ~0.00098) the read-back error is still under half that, so
+// every quantity up to `LogQuantity.maximum` stays inside `LoggedFood.
+// matchesQuantity`'s 0.001 tolerance (pinned by ServingAmountTests). On a
+// 100 g serving that is 0.1 g resolution.
 //
 // Pure, Foundation-only; tested in ServingAmountTests. Used by the app
 // target's `ServingQuantityField` (confirm screen, edit sheet) and the

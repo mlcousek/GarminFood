@@ -143,6 +143,23 @@ final class ServingQuantityInputTests: XCTestCase {
         XCTAssertEqual(hundredGrams.quantity(fromText: "33.33", mode: .amount), 0.333)
     }
 
+    /// Garmin stores `servingQty` as a 32-bit float; a rounded gram-derived
+    /// multiplier must still read back within `LoggedFood.matchesQuantity`'s
+    /// default 0.001 tolerance (GarminKit) all the way to
+    /// `LogQuantity.maximum` -- including above 8192, where float32 can no
+    /// longer hold 3 decimals exactly (its step there is ~0.00098).
+    func testAGramDerivedMultiplierSurvivesGarminsFloat32ReadBack() throws {
+        let cases: [(input: ServingQuantityInput, text: String)] = [
+            (named118, "130"), (gramsTimes100, "70"), (hundredGrams, "33.3"),
+            (hundredGrams, "999999.9"), (perGram, "8192.7"), (perGram, "9999.9")
+        ]
+        for testCase in cases {
+            let quantity = try XCTUnwrap(testCase.input.quantity(fromText: testCase.text, mode: .amount), testCase.text)
+            let readBack = Double(Float(quantity))
+            XCTAssertLessThan(abs(readBack - quantity), 0.001, "\(testCase.text) -> \(quantity) read back as \(readBack)")
+        }
+    }
+
     func testRoundTripsBetweenTextAndQuantity() {
         for grams in ["1", "12.5", "70", "150", "999.9", "5000"] {
             let quantity = hundredGrams.quantity(fromText: grams, mode: .amount)
