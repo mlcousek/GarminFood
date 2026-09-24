@@ -84,6 +84,16 @@ final class AppServices {
     /// searches (the widget extension) never pays for it.
     let offlineIndex: OfflineFoodIndexHolder
     let offlineIndexStore: OfflineIndexStore
+    /// add-gamification-signals D4: local caches the gamification signals
+    /// are built from -- Garmin day-log digests (written where a day log is
+    /// already fetched), active kcal + activities per day, and where each
+    /// food came from (barcode/brand). Plain FoodLogCore stores, one per
+    /// process like everything here; the widget never touches them. The
+    /// Gamification-side `RewardLedger` lives in the app's
+    /// `GamificationEngine` (the widget doesn't link Gamification).
+    let dayLogDigestStore: DayLogDigestStore
+    let activityCacheStore: ActivityCacheStore
+    let foodProvenanceStore: FoodProvenanceStore
 
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
@@ -125,6 +135,9 @@ final class AppServices {
         self.garminHealthSync = GarminHealthSync(cache: garminHealthCache, reader: client)
         self.offlineIndex = offlineIndex
         self.offlineIndexStore = OfflineIndexStore(holder: offlineIndex)
+        self.dayLogDigestStore = DayLogDigestStore()
+        self.activityCacheStore = ActivityCacheStore()
+        self.foodProvenanceStore = FoodProvenanceStore()
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`

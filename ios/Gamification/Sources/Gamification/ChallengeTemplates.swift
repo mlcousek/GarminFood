@@ -106,6 +106,33 @@ public enum ChallengeKind: Sendable, Equatable {
     /// weekends (Saturday AND Sunday both logged each time) within the
     /// window.
     case consecutiveWeekendsBothDays(weekends: Int)
+    /// add-gamification-signals D11: the day predicate holds on at least
+    /// `minDays` days of the window, evaluated from `DaySignals`
+    /// (`ChallengeEngine.progress(... signals:)`; no signals = 0 progress).
+    case signalDays(DayPredicate, minDays: Int)
+    /// add-gamification-signals D11: a span rule over the whole window
+    /// ("all six colours", "3 different Czech brands").
+    case signalWeek(WeekPredicate)
+
+    /// The data a signal kind needs (`[]` for every classic kind, which
+    /// reads only the usage history / goal status it always did).
+    public var dataRequirement: DataRequirement {
+        switch self {
+        case .signalDays(let predicate, _): return predicate.requirement
+        case .signalWeek(let predicate): return predicate.requirement
+        case .logOnDistinctDays, .extendStreakBy, .goalHitDays, .goalHitStreak, .newFoodsTried,
+             .mealTimeOnDistinctDays, .multiMealDays, .busyDays, .weekendBothDays, .mealSlotAbsent,
+             .allGoalsHitDays, .allFourMealSlotsDays, .sameFoodConsecutiveDays, .consecutiveWeekendsBothDays:
+            return []
+        }
+    }
+
+    public var isSignalBased: Bool {
+        switch self {
+        case .signalDays, .signalWeek: return true
+        default: return false
+        }
+    }
 }
 
 public struct ChallengeTemplate: Identifiable, Sendable, Equatable {
@@ -161,6 +188,32 @@ public enum ChallengeCatalog {
         + fullCourseFamily
         + sameFoodFamily
         + weekendStreakFamily
+        + signalTemplates // add-gamification-signals D11 (ChallengeTemplates+Signals.swift)
+
+    /// The 13 original hand-authored template ids (rotation weight 2 in
+    /// `ChallengeRotationPolicy`).
+    public static var handAuthoredIds: Set<String> { Set(handAuthored.map(\.id)) }
+
+    /// Each number-ladder family's template ids, keyed by family name, for
+    /// `ChallengeRotationPolicy`'s allowlist and its tests.
+    public static var ladderFamilies: [String: [String]] {
+        [
+            "log-streak": logStreakFamily.map(\.id),
+            "extend-streak": extendStreakFamily.map(\.id),
+            "goal-days": goalHitDaysFamily.map(\.id),
+            "goal-any-streak": anyGoalStreakFamily.map(\.id),
+            "goal-macro-streak": macroGoalStreakFamily.map(\.id),
+            "new-foods": newFoodsFamily.map(\.id),
+            "meal-time": mealTimeFamily.map(\.id),
+            "multi-meal": multiMealFamily.map(\.id),
+            "busy-days": busyDaysFamily.map(\.id),
+            "meal-absent": mealSlotAbsentFamily.map(\.id),
+            "all-goals": allGoalsFamily.map(\.id),
+            "full-course": fullCourseFamily.map(\.id),
+            "same-food": sameFoodFamily.map(\.id),
+            "weekend-streak": weekendStreakFamily.map(\.id),
+        ]
+    }
 
     private static func macroDisplayName(_ macro: GoalMacro) -> String {
         switch macro {

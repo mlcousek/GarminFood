@@ -43,6 +43,24 @@ public enum AchievementCondition: Sendable, Equatable {
     /// (non-meta) achievement is unlocked. Evaluated in a second pass by
     /// `AchievementEngine`, never by the generic per-condition check.
     case unlockedFractionOfOthers(fraction: Double)
+    /// add-gamification-signals D9: a badge a `GamificationFeature`
+    /// evaluates and unlocks itself. Never met by `AchievementEngine`, and
+    /// excluded from the meta achievements' denominator so shipping feature
+    /// badges never pushes an existing completionist goal further away.
+    case featureEvaluated
+}
+
+/// add-gamification-signals D9: a secret badge shows "???" and a lock until
+/// unlocked (its count is shown, its title is not).
+public enum AchievementVisibility: String, Sendable, Equatable, Codable {
+    case normal, secret
+}
+
+/// add-gamification-signals D9: a limited-edition badge belongs to a
+/// seasonal event and is shown with the event name and the years earned.
+public enum AchievementEdition: Sendable, Equatable, Hashable {
+    case permanent
+    case limited(eventId: String)
 }
 
 public struct AchievementDefinition: Identifiable, Sendable, Equatable {
@@ -61,9 +79,46 @@ public struct AchievementDefinition: Identifiable, Sendable, Equatable {
     /// this is computed rather than a stored field. Used by
     /// `BadgeMedallion` (GarminFood/DesignSystem/) to pick the badge's
     /// rim/fill treatment; not persisted anywhere.
-    public var rarity: AchievementRarity { AchievementRarity.derive(from: condition) }
+    /// add-gamification-signals D9: feature badges have no condition to
+    /// derive a rarity from, so they may state one (`rarityOverride`).
+    public var rarity: AchievementRarity { rarityOverride ?? AchievementRarity.derive(from: condition) }
 
-    public init(id: String, title: String, subtitle: String, category: AchievementCategory, badgeSymbol: String, condition: AchievementCondition, isMeta: Bool = false) {
+    // add-gamification-signals D9 -- all Optional/defaulted so every
+    // existing call site compiles unchanged. Not persisted anywhere
+    // (`AchievementStore` only stores id -> unlock date).
+    /// `nil` = `.normal`.
+    public let visibility: AchievementVisibility?
+    /// `nil` = `.permanent`.
+    public let edition: AchievementEdition?
+    public let rarityOverride: AchievementRarity?
+    /// The `GamificationFeature.featureId` that evaluates this badge.
+    public let featureId: String?
+
+    public var isSecret: Bool { visibility == .secret }
+
+    /// The seasonal event id of a limited-edition badge, else `nil`.
+    public var limitedEditionEventId: String? {
+        if case .limited(let eventId)? = edition { return eventId }
+        return nil
+    }
+
+    /// `false` for `.featureEvaluated` badges -- the set the completionist
+    /// meta achievements count.
+    public var isCoreCatalogBadge: Bool { condition != .featureEvaluated }
+
+    public init(
+        id: String,
+        title: String,
+        subtitle: String,
+        category: AchievementCategory,
+        badgeSymbol: String,
+        condition: AchievementCondition,
+        isMeta: Bool = false,
+        visibility: AchievementVisibility? = nil,
+        edition: AchievementEdition? = nil,
+        rarityOverride: AchievementRarity? = nil,
+        featureId: String? = nil
+    ) {
         self.id = id
         self.title = title
         self.subtitle = subtitle
@@ -71,6 +126,10 @@ public struct AchievementDefinition: Identifiable, Sendable, Equatable {
         self.badgeSymbol = badgeSymbol
         self.condition = condition
         self.isMeta = isMeta
+        self.visibility = visibility
+        self.edition = edition
+        self.rarityOverride = rarityOverride
+        self.featureId = featureId
     }
 }
 

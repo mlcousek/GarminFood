@@ -22,3 +22,53 @@
 
 /* Achievement rarity grade (adjective describing a badge). */
 "Legendary" = "Legendary";
+
+/* add-gamification-signals: creative real-world challenges (ChallengeTemplates+Signals.swift). */
+"Something Fishy" = "Something Fishy";
+"Log fish on 2 different days." = "Log fish on 2 different days.";
+"Five-a-Day Week" = "Five-a-Day Week";
+"Log 5 portions of fruit or vegetables on 4 days." = "Log 5 portions of fruit or vegetables on 4 days.";
+"Rainbow Week" = "Rainbow Week";
+"Eat all 6 colours of fruit and vegetables." = "Eat all 6 colours of fruit and vegetables.";
+"Czech Supermarket Safari" = "Czech Supermarket Safari";
+"Log foods from 3 different Czech brands." = "Log foods from 3 different Czech brands.";
+"Fermentation Station" = "Fermentation Station";
+"Eat something fermented on 4 days." = "Eat something fermented on 4 days.";
+"Pulse Check" = "Pulse Check";
+"Eat legumes on 3 days." = "Eat legumes on 3 days.";
+"Hydration Station" = "Hydration Station";
+"Reach your water goal on 5 days." = "Reach your water goal on 5 days.";
+"Early Bird Week" = "Early Bird Week";
+"Log your first food before 9:00 on 5 days." = "Log your first food before 9:00 on 5 days.";
+"Kitchen Curfew" = "Kitchen Curfew";
+"Log your last food before 20:00 on 5 days." = "Log your last food before 20:00 on 5 days.";
+"Green Breakfast Club" = "Green Breakfast Club";
+"Have vegetables at breakfast on 3 days." = "Have vegetables at breakfast on 3 days.";
+"Fibre Fanatic" = "Fibre Fanatic";
+"Eat at least 30 g of fibre on 4 days." = "Eat at least 30 g of fibre on 4 days.";
+"Sugar Detective" = "Sugar Detective";
+"Keep sugar at 40 g or less on 4 days with at least 3 entries." = "Keep sugar at 40 g or less on 4 days with at least 3 entries.";
+"Fuel & Recover" = "Fuel & Recover";
+"Log 20 g of protein within an hour after an activity, on 3 days." = "Log 20 g of protein within an hour after an activity, on 3 days.";
+"Active and On Target" = "Active and On Target";
+"Do a 30-minute activity and hit your calorie goal on the same day, on 3 days." = "Do a 30-minute activity and hit your calorie goal on the same day, on 3 days.";
+"Nut Job" = "Nut Job";
+"Eat nuts on 4 days." = "Eat nuts on 4 days.";
+"Global Kitchen" = "Global Kitchen";
+"Eat dishes from 4 different cuisines." = "Eat dishes from 4 different cuisines.";
+"Tea Time" = "Tea Time";
+"Drink tea on 5 days." = "Drink tea on 5 days.";
+"Soup Season" = "Soup Season";
+"Have a soup on 4 days." = "Have a soup on 4 days.";
+"Whole Grain Hero" = "Whole Grain Hero";
+"Eat whole grains on 5 days." = "Eat whole grains on 5 days.";
+"Egg-cellent Week" = "Egg-cellent Week";
+"Eat eggs on 3 days." = "Eat eggs on 3 days.";
+"Soda-Free Week" = "Soda-Free Week";
+"Skip sugary drinks on 6 days with at least 2 entries." = "Skip sugary drinks on 6 days with at least 2 entries.";
+"Paint the Plate" = "Paint the Plate";
+"Eat 4 colours of fruit and vegetables in one day, on 2 days." = "Eat 4 colours of fruit and vegetables in one day, on 2 days.";
+"New Horizons" = "New Horizons";
+"Log 5 foods you have never logged before." = "Log 5 foods you have never logged before.";
+"Protein Breakfast" = "Protein Breakfast";
+"Eat at least 20 g of protein at breakfast on 4 days." = "Eat at least 20 g of protein at breakfast on 4 days.";

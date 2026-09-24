@@ -1,6 +1,18 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ +%lld XP": {
+      "comment": "Celebration card: a gamification feature's message (already localized) followed by the XP it awarded.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ +%lld XP"
+          }
+        }
+      }
+    },
     "%@ has no serving Garmin can log.": {
       "comment": "Siri reply. %@ is a food name.",
       "extractionState": "manual",
@@ -321,6 +333,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Každodenní připomenutí, ať se podíváš na dnešní výzvy."
+          }
+        }
+      }
+    },
+    "A secret achievement. Keep logging to reveal it.": {
+      "comment": "Detail sheet text of a locked secret achievement.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajný odznak. Zapisuj dál a odhalíš ho."
           }
         }
       }
@@ -2113,6 +2137,18 @@
         }
       }
     },
+    "Limited edition %lld/%lld": {
+      "comment": "Achievements screen: section header for seasonal limited-edition badges, unlocked/total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limitovaná edice %lld/%lld"
+          }
+        }
+      }
+    },
     "Log ${foodName} in GarminFood": {
       "comment": "Shortcuts parameter summary (LogNamedFoodIntent.parameterSummary). ${foodName} is the food-name parameter; keep it verbatim.",
       "extractionState": "manual",
@@ -3321,6 +3357,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vyhledá název ve tvých jídlech a v databázi potravin Garminu a jednoznačně nejlepší shodu zapíše do GarminFood."
+          }
+        }
+      }
+    },
+    "Secret %lld/%lld": {
+      "comment": "Achievements screen: section header for secret badges, unlocked/total (titles stay hidden until unlocked).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajné %lld/%lld"
+          }
+        }
+      }
+    },
+    "Secret achievement, locked": {
+      "comment": "Accessibility label of a locked secret achievement tile (title hidden).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajný odznak, zamčený"
           }
         }
       }

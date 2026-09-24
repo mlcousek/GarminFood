@@ -250,6 +250,7 @@ public indirect enum DayPredicate: Sendable, Equatable, Codable {
     case goalMet(GoalMacro)
     case macroAtLeast(Macro, grams: Double)       // needs garminLog or local macros
     case macroAtMost(Macro, grams: Double, minEntries: Int)
+    case mealMacroAtLeast(SignalMeal, Macro, grams: Double) // e.g. 20 g protein at breakfast
     case waterGoalMet
     case hasActivity(minMinutes: Int)
     case proteinAfterActivity(grams: Double, withinMinutes: Int)
@@ -261,6 +262,13 @@ public indirect enum DayPredicate: Sendable, Equatable, Codable {
 public struct WeekPredicate … // .daysSatisfying(DayPredicate, atLeast: Int) and .distinctTagsAcrossWeek(prefix:, atLeast:)
 public enum SignalEvaluator { static func holds(_ p: DayPredicate, on: DaySignals, history: SignalsSnapshot) -> Bool }
 ```
+
+(As built: `Macro` is spelled `SignalMacro` and also covers fibre/sugar;
+`DataRequirement` is an `OptionSet` so `.all`/`.any` can need several
+sources; `SignalEvaluator.evaluate` is three-valued -- `nil` = "no data" --
+and `holds` maps that to `false`. `WeekPredicate` also has
+`.distinctCzechBrandsAtLeast` and `.newFoodsAtLeast` for Czech Safari and
+New Horizons.)
 
 `requirement` lets a feature skip a rule when the owner's data doesn't
 support it (no water data in the last 14 days → no water square/boss/
@@ -423,6 +431,11 @@ untouched so its picks do not change). `ChallengeStore.recentTemplateIds`
 cap rises from 3 to 8. Weight-0 templates stay in `ChallengeCatalog.all`:
 an active challenge whose template became weight 0 finishes normally; its
 history and every earned badge keep working.
+
+As built, the allowlist keeps exactly two tiers per ladder FAMILY (14
+families -> 28 templates; the per-macro/per-meal families keep two tiers on
+one axis, e.g. `goal-days-protein-7`/`-12`), which is what the ~28 figure
+below assumes; the spec's "at most two tiers per family (per axis)" holds.
 
 With 13×2 + 24×3 + ~28×1, creative templates are ≈ 57 % of picks and ladder
 tiers ≈ 22 % (today: ladders are 94 %).
