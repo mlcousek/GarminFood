@@ -117,7 +117,7 @@ struct TrendsView: View {
             SectionHeader(title: "Water, last \(hydrationDaysBack) days")
             HStack(spacing: Theme.Spacing.sm) {
                 StatTile(value: "\(streak)", label: "Day streak", systemImage: "flame.fill", tint: Theme.carbs)
-                StatTile(value: hydrationGoalML.formattedML, label: "ml goal", systemImage: "target", tint: Theme.carbs)
+                StatTile(value: hydrationGoalML.formattedML, label: "ml goal", systemImage: "target", tint: Theme.water)
             }
             HydrationTrendChartView(points: points, goalML: hydrationGoalML, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
                 .card()

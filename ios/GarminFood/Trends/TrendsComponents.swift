@@ -119,7 +119,7 @@ struct HydrationTrendPoint: Identifiable {
 }
 
 /// A bar per day against a dashed goal line -- bars that reached the goal
-/// read as the same "hydrated" blue (`Theme.carbs`, matching
+/// read as the same "hydrated" blue (`Theme.water`, matching
 /// `HydrationHeroCard`'s own progress-ring tint) at full opacity; days that
 /// fell short are the same hue dimmed, so "did I hit my goal" reads at a
 /// glance without a second color needing its own legend.
@@ -137,7 +137,7 @@ struct HydrationTrendChartView: View {
                     x: .value("Date", point.date, unit: .day),
                     y: .value("Water", point.totalML)
                 )
-                .foregroundStyle(point.totalML >= goalML && goalML > 0 ? Theme.carbs : Theme.carbs.opacity(0.4))
+                .foregroundStyle(point.totalML >= goalML && goalML > 0 ? Theme.water : Theme.water.opacity(0.4))
             }
             if goalML > 0 {
                 RuleMark(y: .value("Goal", goalML))

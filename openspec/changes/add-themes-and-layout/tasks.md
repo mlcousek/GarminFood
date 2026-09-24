@@ -35,7 +35,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 - [x] 1.7 **Migrate `DesignSystem/`** to palette roles: `CardStyle`, `ProgressRing`, `MacroBar`, `PrimaryButton` (label uses `onAccent`), `StatTile`, `DaySwitcher`, `Tag`, `FavoriteToggleButton`, `GoalState.tint`, and `CalorieBand.tint` (whose literals move into Classic). `BadgeMedallion` rarity colors stay as they are. CI green.
 - [x] 1.8 **Migrate batch A** (R4: only hard-coded colors are edited): `Today/`, `Fasting/`, `Weight/`, `Hydration/`. Hydration moves from `carbs` to `water`. CI green.
 - [x] 1.9 **Migrate batch B**: `Catalog/`, `LogEntry/`, `CustomFood/`, `MealPreset/`, `Shortcuts/`. The 9 `.red` error texts become `danger`, and the `.green` swipe tint becomes `success`. CI green.
-- [ ] 1.10 **Migrate batch C**: `Progress/`, `Trends/`, `Profile/`, `Home/` (`MomentOverlay`), `App/` banners. Text on colored fills uses `onAccent`. CI green.
+- [x] 1.10 **Migrate batch C**: `Progress/`, `Trends/`, `Profile/`, `Home/` (`MomentOverlay`), `App/` banners. Text on colored fills uses `onAccent`. CI green.
 - [ ] 1.11 **Lint**: `tools/lint-design-tokens.sh`, plus `tools/design-token-allowlist.txt` with a reason on every line (`Shared/Theme.swift`, `BadgeMedallion` rarity, scanner and moment scrims, the widget fallback). Run it locally in Git Bash until it passes, then add it as a CI step before "Install XcodeGen". CI green.
 - [ ] 1.12 **On-device check** (AltStore build):
   - Take screenshots of Today, Log Food, Progress, a confirm sheet, the level-up overlay and Settings in light and dark mode, and compare them with screenshots from the previous build. They must look identical.

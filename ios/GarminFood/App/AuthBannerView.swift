@@ -132,7 +132,7 @@ struct GarminSignInSheet: View {
                 }
 
                 if let errorMessage {
-                    Section { Text(errorMessage).foregroundStyle(.red) }
+                    Section { Text(errorMessage).foregroundStyle(Theme.danger) }
                 }
             }
             .navigationTitle("Connect Garmin")
