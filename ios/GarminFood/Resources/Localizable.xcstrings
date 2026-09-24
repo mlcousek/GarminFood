@@ -1159,6 +1159,30 @@
         }
       }
     },
+    "Copy": {
+      "comment": "Copy-meal sheet confirm button with nothing selected.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat"
+          }
+        }
+      }
+    },
+    "Copy %lld": {
+      "comment": "Copy-meal sheet confirm button; %lld = number of selected items.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat (%lld)"
+          }
+        }
+      }
+    },
     "Copy a past meal into %@": {
       "comment": "VoiceOver label of a meal card's Copy from button; %@ = meal name.",
       "extractionState": "manual",
@@ -1195,6 +1219,18 @@
         }
       }
     },
+    "Copy from": {
+      "comment": "Copy-meal sheet section: where to copy from.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat z"
+          }
+        }
+      }
+    },
     "Copy from…": {
       "comment": "Button on a meal card copying a past meal into it.",
       "extractionState": "manual",
@@ -1203,6 +1239,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kopírovat z…"
+          }
+        }
+      }
+    },
+    "Copy to %@": {
+      "comment": "Navigation title of the copy-meal sheet; %@ = target meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat do: %@"
           }
         }
       }
@@ -1263,6 +1311,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ikonu aplikace se nepodařilo změnit"
+          }
+        }
+      }
+    },
+    "Couldn't change this entry": {
+      "comment": "Alert title when editing/moving/deleting an entry failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo změnit"
           }
         }
       }
@@ -1411,6 +1471,18 @@
         }
       }
     },
+    "Couldn't read that day from Garmin. %@": {
+      "comment": "Copy-meal sheet load error; %@ = the underlying error's description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ten den se z Garminu nepodařilo načíst. %@"
+          }
+        }
+      }
+    },
     "Couldn't read the code": {
       "comment": "Import theme preview: title when a pasted/opened theme code is invalid.",
       "extractionState": "manual",
@@ -1543,6 +1615,18 @@
         }
       }
     },
+    "Day": {
+      "comment": "Copy-meal sheet date picker label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den"
+          }
+        }
+      }
+    },
     "Days logged": {
       "comment": "Profile stat tile: number of days with at least one entry.",
       "extractionState": "manual",
@@ -1587,6 +1671,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Smazat"
+          }
+        }
+      }
+    },
+    "Delete %@": {
+      "comment": "Destructive confirmation button; %@ = food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat „%@“"
           }
         }
       }
@@ -1737,6 +1833,54 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "Duplicate": {
+      "comment": "Swipe/context action logging the same entry again.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duplikovat"
+          }
+        }
+      }
+    },
+    "Edit": {
+      "comment": "Swipe/context action editing a logged entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit"
+          }
+        }
+      }
+    },
+    "Edit amount": {
+      "comment": "Context menu action editing a logged entry's amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit množství"
+          }
+        }
+      }
+    },
+    "Edit entry": {
+      "comment": "Navigation title of the edit-entry sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit záznam"
           }
         }
       }
@@ -2191,6 +2335,18 @@
         }
       }
     },
+    "Garmin Connect gets the corrected entry first, then the old one is removed. Until then it may briefly show both.": {
+      "comment": "Edit-entry sheet footnote for an entry already in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect nejdřív dostane opravený záznam a pak se ten původní smaže. Do té doby tam můžou být krátce oba."
+          }
+        }
+      }
+    },
     "Garmin created the food but returned no serving for it. Pick a different Garmin food instead.": {
       "comment": "Error: the created Garmin food has no serving.",
       "extractionState": "manual",
@@ -2467,6 +2623,18 @@
         }
       }
     },
+    "It hasn't reached Garmin yet, so it's only removed from this phone.": {
+      "comment": "Delete confirmation message for an entry not yet delivered to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do Garminu ještě nedorazil, takže se smaže jen z tohoto telefonu."
+          }
+        }
+      }
+    },
     "It hasn't reached Garmin yet, so nothing is removed there.": {
       "comment": "Sync queue delete confirmation for a queued new entry.",
       "extractionState": "manual",
@@ -2475,6 +2643,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Do Garminu ještě nedorazil, takže se tam nic nemaže."
+          }
+        }
+      }
+    },
+    "It will also be removed from Garmin Connect.": {
+      "comment": "Delete confirmation message for an entry already in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smaže se i z Garmin Connect."
+          }
+        }
+      }
+    },
+    "Items": {
+      "comment": "Copy-meal sheet section listing the items to copy.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Položky"
           }
         }
       }
@@ -2899,6 +3091,18 @@
         }
       }
     },
+    "Meal": {
+      "comment": "Section/picker label choosing the meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo"
+          }
+        }
+      }
+    },
     "Meal reminders": {
       "comment": "Reminders screen section header.",
       "extractionState": "manual",
@@ -2955,6 +3159,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neproporcionální"
+          }
+        }
+      }
+    },
+    "Move to": {
+      "comment": "Context submenu moving a logged entry to another meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesunout do"
+          }
+        }
+      }
+    },
+    "Move to %@": {
+      "comment": "Action moving a logged entry to another meal; %@ = meal name, e.g. 'Lunch'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesunout: %@"
           }
         }
       }
@@ -3195,6 +3423,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nic nezaznamenáno"
+          }
+        }
+      }
+    },
+    "Nothing logged in this meal that day.": {
+      "comment": "Copy-meal sheet when the chosen meal and day are empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V tomto jídle ten den nic zapsáno není."
           }
         }
       }
@@ -3643,6 +3883,18 @@
         }
       }
     },
+    "Reading that day from Garmin…": {
+      "comment": "Copy-meal sheet loading text.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Načítám ten den z Garminu…"
+          }
+        }
+      }
+    },
     "Recent": {
       "comment": "Log Food screen: shelf title for recently logged foods.",
       "extractionState": "manual",
@@ -3783,6 +4035,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zaoblené"
+          }
+        }
+      }
+    },
+    "Save": {
+      "comment": "Toolbar button saving an edit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložit"
           }
         }
       }
@@ -3963,6 +4227,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Porce"
+          }
+        }
+      }
+    },
+    "Serving: %@": {
+      "comment": "Edit-entry sheet: the entry's serving; %@ = serving description, e.g. '1 cup'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce: %@"
           }
         }
       }
@@ -4227,6 +4503,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Svačina"
+          }
+        }
+      }
+    },
+    "Some items may already be logged -- check the sync queue. %@": {
+      "comment": "Copy-meal save error; %@ = the underlying error's description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některé položky už možná jsou zapsané – zkontroluj frontu synchronizace. %@"
           }
         }
       }
