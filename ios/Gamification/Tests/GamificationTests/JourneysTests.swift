@@ -41,6 +41,14 @@ final class JourneysTests: XCTestCase {
         XCTAssertTrue(JourneyCatalog.passport.requirement.isEmpty)
     }
 
+    func testAvailability() {
+        let kcalOnly = DaySignals(day: JR.key(5), date: TestClock.date(2026, 9, 5, hour: 0), activeKcal: 300)
+        XCTAssertTrue(JourneysEvaluator.isAvailable(.road, days: [kcalOnly]), "cached active kcal alone is enough")
+        XCTAssertFalse(JourneysEvaluator.isAvailable(.road, days: [JR.day(5, waterML: 100)]))
+        XCTAssertTrue(JourneysEvaluator.isAvailable(.water, days: [JR.day(5, waterML: 100)]))
+        XCTAssertTrue(JourneysEvaluator.isAvailable(.passport, days: []))
+    }
+
     // MARK: - Evaluation
 
     func testProteinReachesSnezkaAndShowsGerlachNext() {

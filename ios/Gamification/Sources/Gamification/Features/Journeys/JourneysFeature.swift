@@ -58,7 +58,7 @@ public actor JourneysFeature: GamificationFeature {
         let result = JourneysEvaluator.evaluate(state: loaded.state, snapshot: context.snapshot)
         let days = context.snapshot.orderedDays
         for kind in JourneyKind.allCases {
-            availability[kind] = JourneyCatalog.definition(kind).requirement.isSatisfied(byAnyOf: days)
+            availability[kind] = JourneysEvaluator.isAvailable(kind, days: days)
         }
         do {
             try await store.save(result.state)

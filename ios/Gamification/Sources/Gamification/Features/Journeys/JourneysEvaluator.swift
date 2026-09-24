@@ -91,6 +91,15 @@ public enum JourneysEvaluator {
         day.activeKcal.map { JourneyCatalog.kilometres(activeKcal: $0, weightKg: weightKg) }
     }
 
+    /// Whether `kind`'s data source exists in any of `days`: its declared
+    /// `DataRequirement`, or -- for the road trip -- a cached active-kcal
+    /// value (Garmin's daily summary is cached separately from the activity
+    /// list, so either one proves the source exists).
+    public static func isAvailable(_ kind: JourneyKind, days: [DaySignals]) -> Bool {
+        if JourneyCatalog.definition(kind).requirement.isSatisfied(byAnyOf: days) { return true }
+        return kind == .road && days.contains { $0.activeKcal != nil }
+    }
+
     /// The weight known on each window day: the latest weigh-in in the
     /// window on or before it, else `stored` (known as of the last sealed
     /// day, which is older than every day still to be counted).
