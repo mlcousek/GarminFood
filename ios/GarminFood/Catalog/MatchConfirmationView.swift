@@ -141,6 +141,7 @@ struct MatchConfirmationView: View {
             }
 
             PrimaryButton(title: "Use this match") {
+                recordOFFProvenance(garminFood: candidate, offFood: offFood, store: environment.foodProvenanceStore)
                 if isPicking {
                     foodAwaitingServingPick = candidate
                 } else {
@@ -205,6 +206,26 @@ struct MatchConfirmationView: View {
         switch GarminFoodMatching.match(offFood: offFood, garminCandidates: candidates) {
         case .matched(let food): state = .matched(food)
         case .noMatch: state = .noMatch
+        }
+    }
+}
+
+/// add-gamification-signals 7.4 (design D3): once the owner settles an Open
+/// Food Facts product on a Garmin food (matched or just created), remember
+/// the OFF barcode (an OFF `Food.id` IS its barcode) and brand under the
+/// Garmin food id -- the logged id loses both, and the food tagger needs
+/// them (Czech brand, EAN 859). A local write, fire-and-forget: the user's
+/// action never waits for it and no network call is involved.
+@MainActor
+private func recordOFFProvenance(garminFood: Food, offFood: Food, store: FoodProvenanceStore) {
+    let foodId = garminFood.id
+    let barcode = offFood.id
+    let brand = offFood.brandName
+    Task {
+        do {
+            try await store.record(foodId: foodId, barcode: barcode, brand: brand)
+        } catch {
+            DiagnosticsLog.log(.warning, category: "signals", "couldn't record food provenance: \(error)")
         }
     }
 }
@@ -317,6 +338,7 @@ struct CreateInGarminConfirmView: View {
                     errorMessage = String(localized: "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.")
                     return
                 }
+                recordOFFProvenance(garminFood: createdFood, offFood: offFood, store: environment.foodProvenanceStore)
                 // Picker variant: hand the created food back as an
                 // ingredient; nothing is logged.
                 if let onPickCreated {

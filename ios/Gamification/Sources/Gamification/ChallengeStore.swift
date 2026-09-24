@@ -22,9 +22,24 @@ public actor ChallengeStore {
         /// Small and bounded -- purely an anti-repetition nicety, not
         /// correctness-critical.
         var recentTemplateIds: [String]
+
+        init(active: ActiveChallenge?, recentTemplateIds: [String]) {
+            self.active = active
+            self.recentTemplateIds = recentTemplateIds
+        }
+
+        // Optional-safe decode (add-gamification-signals): a file missing
+        // `recentTemplateIds` still loads instead of being quarantined.
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            active = try container.decodeIfPresent(ActiveChallenge.self, forKey: .active)
+            recentTemplateIds = try container.decodeIfPresent([String].self, forKey: .recentTemplateIds) ?? []
+        }
     }
 
-    private static let maxRecentTemplateIds = 3
+    /// add-gamification-signals D11: 3 -> 8, so the weighted rotation
+    /// doesn't bounce between the same few high-weight templates.
+    static let maxRecentTemplateIds = 8
 
     private let fileURL: URL
     private var snapshot = Snapshot(active: nil, recentTemplateIds: [])
@@ -76,10 +91,10 @@ public actor ChallengeStore {
     /// activated". Returns the already-active challenge unchanged if one
     /// exists.
     @discardableResult
-    public func ensureActive(catalog: [ChallengeTemplate], now: Date, baselineStreakLength: Int) throws -> ActiveChallenge {
+    public func ensureActive(catalog: [ChallengeTemplate], now: Date, baselineStreakLength: Int, policy: ChallengeRotationPolicy = ChallengeRotationPolicy()) throws -> ActiveChallenge {
         loadIfNeeded()
         if let active = snapshot.active { return active }
-        let template = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now)
+        let template = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now, policy: policy)
         let activated = activate(template: template, now: now, baselineStreakLength: baselineStreakLength)
         try persist()
         return activated
@@ -108,10 +123,10 @@ public actor ChallengeStore {
     /// caller for the SAME already-completed instance sees it already
     /// rotated away and gets `nil`.
     @discardableResult
-    public func completeAndRotateIfStillActive(templateId: String, catalog: [ChallengeTemplate], now: Date, baselineStreakLength: Int) throws -> ActiveChallenge? {
+    public func completeAndRotateIfStillActive(templateId: String, catalog: [ChallengeTemplate], now: Date, baselineStreakLength: Int, policy: ChallengeRotationPolicy = ChallengeRotationPolicy()) throws -> ActiveChallenge? {
         loadIfNeeded()
         guard snapshot.active?.templateId == templateId else { return nil }
-        let template = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now)
+        let template = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now, policy: policy)
         let activated = activate(template: template, now: now, baselineStreakLength: baselineStreakLength)
         try persist()
         return activated
@@ -125,7 +140,8 @@ public actor ChallengeStore {
         catalog: [ChallengeTemplate],
         now: Date,
         baselineStreakLength: Int,
-        boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour
+        boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
+        policy: ChallengeRotationPolicy = ChallengeRotationPolicy()
     ) throws -> Bool {
         loadIfNeeded()
         guard let active = snapshot.active,
@@ -133,7 +149,7 @@ public actor ChallengeStore {
               ChallengeEngine.isWindowElapsed(active: active, template: template, now: now, boundaryHour: boundaryHour)
         else { return false }
 
-        let nextTemplate = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now)
+        let nextTemplate = ChallengeRotation.pickNext(from: catalog, excluding: Set(snapshot.recentTemplateIds), now: now, policy: policy)
         _ = activate(template: nextTemplate, now: now, baselineStreakLength: baselineStreakLength)
         try persist()
         return true

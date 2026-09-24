@@ -25,6 +25,11 @@ public enum GamificationMoment: Sendable, Equatable {
     /// rarity-graded medallion the Achievements screen uses, instead of a
     /// plain icon -- see `AchievementDefinition.rarity`.
     case achievementUnlocked(title: String, badgeSymbol: String, rarity: AchievementRarity)
+    /// add-gamification-signals D7/D12: any `GamificationFeature`'s moment
+    /// (bingo line, record, secret reveal, event, boss, freeze), rendered
+    /// generically by the app's `MomentOverlay` so no wave-2 change has to
+    /// edit it.
+    case feature(FeatureMoment)
 }
 
 /// Tasks 23.4: "every 7 days" is the one concrete example given; kept as a

@@ -37,6 +37,14 @@ final class GamificationEngine {
     private let dailyChallengeStore: DailyChallengeStore
     private let lifetimeStatsStore: LifetimeStatsStore
     private let achievementStore: AchievementStore
+    /// add-gamification-signals D7: runs the registered gamification
+    /// features and builds the day signals they (and the signal-based
+    /// challenges) read. `nil` only where no app stores exist (previews).
+    let featureHost: FeatureHost?
+    /// Written wherever this engine already fetches a day log (7.2).
+    private let dayLogDigestStore: DayLogDigestStore?
+    /// The day signals of the last refresh/confirm (local data only).
+    private(set) var signals: SignalsSnapshot?
 
     /// Every day-keyed calculation uses the date entries are logged FOR
     /// (local midnight, the same date sent to Garmin), so streaks, XP bonuses
@@ -61,7 +69,8 @@ final class GamificationEngine {
     private(set) var unlockedAchievements: [String: Date] = [:]
 
     var catalog: [ChallengeTemplate] { ChallengeCatalog.all }
-    var achievementCatalog: [AchievementDefinition] { AchievementCatalog.all }
+    /// Core achievements + every feature's badges (`BadgeRegistry`, D9).
+    var achievementCatalog: [AchievementDefinition] { featureHost?.badgeCatalog ?? AchievementCatalog.all }
 
     /// The last nutrition day the active challenge can still be completed on.
     var challengeWindowEnd: Date? {
@@ -98,8 +107,12 @@ final class GamificationEngine {
         challengeHistoryStore: ChallengeHistoryStore = ChallengeHistoryStore(),
         dailyChallengeStore: DailyChallengeStore = DailyChallengeStore(),
         lifetimeStatsStore: LifetimeStatsStore = LifetimeStatsStore(),
-        achievementStore: AchievementStore = AchievementStore()
+        achievementStore: AchievementStore = AchievementStore(),
+        featureHost: FeatureHost? = nil,
+        dayLogDigestStore: DayLogDigestStore? = nil
     ) {
+        self.featureHost = featureHost
+        self.dayLogDigestStore = dayLogDigestStore
         self.usageHistory = usageHistory
         self.garminClient = garminClient
         self.xpStore = xpStore
@@ -121,9 +134,11 @@ final class GamificationEngine {
         let goalStatuses = await goalStatusStore.all()
         lastKnownEvents = events
         lastKnownGoalStatuses = goalStatuses
+        signals = await featureHost?.buildSnapshot(goalStatuses: goalStatuses, now: now)
 
         streakStatus = StreakEngine.status(events: events, now: now, boundaryHour: boundaryHour)
-        levelProgress = LevelCurve.level(forTotalXP: await xpStore.currentTotal())
+        // add-gamification-signals D10: never below the peak level reached.
+        levelProgress = await xpStore.currentProgress()
         updateHistory(events: events, goalStatuses: goalStatuses, now: now)
         completedChallenges = await challengeHistoryStore.all()
         try? await lifetimeStatsStore.backfillIfEmpty(events: events, goalStatuses: goalStatuses)
@@ -141,20 +156,23 @@ final class GamificationEngine {
         if let active = try? await challengeStore.ensureActive(
             catalog: ChallengeCatalog.all,
             now: now,
-            baselineStreakLength: streakStatus.length
+            baselineStreakLength: streakStatus.length,
+            policy: rotationPolicy
         ), let template = ChallengeCatalog.all.first(where: { $0.id == active.templateId }),
            ChallengeEngine.isWindowElapsed(active: active, template: template, now: now, boundaryHour: boundaryHour) {
             _ = try? await challengeStore.rotateIfWindowElapsed(
                 catalog: ChallengeCatalog.all,
                 now: now,
                 baselineStreakLength: streakStatus.length,
-                boundaryHour: boundaryHour
+                boundaryHour: boundaryHour,
+                policy: rotationPolicy
             )
         }
 
         await refreshChallengeDisplay(events: events, goalStatuses: goalStatuses, now: now)
         await refreshDailyChallenges(events: events, goalStatuses: goalStatuses, now: now)
         await checkAchievements(events: events, now: now)
+        await runFeatures(now: now, isConfirmPath: false)
     }
 
     /// Called once, right after `LogEntryCoordinator.confirm` /
@@ -178,6 +196,7 @@ final class GamificationEngine {
         let goalStatuses = await goalStatusStore.all()
         let today = NutritionDayBoundary.dayString(for: now, boundaryHour: boundaryHour)
         let goalMetToday = goalStatuses.first(where: { $0.date == today })?.anyGoalMet ?? false
+        signals = await featureHost?.buildSnapshot(goalStatuses: goalStatuses, now: now)
         try? await lifetimeStatsStore.recordLog(nutritionDay: today, calories: calories, now: now)
 
         streakStatus = newStreak
@@ -198,6 +217,7 @@ final class GamificationEngine {
         await checkChallengeCompletion(events: events, goalStatuses: goalStatuses, now: now)
         await checkDailyChallengeCompletion(events: events, goalStatuses: goalStatuses, now: now)
         await checkAchievements(events: events, now: now)
+        await runFeatures(now: now, isConfirmPath: true)
     }
 
     /// The one network call this feature makes anywhere (design.md's
@@ -218,8 +238,10 @@ final class GamificationEngine {
     /// framing of a macro target as a minimum to hit, protein especially.
     func refreshGoalStatus(for date: Date = Date()) async {
         let dateString = NutritionDate.string(from: date)
-        guard let log = try? await garminClient.dailyFoodLog(date: dateString),
-              let goals = log.dailyNutritionGoals,
+        guard let log = try? await garminClient.dailyFoodLog(date: dateString) else { return }
+        // add-gamification-signals 7.2: cache the day log already fetched.
+        try? await dayLogDigestStore?.save(DayLogDigest(log: log, day: dateString, fetchedAt: Date()))
+        guard let goals = log.dailyNutritionGoals,
               let content = log.dailyNutritionContent
         else { return }
 
@@ -272,6 +294,7 @@ final class GamificationEngine {
             events: events,
             goalStatuses: goalStatuses,
             now: now,
+            signals: signals,
             boundaryHour: boundaryHour
         )
     }
@@ -279,7 +302,7 @@ final class GamificationEngine {
     /// Challenges spec's "completing a challenge... awards XP, presents a
     /// completion moment, and replaces the completed challenge."
     private func checkChallengeCompletion(events: [UsageEvent], goalStatuses: [DailyGoalStatus], now: Date) async {
-        guard let active = try? await challengeStore.ensureActive(catalog: ChallengeCatalog.all, now: now, baselineStreakLength: streakStatus.length),
+        guard let active = try? await challengeStore.ensureActive(catalog: ChallengeCatalog.all, now: now, baselineStreakLength: streakStatus.length, policy: rotationPolicy),
               let template = ChallengeCatalog.all.first(where: { $0.id == active.templateId })
         else { return }
 
@@ -289,6 +312,7 @@ final class GamificationEngine {
             events: events,
             goalStatuses: goalStatuses,
             now: now,
+            signals: signals,
             boundaryHour: boundaryHour
         )
         guard progress.isComplete else {
@@ -316,7 +340,8 @@ final class GamificationEngine {
                 templateId: template.id,
                 catalog: ChallengeCatalog.all,
                 now: now,
-                baselineStreakLength: streakStatus.length
+                baselineStreakLength: streakStatus.length,
+                policy: rotationPolicy
             ) else {
                 await refreshChallengeDisplay(events: events, goalStatuses: goalStatuses, now: now)
                 return
@@ -331,6 +356,7 @@ final class GamificationEngine {
                     events: events,
                     goalStatuses: goalStatuses,
                     now: now,
+                    signals: signals,
                     boundaryHour: boundaryHour
                 )
             }
@@ -415,6 +441,9 @@ final class GamificationEngine {
         let lifetime = await lifetimeStatsStore.current()
         let dailyCompletedEver = await dailyChallengeStore.totalCompletedEver()
         let loggedDays = Set(events.map { NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour) })
+        let allChallengesProgress = ChallengeRotationPolicy.allChallengesProgress(
+            completedTemplateIds: Set(completedChallenges.map(\.templateId))
+        )
 
         return AchievementContext(
             level: levelProgress.level,
@@ -422,8 +451,10 @@ final class GamificationEngine {
             totalLogsEver: lifetime.totalLogsEver,
             distinctFoodsInRetainedHistory: Set(events.map(\.foodId)).count,
             challengeCompletionCount: completedChallenges.count,
-            distinctCompletedChallengeTemplateCount: Set(completedChallenges.map(\.templateId)).count,
-            totalChallengeCatalogCount: ChallengeCatalog.all.count,
+            // add-gamification-signals D11: "complete every challenge" counts
+            // only templates still in rotation (static weight > 0).
+            distinctCompletedChallengeTemplateCount: allChallengesProgress.completed,
+            totalChallengeCatalogCount: allChallengesProgress.total,
             dailyChallengeCompletionCount: dailyCompletedEver,
             goalHitDaysEver: lifetime.goalHitDaysEver,
             maxSingleDayCalories: lifetime.maxSingleDayCalories,
@@ -455,6 +486,32 @@ final class GamificationEngine {
             }
         }
         unlockedAchievements = await achievementStore.all()
+    }
+
+    // MARK: - Gamification features (add-gamification-signals D7)
+
+    /// Rotation weights with this refresh's signals (no signals = templates
+    /// needing water/macros/activities are not offered).
+    private var rotationPolicy: ChallengeRotationPolicy {
+        ChallengeRotationPolicy(signals: signals)
+    }
+
+    /// Runs every registered feature via `FeatureHost` and applies its
+    /// moments/level. Local work only -- never a network call.
+    private func runFeatures(now: Date, isConfirmPath: Bool) async {
+        guard let featureHost, let signals else { return }
+        let outcome = await featureHost.run(
+            snapshot: signals,
+            streak: streakStatus,
+            level: levelProgress.level,
+            isConfirmPath: isConfirmPath,
+            now: now,
+            xpStore: xpStore,
+            achievementStore: achievementStore
+        )
+        pendingMoments.append(contentsOf: outcome.moments)
+        if let progress = outcome.levelProgress { levelProgress = progress }
+        if outcome.unlockedBadges { unlockedAchievements = await achievementStore.all() }
     }
 
     private static func metAtLeast(actual: Double?, goal: Double?) -> Bool {

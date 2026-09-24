@@ -10,6 +10,12 @@
 // unlocked ones show their rarity's colour, rim, and (for epic/legendary)
 // a shine -- see BadgeMedallion.swift for why there's no literal image
 // asset.
+//
+// add-gamification-signals D9/D12: the catalog is `BadgeRegistry` (core +
+// every feature's badges, via `GamificationEngine.achievementCatalog`).
+// Secret badges get their own group of "???" tiles (count shown, titles and
+// symbols hidden until unlocked); limited-edition (seasonal) badges get a
+// "Limited edition" group; everything else stays grouped by category.
 
 import SwiftUI
 import Gamification
@@ -33,22 +39,34 @@ struct AchievementsView: View {
                     .listRowBackground(Color.clear)
             }
 
+            let secret = catalog.filter(\.isSecret)
+            let limited = catalog.filter { !$0.isSecret && $0.limitedEditionEventId != nil }
+            let regular = catalog.filter { !$0.isSecret && $0.limitedEditionEventId == nil }
+            let limitedUnlocked = limited.filter { unlocked[$0.id] != nil }.count
+            let secretUnlocked = secret.filter { unlocked[$0.id] != nil }.count
+
             ForEach(AchievementCategory.allCases, id: \.self) { category in
-                let items = catalog.filter { $0.category == category }
+                let items = regular.filter { $0.category == category }
                 if !items.isEmpty {
                     Section(title(for: category)) {
-                        LazyVGrid(columns: columns, spacing: Theme.Spacing.md) {
-                            ForEach(items) { definition in
-                                Button {
-                                    selected = definition
-                                } label: {
-                                    AchievementBadgeView(definition: definition, unlockedDate: unlocked[definition.id])
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                        .padding(.vertical, Theme.Spacing.xs)
+                        badgeGrid(items, unlocked: unlocked)
                     }
+                }
+            }
+
+            if !limited.isEmpty {
+                Section {
+                    badgeGrid(limited, unlocked: unlocked)
+                } header: {
+                    Text("Limited edition \(limitedUnlocked)/\(limited.count)")
+                }
+            }
+
+            if !secret.isEmpty {
+                Section {
+                    badgeGrid(secret, unlocked: unlocked)
+                } header: {
+                    Text("Secret \(secretUnlocked)/\(secret.count)")
                 }
             }
         }
@@ -58,6 +76,21 @@ struct AchievementsView: View {
             AchievementDetailSheet(definition: definition, unlockedDate: unlocked[definition.id])
                 .presentationDetents([.medium, .large])
         }
+    }
+
+    @ViewBuilder
+    private func badgeGrid(_ items: [AchievementDefinition], unlocked: [String: Date]) -> some View {
+        LazyVGrid(columns: columns, spacing: Theme.Spacing.md) {
+            ForEach(items) { definition in
+                Button {
+                    selected = definition
+                } label: {
+                    AchievementBadgeView(definition: definition, unlockedDate: unlocked[definition.id])
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.vertical, Theme.Spacing.xs)
     }
 
     private func title(for category: AchievementCategory) -> String {
@@ -119,11 +152,13 @@ private struct AchievementBadgeView: View {
     let unlockedDate: Date?
 
     private var isUnlocked: Bool { unlockedDate != nil }
+    /// A locked secret badge: "???", no symbol, no rarity (D9).
+    private var isHiddenSecret: Bool { definition.isSecret && !isUnlocked }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
-            BadgeMedallion(symbol: definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 60)
-            Text(definition.title)
+            BadgeMedallion(symbol: isHiddenSecret ? "questionmark" : definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 60)
+            Text(isHiddenSecret ? "???" : definition.title)
                 .font(.caption.weight(.semibold))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(isUnlocked ? .primary : .secondary)
@@ -133,7 +168,7 @@ private struct AchievementBadgeView: View {
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             } else {
-                Text(definition.rarity.displayName)
+                Text(isHiddenSecret ? "???" : definition.rarity.displayName)
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
@@ -145,6 +180,9 @@ private struct AchievementBadgeView: View {
     }
 
     private var accessibilityLabel: String {
+        if isHiddenSecret {
+            return String(localized: "Secret achievement, locked", comment: "Accessibility label of a locked secret achievement tile (title hidden).")
+        }
         if let unlockedDate {
             return "\(definition.title), \(definition.rarity.displayName) achievement, unlocked \(unlockedDate.formatted(date: .abbreviated, time: .omitted))"
         } else {
@@ -162,26 +200,29 @@ private struct AchievementDetailSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     private var isUnlocked: Bool { unlockedDate != nil }
+    private var isHiddenSecret: Bool { definition.isSecret && !isUnlocked }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Theme.Spacing.lg) {
-                    BadgeMedallion(symbol: definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 120)
+                    BadgeMedallion(symbol: isHiddenSecret ? "questionmark" : definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 120)
                         .padding(.top, Theme.Spacing.md)
 
                     VStack(spacing: Theme.Spacing.xs) {
-                        Text(definition.title)
+                        Text(isHiddenSecret ? "???" : definition.title)
                             .font(.title2.weight(.bold))
                             .multilineTextAlignment(.center)
-                        Text(definition.rarity.displayName)
+                        Text(isHiddenSecret ? "???" : definition.rarity.displayName)
                             .font(.caption.weight(.semibold))
                             .textCase(.uppercase)
                             .kerning(0.6)
                             .foregroundStyle(.secondary)
                     }
 
-                    Text(definition.subtitle)
+                    Text(isHiddenSecret
+                         ? String(localized: "A secret achievement. Keep logging to reveal it.", comment: "Detail sheet text of a locked secret achievement.")
+                         : definition.subtitle)
                         .font(.body)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)

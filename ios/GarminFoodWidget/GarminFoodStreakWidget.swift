@@ -120,7 +120,10 @@ struct GarminFoodStreakWidget: Widget {
             GarminFoodStreakWidgetView(entry: entry)
         }
         .configurationDisplayName("Keep Your Streak")
-        .description("A flame-themed shortcut straight into GarminFood's food catalog, ready to log. Shows no live streak count -- there is no way for a widget to read that on this account (design.md D2).")
+        // User-facing gallery text (add-localization 5.2). Shows no live
+        // streak count -- there is no way for a widget to read that on this
+        // account (design.md D2).
+        .description("One tap opens GarminFood's food catalog so you can keep your streak going.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

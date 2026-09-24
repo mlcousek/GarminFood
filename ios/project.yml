@@ -51,7 +51,12 @@
 # VisionKit `DataScannerViewController` barcode-scanning feature -- see
 # ios/GarminFood/Catalog/BarcodeScanner.swift. Barcode scanning itself is
 # deprioritized (design.md D3) but still requires this key to present the
-# camera permission prompt at all.
+# camera permission prompt at all. Its Czech text lives in
+# `GarminFood/Resources/InfoPlist.xcstrings` (add-localization 5.3; key = the
+# plist key name) -- the widget's `CFBundleDisplayName` likewise in
+# `GarminFoodWidget/Resources/InfoPlist.xcstrings`. Both are picked up by the
+# targets' path-globbed `sources` like the Localizable catalogs; changing the
+# English value here doesn't touch the Czech one, so update both together.
 #
 # `GarminFood/Info.plist`'s `CFBundleURLTypes` (added by add-glanceable-surfaces)
 # registers the "garminfood" custom URL scheme two DIFFERENT things share

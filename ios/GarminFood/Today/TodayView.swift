@@ -73,6 +73,8 @@ struct TodayView: View {
 
                 FastingHomeSection { showFasting = true }
 
+                TodaySlotHost() // add-gamification-signals D12: feature banners
+
                 VStack(spacing: Theme.Spacing.md) {
                     ForEach(dashboard.sections) { section in
                         MealSectionCard(

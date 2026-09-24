@@ -40,6 +40,30 @@ final class LocalizationTests: XCTestCase {
         )
     }
 
+    /// Meal reminders are one full sentence per meal (design.md D5) -- the
+    /// Czech accusative ("snídani") only works because nothing is inserted.
+    func testMealReminderResolvesInCzech() throws {
+        let title = try czechBundle().localizedString(forKey: "Log your breakfast", value: "<missing>", table: nil)
+        XCTAssertEqual(title, "Zapiš si snídani")
+    }
+
+    /// The first FoodLogCore `.stringsdict` entry: proves the plural table
+    /// ships in cs.lproj and formats. 5 is deliberately a count whose form
+    /// is `other` under both English and Czech rules, so the assertion
+    /// doesn't depend on which locale's plural rules the formatter picks.
+    func testFastingEndsBodyPluralResolvesInCzech() throws {
+        let format = try czechBundle().localizedString(
+            forKey: "Your fast ends at %@ -- eating opens in %lld minutes.",
+            value: "<missing>",
+            table: nil
+        )
+        XCTAssertNotEqual(format, "<missing>", "stringsdict key missing from cs.lproj")
+        XCTAssertEqual(
+            String(format: format, locale: Locale(identifier: "cs_CZ"), "12:00", 5),
+            "Tvůj půst končí v 12:00 – jíst můžeš za 5 minut."
+        )
+    }
+
     func testEnglishTextIsUnchanged() {
         XCTAssertEqual(LogQuantity.invalidMessage, "Enter an amount greater than zero and at most 10000.")
     }

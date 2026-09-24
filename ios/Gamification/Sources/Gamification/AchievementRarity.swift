@@ -85,6 +85,10 @@ public enum AchievementRarity: Int, Sendable, Equatable, Hashable, CaseIterable,
             if fraction >= 1.0 { return .legendary }
             if fraction >= 0.5 { return .epic }
             return .rare
+        case .featureEvaluated:
+            // Feature badges normally state `rarityOverride`; this is only
+            // the fallback when they don't.
+            return .uncommon
         }
     }
 }
