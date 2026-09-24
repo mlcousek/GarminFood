@@ -31,6 +31,8 @@ is its own branch + PR (`mlcousek/add-localization-wN`).
 - [ ] 3.1 Fasting, Hydration, Weight, Trends, Meal presets, Custom food, Home `MomentOverlay`.
 - [ ] 3.2 FoodLogCore display text: `NutrientKind`/`NutrientGroup`, meal type names, `CalorieBand`, `ServingAmount`/`LogEntryEditError`/`OfflineFoodIndex` errors, `CustomFood` note, `FastingSession`, `DayNote`.
 - [ ] 3.3 `NotificationPlanning`: one full sentence per meal type (Czech accusative), fasting texts; `NotificationScheduler` diff compares title/body so a language change re-plans (spec: pending reminder).
+  - [x] 3.3a Texts: every `NotificationPlanning` title/body is `String(localized:bundle: .module)` with en + cs `.lproj` entries; per-meal full sentences replace the `displayNameLowercased` insertion; the "eating opens in N minutes" body is FoodLogCore's first `.stringsdict` plural (Czech one/few/many/other). `LocalizationTests` pins a Czech meal title and the plural body.
+  - [ ] 3.3b Scheduler diff: still identifier-only, so **already-pending notifications keep the text they were scheduled with** after a language change. Date-scoped meal/streak/challenge reminders self-heal with the next day's requests; the *repeating* fasting reminders keep the old language until their schedule or lead time changes. Fix: include title/body in the diff (remove + re-add when content differs).
 - [ ] 3.4 GarminKit: `defaultLocalization` + resources; `PersistedJSONUnreadFileError` text.
 - [ ] 3.5 Tests pin Czech output for representative FoodLogCore strings via the `cs.lproj` bundle.
 
@@ -42,10 +44,11 @@ is its own branch + PR (`mlcousek/add-localization-wN`).
 
 ## 5. Wave 5 — Siri, widget/Controls, Info.plist
 
-- [ ] 5.1 `GarminFood/Resources/AppShortcuts.xcstrings`: Czech phrases (with `${applicationName}`) and short titles; intent titles and `ActionError` texts in both catalogs (`Shared/`).
-- [ ] 5.2 Widget/Control names, labels and gallery descriptions (rewrite developer-facing "design.md D2" wording in both languages).
-- [ ] 5.3 `InfoPlist.xcstrings` for the app (`NSCameraUsageDescription`) and widget (`CFBundleDisplayName`).
-- [ ] 5.4 On-device: Siri Czech phrases, Shortcuts app, Control Center, camera prompt in Czech.
+- [x] 5.1 `GarminFood/Resources/AppShortcuts.xcstrings`: Czech phrases (with `${applicationName}`) and short titles; intent titles and `ActionError` texts in both catalogs (`Shared/`). Short titles, intent titles/descriptions/parameter titles, Siri dialogs and the `LogNamedFoodIntent` parameter summary (keyed `Log ${foodName} in GarminFood` -- the App Intents summary key format, unverified until the CI export/on-device check) are in `Localizable.xcstrings`; the ambiguous-match reply uses `.formatted(.list(type: .or))` instead of a glued `", or "`.
+- [x] 5.2 Widget/Control names, labels and gallery descriptions (rewrite developer-facing "design.md D2" wording in both languages).
+- [x] 5.3 `InfoPlist.xcstrings` for the app (`NSCameraUsageDescription`) and widget (`CFBundleDisplayName`). The app sets no `CFBundleDisplayName` of its own, so there is none to translate.
+  - [ ] 5.3a TODO (CI): confirm XcodeGen puts both `InfoPlist.xcstrings` files in the Resources phase and the built `.app`/`.appex` contain `cs.lproj/InfoPlist.strings` (the "Show the app's compiled localizations" step). No build setting was changed; if they don't compile, the fallback is per-target `cs.lproj/InfoPlist.strings` files.
+- [ ] 5.4 On-device: Siri Czech phrases, Shortcuts app, Control Center, camera prompt in Czech. Note: Czech is not a Siri voice language, so the Czech phrases surface in the Shortcuts app/Spotlight; spoken Siri uses the phrases of the Siri language (e.g. English) -- check what iOS actually shows.
 
 ## 6. Wave 6 — Polish
 

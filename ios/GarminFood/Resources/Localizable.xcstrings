@@ -13,6 +13,18 @@
         }
       }
     },
+    "%@ has no serving Garmin can log.": {
+      "comment": "Siri reply. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ nemá žádnou porci, kterou by šlo zapsat do Garminu."
+          }
+        }
+      }
+    },
     "%@ kcal": {
       "comment": "Energy of a serving, e.g. '290 kcal'. %@ = whole-number value.",
       "extractionState": "manual",
@@ -501,6 +513,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Číslice čárového kódu"
+          }
+        }
+      }
+    },
+    "Barcode Scanner": {
+      "comment": "App Intents value (Shared/OpenBarcodeScannerIntent.swift): the one screen the scan intent can open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skener čárových kódů"
           }
         }
       }
@@ -997,6 +1021,18 @@
         }
       }
     },
+    "Couldn't find \"%@\" in your foods or Garmin's food database.": {
+      "comment": "Siri reply: no match. %@ is the spoken food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„%@“ se nenašlo ve tvých jídlech ani v databázi potravin Garminu."
+          }
+        }
+      }
+    },
     "Couldn't load from Garmin": {
       "comment": "Profile header: the Garmin profile failed to load.",
       "extractionState": "manual",
@@ -1077,6 +1113,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Záznam se nepodařilo zkusit znovu: %@"
+          }
+        }
+      }
+    },
+    "Couldn't search Garmin: sign in again in GarminFood first.": {
+      "comment": "Siri reply: food search failed because the Garmin sign-in expired.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin nejde prohledat: nejdřív se v GarminFood znovu přihlas."
           }
         }
       }
@@ -1645,6 +1693,18 @@
         }
       }
     },
+    "Food name": {
+      "comment": "Shortcuts parameter title: the name of the food to log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název jídla"
+          }
+        }
+      }
+    },
     "Foods logged": {
       "comment": "Profile stat tile: total number of food entries logged.",
       "extractionState": "manual",
@@ -1809,6 +1869,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "GarminFood zapíše jídlo na dvě ťuknutí a synchronizuje ho do Garmin Connect. Data českých produktů © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+          }
+        }
+      }
+    },
+    "GarminFood Screen": {
+      "comment": "App Intents type name (Shared/OpenBarcodeScannerIntent.swift): the kind of screen the scan intent opens, shown in the Shortcuts app.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrazovka GarminFood"
           }
         }
       }
@@ -2077,6 +2149,42 @@
         }
       }
     },
+    "Log ${foodName} in GarminFood": {
+      "comment": "Shortcuts parameter summary (LogNamedFoodIntent.parameterSummary). ${foodName} is the food-name parameter; keep it verbatim.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat ${foodName} do GarminFood"
+          }
+        }
+      }
+    },
+    "Log a Food": {
+      "comment": "App Shortcut short title (Spotlight/Shortcuts tile). Keep very short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo"
+          }
+        }
+      }
+    },
+    "Log a Food by Name": {
+      "comment": "Siri/Shortcuts action title (LogNamedFoodIntent.swift).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo podle názvu"
+          }
+        }
+      }
+    },
     "Log anyway with a different Garmin food": {
       "comment": "Button: skip the suggested match and log against another Garmin food.",
       "extractionState": "manual",
@@ -2101,6 +2209,102 @@
         }
       }
     },
+    "Log Quick Pick #1": {
+      "comment": "Shortcuts action title: logs the user's most-used food (rank 1).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 1"
+          }
+        }
+      }
+    },
+    "Log Quick Pick #2": {
+      "comment": "Shortcuts action title: logs the user's 2nd most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 2"
+          }
+        }
+      }
+    },
+    "Log Quick Pick #3": {
+      "comment": "Shortcuts action title: logs the user's 3rd most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 3"
+          }
+        }
+      }
+    },
+    "Log Quick Pick #4": {
+      "comment": "Shortcuts action title: logs the user's 4th most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 4"
+          }
+        }
+      }
+    },
+    "Log Usual": {
+      "comment": "App Shortcut short title (Spotlight/Shortcuts tile). Keep very short.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé jídlo"
+          }
+        }
+      }
+    },
+    "Log Usual Food": {
+      "comment": "Siri/Shortcuts action title (GarminFood/Shortcuts/LogTopQuickPickIntent.swift): logs the most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat obvyklé jídlo"
+          }
+        }
+      }
+    },
+    "Logged %@ to Garmin.": {
+      "comment": "Siri reply: logged and delivered. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: zapsáno do Garminu."
+          }
+        }
+      }
+    },
+    "Logged your usual.": {
+      "comment": "Siri reply after logging the user's most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé jídlo je zapsané."
+          }
+        }
+      }
+    },
     "Logs this again": {
       "comment": "VoiceOver hint on a quick-pick/recent food card (re-logs it).",
       "extractionState": "manual",
@@ -2121,6 +2325,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapíše tuto potravinu"
+          }
+        }
+      }
+    },
+    "Logs your #1 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 1 / 'Log Usual Food').",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #2 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 2).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje druhé nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #3 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 3).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje třetí nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #4 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 4).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje čtvrté nejčastější jídlo."
           }
         }
       }
@@ -2485,6 +2737,18 @@
         }
       }
     },
+    "Nothing logged -- \"%@\" could be %@. Say the full name to log one.": {
+      "comment": "Siri reply: ambiguous match, nothing logged. First %@ is the spoken food name, second %@ is a locale-formatted 'A, B, or C' list of candidate food names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nezapsáno – „%@“ může být %@. Řekni celý název jídla, které chceš zapsat."
+          }
+        }
+      }
+    },
     "Nothing logged yet": {
       "comment": "Log Food screen empty state title.",
       "extractionState": "manual",
@@ -2493,6 +2757,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zatím nic nezapsáno"
+          }
+        }
+      }
+    },
+    "Nothing logged yet to quick-pick from -- log a food from the app first.": {
+      "comment": "Error shown by a quick-log Control/Shortcut when there is no logging history yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nemáš nic zapsáno, z čeho by šlo rychle vybírat – nejdřív zapiš jídlo v aplikaci."
           }
         }
       }
@@ -2625,6 +2901,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře skutečnou přihlašovací stránku Garminu přímo v aplikaci a po dokončení přihlášení ho automaticky převezme."
+          }
+        }
+      }
+    },
+    "Opens GarminFood directly into the barcode scanner.": {
+      "comment": "Shortcuts intent description and Control gallery description for the barcode-scan action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře GarminFood rovnou ve skeneru čárových kódů."
           }
         }
       }
@@ -2893,8 +3181,68 @@
         }
       }
     },
+    "Saved %@, but it can't reach Garmin until you sign in again in GarminFood.": {
+      "comment": "Siri reply: saved locally, Garmin sign-in expired. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: uloženo, ale do Garminu se to nedostane, dokud se v GarminFood znovu nepřihlásíš."
+          }
+        }
+      }
+    },
+    "Saved %@. It will sync to Garmin in a moment.": {
+      "comment": "Siri reply after saving a food locally. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: uloženo. Do Garminu se to synchronizuje za chvíli."
+          }
+        }
+      }
+    },
+    "Saved %@. It will sync to Garmin when Garmin accepts it.": {
+      "comment": "Siri reply: saved locally, Garmin didn't accept it yet. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: uloženo. Do Garminu se to synchronizuje, jakmile to Garmin přijme."
+          }
+        }
+      }
+    },
+    "Saved in GarminFood, but not sent: sign in to Garmin again in the app.": {
+      "comment": "Error shown by a quick-log Control/Shortcut: the entry is saved locally but the Garmin sign-in expired.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloženo v GarminFood, ale neodesláno: v aplikaci se znovu přihlas ke Garminu."
+          }
+        }
+      }
+    },
     "Scan barcode": {
       "comment": "Navigation title of the camera barcode scanner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenovat čárový kód"
+          }
+        }
+      }
+    },
+    "Scan Barcode": {
+      "comment": "Siri/Shortcuts intent title and Control Center control name/label (Shared/OpenBarcodeScannerIntent.swift, ScanBarcodeControl.swift). Keep short: Control label.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
@@ -2937,6 +3285,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skener není k dispozici"
+          }
+        }
+      }
+    },
+    "Screen": {
+      "comment": "Shortcuts parameter title of the scan intent: which app screen to open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrazovka"
           }
         }
       }
@@ -2985,6 +3345,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Začni vyhledáním potraviny – nejčastěji zapisované potraviny se tu pak objeví v rychlém výběru."
+          }
+        }
+      }
+    },
+    "Searches your foods and Garmin's food database for a name and logs the clear best match in GarminFood.": {
+      "comment": "Shortcuts action description (LogNamedFoodIntent.swift).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyhledá název ve tvých jídlech a v databázi potravin Garminu a jednoznačně nejlepší shodu zapíše do GarminFood."
           }
         }
       }
@@ -3393,6 +3765,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pole je prázdné. Vlož URL přesměrování, nebo jen hodnotu ticketu z ní."
+          }
+        }
+      }
+    },
+    "That food's details aren't saved locally yet -- open the app and log it once from there.": {
+      "comment": "Error shown by a quick-log Control/Shortcut when the ranked food isn't cached on the device.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podrobnosti tohoto jídla ještě nejsou uložené v telefonu – otevři aplikaci a jednou ho zapiš odtud."
           }
         }
       }

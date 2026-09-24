@@ -91,7 +91,10 @@ struct GarminFoodHomeWidget: Widget {
             GarminFoodHomeWidgetView(entry: entry)
         }
         .configurationDisplayName("Log Food")
-        .description("A one-tap shortcut straight into GarminFood's food catalog, ready to log. Shows no live calorie data -- there is no way for a widget to read that on this account (design.md D2).")
+        // User-facing gallery text (add-localization 5.2). Shows no live
+        // calorie data -- there is no way for a widget to read that on this
+        // account (design.md D2).
+        .description("One tap opens GarminFood's food catalog, ready to log.")
         .supportedFamilies([.systemSmall])
     }
 }

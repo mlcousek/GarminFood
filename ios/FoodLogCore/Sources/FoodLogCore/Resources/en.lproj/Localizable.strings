@@ -197,3 +197,50 @@
 
 /* Offline food database update error. %lld is the HTTP status code. */
 "The index server answered HTTP %lld." = "The index server answered HTTP %lld.";
+
+/* ---- Notifications (NotificationPlanning.swift) ---- */
+
+/* Streak-at-risk reminder notification title. */
+"Keep your streak alive" = "Keep your streak alive";
+
+/* Streak-at-risk reminder notification body. */
+"You haven't logged anything today yet -- don't lose your streak." = "You haven't logged anything today yet -- don't lose your streak.";
+
+/* Daily-challenge reminder notification title. */
+"Today's challenges are ready" = "Today's challenges are ready";
+
+/* Daily-challenge reminder notification body. */
+"Check today's challenges in GarminFood." = "Check today's challenges in GarminFood.";
+
+/* Meal reminder notification title (one full sentence per meal: Czech accusative). */
+"Log your breakfast" = "Log your breakfast";
+
+/* Meal reminder notification title. */
+"Log your lunch" = "Log your lunch";
+
+/* Meal reminder notification title. */
+"Log your dinner" = "Log your dinner";
+
+/* Meal reminder notification title (Garmin's Snacks meal slot). */
+"Log your snacks" = "Log your snacks";
+
+/* Meal reminder notification body. */
+"Don't forget to log breakfast today." = "Don't forget to log breakfast today.";
+
+/* Meal reminder notification body. */
+"Don't forget to log lunch today." = "Don't forget to log lunch today.";
+
+/* Meal reminder notification body. */
+"Don't forget to log dinner today." = "Don't forget to log dinner today.";
+
+/* Meal reminder notification body (Garmin's Snacks meal slot). */
+"Don't forget to log snacks today." = "Don't forget to log snacks today.";
+
+/* Fasting reminder notification title, shortly before the daily fast ends. */
+"Fasting window ending soon" = "Fasting window ending soon";
+
+/* Fasting reminder notification title, shortly before the fast starts. %lld is minutes; 'min' is a unit symbol, so no plural. */
+"Fasting starts in %lld min" = "Fasting starts in %lld min";
+
+/* Fasting reminder notification body. %@ is a 24-hour clock time (HH:mm). */
+"Your fasting window starts at %@." = "Your fasting window starts at %@.";

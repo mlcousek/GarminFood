@@ -10,6 +10,12 @@
 // `OpenBarcodeScannerIntent` is reused as-is from `Shared/` (the same type
 // the barcode-scan Control uses) -- one intent, two entry points (Siri and
 // the Control), matching openspec/config.yaml's "small, composable" spirit.
+//
+// Localization (add-localization Wave 5): the phrases' Czech variants live
+// in `Resources/AppShortcuts.xcstrings`, keyed by the English phrase with
+// `\(.applicationName)` written as `${applicationName}` -- a phrase changed
+// here needs its key changed there too. `shortTitle`s and the intents'
+// titles/descriptions/dialogs are ordinary `Localizable.xcstrings` keys.
 
 import AppIntents
 
