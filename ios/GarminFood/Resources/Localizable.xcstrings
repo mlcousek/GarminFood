@@ -55,6 +55,18 @@
         }
       }
     },
+    "About": {
+      "comment": "Settings section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O aplikaci"
+          }
+        }
+      }
+    },
     "Accent color": {
       "comment": "Settings -> Appearance page. Color picker label and section header.",
       "extractionState": "manual",
@@ -127,6 +139,18 @@
         }
       }
     },
+    "Calorie goal": {
+      "comment": "Settings: nutrition plan row, daily calorie goal from Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl kalorií"
+          }
+        }
+      }
+    },
     "Cancel": {
       "comment": "Generic cancel button.",
       "extractionState": "manual",
@@ -139,6 +163,18 @@
         }
       }
     },
+    "Carbs": {
+      "comment": "Macro name: carbohydrates.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sacharidy"
+          }
+        }
+      }
+    },
     "Card style": {
       "comment": "Settings -> Appearance page. Picker label.",
       "extractionState": "manual",
@@ -147,6 +183,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Styl karet"
+          }
+        }
+      }
+    },
+    "Celebration animations": {
+      "comment": "Settings toggle: level-up and streak celebrations.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oslavné animace"
           }
         }
       }
@@ -235,6 +283,18 @@
         }
       }
     },
+    "Connected": {
+      "comment": "Settings: Garmin connection status.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojeno"
+          }
+        }
+      }
+    },
     "Coral": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -267,6 +327,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ikonu aplikace se nepodařilo změnit"
+          }
+        }
+      }
+    },
+    "Couldn't load from Garmin.": {
+      "comment": "Settings: footer when the nutrition plan failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z Garminu se to nepodařilo načíst."
           }
         }
       }
@@ -319,6 +391,18 @@
         }
       }
     },
+    "Default meal from Garmin's schedule": {
+      "comment": "Settings toggle: preselect the meal from Garmin's meal time windows.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výchozí jídlo podle rozvrhu v Garminu"
+          }
+        }
+      }
+    },
     "Density": {
       "comment": "Settings -> Appearance page. Picker label for spacing density.",
       "extractionState": "manual",
@@ -327,6 +411,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hustota"
+          }
+        }
+      }
+    },
+    "Diagnostics": {
+      "comment": "Settings row / screen title: in-app diagnostics log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diagnostika"
           }
         }
       }
@@ -351,6 +447,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukončeno"
+          }
+        }
+      }
+    },
+    "Entries waiting to sync stay queued and send once you sign in again.": {
+      "comment": "Sign-out confirmation message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy čekající na synchronizaci zůstanou ve frontě a odešlou se, až se znovu přihlásíš."
+          }
+        }
+      }
+    },
+    "Fat": {
+      "comment": "Macro name: fat.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuky"
           }
         }
       }
@@ -415,6 +535,30 @@
         }
       }
     },
+    "Garmin account": {
+      "comment": "Settings section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Účet Garmin"
+          }
+        }
+      }
+    },
+    "GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
+      "comment": "Settings: About footer with the required ODbL attribution.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GarminFood zapíše jídlo na dvě ťuknutí a synchronizuje ho do Garmin Connect. Data českých produktů © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+          }
+        }
+      }
+    },
     "Glass": {
       "comment": "Settings -> Appearance page. Card style option (translucent material).",
       "extractionState": "manual",
@@ -459,6 +603,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Grafit"
+          }
+        }
+      }
+    },
+    "Haptic feedback": {
+      "comment": "Settings toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haptická odezva"
           }
         }
       }
@@ -643,6 +799,18 @@
         }
       }
     },
+    "Not connected": {
+      "comment": "Settings: Garmin connection status when signed out.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepřipojeno"
+          }
+        }
+      }
+    },
     "Number font": {
       "comment": "Settings -> Appearance page. Picker label for the typeface of big numbers.",
       "extractionState": "manual",
@@ -651,6 +819,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Písmo čísel"
+          }
+        }
+      }
+    },
+    "Nutrition plan": {
+      "comment": "Settings section header: goals set in Garmin Connect.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutriční plán"
           }
         }
       }
@@ -679,6 +859,30 @@
         }
       }
     },
+    "Open Database License 1.0": {
+      "comment": "Settings: link to the license text (proper name of the license).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Database License 1.0"
+          }
+        }
+      }
+    },
+    "Open Food Facts (ODbL)": {
+      "comment": "Settings: link to the Open Food Facts site (product name, license).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Food Facts (ODbL)"
+          }
+        }
+      }
+    },
     "Outlined": {
       "comment": "Settings -> Appearance page. Card style option (border only).",
       "extractionState": "manual",
@@ -699,6 +903,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Preferences": {
+      "comment": "Settings section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Protein": {
+      "comment": "Macro name: protein.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bílkoviny"
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "comment": "Settings row / screen title: local notification settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomínky"
           }
         }
       }
@@ -763,6 +1003,18 @@
         }
       }
     },
+    "Search Czech foods only": {
+      "comment": "Settings toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledat jen české potraviny"
+          }
+        }
+      }
+    },
     "Serif": {
       "comment": "Settings -> Appearance page. Number font option.",
       "extractionState": "manual",
@@ -775,6 +1027,30 @@
         }
       }
     },
+    "Set in Garmin Connect. GarminFood only displays it.": {
+      "comment": "Settings: footer under the read-only nutrition plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavuje se v Garmin Connect. GarminFood ho jen zobrazuje."
+          }
+        }
+      }
+    },
+    "Settings": {
+      "comment": "Navigation title of the Settings screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavení"
+          }
+        }
+      }
+    },
     "Sharp": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -783,6 +1059,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ostré"
+          }
+        }
+      }
+    },
+    "Sign in to Garmin": {
+      "comment": "Button: open the Garmin sign-in sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se ke Garminu"
+          }
+        }
+      }
+    },
+    "Sign out": {
+      "comment": "Button: sign out of the Garmin account.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit se"
+          }
+        }
+      }
+    },
+    "Sign out of Garmin?": {
+      "comment": "Confirmation dialog title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit se z Garminu?"
+          }
+        }
+      }
+    },
+    "Sign-in expired": {
+      "comment": "Settings: Garmin connection status when the session must be renewed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení vypršelo"
           }
         }
       }
@@ -811,6 +1135,18 @@
         }
       }
     },
+    "Status": {
+      "comment": "Settings: label of the Garmin connection status row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stav"
+          }
+        }
+      }
+    },
     "Sunset": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -819,6 +1155,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Západ slunce"
+          }
+        }
+      }
+    },
+    "Sync queue": {
+      "comment": "Settings row / screen title: entries not yet delivered to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fronta synchronizace"
           }
         }
       }
@@ -891,6 +1239,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tento motiv je jen světlý."
+          }
+        }
+      }
+    },
+    "Version": {
+      "comment": "Settings: app version row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verze"
           }
         }
       }
