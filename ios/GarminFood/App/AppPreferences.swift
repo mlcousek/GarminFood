@@ -31,6 +31,9 @@ final class AppPreferences {
         static let weightGoalStartKg = "goals.weight.startKg"
         // amount-in-grams: type grams or servings in quantity fields.
         static let quantityInputMode = "preferences.quantityInputMode"
+        // add-standalone-mode D1: which system of record this install uses.
+        // Absent = not yet classified (AppEnvironment.classifyDataModeIfNeeded).
+        static let dataMode = "dataMode.v1"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -51,6 +54,7 @@ final class AppPreferences {
     private var storedWeightGoalOverrideKg: Double?
     private var storedWeightGoalStartKg: Double?
     private var storedQuantityInputMode: QuantityInputMode
+    private var storedDataMode: DataMode?
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -75,6 +79,23 @@ final class AppPreferences {
         // for 150 g, never 1,5 (see FoodLogCore/ServingAmount.swift).
         storedQuantityInputMode = (defaults.string(forKey: Key.quantityInputMode))
             .flatMap(QuantityInputMode.init(rawValue:)) ?? .amount
+        storedDataMode = defaults.string(forKey: Key.dataMode).flatMap(DataMode.init(rawValue:))
+    }
+
+    /// add-standalone-mode D1: the install's system of record, or `nil`
+    /// until classified. Set once at launch by
+    /// `AppEnvironment.classifyDataModeIfNeeded()`; nothing reads it to
+    /// change behaviour yet (wave 1 is seams only).
+    var dataMode: DataMode? {
+        get { storedDataMode }
+        set {
+            storedDataMode = newValue
+            if let newValue {
+                defaults.set(newValue.rawValue, forKey: Key.dataMode)
+            } else {
+                defaults.removeObject(forKey: Key.dataMode)
+            }
+        }
     }
 
     var hapticsEnabled: Bool {

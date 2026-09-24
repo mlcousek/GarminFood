@@ -170,6 +170,7 @@ final class AppEnvironment {
         // any search (add-offline-czech-food-index D3).
         let offlineIndexLoader = self.offlineIndexLoader
         Task { await offlineIndexLoader.loadAndCheckIfDue() }
+        await classifyDataModeIfNeeded()
         await migrateLegacyFastingIfNeeded()
         await authState.refresh()
         await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)
@@ -746,6 +747,42 @@ final class AppEnvironment {
             category: "Fasting",
             "migrated \(history.count + (active == nil ? 0 : 1)) legacy session(s) to a daily window \(seed.schedule.startMinute)-\(seed.schedule.endMinute) min, enabled: \(seed.isEnabled)"
         )
+    }
+
+    // MARK: - Data mode (add-standalone-mode D1)
+
+    /// Once per install: an install that predates `dataMode.v1` and has a
+    /// Garmin token or any local history is the owner's phone, so it is
+    /// stored as `.garminConnected` silently (`DataModeMigration`). A fresh
+    /// install stays unset (onboarding, wave 5). A Keychain read that
+    /// throws (e.g. before first unlock) skips classification until the
+    /// next foreground rather than guessing "no token". Nothing reads the
+    /// mode to change behaviour in wave 1.
+    func classifyDataModeIfNeeded() async {
+        guard preferences.dataMode == nil else { return }
+        let hasGarminToken: Bool
+        do {
+            hasGarminToken = try await TokenProvider.shared.loadOAuth1Token() != nil
+        } catch {
+            DiagnosticsLog.log(.warning, category: "DataMode", "Couldn't read the Garmin token, will classify next foreground: \(error)")
+            return
+        }
+        let services = AppServices.shared
+        let outboxEntries = await outbox.allEntries()
+        let usageEvents = await usageHistory.all()
+        let weightEntries = await services.weightStore.all()
+        let hydrationEntries = await services.hydrationStore.all()
+        let hasLocalHistory = !outboxEntries.isEmpty || !usageEvents.isEmpty
+            || !weightEntries.isEmpty || !hydrationEntries.isEmpty
+        // Re-checked after the reads, like the fasting migration below.
+        guard preferences.dataMode == nil else { return }
+        guard let decided = DataModeMigration.decide(
+            storedMode: nil,
+            hasGarminToken: hasGarminToken,
+            hasLocalHistory: hasLocalHistory
+        ) else { return }
+        preferences.dataMode = decided
+        DiagnosticsLog.log(.info, category: "DataMode", "Classified as \(decided.rawValue) (token: \(hasGarminToken), local history: \(hasLocalHistory)).")
     }
 
     // MARK: - Private
