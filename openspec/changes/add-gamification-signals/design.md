@@ -391,9 +391,17 @@ at ~3 years). New constants in `XPAward+Features.swift`:
 
 Estimated average from new sources ≈ 220 XP/week ≈ +31 XP/day (bingo ~70,
 boss ~110 at a 50 % win rate, records ~20, collections/journeys ~20). That
-makes level 84 arrive after ~2.1 years instead of ~3. Accepted and called
-out as an open question (keep, or nudge `LevelCurve.growthFactor` from
-1.045 to 1.048 in a later change).
+would make level 84 arrive after ~2.1 years instead of ~3. **Owner decision
+2026-09-24: slow the curve** so the ~3-year pace holds with the new sources:
+`LevelCurve.growthFactor` 1.045 → **1.0505** (XP to level 84 ≈ 100 ·
+(1.0505^83 − 1) / 0.0505 ≈ 116 k ≈ 106 XP/day × 3 y, vs ≈ 84 k today).
+Because level is derived from total XP, a steeper curve could show a LOWER
+level than one already reached (tiny at low levels: level 10 needs 1,103 XP
+instead of 1,080). Rule: **a reached level is never taken away** — `XPStore`
+persists `peakLevel` (Optional, back-compat) and the displayed level is
+`max(curveLevel, peakLevel)`; level-up moments and level achievements fire
+only when the curve level exceeds `peakLevel`, and the progress bar shows XP
+toward `displayedLevel + 1` on the new curve.
 
 ### D11 — Catalog trim: rotation weights, not deletion
 
@@ -596,8 +604,8 @@ slot, so it should not be needed.
 
 ## Open Questions
 
-1. XP pacing (D10): accept ~+31 XP/day (level 84 in ~2.1 y), or retune the
-   curve slightly in a later change?
+1. ~~XP pacing~~ — decided 2026-09-24: slow the curve (D10, growthFactor
+   1.0505, reached levels never taken away).
 2. Should the free-text day note (not just tags) be scanned for words like
    "závod" to infer a race day? Proposed: no — tags only, explicit is better.
 3. Is the Czech-brand list right for the owner's actual shops (does he buy

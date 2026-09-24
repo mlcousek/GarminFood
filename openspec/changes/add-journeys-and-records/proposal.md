@@ -16,7 +16,7 @@ chosen ideas turn the numbers he already logs into something tangible:
 ## What Changes
 
 - Four **journeys** with documented conversions and milestones: protein
-  climb (1 g = 1 vertical metre), water "Vodník" (litres), active-kcal road
+  climb (1 g = 0.5 vertical metre), water "Vodník" (litres), active-kcal road
   trip (km = active kcal ÷ body weight in kg), and a passport of distinct
   foods (1 stamp per food). Each shows the current position and the next
   milestone; each milestone = 40 XP; final milestones unlock badges.

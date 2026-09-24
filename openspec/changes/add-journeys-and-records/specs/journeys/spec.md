@@ -3,7 +3,7 @@
 ### Requirement: Cumulative totals advance along real-world journeys
 
 The system SHALL maintain four journeys from cumulative daily values: a
-protein climb where 1 g of protein equals 1 vertical metre, a water journey
+protein climb where 1 g of protein equals 0.5 vertical metre, a water journey
 in litres, a road trip from Praha where kilometres equal active kilocalories
 divided by the latest known body weight in kilograms (70 kg when unknown),
 and a food passport with one stamp per distinct food ever logged. Each

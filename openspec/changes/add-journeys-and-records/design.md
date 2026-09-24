@@ -28,7 +28,8 @@ summary moment for journeys.
 
 ### D2 — Protein climb ("Výstup")
 
-Conversion: **1 g protein = 1 vertical metre** (documented; a playful
+Conversion: **1 g protein = 0.5 vertical metre** (owner decision
+2026-09-24: a slower, more epic climb; documented; a playful
 unit, not physiology). Only days with known protein contribute.
 
 | Stage | Milestone | Metres (cumulative within stage) |
@@ -46,8 +47,8 @@ unit, not physiology). Only days with known protein contribute.
 | 3 To space | Kármán line | 100,000 |
 
 Stages run one after another (stage 2 starts at 0 m when Everest is
-reached). At ~130 g/day: Everest ≈ 10 weeks, Seven Summits ≈ +11 months,
-Kármán line ≈ +2 years — a genuine long tail.
+reached). At ~130 g/day (65 m/day): Everest ≈ 20 weeks, Seven Summits
+≈ +22 months, Kármán line ≈ +4 years — a genuine long tail.
 
 ### D3 — Water ("Vodník", the Czech water goblin)
 
@@ -168,7 +169,7 @@ fields Optional, quarantine helpers.
 
 ## Open Questions
 
-1. Protein climb pace (~10 weeks to Everest at 130 g/day) — right feel, or
-   should Everest take longer (e.g. 1 g = 0.5 m)?
+1. ~~Protein climb pace~~ — decided 2026-09-24: 1 g = 0.5 m (~20 weeks to
+   Everest at 130 g/day).
 2. Should journeys also include a "calories eaten → Big Macs" style route?
    The existing funny-facts achievements already cover that; not planned.

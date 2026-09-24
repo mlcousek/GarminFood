@@ -46,6 +46,7 @@
 - [ ] 6.2 `ChallengeTemplates+Signals.swift`: the 24 templates in design D11, appended to `ChallengeCatalog.all`.
 - [ ] 6.3 `ChallengeRotationPolicy` (weights + ladder allowlist) and weighted `ChallengeRotation.pickNext`; `ChallengeStore.recentTemplateIds` cap 3 → 8 (Optional-safe decode).
 - [ ] 6.4 `allChallengesCompleted` denominator = templates with static weight > 0.
+- [ ] 6.6 Level curve (D10): `LevelCurve.growthFactor` 1.045 → 1.0505; `XPStore.peakLevel` (Optional) so a reached level is never lowered (displayed = max(curve, peak)); level-up moments / level achievements only above the peak. Tests: level 84 XP ≈ 116 k; an XP total that was level N on the old curve still displays ≥ N; a level-up fires only above the peak; old `XPStore` JSON decodes.
 - [ ] 6.5 Tests: `ChallengeRotationPolicyTests`, signal-kind progress tests (Something Fishy, Fibre Fanatic missing-macro day), back-compat decode of an old `ChallengeStore` JSON fixture, existing `ChallengeTemplateCoverageTests` still pass.
 
 ## 7. App wiring (thin)
