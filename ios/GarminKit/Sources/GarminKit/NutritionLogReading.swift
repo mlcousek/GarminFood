@@ -5,7 +5,7 @@
 // protocol. `GarminClient` satisfies it as-is (no body changes -- the four
 // methods below are its existing, confirmed-live read routes); wave 2 adds
 // FoodLogCore's `LocalNutritionReader`, which builds the same DTOs from the
-// local food log via the public inits in GarminModels+Inits.swift.
+// local food log via the public inits declared in GarminModels.swift.
 //
 // Consumers hold `any NutritionLogReading` (DayLogLoader, MacroTrendLoader,
 // GamificationEngine, AppEnvironment.copyMealPlan). In Garmin mode they get

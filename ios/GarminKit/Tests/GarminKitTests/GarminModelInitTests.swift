@@ -1,7 +1,7 @@
 // GarminModelInitTests.swift
 //
 // add-standalone-mode D3/D13: the additive public inits on the read DTOs
-// (GarminModels+Inits.swift) must build values EQUAL to what the decoder
+// (declared in the type bodies in GarminModels.swift) must build values EQUAL to what the decoder
 // produces from Garmin's JSON, field for field -- a local reader (wave 2)
 // builds these by hand and the dashboard/Trends/gamification code must not
 // be able to tell the difference. Fixtures follow the shapes recorded in
