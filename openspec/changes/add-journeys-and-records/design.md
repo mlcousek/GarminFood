@@ -102,7 +102,7 @@ Rules:
 - "Higher" records compare today live: the first time today's value
   exceeds the record (strictly; protein by ≥ 1 g, water by ≥ 50 ml,
   kcal by ≥ 1), a PR is set and a moment fires; later increases the same
-  day update the value silently. Grant key `record.<id>.<day>` = 20 XP.
+  day update the value silently. Grant key `records.<id>.<day>` (the feature id is the key namespace the FeatureHost enforces) = 20 XP.
 - "Lower" and `longest-fast` are judged on **closed** days only (a fast
   or a low-sugar day is only known once the day is over); the moment fires
   on the next run after the day closes.
@@ -119,7 +119,7 @@ record whose data exists, rare).
 
 ### D7 — Rewards and moments
 
-- Journey milestone: `journey.<journeyId>.<milestoneId>` = 40 XP, moment
+- Journey milestone: `journeys.<journeyId>.<milestoneId>` (feature-id namespace) = 40 XP, moment
   "You summited Sněžka (1,603 m of protein)!" (style `.celebration`).
 - Journey badges: `journey.everest`, `journey.seven-summits` (epic),
   `journey.karman` (legendary), `journey.bathtub`, `journey.hot-tub`

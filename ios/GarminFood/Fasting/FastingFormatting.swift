@@ -18,9 +18,9 @@ enum FastingFormat {
         let hours = total / 60
         let remainder = total % 60
         switch (hours, remainder) {
-        case (0, _): return "\(remainder) m"
-        case (_, 0): return "\(hours) h"
-        default: return "\(hours) h \(remainder) m"
+        case (0, _): return String(localized: "\(remainder) m", comment: "Fasting duration in minutes, e.g. '45 m'.")
+        case (_, 0): return String(localized: "\(hours) h", comment: "Fasting duration in whole hours, e.g. '16 h'.")
+        default: return String(localized: "\(hours) h \(remainder) m", comment: "Fasting duration, e.g. '15 h 30 m'. First = hours, second = minutes.")
         }
     }
 
@@ -32,7 +32,9 @@ enum FastingFormat {
 
     /// "16 h fast · 8 h eating" -- the spec's Settings label.
     static func split(_ schedule: FastingSchedule) -> String {
-        "\(duration(minutes: schedule.fastingMinutes)) fast · \(duration(minutes: schedule.eatingMinutes)) eating"
+        let fast = duration(minutes: schedule.fastingMinutes)
+        let eating = duration(minutes: schedule.eatingMinutes)
+        return String(localized: "\(fast) fast · \(eating) eating", comment: "Fasting schedule split, e.g. '16 h fast · 8 h eating'. %@ = durations.")
     }
 
     /// Clock time in the user's own locale/24-hour setting ("12:00").

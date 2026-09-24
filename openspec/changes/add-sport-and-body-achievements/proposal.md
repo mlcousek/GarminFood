@@ -51,7 +51,11 @@ Owned files only: `Gamification/Sources/Gamification/Features/SportBody/*`,
 `FoodLogCore/Sources/FoodLogCore/Signals/FoodTagRules+Sport.swift` (stub
 filled), `FoodLogCore/Sources/FoodLogCore/Signals/FoodTag+Sport.swift`
 (new), `GarminFood/Progress/Slots/SportBodySlotView.swift`,
-`GarminFood/Progress/SportBody/*`, tests.
+`GarminFood/Progress/SportBody/*`, tests. Two shared touches: `GarminFood/App/FeatureHost.swift`
+now passes the EFFECTIVE weight goal (override, else Garmin's cached plan)
+into `ProfileSignals` -- it previously passed only the local override, so
+weight milestones would never see Garmin's own goal -- and the feature id is
+added to `GamificationFeatureRegistryTests`' implemented set.
 
 **Depends on**: `add-gamification-signals` (cached activities and active
 kcal, weigh-ins, weight goal in `ProfileSignals`, fasting outcome, note

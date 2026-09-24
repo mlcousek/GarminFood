@@ -82,8 +82,8 @@ struct BarcodeScanScreen: View {
                 } else {
                     EmptyStateView(
                         systemImage: "barcode.viewfinder",
-                        title: String(localized: "Scanner unavailable"),
-                        message: String(localized: "Barcode scanning isn't supported on this device or OS version. Search by name instead, or note that Garmin's barcode coverage for Czech products is limited anyway.")
+                        title: "Scanner unavailable",
+                        message: "Barcode scanning isn't supported on this device or OS version. Search by name instead, or note that Garmin's barcode coverage for Czech products is limited anyway."
                     )
                 }
             }

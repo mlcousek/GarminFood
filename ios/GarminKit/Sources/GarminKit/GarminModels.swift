@@ -29,7 +29,31 @@ public struct FoodSearchResult: Decodable, Sendable {
     public let logTimestamp: String?
 }
 
-public struct FoodMetaData: Decodable, Sendable {
+public struct FoodMetaData: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        foodId: String,
+        foodName: String? = nil,
+        foodType: String? = nil,
+        brandName: String? = nil,
+        source: String? = nil,
+        regionCode: String? = nil,
+        languageCode: String? = nil,
+        customFoodType: String? = nil
+    ) {
+        self.foodId = foodId
+        self.foodName = foodName
+        self.foodType = foodType
+        self.brandName = brandName
+        self.source = source
+        self.regionCode = regionCode
+        self.languageCode = languageCode
+        self.customFoodType = customFoodType
+    }
+
     public let foodId: String
     public let foodName: String?
     public let foodType: String?
@@ -67,7 +91,31 @@ public struct NutritionContent: Decodable, Sendable {
 
 // MARK: - Daily food log (GET /nutrition-service/food/logs/{date}) -- confirmed live 2026-09-14
 
-public struct DailyFoodLog: Decodable, Sendable {
+public struct DailyFoodLog: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        mealDate: String? = nil,
+        dayStartTime: String? = nil,
+        dayEndTime: String? = nil,
+        dailyViewType: String? = nil,
+        dailyNutritionGoals: NutritionGoals? = nil,
+        dailyNutritionContent: DailyNutritionContent? = nil,
+        mealDetails: [MealDetail]? = nil,
+        loggedFoodsWithServingSizes: [LoggedFood]? = nil
+    ) {
+        self.mealDate = mealDate
+        self.dayStartTime = dayStartTime
+        self.dayEndTime = dayEndTime
+        self.dailyViewType = dailyViewType
+        self.dailyNutritionGoals = dailyNutritionGoals
+        self.dailyNutritionContent = dailyNutritionContent
+        self.mealDetails = mealDetails
+        self.loggedFoodsWithServingSizes = loggedFoodsWithServingSizes
+    }
+
     public let mealDate: String?
     /// "04:00:00" observed -- the nutrition day is NOT calendar
     /// midnight-to-midnight. Any "today" logic MUST read this from the
@@ -82,7 +130,31 @@ public struct DailyFoodLog: Decodable, Sendable {
     public let loggedFoodsWithServingSizes: [LoggedFood]?
 }
 
-public struct NutritionGoals: Decodable, Sendable {
+public struct NutritionGoals: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        calories: Double? = nil,
+        adjustedCalories: Double? = nil,
+        carbs: Double? = nil,
+        adjustedCarbs: Double? = nil,
+        fat: Double? = nil,
+        adjustedFat: Double? = nil,
+        protein: Double? = nil,
+        adjustedProtein: Double? = nil
+    ) {
+        self.calories = calories
+        self.adjustedCalories = adjustedCalories
+        self.carbs = carbs
+        self.adjustedCarbs = adjustedCarbs
+        self.fat = fat
+        self.adjustedFat = adjustedFat
+        self.protein = protein
+        self.adjustedProtein = adjustedProtein
+    }
+
     public let calories: Double?
     public let adjustedCalories: Double?
     public let carbs: Double?
@@ -98,7 +170,51 @@ public struct NutritionGoals: Decodable, Sendable {
 /// with food logged; the daily total carries only the first few. A meal
 /// with nothing logged comes back as an EMPTY object, so every field is
 /// optional and an absent value means "nothing", not "unknown".
-public struct DailyNutritionContent: Decodable, Sendable {
+public struct DailyNutritionContent: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        calories: Double? = nil,
+        carbs: Double? = nil,
+        fat: Double? = nil,
+        protein: Double? = nil,
+        otherCalories: Double? = nil,
+        caloriesPercentage: Double? = nil,
+        fiber: Double? = nil,
+        sugar: Double? = nil,
+        saturatedFat: Double? = nil,
+        monounsaturatedFat: Double? = nil,
+        polyunsaturatedFat: Double? = nil,
+        cholesterol: Double? = nil,
+        sodium: Double? = nil,
+        potassium: Double? = nil,
+        vitaminA: Double? = nil,
+        vitaminC: Double? = nil,
+        calcium: Double? = nil,
+        iron: Double? = nil
+    ) {
+        self.calories = calories
+        self.carbs = carbs
+        self.fat = fat
+        self.protein = protein
+        self.otherCalories = otherCalories
+        self.caloriesPercentage = caloriesPercentage
+        self.fiber = fiber
+        self.sugar = sugar
+        self.saturatedFat = saturatedFat
+        self.monounsaturatedFat = monounsaturatedFat
+        self.polyunsaturatedFat = polyunsaturatedFat
+        self.cholesterol = cholesterol
+        self.sodium = sodium
+        self.potassium = potassium
+        self.vitaminA = vitaminA
+        self.vitaminC = vitaminC
+        self.calcium = calcium
+        self.iron = iron
+    }
+
     public let calories: Double?
     public let carbs: Double?
     public let fat: Double?
@@ -119,14 +235,56 @@ public struct DailyNutritionContent: Decodable, Sendable {
     public let iron: Double?
 }
 
-public struct MealDetail: Decodable, Sendable {
+public struct MealDetail: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        meal: Meal? = nil,
+        mealNutritionContent: DailyNutritionContent? = nil,
+        mealNutritionGoals: NutritionGoals? = nil,
+        loggedFoods: [LoggedFood]? = nil
+    ) {
+        self.meal = meal
+        self.mealNutritionContent = mealNutritionContent
+        self.mealNutritionGoals = mealNutritionGoals
+        self.loggedFoods = loggedFoods
+    }
+
     public let meal: Meal?
     public let mealNutritionContent: DailyNutritionContent?
     public let mealNutritionGoals: NutritionGoals?
     public let loggedFoods: [LoggedFood]?
 }
 
-public struct Meal: Decodable, Sendable {
+public struct Meal: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        mealId: Int? = nil,
+        mealIndex: Int? = nil,
+        mealName: String? = nil,
+        displayOrder: Int? = nil,
+        startTime: String? = nil,
+        endTime: String? = nil,
+        goals: NutritionGoals? = nil,
+        editable: Bool? = nil,
+        translated: Bool? = nil
+    ) {
+        self.mealId = mealId
+        self.mealIndex = mealIndex
+        self.mealName = mealName
+        self.displayOrder = displayOrder
+        self.startTime = startTime
+        self.endTime = endTime
+        self.goals = goals
+        self.editable = editable
+        self.translated = translated
+    }
+
     public let mealId: Int?
     public let mealIndex: Int?
     /// Confirmed values via real reads: BREAKFAST, LUNCH, SNACKS. DINNER is
@@ -142,7 +300,43 @@ public struct Meal: Decodable, Sendable {
 
 /// A single logged food entry, as it comes back from `dailyFoodLog` or
 /// `loggedFoodsWithServingSizes`.
-public struct LoggedFood: Decodable, Sendable {
+public struct LoggedFood: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        id: String? = nil,
+        logId: String? = nil,
+        logTimestamp: String? = nil,
+        logSource: String? = nil,
+        logCategory: String? = nil,
+        servingQty: Double? = nil,
+        foodMetaData: FoodMetaData? = nil,
+        nutritionContent: LoggedNutritionContent? = nil,
+        isFavorite: Bool? = nil,
+        mealId: Int? = nil,
+        customMealId: Int? = nil,
+        mealTime: String? = nil,
+        foodInactive: Bool? = nil,
+        type: String? = nil
+    ) {
+        self.id = id
+        self.logId = logId
+        self.logTimestamp = logTimestamp
+        self.logSource = logSource
+        self.logCategory = logCategory
+        self.servingQty = servingQty
+        self.foodMetaData = foodMetaData
+        self.nutritionContent = nutritionContent
+        self.isFavorite = isFavorite
+        self.mealId = mealId
+        self.customMealId = customMealId
+        self.mealTime = mealTime
+        self.foodInactive = foodInactive
+        self.type = type
+    }
+
     /// "appears to equal foodId" per the contract -- not relied on as a
     /// distinct identifier anywhere in this package.
     public let id: String?
@@ -203,7 +397,39 @@ public struct LoggedFood: Decodable, Sendable {
     }
 }
 
-public struct LoggedNutritionContent: Decodable, Sendable {
+public struct LoggedNutritionContent: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        servingId: String? = nil,
+        servingUnit: String? = nil,
+        numberOfUnits: Double? = nil,
+        calories: Double? = nil,
+        carbs: Double? = nil,
+        protein: Double? = nil,
+        fat: Double? = nil,
+        fiber: Double? = nil,
+        sugar: Double? = nil,
+        saturatedFat: Double? = nil,
+        sodium: Double? = nil,
+        unitHasServing: Bool? = nil
+    ) {
+        self.servingId = servingId
+        self.servingUnit = servingUnit
+        self.numberOfUnits = numberOfUnits
+        self.calories = calories
+        self.carbs = carbs
+        self.protein = protein
+        self.fat = fat
+        self.fiber = fiber
+        self.sugar = sugar
+        self.saturatedFat = saturatedFat
+        self.sodium = sodium
+        self.unitHasServing = unitHasServing
+    }
+
     public let servingId: String?
     public let servingUnit: String?
     public let numberOfUnits: Double?
@@ -224,7 +450,21 @@ public struct LoggedNutritionContent: Decodable, Sendable {
 /// logged on it. The write needs this: Garmin files an entry under a meal
 /// INSTANCE (`mealId`, numeric, different for every date), not under a meal
 /// name, and an entry queued offline cannot know that id until delivery.
-public struct MealsForDate: Decodable, Sendable {
+public struct MealsForDate: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        meals: [Meal]? = nil,
+        dailyTimelineStartTime: String? = nil,
+        dailyTimelineEndTime: String? = nil
+    ) {
+        self.meals = meals
+        self.dailyTimelineStartTime = dailyTimelineStartTime
+        self.dailyTimelineEndTime = dailyTimelineEndTime
+    }
+
     public let meals: [Meal]?
     public let dailyTimelineStartTime: String?
     public let dailyTimelineEndTime: String?
@@ -293,7 +533,23 @@ public struct NutritionSettings: Decodable, Sendable {
 /// nothing in this app needs them; `JSONDecoder` ignores JSON keys a
 /// `Decodable` type doesn't declare, so omitting them does not affect
 /// decoding the fields that ARE modeled.
-public struct CalorieSummaryDailyResponse: Decodable, Sendable {
+public struct CalorieSummaryDailyResponse: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        startDate: String? = nil,
+        endDate: String? = nil,
+        caloriesBurned: Double? = nil,
+        dailyNutritionContents: [CalorieSummaryDay]? = nil
+    ) {
+        self.startDate = startDate
+        self.endDate = endDate
+        self.caloriesBurned = caloriesBurned
+        self.dailyNutritionContents = dailyNutritionContents
+    }
+
     public let startDate: String?
     public let endDate: String?
     public let caloriesBurned: Double?
@@ -314,7 +570,21 @@ public struct CalorieSummaryDailyResponse: Decodable, Sendable {
 /// goal values (2300/3128/316/430/64/87/115/156 kcal/g) matched exactly, so
 /// the two routes' per-day shapes are confirmed identical, not just
 /// similar.
-public struct CalorieSummaryDay: Decodable, Sendable {
+public struct CalorieSummaryDay: Decodable, Sendable, Equatable {
+    /// Public memberwise init (add-standalone-mode D3): lets a non-Garmin
+    /// `NutritionLogReading` build the same values the app decodes from
+    /// Garmin. Declared in the type body (not an extension) so it replaces
+    /// the synthesized memberwise init instead of redeclaring it.
+    public init(
+        mealDate: String? = nil,
+        nutritionContent: DailyNutritionContent? = nil,
+        nutritionGoals: NutritionGoals? = nil
+    ) {
+        self.mealDate = mealDate
+        self.nutritionContent = nutritionContent
+        self.nutritionGoals = nutritionGoals
+    }
+
     public let mealDate: String?
     public let nutritionContent: DailyNutritionContent?
     public let nutritionGoals: NutritionGoals?

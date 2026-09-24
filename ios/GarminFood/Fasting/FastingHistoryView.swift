@@ -94,15 +94,17 @@ struct FastingHistoryView: View {
 
         VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Theme.Spacing.sm) {
-                StatTile(value: "\(streak)", label: streak == 1 ? "Day kept in a row" : "Days kept in a row", systemImage: "flame.fill", tint: Theme.ember)
-                StatTile(value: "\(keptCount)/\(judgedCount)", label: "Kept, last \(Self.dayCount) days", systemImage: "checkmark.seal.fill", tint: Theme.success)
+                // Count-independent label (the number is the tile's value),
+                // so no `== 1 ?` singular switch that Czech can't follow.
+                StatTile(value: "\(streak)", label: String(localized: "Days kept in a row"), systemImage: "flame.fill", tint: Theme.ember)
+                StatTile(value: "\(keptCount)/\(judgedCount)", label: String(localized: "Kept, last \(Self.dayCount) days", comment: "Fasting stat tile label; %lld = days in the window (30). Plural."), systemImage: "checkmark.seal.fill", tint: Theme.success)
             }
 
             FastingHomeCard(schedule: schedule, now: now, showsChevron: false, onTap: {})
                 .allowsHitTesting(false)
 
             VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                SectionHeader(title: "Last \(Self.dayCount) days")
+                SectionHeader(title: String(localized: "Last \(Self.dayCount) days", comment: "Fasting history section header; %lld = days shown (30). Plural."))
                 if hasLoaded {
                     VStack(spacing: 0) {
                         ForEach(days) { day in
