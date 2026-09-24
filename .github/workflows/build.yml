@@ -28,10 +28,15 @@ on:
       - "ios/**"
       - ".github/workflows/build.yml"
       - "tools/check-localizations.mjs"
+      - "tools/lint-design-tokens.sh"
+      - "tools/design-token-allowlist.txt"
   pull_request:
     paths:
       - "ios/**"
+      - ".github/workflows/build.yml"
       - "tools/check-localizations.mjs"
+      - "tools/lint-design-tokens.sh"
+      - "tools/design-token-allowlist.txt"
   workflow_dispatch: {}
 
 jobs:

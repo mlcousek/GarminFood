@@ -124,7 +124,9 @@ final class AppPreferences {
     }
 
     /// Let the Czech offline database download over cellular, not just
-    /// Wi-Fi (add-offline-czech-food-index D3). Low Data Mode still wins.
+    /// Wi-Fi (add-offline-czech-food-index D3). On means ANY network for the
+    /// automatic check too -- cellular, hotspot and Low Data Mode alike
+    /// (`URLSessionOfflineIndexFetcher.session`, since 2026-09-24).
     var offlineIndexAllowsCellular: Bool {
         get { storedOfflineIndexAllowsCellular }
         set {
