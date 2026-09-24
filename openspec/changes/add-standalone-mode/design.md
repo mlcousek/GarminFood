@@ -617,8 +617,8 @@ Carried into tasks.md group 0 for the owner:
    uploaded? That would need the quickAdd write contract documented first.
 5. Goal calculator: 1200 kcal floor for everyone, or sex-specific (1200 or
    1500)? Protein g/kg defaults? Per-meal targets, or day targets only?
-6. App name and UI language: keep "GarminFood" and English for her, or add a
-   neutral display name or Czech strings?
+6. App name for her install: keep "GarminFood" or a neutral display name?
+   (UI language is settled: Czech via `add-localization`.)
 7. Does she prefer SideStore (no weekly PC dependence) over AltStore?
 8. Owner side: is "Copy my last 90 days from Garmin" worth building now, or
    later?

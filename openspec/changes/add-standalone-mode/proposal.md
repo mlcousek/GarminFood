@@ -127,7 +127,10 @@ the new capabilities above.
 - **Building the planned gamification features.** Those are owned by the
   eight gamification changes. This change only fixes how they must behave
   in standalone mode (availability gating).
-- **Renaming the app or localising it into Czech.** Open question.
+- **Localising the app into Czech** is owned by `add-localization` (wave 1
+  merged 2026-09-24). Every new string in this change is localizable and
+  translated into Czech from day one (CLAUDE.md). A neutral display name
+  for her install stays an open question.
 
 ## Impact
 
