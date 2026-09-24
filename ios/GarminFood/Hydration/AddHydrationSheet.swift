@@ -47,7 +47,7 @@ struct AddHydrationSheet: View {
                             amountText = String(Int(preset))
                         }
                         .buttonStyle(.bordered)
-                        .tint(Theme.carbs)
+                        .tint(Theme.water)
                     }
                 }
                 DatePicker("When", selection: $loggedAt, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
@@ -55,7 +55,7 @@ struct AddHydrationSheet: View {
 
             if let errorMessage {
                 Section {
-                    Text(errorMessage).foregroundStyle(.red)
+                    Text(errorMessage).foregroundStyle(Theme.danger)
                 }
             }
         }

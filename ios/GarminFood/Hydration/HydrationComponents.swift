@@ -47,7 +47,7 @@ struct HydrationHeroCard: View {
                     .foregroundStyle(.secondary)
             }
             ProgressView(value: fraction)
-                .tint(Theme.carbs)
+                .tint(Theme.water)
             Text(goalML > 0 ? "Goal \(goalML.formattedML) ml" : "No goal set")
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -88,7 +88,7 @@ struct HydrationQuickAddRow: View {
                     .padding(.vertical, Theme.Spacing.sm)
                 }
                 .buttonStyle(.bordered)
-                .tint(Theme.carbs)
+                .tint(Theme.water)
                 .accessibilityLabel("Add \(Int(amount)) milliliters")
             }
             Button(action: onCustom) {

@@ -51,7 +51,7 @@ struct AddWeightSheet: View {
 
             if let errorMessage {
                 Section {
-                    Text(errorMessage).foregroundStyle(.red)
+                    Text(errorMessage).foregroundStyle(Theme.danger)
                 }
             }
         }
