@@ -20,6 +20,6 @@
 
 ## 4. Verify
 
-- [ ] 4.1 `openspec validate add-food-collections --strict` passes.
+- [x] 4.1 `openspec validate add-food-collections --strict` passes.
 - [ ] 4.2 CI green (`swift test` FoodLogCore + Gamification; app + widget build).
 - [ ] 4.3 On-device check: first launch shows a single back-fill moment; the Collections screen lists discoveries from recent logs; logging a new Czech-brand product discovers its brand.
