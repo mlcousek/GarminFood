@@ -41,7 +41,9 @@ struct ContentView: View {
             .tabItem { Label("Profile", systemImage: "person.crop.circle") }
             .tag(AppRouter.Tab.profile)
         }
-        .tint(Theme.accent)
+        // add-themes-and-layout R4: tint, forced scheme and accessibility
+        // inputs for the theme (replaces `.tint(Theme.accent)`).
+        .themed(environment.themeStore)
         .overlay { MomentOverlay() }
         .onOpenURL { url in
             environment.router.handle(url: url)

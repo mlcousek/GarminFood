@@ -24,7 +24,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 - [x] 1.3 **`ThemeRole`, `TokenValue` (`.rgb` / `.system(name)`), `ThemeSpec`, and the Classic spec with today's values** (design D3 table), including the band colors from `Components.swift`, `water` = carbs, and `danger` = system red. `ClassicIdentityTests` compares each value with the literals in `Theme.swift` and `Components.swift`. CI green.
 - [x] 1.4 **`AppearanceSettings` v1** with lenient `Codable`, and `AppearanceMigration` (does nothing at v1). Tests: absent, missing fields, unknown enum values, extra fields, garbage. CI green.
 - [x] 1.5 **`PaletteResolver` for Classic**, both schemes. Test that it resolves to today's values. CI green.
-- [ ] 1.6 **App theming plumbing** (revised by design R4: the `Theme.*` API is kept, no `ThemeColor`/`\.palette` migration):
+- [x] 1.6 **App theming plumbing** (revised by design R4: the `Theme.*` API is kept, no `ThemeColor`/`\.palette` migration):
   - `Shared/ThemeRuntime.swift`: `ThemePalette` (dynamic light/dark `UIColor`-backed `Color`s) and the `@Observable` `ThemeRuntime.shared` that `Theme.*` tokens read
   - `ThemeStore` (`@MainActor @Observable`)
   - `AppPreferences` key `appearance.v1` plus quarantine and a `DiagnosticsLog` warning (`AppPreferences+Appearance.swift`)

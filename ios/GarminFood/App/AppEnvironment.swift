@@ -75,6 +75,9 @@ final class AppEnvironment {
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
     let preferences: AppPreferences
+    /// add-themes-and-layout: the look (theme, style, custom accent) and
+    /// the root that pushes it into `ThemeRuntime` (ThemeStore.swift).
+    let themeStore: ThemeStore
     let notificationPreferences: NotificationPreferencesStore
     let profile: ProfileLoader
     let donations: LogDonations
@@ -150,6 +153,7 @@ final class AppEnvironment {
         self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
         self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache, coordinator: services.logEntryCoordinator)
         self.preferences = preferences
+        self.themeStore = ThemeStore()
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
