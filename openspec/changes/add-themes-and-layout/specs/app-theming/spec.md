@@ -181,13 +181,14 @@ code SHALL contain no personal or food data.
 
 The system SHALL let each Home Screen widget choose its theme from the
 built-in list through the widget's own Edit Widget configuration, with
-Classic as the default. Widgets SHALL NOT follow the in-app theme
-automatically. Appearance settings SHALL say so.
+GF Teal (the default theme, which unconfigured widgets already show) as the
+default. Widgets SHALL NOT follow the in-app theme automatically.
+Appearance settings SHALL say so.
 
 #### Scenario: Existing widget unchanged
 
 - **WHEN** the owner updates the app with a Log Food widget already on the Home Screen
-- **THEN** the widget keeps its coral gradient until he edits the widget and picks another theme
+- **THEN** the widget keeps its GF Teal gradient until he edits the widget and picks another theme
 
 #### Scenario: App theme does not leak
 

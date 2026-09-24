@@ -445,6 +445,30 @@
         }
       }
     },
+    "Apply": {
+      "comment": "Import theme preview: applies the previewed theme.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít"
+          }
+        }
+      }
+    },
+    "Applying replaces your theme, accent color, style and macro colors.": {
+      "comment": "Import theme preview: footer under the previewed theme.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použitím nahradíš svůj motiv, barvu zvýraznění, styl i barvy maker."
+          }
+        }
+      }
+    },
     "Barcode digits": {
       "comment": "Text field placeholder: the digits of a barcode.",
       "extractionState": "manual",
@@ -769,6 +793,18 @@
         }
       }
     },
+    "Copied": {
+      "comment": "Share theme sheet: confirmation after copying the code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírováno"
+          }
+        }
+      }
+    },
     "Copied!": {
       "comment": "Diagnostics menu item right after copying the log.",
       "extractionState": "manual",
@@ -789,6 +825,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kopírovat vše"
+          }
+        }
+      }
+    },
+    "Copy code": {
+      "comment": "Share theme sheet: copies the theme code to the clipboard.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírovat kód"
           }
         }
       }
@@ -981,6 +1029,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Garmin teď není dostupný. Zkontroluj připojení nebo to zkus znovu."
+          }
+        }
+      }
+    },
+    "Couldn't read the code": {
+      "comment": "Import theme preview: title when a pasted/opened theme code is invalid.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kód se nepodařilo přečíst"
           }
         }
       }
@@ -1185,6 +1245,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zahodit"
+          }
+        }
+      }
+    },
+    "Done": {
+      "comment": "Toolbar button closing a sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotovo"
           }
         }
       }
@@ -1825,6 +1897,18 @@
         }
       }
     },
+    "Import theme": {
+      "comment": "Settings -> Appearance: row with a Paste button for a theme code; also the import preview's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importovat motiv"
+          }
+        }
+      }
+    },
     "Indigo": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -2205,6 +2289,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neproporcionální"
+          }
+        }
+      }
+    },
+    "My GarminFood look. Paste the code in Settings > Appearance > Import theme, or open the link on your iPhone.": {
+      "comment": "First line of the shared theme message; the code and the link follow on their own lines.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Můj vzhled GarminFood. Vlož kód v Nastavení > Vzhled > Importovat motiv, nebo otevři odkaz v iPhonu."
           }
         }
       }
@@ -2617,6 +2713,18 @@
         }
       }
     },
+    "QR code with the theme link": {
+      "comment": "VoiceOver label of the QR code on the Share theme sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kód s odkazem na motiv"
+          }
+        }
+      }
+    },
     "Quick pick": {
       "comment": "Log Food screen: shelf title for the most-logged foods.",
       "extractionState": "manual",
@@ -2757,6 +2865,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Naskenovat čárový kód"
+          }
+        }
+      }
+    },
+    "Scan the QR code with the iPhone Camera, or send the code. It contains only appearance settings, never food or personal data.": {
+      "comment": "Share theme sheet: explanation under the QR code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenuj QR kód Fotoaparátem v iPhonu, nebo pošli kód. Obsahuje jen nastavení vzhledu, nikdy jídlo ani osobní údaje."
           }
         }
       }
@@ -2905,6 +3025,54 @@
         }
       }
     },
+    "Share": {
+      "comment": "Settings -> Appearance: section header for sharing and importing a theme code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílení"
+          }
+        }
+      }
+    },
+    "Share code": {
+      "comment": "Share theme sheet: opens the system share sheet with the code and link.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílet kód"
+          }
+        }
+      }
+    },
+    "Share theme": {
+      "comment": "Settings -> Appearance: button that opens the theme share sheet; also that sheet's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílet motiv"
+          }
+        }
+      }
+    },
+    "Share your look as a code, link or QR code. Importing always shows a preview first.": {
+      "comment": "Settings -> Appearance: footer under Share theme / Import theme.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílej svůj vzhled jako kód, odkaz nebo QR kód. Import vždy nejdřív ukáže náhled."
+          }
+        }
+      }
+    },
     "Sharp": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -3037,6 +3205,18 @@
         }
       }
     },
+    "Some settings in this code aren't supported by this version and keep their defaults.": {
+      "comment": "Import theme preview warning: some values in the code were not recognised.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některá nastavení v tomto kódu tato verze nepodporuje, zůstanou výchozí."
+          }
+        }
+      }
+    },
     "Standard": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -3157,6 +3337,18 @@
         }
       }
     },
+    "That isn't a GarminFood theme code. Nothing was changed.": {
+      "comment": "Import theme: the pasted text is not a theme code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle není kód motivu GarminFood. Nic se nezměnilo."
+          }
+        }
+      }
+    },
     "That's not right — no match found": {
       "comment": "Button: the suggested Garmin match is wrong; treat as no match.",
       "extractionState": "manual",
@@ -3165,6 +3357,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "To nesedí — shoda nenalezena"
+          }
+        }
+      }
+    },
+    "The code is incomplete or damaged. Copy it again. Nothing was changed.": {
+      "comment": "Import theme: the code is truncated, tampered with or too long.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kód je neúplný nebo poškozený. Zkopíruj ho znovu. Nic se nezměnilo."
           }
         }
       }
@@ -3213,6 +3417,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tím se úprava zruší. Původní záznam zůstane v Garmin Connect s původním množstvím."
+          }
+        }
+      }
+    },
+    "This code comes from a newer version of GarminFood. Update the app to import it. Nothing was changed.": {
+      "comment": "Import theme: the code has a newer format version.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento kód pochází z novější verze GarminFood. Pro import aplikaci aktualizuj. Nic se nezměnilo."
+          }
+        }
+      }
+    },
+    "This code uses a theme this version doesn't have (%@). The rest of its settings apply on Classic Coral.": {
+      "comment": "Import theme preview warning. %@ is the unknown theme's id from a newer app version.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento kód používá motiv, který tato verze nemá (%@). Zbytek nastavení se použije s motivem Klasický korál."
           }
         }
       }
@@ -3597,6 +3825,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cíl váhy"
+          }
+        }
+      }
+    },
+    "Widgets don't change with the app's theme. Touch and hold a widget, then Edit Widget, to pick its theme.": {
+      "comment": "Settings -> Appearance: footer under the theme gallery. \"Edit Widget\" is the iOS menu item's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widgety se s motivem aplikace nemění. Motiv widgetu vybereš tak, že widget podržíš a zvolíš Upravit widget."
           }
         }
       }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import AppearanceKit
 
 @MainActor
 @Observable
@@ -55,8 +56,17 @@ final class AppRouter {
     func catalogDidAppear() { catalogPresentationCount += 1 }
     func catalogDidDisappear() { catalogPresentationCount = max(0, catalogPresentationCount - 1) }
 
-    /// A `garminfood://` link from a widget tap.
+    /// A `garminfood://theme?c=<code>` link (a shared theme, opened from a
+    /// message or its QR code) waiting for ContentView's import preview.
+    /// Nothing is applied until the user taps Apply there (design D11).
+    var pendingThemeImport: ThemeImportRequest?
+
+    /// A `garminfood://` link: a widget tap, or a shared theme.
     func handle(url: URL) {
+        if let code = ThemeShareCode.code(fromLink: url, scheme: GarminFoodDeepLink.scheme) {
+            pendingThemeImport = ThemeImportRequest(code: code)
+            return
+        }
         guard let action = GarminFoodDeepLink.action(from: url) else { return }
         selectedTab = .today
         switch action {
