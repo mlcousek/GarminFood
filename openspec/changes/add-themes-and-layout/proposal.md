@@ -31,16 +31,14 @@ more reasons to act:
   and injected through the SwiftUI environment. The pure logic (color math,
   WCAG contrast, auto-adjust, theme specs, share codes) lives in a new
   dependency-free SPM package, `AppearanceKit`, which is unit-tested in CI.
-- **9 built-in themes.** Each has its own light and dark values:
-  - **Classic** (default, today's coral, pixel-identical)
-  - **GF Teal** (matches the new icon)
-  - **Forest**
-  - **Ocean**
-  - **Sunset**
-  - **Mono**
-  - **High Contrast**
-  - **Czech Autumn** (rust and plum on warm paper)
-  - **Night Run** (true-black OLED with a lime accent, dark only)
+- **13 built-in themes, each paired with an app icon** (owner decision
+  2026-09-24, design.md R1–R2):
+  - **GF Teal** (the new default, matching the primary icon)
+  - **Classic Coral** (today's look, pixel-identical)
+  - **Ocean**, **Forest**, **Sunset**, **Slate** (light and dark)
+  - **Indigo Night**, **Berry**, **Graphite**, **Gold** (dark only)
+  - **Pastel**, **Citrus** (light only)
+  - **High Contrast** (light and dark)
 - **Style options.**
   - Appearance: System, Light or Dark, per theme.
   - A custom accent picker with automatic contrast fixing and a warning
@@ -68,16 +66,19 @@ more reasons to act:
   through `AppIntentConfiguration`. It's set by long-pressing the widget
   and choosing Edit Widget. They **can't** follow the in-app theme
   automatically because there's no App Group, and the UI says so.
-- **Icons.** New alternate icons matching the themes, offered, never
-  forced, when you pick a theme. This is gated on first confirming on a
-  device that the existing PR #27 icon switching works.
+- **Icons.** 11 new alternate icons in the "GF / by Jirka" gradient style
+  replace the 5 old ones. Picking a theme switches to its icon while the
+  "Match app icon to theme" toggle (default on) is on.
+- **One Appearance page** in Settings holds every option: themes,
+  appearance, app icon, customization, layout (later), sharing (later)
+  and reset.
 - **Guard rails.**
   - `tools/lint-design-tokens.sh`, run in CI and locally in Git Bash,
     rejects raw colors outside an allowlist.
   - Contrast tests guarantee every built-in theme meets its thresholds.
   - Layout persistence and migration tests.
-- **Zero change for existing users.** With no stored settings the app
-  renders exactly as today. Every stored blob is versioned and optional,
+- **GF Teal becomes the default** (owner decision): with no stored
+  settings the app renders GF Teal; Classic Coral restores today's look. Every stored blob is versioned and optional,
   and falls back to the defaults when missing or unreadable.
 
 ## Capabilities

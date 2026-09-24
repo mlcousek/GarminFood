@@ -1,15 +1,17 @@
 ## 0. Owner decisions (before wave 2)
 
-- [ ] 0.1 **Theme list.** Keep, drop or rename any of: GF Teal, Forest, Ocean, Sunset, Mono, High Contrast, Czech Autumn ("Podzim"?), Night Run. Is there a theme you want that's missing, such as club colors or a watch-face match?
-- [ ] 0.2 **Default theme.** Classic (coral, zero change) stays the default. Should GF Teal become the default later, to match the new icon?
-- [ ] 0.3 **Classic's contrast.** The "Log it" label is 2.96:1 on coral. Should the button fill be darkened to `accentDeep` (4.71:1) in light mode for Classic too? That would be a small visible change.
-- [ ] 0.4 **Per-person layouts on one phone.** The plan assumes each person uses their own phone and shares themes by code. Is that right?
-- [ ] 0.5 **Share codes.** Should they include the Today layout by default, or only when "Include layout" is switched on (planned: off)?
-- [ ] 0.6 **"GF by Jirka" signature.** Should it be hideable in the layout editor (planned: pinned last, not hideable)?
-- [ ] 0.7 **Tabs.** Is choosing the start tab enough, or do you want to be able to hide the Progress tab entirely?
-- [ ] 0.8 **Icon suggestion.** Should picking a theme ask each time (planned) or never?
-- [ ] 0.9 **Night Run.** Is dark-only OK?
-- [ ] 0.10 **Wave order.** After wave 1, should themes (wave 2) or layout editing (wave 3) come first? They're independent.
+Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
+
+- [x] 0.1 **Theme list.** 13 themes, each paired with an icon: GF Teal, Classic Coral, Ocean, Forest, Sunset, Slate (light + dark); Indigo Night, Berry, Graphite, Gold (dark only); Pastel, Citrus (light only); High Contrast (light + dark). Mono, Czech Autumn and Night Run dropped.
+- [x] 0.2 **Default theme.** GF Teal is the new default for everyone (intentional visible change). Today's coral is the Classic Coral theme.
+- [ ] 0.3 **Classic's contrast.** Not answered: Classic Coral stays pixel-identical (exemption list kept); Increase Contrast still fixes it.
+- [ ] 0.4 **Per-person layouts on one phone.** Not answered yet (wave 3).
+- [ ] 0.5 **Share codes.** Not answered yet (wave 5).
+- [ ] 0.6 **"GF by Jirka" signature.** Not answered yet (wave 3).
+- [ ] 0.7 **Tabs.** Not answered yet (wave 4).
+- [x] 0.8 **Icon suggestion.** Replaced by a "Match app icon to theme" toggle, default on; the icon can still be chosen independently.
+- [x] 0.9 **Dark-only themes.** Yes: Indigo Night, Berry, Graphite and Gold are dark only; Pastel and Citrus light only.
+- [x] 0.10 **Wave order.** Waves 1 + 2 + the icon part of 5 + the single Appearance page first (branch `mlcousek/add-themes-and-icons`); layout editing (waves 3–4) later, after the gamification slot views land.
 
 ## 1. Wave 1: token refactor and theme store, no visual change (size: L)
 
@@ -22,18 +24,16 @@
 - [ ] 1.3 **`ThemeRole`, `TokenValue` (`.rgb` / `.system(name)`), `ThemeSpec`, and the Classic spec with today's values** (design D3 table), including the band colors from `Components.swift`, `water` = carbs, and `danger` = system red. `ClassicIdentityTests` compares each value with the literals in `Theme.swift` and `Components.swift`. CI green.
 - [ ] 1.4 **`AppearanceSettings` v1** with lenient `Codable`, and `AppearanceMigration` (does nothing at v1). Tests: absent, missing fields, unknown enum values, extra fields, garbage. CI green.
 - [ ] 1.5 **`PaletteResolver` for Classic**, both schemes. Test that it resolves to today's values. CI green.
-- [ ] 1.6 **App theming plumbing** (`DesignSystem/Theming/`):
-  - `ThemePalette` (precomputed `Color`s)
-  - `EnvironmentValues.palette` and `.themeStyle`
-  - the `ThemeColor` `ShapeStyle` and the `.theme(_:)` shorthand
-  - `ThemeStore` (`@Observable`)
+- [ ] 1.6 **App theming plumbing** (revised by design R4: the `Theme.*` API is kept, no `ThemeColor`/`\.palette` migration):
+  - `Shared/ThemeRuntime.swift`: `ThemePalette` (dynamic light/dark `UIColor`-backed `Color`s) and the `@Observable` `ThemeRuntime.shared` that `Theme.*` tokens read
+  - `ThemeStore` (`@MainActor @Observable`)
   - `AppPreferences` key `appearance.v1` plus quarantine and a `DiagnosticsLog` warning (`AppPreferences+Appearance.swift`)
   - register the store in `AppEnvironment`
   - a root `.themed(store)` in `ContentView` that replaces `.tint(Theme.accent)`
 
   Every new file gets a header comment. CI green.
 - [ ] 1.7 **Migrate `DesignSystem/`** to palette roles: `CardStyle`, `ProgressRing`, `MacroBar`, `PrimaryButton` (label uses `onAccent`), `StatTile`, `DaySwitcher`, `Tag`, `FavoriteToggleButton`, `GoalState.tint`, and `CalorieBand.tint` (whose literals move into Classic). `BadgeMedallion` rarity colors stay as they are. CI green.
-- [ ] 1.8 **Migrate batch A**: `Today/`, `Fasting/`, `Weight/`, `Hydration/`. Hydration moves from `carbs` to `water`. CI green.
+- [ ] 1.8 **Migrate batch A** (R4: only hard-coded colors are edited): `Today/`, `Fasting/`, `Weight/`, `Hydration/`. Hydration moves from `carbs` to `water`. CI green.
 - [ ] 1.9 **Migrate batch B**: `Catalog/`, `LogEntry/`, `CustomFood/`, `MealPreset/`, `Shortcuts/`. The 9 `.red` error texts become `danger`, and the `.green` swipe tint becomes `success`. CI green.
 - [ ] 1.10 **Migrate batch C**: `Progress/`, `Trends/`, `Profile/`, `Home/` (`MomentOverlay`), `App/` banners. Text on colored fills uses `onAccent`. CI green.
 - [ ] 1.11 **Lint**: `tools/lint-design-tokens.sh`, plus `tools/design-token-allowlist.txt` with a reason on every line (`Shared/Theme.swift`, `BadgeMedallion` rarity, scanner and moment scrims, the widget fallback). Run it locally in Git Bash until it passes, then add it as a CI step before "Install XcodeGen". CI green.
@@ -44,10 +44,10 @@
 
 ## 2. Wave 2: built-in themes, appearance and style options (size: M)
 
-- [ ] 2.1 **`ThemeCatalog` built-ins** (D3) as data: the Legible and CVD-safe macro and state sets, GF Teal, Forest, Ocean (carbs override), Sunset, Mono, High Contrast (Outlined by default), Czech Autumn, and Night Run (dark only). `BuiltInThemeContrastTests` and `DistinctnessTests` (D5) run over every theme, scheme and contrast mode, with Classic's closed exemption list. Record any value nudged to pass in the catalog comment. CI green.
+- [ ] 2.1 **`ThemeCatalog` built-ins** (R2) as data: the Legible and CVD-safe macro and state sets and the 13 themes, brand colors from their icons, fitted by the resolver (R3). `BuiltInThemeContrastTests` and `DistinctnessTests` (D5) run over every theme, scheme and contrast mode, with Classic's closed exemption list. Record any value nudged to pass in the catalog comment. CI green.
 - [ ] 2.2 **`PaletteResolver` steps 2 to 5** (D4): the macro set override, Differentiate Without Color mapped to CVD-safe, increased contrast (Classic included), and `onAccent` derivation. Tests. CI green.
 - [ ] 2.3 **`AccentAdjuster`** plus the custom accent in the settings. Tests: coral in light is fitted with the hue kept, a passing color is unchanged, `#FFFF00` terminates, lime is darkened. Also test the macro-collision warning. CI green.
-- [ ] 2.4 **Settings → Appearance screen** (`Profile/Appearance/`):
+- [ ] 2.4 **Settings → Appearance screen** (`Profile/Appearance/`, structure per R6, including the app icon grid and a disabled "Customize layout — Coming soon" row):
   - a theme gallery grid of live mini previews (a small summary ring and macro bars drawn with that theme's palette)
   - an appearance picker (with Light and System hidden for dark-only themes)
   - custom accent: `ColorPicker(supportsOpacity: false)` plus curated swatches, the "Adjusted for light/dark mode" note, and the collision warning
@@ -115,8 +115,8 @@
 ## 5. Wave 5: icons, sharing and widgets (size: M)
 
 - [ ] 5.1 **Precondition: confirm `add-app-icon-picker` 4.2 on device.** Does `setAlternateIconName` work on an AltStore-signed build, and does it survive a 7-day re-sign? Record the result. If it fails, skip 5.2 and 5.3 and note why.
-- [ ] 5.2 **Commit `tools/generate-app-icons.py`** (Pillow) and generate 7 alternates: Coral Classic (from the pre-#37 primary in `53502e8`), Forest, Ocean, Sunset, Mono, Autumn and Night Run. Each is full-bleed, opaque, and downsampled to @2x and @3x in `GarminFood/AppIcons/`. Add the `project.yml` `CFBundleAlternateIcons` entries (validated with PyYAML), the `AppIconOption` cases, and `ThemeSpec.suggestedIconName`. CI green.
-- [ ] 5.3 **Icon suggestion on theme apply**: a confirmation dialog, and a "Match app icon to theme" preference (Ask / Never). CI green.
+- [ ] 5.2 **Replace the alternates (R5)**: remove Streak, Macro, Midnight, Mint and Pastel; add the 11 GF-style icons (Indigo, Sunset, Forest, Pastel, Slate, Citrus, Ocean, Coral, Berry, Graphite, Gold) as @2x/@3x in `GarminFood/AppIcons/`. Update `project.yml` `CFBundleAlternateIcons` (validated with PyYAML), `AppIconOption`, and `ThemeSpec.iconName`. Reset a stale removed alternate to the primary icon on launch. CI green.
+- [ ] 5.3 **Icon follows theme** (R5): a "Match app icon to theme" toggle, default on; picking a theme switches the icon when it's on. CI green.
 - [ ] 5.4 **`ThemeShareCode`** (AppearanceKit), D11. Tests: round trip, prefix, tampered payload, 2 KB cap, unknown theme, accent re-fit, layout merge. CI green.
 - [ ] 5.5 **Share UI**:
   - Export: `ShareLink` with the code and `garminfood://theme?c=…`, plus a QR code from `CIQRCodeGenerator`.
