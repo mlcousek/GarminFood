@@ -149,6 +149,10 @@ public actor RecordsStore {
     }
 
     public func save(_ state: RecordsState) throws {
+        // A save before any load must still honour the unreadable-file
+        // contract: load first so an existing-but-unreadable file is
+        // detected (and refused) rather than failing as merely "unread".
+        if !file.loaded { _ = load() }
         try file.save(state)
         cached = state
     }
