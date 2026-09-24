@@ -116,7 +116,7 @@ struct SearchResultsSection: View {
             statusRows
         } header: {
             if !visibleResults.isEmpty {
-                SectionHeader(title: "Results")
+                SectionHeader(title: String(localized: "Results"))
             }
         }
         .animation(reduceMotion ? nil : .default, value: visibleResults.map(\.id))
@@ -147,7 +147,9 @@ struct SearchResultsSection: View {
     }
 
     private func hint(for result: SearchResult) -> String {
-        result.origin.isDirectlyLoggable ? "Selects this food" : "Finds the matching Garmin food first"
+        result.origin.isDirectlyLoggable
+            ? String(localized: "Selects this food")
+            : String(localized: "Finds the matching Garmin food first")
     }
 
     private func select(_ result: SearchResult) {
