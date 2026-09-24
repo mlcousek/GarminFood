@@ -138,6 +138,15 @@ A single `loggedFoods` entry, from `GET /nutrition-service/food/logs/{date}` (fi
 }
 ```
 
+## Serving shapes and `servingQty` precision (read-only, 2026-09-24)
+
+From a read-only `food/search` (`tvaroh`, `mleko`, `jogurt`, `chleba`, `banana`, `cola`, regionCode CZ) and the owner's own `food/logs/{date}` (quantity fields only):
+
+- `servingQty` is always a multiplier of ONE WHOLE serving (`numberOfUnits` x `servingUnit`), never an absolute gram amount: 150 g of a `"g"` x 100 serving is `servingQty: 1.5`.
+- The same 100 g of a FatSecret food usually comes as two servings: `servingUnit: "100g"` (also `"100г"`, `"100ml"`, `"100мл"`), `numberOfUnits: 1`, `unitHasServing: true`, and `servingUnit: "g"`/`"ml"` (also `"G"`, `"ML"`), `numberOfUnits: 100`, `unitHasServing: false`, servingId shaped like `<id>_0_100_g`. Both carry the calories for the whole 100 g.
+- Other metric shapes: `"G"` x 30, `"serving (118 g)"` x 1, `"serving (50 g)"` x 1. Non-metric: `"medium (7\" to 7-7/8\" long)"`, `"can (12 fl oz)"`, `"1/4 cup dry"`, `"oz"`: no gram size known.
+- Garmin stores `servingQty` as a 32-bit float: 0.7 reads back as `0.699999988079071`, 0.15 as `0.15000000596046448`. About 7 significant digits survive, which is why the app rounds a gram-derived multiplier to 3 decimals (`FoodLogCore/ServingAmount.swift`).
+
 ## The nutrition day is not calendar midnight-to-midnight
 
 `GET /nutrition-service/food/logs/{date}` returned `dayStartTime: "04:00:00"` and `dayEndTime: "17:00:00"` on the day this was observed. This is a **major** finding for anything computing "today" client-side: the widget/Control's local-date logic must not assume a nutrition day starts at 00:00. Whether this window is a fixed account setting, tied to the user's sleep schedule, or something else entirely is unconfirmed — but it must be read from the API response, never hardcoded.

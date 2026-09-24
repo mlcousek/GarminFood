@@ -243,13 +243,32 @@ struct MealPresetEditorView: View {
     }
 }
 
-/// One ingredient row: name/serving, and an editable quantity multiplier
-/// (same meaning as everywhere else in this app -- a multiplier of the
-/// shown serving, e.g. `1.5` x "100 g").
+/// One ingredient row: name/serving, and an editable quantity. The stored
+/// `ingredient.quantity` is a multiplier of the shown serving (same meaning
+/// as everywhere else in this app, e.g. `1.5` x "100 g"), but for a serving
+/// with a known gram/ml size it is TYPED in grams by default
+/// (amount-in-grams) -- the same `ServingQuantityInput` rules and
+/// remembered `AppPreferences.quantityInputMode` as `ServingQuantityField`,
+/// in a compact row layout: tapping the "g"/"×" label switches the mode.
+/// Text that isn't a valid amount is ignored (the last valid quantity
+/// stays), as before.
 private struct IngredientRow: View {
     @Binding var ingredient: MealPresetIngredient
 
+    @Environment(AppEnvironment.self) private var environment
     @State private var quantityText: String = ""
+    /// The text this row last wrote itself and the exact quantity it stands
+    /// for, so re-showing a quantity never nudges it by display rounding.
+    @State private var writtenText: String?
+    @State private var writtenQuantity: Double?
+
+    private var input: ServingQuantityInput { ServingQuantityInput(serving: ingredient.serving) }
+    private var mode: QuantityInputMode { input.resolvedMode(environment.preferences.quantityInputMode) }
+
+    private var unitLabel: String {
+        if mode == .amount, let size = input.size { return size.unit.symbol }
+        return "×"
+    }
 
     var body: some View {
         HStack {
@@ -261,26 +280,51 @@ private struct IngredientRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: Theme.Spacing.sm)
-            TextField("1", text: $quantityText)
+            TextField(mode == .amount ? "100" : "1", text: $quantityText)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
-                .frame(width: 50)
+                .frame(width: 60)
                 .onChange(of: quantityText) { _, newValue in
-                    // `DecimalInput`: accepts the Czech decimal comma ("0,5").
-                    if let value = DecimalInput.parse(newValue), LogQuantity.isValid(value) {
+                    if newValue == writtenText {
+                        if let writtenQuantity, writtenQuantity != ingredient.quantity {
+                            ingredient.quantity = writtenQuantity
+                        }
+                        return
+                    }
+                    // `DecimalInput` inside: accepts the Czech comma ("0,5").
+                    if let value = input.quantity(fromText: newValue, mode: mode) {
                         ingredient.quantity = value
                     }
                 }
-            Text("×")
-                .foregroundStyle(.secondary)
+            if input.offersModeChoice {
+                Button(unitLabel) {
+                    environment.preferences.quantityInputMode = mode == .amount ? .servings : .amount
+                }
+                .buttonStyle(.borderless)
+                .accessibilityLabel(mode == .amount ? "Grams or millilitres. Switch to servings" : "Servings. Switch to grams or millilitres")
+            } else {
+                Text(unitLabel)
+                    .foregroundStyle(.secondary)
+            }
             if let calories = ingredient.calories {
                 MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
             }
         }
         .onAppear {
             if quantityText.isEmpty {
-                quantityText = ingredient.quantity.formattedQuantity
+                writeQuantityText()
             }
         }
+        .onChange(of: mode) { _, _ in
+            writeQuantityText()
+        }
+    }
+
+    private func writeQuantityText() {
+        let value = ingredient.quantity
+        let text = input.text(forQuantity: value, mode: mode, decimalSeparator: Locale.current.decimalSeparator ?? ".")
+        writtenText = text
+        writtenQuantity = value
+        quantityText = text
     }
 }

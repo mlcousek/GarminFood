@@ -242,8 +242,12 @@ struct EditEntrySheet: View {
 
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
-    @State private var quantity: Double
+    /// The multiplier of the logged serving (`servingQty`); `nil` while the
+    /// typed text isn't valid. Typed in grams when the serving states its
+    /// size (`ServingQuantityField`, amount-in-grams).
+    @State private var quantity: Double?
     @State private var meal: MealType
+    @FocusState private var isAmountFieldFocused: Bool
     @State private var isSaving = false
     @State private var errorMessage: String?
 
@@ -269,23 +273,17 @@ struct EditEntrySheet: View {
                 }
 
                 Section("Amount") {
-                    Stepper(value: $quantity, in: 0.25...999, step: 0.5) {
-                        HStack {
-                            TextField("Amount", value: $quantity, format: .number)
-                                .keyboardType(.decimalPad)
-                                .font(.body.monospacedDigit())
-                                .frame(maxWidth: 90)
-                            Text(entry.servingDescription.map { "× \($0)" } ?? "×")
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                        }
-                    }
-                    .accessibilityValue("\(quantity.formattedQuantity)")
-                    if !LogQuantity.isValid(quantity) {
-                        Text(LogQuantity.invalidMessage)
-                            .font(.footnote)
-                            .foregroundStyle(Theme.warning)
-                    } else if let calories = entry.calories(forQuantity: quantity) {
+                    // Same field as the confirm screen: grams for a serving
+                    // with a known size, servings otherwise; shows its own
+                    // out-of-range message.
+                    ServingQuantityField(
+                        serving: entry.serving,
+                        quantity: $quantity,
+                        isFocused: $isAmountFieldFocused,
+                        fallbackServingLabel: entry.servingDescription,
+                        showsStepper: true
+                    )
+                    if let quantity, let calories = entry.calories(forQuantity: quantity) {
                         LabeledContent("Calories", value: "\(calories.wholeNumberText) kcal")
                             .monospacedDigit()
                     }
@@ -328,20 +326,26 @@ struct EditEntrySheet: View {
                     Button("Save") { save() }
                         .disabled(!canSave)
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { isAmountFieldFocused = false }
+                }
             }
         }
         .presentationDetents([.medium, .large])
     }
 
     private var hasChanged: Bool {
-        abs(quantity - entry.servingQty) > 0.0001 || meal != entry.mealType
+        guard let quantity else { return true }
+        return abs(quantity - entry.servingQty) > 0.0001 || meal != entry.mealType
     }
 
     private var canSave: Bool {
-        !isSaving && hasChanged && LogQuantity.isValid(quantity)
+        !isSaving && hasChanged && (quantity.map(LogQuantity.isValid) ?? false)
     }
 
     private func save() {
+        guard let quantity else { return }
         isSaving = true
         errorMessage = nil
         Task { @MainActor in
