@@ -44,19 +44,19 @@ enum WidgetThemeOption: String, AppEnum {
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation = "Theme"
     static var caseDisplayRepresentations: [WidgetThemeOption: DisplayRepresentation] = [
-        .teal: "GF Teal",
-        .classic: "Classic Coral",
-        .ocean: "Ocean",
-        .forest: "Forest",
-        .sunset: "Sunset",
-        .slate: "Slate",
-        .indigo: "Indigo Night",
-        .berry: "Berry",
-        .graphite: "Graphite",
-        .gold: "Gold",
-        .pastel: "Pastel",
-        .citrus: "Citrus",
-        .highContrast: "High Contrast"
+        .teal: DisplayRepresentation(title: "GF Teal"),
+        .classic: DisplayRepresentation(title: "Classic Coral"),
+        .ocean: DisplayRepresentation(title: "Ocean"),
+        .forest: DisplayRepresentation(title: "Forest"),
+        .sunset: DisplayRepresentation(title: "Sunset"),
+        .slate: DisplayRepresentation(title: "Slate"),
+        .indigo: DisplayRepresentation(title: "Indigo Night"),
+        .berry: DisplayRepresentation(title: "Berry"),
+        .graphite: DisplayRepresentation(title: "Graphite"),
+        .gold: DisplayRepresentation(title: "Gold"),
+        .pastel: DisplayRepresentation(title: "Pastel"),
+        .citrus: DisplayRepresentation(title: "Citrus"),
+        .highContrast: DisplayRepresentation(title: "High Contrast")
     ]
 
     /// The default for a widget nobody has edited (see header).
