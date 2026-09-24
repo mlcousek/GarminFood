@@ -156,6 +156,19 @@ public enum BodyRules {
         )
     }
 
+    /// The weight milestones that can still apply to a goal of `direction`
+    /// (`nil` = no start weight), in display order.
+    public static func applicableMilestoneIds(direction: WeightGoalDirection?) -> [String] {
+        switch direction {
+        case .loss?, .gain?:
+            return SportBodyCatalog.weightMilestoneIds
+        case .maintenance?:
+            return [SportBodyCatalog.steadyId]
+        case nil:
+            return [SportBodyCatalog.targetId, SportBodyCatalog.steadyId]
+        }
+    }
+
     /// Every weight badge the window's weigh-ins earn, in catalog order.
     public static func weightBadgeIds(in snapshot: SignalsSnapshot, calendar: Calendar) -> [String] {
         guard let goal = snapshot.profile.weightGoal, let targetKg = goal.targetKg, targetKg > 0 else { return [] }

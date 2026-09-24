@@ -1,6 +1,42 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ · %lld g carbs, %lld min before": {
+      "comment": "Sport & body activity row: a fuel entry. %@ = food name, then grams, then minutes before the start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld g sacharidů, %lld min před"
+          }
+        }
+      }
+    },
+    "%@ · %lld g protein": {
+      "comment": "Sport & body activity row: an entry after the activity. %@ = food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld g bílkovin"
+          }
+        }
+      }
+    },
+    "%@ · carb-rich, %lld min before": {
+      "comment": "Sport & body activity row: a fuel entry with unknown carbs. %@ = food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · bohaté na sacharidy, %lld min před"
+          }
+        }
+      }
+    },
     "%@ +%lld XP": {
       "comment": "Celebration card: a gamification feature's message (already localized) followed by the XP it awarded.",
       "extractionState": "manual",
@@ -355,6 +391,18 @@
         }
       }
     },
+    "%lld g protein within 60 min": {
+      "comment": "Sport & body activity row: protein total logged within 60 min after the end.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld g bílkovin do 60 min"
+          }
+        }
+      }
+    },
     "%lld h": {
       "comment": "Fasting duration in whole hours, e.g. 16 h.",
       "extractionState": "manual",
@@ -619,6 +667,18 @@
         }
       }
     },
+    "Activities appear here once Garmin has synced them.": {
+      "comment": "Sport & body: no Garmin activity data yet (neutral, not an error).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivity se tu objeví, jakmile je Garmin synchronizuje."
+          }
+        }
+      }
+    },
     "Add a food to this meal to see it here.": {
       "comment": "Meal detail empty state message.",
       "extractionState": "manual",
@@ -723,6 +783,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upraveno pro světlý režim, aby zůstalo čitelné."
+          }
+        }
+      }
+    },
+    "All fasting badges earned": {
+      "comment": "Sport & body screen: every fasting badge unlocked.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny odznaky za půst získány"
           }
         }
       }
@@ -2077,6 +2149,18 @@
         }
       }
     },
+    "Eaten during: %lld": {
+      "comment": "Sport & body activity row: number of entries logged during the activity.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snědeno během: %lld"
+          }
+        }
+      }
+    },
     "Eating window": {
       "comment": "Fasting card title while eating is allowed.",
       "extractionState": "manual",
@@ -2395,6 +2479,18 @@
         }
       }
     },
+    "Fasting streak": {
+      "comment": "Sport & body: kept-fast streak label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série půstu"
+          }
+        }
+      }
+    },
     "Fat": {
       "comment": "Macro name: fat.",
       "extractionState": "manual",
@@ -2571,6 +2667,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zdroj: %1$@, také v: %2$@"
+          }
+        }
+      }
+    },
+    "Fuelled": {
+      "comment": "Sport & body activity row: carbs logged 30-180 min before the start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Natankováno"
+          }
+        }
+      }
+    },
+    "Fuelled %lld · Recovered %lld · Earned days %lld · Race days %lld": {
+      "comment": "Sport & body screen: lifetime counts behind the tiered badges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palivo %lld · Regenerace %lld · Zasloužené dny %lld · Závodní dny %lld"
           }
         }
       }
@@ -2875,6 +2995,18 @@
         }
       }
     },
+    "Hike": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Túra"
+          }
+        }
+      }
+    },
     "If the sign-in page above doesn't complete automatically, sign in to Garmin Connect in a regular browser instead, then copy the \"ticket\" value from the redirect URL here.": {
       "comment": "Sign-in sheet: instructions for the manual fallback. 'ticket' is the literal URL parameter name.",
       "extractionState": "manual",
@@ -3147,6 +3279,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Později"
+          }
+        }
+      }
+    },
+    "Latest %@": {
+      "comment": "Sport & body weight goal: newest weigh-in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední %@"
           }
         }
       }
@@ -3703,6 +3847,18 @@
         }
       }
     },
+    "Maintenance goal: stay within 1 kg of your target.": {
+      "comment": "Sport & body weight goal: target within 0.5 kg of the start weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl udržení: drž se do 1 kg od cílové váhy."
+          }
+        }
+      }
+    },
     "Manual fallback": {
       "comment": "Sign-in sheet: section header for the manual ticket-paste path.",
       "extractionState": "manual",
@@ -3907,6 +4063,18 @@
         }
       }
     },
+    "Next badge at %lld days": {
+      "comment": "Sport & body screen: next fasting badge threshold (3, 7, 14 or 30 days).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další odznak při %lld dnech"
+          }
+        }
+      }
+    },
     "Next day": {
       "comment": "VoiceOver label of the day switcher's forward arrow.",
       "extractionState": "manual",
@@ -3927,6 +4095,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bez cíle kalorií"
+          }
+        }
+      }
+    },
+    "No counted activities in the last 14 days.": {
+      "comment": "Sport & body screen: empty activity list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za posledních 14 dní žádné započítané aktivity."
           }
         }
       }
@@ -4063,6 +4243,18 @@
         }
       }
     },
+    "Not fuelled": {
+      "comment": "Sport & body activity row: no qualifying carbs before the start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez paliva"
+          }
+        }
+      }
+    },
     "Not loaded from Garmin yet": {
       "comment": "Today status line before any Garmin data arrived for the day.",
       "extractionState": "manual",
@@ -4071,6 +4263,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Z Garminu zatím nenačteno"
+          }
+        }
+      }
+    },
+    "Not recovered": {
+      "comment": "Sport & body activity row: not enough protein after the end.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez regenerace"
           }
         }
       }
@@ -4459,6 +4663,18 @@
         }
       }
     },
+    "Opens Sport & Body": {
+      "comment": "VoiceOver hint of the Sport & body card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře Sport a tělo"
+          }
+        }
+      }
+    },
     "Opens water tracking": {
       "comment": "VoiceOver hint of Today's water card.",
       "extractionState": "manual",
@@ -4699,6 +4915,30 @@
         }
       }
     },
+    "Recent activities": {
+      "comment": "Sport & body screen: section header (last 14 days).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední aktivity"
+          }
+        }
+      }
+    },
+    "Recovered": {
+      "comment": "Sport & body activity row: 20 g+ protein within 60 min after the end.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regenerace splněna"
+          }
+        }
+      }
+    },
     "Reminders": {
       "comment": "Settings row / screen title: local notification settings.",
       "extractionState": "manual",
@@ -4807,6 +5047,18 @@
         }
       }
     },
+    "Ride": {
+      "comment": "Activity type name (Garmin activity: cycling).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jízda"
+          }
+        }
+      }
+    },
     "Round": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -4827,6 +5079,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zaoblené"
+          }
+        }
+      }
+    },
+    "Row": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veslování"
+          }
+        }
+      }
+    },
+    "Run": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Běh"
           }
         }
       }
@@ -5203,6 +5479,18 @@
         }
       }
     },
+    "Set a weight goal in Garmin Connect or Settings to track milestones.": {
+      "comment": "Sport & body screen: no weight goal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastav si cílovou váhu v Garmin Connect nebo v Nastavení a sleduj milníky."
+          }
+        }
+      }
+    },
     "Set in Garmin Connect. GarminFood only displays it.": {
       "comment": "Settings: footer under the read-only nutrition plan.",
       "extractionState": "manual",
@@ -5419,6 +5707,18 @@
         }
       }
     },
+    "Ski": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyže"
+          }
+        }
+      }
+    },
     "Slate": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -5479,6 +5779,30 @@
         }
       }
     },
+    "Sport & Body": {
+      "comment": "Sport & body: card header and screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport a tělo"
+          }
+        }
+      }
+    },
+    "Sport & body badges": {
+      "comment": "Sport & body screen: badge grid section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odznaky sportu a těla"
+          }
+        }
+      }
+    },
     "Standard": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -5487,6 +5811,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Standardní"
+          }
+        }
+      }
+    },
+    "Start %@ · Target %@": {
+      "comment": "Sport & body weight goal: start and target weights (e.g. 82 kg).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start %@ · Cíl %@"
           }
         }
       }
@@ -5593,6 +5929,18 @@
         }
       }
     },
+    "Strength": {
+      "comment": "Activity type name (Garmin activity: strength training).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posilování"
+          }
+        }
+      }
+    },
     "Suggested by Garmin Connect": {
       "comment": "Caption under a meal's calorie target and time window, which come from Garmin Connect.",
       "extractionState": "manual",
@@ -5613,6 +5961,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Západ slunce"
+          }
+        }
+      }
+    },
+    "Swim": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plavání"
           }
         }
       }
@@ -5661,6 +6021,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Systém"
+          }
+        }
+      }
+    },
+    "Target %@": {
+      "comment": "Sport & body weight goal: target weight (no start weight known).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl %@"
           }
         }
       }
@@ -5925,6 +6297,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tahle položka nemá v Open Food Facts hodnotu kalorií, takže ji v Garminu nejde vytvořit."
+          }
+        }
+      }
+    },
+    "This month: %lld fuelled · %lld recovered": {
+      "comment": "Sport & body card: activities fuelled before / recovered after this month.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento měsíc: palivo %lld · regenerace %lld"
           }
         }
       }
@@ -6277,6 +6661,18 @@
         }
       }
     },
+    "Walk": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chůze"
+          }
+        }
+      }
+    },
     "Water %@ ml": {
       "comment": "Sync queue row title for a queued drink; %@ is the amount.",
       "extractionState": "manual",
@@ -6393,6 +6789,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Při zapnutém sladění výběr motivu přepne i ikonu na ploše."
+          }
+        }
+      }
+    },
+    "Workout": {
+      "comment": "Activity type name (any other Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trénink"
           }
         }
       }

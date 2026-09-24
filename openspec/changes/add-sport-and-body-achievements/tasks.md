@@ -19,8 +19,8 @@
 
 ## 4. UI (thin)
 
-- [ ] 4.1 `Progress/Slots/SportBodySlotView.swift`.
-- [ ] 4.2 `Progress/SportBody/SportBodyView.swift`: activities with fuel/recovery ticks and the counted entries; weight milestones; fasting streak. VoiceOver, Dynamic Type, dark mode.
+- [x] 4.1 `Progress/Slots/SportBodySlotView.swift`.
+- [x] 4.2 `Progress/SportBody/SportBodyView.swift`: activities with fuel/recovery ticks and the counted entries; weight milestones; fasting streak. VoiceOver, Dynamic Type, dark mode.
 
 ## 5. Verify
 

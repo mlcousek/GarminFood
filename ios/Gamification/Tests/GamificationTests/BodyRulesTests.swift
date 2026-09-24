@@ -63,6 +63,13 @@ final class BodyRulesTests: XCTestCase {
         XCTAssertFalse(BodyRules.reachedTarget(weightKg: 75.7, startKg: nil, targetKg: 76))
     }
 
+    func testApplicableMilestonesFollowTheDirection() {
+        XCTAssertEqual(BodyRules.applicableMilestoneIds(direction: .loss), SportBodyCatalog.weightMilestoneIds)
+        XCTAssertEqual(BodyRules.applicableMilestoneIds(direction: .gain), SportBodyCatalog.weightMilestoneIds)
+        XCTAssertEqual(BodyRules.applicableMilestoneIds(direction: .maintenance), [SportBodyCatalog.steadyId])
+        XCTAssertEqual(BodyRules.applicableMilestoneIds(direction: nil), [SportBodyCatalog.targetId, SportBodyCatalog.steadyId])
+    }
+
     func testWeightBadgesFromTheWindow() {
         let snapshot = F.snapshot([
             F.day(F.key(2026, 9, 10), weighInKg: 81.5),

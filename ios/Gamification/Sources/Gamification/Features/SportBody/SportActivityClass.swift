@@ -52,3 +52,33 @@ public enum SportActivityClass: String, Sendable, Equatable, CaseIterable {
     /// Counts toward Recovery Window.
     public var countsForRecovery: Bool { self == .endurance || self == .strength }
 }
+
+/// What kind of activity a typeKey is, for display only (the Sport & Body
+/// screen's name and symbol per row). Order matters: "trail_running" is a
+/// run, "mountain_biking" a ride.
+public enum SportActivityKind: String, Sendable, Equatable, CaseIterable {
+    case run, ride, hike, swim, walk, ski, row, strength, other
+
+    public init(typeKey: String) {
+        let key = typeKey.lowercased()
+        if key.contains("running") {
+            self = .run
+        } else if key.contains("cycling") || key.contains("biking") {
+            self = .ride
+        } else if key.contains("hiking") {
+            self = .hike
+        } else if key.contains("swimming") {
+            self = .swim
+        } else if key.contains("walking") {
+            self = .walk
+        } else if key.contains("skiing") {
+            self = .ski
+        } else if key.contains("rowing") {
+            self = .row
+        } else if SportActivityClass.strengthKeys.contains(key) {
+            self = .strength
+        } else {
+            self = .other
+        }
+    }
+}

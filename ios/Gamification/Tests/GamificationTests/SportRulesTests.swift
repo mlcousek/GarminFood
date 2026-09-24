@@ -41,6 +41,19 @@ final class SportRulesTests: XCTestCase {
         }
     }
 
+    func testDisplayKind() {
+        XCTAssertEqual(SportActivityKind(typeKey: "trail_running"), .run)
+        XCTAssertEqual(SportActivityKind(typeKey: "mountain_biking"), .ride)
+        XCTAssertEqual(SportActivityKind(typeKey: "indoor_cycling"), .ride)
+        XCTAssertEqual(SportActivityKind(typeKey: "hiking"), .hike)
+        XCTAssertEqual(SportActivityKind(typeKey: "open_water_swimming"), .swim)
+        XCTAssertEqual(SportActivityKind(typeKey: "walking"), .walk)
+        XCTAssertEqual(SportActivityKind(typeKey: "backcountry_skiing"), .ski)
+        XCTAssertEqual(SportActivityKind(typeKey: "indoor_rowing"), .row)
+        XCTAssertEqual(SportActivityKind(typeKey: "strength_training"), .strength)
+        XCTAssertEqual(SportActivityKind(typeKey: "yoga"), .other)
+    }
+
     // MARK: - Fuel
 
     private let runStart = SportFixtures.at(2026, 9, 20, 7, 30)
