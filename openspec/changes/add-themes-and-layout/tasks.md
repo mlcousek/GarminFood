@@ -15,7 +15,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 
 ## 1. Wave 1: token refactor and theme store, no visual change (size: L)
 
-- [ ] 1.1 **Create `ios/AppearanceKit/`.**
+- [x] 1.1 **Create `ios/AppearanceKit/`.**
   - `Package.swift`: iOS 17 / macOS 14, Foundation only, one library and a test target.
   - Add a "Run AppearanceKit unit tests" step to `.github/workflows/build.yml`, matching the other packages.
   - Add a `packages:` entry to `ios/project.yml`, plus a dependency from both the `GarminFood` and `GarminFoodWidget` targets.

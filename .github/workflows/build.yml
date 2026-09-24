@@ -121,6 +121,14 @@ jobs:
           cd Gamification
           swift test
 
+      - name: Run AppearanceKit unit tests
+        # Pure logic (color math, WCAG contrast and OKLab distinctness policy
+        # over every built-in theme, palette resolution, settings decoding) --
+        # same rationale as the steps above. Dependency-free (Foundation only).
+        run: |
+          cd AppearanceKit
+          swift test
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
