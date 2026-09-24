@@ -415,6 +415,9 @@ final class GamificationEngine {
         let lifetime = await lifetimeStatsStore.current()
         let dailyCompletedEver = await dailyChallengeStore.totalCompletedEver()
         let loggedDays = Set(events.map { NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour) })
+        let allChallengesProgress = ChallengeRotationPolicy.allChallengesProgress(
+            completedTemplateIds: Set(completedChallenges.map(\.templateId))
+        )
 
         return AchievementContext(
             level: levelProgress.level,
@@ -422,8 +425,10 @@ final class GamificationEngine {
             totalLogsEver: lifetime.totalLogsEver,
             distinctFoodsInRetainedHistory: Set(events.map(\.foodId)).count,
             challengeCompletionCount: completedChallenges.count,
-            distinctCompletedChallengeTemplateCount: Set(completedChallenges.map(\.templateId)).count,
-            totalChallengeCatalogCount: ChallengeCatalog.all.count,
+            // add-gamification-signals D11: "complete every challenge" counts
+            // only templates still in rotation (static weight > 0).
+            distinctCompletedChallengeTemplateCount: allChallengesProgress.completed,
+            totalChallengeCatalogCount: allChallengesProgress.total,
             dailyChallengeCompletionCount: dailyCompletedEver,
             goalHitDaysEver: lifetime.goalHitDaysEver,
             maxSingleDayCalories: lifetime.maxSingleDayCalories,

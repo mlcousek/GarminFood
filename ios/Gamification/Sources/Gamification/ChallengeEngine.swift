@@ -308,16 +308,30 @@ public enum ChallengeEngine {
 /// (design.md's "no hidden server-side state" goal) and is exactly as
 /// testable as everything else in this package: the same `now` and
 /// `excludedIds` always produce the same pick.
+///
+/// add-gamification-signals D11: the pick is WEIGHTED by
+/// `ChallengeRotationPolicy` (hand-authored 2, creative signal 3, allowlisted
+/// ladder tiers 1, everything else 0), still deterministic -- seeded by the
+/// same `now` through the shared `DeterministicRandom`. Fallbacks, in order:
+/// any non-excluded template with weight > 0; else any non-excluded
+/// template (plain seeded index, as before); else the whole catalog.
 public enum ChallengeRotation {
     public static func pickNext(
         from catalog: [ChallengeTemplate],
         excluding excludedIds: Set<String>,
-        now: Date
+        now: Date,
+        policy: ChallengeRotationPolicy = ChallengeRotationPolicy()
     ) -> ChallengeTemplate {
         precondition(!catalog.isEmpty, "the challenge catalog must not be empty")
-        let candidates = catalog.filter { !excludedIds.contains($0.id) }
-        let pool = (candidates.isEmpty ? catalog : candidates).sorted { $0.id < $1.id }
-        let index = Int(now.timeIntervalSince1970.rounded()) % pool.count
+        let seconds = Int(now.timeIntervalSince1970.rounded())
+        let candidates = catalog.filter { !excludedIds.contains($0.id) }.sorted { $0.id < $1.id }
+
+        var random = DeterministicRandom(seed: String(seconds))
+        if let picked = random.weightedPick(candidates, weight: { policy.weight(for: $0) }) {
+            return picked
+        }
+        let pool = candidates.isEmpty ? catalog.sorted { $0.id < $1.id } : candidates
+        let index = ((seconds % pool.count) + pool.count) % pool.count
         return pool[index]
     }
 }
