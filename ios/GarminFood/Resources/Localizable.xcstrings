@@ -79,6 +79,60 @@
         }
       }
     },
+    "%lld entries haven't reached Garmin yet": {
+      "comment": "Sync banner: number of logged entries not yet delivered to Garmin. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamy se ještě nedostaly do Garminu"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamu se ještě nedostalo do Garminu"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznam se ještě nedostal do Garminu"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamů se ještě nedostalo do Garminu"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entry hasn't reached Garmin yet"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entries haven't reached Garmin yet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld minutes before": {
       "comment": "Fasting reminder stepper: minutes before the fasting boundary. Plural.",
       "extractionState": "manual",
@@ -475,6 +529,18 @@
         }
       }
     },
+    "Close": {
+      "comment": "Generic toolbar button closing a sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zavřít"
+          }
+        }
+      }
+    },
     "Colour-blind safe": {
       "comment": "Settings -> Appearance page. Macro colors option.",
       "extractionState": "manual",
@@ -531,6 +597,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kompaktní"
+          }
+        }
+      }
+    },
+    "Complete sign-in with pasted ticket": {
+      "comment": "Sign-in sheet: button submitting a manually pasted ticket.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dokončit přihlášení vloženým ticketem"
+          }
+        }
+      }
+    },
+    "Connect Garmin": {
+      "comment": "Sign-in sheet: navigation title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojit Garmin"
           }
         }
       }
@@ -595,6 +685,18 @@
         }
       }
     },
+    "Couldn't build Garmin's exchange URL. That's an app bug -- retrying won't help.": {
+      "comment": "Sign-in error: internal bug building the URL.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se sestavit URL pro výměnu tokenu u Garminu. Je to chyba aplikace – opakování nepomůže."
+          }
+        }
+      }
+    },
     "Couldn't cancel this delete: %@": {
       "comment": "Sync queue error; %@ is the system error description.",
       "extractionState": "manual",
@@ -655,14 +757,14 @@
         }
       }
     },
-    "Couldn't load Garmin's sign-in page. Check your connection and try again.": {
-      "comment": "Error shown when the Garmin sign-in web page fails to load.",
+    "Couldn't fetch Garmin's public consumer key (%@). Check your connection and try again.": {
+      "comment": "Sign-in error. %@ = 'HTTP 503' or 'no HTTP response'. 'Consumer key' is an OAuth term.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Přihlašovací stránku Garminu se nepodařilo načíst. Zkontroluj připojení a zkus to znovu."
+            "value": "Nepodařilo se stáhnout veřejný consumer key Garminu (%@). Zkontroluj připojení a zkus to znovu."
           }
         }
       }
@@ -687,6 +789,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Z Garminu se to nepodařilo načíst."
+          }
+        }
+      }
+    },
+    "Couldn't load Garmin's sign-in page. Check your connection and try again.": {
+      "comment": "Error shown when the Garmin sign-in web page fails to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlašovací stránku Garminu se nepodařilo načíst. Zkontroluj připojení a zkus to znovu."
+          }
+        }
+      }
+    },
+    "Couldn't reach Garmin right now. Check your connection or try again.": {
+      "comment": "Food search error: Garmin unreachable.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin teď není dostupný. Zkontroluj připojení nebo to zkus znovu."
           }
         }
       }
@@ -1009,6 +1135,18 @@
         }
       }
     },
+    "Entries still save locally and will sync once you reconnect.": {
+      "comment": "Auth banner subtitle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy se dál ukládají v telefonu a synchronizují se, jakmile se znovu připojíš."
+          }
+        }
+      }
+    },
     "Entries waiting to sync stay queued and send once you sign in again.": {
       "comment": "Sign-out confirmation message.",
       "extractionState": "manual",
@@ -1219,14 +1357,14 @@
         }
       }
     },
-    "GF Teal": {
-      "comment": "App icon / theme name shown in Appearance settings.",
+    "Garmin accepted the ticket but sent back a response this app couldn't read.": {
+      "comment": "Sign-in error: unreadable token-exchange response.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "GF tyrkys"
+            "value": "Garmin ticket přijal, ale vrátil odpověď, které aplikace nerozumí."
           }
         }
       }
@@ -1239,6 +1377,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Účet Garmin"
+          }
+        }
+      }
+    },
+    "Garmin rejected the sign-in ticket (%@): %@": {
+      "comment": "Sign-in error. First %@ = 'HTTP 401' or 'no HTTP response'; second %@ = short server detail.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin odmítl přihlašovací ticket (%1$@): %2$@"
+          }
+        }
+      }
+    },
+    "Garmin rejected the sign-in ticket (%@).": {
+      "comment": "Sign-in error. %@ = 'HTTP 401' or 'no HTTP response'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin odmítl přihlašovací ticket (%@)."
+          }
+        }
+      }
+    },
+    "Garmin sign-in expired": {
+      "comment": "Auth banner title: the stored Garmin session is no longer valid.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení ke Garminu vypršelo"
           }
         }
       }
@@ -1275,6 +1449,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "GarminFood zapíše jídlo na dvě ťuknutí a synchronizuje ho do Garmin Connect. Data českých produktů © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+          }
+        }
+      }
+    },
+    "GF Teal": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GF tyrkys"
           }
         }
       }
@@ -1359,6 +1545,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vysoký kontrast"
+          }
+        }
+      }
+    },
+    "If the sign-in page above doesn't complete automatically, sign in to Garmin Connect in a regular browser instead, then copy the \"ticket\" value from the redirect URL here.": {
+      "comment": "Sign-in sheet: instructions for the manual fallback. 'ticket' is the literal URL parameter name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokud se přihlašovací stránka výše nedokončí automaticky, přihlas se ke Garmin Connect v běžném prohlížeči a sem zkopíruj hodnotu „ticket“ z URL přesměrování."
           }
         }
       }
@@ -1567,6 +1765,18 @@
         }
       }
     },
+    "Manual fallback": {
+      "comment": "Sign-in sheet: section header for the manual ticket-paste path.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruční náhradní postup"
+          }
+        }
+      }
+    },
     "Match app icon to theme": {
       "comment": "Settings -> Appearance page. Toggle.",
       "extractionState": "manual",
@@ -1627,6 +1837,18 @@
         }
       }
     },
+    "no HTTP response": {
+      "comment": "Sign-in error detail used inside parentheses when no HTTP status came back, e.g. 'Garmin rejected the sign-in ticket (no HTTP response).'",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "žádná HTTP odpověď"
+          }
+        }
+      }
+    },
     "Not connected": {
       "comment": "Settings: Garmin connection status when signed out.",
       "extractionState": "manual",
@@ -1635,6 +1857,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nepřipojeno"
+          }
+        }
+      }
+    },
+    "Not connected to Garmin": {
+      "comment": "Auth banner title: never signed in to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepřipojeno ke Garminu"
           }
         }
       }
@@ -1711,18 +1945,6 @@
         }
       }
     },
-    "OK": {
-      "comment": "Generic alert dismiss button.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        }
-      }
-    },
     "Ocean": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -1743,6 +1965,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Offline databáze potravin"
+          }
+        }
+      }
+    },
+    "OK": {
+      "comment": "Generic alert dismiss button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
@@ -1795,6 +2029,18 @@
         }
       }
     },
+    "Opens Garmin's real sign-in page in-app and captures the sign-in automatically once it completes.": {
+      "comment": "Sign-in sheet: explanation under the sign-in button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře skutečnou přihlašovací stránku Garminu přímo v aplikaci a po dokončení přihlášení ho automaticky převezme."
+          }
+        }
+      }
+    },
     "Outlined": {
       "comment": "Settings -> Appearance page. Card style option (border only).",
       "extractionState": "manual",
@@ -1803,6 +2049,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Obrysové"
+          }
+        }
+      }
+    },
+    "Paste service ticket": {
+      "comment": "Sign-in sheet: placeholder of the manual ticket text field. 'Service ticket' is Garmin's SSO term.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlož service ticket"
           }
         }
       }
@@ -1839,6 +2097,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Profil"
+          }
+        }
+      }
+    },
+    "Progress": {
+      "comment": "Tab bar item: the Progress screen (streak, level, challenges).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokrok"
           }
         }
       }
@@ -2071,6 +2341,30 @@
         }
       }
     },
+    "Sign in to Garmin to search its food database.": {
+      "comment": "Food search error: signed out of Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlas se ke Garminu, abys mohl hledat v jeho databázi potravin."
+          }
+        }
+      }
+    },
+    "Sign in with Garmin": {
+      "comment": "Sign-in sheet: button opening Garmin's web sign-in page.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se přes Garmin"
+          }
+        }
+      }
+    },
     "Sign out": {
       "comment": "Button: sign out of the Garmin account.",
       "extractionState": "manual",
@@ -2103,6 +2397,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlášení vypršelo"
+          }
+        }
+      }
+    },
+    "Sign-in failed: %@": {
+      "comment": "Sign-in error fallback. %@ = system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení selhalo: %@"
           }
         }
       }
@@ -2251,6 +2557,30 @@
         }
       }
     },
+    "That field is empty. Paste the redirect URL, or just the ticket value from it.": {
+      "comment": "Sign-in sheet error: the manual ticket field was empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole je prázdné. Vlož URL přesměrování, nebo jen hodnotu ticketu z ní."
+          }
+        }
+      }
+    },
+    "the response was an HTML page rather than an API error, most likely a Cloudflare challenge": {
+      "comment": "Sign-in error detail shown after a colon in 'Garmin rejected the sign-in ticket (HTTP 403): …'. Lowercase start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "odpověď byla HTML stránka místo chyby API, nejspíš ověření Cloudflare"
+          }
+        }
+      }
+    },
     "Theme": {
       "comment": "Settings -> Appearance page. Section header above the theme gallery.",
       "extractionState": "manual",
@@ -2355,6 +2685,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Čas"
+          }
+        }
+      }
+    },
+    "Today": {
+      "comment": "Tab bar item: the Today (home) screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnes"
           }
         }
       }
