@@ -133,6 +133,60 @@
         }
       }
     },
+    "%lld products": {
+      "comment": "Settings: number of products in the offline database. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produkt"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produkty"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produktu"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld produktů"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld product"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld products"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "A daily nudge to check today's challenges.": {
       "comment": "Reminders screen footer under the challenges reminder.",
       "extractionState": "manual",
@@ -201,6 +255,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vše synchronizováno"
+          }
+        }
+      }
+    },
+    "Allow on cellular": {
+      "comment": "Settings toggle: allow the offline database download on cellular.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povolit přes mobilní data"
+          }
+        }
+      }
+    },
+    "Already up to date.": {
+      "comment": "Settings footer after a manual offline database check found nothing new.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Už je aktuální."
           }
         }
       }
@@ -321,6 +399,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Splněné výzvy"
+          }
+        }
+      }
+    },
+    "Checking…": {
+      "comment": "Button label while the offline database update runs.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontroluje se…"
           }
         }
       }
@@ -577,6 +667,18 @@
         }
       }
     },
+    "Czech foods": {
+      "comment": "Settings: offline database row label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "České potraviny"
+          }
+        }
+      }
+    },
     "Dark": {
       "comment": "Settings -> Appearance page. Appearance option: dark mode.",
       "extractionState": "manual",
@@ -705,6 +807,72 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zahodit"
+          }
+        }
+      }
+    },
+    "Download now": {
+      "comment": "Button: download the offline database now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhnout nyní"
+          }
+        }
+      }
+    },
+    "Downloaded %lld products.": {
+      "comment": "Settings footer after a manual offline database download. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Stažen %lld produkt."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženy %lld produkty."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženo %lld produktu."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženo %lld produktů."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Downloaded %lld product."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Downloaded %lld products."
+                }
+              }
+            }
           }
         }
       }
@@ -1387,6 +1555,18 @@
         }
       }
     },
+    "Not downloaded": {
+      "comment": "Settings: offline database not installed yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nestaženo"
+          }
+        }
+      }
+    },
     "Not set": {
       "comment": "Settings: no weight goal set.",
       "extractionState": "manual",
@@ -1455,6 +1635,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Oceán"
+          }
+        }
+      }
+    },
+    "Offline food database": {
+      "comment": "Settings section header: the downloadable Czech food index.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline databáze potravin"
           }
         }
       }
@@ -1687,6 +1879,18 @@
         }
       }
     },
+    "Search Czech products instantly, even offline. Updates weekly, on Wi-Fi unless cellular is allowed. Data from Open Food Facts (ODbL).": {
+      "comment": "Settings footer of the offline database section (with the required ODbL attribution).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledej české produkty okamžitě, i offline. Aktualizuje se jednou týdně přes Wi-Fi, pokud nepovolíš mobilní data. Data z Open Food Facts (ODbL)."
+          }
+        }
+      }
+    },
     "Sent": {
       "comment": "Sync queue row status for a weigh-in or drink.",
       "extractionState": "manual",
@@ -1803,6 +2007,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlášení vypršelo"
+          }
+        }
+      }
+    },
+    "Size": {
+      "comment": "Settings: offline database size on disk.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velikost"
           }
         }
       }
@@ -2059,6 +2275,30 @@
         }
       }
     },
+    "Updated": {
+      "comment": "Settings: when the offline database was last installed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizováno"
+          }
+        }
+      }
+    },
+    "Updating": {
+      "comment": "Accessibility label of the offline database progress indicator.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizuje se"
+          }
+        }
+      }
+    },
     "Use Garmin's water goal": {
       "comment": "Settings toggle: follow Garmin's water goal instead of a local override.",
       "extractionState": "manual",
@@ -2091,6 +2331,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verze"
+          }
+        }
+      }
+    },
+    "Waiting for Wi-Fi. Turn on “Allow on cellular” to download now.": {
+      "comment": "Settings footer when the download waits for Wi-Fi; quotes the toggle's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čeká se na Wi-Fi. Pro okamžité stažení zapni „Povolit přes mobilní data“."
           }
         }
       }
