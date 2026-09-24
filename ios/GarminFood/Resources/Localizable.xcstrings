@@ -439,6 +439,42 @@
         }
       }
     },
+    "Clear": {
+      "comment": "Destructive confirmation button: clear the diagnostics log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vymazat"
+          }
+        }
+      }
+    },
+    "Clear log": {
+      "comment": "Diagnostics menu item: clear the log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vymazat záznam"
+          }
+        }
+      }
+    },
+    "Clear the diagnostics log?": {
+      "comment": "Confirmation dialog title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vymazat diagnostický záznam?"
+          }
+        }
+      }
+    },
     "Colour-blind safe": {
       "comment": "Settings -> Appearance page. Macro colors option.",
       "extractionState": "manual",
@@ -507,6 +543,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Připojeno"
+          }
+        }
+      }
+    },
+    "Copied!": {
+      "comment": "Diagnostics menu item right after copying the log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírováno!"
+          }
+        }
+      }
+    },
+    "Copy all": {
+      "comment": "Diagnostics menu item: copy the whole log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat vše"
           }
         }
       }
@@ -945,6 +1005,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Záznamy čekající na synchronizaci zůstanou ve frontě a odešlou se, až se znovu přihlásíš."
+          }
+        }
+      }
+    },
+    "Errors and warnings from Garmin sync and logging actions will show up here.": {
+      "comment": "Diagnostics empty state message. (The log entries themselves stay in English.)",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tady se objeví chyby a varování ze synchronizace s Garminem a ze zapisování."
           }
         }
       }
@@ -1575,6 +1647,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nenastaveno"
+          }
+        }
+      }
+    },
+    "Nothing logged": {
+      "comment": "Diagnostics empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nezaznamenáno"
           }
         }
       }
