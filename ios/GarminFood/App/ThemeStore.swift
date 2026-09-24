@@ -98,6 +98,19 @@ final class ThemeStore {
     /// Picks a theme, and (with Match app icon on) its icon.
     func selectTheme(_ id: String) {
         update { $0.themeID = id }
+        matchAppIconIfNeeded()
+    }
+
+    /// Back to the defaults -- including the default theme's icon when
+    /// "Match app icon to theme" is on, like any other theme change.
+    func resetAll() {
+        update { $0 = .default }
+        matchAppIconIfNeeded()
+    }
+
+    /// With Match app icon on, switches the Home Screen icon to the current
+    /// theme's (a no-op when it's already showing).
+    private func matchAppIconIfNeeded() {
         guard matchesAppIcon else { return }
         let option = AppIconOption(themeIconName: theme.iconName)
         AppIconSwitcher.set(option) { error in
@@ -105,10 +118,6 @@ final class ThemeStore {
                 DiagnosticsLog.log(.warning, category: "appearance", "Match app icon to theme failed for \(option.rawValue): \(error)")
             }
         }
-    }
-
-    func resetAll() {
-        update { $0 = .default }
     }
 
     func dismissResetNotice() {
