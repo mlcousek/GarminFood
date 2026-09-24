@@ -116,6 +116,35 @@ public enum AccentAdjuster {
         )
     }
 
+    // MARK: - Collision warning
+
+    /// The macro color `accent` is too close to (OKLab ΔE below
+    /// `ContrastPolicy.minimumAccentMacroDistance`), or `nil`. When several
+    /// are, the closest wins. The accent picker shows "Looks like the
+    /// protein color…" for the returned role.
+    public static func collidingMacro(_ accent: RGBA, macros: [ThemeRole: RGBA]) -> ThemeRole? {
+        var closest: (role: ThemeRole, distance: Double)?
+        for role in ThemeRole.comparedMacros + [.water] {
+            guard let macro = macros[role] else { continue }
+            let distance = ColorMath.deltaEOK(accent, macro)
+            guard distance < ContrastPolicy.minimumAccentMacroDistance else { continue }
+            if closest.map({ distance < $0.distance }) ?? true {
+                closest = (role, distance)
+            }
+        }
+        return closest?.role
+    }
+
+    /// `collidingMacro(_:macros:)` for a resolved palette's (fitted) accent
+    /// against its own macro colors.
+    public static func collidingMacro(in palette: ResolvedPalette) -> ThemeRole? {
+        var macros: [ThemeRole: RGBA] = [:]
+        for role in ThemeRole.comparedMacros + [.water] {
+            macros[role] = palette.referenceValue(role)
+        }
+        return collidingMacro(palette.referenceValue(.accent), macros: macros)
+    }
+
     /// Convenience for the D5 signature: `color` against each of `surfaces`
     /// at `minRatio`, in the direction that suits `scheme`.
     public static func fit(
