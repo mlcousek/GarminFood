@@ -103,6 +103,18 @@
         }
       }
     },
+    "All synced": {
+      "comment": "Sync queue empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vše synchronizováno"
+          }
+        }
+      }
+    },
     "App icon": {
       "comment": "Settings -> Appearance page. Section header above the icon grid.",
       "extractionState": "manual",
@@ -331,6 +343,18 @@
         }
       }
     },
+    "Couldn't cancel this delete: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazání se nepodařilo zrušit: %@"
+          }
+        }
+      }
+    },
     "Couldn't change the app icon": {
       "comment": "Alert title when iOS refuses an icon change.",
       "extractionState": "manual",
@@ -339,6 +363,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ikonu aplikace se nepodařilo změnit"
+          }
+        }
+      }
+    },
+    "Couldn't complete that action": {
+      "comment": "Alert title for a failed sync-queue action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akci se nepodařilo dokončit"
+          }
+        }
+      }
+    },
+    "Couldn't delete this entry: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo smazat: %@"
+          }
+        }
+      }
+    },
+    "Couldn't discard this entry: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo zahodit: %@"
           }
         }
       }
@@ -363,6 +423,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Z Garminu se to nepodařilo načíst."
+          }
+        }
+      }
+    },
+    "Couldn't retry this entry: %@": {
+      "comment": "Sync queue error; %@ is the system error description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo zkusit znovu: %@"
           }
         }
       }
@@ -451,6 +523,42 @@
         }
       }
     },
+    "Delete": {
+      "comment": "Destructive button / swipe action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat"
+          }
+        }
+      }
+    },
+    "Delete this entry?": {
+      "comment": "Confirmation dialog title in the sync queue.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat tento záznam?"
+          }
+        }
+      }
+    },
+    "Delete weigh-in %@ kg": {
+      "comment": "Sync queue row title for a queued weigh-in delete; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat vážení %@ kg"
+          }
+        }
+      }
+    },
     "Density": {
       "comment": "Settings -> Appearance page. Picker label for spacing density.",
       "extractionState": "manual",
@@ -471,6 +579,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diagnostika"
+          }
+        }
+      }
+    },
+    "Discard": {
+      "comment": "Swipe action: drop a queued drink that was never sent.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zahodit"
+          }
+        }
+      }
+    },
+    "Edited, but the old entry is still in Garmin": {
+      "comment": "Sync queue row status: an edit whose old entry couldn't be removed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upraveno, ale původní záznam je v Garminu pořád"
+          }
+        }
+      }
+    },
+    "Edited, removing the old entry…": {
+      "comment": "Sync queue row status: an edit in progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upraveno, odstraňuje se původní záznam…"
           }
         }
       }
@@ -499,6 +643,18 @@
         }
       }
     },
+    "Entries here are still saved on this phone and will keep retrying, or you can retry or delete them.": {
+      "comment": "Sync queue footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy tady zůstávají uložené v telefonu a budou se dál zkoušet odeslat. Můžeš je také zkusit znovu nebo smazat."
+          }
+        }
+      }
+    },
     "Entries waiting to sync stay queued and send once you sign in again.": {
       "comment": "Sign-out confirmation message.",
       "extractionState": "manual",
@@ -507,6 +663,72 @@
           "stringUnit": {
             "state": "translated",
             "value": "Záznamy čekající na synchronizaci zůstanou ve frontě a odešlou se, až se znovu přihlásíš."
+          }
+        }
+      }
+    },
+    "Every logged entry has reached Garmin.": {
+      "comment": "Sync queue empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny zapsané záznamy dorazily do Garminu."
+          }
+        }
+      }
+    },
+    "Failed after %lld attempts": {
+      "comment": "Sync queue row status: delivery failed after N attempts. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusu"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusech"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusu"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Selhalo po %lld pokusech"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Failed after %lld attempt"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Failed after %lld attempts"
+                }
+              }
+            }
           }
         }
       }
@@ -711,6 +933,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indigová noc"
+          }
+        }
+      }
+    },
+    "It hasn't reached Garmin yet, so nothing is removed there.": {
+      "comment": "Sync queue delete confirmation for a queued new entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do Garminu ještě nedorazil, takže se tam nic nemaže."
+          }
+        }
+      }
+    },
+    "Keep in Garmin": {
+      "comment": "Swipe action: drop a queued delete/correction so the entry stays in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponechat v Garminu"
           }
         }
       }
@@ -1039,6 +1285,18 @@
         }
       }
     },
+    "Remove %@ ml of water": {
+      "comment": "Sync queue row title for a queued water correction; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat %@ ml vody"
+          }
+        }
+      }
+    },
     "Reset": {
       "comment": "Confirmation button that resets settings to defaults.",
       "extractionState": "manual",
@@ -1075,6 +1333,18 @@
         }
       }
     },
+    "Retry": {
+      "comment": "Swipe action: retry sending a queued entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
     "Round": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -1107,6 +1377,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hledat jen české potraviny"
+          }
+        }
+      }
+    },
+    "Sent": {
+      "comment": "Sync queue row status for a weigh-in or drink.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odesláno"
+          }
+        }
+      }
+    },
+    "Sent, confirming…": {
+      "comment": "Sync queue row status: sent, awaiting Garmin's confirmation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odesláno, ověřuje se…"
           }
         }
       }
@@ -1255,6 +1549,18 @@
         }
       }
     },
+    "Sync now": {
+      "comment": "Sync queue toolbar button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizovat teď"
+          }
+        }
+      }
+    },
     "Sync queue": {
       "comment": "Settings row / screen title: entries not yet delivered to Garmin.",
       "extractionState": "manual",
@@ -1303,6 +1609,30 @@
         }
       }
     },
+    "This cancels the edit. The original entry stays in Garmin Connect at its old amount.": {
+      "comment": "Sync queue delete confirmation for a queued edit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tím se úprava zruší. Původní záznam zůstane v Garmin Connect s původním množstvím."
+          }
+        }
+      }
+    },
+    "This delete is being sent to Garmin right now, so it can't be cancelled.": {
+      "comment": "Sync queue error when cancelling an in-flight delete.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazání se právě odesílá do Garminu, takže ho už nejde zrušit."
+          }
+        }
+      }
+    },
     "This device doesn't support alternate app icons.": {
       "comment": "Shown when iOS reports alternate icons are unsupported.",
       "extractionState": "manual",
@@ -1311,6 +1641,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Toto zařízení nepodporuje alternativní ikony aplikace."
+          }
+        }
+      }
+    },
+    "This entry reached Garmin in the meantime, so there's nothing to discard.": {
+      "comment": "Sync queue error when discarding an entry that was already delivered.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam mezitím do Garminu dorazil, takže není co zahodit."
           }
         }
       }
@@ -1347,6 +1689,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verze"
+          }
+        }
+      }
+    },
+    "Waiting to sync": {
+      "comment": "Sync queue row status.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čeká na synchronizaci"
+          }
+        }
+      }
+    },
+    "Water %@ ml": {
+      "comment": "Sync queue row title for a queued drink; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voda %@ ml"
+          }
+        }
+      }
+    },
+    "Weigh-in %@ kg": {
+      "comment": "Sync queue row title for a queued weigh-in; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vážení %@ kg"
+          }
+        }
+      }
+    },
+    "Weight & water": {
+      "comment": "Sync queue section header: queued weigh-ins and drinks.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váha a voda"
           }
         }
       }
