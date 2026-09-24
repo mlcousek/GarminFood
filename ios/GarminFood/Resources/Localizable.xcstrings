@@ -1507,6 +1507,18 @@
         }
       }
     },
+    "Couldn't save": {
+      "comment": "Day note card status when saving the note failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se uložit"
+          }
+        }
+      }
+    },
     "Couldn't save this entry.": {
       "comment": "Error shown when a water entry couldn't be saved locally.",
       "extractionState": "manual",
@@ -1767,6 +1779,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hotovo"
+          }
+        }
+      }
+    },
+    "Double-tap to toggle this tag": {
+      "comment": "VoiceOver hint of a day-note tag chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvojitým klepnutím štítek přepneš"
           }
         }
       }
@@ -2355,6 +2379,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Garmin jídlo vytvořil, ale nevrátil k němu žádnou porci. Vyber raději jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "Garmin didn't delete this entry: %@. You can also delete it in Garmin Connect.": {
+      "comment": "%@ = short reason, e.g. 'HTTP 500' or 'not signed in'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin tento záznam nesmazal: %@. Můžeš ho smazat i v Garmin Connect."
           }
         }
       }
@@ -3403,6 +3439,18 @@
         }
       }
     },
+    "not selected": {
+      "comment": "VoiceOver value of an unselected day-note tag chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nevybráno"
+          }
+        }
+      }
+    },
     "Not set": {
       "comment": "Settings: no weight goal set.",
       "extractionState": "manual",
@@ -3411,6 +3459,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nenastaveno"
+          }
+        }
+      }
+    },
+    "not signed in": {
+      "comment": "Short reason after 'Garmin didn't delete this entry: '.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nejsi přihlášený"
+          }
+        }
+      }
+    },
+    "Note": {
+      "comment": "Section header of Today's day note card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poznámka"
+          }
+        }
+      }
+    },
+    "Note for this day": {
+      "comment": "VoiceOver label of the day note text field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poznámka k tomuto dni"
           }
         }
       }
@@ -3687,6 +3771,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře Pokrok"
+          }
+        }
+      }
+    },
+    "Opens water tracking": {
+      "comment": "VoiceOver hint of Today's water card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře sledování vody"
+          }
+        }
+      }
+    },
+    "Opens weight tracking": {
+      "comment": "VoiceOver hint of Today's weight card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře sledování váhy"
           }
         }
       }
@@ -4051,6 +4159,18 @@
         }
       }
     },
+    "Saved": {
+      "comment": "Day note card status after the note was saved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloženo"
+          }
+        }
+      }
+    },
     "Scan barcode": {
       "comment": "Navigation title of the camera barcode scanner.",
       "extractionState": "manual",
@@ -4167,6 +4287,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hledám…"
+          }
+        }
+      }
+    },
+    "selected": {
+      "comment": "VoiceOver value of a selected day-note tag chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vybráno"
           }
         }
       }
@@ -4897,6 +5029,18 @@
         }
       }
     },
+    "This entry has no Garmin identifier, so it can't be deleted from here. Delete it in Garmin Connect.": {
+      "comment": "Error deleting an entry that lacks Garmin's log id.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento záznam nemá identifikátor Garminu, takže ho odsud nejde smazat. Smaž ho v Garmin Connect."
+          }
+        }
+      }
+    },
     "This entry reached Garmin in the meantime, so there's nothing to discard.": {
       "comment": "Sync queue error when discarding an entry that was already delivered.",
       "extractionState": "manual",
@@ -5013,6 +5157,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dnešní výzvy"
+          }
+        }
+      }
+    },
+    "too many requests, try again shortly": {
+      "comment": "Short reason after 'Garmin didn't delete this entry: '.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "příliš mnoho požadavků, zkus to za chvíli"
           }
         }
       }
@@ -5325,6 +5481,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "výrazně přes cíl"
+          }
+        }
+      }
+    },
+    "What made this day different?": {
+      "comment": "Placeholder of the day note text field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čím byl tento den jiný?"
           }
         }
       }
