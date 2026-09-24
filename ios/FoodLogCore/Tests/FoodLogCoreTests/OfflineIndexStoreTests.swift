@@ -19,6 +19,8 @@ private actor FakeIndexServer: OfflineIndexFetching {
     private let failsManifest: Bool
     private(set) var manifestRequests = 0
     private(set) var downloads: [URL] = []
+    /// The `allowsCellular` ("any network") flag of every request, in order.
+    private(set) var networkPermissions: [Bool] = []
 
     init(manifest: Data, indexFile: Data, failsManifest: Bool = false) {
         self.manifest = manifest
@@ -33,12 +35,14 @@ private actor FakeIndexServer: OfflineIndexFetching {
 
     func fetchManifest(from url: URL, allowsCellular: Bool) async throws -> Data {
         manifestRequests += 1
+        networkPermissions.append(allowsCellular)
         if failsManifest { throw IndexServerUnavailable() }
         return manifest
     }
 
     func download(from url: URL, allowsCellular: Bool) async throws -> URL {
         downloads.append(url)
+        networkPermissions.append(allowsCellular)
         let file = FileManager.default.temporaryDirectory.appendingPathComponent("offline-index-test-download-\(UUID().uuidString).gz")
         try indexFile.write(to: file)
         return file
@@ -99,9 +103,9 @@ final class OfflineIndexStoreTests: XCTestCase {
         return (manifest: manifestData, file: file)
     }
 
-    private func makeStore(_ server: FakeIndexServer, holder: OfflineFoodIndexHolder = OfflineFoodIndexHolder()) -> OfflineIndexStore {
+    private func makeStore(_ server: FakeIndexServer, holder: OfflineFoodIndexHolder = OfflineFoodIndexHolder(), directory: URL? = nil) -> OfflineIndexStore {
         let clock = self.clock
-        return OfflineIndexStore(holder: holder, directory: directory, fetcher: server, manifestURL: manifestURL, clock: { clock.now })
+        return OfflineIndexStore(holder: holder, directory: directory ?? self.directory!, fetcher: server, manifestURL: manifestURL, clock: { clock.now })
     }
 
     func testFirstCheckDownloadsVerifiesAndInstalls() async throws {
@@ -127,6 +131,24 @@ final class OfflineIndexStoreTests: XCTestCase {
         let excluded = try installed.resourceValues(forKeys: [.isExcludedFromBackupKey]).isExcludedFromBackup
         XCTAssertEqual(excluded, true, "re-downloadable, so kept out of backups")
         XCTAssertFalse(FileManager.default.fileExists(atPath: directory.appendingPathComponent("czech-food-index.staging.gz").path))
+    }
+
+    /// Owner report 2026-09-24: "Download now" did nothing on a hotspot /
+    /// in Low Data Mode. A deliberate tap may use any network; the
+    /// automatic check stays Wi-Fi only unless cellular was allowed.
+    func testDownloadNowMayUseAnyNetworkButTheAutomaticCheckMayNot() async throws {
+        let published = try release(["Tvaroh"], version: "v1")
+        let automaticServer = FakeIndexServer(manifest: published.manifest, indexFile: published.file)
+        _ = await makeStore(automaticServer).checkForUpdate()
+        let automatic = await automaticServer.networkPermissions
+        XCTAssertEqual(automatic, [false, false], "manifest + download, Wi-Fi only")
+
+        let manualServer = FakeIndexServer(manifest: published.manifest, indexFile: published.file)
+        let manualDirectory = directory.appendingPathComponent("manual", isDirectory: true)
+        try FileManager.default.createDirectory(at: manualDirectory, withIntermediateDirectories: true)
+        _ = await makeStore(manualServer, directory: manualDirectory).checkForUpdate(force: true)
+        let manual = await manualServer.networkPermissions
+        XCTAssertEqual(manual, [true, true], "manifest + download, any network")
     }
 
     func testUnchangedManifestDownloadsNothing() async throws {
