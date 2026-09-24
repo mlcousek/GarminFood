@@ -361,6 +361,30 @@
         }
       }
     },
+    "Barcode digits": {
+      "comment": "Text field placeholder: the digits of a barcode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Číslice čárového kódu"
+          }
+        }
+      }
+    },
+    "Barcode scanning isn't supported on this device or OS version. Search by name instead, or note that Garmin's barcode coverage for Czech products is limited anyway.": {
+      "comment": "Empty-state message when barcode scanning is unsupported.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skenování čárových kódů není na tomto zařízení nebo verzi systému podporováno. Hledej raději podle názvu — Garmin má čárové kódy českých výrobků stejně jen v omezené míře."
+          }
+        }
+      }
+    },
     "Berry": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -853,6 +877,18 @@
         }
       }
     },
+    "Couldn't look that up right now. Try again.": {
+      "comment": "Error: resolving a scanned barcode failed (network/auth), not 'no product'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teď se to nepodařilo vyhledat. Zkus to znovu."
+          }
+        }
+      }
+    },
     "Couldn't reach Garmin right now. Check your connection or try again.": {
       "comment": "Food search error: Garmin unreachable.",
       "extractionState": "manual",
@@ -1179,6 +1215,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukončeno"
+          }
+        }
+      }
+    },
+    "Enter barcode": {
+      "comment": "Navigation title of the manual barcode entry sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadat čárový kód"
+          }
+        }
+      }
+    },
+    "Enter barcode manually": {
+      "comment": "Button on the camera scanner: type the barcode digits instead.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadat čárový kód ručně"
           }
         }
       }
@@ -1813,6 +1873,30 @@
         }
       }
     },
+    "Look Up": {
+      "comment": "Button: look up the typed barcode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyhledat"
+          }
+        }
+      }
+    },
+    "Looking up…": {
+      "comment": "Progress label while a scanned barcode is being resolved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyhledávám…"
+          }
+        }
+      }
+    },
     "Looks like the carbs color. Bars may be harder to tell apart.": {
       "comment": "Settings -> Appearance page. Warning: custom accent too close to a macro color.",
       "extractionState": "manual",
@@ -2257,6 +2341,18 @@
         }
       }
     },
+    "Point your camera at a barcode": {
+      "comment": "Hint over the camera viewfinder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namiř fotoaparát na čárový kód"
+          }
+        }
+      }
+    },
     "Preferences": {
       "comment": "Settings section header.",
       "extractionState": "manual",
@@ -2409,6 +2505,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zaoblené"
+          }
+        }
+      }
+    },
+    "Scan barcode": {
+      "comment": "Navigation title of the camera barcode scanner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenovat čárový kód"
+          }
+        }
+      }
+    },
+    "Scanner unavailable": {
+      "comment": "Empty-state title: this device can't scan barcodes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skener není k dispozici"
           }
         }
       }
@@ -2973,6 +3093,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nejdřív si zapni denní okno půstu v Nastavení → Půst. Tyto připomínky fungují jen, když je zapnuté."
+          }
+        }
+      }
+    },
+    "Type the digits printed under the barcode -- usually 8 to 14 numbers.": {
+      "comment": "Help text under the manual barcode field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opiš číslice vytištěné pod čárovým kódem — obvykle 8 až 14 číslic."
           }
         }
       }
