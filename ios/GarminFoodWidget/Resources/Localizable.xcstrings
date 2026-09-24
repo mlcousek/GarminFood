@@ -1,210 +1,402 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "Berry" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bobule"
+  "sourceLanguage": "en",
+  "strings": {
+    "Barcode Scanner": {
+      "comment": "App Intents value (Shared/OpenBarcodeScannerIntent.swift): the one screen the scan intent can open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skener čárových kódů"
           }
         }
       }
     },
-    "Choose the colors of this widget." : {
-      "comment" : "Description of the widget configuration (Edit Widget).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyber barvy tohoto widgetu."
+    "Berry": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bobule"
           }
         }
       }
     },
-    "Citrus" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Citrus"
+    "Choose the colors of this widget.": {
+      "comment": "Description of the widget configuration (Edit Widget).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyber barvy tohoto widgetu."
           }
         }
       }
     },
-    "Classic Coral" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klasický korál"
+    "Citrus": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Citrus"
           }
         }
       }
     },
-    "Forest" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les"
+    "Classic Coral": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasický korál"
           }
         }
       }
     },
-    "GF Teal" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GF tyrkys"
+    "Forest": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les"
           }
         }
       }
     },
-    "Gold" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zlatá"
+    "GarminFood Screen": {
+      "comment": "App Intents type name (Shared/OpenBarcodeScannerIntent.swift): the kind of screen the scan intent opens, shown in the Shortcuts app.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrazovka GarminFood"
           }
         }
       }
     },
-    "Graphite" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grafit"
+    "GF Teal": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GF tyrkys"
           }
         }
       }
     },
-    "High Contrast" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vysoký kontrast"
+    "Gold": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zlatá"
           }
         }
       }
     },
-    "Indigo Night" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indigová noc"
+    "Graphite": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafit"
           }
         }
       }
     },
-    "Log Food" : {
-      "comment" : "Home Screen / Lock Screen widget name, label and VoiceOver label: opens the food catalog.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zapsat jídlo"
+    "High Contrast": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vysoký kontrast"
           }
         }
       }
     },
-    "Ocean" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oceán"
+    "Indigo Night": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indigová noc"
           }
         }
       }
     },
-    "Pastel" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pastel"
+    "Log Food": {
+      "comment": "Home Screen / Lock Screen widget name, label and VoiceOver label: opens the food catalog.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo"
           }
         }
       }
     },
-    "Slate" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Břidlice"
+    "Log Quick Pick #1": {
+      "comment": "Shortcuts action title: logs the user's most-used food (rank 1).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 1"
           }
         }
       }
     },
-    "Sunset" : {
-      "comment" : "Theme name (widget theme option).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Západ slunce"
+    "Log Quick Pick #2": {
+      "comment": "Shortcuts action title: logs the user's 2nd most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 2"
           }
         }
       }
     },
-    "Theme" : {
-      "comment" : "Edit Widget: name of the widget's theme option.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Motiv"
+    "Log Quick Pick #3": {
+      "comment": "Shortcuts action title: logs the user's 3rd most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 3"
           }
         }
       }
     },
-    "Widget theme" : {
-      "comment" : "Title of the widget configuration (Edit Widget).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Motiv widgetu"
+    "Log Quick Pick #4": {
+      "comment": "Shortcuts action title: logs the user's 4th most-used food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat rychlý výběr č. 4"
+          }
+        }
+      }
+    },
+    "Logs your #1 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 1 / 'Log Usual Food').",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #2 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 2).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje druhé nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #3 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 3).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje třetí nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Logs your #4 most-used food in GarminFood.": {
+      "comment": "Shortcuts action description (quick pick rank 4).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše do GarminFood tvoje čtvrté nejčastější jídlo."
+          }
+        }
+      }
+    },
+    "Nothing logged yet to quick-pick from -- log a food from the app first.": {
+      "comment": "Error shown by a quick-log Control/Shortcut when there is no logging history yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nemáš nic zapsáno, z čeho by šlo rychle vybírat – nejdřív zapiš jídlo v aplikaci."
+          }
+        }
+      }
+    },
+    "Ocean": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oceán"
+          }
+        }
+      }
+    },
+    "Opens GarminFood directly into the barcode scanner.": {
+      "comment": "Shortcuts intent description and Control gallery description for the barcode-scan action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře GarminFood rovnou ve skeneru čárových kódů."
+          }
+        }
+      }
+    },
+    "Pastel": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Saved in GarminFood, but not sent: sign in to Garmin again in the app.": {
+      "comment": "Error shown by a quick-log Control/Shortcut: the entry is saved locally but the Garmin sign-in expired.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloženo v GarminFood, ale neodesláno: v aplikaci se znovu přihlas ke Garminu."
+          }
+        }
+      }
+    },
+    "Scan Barcode": {
+      "comment": "Siri/Shortcuts intent title and Control Center control name/label (Shared/OpenBarcodeScannerIntent.swift, ScanBarcodeControl.swift). Keep short: Control label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenovat čárový kód"
+          }
+        }
+      }
+    },
+    "Screen": {
+      "comment": "Shortcuts parameter title of the scan intent: which app screen to open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrazovka"
+          }
+        }
+      }
+    },
+    "Slate": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Břidlice"
+          }
+        }
+      }
+    },
+    "Sunset": {
+      "comment": "Theme name (widget theme option).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Západ slunce"
+          }
+        }
+      }
+    },
+    "That food's details aren't saved locally yet -- open the app and log it once from there.": {
+      "comment": "Error shown by a quick-log Control/Shortcut when the ranked food isn't cached on the device.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podrobnosti tohoto jídla ještě nejsou uložené v telefonu – otevři aplikaci a jednou ho zapiš odtud."
+          }
+        }
+      }
+    },
+    "Theme": {
+      "comment": "Edit Widget: name of the widget's theme option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motiv"
+          }
+        }
+      }
+    },
+    "Widget theme": {
+      "comment": "Title of the widget configuration (Edit Widget).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motiv widgetu"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

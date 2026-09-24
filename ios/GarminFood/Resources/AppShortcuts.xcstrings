@@ -1,0 +1,78 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Log a food by name in ${applicationName}" : {
+      "comment" : "Siri/App Shortcut phrase (GarminFoodShortcuts.swift, LogNamedFoodIntent). ${applicationName} is replaced by the app name; keep it verbatim.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapiš jídlo podle názvu do ${applicationName}"
+          }
+        }
+      }
+    },
+    "Log a food in ${applicationName}" : {
+      "comment" : "Siri/App Shortcut phrase (LogNamedFoodIntent). ${applicationName} is replaced by the app name; keep it verbatim.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapiš jídlo do ${applicationName}"
+          }
+        }
+      }
+    },
+    "Log my usual food in ${applicationName}" : {
+      "comment" : "Siri/App Shortcut phrase (LogTopQuickPickIntent: logs the most-used food). ${applicationName} is replaced by the app name; keep it verbatim.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapiš moje obvyklé jídlo do ${applicationName}"
+          }
+        }
+      }
+    },
+    "Log the usual in ${applicationName}" : {
+      "comment" : "Siri/App Shortcut phrase (LogTopQuickPickIntent). ${applicationName} is replaced by the app name; keep it verbatim.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapiš obvyklé do ${applicationName}"
+          }
+        }
+      }
+    },
+    "Open ${applicationName} to scan a barcode" : {
+      "comment" : "Siri/App Shortcut phrase (OpenBarcodeScannerIntent). ${applicationName} is replaced by the app name; keep it verbatim.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otevři ${applicationName} a naskenuj čárový kód"
+          }
+        }
+      }
+    },
+    "Scan a barcode in ${applicationName}" : {
+      "comment" : "Siri/App Shortcut phrase (OpenBarcodeScannerIntent). ${applicationName} is replaced by the app name; keep it verbatim.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naskenuj čárový kód v ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
