@@ -82,16 +82,16 @@ final class SeasonalEventsTests: XCTestCase {
     }
 
     private func completes(_ eventId: String, year: Int, _ foods: [String: [String]]) throws -> Bool {
-        let event = try event(eventId)
-        let window = try XCTUnwrap(event.window(year: year, nameDay: nil))
+        let seasonal = try self.event(eventId)
+        let window = try XCTUnwrap(seasonal.window(year: year, nameDay: nil))
         let marks = SeasonalEvaluator.mergedMarks(
-            event: event,
+            event: seasonal,
             year: year,
             window: window,
             snapshot: snapshot(foods, today: window.upperBound.dayKey),
             stored: [:]
         )
-        return SeasonalEvaluator.isCompleted(event: event, marks: marks)
+        return SeasonalEvaluator.isCompleted(event: seasonal, marks: marks)
     }
 
     // MARK: - Catalog

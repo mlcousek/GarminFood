@@ -27,7 +27,9 @@ struct SeasonalBannerSlot: View {
     private var featureHost: FeatureHost? { environment.gamificationEngine.featureHost }
 
     var body: some View {
-        Group {
+        // A VStack, not a Group: `.task` on a Group whose only child is a
+        // false `if` never runs, so the first load would never happen.
+        VStack(spacing: 0) {
             if let status {
                 SeasonalBannerCard(status: status)
             }
