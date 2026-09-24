@@ -126,7 +126,8 @@ editing most view files in parallel (gamification, localization), so a
   UIKit appearance proxy) won't update until that view re-renders. None
   exist today; the lint and review keep it that way.
 - The widget process never loads settings, so it renders the default
-  theme (GF Teal). The per-widget theme parameter (D13) is still deferred.
+  theme (GF Teal). The per-widget theme parameter (D13) came in wave 5,
+  with GF Teal rather than Classic as its default (see D13).
 
 **R5. Icons (replaces D10).** All alternates use the new "GF / by Jirka"
 gradient style of the PR #37 primary. The 5 old alternates (Streak, Macro,
@@ -711,6 +712,13 @@ Bash locally and in CI.
   linked) for the chosen ID and the scheme the system gives it.
 - Existing instances resolve to Classic, so they look exactly as they do
   today.
+- **Revised in wave 5 (after R1/R4):** unconfigured widgets had already
+  been showing GF Teal since the theme wiring, so the intent's default is
+  `.teal`, not `.classic` — existing widgets still don't change. The label
+  is the theme's `onAccent` (not fixed white), and the Log Food gradient
+  drops `accentDeep` under a black label. None of this needs an App Group:
+  WidgetKit stores each widget's configuration and hands it to the
+  extension's own provider.
 - **What can't be done, stated in Settings → Appearance:** "Widgets don't
   change with the app's theme. Long-press a widget → Edit Widget to pick
   its theme." A custom accent can't be offered in widgets either, because

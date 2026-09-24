@@ -45,6 +45,11 @@ struct ContentView: View {
         // inputs for the theme (replaces `.tint(Theme.accent)`).
         .themed(environment.themeStore)
         .overlay { MomentOverlay() }
+        // A shared theme's link (AppRouter.handle(url:)): preview first,
+        // Apply or Cancel -- never applied silently (design D11).
+        .sheet(item: $router.pendingThemeImport) { request in
+            ThemeImportPreviewSheet(code: request.code)
+        }
         .onOpenURL { url in
             environment.router.handle(url: url)
         }

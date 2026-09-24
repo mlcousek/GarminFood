@@ -120,6 +120,20 @@ final class ThemeStore {
         }
     }
 
+    /// Applies a previewed share code (Import theme, design D11): its
+    /// appearance, macro set, custom accent and style, then its theme via
+    /// `selectTheme` (so Match app icon applies too). Only ever called from
+    /// the import preview's Apply button -- never silently.
+    func applyImported(_ imported: AppearanceSettings) {
+        update { settings in
+            settings.appearance = imported.appearance
+            settings.macroSet = imported.macroSet
+            settings.customAccent = imported.customAccent
+            settings.style = imported.style
+        }
+        selectTheme(imported.themeID)
+    }
+
     func dismissResetNotice() {
         showsResetNotice = false
         defaults.removeObject(forKey: AppPreferences.Key.appearanceResetNotice)

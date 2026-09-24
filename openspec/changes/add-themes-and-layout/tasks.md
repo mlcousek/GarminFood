@@ -6,7 +6,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 - [x] 0.2 **Default theme.** GF Teal is the new default for everyone (intentional visible change). Today's coral is the Classic Coral theme.
 - [ ] 0.3 **Classic's contrast.** Not answered: Classic Coral stays pixel-identical (exemption list kept); Increase Contrast still fixes it.
 - [ ] 0.4 **Per-person layouts on one phone.** Not answered yet (wave 3).
-- [ ] 0.5 **Share codes.** Not answered yet (wave 5).
+- [ ] 0.5 **Share codes.** Not answered yet (wave 5). Built as designed in D11 (tasks 5.4–5.5) so it can be tried on device; the owner can still drop it.
 - [ ] 0.6 **"GF by Jirka" signature.** Not answered yet (wave 3).
 - [ ] 0.7 **Tabs.** Not answered yet (wave 4).
 - [x] 0.8 **Icon suggestion.** Replaced by a "Match app icon to theme" toggle, default on; the icon can still be chosen independently.
@@ -55,13 +55,13 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
   - a "Reset all appearance" action
 
   Add a row for it in `SettingsView`. CI green.
-- [ ] 2.5 **Style options** (D6):
+- [x] 2.5 **Style options** (D6):
   - Card styles: Filled, Elevated, Outlined, Glass. Glass falls back to Filled under Reduce Transparency, and outlined borders are 2 pt under Increase Contrast.
   - Corner scale.
   - Container-level density.
   - Number font through `.numberStyle()` and `.fontDesign`.
   - Make `heroNumber` and the Level 48 pt number `@ScaledMetric`.
-  - *Status:* card styles, corners, container density (Today/Progress stacks, card padding) and number font are built (`CardStyle`, `Theme.Radius`, `Theme.Density`, `Font.heroNumber` etc. read `ThemeRuntime`). **Still open:** the `@ScaledMetric` hero/Level numbers (needs call-site edits in Today/Progress files other agents are translating; do after those land).
+  - *Status:* card styles, corners, container density (Today/Progress stacks, card padding) and number font are built (`CardStyle`, `Theme.Radius`, `Theme.Density`, `Font.heroNumber` etc. read `ThemeRuntime`). The 72 pt hero number is `.heroNumberFont()` (`HeroNumberFont`, `@ScaledMetric` relative to Large Title, in `Shared/Theme.swift`) on the weight and hydration heroes, and the Level number has its own `@ScaledMetric` (`levelNumberSize`, `LevelDetailView`); only the font lines changed at the call sites.
 
   CI green.
 - [x] 2.6 **Optional Today gradient header** (off by default), with the Reduce Transparency flat tint. Add a contrast test of `.primary` against the blended stops. CI green.
@@ -119,13 +119,21 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 - [ ] 5.1 **Precondition: confirm `add-app-icon-picker` 4.2 on device.** Does `setAlternateIconName` work on an AltStore-signed build, and does it survive a 7-day re-sign? Record the result. If it fails, skip 5.2 and 5.3 and note why.
 - [ ] 5.2 **Replace the alternates (R5)**: remove Streak, Macro, Midnight, Mint and Pastel; add the 11 GF-style icons (Indigo, Sunset, Forest, Pastel, Slate, Citrus, Ocean, Coral, Berry, Graphite, Gold) as @2x/@3x in `GarminFood/AppIcons/`. Update `project.yml` `CFBundleAlternateIcons` (validated with PyYAML), `AppIconOption`, and `ThemeSpec.iconName`. Reset a stale removed alternate to the primary icon on launch. CI green.
 - [ ] 5.3 **Icon follows theme** (R5): a "Match app icon to theme" toggle, default on; picking a theme switches the icon when it's on. CI green.
-- [ ] 5.4 **`ThemeShareCode`** (AppearanceKit), D11. Tests: round trip, prefix, tampered payload, 2 KB cap, unknown theme, accent re-fit, layout merge. CI green.
-- [ ] 5.5 **Share UI**:
+- [x] 5.4 **`ThemeShareCode`** (AppearanceKit), D11. Tests: round trip, prefix, tampered payload, 2 KB cap, unknown theme, accent re-fit, layout merge. CI green.
+  - *As built:* `GFT1.<base64url JSON>.<checksum>` (FNV-1a 32, 8 hex digits, so a truncated or edited code is rejected rather than half-applied); other versions fail as `unsupportedVersion`. `ThemeShareCodeTests` covers round trip, prefix/shape, garbage, other versions, truncation, tampering, the 2 KB cap, unknown theme (→ Classic + warning), unknown values (→ defaults + warning), accent re-fit, the `garminfood://theme` link and pasted share messages.
+  - *Deferred to wave 3:* the layout (`l`) field and its merge test. There is no layout model yet; this build ignores an `l` key (tested).
+- [x] 5.5 **Share UI**:
   - Export: `ShareLink` with the code and `garminfood://theme?c=…`, plus a QR code from `CIQRCodeGenerator`.
   - Import: `PasteButton` and an `AppRouter` route, both leading to a preview sheet with Apply and Cancel.
 
   CI green.
-- [ ] 5.6 **Widgets**: `WidgetThemeIntent` with a `WidgetThemeOption` `AppEnum`, and `AppIntentConfiguration` for `GarminFoodHomeWidget` and `GarminFoodStreakWidget`, keeping their `kind`s and the `.never` timeline. The gradient resolves from `ThemeCatalog`. Add the Settings footnote explaining that widgets are themed per widget. CI green.
+  - *As built:* Settings → Appearance → Share (`ThemeShareSection`): Share theme opens `ThemeShareSheet` (QR of the link, the code, Share code, Copy code); Import theme is a `PasteButton`. `AppRouter.handle(url:)` turns a `garminfood://theme?c=` link into `pendingThemeImport`, presented by `ContentView`. Both land in `ThemeImportPreviewSheet` (gallery tile, warnings, Apply/Cancel; an invalid code says so and changes nothing). Apply goes through `ThemeStore.applyImported`, which ends in `selectTheme`, so Match app icon applies.
+- [x] 5.6 **Widgets**: `WidgetThemeIntent` with a `WidgetThemeOption` `AppEnum`, and `AppIntentConfiguration` for `GarminFoodHomeWidget` and `GarminFoodStreakWidget`, keeping their `kind`s and the `.never` timeline. The gradient resolves from `ThemeCatalog`. Add the Settings footnote explaining that widgets are themed per widget. CI green.
+  - *As built* (`GarminFoodWidget/WidgetTheme.swift`): this fits without an App Group. WidgetKit stores each widget's configuration and passes it to the extension's own `AppIntentTimelineProvider`; nothing is read from the app.
+  - The default is **GF Teal, not Classic** (a deviation from D13, which predates R1): since R1/R4 every widget already renders GF Teal, so widgets on the Home Screen don't change with this update.
+  - The label is the theme's `onAccent` instead of fixed white. White was unreadable on dark-scheme accents.
+  - The Log Food gradient runs accent → accentDeep under a white label, and is plain accent under a black one.
+  - The Appearance page's Theme footer carries the "widgets don't follow the app" note.
 - [ ] 5.7 **On-device check**:
   - A code shared from the owner's phone and applied on the fiancée's phone.
   - Invalid-code handling.

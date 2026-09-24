@@ -8,12 +8,16 @@
 // in the preview before picking.
 //
 // Previews use plain (non-dynamic) colors from `ThemePalette.previewColor`
-// resolved for the scheme the theme would actually show in: the current
-// system scheme, or the theme's only scheme.
+// resolved for the scheme the theme would actually show in: the user's
+// Light/Dark choice, else the SYSTEM scheme (not the one the active theme
+// forces -- a dark-only active theme must not preview Ocean in dark), or the
+// theme's only scheme.
 //
-// Depends on ThemeStore (selection, resolution). Used by AppearanceSettingsView.
+// Depends on ThemeStore (selection, resolution). Used by
+// AppearanceSettingsView; `ThemePreviewTile` also by ThemeImportPreviewSheet.
 
 import SwiftUI
+import UIKit
 import AppearanceKit
 
 @MainActor
@@ -49,13 +53,35 @@ struct ThemeGalleryView: View {
     }
 
     private func palette(for spec: ThemeSpec) -> ResolvedPalette {
-        let system: ThemeColorScheme = colorScheme == .dark ? .dark : .light
-        return store.resolved(spec, scheme: spec.effectiveScheme(for: system))
+        let requested = store.previewScheme(for: store.settings.appearance, environmentScheme: colorScheme)
+        return store.resolved(spec, scheme: spec.effectiveScheme(for: requested))
+    }
+}
+
+extension ThemeStore {
+    /// The scheme a dual-scheme theme is previewed in for `appearance`: the
+    /// user's Light/Dark choice, else the system's. `environmentScheme` is
+    /// the view's `colorScheme`, which is the system's only while nothing
+    /// is forced: `.preferredColorScheme` overrides the whole window, so
+    /// under a single-scheme active theme the screen's own traits are read.
+    func previewScheme(for appearance: AppearanceMode, environmentScheme: ColorScheme) -> ThemeColorScheme {
+        switch appearance {
+        case .light: return .light
+        case .dark: return .dark
+        case .system: break
+        }
+        guard forcedColorScheme != nil else {
+            return environmentScheme == .dark ? .dark : .light
+        }
+        let screenStyle = UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.screen.traitCollection.userInterfaceStyle }
+            .first ?? .light
+        return screenStyle == .dark ? .dark : .light
     }
 }
 
 /// A miniature Today: background, one card with a ring and three macro bars.
-private struct ThemePreviewTile: View {
+struct ThemePreviewTile: View {
     let palette: ResolvedPalette
     let isSelected: Bool
 
