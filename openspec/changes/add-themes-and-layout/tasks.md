@@ -65,7 +65,8 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 
   CI green.
 - [x] 2.6 **Optional Today gradient header** (off by default), with the Reduce Transparency flat tint. Add a contrast test of `.primary` against the blended stops. CI green.
-- [ ] 2.7 **Per-theme appearance** applied through `.preferredColorScheme` at the root. Any presenter found not inheriting the palette gets an explicit `.themed(store)`. CI green.
+- [x] 2.7 **Per-theme appearance** applied through `.preferredColorScheme` at the root. Any presenter found not inheriting the palette gets an explicit `.themed(store)`. CI green.
+  - *As built:* `ThemeRootModifier` (`ThemeStore.swift`, applied once in `ContentView`) forces the scheme of a single-scheme theme, else the global Light/Dark choice (R7), and feeds Increase Contrast / Differentiate Without Color to the store. Tokens read the global `ThemeRuntime`, so sheets and the moment overlay follow the theme without their own `.themed`; confirming that on device is part of 2.8.
 - [ ] 2.8 **On-device check**:
   - Go through every theme in light and dark: Today, Log Food, the confirm sheet, Progress, the level-up overlay, alerts.
   - Repeat with Increase Contrast, Reduce Transparency, Differentiate Without Color and the largest Dynamic Type.
