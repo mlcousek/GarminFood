@@ -142,13 +142,13 @@ public enum DaySignalsBuilder {
         var dateByKey: [String: Date] = [:]
         for offset in stride(from: max(windowDays, 1) - 1, through: 0, by: -1) {
             guard let date = calendar.date(byAdding: .day, value: -offset, to: todayStart) else { continue }
-            let key = NutritionDate.string(from: date, calendar: calendar)
+            let key = resolver.dayKey(date)
             if dateByKey[key] == nil {
                 windowKeys.append(key)
                 dateByKey[key] = date
             }
         }
-        let todayKey = NutritionDate.string(from: today, calendar: calendar)
+        let todayKey = resolver.dayKey(today)
 
         // Group sources by day once.
         var eventsByDay: [String: [UsageEvent]] = [:]
@@ -165,7 +165,7 @@ public enum DaySignalsBuilder {
         }
         var fastingByDay: [String: FastingOutcome] = [:]
         for fast in input.fastingDays {
-            let key = NutritionDate.string(from: fast.day, calendar: calendar)
+            let key = resolver.dayKey(fast.day)
             switch fast.result {
             case .kept: fastingByDay[key] = .kept
             case .broken: fastingByDay[key] = .broken
@@ -313,14 +313,27 @@ private struct EntryResolver {
     let input: SignalsInput
     let calendar: Calendar
     private var tagMemo: [String: Set<FoodTag>] = [:]
+    /// One formatter per build: `NutritionDate.string` makes a fresh
+    /// `DateFormatter` per call, which dominated the 1,000-event budget.
+    /// Same calendar, time zone and format, so the keys are identical.
+    private let dayFormatter: DateFormatter
 
     init(input: SignalsInput, calendar: Calendar) {
         self.input = input
         self.calendar = calendar
+        let formatter = DateFormatter()
+        formatter.calendar = calendar
+        formatter.timeZone = calendar.timeZone
+        formatter.dateFormat = "yyyy-MM-dd"
+        self.dayFormatter = formatter
+    }
+
+    func dayKey(_ date: Date) -> String {
+        dayFormatter.string(from: date)
     }
 
     func day(of event: UsageEvent) -> String {
-        event.nutritionDay ?? NutritionDate.string(from: event.timestamp, calendar: calendar)
+        event.nutritionDay ?? dayKey(event.timestamp)
     }
 
     struct Metadata {
