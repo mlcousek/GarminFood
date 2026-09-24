@@ -15,15 +15,15 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 
 ## 1. Wave 1: token refactor and theme store, no visual change (size: L)
 
-- [ ] 1.1 **Create `ios/AppearanceKit/`.**
+- [x] 1.1 **Create `ios/AppearanceKit/`.**
   - `Package.swift`: iOS 17 / macOS 14, Foundation only, one library and a test target.
   - Add a "Run AppearanceKit unit tests" step to `.github/workflows/build.yml`, matching the other packages.
   - Add a `packages:` entry to `ios/project.yml`, plus a dependency from both the `GarminFood` and `GarminFoodWidget` targets.
   - Validate `project.yml` with PyYAML locally. CI green.
-- [ ] 1.2 **`ColorMath`**: `RGBA` and hex, sRGB↔linear, WCAG luminance and contrast, OKLab/OKLCH, `deltaE_OK`, Machado CVD matrices. Tests: 21:1 white/black, `#777777` 4.48:1, OKLab round trip, CVD on the primaries. CI green.
-- [ ] 1.3 **`ThemeRole`, `TokenValue` (`.rgb` / `.system(name)`), `ThemeSpec`, and the Classic spec with today's values** (design D3 table), including the band colors from `Components.swift`, `water` = carbs, and `danger` = system red. `ClassicIdentityTests` compares each value with the literals in `Theme.swift` and `Components.swift`. CI green.
-- [ ] 1.4 **`AppearanceSettings` v1** with lenient `Codable`, and `AppearanceMigration` (does nothing at v1). Tests: absent, missing fields, unknown enum values, extra fields, garbage. CI green.
-- [ ] 1.5 **`PaletteResolver` for Classic**, both schemes. Test that it resolves to today's values. CI green.
+- [x] 1.2 **`ColorMath`**: `RGBA` and hex, sRGB↔linear, WCAG luminance and contrast, OKLab/OKLCH, `deltaE_OK`, Machado CVD matrices. Tests: 21:1 white/black, `#777777` 4.48:1, OKLab round trip, CVD on the primaries. CI green.
+- [x] 1.3 **`ThemeRole`, `TokenValue` (`.rgb` / `.system(name)`), `ThemeSpec`, and the Classic spec with today's values** (design D3 table), including the band colors from `Components.swift`, `water` = carbs, and `danger` = system red. `ClassicIdentityTests` compares each value with the literals in `Theme.swift` and `Components.swift`. CI green.
+- [x] 1.4 **`AppearanceSettings` v1** with lenient `Codable`, and `AppearanceMigration` (does nothing at v1). Tests: absent, missing fields, unknown enum values, extra fields, garbage. CI green.
+- [x] 1.5 **`PaletteResolver` for Classic**, both schemes. Test that it resolves to today's values. CI green.
 - [ ] 1.6 **App theming plumbing** (revised by design R4: the `Theme.*` API is kept, no `ThemeColor`/`\.palette` migration):
   - `Shared/ThemeRuntime.swift`: `ThemePalette` (dynamic light/dark `UIColor`-backed `Color`s) and the `@Observable` `ThemeRuntime.shared` that `Theme.*` tokens read
   - `ThemeStore` (`@MainActor @Observable`)
@@ -44,9 +44,9 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 
 ## 2. Wave 2: built-in themes, appearance and style options (size: M)
 
-- [ ] 2.1 **`ThemeCatalog` built-ins** (R2) as data: the Legible and CVD-safe macro and state sets and the 13 themes, brand colors from their icons, fitted by the resolver (R3). `BuiltInThemeContrastTests` and `DistinctnessTests` (D5) run over every theme, scheme and contrast mode, with Classic's closed exemption list. Record any value nudged to pass in the catalog comment. CI green.
-- [ ] 2.2 **`PaletteResolver` steps 2 to 5** (D4): the macro set override, Differentiate Without Color mapped to CVD-safe, increased contrast (Classic included), and `onAccent` derivation. Tests. CI green.
-- [ ] 2.3 **`AccentAdjuster`** plus the custom accent in the settings. Tests: coral in light is fitted with the hue kept, a passing color is unchanged, `#FFFF00` terminates, lime is darkened. Also test the macro-collision warning. CI green.
+- [x] 2.1 **`ThemeCatalog` built-ins** (R2) as data: the Legible and CVD-safe macro and state sets and the 13 themes, brand colors from their icons, fitted by the resolver (R3). `BuiltInThemeContrastTests` and `DistinctnessTests` (D5) run over every theme, scheme and contrast mode, with Classic's closed exemption list. Record any value nudged to pass in the catalog comment. CI green.
+- [x] 2.2 **`PaletteResolver` steps 2 to 5** (D4): the macro set override, Differentiate Without Color mapped to CVD-safe, increased contrast (Classic included), and `onAccent` derivation. Tests. CI green.
+- [x] 2.3 **`AccentAdjuster`** plus the custom accent in the settings. Tests: coral in light is fitted with the hue kept, a passing color is unchanged, `#FFFF00` terminates, lime is darkened. Also test the macro-collision warning. CI green.
 - [ ] 2.4 **Settings → Appearance screen** (`Profile/Appearance/`, structure per R6, including the app icon grid and a disabled "Customize layout — Coming soon" row):
   - a theme gallery grid of live mini previews (a small summary ring and macro bars drawn with that theme's palette)
   - an appearance picker (with Light and System hidden for dark-only themes)
