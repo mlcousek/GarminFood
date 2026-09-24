@@ -1,6 +1,30 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ kg": {
+      "comment": "A weight in kilograms; %@ is the formatted number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kg"
+          }
+        }
+      }
+    },
+    "%@ ml": {
+      "comment": "An amount of water in millilitres; %@ is the formatted number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ml"
+          }
+        }
+      }
+    },
     "%lld days left": {
       "comment": "Challenge status: whole days remaining (1 or more). Plural.",
       "extractionState": "manual",
@@ -829,6 +853,30 @@
         }
       }
     },
+    "Garmin's water goal: %@ ml.": {
+      "comment": "Settings goals footer sentence; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl vody v Garminu: %@ ml."
+          }
+        }
+      }
+    },
+    "Garmin's weight goal: %@ kg.": {
+      "comment": "Settings goals footer sentence; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl váhy v Garminu: %@ kg."
+          }
+        }
+      }
+    },
     "GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
       "comment": "Settings: About footer with the required ODbL attribution.",
       "extractionState": "manual",
@@ -849,6 +897,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sklo"
+          }
+        }
+      }
+    },
+    "Goals": {
+      "comment": "Settings section header: water and weight goals.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíle"
           }
         }
       }
@@ -1117,6 +1177,18 @@
         }
       }
     },
+    "Mine": {
+      "comment": "Settings: small label saying a goal is the user's own override (masculine, 'cíl').",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Můj"
+          }
+        }
+      }
+    },
     "Monospaced": {
       "comment": "Settings -> Appearance page. Number font option.",
       "extractionState": "manual",
@@ -1129,6 +1201,18 @@
         }
       }
     },
+    "My goal: %@ ml": {
+      "comment": "Settings stepper label for the local water goal; %@ is the amount.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Můj cíl: %@ ml"
+          }
+        }
+      }
+    },
     "Not connected": {
       "comment": "Settings: Garmin connection status when signed out.",
       "extractionState": "manual",
@@ -1137,6 +1221,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nepřipojeno"
+          }
+        }
+      }
+    },
+    "Not set": {
+      "comment": "Settings: no weight goal set.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenastaveno"
           }
         }
       }
@@ -1525,6 +1621,18 @@
         }
       }
     },
+    "Starting weight: %@ kg": {
+      "comment": "Settings stepper label for the local starting weight; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počáteční váha: %@ kg"
+          }
+        }
+      }
+    },
     "Status": {
       "comment": "Settings: label of the Garmin connection status row.",
       "extractionState": "manual",
@@ -1581,6 +1689,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Systém"
+          }
+        }
+      }
+    },
+    "Target: %@ kg": {
+      "comment": "Settings stepper label for the local target weight; %@ is the weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cílová váha: %@ kg"
           }
         }
       }
@@ -1681,6 +1801,30 @@
         }
       }
     },
+    "Use Garmin's water goal": {
+      "comment": "Settings toggle: follow Garmin's water goal instead of a local override.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít cíl vody z Garminu"
+          }
+        }
+      }
+    },
+    "Use Garmin's weight goal": {
+      "comment": "Settings toggle: follow Garmin's weight goal instead of a local override.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít cíl váhy z Garminu"
+          }
+        }
+      }
+    },
     "Version": {
       "comment": "Settings: app version row.",
       "extractionState": "manual",
@@ -1717,6 +1861,18 @@
         }
       }
     },
+    "Water goal": {
+      "comment": "Settings: daily water goal row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl vody"
+          }
+        }
+      }
+    },
     "Weigh-in %@ kg": {
       "comment": "Sync queue row title for a queued weigh-in; %@ is the weight.",
       "extractionState": "manual",
@@ -1741,6 +1897,18 @@
         }
       }
     },
+    "Weight goal": {
+      "comment": "Settings: weight goal row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl váhy"
+          }
+        }
+      }
+    },
     "With matching on, picking a theme also switches the Home Screen icon.": {
       "comment": "Settings -> Appearance page. Footer under the icon grid.",
       "extractionState": "manual",
@@ -1749,6 +1917,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Při zapnutém sladění výběr motivu přepne i ikonu na ploše."
+          }
+        }
+      }
+    },
+    "Your own goals stay on this phone; Garmin Connect isn't changed.": {
+      "comment": "Settings goals footer sentence.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje vlastní cíle zůstávají v tomto telefonu, Garmin Connect se nemění."
           }
         }
       }
