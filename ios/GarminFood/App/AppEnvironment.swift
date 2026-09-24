@@ -52,7 +52,7 @@ final class AppEnvironment {
     /// Settings (OfflineIndexLoader.swift).
     let offlineIndex: OfflineFoodIndexHolder
     let offlineIndexLoader: OfflineIndexLoader
-    let logEntryCoordinator: LogEntryCoordinator
+    let logEntryCoordinator: ModeRoutingFoodLogging
     /// add-weight-tracking: mirrors `outbox`/`logEntryCoordinator` above,
     /// plus a loader (`weightLoader`) since, unlike the food dashboard,
     /// there's no existing `dayLog`-shaped object weight can piggyback on.

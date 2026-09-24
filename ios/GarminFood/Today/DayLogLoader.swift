@@ -28,8 +28,9 @@ final class DayLogLoader {
     @ObservationIgnored private let client: GarminClient
     @ObservationIgnored private let outbox: Outbox
     @ObservationIgnored private let foodCache: FoodCacheStore
-    /// Deleting a still-queued row goes through it (claim-guarded cancel).
-    @ObservationIgnored private let coordinator: LogEntryCoordinator
+    /// Deleting goes through it: a still-queued row by claim-guarded
+    /// cancel, a synced one by `deleteCommitted` (add-standalone-mode D4).
+    @ObservationIgnored private let coordinator: any FoodLogging
     @ObservationIgnored private var logsByDate: [String: DailyFoodLog] = [:]
     @ObservationIgnored private var mealsByDate: [String: [Meal]] = [:]
     @ObservationIgnored private var activeByDate: [String: Double] = [:]
@@ -74,7 +75,7 @@ final class DayLogLoader {
         client: GarminClient,
         outbox: Outbox,
         foodCache: FoodCacheStore,
-        coordinator: LogEntryCoordinator,
+        coordinator: any FoodLogging,
         digestStore: DayLogDigestStore? = nil,
         activityCache: ActivityCacheStore? = nil,
         now: Date = Date()
@@ -253,7 +254,7 @@ final class DayLogLoader {
         case .synced(let logId):
             guard !logId.isEmpty else { throw DeleteError.missingIdentifier }
             do {
-                try await client.deleteFoodLogEntries(logIds: [logId], date: dateString)
+                try await coordinator.deleteCommitted(logId: logId, date: dateString)
             } catch {
                 throw DeleteError.garmin(Self.describe(error))
             }
@@ -265,6 +266,8 @@ final class DayLogLoader {
             let outcome = try await coordinator.deletePending(outboxId: outboxId)
             await rebuild()
             if case .deleteOriginal(let date, let logId) = outcome {
+                // Stays a direct Garmin call: an outbox edit only ever
+                // replaces a Garmin entry, whatever the data mode is now.
                 do {
                     try await client.deleteFoodLogEntries(logIds: [logId], date: date)
                 } catch GarminClientError.httpError(let statusCode, _) where statusCode == 404 {
