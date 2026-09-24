@@ -20,7 +20,7 @@
 
 ## 4. FoodLogCore — caches and signals
 
-- [ ] 4.1 `DayLogDigest` + `DayLogDigestStore` (120-day cap, quarantine semantics) + adapter from `DailyFoodLog`. Tests: adapter maps fibre/sugar/goals; cap; corrupt-file quarantine.
+- [x] 4.1 `DayLogDigest` + `DayLogDigestStore` (120-day cap, quarantine semantics) + adapter from `DailyFoodLog`. Tests: adapter maps fibre/sugar/goals; cap; corrupt-file quarantine.
 - [ ] 4.2 `ActivityCacheStore` (active kcal + activities per day, 120-day cap; GMT start parsing, local-date day assignment). Tests.
 - [ ] 4.3 `FoodProvenanceStore` (foodId → barcode/brand, 2,000 cap). Tests.
 - [ ] 4.4 `DaySignals`, `SignalEntry`, `MacroTotals`, `MacroGoals`, `SignalAvailability`, `FastingOutcome`, `ProfileSignals` (incl. `firstName(fromFullName:)`: "Jiří Mlčoušek" → "Jiří"). Plain types only — no GarminKit type in any public signature.
