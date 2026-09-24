@@ -5,17 +5,17 @@
 
 ## 2. Rules (Gamification, pure)
 
-- [ ] 2.1 `Features/SportBody/SportActivityClass.swift` (design D1) + tests.
-- [ ] 2.2 `Features/SportBody/SportRules.swift`: fuel, recovery, earned-it, double day, gel guru, long haul, race day, carb loader (design D2).
-- [ ] 2.3 `Features/SportBody/BodyRules.swift`: goal direction, progress, first kilo, halfway, target, steady-30, fasting tiers.
-- [ ] 2.4 `SportBodyCatalog.swift`: badge definitions (`featureId: "sport"`, rarity overrides).
-- [ ] 2.5 Tests: every edge in design D7.
+- [x] 2.1 `Features/SportBody/SportActivityClass.swift` (design D1) + tests.
+- [x] 2.2 `Features/SportBody/SportRules.swift`: fuel, recovery, earned-it, double day, gel guru, long haul, race day, carb loader (design D2).
+- [x] 2.3 `Features/SportBody/BodyRules.swift`: goal direction, progress, first kilo, halfway, target, steady-30, fasting tiers.
+- [x] 2.4 `SportBodyCatalog.swift`: badge definitions (`featureId: "sport"`, rarity overrides).
+- [x] 2.5 Tests: every edge in design D7.
 
 ## 3. Feature
 
-- [ ] 3.1 `SportBodyStore` (activity ids / days, caps, Optional fields, quarantine helpers).
-- [ ] 3.2 Replace the stub `SportAndBodyFeature`: counts, unlocks, per-activity moment once, summary; expose `recentActivities()` and `bodyProgress()`.
-- [ ] 3.3 Tests: counts accumulate beyond 42 days via the store; one moment per activity; activities-unavailable path.
+- [x] 3.1 `SportBodyStore` (activity ids / days, caps, Optional fields, quarantine helpers).
+- [x] 3.2 Replace the stub `SportAndBodyFeature`: counts, unlocks, per-activity moment once, summary; expose `recentActivities()` and `bodyProgress()`.
+- [x] 3.3 Tests: counts accumulate beyond 42 days via the store; one moment per activity; activities-unavailable path.
 
 ## 4. UI (thin)
 
