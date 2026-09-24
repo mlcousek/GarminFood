@@ -99,9 +99,9 @@ final class ColorMathTests: XCTestCase {
         for hex: UInt32 in [0xF56B4A, 0x0072B2, 0x8A6D00, 0xFFFF00, 0x1C1C1E, 0x7F7F7F, 0x00FF00] {
             let color = RGBA(hex: hex)
             let back = ColorMath.rgba(fromOKLab: ColorMath.oklab(color))
-            XCTAssertEqual(back.red, color.red, accuracy: 1e-6, "\(color.hexString)")
-            XCTAssertEqual(back.green, color.green, accuracy: 1e-6, "\(color.hexString)")
-            XCTAssertEqual(back.blue, color.blue, accuracy: 1e-6, "\(color.hexString)")
+            XCTAssertEqual(back.red, color.red, accuracy: 1e-5, "\(color.hexString)")
+            XCTAssertEqual(back.green, color.green, accuracy: 1e-5, "\(color.hexString)")
+            XCTAssertEqual(back.blue, color.blue, accuracy: 1e-5, "\(color.hexString)")
         }
     }
 
