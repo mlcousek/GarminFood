@@ -125,3 +125,71 @@
 
 /* Section header in a nutrition breakdown. */
 "Minerals" = "Minerály";
+
+/* ---- Errors, day notes, fasting, custom food ---- */
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Race" = "Závod";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Training" = "Trénink";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Celebration" = "Oslava";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Sick" = "Nemoc";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Travel" = "Cestování";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Party" = "Párty";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Rest day" = "Den odpočinku";
+
+/* Fasting protocol name in a picker (OMAD = one meal a day). */
+"OMAD (23:1)" = "OMAD (23:1)";
+
+/* Fasting protocol name in a picker: a user-defined fasting window (agrees with 'režim', masculine). */
+"Custom" = "Vlastní";
+
+/* Error shown when editing a logged food entry fails. */
+"This entry can't be edited here -- it has no food to log again. You can delete it instead." = "Tenhle záznam tady nejde upravit – nemá jídlo, které by šlo zapsat znovu. Můžeš ho ale smazat.";
+
+/* Error shown when editing a logged food entry fails. */
+"Nothing changed." = "Nic se nezměnilo.";
+
+/* Error shown when editing a logged food entry fails. */
+"This entry is just reaching Garmin. Try again in a moment." = "Tenhle záznam se právě odesílá do Garminu. Zkus to za chvíli znovu.";
+
+/* Error shown when editing a logged food entry fails. */
+"This entry changed in the meantime. Pull to refresh and try again." = "Záznam se mezitím změnil. Stáhni obrazovku dolů pro obnovení a zkus to znovu.";
+
+/* Validation error under an amount field. First %@ is the maximum amount (e.g. 25000), second %@ the unit symbol (g or ml). */
+"Enter an amount greater than zero and at most %@ %@." = "Zadej množství větší než nula a nejvýše %@ %@.";
+
+/* Note under a custom food. %@ is the name of the Garmin food it is actually logged as. */
+"Recorded in Garmin as \"%@\" (closest match; custom-food creation isn't confirmed possible via Garmin's API yet)." = "V Garminu zapsáno jako „%@“ (nejbližší shoda; vytvoření vlastního jídla přes Garmin API zatím není ověřené).";
+
+/* Offline food database update error. */
+"The downloaded index isn't a gzip file." = "Stažená databáze není soubor gzip.";
+
+/* Offline food database update error. %@ is a technical detail in English. */
+"The downloaded index is corrupted (%@)." = "Stažená databáze je poškozená (%@).";
+
+/* Offline food database update error. %lld is the format version number. */
+"The index uses format %lld, which needs a newer app." = "Databáze používá formát %lld, který potřebuje novější verzi aplikace.";
+
+/* Offline food database update error. %@ is a technical detail in English. */
+"The index couldn't be read (%@)." = "Databázi se nepodařilo načíst (%@).";
+
+/* Offline food database update error. */
+"The downloaded index failed its checksum." = "Stažená databáze neprošla kontrolou kontrolního součtu.";
+
+/* Offline food database update error. %@ is a technical detail in English. */
+"The index manifest is invalid (%@)." = "Popis databáze (manifest) je neplatný (%@).";
+
+/* Offline food database update error. %lld is the HTTP status code. */
+"The index server answered HTTP %lld." = "Server s databází odpověděl HTTP %lld.";

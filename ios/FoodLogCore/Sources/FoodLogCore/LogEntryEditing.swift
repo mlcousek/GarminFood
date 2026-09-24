@@ -45,15 +45,15 @@ public enum LogEntryEditError: Error, Sendable, Equatable, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .notEditable:
-            return "This entry can't be edited here -- it has no food to log again. You can delete it instead."
+            return String(localized: "This entry can't be edited here -- it has no food to log again. You can delete it instead.", bundle: .module, comment: "Error shown when editing a logged food entry fails.")
         case .invalidQuantity:
             return LogQuantity.invalidMessage
         case .noChange:
-            return "Nothing changed."
+            return String(localized: "Nothing changed.", bundle: .module, comment: "Error shown when editing a logged food entry fails.")
         case .stillSyncing:
-            return "This entry is just reaching Garmin. Try again in a moment."
+            return String(localized: "This entry is just reaching Garmin. Try again in a moment.", bundle: .module, comment: "Error shown when editing a logged food entry fails.")
         case .entryGone:
-            return "This entry changed in the meantime. Pull to refresh and try again."
+            return String(localized: "This entry changed in the meantime. Pull to refresh and try again.", bundle: .module, comment: "Error shown when editing a logged food entry fails.")
         }
     }
 }
