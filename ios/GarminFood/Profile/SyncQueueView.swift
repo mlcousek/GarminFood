@@ -89,8 +89,8 @@ struct SyncQueueView: View {
                 Section {
                     EmptyStateView(
                         systemImage: "checkmark.circle",
-                        title: String(localized: "All synced"),
-                        message: String(localized: "Every logged entry has reached Garmin.")
+                        title: "All synced",
+                        message: "Every logged entry has reached Garmin."
                     )
                 }
             } else if !entries.isEmpty {

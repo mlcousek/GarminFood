@@ -33,7 +33,7 @@ struct FastingHomeSection: View {
     var body: some View {
         if let schedule = environment.preferences.activeFastingSchedule {
             VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                SectionHeader(title: "Fasting")
+                SectionHeader(title: String(localized: "Fasting"))
                 TimelineView(.everyMinute) { context in
                     FastingHomeCard(schedule: schedule, now: context.date, onTap: onOpen)
                 }
@@ -56,7 +56,7 @@ struct FastingHomeCard: View {
         if let phase = schedule.phase(at: now, calendar: .current) {
             let isFasting = phase.kind == .fasting
             let tint = isFasting ? Theme.accent : Theme.success
-            let title = isFasting ? "Fasting" : "Eating window"
+            let title = isFasting ? String(localized: "Fasting") : String(localized: "Eating window")
             let detail = Self.detail(for: phase, now: now)
 
             Button(action: onTap) {
@@ -87,7 +87,7 @@ struct FastingHomeCard: View {
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(title). \(detail)")
+            .accessibilityLabel(Text(verbatim: "\(title). \(detail)"))
             .accessibilityHint(showsChevron ? "Opens your fasting history" : "")
         }
     }
@@ -95,9 +95,13 @@ struct FastingHomeCard: View {
     static func detail(for phase: FastingPhase, now: Date) -> String {
         switch phase.kind {
         case .fasting:
-            return "\(FastingFormat.duration(phase.elapsed(at: now))) in · eating opens at \(FastingFormat.clock(phase.scheduledEndAt))"
+            let elapsed = FastingFormat.duration(phase.elapsed(at: now))
+            let opensAt = FastingFormat.clock(phase.scheduledEndAt)
+            return String(localized: "\(elapsed) in · eating opens at \(opensAt)", comment: "Fasting card detail. First %@ = time fasted so far ('11 h 20 m'), second = clock time the eating window opens.")
         case .eating:
-            return "closes at \(FastingFormat.clock(phase.scheduledEndAt)) (\(FastingFormat.duration(phase.remaining(at: now))))"
+            let closesAt = FastingFormat.clock(phase.scheduledEndAt)
+            let remaining = FastingFormat.duration(phase.remaining(at: now))
+            return String(localized: "closes at \(closesAt) (\(remaining))", comment: "Eating-window card detail. First %@ = clock time it closes, second = time remaining ('2 h 5 m').")
         }
     }
 }
