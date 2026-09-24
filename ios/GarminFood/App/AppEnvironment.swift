@@ -72,6 +72,13 @@ final class AppEnvironment {
     /// own header for why it loads only when the Trends screen is open.
     let trendsLoader: MacroTrendLoader
     let gamificationEngine: GamificationEngine
+    /// add-gamification-signals D4: local caches behind the gamification
+    /// signals (`AppServices`), and the foreground-only Garmin reads that
+    /// fill the activity cache / first name (`GamificationSignalsSync`).
+    let dayLogDigestStore: DayLogDigestStore
+    let activityCacheStore: ActivityCacheStore
+    let foodProvenanceStore: FoodProvenanceStore
+    let gamificationSignalsSync: GamificationSignalsSync
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
     let preferences: AppPreferences
@@ -150,8 +157,35 @@ final class AppEnvironment {
         self.hydrationLoader = HydrationLoader(store: services.hydrationStore, outbox: services.hydrationOutbox, cache: services.garminHealthCache, preferences: preferences)
         self.garminHealthSync = services.garminHealthSync
         self.trendsLoader = MacroTrendLoader(client: client)
-        self.gamificationEngine = GamificationEngine(usageHistory: services.usageHistory, garminClient: client)
-        self.dayLog = DayLogLoader(client: client, outbox: services.outbox, foodCache: services.foodCache, coordinator: services.logEntryCoordinator)
+        self.dayLogDigestStore = services.dayLogDigestStore
+        self.activityCacheStore = services.activityCacheStore
+        self.foodProvenanceStore = services.foodProvenanceStore
+        self.gamificationSignalsSync = GamificationSignalsSync(client: client, activityCache: services.activityCacheStore)
+        let featureHost = FeatureHost(sources: FeatureHost.Sources(
+            usageHistory: services.usageHistory,
+            foodCache: services.foodCache,
+            dayLogDigests: services.dayLogDigestStore,
+            activityCache: services.activityCacheStore,
+            provenance: services.foodProvenanceStore,
+            hydration: services.hydrationStore,
+            garminHealthCache: services.garminHealthCache,
+            dayNotes: services.dayNoteStore,
+            preferences: preferences
+        ))
+        self.gamificationEngine = GamificationEngine(
+            usageHistory: services.usageHistory,
+            garminClient: client,
+            featureHost: featureHost,
+            dayLogDigestStore: services.dayLogDigestStore
+        )
+        self.dayLog = DayLogLoader(
+            client: client,
+            outbox: services.outbox,
+            foodCache: services.foodCache,
+            coordinator: services.logEntryCoordinator,
+            digestStore: services.dayLogDigestStore,
+            activityCache: services.activityCacheStore
+        )
         self.preferences = preferences
         self.themeStore = ThemeStore()
         self.notificationPreferences = NotificationPreferencesStore()
@@ -185,7 +219,8 @@ final class AppEnvironment {
         // (sync-weight-hydration-with-garmin); this reads Garmin into the
         // cache and then reloads both loaders from it.
         async let weightAndWater: Void = refreshGarminHealth()
-        _ = await (day, gamification, goals, garminProfile, weightAndWater)
+        async let signalReads: Void = refreshGamificationSignals()
+        _ = await (day, gamification, goals, garminProfile, weightAndWater, signalReads)
         await syncNotifications()
         // Low priority and never awaited by anything the user sees.
         Task(priority: .background) { await self.backfillUsageMealsIfNeeded() }
@@ -207,6 +242,16 @@ final class AppEnvironment {
         lastForegroundDay = Date()
         await gamificationEngine.refresh()
         await syncNotifications()
+    }
+
+    /// add-gamification-signals 7.3: the read-only activities / first-name
+    /// reads, throttled inside `GamificationSignalsSync` (30 min / daily).
+    /// Foreground only -- never a confirm path. An auth failure goes to the
+    /// loud banner; anything else was already logged quietly.
+    private func refreshGamificationSignals() async {
+        if let authError = await gamificationSignalsSync.refreshIfDue() {
+            authState.report(authError)
+        }
     }
 
     /// One-time (until it completes): fills in the meal of usage events

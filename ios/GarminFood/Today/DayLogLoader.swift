@@ -30,6 +30,11 @@ final class DayLogLoader {
     @ObservationIgnored private var logsByDate: [String: DailyFoodLog] = [:]
     @ObservationIgnored private var mealsByDate: [String: [Meal]] = [:]
     @ObservationIgnored private var activeByDate: [String: Double] = [:]
+    /// add-gamification-signals 7.2: the day log and active kcal this
+    /// loader ALREADY reads are also cached for the gamification signals
+    /// (no new request). `nil` in previews/tests.
+    @ObservationIgnored private let digestStore: DayLogDigestStore?
+    @ObservationIgnored private let activityCache: ActivityCacheStore?
 
     private(set) var selectedDate: Date
     private(set) var dashboard: DayDashboard
@@ -61,11 +66,21 @@ final class DayLogLoader {
     /// meal when logging starts outside the dashboard.
     private(set) var latestWindows: [MealWindow] = []
 
-    init(client: GarminClient, outbox: Outbox, foodCache: FoodCacheStore, coordinator: LogEntryCoordinator, now: Date = Date()) {
+    init(
+        client: GarminClient,
+        outbox: Outbox,
+        foodCache: FoodCacheStore,
+        coordinator: LogEntryCoordinator,
+        digestStore: DayLogDigestStore? = nil,
+        activityCache: ActivityCacheStore? = nil,
+        now: Date = Date()
+    ) {
         self.client = client
         self.outbox = outbox
         self.foodCache = foodCache
         self.coordinator = coordinator
+        self.digestStore = digestStore
+        self.activityCache = activityCache
         let day = Calendar.current.startOfDay(for: now)
         self.selectedDate = day
         self.dashboard = MealDashboard.build(
@@ -154,6 +169,7 @@ final class DayLogLoader {
             if let log = try await client.dailyFoodLog(date: date) {
                 logsByDate[date] = log
                 if date == dateString { isStale = false }
+                try? await digestStore?.save(DayLogDigest(log: log, day: date, fetchedAt: Date()))
             } else {
                 logsByDate.removeValue(forKey: date)
                 await loadMealsIfNeeded(date: date)
@@ -202,6 +218,7 @@ final class DayLogLoader {
         if let summary = try? await client.dailyUserSummary(date: date),
            let active = summary.activeKilocalories {
             activeByDate[date] = active
+            try? await activityCache?.recordActiveKcal(active, day: date)
         } else {
             activeByDate.removeValue(forKey: date)
         }
