@@ -44,8 +44,10 @@ struct LogEntryConfirmView: View {
     /// exactly one serving. This is exactly what's sent to Garmin as
     /// `servingQty` (`FoodLogWriteBody`, confirmed by the project's first
     /// real write 2026-09-16), so every other calculation in this view
-    /// must treat it the same way.
-    @State private var quantity: Double
+    /// must treat it the same way. `nil` while the typed text isn't a
+    /// valid amount (`ServingQuantityField` -- which is also where a typed
+    /// gram amount becomes this multiplier).
+    @State private var quantity: Double?
     @State private var mealType: MealType
     @State private var date: Date
     @State private var selectedServing: Serving?
@@ -81,6 +83,8 @@ struct LogEntryConfirmView: View {
         // randomly jumping to "50 servings" the moment you touched it.
         // A remembered amount outside `LogQuantity`'s bound falls back to 1.
         _quantity = State(initialValue: initialQuantity.map { LogQuantity.isValid($0) ? $0 : 1 } ?? 1)
+        // (A remembered amount is still a multiplier; `ServingQuantityField`
+        // shows it in grams when that's the input mode -- amount-in-grams.)
         // 2026-09-21 bug fix: `presetMealType` is applied HERE, directly in
         // `init`, rather than corrected afterward in `applyContextOnce()` --
         // the previous version always started `mealType` at the time-of-day
@@ -118,36 +122,8 @@ struct LogEntryConfirmView: View {
         // the on-screen preview was silently wrong -- too low by roughly
         // the serving size -- for any serving where `numberOfUnits != 1`
         // (a "100g" serving showed calories about 100x too small).
-        guard let calories = selectedServing?.calories else { return nil }
+        guard let calories = selectedServing?.calories, let quantity else { return nil }
         return calories * quantity
-    }
-
-    /// Grams, ml, and the like are amounts a user actually knows and wants
-    /// to type ("70g"); "medium", "cup", "slice" are not -- there is no
-    /// unit conversion available for those without knowing the food's
-    /// density, which Garmin doesn't provide. Case/whitespace-insensitive,
-    /// since Garmin's own data uses "G" and "g" for the same thing.
-    private var isDirectlyEnterableAmount: Bool {
-        guard let unit = selectedServing?.unit.trimmingCharacters(in: .whitespaces).lowercased() else { return false }
-        return ["g", "gram", "grams", "ml", "milliliter", "milliliters", "millilitre", "millilitres"].contains(unit)
-    }
-
-    /// The amount of `selectedServing.unit` this logs, e.g. 70 (g) for a
-    /// "100g" serving at `quantity == 0.7`. Read/write: typing a new amount
-    /// recomputes `quantity` against the serving's own defined size, which
-    /// is the whole point -- the user thinks in grams, Garmin's API thinks
-    /// in servings, and this is the one place those two convert.
-    private var amountBinding: Binding<Double> {
-        Binding(
-            get: {
-                guard let base = selectedServing?.numberOfUnits else { return quantity }
-                return quantity * base
-            },
-            set: { newAmount in
-                guard let base = selectedServing?.numberOfUnits, base > 0 else { return }
-                quantity = newAmount / base
-            }
-        )
     }
 
     var body: some View {
@@ -177,51 +153,15 @@ struct LogEntryConfirmView: View {
                     }
                 }
 
-                if isDirectlyEnterableAmount {
-                    HStack {
-                        Text("Amount")
-                        Spacer()
-                        TextField("Amount", value: amountBinding, format: .number.precision(.fractionLength(0...1)))
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .focused($isAmountFieldFocused)
-                            .frame(minWidth: 60)
-                        Text(selectedServing?.unit.lowercased() ?? "g")
-                            .foregroundStyle(.secondary)
-                    }
-                    if let selectedServing {
-                        // The conversion made explicit, since the whole
-                        // point of typing grams is not having to think in
-                        // servings -- but showing it builds trust that the
-                        // right number is what actually reaches Garmin.
-                        Text("= \(quantity.formattedQuantity) of a \(selectedServing.displayLabel) serving")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                    }
-                } else {
-                    HStack {
-                        Text("Quantity")
-                        Spacer()
-                        TextField("Quantity", value: $quantity, format: .number.precision(.fractionLength(0...2)))
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .focused($isAmountFieldFocused)
-                            .frame(minWidth: 60)
-                        if let unit = selectedServing?.unit, !unit.isEmpty {
-                            Text(unit)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                if !isQuantityValid {
-                    // Shown only while the typed amount is out of range
-                    // (`LogQuantity`, FoodLogCore) -- the Log button is
-                    // disabled meanwhile, so say why.
-                    Text(LogQuantity.invalidMessage)
-                        .font(.caption)
-                        .foregroundStyle(Theme.warning)
-                }
+                // Grams/ml whenever the serving states its size ("100g",
+                // "g" x 100, "serving (118 g)"), servings otherwise -- and
+                // the out-of-range message -- all in `ServingQuantityField`
+                // (amount-in-grams). `quantity` stays the multiplier.
+                ServingQuantityField(
+                    serving: selectedServing,
+                    quantity: $quantity,
+                    isFocused: $isAmountFieldFocused
+                )
 
                 if let caloriesForQuantity {
                     HStack {
@@ -332,11 +272,11 @@ struct LogEntryConfirmView: View {
     /// <= `LogQuantity.maximum`). Checked here too so an absurd typed amount
     /// disables the button with a reason, rather than only failing on tap.
     private var isQuantityValid: Bool {
-        LogQuantity.isValid(quantity)
+        quantity.map(LogQuantity.isValid) ?? false
     }
 
     private func confirm() {
-        guard canConfirm else { return }
+        guard canConfirm, let quantity else { return }
         isSaving = true
         errorMessage = nil
 
