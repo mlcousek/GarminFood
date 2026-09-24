@@ -10,3 +10,190 @@
 
 /* Validation error under a quantity field. %@ is the maximum number of servings, e.g. 10000. */
 "Enter an amount greater than zero and at most %@." = "Enter an amount greater than zero and at most %@.";
+
+/* ---- Nutrients (MealDashboard.swift) ---- */
+
+/* Nutrient name (row label in a nutrition breakdown). */
+"Calories" = "Calories";
+
+/* Nutrient name. */
+"Carbohydrates" = "Carbohydrates";
+
+/* Nutrient name. */
+"Fiber" = "Fiber";
+
+/* Nutrient name. */
+"Sugar" = "Sugar";
+
+/* Nutrient name. */
+"Protein" = "Protein";
+
+/* Nutrient name. */
+"Fat" = "Fat";
+
+/* Nutrient name. */
+"Saturated fat" = "Saturated fat";
+
+/* Nutrient name. */
+"Monounsaturated fat" = "Monounsaturated fat";
+
+/* Nutrient name. */
+"Polyunsaturated fat" = "Polyunsaturated fat";
+
+/* Nutrient name. */
+"Cholesterol" = "Cholesterol";
+
+/* Nutrient name. */
+"Sodium" = "Sodium";
+
+/* Nutrient name. */
+"Potassium" = "Potassium";
+
+/* Nutrient name. */
+"Vitamin A" = "Vitamin A";
+
+/* Nutrient name. */
+"Vitamin C" = "Vitamin C";
+
+/* Nutrient name. */
+"Calcium" = "Calcium";
+
+/* Nutrient name. */
+"Iron" = "Iron";
+
+/* Nutrient name. */
+"Vitamin B1 (Thiamin)" = "Vitamin B1 (Thiamin)";
+
+/* Nutrient name. */
+"Vitamin B2 (Riboflavin)" = "Vitamin B2 (Riboflavin)";
+
+/* Nutrient name. */
+"Vitamin B3 (Niacin)" = "Vitamin B3 (Niacin)";
+
+/* Nutrient name. */
+"Vitamin B5 (Pantothenic acid)" = "Vitamin B5 (Pantothenic acid)";
+
+/* Nutrient name. */
+"Vitamin B6" = "Vitamin B6";
+
+/* Nutrient name. */
+"Folate (B9)" = "Folate (B9)";
+
+/* Nutrient name. */
+"Vitamin B12" = "Vitamin B12";
+
+/* Nutrient name. */
+"Vitamin D" = "Vitamin D";
+
+/* Nutrient name. */
+"Vitamin E" = "Vitamin E";
+
+/* Nutrient name. */
+"Vitamin K" = "Vitamin K";
+
+/* Nutrient name. */
+"Magnesium" = "Magnesium";
+
+/* Nutrient name. */
+"Zinc" = "Zinc";
+
+/* Nutrient name. */
+"Phosphorus" = "Phosphorus";
+
+/* Nutrient name. */
+"Selenium" = "Selenium";
+
+/* Nutrient name. */
+"Copper" = "Copper";
+
+/* Nutrient name. */
+"Manganese" = "Manganese";
+
+/* Nutrient name. */
+"Iodine" = "Iodine";
+
+/* Nutrient name (omega-3 fatty acids). */
+"Omega-3" = "Omega-3";
+
+/* Nutrient name (omega-6 fatty acids). */
+"Omega-6" = "Omega-6";
+
+/* Section header in a nutrition breakdown (calories). */
+"Energy" = "Energy";
+
+/* Section header in a nutrition breakdown. */
+"Macronutrients" = "Macronutrients";
+
+/* Section header in a nutrition breakdown. */
+"Vitamins" = "Vitamins";
+
+/* Section header in a nutrition breakdown. */
+"Minerals" = "Minerals";
+
+/* ---- Errors, day notes, fasting, custom food ---- */
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Race" = "Race";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Training" = "Training";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Celebration" = "Celebration";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Sick" = "Sick";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Travel" = "Travel";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Party" = "Party";
+
+/* Day note tag (what kind of day it was), shown on a chip. */
+"Rest day" = "Rest day";
+
+/* Fasting protocol name in a picker (OMAD = one meal a day). */
+"OMAD (23:1)" = "OMAD (23:1)";
+
+/* Fasting protocol name in a picker: a user-defined fasting window (agrees with 'režim', masculine). */
+"Custom" = "Custom";
+
+/* Error shown when editing a logged food entry fails. */
+"This entry can't be edited here -- it has no food to log again. You can delete it instead." = "This entry can't be edited here -- it has no food to log again. You can delete it instead.";
+
+/* Error shown when editing a logged food entry fails. */
+"Nothing changed." = "Nothing changed.";
+
+/* Error shown when editing a logged food entry fails. */
+"This entry is just reaching Garmin. Try again in a moment." = "This entry is just reaching Garmin. Try again in a moment.";
+
+/* Error shown when editing a logged food entry fails. */
+"This entry changed in the meantime. Pull to refresh and try again." = "This entry changed in the meantime. Pull to refresh and try again.";
+
+/* Validation error under an amount field. First %@ is the maximum amount (e.g. 25000), second %@ the unit symbol (g or ml). */
+"Enter an amount greater than zero and at most %@ %@." = "Enter an amount greater than zero and at most %@ %@.";
+
+/* Note under a custom food. %@ is the name of the Garmin food it is actually logged as. */
+"Recorded in Garmin as \"%@\" (closest match; custom-food creation isn't confirmed possible via Garmin's API yet)." = "Recorded in Garmin as \"%@\" (closest match; custom-food creation isn't confirmed possible via Garmin's API yet).";
+
+/* Offline food database update error. */
+"The downloaded index isn't a gzip file." = "The downloaded index isn't a gzip file.";
+
+/* Offline food database update error. %@ is a technical detail in English. */
+"The downloaded index is corrupted (%@)." = "The downloaded index is corrupted (%@).";
+
+/* Offline food database update error. %lld is the format version number. */
+"The index uses format %lld, which needs a newer app." = "The index uses format %lld, which needs a newer app.";
+
+/* Offline food database update error. %@ is a technical detail in English. */
+"The index couldn't be read (%@)." = "The index couldn't be read (%@).";
+
+/* Offline food database update error. */
+"The downloaded index failed its checksum." = "The downloaded index failed its checksum.";
+
+/* Offline food database update error. %@ is a technical detail in English. */
+"The index manifest is invalid (%@)." = "The index manifest is invalid (%@).";
+
+/* Offline food database update error. %lld is the HTTP status code. */
+"The index server answered HTTP %lld." = "The index server answered HTTP %lld.";

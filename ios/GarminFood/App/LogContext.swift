@@ -29,12 +29,15 @@ extension MealType {
     /// Garmin Connect's order; `allCases` puts snacks before dinner.
     static var dashboardOrder: [MealType] { [.breakfast, .lunch, .dinner, .snacks] }
 
+    /// Localized, for display only -- never persisted or sent to Garmin
+    /// (those use `rawValue`). Title case: a label on its own, not a word
+    /// to splice into a sentence (Czech needs its own phrasing there).
     var displayName: String {
         switch self {
-        case .breakfast: return "Breakfast"
-        case .lunch: return "Lunch"
-        case .dinner: return "Dinner"
-        case .snacks: return "Snacks"
+        case .breakfast: return String(localized: "Breakfast")
+        case .lunch: return String(localized: "Lunch")
+        case .dinner: return String(localized: "Dinner")
+        case .snacks: return String(localized: "Snacks")
         }
     }
 

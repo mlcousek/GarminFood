@@ -38,17 +38,17 @@ struct NotificationSettingsView: View {
 
             Section {
                 reminderRow(
-                    title: "Breakfast",
+                    title: String(localized: "Breakfast"),
                     setting: environment.notificationPreferences.preferences.breakfastReminder,
                     onChange: { environment.setBreakfastReminder($0) }
                 )
                 reminderRow(
-                    title: "Lunch",
+                    title: String(localized: "Lunch"),
                     setting: environment.notificationPreferences.preferences.lunchReminder,
                     onChange: { environment.setLunchReminder($0) }
                 )
                 reminderRow(
-                    title: "Dinner",
+                    title: String(localized: "Dinner"),
                     setting: environment.notificationPreferences.preferences.dinnerReminder,
                     onChange: { environment.setDinnerReminder($0) }
                 )
@@ -60,7 +60,7 @@ struct NotificationSettingsView: View {
 
             Section {
                 reminderRow(
-                    title: "Streak at risk",
+                    title: String(localized: "Streak at risk"),
                     setting: environment.notificationPreferences.preferences.streakReminder,
                     onChange: { environment.setStreakReminder($0) }
                 )
@@ -70,7 +70,7 @@ struct NotificationSettingsView: View {
 
             Section {
                 reminderRow(
-                    title: "Today's challenges",
+                    title: String(localized: "Today's challenges"),
                     setting: environment.notificationPreferences.preferences.dailyChallengeReminder,
                     onChange: { environment.setDailyChallengeReminder($0) }
                 )
@@ -80,12 +80,12 @@ struct NotificationSettingsView: View {
 
             Section {
                 fastingReminderRow(
-                    title: "Fast ending soon",
+                    title: String(localized: "Fast ending soon"),
                     setting: environment.notificationPreferences.preferences.fastingReminder,
                     onChange: { environment.setFastingReminder($0) }
                 )
                 fastingReminderRow(
-                    title: "Fast starting soon",
+                    title: String(localized: "Fast starting soon"),
                     setting: environment.notificationPreferences.preferences.fastingStartReminder,
                     onChange: { environment.setFastingStartReminder($0) }
                 )
@@ -162,11 +162,11 @@ struct NotificationSettingsView: View {
 
     private var fastingFooter: String {
         guard let schedule = environment.preferences.activeFastingSchedule else {
-            return "Turn on a daily fasting window in Settings → Fasting first; these only fire while it's on."
+            return String(localized: "Turn on a daily fasting window in Settings → Fasting first; these only fire while it's on.")
         }
         let start = FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.startMinute))
         let end = FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.endMinute))
-        return "Every day, before your fast ends at \(end) and before it starts at \(start)."
+        return String(localized: "Every day, before your fast ends at \(end) and before it starts at \(start).")
     }
 
     private func refreshStatus() async {

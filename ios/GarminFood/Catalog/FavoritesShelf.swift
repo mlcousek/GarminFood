@@ -34,7 +34,7 @@ struct FavoritesShelf: View {
     var onToggleFavorite: ((Food) -> Void)? = nil
     /// What a tap does, for VoiceOver ("Adds this to the meal" in the
     /// ingredient picker).
-    var cardAccessibilityHint: String = "Logs this food"
+    var cardAccessibilityHint: String = String(localized: "Logs this food")
 
     var body: some View {
         FoodShelf(items: items) { item in
@@ -61,11 +61,12 @@ struct FavoritesShelf: View {
     }
 
     private func accessibilityLabel(for food: Food) -> String {
-        var label = "\(food.name), favorite"
+        // Whole-sentence keys (no glued fragments) so each language can
+        // order name/"favorite"/energy its own way.
         if let calories = food.servings.first?.calories {
-            label += ", \(calories.wholeNumberText) kilocalories"
+            return String(localized: "\(food.name), favorite, \(calories.wholeNumberText) kilocalories")
         }
-        return label
+        return String(localized: "\(food.name), favorite")
     }
 }
 

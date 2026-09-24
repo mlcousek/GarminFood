@@ -35,7 +35,9 @@ struct AuthBannerView: View {
                 HStack(spacing: Theme.Spacing.sm) {
                     Image(systemName: "person.crop.circle.badge.exclamationmark")
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(authState.state == .needsSignIn ? "Garmin sign-in expired" : "Not connected to Garmin")
+                        Text(authState.state == .needsSignIn
+                             ? String(localized: "Garmin sign-in expired")
+                             : String(localized: "Not connected to Garmin"))
                             .font(.subheadline.weight(.semibold))
                         Text("Entries still save locally and will sync once you reconnect.")
                             .font(.caption)
@@ -73,9 +75,8 @@ struct DeliveryBannerView: View {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: Theme.Spacing.sm) {
                     Image(systemName: "arrow.triangle.2.circlepath.circle")
-                    Text(environment.undeliveredCount == 1
-                         ? "1 entry hasn't reached Garmin yet"
-                         : "\(environment.undeliveredCount) entries haven't reached Garmin yet")
+                    // Plural catalog entry (Czech one/few/many/other).
+                    Text("\(environment.undeliveredCount) entries haven't reached Garmin yet")
                         .font(.subheadline.weight(.semibold))
                     Spacer()
                 }
@@ -163,7 +164,7 @@ struct GarminSignInSheet: View {
 
     private func completeSignIn(withTicket rawTicket: String) async {
         guard let ticket = GarminSSOEndpoints.ticket(in: rawTicket) else {
-            errorMessage = "That field is empty. Paste the redirect URL, or just the ticket value from it."
+            errorMessage = String(localized: "That field is empty. Paste the redirect URL, or just the ticket value from it.")
             return
         }
         isWorking = true

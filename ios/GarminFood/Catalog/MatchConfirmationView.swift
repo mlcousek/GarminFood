@@ -96,7 +96,9 @@ struct MatchConfirmationView: View {
     }
 
     private var differentFoodTitle: String {
-        isPicking ? "Pick a different Garmin food instead" : "Log anyway with a different Garmin food"
+        isPicking
+            ? String(localized: "Pick a different Garmin food instead")
+            : String(localized: "Log anyway with a different Garmin food")
     }
 
     @ViewBuilder
@@ -115,8 +117,8 @@ struct MatchConfirmationView: View {
             noMatchView
         case .error(let message):
             VStack(spacing: Theme.Spacing.lg) {
-                EmptyStateView(systemImage: "wifi.exclamationmark", title: "Couldn't check Garmin", message: message)
-                PrimaryButton(title: "Try again") {
+                EmptyStateView(systemImage: "wifi.exclamationmark", title: String(localized: "Couldn't check Garmin"), message: message)
+                PrimaryButton(title: String(localized: "Try again")) {
                     state = .loading
                     Task { await runMatch() }
                 }
@@ -138,7 +140,7 @@ struct MatchConfirmationView: View {
                     .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.md))
             }
 
-            PrimaryButton(title: "Use this match") {
+            PrimaryButton(title: String(localized: "Use this match")) {
                 if isPicking {
                     foodAwaitingServingPick = candidate
                 } else {
@@ -168,11 +170,11 @@ struct MatchConfirmationView: View {
         VStack(spacing: Theme.Spacing.lg) {
             EmptyStateView(
                 systemImage: "questionmark.circle",
-                title: "No match found",
-                message: "Garmin's database doesn't seem to have \"\(offFood.name)\". You can create it there, or log against a different Garmin food instead."
+                title: String(localized: "No match found"),
+                message: String(localized: "Garmin's database doesn't seem to have \"\(offFood.name)\". You can create it there, or log against a different Garmin food instead.")
             )
 
-            PrimaryButton(title: "Create in Garmin") {
+            PrimaryButton(title: String(localized: "Create in Garmin")) {
                 isPresentingCreateInGarmin = true
             }
 
@@ -270,7 +272,7 @@ struct CreateInGarminConfirmView: View {
         .navigationTitle("Create in Garmin")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
-            PrimaryButton(title: "Create in Garmin", isDisabled: isCreating || serving?.calories == nil) {
+            PrimaryButton(title: String(localized: "Create in Garmin"), isDisabled: isCreating || serving?.calories == nil) {
                 createInGarmin()
             }
             .padding(Theme.Spacing.md)
@@ -284,8 +286,8 @@ struct CreateInGarminConfirmView: View {
             if serving?.calories == nil {
                 EmptyStateView(
                     systemImage: "exclamationmark.triangle",
-                    title: "Missing calories",
-                    message: "This item has no calorie value from Open Food Facts, so it can't be created in Garmin."
+                    title: String(localized: "Missing calories"),
+                    message: String(localized: "This item has no calorie value from Open Food Facts, so it can't be created in Garmin.")
                 )
             }
         }
@@ -312,14 +314,14 @@ struct CreateInGarminConfirmView: View {
                     languageCode: environment.profile.settings?.languageCode
                 )
                 guard let createdFood = Food(searchResult: result) else {
-                    errorMessage = "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead."
+                    errorMessage = String(localized: "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.")
                     return
                 }
                 // Picker variant: hand the created food back as an
                 // ingredient; nothing is logged.
                 if let onPickCreated {
                     guard let createdServing = createdFood.servings.first else {
-                        errorMessage = "Garmin created the food but returned no serving for it. Pick a different Garmin food instead."
+                        errorMessage = String(localized: "Garmin created the food but returned no serving for it. Pick a different Garmin food instead.")
                         return
                     }
                     onPickCreated(createdFood, createdServing)
@@ -330,7 +332,7 @@ struct CreateInGarminConfirmView: View {
                 // normal log-entry confirm flow.
                 logTarget = .catalog(food: createdFood, initialServing: createdFood.servings.first)
             } catch {
-                errorMessage = "Couldn't create this food in Garmin. Try again, or log against a different Garmin food instead."
+                errorMessage = String(localized: "Couldn't create this food in Garmin. Try again, or log against a different Garmin food instead.")
             }
         }
     }

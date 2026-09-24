@@ -60,8 +60,8 @@ public enum FastingProtocol: Codable, Sendable, Equatable, Hashable {
         case .sixteenEight: return "16:8"
         case .eighteenSix: return "18:6"
         case .twentyFour: return "20:4"
-        case .omad: return "OMAD (23:1)"
-        case .custom: return "Custom"
+        case .omad: return String(localized: "OMAD (23:1)", bundle: .module, comment: "Fasting protocol name in a picker (OMAD = one meal a day).")
+        case .custom: return String(localized: "Custom", bundle: .module, comment: "Fasting protocol name in a picker: a user-defined fasting window.")
         }
     }
 }

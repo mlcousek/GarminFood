@@ -163,7 +163,11 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
     /// Shown to the user per the food-catalog spec's "the discrepancy...
     /// is shown to the user" requirement -- never hidden.
     public var discrepancyNote: String {
-        "Recorded in Garmin as \"\(backingFoodName)\" (closest match; custom-food creation isn't confirmed possible via Garmin's API yet)."
+        String(
+            localized: "Recorded in Garmin as \"\(backingFoodName)\" (closest match; custom-food creation isn't confirmed possible via Garmin's API yet).",
+            bundle: .module,
+            comment: "Note under a custom food. %@ is the name of the Garmin food it is actually logged as."
+        )
     }
 }
 

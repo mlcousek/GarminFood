@@ -122,20 +122,20 @@ struct GoalsSettingsSection: View {
     private func originLabel(_ origin: GoalOrigin) -> String {
         switch origin {
         case .garmin: return "Garmin"
-        case .override: return "Mine"
-        case .fallback: return "Default"
+        case .override: return String(localized: "Mine")
+        case .fallback: return String(localized: "Default")
         }
     }
 
     private func footerText(garminWater: Double?, garminTarget: Double?) -> String {
         var parts: [String] = []
         if let garminWater {
-            parts.append("Garmin's water goal: \(garminWater.formattedML) ml.")
+            parts.append(String(localized: "Garmin's water goal: \(garminWater.formattedML) ml."))
         }
         if let garminTarget {
-            parts.append("Garmin's weight goal: \(garminTarget.formattedKg) kg.")
+            parts.append(String(localized: "Garmin's weight goal: \(garminTarget.formattedKg) kg."))
         }
-        parts.append("Your own goals stay on this phone; Garmin Connect isn't changed.")
+        parts.append(String(localized: "Your own goals stay on this phone; Garmin Connect isn't changed."))
         return parts.joined(separator: " ")
     }
 }

@@ -250,7 +250,11 @@ public struct ServingQuantityInput: Sendable, Equatable {
     public func invalidMessage(mode: QuantityInputMode) -> String {
         guard resolvedMode(mode) == .amount, let size else { return LogQuantity.invalidMessage }
         let limit = NumberDisplay.whole(size.amount(forQuantity: LogQuantity.maximum))
-        return "Enter an amount greater than zero and at most \(limit) \(size.unit.symbol)."
+        return String(
+            localized: "Enter an amount greater than zero and at most \(limit) \(size.unit.symbol).",
+            bundle: .module,
+            comment: "Validation error under an amount field. First %@ is the maximum amount (e.g. 25000), second %@ the unit symbol (g or ml)."
+        )
     }
 
     // MARK: Helpers

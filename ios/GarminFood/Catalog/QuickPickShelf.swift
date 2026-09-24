@@ -33,7 +33,7 @@ struct QuickPickShelf: View {
     /// What a tap does, for VoiceOver. `FoodCatalogView` passes "Adds this
     /// to the meal" in its ingredient picker, where a tap no longer logs
     /// (fix-testing-feedback-quick-wins).
-    var cardAccessibilityHint: String = "Logs this again"
+    var cardAccessibilityHint: String = String(localized: "Logs this again")
 
     var body: some View {
         FoodShelf(items: items) { item in
@@ -55,11 +55,16 @@ struct QuickPickShelf: View {
     }
 
     private func accessibilityLabel(for item: QuickPickItem) -> String {
-        var label = "\(item.food.name), \(item.numberOfUnits.shelfQuantityText) times \(item.serving.displayLabel)"
+        // Whole-sentence keys (no glued fragments) so each language can
+        // phrase quantity and energy its own way.
+        let name = item.food.name
+        let quantity = item.numberOfUnits.shelfQuantityText
+        let serving = item.serving.displayLabel
         if let calories = item.serving.calories {
-            label += ", \((calories * item.numberOfUnits).wholeNumberText) kilocalories"
+            let energy = (calories * item.numberOfUnits).wholeNumberText
+            return String(localized: "\(name), \(quantity) times \(serving), \(energy) kilocalories")
         }
-        return label
+        return String(localized: "\(name), \(quantity) times \(serving)")
     }
 }
 

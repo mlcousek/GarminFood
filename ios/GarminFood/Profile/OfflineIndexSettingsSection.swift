@@ -61,7 +61,7 @@ struct OfflineIndexSettingsSection: View {
             Button {
                 Task { await loader.downloadNow() }
             } label: {
-                Label(loader.isUpdating ? "Checking…" : "Download now", systemImage: "arrow.down.circle")
+                Label(loader.isUpdating ? String(localized: "Checking…") : String(localized: "Download now"), systemImage: "arrow.down.circle")
             }
             .disabled(loader.isUpdating)
 
@@ -75,8 +75,8 @@ struct OfflineIndexSettingsSection: View {
     }
 
     private func summaryText(_ status: OfflineIndexStatus) -> String {
-        guard status.isInstalled, let count = status.installedCount else { return "Not downloaded" }
-        return "\(count.formatted()) products"
+        guard status.isInstalled, let count = status.installedCount else { return String(localized: "Not downloaded") }
+        return String(localized: "\(count) products")
     }
 
     @ViewBuilder
@@ -96,11 +96,11 @@ struct OfflineIndexSettingsSection: View {
         case .checkedRecently, .alreadyRunning:
             return nil
         case .upToDate:
-            return "Already up to date."
+            return String(localized: "Already up to date.")
         case .installed(let count):
-            return "Downloaded \(count.formatted()) products."
+            return String(localized: "Downloaded \(count) products.")
         case .waitingForWiFi:
-            return "Waiting for Wi-Fi. Turn on “Allow on cellular” to download now."
+            return String(localized: "Waiting for Wi-Fi. Turn on “Allow on cellular” to download now.")
         case .failed:
             // The store already recorded it; `status.lastError` shows it.
             return nil

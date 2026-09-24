@@ -13,9 +13,9 @@ enum GarminErrorPresentation {
     static func searchFailureMessage(for failure: SearchFailure) -> String {
         switch failure.kind {
         case .signedOut:
-            return "Sign in to Garmin to search its food database."
+            return String(localized: "Sign in to Garmin to search its food database.")
         case .unavailable:
-            return "Couldn't reach Garmin right now. Check your connection or try again."
+            return String(localized: "Couldn't reach Garmin right now. Check your connection or try again.")
         }
     }
 
@@ -33,22 +33,22 @@ enum GarminErrorPresentation {
         if let bootstrap = error as? GarminBootstrapError {
             switch bootstrap {
             case .exchangeFailed(let statusCode, let body):
-                let status = statusCode.map { "HTTP \($0)" } ?? "no HTTP response"
+                let status = statusCode.map { "HTTP \($0)" } ?? String(localized: "no HTTP response")
                 guard let detail = readableDetail(from: body) else {
-                    return "Garmin rejected the sign-in ticket (\(status))."
+                    return String(localized: "Garmin rejected the sign-in ticket (\(status)).")
                 }
-                return "Garmin rejected the sign-in ticket (\(status)): \(detail)"
+                return String(localized: "Garmin rejected the sign-in ticket (\(status)): \(detail)")
             case .malformedExchangeResponse:
-                return "Garmin accepted the ticket but sent back a response this app couldn't read."
+                return String(localized: "Garmin accepted the ticket but sent back a response this app couldn't read.")
             case .invalidExchangeURL:
-                return "Couldn't build Garmin's exchange URL. That's an app bug -- retrying won't help."
+                return String(localized: "Couldn't build Garmin's exchange URL. That's an app bug -- retrying won't help.")
             }
         }
         if let auth = error as? GarminAuthError, case .consumerKeyFetchFailed(let statusCode) = auth {
-            let status = statusCode.map { "HTTP \($0)" } ?? "no HTTP response"
-            return "Couldn't fetch Garmin's public consumer key (\(status)). Check your connection and try again."
+            let status = statusCode.map { "HTTP \($0)" } ?? String(localized: "no HTTP response")
+            return String(localized: "Couldn't fetch Garmin's public consumer key (\(status)). Check your connection and try again.")
         }
-        return "Sign-in failed: \(error.localizedDescription)"
+        return String(localized: "Sign-in failed: \(error.localizedDescription)")
     }
 
     /// The likeliest bodies here are a Cloudflare interstitial or a Garmin
@@ -64,7 +64,7 @@ enum GarminErrorPresentation {
         let trimmed = (body ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         if trimmed.hasPrefix("<") {
-            return "the response was an HTML page rather than an API error, most likely a Cloudflare challenge"
+            return String(localized: "the response was an HTML page rather than an API error, most likely a Cloudflare challenge")
         }
         return String(trimmed.prefix(200))
     }
