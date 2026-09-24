@@ -15,8 +15,8 @@
 
 ## 3. UI (thin)
 
-- [ ] 3.1 `Progress/Slots/CollectionsSlotView.swift`: total + five mini rings.
-- [ ] 3.2 `Progress/Collections/CollectionsView.swift`: sections, discovered tiles, silhouettes with hints, detail sheet; VoiceOver, Dynamic Type, dark mode.
+- [x] 3.1 `Progress/Slots/CollectionsSlotView.swift`: total + five mini rings.
+- [x] 3.2 `Progress/Collections/CollectionsView.swift`: sections, discovered tiles, silhouettes with hints, detail sheet; VoiceOver, Dynamic Type, dark mode.
 
 ## 4. Verify
 
