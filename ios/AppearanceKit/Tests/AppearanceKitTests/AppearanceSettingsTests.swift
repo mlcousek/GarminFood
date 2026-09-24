@@ -82,7 +82,7 @@ final class AppearanceSettingsTests: XCTestCase {
     }
 
     func testWrongTypesFallBackPerField() {
-        let json = #"{"version":"one","themeID":42,"macroSet":7,"customAccent":"#nothex","style":"fancy","appearanceByTheme":[1]}"#
+        let json = ##"{"version":"one","themeID":42,"macroSet":7,"customAccent":"#nothex","style":"fancy","appearanceByTheme":[1]}"##
         let result = load(json)
         XCTAssertEqual(result.status, .loaded)
         XCTAssertEqual(result.settings, .default)
