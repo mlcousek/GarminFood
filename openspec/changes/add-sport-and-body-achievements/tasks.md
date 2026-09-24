@@ -1,7 +1,7 @@
 ## 1. Tags (FoodLogCore)
 
-- [ ] 1.1 `Signals/FoodTag+Sport.swift` (`sport.carbRich`) and fill `Signals/FoodTagRules+Sport.swift`.
-- [ ] 1.2 Tagger golden cases: banán, ovesná kaše, energetický gel, "Rohlík tukový" → carbRich; "Rýžový nápoj" (a milk substitute) and "Banánový jogurt" → not carbRich (pinned by exclusions).
+- [x] 1.1 `Signals/FoodTag+Sport.swift` (`sport.carbRich`) and fill `Signals/FoodTagRules+Sport.swift`.
+- [x] 1.2 Tagger golden cases: banán, ovesná kaše, energetický gel, "Rohlík tukový" → carbRich; "Rýžový nápoj" (a milk substitute) and "Banánový jogurt" → not carbRich (pinned by exclusions).
 
 ## 2. Rules (Gamification, pure)
 
