@@ -13,7 +13,7 @@
 import Foundation
 import FoodLogCore
 
-public indirect enum WeekPredicate: Sendable, Equatable, Codable {
+public enum WeekPredicate: Sendable, Equatable, Codable {
     /// At least `atLeast` days on which the day predicate holds.
     case daysSatisfying(DayPredicate, atLeast: Int)
     /// At least `atLeast` distinct tags with `prefix` across all the days.

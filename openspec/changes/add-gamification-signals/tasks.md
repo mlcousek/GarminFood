@@ -29,39 +29,39 @@
 
 ## 5. Gamification — shared vocabulary and seam
 
-- [ ] 5.1 `WeekKey` (ISO-8601 week "2026-W39", Monday start, `minimumDaysInFirstWeek = 4`) + tests across year boundaries (2026-12-31, 2027-01-01, 2020-12-31 = W53).
-- [ ] 5.2 `DeterministicRandom` (djb2 + LCG, same algorithm as `DailyChallengeSelection`, which is left untouched) + weighted pick. Tests.
-- [ ] 5.3 `DayPredicate`, `WeekPredicate`, `DataRequirement`, `SignalEvaluator`. One test per case + missing-data paths.
-- [ ] 5.4 `GamificationFeature` protocol, `FeatureContext`, `FeatureUpdate`, `RewardGrant`, `FeatureMoment`, `FeatureSummary`.
-- [ ] 5.5 `RewardLedger` (JSON actor). Tests: idempotent XP, freeze grants listed with day, reload from disk.
-- [ ] 5.6 Eight stub features in their own folders + `GamificationFeatureRegistry.makeAll(directory:)`. Test: ids unique, order fixed.
-- [ ] 5.7 `Achievements.swift`: Optional `visibility`, `edition`, `rarityOverride`, `featureId`; `.featureEvaluated` condition; `AchievementEngine` meta denominator excludes `.featureEvaluated`; `AchievementRarity` honours override. Tests incl. the unchanged-denominator scenario.
-- [ ] 5.8 `BadgeRegistry.all` + test: no duplicate ids.
-- [ ] 5.9 `XPAward+Features.swift` constants (D10).
-- [ ] 5.10 `GamificationMoment.feature(FeatureMoment)` case.
+- [x] 5.1 `WeekKey` (ISO-8601 week "2026-W39", Monday start, `minimumDaysInFirstWeek = 4`) + tests across year boundaries (2026-12-31, 2027-01-01, 2020-12-31 = W53).
+- [x] 5.2 `DeterministicRandom` (djb2 + LCG, same algorithm as `DailyChallengeSelection`, which is left untouched) + weighted pick. Tests.
+- [x] 5.3 `DayPredicate`, `WeekPredicate`, `DataRequirement`, `SignalEvaluator`. One test per case + missing-data paths.
+- [x] 5.4 `GamificationFeature` protocol, `FeatureContext`, `FeatureUpdate`, `RewardGrant`, `FeatureMoment`, `FeatureSummary`.
+- [x] 5.5 `RewardLedger` (JSON actor). Tests: idempotent XP, freeze grants listed with day, reload from disk.
+- [x] 5.6 Eight stub features in their own folders + `GamificationFeatureRegistry.makeAll(directory:)`. Test: ids unique, order fixed.
+- [x] 5.7 `Achievements.swift`: Optional `visibility`, `edition`, `rarityOverride`, `featureId`; `.featureEvaluated` condition; `AchievementEngine` meta denominator excludes `.featureEvaluated`; `AchievementRarity` honours override. Tests incl. the unchanged-denominator scenario.
+- [x] 5.8 `BadgeRegistry.all` + test: no duplicate ids.
+- [x] 5.9 `XPAward+Features.swift` constants (D10).
+- [x] 5.10 `GamificationMoment.feature(FeatureMoment)` case.
 
 ## 6. Gamification — challenge trim and creative challenges
 
-- [ ] 6.1 `ChallengeKind.signalDays(DayPredicate, minDays:)` and `.signalWeek(WeekPredicate)`; `ChallengeEngine.progress` gains an optional `signals: SignalsSnapshot?` parameter (default nil → signal kinds report 0 progress).
-- [ ] 6.2 `ChallengeTemplates+Signals.swift`: the 24 templates in design D11, appended to `ChallengeCatalog.all`.
-- [ ] 6.3 `ChallengeRotationPolicy` (weights + ladder allowlist) and weighted `ChallengeRotation.pickNext`; `ChallengeStore.recentTemplateIds` cap 3 → 8 (Optional-safe decode).
-- [ ] 6.4 `allChallengesCompleted` denominator = templates with static weight > 0.
-- [ ] 6.6 Level curve (D10): `LevelCurve.growthFactor` 1.045 → 1.0505; `XPStore.peakLevel` (Optional) so a reached level is never lowered (displayed = max(curve, peak)); level-up moments / level achievements only above the peak. Tests: level 84 XP ≈ 116 k; an XP total that was level N on the old curve still displays ≥ N; a level-up fires only above the peak; old `XPStore` JSON decodes.
-- [ ] 6.5 Tests: `ChallengeRotationPolicyTests`, signal-kind progress tests (Something Fishy, Fibre Fanatic missing-macro day), back-compat decode of an old `ChallengeStore` JSON fixture, existing `ChallengeTemplateCoverageTests` still pass.
+- [x] 6.1 `ChallengeKind.signalDays(DayPredicate, minDays:)` and `.signalWeek(WeekPredicate)`; `ChallengeEngine.progress` gains an optional `signals: SignalsSnapshot?` parameter (default nil → signal kinds report 0 progress).
+- [x] 6.2 `ChallengeTemplates+Signals.swift`: the 24 templates in design D11, appended to `ChallengeCatalog.all`.
+- [x] 6.3 `ChallengeRotationPolicy` (weights + ladder allowlist) and weighted `ChallengeRotation.pickNext`; `ChallengeStore.recentTemplateIds` cap 3 → 8 (Optional-safe decode).
+- [x] 6.4 `allChallengesCompleted` denominator = templates with static weight > 0.
+- [x] 6.6 Level curve (D10): `LevelCurve.growthFactor` 1.045 → 1.0505; `XPStore.peakLevel` (Optional) so a reached level is never lowered (displayed = max(curve, peak)); level-up moments / level achievements only above the peak. Tests: level 84 XP ≈ 116 k; an XP total that was level N on the old curve still displays ≥ N; a level-up fires only above the peak; old `XPStore` JSON decodes.
+- [x] 6.5 Tests: `ChallengeRotationPolicyTests`, signal-kind progress tests (Something Fishy, Fibre Fanatic missing-macro day), back-compat decode of an old `ChallengeStore` JSON fixture, existing `ChallengeTemplateCoverageTests` still pass.
 
 ## 7. App wiring (thin)
 
-- [ ] 7.1 `AppServices`: instantiate `DayLogDigestStore`, `ActivityCacheStore`, `FoodProvenanceStore`, `RewardLedger`; expose via `AppEnvironment`.
-- [ ] 7.2 Write the day-log digest where `DayLogLoader` and `GamificationEngine.refreshGoalStatus` already fetch a day log; write active kcal where `DayLogLoader` already reads it.
-- [ ] 7.3 `GamificationSignalsSync`: on foreground/background refresh (never on confirm), at most every 30 min, read activities for the last 14 days (limit 20) and `socialProfile` first name (once per day); cache; failures → `DiagnosticsLog(.error, category: "signals")`; auth errors → existing banner.
-- [ ] 7.4 Record OFF provenance in the existing OFF match / custom-food-create flow (local write, after the user's action, no network await added).
-- [ ] 7.5 `FeatureHost`: builds `SignalsInput` from stores, runs registry features, applies ledger/badges/moments, catches and logs per-feature errors. Called at the end of `GamificationEngine.refresh` and `handleLogConfirmed` (≤ 3 lines each).
-- [ ] 7.6 `MomentOverlay`: render `.feature` moments generically (symbol, title, message, XP; style colour; haptic; Reduce Motion respected).
-- [ ] 7.7 `ProgressSlotHost` + 8 stub slot views; `TodaySlotHost` + 2 stub banners; one line each in `ProgressHomeView` and `TodayView`.
-- [ ] 7.8 `AchievementsView` + summary card read `BadgeRegistry`; "Secret" group of `???` tiles; "Limited edition" group.
+- [x] 7.1 `AppServices`: instantiate `DayLogDigestStore`, `ActivityCacheStore`, `FoodProvenanceStore`, `RewardLedger`; expose via `AppEnvironment`.
+- [x] 7.2 Write the day-log digest where `DayLogLoader` and `GamificationEngine.refreshGoalStatus` already fetch a day log; write active kcal where `DayLogLoader` already reads it.
+- [x] 7.3 `GamificationSignalsSync`: on foreground/background refresh (never on confirm), at most every 30 min, read activities for the last 14 days (limit 20) and `socialProfile` first name (once per day); cache; failures → `DiagnosticsLog(.error, category: "signals")`; auth errors → existing banner.
+- [x] 7.4 Record OFF provenance in the existing OFF match / custom-food-create flow (local write, after the user's action, no network await added).
+- [x] 7.5 `FeatureHost`: builds `SignalsInput` from stores, runs registry features, applies ledger/badges/moments, catches and logs per-feature errors. Called at the end of `GamificationEngine.refresh` and `handleLogConfirmed` (≤ 3 lines each).
+- [x] 7.6 `MomentOverlay`: render `.feature` moments generically (symbol, title, message, XP; style colour; haptic; Reduce Motion respected).
+- [x] 7.7 `ProgressSlotHost` + 8 stub slot views; `TodaySlotHost` + 2 stub banners; one line each in `ProgressHomeView` and `TodayView`.
+- [x] 7.8 `AchievementsView` + summary card read `BadgeRegistry`; "Secret" group of `???` tiles; "Limited edition" group.
 
 ## 8. Verify
 
-- [ ] 8.1 `openspec validate add-gamification-signals --strict` passes.
+- [x] 8.1 `openspec validate add-gamification-signals --strict` passes.
 - [ ] 8.2 CI green: `swift test` for GarminKit, FoodLogCore, Gamification; app + widget `xcodebuild`.
 - [ ] 8.3 On-device check (AltStore build): existing streak/level/achievements unchanged after upgrade; Progress tab renders with empty slots; after a refresh, Settings → Diagnostics shows no `signals` errors and a run logged on the watch appears in the cached activities (verify via a debug line in Diagnostics).
