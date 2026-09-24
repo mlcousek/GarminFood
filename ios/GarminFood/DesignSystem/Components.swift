@@ -169,6 +169,7 @@ struct PrimaryButton: View {
         Button(action: action) {
             Text(title)
                 .font(.headline)
+                .foregroundStyle(isDisabled ? Color.secondary : Theme.onAccent)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Theme.Spacing.sm + 2)
         }
@@ -247,16 +248,16 @@ extension TodaySummary.GoalState {
 extension CalorieBand {
     /// The home calorie ring's stepped scale (today-dashboard spec). Only
     /// the ring uses this; the macro bars and meal cards keep the coarser
-    /// `GoalState.tint` above. Reuses existing tokens where one already
-    /// means the right thing; yellow and red have no token of their own, so
-    /// they are defined here, next to the only place that draws them.
+    /// `GoalState.tint` above. One theme token per band (add-themes-and-
+    /// layout; Classic's values are the former literals here).
     var tint: Color {
         switch self {
-        case .low: return Theme.grace
-        case .building, .slightlyOver: return Theme.ember
-        case .approaching: return Color(red: 0.96, green: 0.79, blue: 0.18)
-        case .onTarget: return Theme.success
-        case .over: return Color(red: 0.86, green: 0.24, blue: 0.23)
+        case .low: return Theme.bandLow
+        case .building: return Theme.bandBuilding
+        case .approaching: return Theme.bandApproaching
+        case .onTarget: return Theme.bandOnTarget
+        case .slightlyOver: return Theme.bandSlightlyOver
+        case .over: return Theme.bandOver
         }
     }
 

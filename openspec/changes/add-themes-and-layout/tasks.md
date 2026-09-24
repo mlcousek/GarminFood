@@ -32,7 +32,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
   - a root `.themed(store)` in `ContentView` that replaces `.tint(Theme.accent)`
 
   Every new file gets a header comment. CI green.
-- [ ] 1.7 **Migrate `DesignSystem/`** to palette roles: `CardStyle`, `ProgressRing`, `MacroBar`, `PrimaryButton` (label uses `onAccent`), `StatTile`, `DaySwitcher`, `Tag`, `FavoriteToggleButton`, `GoalState.tint`, and `CalorieBand.tint` (whose literals move into Classic). `BadgeMedallion` rarity colors stay as they are. CI green.
+- [x] 1.7 **Migrate `DesignSystem/`** to palette roles: `CardStyle`, `ProgressRing`, `MacroBar`, `PrimaryButton` (label uses `onAccent`), `StatTile`, `DaySwitcher`, `Tag`, `FavoriteToggleButton`, `GoalState.tint`, and `CalorieBand.tint` (whose literals move into Classic). `BadgeMedallion` rarity colors stay as they are. CI green.
 - [ ] 1.8 **Migrate batch A** (R4: only hard-coded colors are edited): `Today/`, `Fasting/`, `Weight/`, `Hydration/`. Hydration moves from `carbs` to `water`. CI green.
 - [ ] 1.9 **Migrate batch B**: `Catalog/`, `LogEntry/`, `CustomFood/`, `MealPreset/`, `Shortcuts/`. The 9 `.red` error texts become `danger`, and the `.green` swipe tint becomes `success`. CI green.
 - [ ] 1.10 **Migrate batch C**: `Progress/`, `Trends/`, `Profile/`, `Home/` (`MomentOverlay`), `App/` banners. Text on colored fills uses `onAccent`. CI green.
