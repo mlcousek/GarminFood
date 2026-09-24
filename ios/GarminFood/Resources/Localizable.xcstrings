@@ -445,6 +445,18 @@
         }
       }
     },
+    "Adjust amount": {
+      "comment": "Accessibility label of the quantity stepper (label hidden visually).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit množství"
+          }
+        }
+      }
+    },
     "Adjusted for dark mode to stay readable.": {
       "comment": "Settings -> Appearance page. Note under a custom accent that was lightened for contrast.",
       "extractionState": "manual",
@@ -513,6 +525,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "také v: %@"
+          }
+        }
+      }
+    },
+    "Amount": {
+      "comment": "Row label of the quantity field when typing grams or millilitres.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Množství"
+          }
+        }
+      }
+    },
+    "Amount in grams": {
+      "comment": "VoiceOver label of the quantity text field when typing grams.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Množství v gramech"
+          }
+        }
+      }
+    },
+    "Amount in millilitres": {
+      "comment": "VoiceOver label of the quantity text field when typing millilitres.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Množství v mililitrech"
           }
         }
       }
@@ -1539,6 +1587,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukončeno"
+          }
+        }
+      }
+    },
+    "Enter as": {
+      "comment": "Label of the segmented picker choosing whether a quantity is typed in grams/ml or in servings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadat jako"
           }
         }
       }
@@ -2881,6 +2941,18 @@
         }
       }
     },
+    "Number of servings": {
+      "comment": "VoiceOver label of the quantity text field when typing servings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počet porcí"
+          }
+        }
+      }
+    },
     "Nutrition plan": {
       "comment": "Settings section header: goals set in Garmin Connect.",
       "extractionState": "manual",
@@ -3205,6 +3277,18 @@
         }
       }
     },
+    "Quantity": {
+      "comment": "Row label of the quantity field when typing a number of servings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počet porcí"
+          }
+        }
+      }
+    },
     "Quick pick": {
       "comment": "Log Food screen: shelf title for the most-logged foods.",
       "extractionState": "manual",
@@ -3519,6 +3603,18 @@
     },
     "Serving": {
       "comment": "Form label: the serving (portion) of a food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce"
+          }
+        }
+      }
+    },
+    "Servings": {
+      "comment": "Segment of the 'Enter as' picker: type the quantity as a number of servings.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
