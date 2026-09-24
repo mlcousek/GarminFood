@@ -93,7 +93,9 @@ struct AppIconGridSection: View {
     }
 
     private func select(_ option: AppIconOption) {
-        guard option != selected else { return }
+        // Not `option != selected`: a removed icon still on the Home Screen
+        // shows as "GF Teal" selected, and tapping it must still switch.
+        // `set` itself skips an icon that is already showing.
         AppIconSwitcher.set(option) { error in
             if let error {
                 errorMessage = error.localizedDescription

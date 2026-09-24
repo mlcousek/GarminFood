@@ -103,11 +103,20 @@ enum AppIconSwitcher {
         return AppIconOption(rawValue: name) ?? .default
     }
 
+    /// Whether the Home Screen already shows `option`. Compares the raw
+    /// icon names, not `current`: `current` reads a removed or unknown name
+    /// as `.default`, which would make picking the default icon a silent
+    /// no-op while a removed icon is still on the Home Screen (e.g. when
+    /// `resetRemovedAlternateIfNeeded` failed).
+    static func isShowing(_ option: AppIconOption) -> Bool {
+        option.alternateIconName == UIApplication.shared.alternateIconName
+    }
+
     /// Switches the Home Screen icon. iOS shows its own "You have changed
     /// the icon" alert; that can't (and shouldn't) be suppressed. The
     /// completion runs on the main actor with `nil` on success.
     static func set(_ option: AppIconOption, completion: @escaping @MainActor (Error?) -> Void) {
-        guard option != current else {
+        guard !isShowing(option) else {
             completion(nil)
             return
         }
