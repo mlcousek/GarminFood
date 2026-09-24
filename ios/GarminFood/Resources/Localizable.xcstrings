@@ -37,6 +37,18 @@
         }
       }
     },
+    "%@ kcal, no target": {
+      "comment": "Meal detail: calories eaten when the meal has no target; %@ = whole kcal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kcal, bez cíle"
+          }
+        }
+      }
+    },
     "%@ kg": {
       "comment": "A weight in kilograms; %@ is the formatted number.",
       "extractionState": "manual",
@@ -57,6 +69,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ ml"
+          }
+        }
+      }
+    },
+    "%@ of %@ kcal": {
+      "comment": "Meal detail: calories eaten of the meal's target; %@ = whole kcal values.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ z %2$@ kcal"
           }
         }
       }
@@ -475,6 +499,18 @@
         }
       }
     },
+    "Add a food to this meal to see it here.": {
+      "comment": "Meal detail empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidej do tohoto jídla potravinu a uvidíš ji tady."
+          }
+        }
+      }
+    },
     "Add food": {
       "comment": "Button on a meal card / meal detail adding a food to that meal.",
       "extractionState": "manual",
@@ -831,6 +867,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kalorie"
+          }
+        }
+      }
+    },
+    "Calories: %@": {
+      "comment": "VoiceOver label of the meal detail calorie ring; %@ = meal name, e.g. 'Breakfast'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie: %@"
           }
         }
       }
@@ -2035,6 +2083,18 @@
         }
       }
     },
+    "Foods": {
+      "comment": "Meal detail section header listing the logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potraviny"
+          }
+        }
+      }
+    },
     "Foods logged": {
       "comment": "Profile stat tile: total number of food entries logged.",
       "extractionState": "manual",
@@ -3187,6 +3247,18 @@
         }
       }
     },
+    "Nutrients": {
+      "comment": "Meal detail section header listing Garmin's nutrient totals.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Živiny"
+          }
+        }
+      }
+    },
     "Nutrition plan": {
       "comment": "Settings section header: goals set in Garmin Connect.",
       "extractionState": "manual",
@@ -4269,6 +4341,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "Suggested by Garmin Connect": {
+      "comment": "Caption under a meal's calorie target and time window, which come from Garmin Connect.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Navrženo Garmin Connect"
           }
         }
       }
