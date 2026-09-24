@@ -7,8 +7,11 @@
 //   - checks the manifest at most once every 24 h, unless forced by
 //     Settings' "Download now";
 //   - downloads only when the manifest's SHA-256 differs from what's
-//     installed, and only on Wi-Fi unless the user allowed cellular. Low
-//     Data Mode is always respected;
+//     installed. The AUTOMATIC check runs only on Wi-Fi (not Low Data Mode)
+//     unless the user allowed cellular; an explicit "Download now" tap
+//     (`force`) may use any network -- the file is ~300 KB, and refusing a
+//     deliberate tap on a hotspot or in Low Data Mode just looked broken
+//     (owner report, 2026-09-24: "I can not download the Czech database");
 //   - verifies the SHA-256 and fully decodes the new file BEFORE it
 //     replaces anything, then swaps it in with `replaceItemAt` and
 //     excludes it from backup, since it can be downloaded again. A failed,
@@ -22,9 +25,10 @@
 //     works without it.
 //
 // The network is behind `OfflineIndexFetching` (faked in tests). The real
-// URLSession implementation is at the bottom. Its session disallows
-// expensive and constrained networks, so "Wi-Fi only" is enforced by the
-// OS, not by a reachability guess. Nothing here talks to Garmin.
+// URLSession implementation is at the bottom. Unless any network is
+// allowed, its session disallows cellular, expensive and constrained
+// networks, so "Wi-Fi only" is enforced by the OS, not by a reachability
+// guess. Nothing here talks to Garmin.
 //
 // Used by the app's composition root (AppServices), BackgroundRefresh, the
 // foreground check and SettingsView. Tested by OfflineIndexStoreTests.
@@ -177,10 +181,12 @@ public actor OfflineIndexStore {
         updateInFlight = true
         defer { updateInFlight = false }
         loadInstalledIndexIfNeeded()
+        // A deliberate "Download now" tap may use any network.
+        let anyNetwork = allowsCellular || force
 
         let manifest: OfflineIndexManifest
         do {
-            let data = try await fetcher.fetchManifest(from: manifestURL, allowsCellular: allowsCellular)
+            let data = try await fetcher.fetchManifest(from: manifestURL, allowsCellular: anyNetwork)
             manifest = try Self.decodeManifest(data)
         } catch {
             return transportOutcome(error, stage: "manifest")
@@ -201,7 +207,7 @@ public actor OfflineIndexStore {
 
         let downloaded: URL
         do {
-            downloaded = try await fetcher.download(from: fileURL, allowsCellular: allowsCellular)
+            downloaded = try await fetcher.download(from: fileURL, allowsCellular: anyNetwork)
         } catch {
             let outcome = transportOutcome(error, stage: "download")
             if outcome == .waitingForWiFi {
@@ -364,8 +370,10 @@ public struct URLSessionOfflineIndexFetcher: OfflineIndexFetching {
     static func session(allowsCellular: Bool) -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.allowsCellularAccess = allowsCellular
+        // `allowsCellular` means "any network": cellular, a personal
+        // hotspot (expensive) and Low Data Mode (constrained) alike.
         configuration.allowsExpensiveNetworkAccess = allowsCellular
-        configuration.allowsConstrainedNetworkAccess = false
+        configuration.allowsConstrainedNetworkAccess = allowsCellular
         configuration.waitsForConnectivity = false
         configuration.timeoutIntervalForRequest = 30
         configuration.timeoutIntervalForResource = 300
