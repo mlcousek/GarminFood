@@ -141,7 +141,7 @@ struct FoodShelfCard: View {
             }
             Spacer(minLength: 0)
             if let calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
+                MacroBadge(value: calories, unit: " kcal", accessibleUnit: String(localized: "kilocalories"))
             }
         }
         .padding(Theme.Spacing.sm)

@@ -25,6 +25,54 @@
         }
       }
     },
+    "%@, %@ times %@": {
+      "comment": "VoiceOver label of a quick-pick card. %1$@ = food name, %2$@ = usual quantity (e.g. 2), %3$@ = serving (e.g. 100 g).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@krát %3$@"
+          }
+        }
+      }
+    },
+    "%@, %@ times %@, %@ kilocalories": {
+      "comment": "VoiceOver label of a quick-pick card. %1$@ = food name, %2$@ = quantity, %3$@ = serving, %4$@ = total energy (whole number).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@krát %3$@, %4$@ kilokalorií"
+          }
+        }
+      }
+    },
+    "%@, favorite": {
+      "comment": "VoiceOver label of a favorite food card. %@ = food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, oblíbené"
+          }
+        }
+      }
+    },
+    "%@, favorite, %@ kilocalories": {
+      "comment": "VoiceOver label of a favorite food card. 1st %@ = food name, 2nd %@ = energy per serving (whole number).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, oblíbené, %2$@ kilokalorií"
+          }
+        }
+      }
+    },
     "%lld days left": {
       "comment": "Challenge status: whole days remaining (1 or more). Plural.",
       "extractionState": "manual",
@@ -1809,6 +1857,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ponechat v Garminu"
+          }
+        }
+      }
+    },
+    "kilocalories": {
+      "comment": "Spoken unit after an energy value (VoiceOver), e.g. '290 kilocalories'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kilokalorií"
           }
         }
       }
