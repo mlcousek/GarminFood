@@ -45,7 +45,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 ## 2. Wave 2: built-in themes, appearance and style options (size: M)
 
 - [x] 2.1 **`ThemeCatalog` built-ins** (R2) as data: the Legible and CVD-safe macro and state sets and the 13 themes, brand colors from their icons, fitted by the resolver (R3). `BuiltInThemeContrastTests` and `DistinctnessTests` (D5) run over every theme, scheme and contrast mode, with Classic's closed exemption list. Record any value nudged to pass in the catalog comment. CI green.
-- [ ] 2.2 **`PaletteResolver` steps 2 to 5** (D4): the macro set override, Differentiate Without Color mapped to CVD-safe, increased contrast (Classic included), and `onAccent` derivation. Tests. CI green.
+- [x] 2.2 **`PaletteResolver` steps 2 to 5** (D4): the macro set override, Differentiate Without Color mapped to CVD-safe, increased contrast (Classic included), and `onAccent` derivation. Tests. CI green.
 - [ ] 2.3 **`AccentAdjuster`** plus the custom accent in the settings. Tests: coral in light is fitted with the hue kept, a passing color is unchanged, `#FFFF00` terminates, lime is darkened. Also test the macro-collision warning. CI green.
 - [ ] 2.4 **Settings → Appearance screen** (`Profile/Appearance/`, structure per R6, including the app icon grid and a disabled "Customize layout — Coming soon" row):
   - a theme gallery grid of live mini previews (a small summary ring and macro bars drawn with that theme's palette)
