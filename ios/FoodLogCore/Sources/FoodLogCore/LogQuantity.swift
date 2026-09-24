@@ -28,9 +28,15 @@ public enum LogQuantity {
     }
 
     /// What a screen shows when `isValid` fails for a quantity the user
-    /// typed.
+    /// typed. Localized from this package's own `Resources/<lang>.lproj`
+    /// (add-localization design.md D3); the key is the English text with
+    /// the limit as `%@`.
     public static var invalidMessage: String {
-        "Enter an amount greater than zero and at most \(NumberDisplay.quantity(maximum))."
+        String(
+            localized: "Enter an amount greater than zero and at most \(NumberDisplay.quantity(maximum)).",
+            bundle: .module,
+            comment: "Validation error under a quantity field. %@ is the maximum number of servings, e.g. 10000."
+        )
     }
 }
 

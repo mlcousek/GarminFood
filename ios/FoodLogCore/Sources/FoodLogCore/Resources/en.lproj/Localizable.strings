@@ -1,0 +1,12 @@
+/*
+  FoodLogCore — English (development language).
+
+  Keys ARE the English source text (add-localization design.md D4), so this
+  file maps every key to itself. It must exist and list every key that
+  cs.lproj lists: without an en.lproj, a phone preferring English would pick
+  the only localization present (Czech). tools/check-localizations.mjs
+  enforces en/cs key parity. UTF-8, one `"key" = "value";` per string.
+*/
+
+/* Validation error under a quantity field. %@ is the maximum number of servings, e.g. 10000. */
+"Enter an amount greater than zero and at most %@." = "Enter an amount greater than zero and at most %@.";

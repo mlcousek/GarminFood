@@ -20,13 +20,16 @@ public enum AchievementRarity: Int, Sendable, Equatable, Hashable, CaseIterable,
         lhs.rawValue < rhs.rawValue
     }
 
+    /// Localized from this package's `Resources/<lang>.lproj`
+    /// (add-localization design.md D3). In Czech these are adjectives
+    /// agreeing with "odznak" (badge, masculine) -- hence the comments.
     public var displayName: String {
         switch self {
-        case .common: return "Common"
-        case .uncommon: return "Uncommon"
-        case .rare: return "Rare"
-        case .epic: return "Epic"
-        case .legendary: return "Legendary"
+        case .common: return String(localized: "Common", bundle: .module, comment: "Achievement rarity grade (adjective describing a badge).")
+        case .uncommon: return String(localized: "Uncommon", bundle: .module, comment: "Achievement rarity grade (adjective describing a badge).")
+        case .rare: return String(localized: "Rare", bundle: .module, comment: "Achievement rarity grade (adjective describing a badge).")
+        case .epic: return String(localized: "Epic", bundle: .module, comment: "Achievement rarity grade (adjective describing a badge).")
+        case .legendary: return String(localized: "Legendary", bundle: .module, comment: "Achievement rarity grade (adjective describing a badge).")
         }
     }
 

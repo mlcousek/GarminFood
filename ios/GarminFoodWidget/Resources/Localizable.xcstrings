@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Log Food" : {
+      "comment" : "Home Screen / Lock Screen widget name, label and VoiceOver label: opens the food catalog.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapsat jídlo"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

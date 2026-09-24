@@ -1,0 +1,20 @@
+/*
+  Gamification — Czech. Informal "ty" register (add-localization design.md D5).
+  Every key here must also be in en.lproj/Localizable.strings, with the same
+  format specifiers (checked by tools/check-localizations.mjs).
+*/
+
+/* Achievement rarity grade — masculine adjective agreeing with "odznak" (badge). */
+"Common" = "Běžný";
+
+/* Achievement rarity grade — masculine adjective agreeing with "odznak" (badge). */
+"Uncommon" = "Neobvyklý";
+
+/* Achievement rarity grade — masculine adjective agreeing with "odznak" (badge). */
+"Rare" = "Vzácný";
+
+/* Achievement rarity grade — masculine adjective agreeing with "odznak" (badge). */
+"Epic" = "Epický";
+
+/* Achievement rarity grade — masculine adjective agreeing with "odznak" (badge). */
+"Legendary" = "Legendární";

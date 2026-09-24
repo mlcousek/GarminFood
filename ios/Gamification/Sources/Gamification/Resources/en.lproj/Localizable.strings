@@ -1,0 +1,24 @@
+/*
+  Gamification — English (development language).
+
+  Keys ARE the English source text (add-localization design.md D4), so this
+  file maps every key to itself. It must exist and list every key that
+  cs.lproj lists: without an en.lproj, a phone preferring English would pick
+  the only localization present (Czech). tools/check-localizations.mjs
+  enforces en/cs key parity. UTF-8, one `"key" = "value";` per string.
+*/
+
+/* Achievement rarity grade (adjective describing a badge). */
+"Common" = "Common";
+
+/* Achievement rarity grade (adjective describing a badge). */
+"Uncommon" = "Uncommon";
+
+/* Achievement rarity grade (adjective describing a badge). */
+"Rare" = "Rare";
+
+/* Achievement rarity grade (adjective describing a badge). */
+"Epic" = "Epic";
+
+/* Achievement rarity grade (adjective describing a badge). */
+"Legendary" = "Legendary";
