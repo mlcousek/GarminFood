@@ -10,6 +10,7 @@
 
 import SwiftUI
 import FoodLogCore
+import AppearanceKit
 
 // MARK: - MacroBadge
 
@@ -211,20 +212,55 @@ struct EmptyStateView: View {
 
 // MARK: - Card
 
-/// The one surface style for grouped content on the new screens.
+/// The one surface style for grouped content on the new screens. Follows
+/// the Card style option (add-themes-and-layout D6): Filled (default,
+/// today's look), Elevated (soft shadow in light; the raised surface in
+/// dark, where shadows vanish), Outlined (background fill + stroke, 2 pt
+/// under Increase Contrast) and Glass (material; Filled under Reduce
+/// Transparency). Default padding follows the Density option.
 struct CardStyle: ViewModifier {
-    var padding: CGFloat = Theme.Spacing.md
+    var padding: CGFloat? = nil
+
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.colorSchemeContrast) private var contrast
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     func body(content: Content) -> some View {
         content
-            .padding(padding)
+            .padding(padding ?? Theme.Density.cardPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.heroBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.lg, style: .continuous))
+            .background { surface }
+    }
+
+    @ViewBuilder
+    private var surface: some View {
+        let shape = RoundedRectangle(cornerRadius: Theme.Radius.lg, style: .continuous)
+        switch effectiveStyle {
+        case .filled:
+            shape.fill(Theme.heroBackground)
+        case .elevated:
+            if colorScheme == .dark {
+                shape.fill(Theme.cardBackground)
+            } else {
+                shape.fill(Theme.heroBackground)
+                    .shadow(color: Color.primary.opacity(0.08), radius: 8, x: 0, y: 2)
+            }
+        case .outlined:
+            shape.fill(Theme.groupedBackground)
+                .overlay(shape.strokeBorder(Theme.stroke, lineWidth: contrast == .increased ? 2 : 1))
+        case .glass:
+            shape.fill(.regularMaterial)
+        }
+    }
+
+    private var effectiveStyle: CardStyleOption {
+        let style = Theme.style.cardStyle
+        return style == .glass && reduceTransparency ? .filled : style
     }
 }
 
 extension View {
-    func card(padding: CGFloat = Theme.Spacing.md) -> some View {
+    func card(padding: CGFloat? = nil) -> some View {
         modifier(CardStyle(padding: padding))
     }
 }

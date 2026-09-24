@@ -19,7 +19,7 @@ struct ProgressHomeView: View {
         let engine = environment.gamificationEngine
 
         ScrollView {
-            VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
+            VStack(alignment: .leading, spacing: Theme.Density.stackSpacing) {
                 NavigationLink {
                     StreakDetailView()
                 } label: {

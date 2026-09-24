@@ -61,6 +61,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
   - Container-level density.
   - Number font through `.numberStyle()` and `.fontDesign`.
   - Make `heroNumber` and the Level 48 pt number `@ScaledMetric`.
+  - *Status:* card styles, corners, container density (Today/Progress stacks, card padding) and number font are built (`CardStyle`, `Theme.Radius`, `Theme.Density`, `Font.heroNumber` etc. read `ThemeRuntime`). **Still open:** the `@ScaledMetric` hero/Level numbers (needs call-site edits in Today/Progress files other agents are translating; do after those land).
 
   CI green.
 - [ ] 2.6 **Optional Today gradient header** (off by default), with the Reduce Transparency flat tint. Add a contrast test of `.primary` against the blended stops. CI green.
