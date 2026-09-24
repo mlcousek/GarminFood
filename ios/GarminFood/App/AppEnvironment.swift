@@ -89,6 +89,9 @@ final class AppEnvironment {
     /// add-themes-and-layout: the look (theme, style, custom accent) and
     /// the root that pushes it into `ThemeRuntime` (ThemeStore.swift).
     let themeStore: ThemeStore
+    /// add-themes-and-layout D8: the Today (and later Log Food / Progress)
+    /// card order, visibility and variants (Layout/LayoutStore.swift).
+    let layoutStore: LayoutStore
     let notificationPreferences: NotificationPreferencesStore
     let profile: ProfileLoader
     let donations: LogDonations
@@ -195,6 +198,7 @@ final class AppEnvironment {
         )
         self.preferences = preferences
         self.themeStore = ThemeStore()
+        self.layoutStore = LayoutStore()
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
