@@ -8,7 +8,7 @@
 - [x] 2.1 `Features/SportBody/SportActivityClass.swift` (design D1) + tests.
 - [x] 2.2 `Features/SportBody/SportRules.swift`: fuel, recovery, earned-it, double day, gel guru, long haul, race day, carb loader (design D2).
 - [x] 2.3 `Features/SportBody/BodyRules.swift`: goal direction, progress, first kilo, halfway, target, steady-30, fasting tiers.
-- [x] 2.4 `SportBodyCatalog.swift`: badge definitions (`featureId: "sport"`, rarity overrides).
+- [x] 2.4 `SportBodyCatalog.swift`: badge definitions (`featureId: SportAndBodyFeature.id` = "sportBody", rarity overrides).
 - [x] 2.5 Tests: every edge in design D7.
 
 ## 3. Feature
@@ -24,6 +24,6 @@
 
 ## 5. Verify
 
-- [ ] 5.1 `openspec validate add-sport-and-body-achievements --strict` passes.
+- [x] 5.1 `openspec validate add-sport-and-body-achievements --strict` passes.
 - [ ] 5.2 CI green (`swift test` FoodLogCore + Gamification; app + widget build).
 - [ ] 5.3 On-device check: after a real run synced to Garmin, a pre-run carb log shows the run as fuelled in Sport & Body and unlocks "Fuelled Up" once; a post-run protein log marks it recovered.
