@@ -108,6 +108,8 @@ public indirect enum DayPredicate: Sendable, Equatable, Codable {
     case macroAtLeast(SignalMacro, grams: Double)
     /// Total ≤ grams on a day with at least `minEntries` entries.
     case macroAtMost(SignalMacro, grams: Double, minEntries: Int)
+    /// The entries of `meal` add up to at least `grams` of the macro.
+    case mealMacroAtLeast(SignalMeal, SignalMacro, grams: Double)
     case waterGoalMet
     /// An activity of at least `minMinutes`.
     case hasActivity(minMinutes: Int)
@@ -126,7 +128,7 @@ public indirect enum DayPredicate: Sendable, Equatable, Codable {
              .tagInMeal, .mealLogged, .firstLogBefore, .lastLogBefore, .distinctFoodsAtLeast,
              .newFood, .newCzechBrand:
             return []
-        case .goalMet, .macroAtLeast, .macroAtMost:
+        case .goalMet, .macroAtLeast, .macroAtMost, .mealMacroAtLeast:
             return .macros
         case .waterGoalMet:
             return .water

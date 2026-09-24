@@ -18,3 +18,53 @@
 
 /* Achievement rarity grade — masculine adjective agreeing with "odznak" (badge). */
 "Legendary" = "Legendární";
+
+/* add-gamification-signals: creative real-world challenges (ChallengeTemplates+Signals.swift). */
+"Something Fishy" = "Něco rybího";
+"Log fish on 2 different days." = "Zapiš rybu ve 2 různých dnech.";
+"Five-a-Day Week" = "Týden pěti porcí";
+"Log 5 portions of fruit or vegetables on 4 days." = "Zapiš 5 porcí ovoce nebo zeleniny ve 4 dnech.";
+"Rainbow Week" = "Duhový týden";
+"Eat all 6 colours of fruit and vegetables." = "Sněz všech 6 barev ovoce a zeleniny.";
+"Czech Supermarket Safari" = "Safari po českém supermarketu";
+"Log foods from 3 different Czech brands." = "Zapiš jídla od 3 různých českých značek.";
+"Fermentation Station" = "Fermentační stanice";
+"Eat something fermented on 4 days." = "Dej si něco fermentovaného ve 4 dnech.";
+"Pulse Check" = "Luštěninová kontrola";
+"Eat legumes on 3 days." = "Dej si luštěniny ve 3 dnech.";
+"Hydration Station" = "Pitný režim";
+"Reach your water goal on 5 days." = "Splň svůj cíl pitného režimu v 5 dnech.";
+"Early Bird Week" = "Týden ranního ptáčete";
+"Log your first food before 9:00 on 5 days." = "Zapiš první jídlo dne před 9:00 v 5 dnech.";
+"Kitchen Curfew" = "Kuchyňská večerka";
+"Log your last food before 20:00 on 5 days." = "Zapiš poslední jídlo dne před 20:00 v 5 dnech.";
+"Green Breakfast Club" = "Klub zelených snídaní";
+"Have vegetables at breakfast on 3 days." = "Dej si zeleninu ke snídani ve 3 dnech.";
+"Fibre Fanatic" = "Vlákninový nadšenec";
+"Eat at least 30 g of fibre on 4 days." = "Sněz aspoň 30 g vlákniny ve 4 dnech.";
+"Sugar Detective" = "Cukrový detektiv";
+"Keep sugar at 40 g or less on 4 days with at least 3 entries." = "Drž cukr na 40 g nebo méně ve 4 dnech s aspoň 3 záznamy.";
+"Fuel & Recover" = "Doplň a zregeneruj";
+"Log 20 g of protein within an hour after an activity, on 3 days." = "Zapiš 20 g bílkovin do hodiny po aktivitě, ve 3 dnech.";
+"Active and On Target" = "Aktivně a v cíli";
+"Do a 30-minute activity and hit your calorie goal on the same day, on 3 days." = "Stihni aspoň 30minutovou aktivitu a kalorický cíl v tentýž den, ve 3 dnech.";
+"Nut Job" = "Oříškový blázen";
+"Eat nuts on 4 days." = "Dej si ořechy ve 4 dnech.";
+"Global Kitchen" = "Světová kuchyně";
+"Eat dishes from 4 different cuisines." = "Ochutnej jídla ze 4 různých kuchyní.";
+"Tea Time" = "Čas na čaj";
+"Drink tea on 5 days." = "Dej si čaj v 5 dnech.";
+"Soup Season" = "Polévková sezóna";
+"Have a soup on 4 days." = "Dej si polévku ve 4 dnech.";
+"Whole Grain Hero" = "Celozrnný hrdina";
+"Eat whole grains on 5 days." = "Dej si celozrnné jídlo v 5 dnech.";
+"Egg-cellent Week" = "Vajíčkový týden";
+"Eat eggs on 3 days." = "Dej si vejce ve 3 dnech.";
+"Soda-Free Week" = "Týden bez limonád";
+"Skip sugary drinks on 6 days with at least 2 entries." = "Vynech slazené nápoje v 6 dnech s aspoň 2 záznamy.";
+"Paint the Plate" = "Barevný talíř";
+"Eat 4 colours of fruit and vegetables in one day, on 2 days." = "Sněz 4 barvy ovoce a zeleniny za jeden den, ve 2 dnech.";
+"New Horizons" = "Nové obzory";
+"Log 5 foods you have never logged before." = "Zapiš 5 jídel, která v deníku ještě nemáš.";
+"Protein Breakfast" = "Bílkovinová snídaně";
+"Eat at least 20 g of protein at breakfast on 4 days." = "Sněz aspoň 20 g bílkovin ke snídani ve 4 dnech.";

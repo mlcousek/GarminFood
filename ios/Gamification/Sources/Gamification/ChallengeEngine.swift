@@ -72,6 +72,7 @@ public enum ChallengeEngine {
         events: [UsageEvent],
         goalStatuses: [DailyGoalStatus],
         now: Date,
+        signals: SignalsSnapshot? = nil,
         boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
         calendar: Calendar = .current
     ) -> ChallengeProgress {
@@ -242,7 +243,31 @@ public enum ChallengeEngine {
                 longest = max(longest, running)
             }
             return ChallengeProgress(current: longest, target: weekends)
+
+        case .signalDays(let predicate, let minDays):
+            // add-gamification-signals D11: a day counts only when the rule
+            // definitely holds -- a day with unknown data (e.g. an entry
+            // without fibre) simply doesn't count, it is never "failed".
+            guard let signals else { return ChallengeProgress(current: 0, target: minDays) }
+            let days = signalDays(signals, from: windowStart, to: evaluableEnd, calendar: calendar)
+            let count = SignalEvaluator.daysSatisfying(predicate, in: days, history: signals, calendar: calendar).count
+            return ChallengeProgress(current: count, target: minDays)
+
+        case .signalWeek(let predicate):
+            guard let signals else { return ChallengeProgress(current: 0, target: predicate.target) }
+            let days = signalDays(signals, from: windowStart, to: evaluableEnd, calendar: calendar)
+            let count = SignalEvaluator.progress(predicate, over: days, history: signals, calendar: calendar)
+            return ChallengeProgress(current: count, target: predicate.target)
         }
+    }
+
+    /// The data-bearing signal days whose `yyyy-MM-dd` key falls on one of
+    /// the window's nutrition days.
+    private static func signalDays(_ signals: SignalsSnapshot, from start: Date, to end: Date, calendar: Calendar) -> [DaySignals] {
+        let keys = eachDay(from: start, to: end, calendar: calendar).map {
+            NutritionDayBoundary.string(forNutritionDay: $0, calendar: calendar)
+        }
+        return signals.days(keys)
     }
 
     private static func targetCount(for kind: ChallengeKind) -> Int {
@@ -261,6 +286,8 @@ public enum ChallengeEngine {
         case .allFourMealSlotsDays(let minDays): return minDays
         case .sameFoodConsecutiveDays(let minDays): return minDays
         case .consecutiveWeekendsBothDays(let weekends): return weekends
+        case .signalDays(_, let minDays): return minDays
+        case .signalWeek(let predicate): return predicate.target
         }
     }
 

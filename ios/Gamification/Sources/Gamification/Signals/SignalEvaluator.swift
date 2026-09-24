@@ -95,6 +95,14 @@ public enum SignalEvaluator {
             guard let value = macro.value(in: day.totals) else { return nil }
             return value <= grams
 
+        case .mealMacroAtLeast(let meal, let macro, let grams):
+            let inMeal = day.entries.filter { $0.meal == meal }
+            guard !inMeal.isEmpty else { return false }
+            let values = inMeal.compactMap { macro.value(in: $0) }
+            if values.reduce(0, +) >= grams { return true }
+            // Short of the target: a definite "no" only if every value was known.
+            return values.count == inMeal.count ? false : nil
+
         case .waterGoalMet:
             guard day.availability.hasWater, let water = day.waterML,
                   let goal = day.waterGoalML, goal > 0
