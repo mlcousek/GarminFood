@@ -1,0 +1,15 @@
+# Exemptions for tools/lint-design-tokens.sh (add-themes-and-layout D12).
+# One `path:regex  # reason` per line. `path` matches as a suffix of the file
+# path; an empty regex (just `path`) exempts the whole file. Every line must
+# say why the color is intentionally not a theme token.
+
+Shared/ThemeRuntime.swift:UIColor\(red:  # the one bridge from AppearanceKit RGBA values to UIColor
+GarminFood/DesignSystem/BadgeMedallion.swift  # rarity medal colors are fixed by design, not theme roles (D3)
+GarminFood/Catalog/BarcodeScanScreen.swift:Color\.black|\.black\.opacity|Color\.white|foregroundStyle\(\.white\)  # scanner scrim and viewfinder drawn over the live camera
+GarminFood/Home/MomentOverlay.swift:Color\.black\.opacity  # celebration moment scrim
+GarminFood/Profile/AppIconOption.swift:case \.indigo  # enum case name, not a color
+GarminFood/Progress/ProgressViews.swift:foregroundStyle\(\.white\)  # StreakDot glyph on its ember/grace fill in every theme
+GarminFood/Profile/ProfileView.swift:tint\(\.white\)  # loading spinner drawn over the avatar photo
+GarminFood/Profile/SettingsView.swift:foregroundStyle\(\.white\)  # sync-queue count badge on the warning fill
+GarminFoodWidget/GarminFoodHomeWidget.swift:foregroundStyle\(\.white\)  # widget fallback: fixed white on the accent gradient (the widget never loads settings, R4)
+GarminFoodWidget/GarminFoodStreakWidget.swift:foregroundStyle\(\.white\)  # widget fallback: fixed white on the flame gradient (R4)
