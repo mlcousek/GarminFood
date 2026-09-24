@@ -79,6 +79,72 @@
         }
       }
     },
+    "%lld minutes before": {
+      "comment": "Fasting reminder stepper: minutes before the fasting boundary. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minutu předem"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minuty předem"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minuty předem"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minut předem"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minute before"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minutes before"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "A daily nudge to check today's challenges.": {
+      "comment": "Reminders screen footer under the challenges reminder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každodenní připomenutí, ať se podíváš na dnešní výzvy."
+          }
+        }
+      }
+    },
     "About": {
       "comment": "Settings section header.",
       "extractionState": "manual",
@@ -171,6 +237,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bobule"
+          }
+        }
+      }
+    },
+    "Breakfast": {
+      "comment": "Meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snídaně"
           }
         }
       }
@@ -607,6 +685,18 @@
         }
       }
     },
+    "Dinner": {
+      "comment": "Meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Večeře"
+          }
+        }
+      }
+    },
     "Discard": {
       "comment": "Swipe action: drop a queued drink that was never sent.",
       "extractionState": "manual",
@@ -691,6 +781,18 @@
         }
       }
     },
+    "Every day, before your fast ends at %@ and before it starts at %@.": {
+      "comment": "Reminders screen footer; first %@ is the fast's end time, second its start time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každý den před koncem půstu v %@ a před jeho začátkem v %@."
+          }
+        }
+      }
+    },
     "Every logged entry has reached Garmin.": {
       "comment": "Sync queue empty state message.",
       "extractionState": "manual",
@@ -753,6 +855,42 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "Fast ending soon": {
+      "comment": "Reminder toggle: before the fasting window ends.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst brzy končí"
+          }
+        }
+      }
+    },
+    "Fast starting soon": {
+      "comment": "Reminder toggle: before the fasting window starts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst brzy začíná"
+          }
+        }
+      }
+    },
+    "Fasting": {
+      "comment": "Section header / screen title for intermittent fasting.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst"
           }
         }
       }
@@ -1153,6 +1291,18 @@
         }
       }
     },
+    "Lunch": {
+      "comment": "Meal name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oběd"
+          }
+        }
+      }
+    },
     "Macro colors": {
       "comment": "Settings -> Appearance page. Picker label: which colors draw carbs/protein/fat.",
       "extractionState": "manual",
@@ -1173,6 +1323,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sladit ikonu aplikace s motivem"
+          }
+        }
+      }
+    },
+    "Meal reminders": {
+      "comment": "Reminders screen section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomínky jídel"
           }
         }
       }
@@ -1237,6 +1399,18 @@
         }
       }
     },
+    "Notifications are off for GarminFood in iOS Settings, so reminders below won't fire.": {
+      "comment": "Reminders screen: warning when iOS notification permission is off.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oznámení pro GarminFood jsou v Nastavení iOS vypnutá, takže se připomínky níže nezobrazí."
+          }
+        }
+      }
+    },
     "Number font": {
       "comment": "Settings -> Appearance page. Picker label for the typeface of big numbers.",
       "extractionState": "manual",
@@ -1285,6 +1459,18 @@
         }
       }
     },
+    "Only fires on a day you haven't logged anything yet, if you have a streak to lose.": {
+      "comment": "Reminders screen footer under the streak reminder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ozve se jen v den, kdy ještě nemáš nic zapsané, a jen pokud máš sérii, o kterou můžeš přijít."
+          }
+        }
+      }
+    },
     "Open Database License 1.0": {
       "comment": "Settings: link to the license text (proper name of the license).",
       "extractionState": "manual",
@@ -1305,6 +1491,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open Food Facts (ODbL)"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "comment": "Button: open the iOS Settings app.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevřít Nastavení"
           }
         }
       }
@@ -1377,6 +1575,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Připomínky"
+          }
+        }
+      }
+    },
+    "Reminds you at the chosen time only if that meal hasn't been logged yet that day.": {
+      "comment": "Reminders screen footer under meal reminders.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomene se ve zvolený čas, jen pokud to jídlo ještě ten den nemáš zapsané."
           }
         }
       }
@@ -1645,6 +1855,18 @@
         }
       }
     },
+    "Streak at risk": {
+      "comment": "Reminder toggle: warn when the logging streak is about to break.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série v ohrožení"
+          }
+        }
+      }
+    },
     "Sunset": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -1797,6 +2019,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tento motiv je jen světlý."
+          }
+        }
+      }
+    },
+    "Time": {
+      "comment": "Reminder time picker label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čas"
+          }
+        }
+      }
+    },
+    "Today's challenges": {
+      "comment": "Reminder toggle: daily nudge about challenges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnešní výzvy"
+          }
+        }
+      }
+    },
+    "Turn on a daily fasting window in Settings → Fasting first; these only fire while it's on.": {
+      "comment": "Reminders screen footer when no fasting window is set.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdřív si zapni denní okno půstu v Nastavení → Půst. Tyto připomínky fungují jen, když je zapnuté."
           }
         }
       }
