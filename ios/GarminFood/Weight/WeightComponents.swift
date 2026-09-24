@@ -44,7 +44,7 @@ struct WeightHeroCard: View {
             if let latest {
                 HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
                     Text(latest.weightKg.formattedKg)
-                        .font(.heroNumber)
+                        .heroNumberFont()
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
                     Text("kg")

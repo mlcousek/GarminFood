@@ -532,6 +532,7 @@ struct LevelDetailView: View {
     @Environment(AppEnvironment.self) private var environment
 
     @ScaledMetric(relativeTo: .largeTitle) private var ringSize: CGFloat = 160
+    @ScaledMetric(relativeTo: .largeTitle) private var levelNumberSize: CGFloat = 48
 
     var body: some View {
         let progress = environment.gamificationEngine.levelProgress
@@ -549,7 +550,7 @@ struct LevelDetailView: View {
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
                             Text("\(progress.level)")
-                                .font(.system(size: 48, weight: .bold, design: .rounded))
+                                .font(.system(size: levelNumberSize, weight: .bold, design: .rounded))
                                 .minimumScaleFactor(0.5)
                         }
                     }
