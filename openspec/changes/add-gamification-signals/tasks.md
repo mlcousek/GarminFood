@@ -5,9 +5,9 @@
 
 ## 2. GarminKit (read only)
 
-- [ ] 2.1 `GarminActivities.swift`: `GarminActivity` DTO (only the used keys, all Optional, unknown keys ignored) + header comment naming the route and date.
-- [ ] 2.2 `GarminClient.activities(startDate:endDate:limit:)` using the existing signed GET choke point (so it inherits DiagnosticsLog and auth handling). Doc comment: READ-ONLY, confirmed 2026-09-24.
-- [ ] 2.3 Test: decode a trimmed real fixture (3 items incl. a "walking" and a "running"), including a missing `distance`.
+- [x] 2.1 `GarminActivities.swift`: `GarminActivity` DTO (only the used keys, all Optional, unknown keys ignored) + header comment naming the route and date.
+- [x] 2.2 `GarminClient.activities(startDate:endDate:limit:)` using the existing signed GET choke point (so it inherits DiagnosticsLog and auth handling). Doc comment: READ-ONLY, confirmed 2026-09-24.
+- [x] 2.3 Test: decode a trimmed real fixture (3 items incl. a "walking" and a "running"), including a missing `distance`.
 
 ## 3. FoodLogCore — tagging
 
