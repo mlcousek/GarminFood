@@ -144,9 +144,10 @@ public struct MetricServingSize: Sendable, Equatable, Hashable {
     /// "<optional number><optional spaces><metric unit word>", nothing else.
     private static func numberAndUnit(_ text: String) -> (unit: MetricUnit, amount: Double)? {
         let trimmed = text.trimmingCharacters(in: .whitespaces)
-        let numberPart = trimmed.prefix { character in
-            character == "." || character == "," || ("0"..."9").contains(character)
-        }
+        let digits: ClosedRange<Character> = "0"..."9"
+        let numberPart = trimmed.prefix(while: { character in
+            character == "." || character == "," || digits.contains(character)
+        })
         let unitPart = trimmed.dropFirst(numberPart.count).trimmingCharacters(in: .whitespaces)
         guard let token = tokens[unitPart] else { return nil }
         let count: Double
