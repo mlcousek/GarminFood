@@ -199,6 +199,18 @@
         }
       }
     },
+    "Challenges done": {
+      "comment": "Profile stat tile: completed challenges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněné výzvy"
+          }
+        }
+      }
+    },
     "Citrus": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -331,6 +343,18 @@
         }
       }
     },
+    "Couldn't load from Garmin": {
+      "comment": "Profile header: the Garmin profile failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z Garminu se nepodařilo načíst"
+          }
+        }
+      }
+    },
     "Couldn't load from Garmin.": {
       "comment": "Settings: footer when the nutrition plan failed to load.",
       "extractionState": "manual",
@@ -339,6 +363,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Z Garminu se to nepodařilo načíst."
+          }
+        }
+      }
+    },
+    "Current streak": {
+      "comment": "Profile stat tile: consecutive logged days now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuální série"
           }
         }
       }
@@ -375,6 +411,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tmavý"
+          }
+        }
+      }
+    },
+    "Days logged": {
+      "comment": "Profile stat tile: number of days with at least one entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsané dny"
           }
         }
       }
@@ -507,6 +555,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deník jídla"
+          }
+        }
+      }
+    },
+    "Foods logged": {
+      "comment": "Profile stat tile: total number of food entries logged.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsaná jídla"
           }
         }
       }
@@ -691,6 +751,18 @@
         }
       }
     },
+    "Level": {
+      "comment": "Profile stat tile: current gamification level.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úroveň"
+          }
+        }
+      }
+    },
     "Level %lld": {
       "comment": "Current gamification level on the Today streak card.",
       "extractionState": "manual",
@@ -711,6 +783,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Světlý"
+          }
+        }
+      }
+    },
+    "Longest streak": {
+      "comment": "Profile stat tile: longest run of logged days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdelší série"
           }
         }
       }
@@ -915,6 +999,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Profile": {
+      "comment": "Tab label and navigation title of the Profile screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
           }
         }
       }
