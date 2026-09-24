@@ -9,7 +9,8 @@
 //   4. customization: custom accent, card style, corners, density, number
 //      font, gradient header, macro colors
 //   5. layout: "Customize layout" -- Coming soon (waves 3-4)
-//   6. reset
+//   6. share / import a theme code (wave 5, ThemeShareSection)
+//   7. reset
 // Every change writes through ThemeStore immediately and applies live.
 //
 // Depends on ThemeStore (via AppEnvironment) and AppearanceKit's option
@@ -60,6 +61,8 @@ struct AppearanceSettingsView: View {
             } header: {
                 Text("Layout")
             }
+
+            ThemeShareSection(store: store)
 
             Section {
                 Button("Reset all appearance", role: .destructive) {
