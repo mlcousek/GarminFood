@@ -233,9 +233,9 @@ final class DayLogLoader {
         var errorDescription: String? {
             switch self {
             case .missingIdentifier:
-                return "This entry has no Garmin identifier, so it can't be deleted from here. Delete it in Garmin Connect."
+                return String(localized: "This entry has no Garmin identifier, so it can't be deleted from here. Delete it in Garmin Connect.")
             case .garmin(let detail):
-                return "Garmin didn't delete this entry: \(detail). You can also delete it in Garmin Connect."
+                return String(localized: "Garmin didn't delete this entry: \(detail). You can also delete it in Garmin Connect.", comment: "%@ = short reason, e.g. 'HTTP 500' or 'not signed in'.")
             }
         }
     }
@@ -280,9 +280,9 @@ final class DayLogLoader {
         case GarminClientError.httpError(let statusCode, _):
             return "HTTP \(statusCode)"
         case GarminClientError.unauthorized:
-            return "not signed in"
+            return String(localized: "not signed in", comment: "Short reason after 'Garmin didn't delete this entry: '.")
         case GarminClientError.rateLimited:
-            return "too many requests, try again shortly"
+            return String(localized: "too many requests, try again shortly", comment: "Short reason after 'Garmin didn't delete this entry: '.")
         default:
             return error.localizedDescription
         }

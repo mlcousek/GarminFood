@@ -21,8 +21,8 @@ struct DiagnosticsLogView: View {
             if entries.isEmpty {
                 EmptyStateView(
                     systemImage: "checkmark.circle",
-                    title: String(localized: "Nothing logged"),
-                    message: String(localized: "Errors and warnings from Garmin sync and logging actions will show up here.")
+                    title: "Nothing logged",
+                    message: "Errors and warnings from Garmin sync and logging actions will show up here."
                 )
                 .listRowSeparator(.hidden)
             } else {

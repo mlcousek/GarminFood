@@ -57,7 +57,7 @@ struct DayNoteCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-            SectionHeader(title: "Note", trailing: status.label)
+            SectionHeader(title: String(localized: "Note", comment: "Section header of Today's day note card."), trailing: status.label)
 
             VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                 TextField("What made this day different?", text: textBinding, axis: .vertical)
@@ -191,8 +191,8 @@ private enum SaveStatus {
     var label: String? {
         switch self {
         case .idle: return nil
-        case .saved: return "Saved"
-        case .failed: return "Couldn't save"
+        case .saved: return String(localized: "Saved", comment: "Day note card status after the note was saved.")
+        case .failed: return String(localized: "Couldn't save", comment: "Day note card status when saving the note failed.")
         }
     }
 }

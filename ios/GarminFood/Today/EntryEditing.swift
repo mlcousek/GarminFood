@@ -417,7 +417,7 @@ struct CopyMealSheet: View {
                             .foregroundStyle(Theme.warning)
                     } else if let plan {
                         if plan.isEmpty {
-                            Text("Nothing logged in \(sourceMeal.displayName.lowercased()) that day.")
+                            Text("Nothing logged in this meal that day.")
                                 .foregroundStyle(.secondary)
                         }
                         ForEach(plan.copyable) { item in
@@ -516,7 +516,7 @@ struct CopyMealSheet: View {
             if Task.isCancelled { return }
             plan = nil
             selected = []
-            loadError = "Couldn't read that day from Garmin. \(error.localizedDescription)"
+            loadError = String(localized: "Couldn't read that day from Garmin. \(error.localizedDescription)", comment: "Copy-meal sheet load error; %@ = the underlying error's description.")
         }
     }
 
@@ -532,7 +532,7 @@ struct CopyMealSheet: View {
                 Haptics.success()
                 dismiss()
             } catch {
-                saveError = "Some items may already be logged -- check the sync queue. \(error.localizedDescription)"
+                saveError = String(localized: "Some items may already be logged -- check the sync queue. \(error.localizedDescription)", comment: "Copy-meal save error; %@ = the underlying error's description.")
                 Haptics.warning()
             }
         }

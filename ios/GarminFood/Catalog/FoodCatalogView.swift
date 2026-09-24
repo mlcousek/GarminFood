@@ -209,8 +209,8 @@ struct FoodCatalogView: View {
             if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, mealPresets.isEmpty, favoriteFoods.isEmpty, !isPickingBackingFood {
                 EmptyStateView(
                     systemImage: "fork.knife",
-                    title: String(localized: "Nothing logged yet"),
-                    message: String(localized: "Search for a food to get started -- your most-logged foods will show up here as a quick pick.")
+                    title: "Nothing logged yet",
+                    message: "Search for a food to get started -- your most-logged foods will show up here as a quick pick."
                 )
                 .listRowSeparator(.hidden)
             }
