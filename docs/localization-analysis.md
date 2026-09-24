@@ -287,7 +287,7 @@ of them add English copy, mostly in `Gamification` catalogs.
 
 To avoid a merge war:
 
-- **Wave 1 touches only infrastructure** plus 4 smoke strings in files no
+- **Wave 1 touches only infrastructure** plus a handful of smoke strings in files no
   in-flight change is rewriting.
 - **Gamification content is translated per gamification wave, after it
   lands** (Wave 4), never by rewriting a catalog file another branch is

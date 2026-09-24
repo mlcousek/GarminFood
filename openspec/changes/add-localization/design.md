@@ -130,7 +130,7 @@ code change.
 
 ### D10 — Coordination with in-flight changes
 
-Wave 1 touches infrastructure plus four smoke strings in files no in-flight
+Wave 1 touches infrastructure plus a handful of smoke strings in files no in-flight
 plan rewrites. Gamification copy is translated **after** each gamification
 change merges (Wave 4), in its own small PR, never by editing a file another
 open branch is changing. From Wave 1 on, `CLAUDE.md` requires new copy to be

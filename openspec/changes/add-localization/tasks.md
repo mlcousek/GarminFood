@@ -5,14 +5,14 @@ is its own branch + PR (`mlcousek/add-localization-wN`).
 
 ## 1. Wave 1 — Infrastructure (no mass translation)
 
-- [ ] 1.1 `ios/project.yml`: `options.developmentLanguage: en`; base settings `LOCALIZATION_PREFERS_STRING_CATALOGS`, `SWIFT_EMIT_LOC_STRINGS`; `CFBundleDevelopmentRegion: en` + `CFBundleLocalizations: [en, cs]` in both Info.plists.
-- [ ] 1.2 `defaultLocalization: "en"` + `resources: [.process("Resources")]` in FoodLogCore and Gamification `Package.swift` (GarminKit only when it gets its first user-facing string, Wave 3).
-- [ ] 1.3 Catalogs: `GarminFood/Resources/Localizable.xcstrings`, `GarminFoodWidget/Resources/Localizable.xcstrings`; package `Resources/{en,cs}.lproj/Localizable.strings` (+ `en`/`cs` `.stringsdict` placeholder-free where empty).
-- [ ] 1.4 Smoke strings end-to-end: app "Food log" title + "Level %lld" (no code change) and the `timeLeftText` plural (`String(localized:)`, Czech one/few/many/other); FoodLogCore `LogQuantity.invalidMessage`; Gamification `AchievementRarity.displayName`; widget "Log Food".
-- [ ] 1.5 `tools/check-localizations.mjs` (catalog JSON, Czech present + `translated`, specifier parity, Czech plural categories, `.strings`/`.stringsdict` parsing, `Shared/` keys in both catalogs, `--scan` report of unlocalized literals) + a blocking `localization` job in `build.yml`.
-- [ ] 1.6 Non-blocking macOS CI steps: `xcrun xcstringstool compile` per catalog; `xcodebuild -exportLocalizations -exportLanguage cs` uploaded as an artifact.
-- [ ] 1.7 Package tests: `cs` in `Bundle.module.localizations`, a Czech key resolves via the `cs.lproj` bundle (FoodLogCore, Gamification); English output unchanged.
-- [ ] 1.8 `CLAUDE.md` convention: new user-facing text localizable + translated from day one.
+- [x] 1.1 `ios/project.yml`: `options.developmentLanguage: en`; base settings `LOCALIZATION_PREFERS_STRING_CATALOGS`, `SWIFT_EMIT_LOC_STRINGS`; `CFBundleDevelopmentRegion: en` + `CFBundleLocalizations: [en, cs]` in both Info.plists.
+- [x] 1.2 `defaultLocalization: "en"` + `resources: [.process("Resources")]` in FoodLogCore and Gamification `Package.swift` (GarminKit only when it gets its first user-facing string, Wave 3).
+- [x] 1.3 Catalogs: `GarminFood/Resources/Localizable.xcstrings`, `GarminFoodWidget/Resources/Localizable.xcstrings`; package `Resources/{en,cs}.lproj/Localizable.strings` (a `.stringsdict` is added per package with its first plural; the checker already validates them).
+- [x] 1.4 Smoke strings end-to-end: app "Food log" title + "Level %lld" (no code change) and the `timeLeftText` plural (`String(localized:)`, Czech one/few/many/other); FoodLogCore `LogQuantity.invalidMessage`; Gamification `AchievementRarity.displayName`; widget "Log Food".
+- [x] 1.5 `tools/check-localizations.mjs` (catalog JSON, Czech present + `translated`, specifier parity, Czech plural categories, `.strings`/`.stringsdict` parsing, `Shared/` keys in both catalogs, `--scan` report of unlocalized literals) + a blocking `localization` job in `build.yml`.
+- [x] 1.6 Non-blocking macOS CI steps: `xcrun xcstringstool compile` per catalog; `xcodebuild -exportLocalizations -exportLanguage cs` uploaded as an artifact.
+- [x] 1.7 Package tests: `cs` in `Bundle.module.localizations`, a Czech key resolves via the `cs.lproj` bundle (FoodLogCore, Gamification); English output unchanged.
+- [x] 1.8 `CLAUDE.md` convention: new user-facing text localizable + translated from day one.
 - [ ] 1.9 CI green on the Wave 1 PR; read the `-exportLocalizations` artifact and confirm the smoke keys (`Level %lld`, `%lld days left`) match the catalog exactly; record whether `xcstringstool compile` passed and make it blocking if so.
 - [ ] 1.10 On-device: phone in Czech → Today title "Deník jídla", "Úroveň N", a challenge "Zbývají 3 dny", rarity "Legendární", widget gallery "Zapsat jídlo"; Settings › GarminFood › Language appears and switching to English reverts.
 
