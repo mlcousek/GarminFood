@@ -34,6 +34,8 @@ struct ProgressHomeView: View {
                 }
                 .buttonStyle(.plain)
 
+                ProgressSlotHost() // add-gamification-signals D12: feature cards
+
                 NavigationLink {
                     ChallengesView()
                 } label: {
