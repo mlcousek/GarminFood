@@ -136,30 +136,30 @@ struct FoodCatalogView: View {
             // nest).
             if !isPickingBackingFood, searchText.trimmingCharacters(in: .whitespaces).isEmpty {
                 if !quickPickItems.isEmpty {
-                    shelfSection(title: "Quick pick") {
+                    shelfSection(title: String(localized: "Quick pick")) {
                         rememberedFoodShelf(quickPickItems)
                     }
                 }
 
                 if !favoriteFoods.isEmpty {
-                    shelfSection(title: "Favorites") {
+                    shelfSection(title: String(localized: "Favorites")) {
                         FavoritesShelf(
                             items: favoriteFoods,
                             onTap: { food in select(food) },
                             onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
-                            cardAccessibilityHint: isPickingIngredient ? "Adds this to the meal" : "Logs this food"
+                            cardAccessibilityHint: isPickingIngredient ? String(localized: "Adds this to the meal") : String(localized: "Logs this food")
                         )
                     }
                 }
 
                 if !usualItems.isEmpty {
-                    shelfSection(title: "Usual for \(usualMealType.displayName.lowercased())") {
+                    shelfSection(title: usualShelfTitle) {
                         rememberedFoodShelf(usualItems)
                     }
                 }
 
                 if !isPicking, !mealPresets.isEmpty {
-                    shelfSection(title: "Meals") {
+                    shelfSection(title: String(localized: "Meals")) {
                         MealPresetShelf(
                             presets: mealPresets,
                             onTap: { preset in mealPresetTarget = preset },
@@ -170,7 +170,7 @@ struct FoodCatalogView: View {
                 }
 
                 if !recentItems.isEmpty {
-                    shelfSection(title: "Recent") {
+                    shelfSection(title: String(localized: "Recent")) {
                         rememberedFoodShelf(recentItems)
                     }
                 }
@@ -181,7 +181,7 @@ struct FoodCatalogView: View {
                             customFoodRow(draft)
                         }
                     } header: {
-                        SectionHeader(title: "Your custom foods")
+                        SectionHeader(title: String(localized: "Your custom foods"))
                     }
                 }
             }
@@ -209,8 +209,8 @@ struct FoodCatalogView: View {
             if searchText.trimmingCharacters(in: .whitespaces).isEmpty, quickPickItems.isEmpty, customFoods.isEmpty, mealPresets.isEmpty, favoriteFoods.isEmpty, !isPickingBackingFood {
                 EmptyStateView(
                     systemImage: "fork.knife",
-                    title: "Nothing logged yet",
-                    message: "Search for a food to get started -- your most-logged foods will show up here as a quick pick."
+                    title: String(localized: "Nothing logged yet"),
+                    message: String(localized: "Search for a food to get started -- your most-logged foods will show up here as a quick pick.")
                 )
                 .listRowSeparator(.hidden)
             }
@@ -301,7 +301,7 @@ struct FoodCatalogView: View {
                 },
                 onUnresolved: { code in
                     isPresentingBarcodeScanner = false
-                    barcodeNoteForNewCustomFood = "Scanned barcode: \(code) (not found in Garmin's database)"
+                    barcodeNoteForNewCustomFood = String(localized: "Scanned barcode: \(code) (not found in Garmin's database)")
                     isPresentingCustomFoodEditor = true
                 },
                 onCancel: { isPresentingBarcodeScanner = false }
@@ -326,9 +326,20 @@ struct FoodCatalogView: View {
     }
 
     private var navigationTitle: String {
-        if isPickingBackingFood { return "Pick closest match" }
-        if isPickingIngredient { return "Add ingredient" }
-        return "Log Food"
+        if isPickingBackingFood { return String(localized: "Pick closest match") }
+        if isPickingIngredient { return String(localized: "Add ingredient") }
+        return String(localized: "Log Food")
+    }
+
+    /// "Usual for <meal>" as one whole-sentence key per meal (Czech needs
+    /// a different case/phrasing per meal, so no glued-in meal name).
+    private var usualShelfTitle: String {
+        switch usualMealType {
+        case .breakfast: return String(localized: "Usual for breakfast")
+        case .lunch: return String(localized: "Usual for lunch")
+        case .dinner: return String(localized: "Usual for dinner")
+        case .snacks: return String(localized: "Usual for snacks")
+        }
     }
 
     /// Presents the barcode scanner if `AppNavigationBridge` has a pending
@@ -387,7 +398,7 @@ struct FoodCatalogView: View {
             onTap: { item in selectQuickPick(item) },
             isFavorite: isPicking ? nil : { isFoodFavorited($0) },
             onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
-            cardAccessibilityHint: isPickingIngredient ? "Adds this to the meal" : "Logs this again"
+            cardAccessibilityHint: isPickingIngredient ? String(localized: "Adds this to the meal") : String(localized: "Logs this again")
         )
     }
 

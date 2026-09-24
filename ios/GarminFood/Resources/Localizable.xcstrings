@@ -277,6 +277,30 @@
         }
       }
     },
+    "Add ingredient": {
+      "comment": "Navigation title when picking an ingredient for a saved meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat surovinu"
+          }
+        }
+      }
+    },
+    "Adds this to the meal": {
+      "comment": "VoiceOver hint on a food card while picking an ingredient for a saved meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidá tuto položku do jídla"
+          }
+        }
+      }
+    },
     "Adjusted for dark mode to stay readable.": {
       "comment": "Settings -> Appearance page. Note under a custom accent that was lightened for contrast.",
       "extractionState": "manual",
@@ -1417,6 +1441,18 @@
         }
       }
     },
+    "Favorites": {
+      "comment": "Log Food screen: shelf title for starred foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oblíbené"
+          }
+        }
+      }
+    },
     "Filled": {
       "comment": "Settings -> Appearance page. Card style option.",
       "extractionState": "manual",
@@ -1861,6 +1897,42 @@
         }
       }
     },
+    "Log Food": {
+      "comment": "Navigation title of the food search/log screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo"
+          }
+        }
+      }
+    },
+    "Logs this again": {
+      "comment": "VoiceOver hint on a quick-pick/recent food card (re-logs it).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše ji znovu"
+          }
+        }
+      }
+    },
+    "Logs this food": {
+      "comment": "VoiceOver hint on a favorite food card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapíše tuto potravinu"
+          }
+        }
+      }
+    },
     "Longest streak": {
       "comment": "Profile stat tile: longest run of logged days.",
       "extractionState": "manual",
@@ -2017,6 +2089,18 @@
         }
       }
     },
+    "Meals": {
+      "comment": "Log Food screen: shelf title for saved multi-food meals (presets).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídla"
+          }
+        }
+      }
+    },
     "Mine": {
       "comment": "Settings: small label saying a goal is the user's own override (masculine, 'cíl').",
       "extractionState": "manual",
@@ -2073,6 +2157,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Název"
+          }
+        }
+      }
+    },
+    "New custom food": {
+      "comment": "Toolbar menu item: create a custom food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nová vlastní potravina"
+          }
+        }
+      }
+    },
+    "New meal": {
+      "comment": "Toolbar menu item: create a saved multi-food meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nové jídlo"
           }
         }
       }
@@ -2157,6 +2265,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nic nezaznamenáno"
+          }
+        }
+      }
+    },
+    "Nothing logged yet": {
+      "comment": "Log Food screen empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nic nezapsáno"
           }
         }
       }
@@ -2341,6 +2461,18 @@
         }
       }
     },
+    "Pick closest match": {
+      "comment": "Navigation title when picking the Garmin food that backs a custom food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyber nejbližší shodu"
+          }
+        }
+      }
+    },
     "Point your camera at a barcode": {
       "comment": "Hint over the camera viewfinder.",
       "extractionState": "manual",
@@ -2397,6 +2529,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bílkoviny"
+          }
+        }
+      }
+    },
+    "Quick pick": {
+      "comment": "Log Food screen: shelf title for the most-logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlý výběr"
+          }
+        }
+      }
+    },
+    "Recent": {
+      "comment": "Log Food screen: shelf title for recently logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávné"
           }
         }
       }
@@ -2521,6 +2677,18 @@
         }
       }
     },
+    "Scanned barcode: %@ (not found in Garmin's database)": {
+      "comment": "Prefilled note on a new custom food after an unknown barcode scan. %@ = the barcode digits.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naskenovaný čárový kód: %@ (v databázi Garminu nenalezen)"
+          }
+        }
+      }
+    },
     "Scanner unavailable": {
       "comment": "Empty-state title: this device can't scan barcodes.",
       "extractionState": "manual",
@@ -2553,6 +2721,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hledej české produkty okamžitě, i offline. Aktualizuje se jednou týdně přes Wi-Fi, pokud nepovolíš mobilní data. Data z Open Food Facts (ODbL)."
+          }
+        }
+      }
+    },
+    "Search foods (rohlík, chleba, tvaroh…)": {
+      "comment": "Search field placeholder on the Log Food screen (Czech food examples stay).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledat potraviny (rohlík, chleba, tvaroh…)"
+          }
+        }
+      }
+    },
+    "Search for a food to get started -- your most-logged foods will show up here as a quick pick.": {
+      "comment": "Log Food screen empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Začni vyhledáním potraviny – nejčastěji zapisované potraviny se tu pak objeví v rychlém výběru."
           }
         }
       }
@@ -3169,6 +3361,54 @@
         }
       }
     },
+    "Usual for breakfast": {
+      "comment": "Log Food screen: shelf title of foods usually logged at breakfast.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle k snídani"
+          }
+        }
+      }
+    },
+    "Usual for dinner": {
+      "comment": "Log Food screen: shelf title of foods usually logged at dinner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle k večeři"
+          }
+        }
+      }
+    },
+    "Usual for lunch": {
+      "comment": "Log Food screen: shelf title of foods usually logged at lunch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle k obědu"
+          }
+        }
+      }
+    },
+    "Usual for snacks": {
+      "comment": "Log Food screen: shelf title of foods usually logged as a snack.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvykle ke svačině"
+          }
+        }
+      }
+    },
     "Version": {
       "comment": "Settings: app version row.",
       "extractionState": "manual",
@@ -3273,6 +3513,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Při zapnutém sladění výběr motivu přepne i ikonu na ploše."
+          }
+        }
+      }
+    },
+    "Your custom foods": {
+      "comment": "Log Food screen: section header listing the user's custom foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje vlastní potraviny"
           }
         }
       }
