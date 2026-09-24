@@ -29,6 +29,12 @@
 // (finite, > 0, <= 10 000) BEFORE writing anything, so an absurd typed
 // amount is refused with an error the screen shows instead of being queued
 // (LogQuantity.swift's header has the crash this prevented).
+//
+// add-standalone-mode D4: conforms to `FoodLogging` (FoodLogging.swift) and
+// gains `deleteCommitted(logId:date:)`, moved here from `DayLogLoader`. It is
+// the one method that calls Garmin directly -- deleting a row that is
+// already in Garmin has no local half -- and it is a delete, never on a
+// confirm path, so zero-network-wait above still holds for every log.
 
 import Foundation
 import GarminKit
@@ -38,17 +44,23 @@ public struct LogEntryCoordinator: Sendable {
     private let usageHistory: UsageHistoryStore
     private let servingDefaults: ServingDefaultStore
     private let foodCache: FoodCacheStore?
+    /// add-standalone-mode D4: where `deleteCommitted` deletes a row that is
+    /// already in Garmin (the app's `GarminClient`). `nil` in tests that
+    /// never delete a synced row.
+    private let garminLog: (any FoodLogReconciling)?
 
     public init(
         outbox: Outbox,
         usageHistory: UsageHistoryStore = UsageHistoryStore(),
         servingDefaults: ServingDefaultStore = ServingDefaultStore(),
-        foodCache: FoodCacheStore? = nil
+        foodCache: FoodCacheStore? = nil,
+        garminLog: (any FoodLogReconciling)? = nil
     ) {
         self.outbox = outbox
         self.usageHistory = usageHistory
         self.servingDefaults = servingDefaults
         self.foodCache = foodCache
+        self.garminLog = garminLog
     }
 
     /// Confirms a catalog (Garmin-search-backed) food. Returns as soon as
@@ -378,6 +390,17 @@ public struct LogEntryCoordinator: Sendable {
             return .deleteOriginal(date: replaced.date, logId: replaced.logId)
         }
         return .removed
+    }
+
+    /// Deletes a row that is already in Garmin (`.synced(logId:)` on the
+    /// dashboard) -- add-standalone-mode D4, a straight move of the call
+    /// `DayLogLoader.delete` used to make itself. Unlike every write above
+    /// this IS a network call, and always was: a synced row has nothing
+    /// local to remove. Errors are Garmin's own (`GarminClientError`),
+    /// unchanged, so the caller's user-facing mapping stays where it was.
+    public func deleteCommitted(logId: String, date: String) async throws {
+        guard let garminLog else { throw CommittedDeleteError.noSystemOfRecord }
+        try await garminLog.deleteFoodLogEntries(logIds: [logId], date: date)
     }
 
     static func editError(for error: OutboxEditError) -> LogEntryEditError {

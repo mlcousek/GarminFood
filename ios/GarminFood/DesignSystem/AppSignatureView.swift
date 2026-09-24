@@ -8,7 +8,7 @@ import SwiftUI
 struct AppSignatureView: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.xs / 2) {
-            Text("GF")
+            Text(verbatim: "GF")
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(Theme.flameGradient)
             Text("by Jirka")

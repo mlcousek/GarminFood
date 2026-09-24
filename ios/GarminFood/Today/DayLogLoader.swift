@@ -22,11 +22,15 @@ import FoodLogCore
 @MainActor
 @Observable
 final class DayLogLoader {
+    /// add-standalone-mode D3: the day log, meal windows and active
+    /// calories. The app's GarminClient today.
+    @ObservationIgnored private let reader: any NutritionLogReading
     @ObservationIgnored private let client: GarminClient
     @ObservationIgnored private let outbox: Outbox
     @ObservationIgnored private let foodCache: FoodCacheStore
-    /// Deleting a still-queued row goes through it (claim-guarded cancel).
-    @ObservationIgnored private let coordinator: LogEntryCoordinator
+    /// Deleting goes through it: a still-queued row by claim-guarded
+    /// cancel, a synced one by `deleteCommitted` (add-standalone-mode D4).
+    @ObservationIgnored private let coordinator: any FoodLogging
     @ObservationIgnored private var logsByDate: [String: DailyFoodLog] = [:]
     @ObservationIgnored private var mealsByDate: [String: [Meal]] = [:]
     @ObservationIgnored private var activeByDate: [String: Double] = [:]
@@ -67,14 +71,16 @@ final class DayLogLoader {
     private(set) var latestWindows: [MealWindow] = []
 
     init(
+        reader: any NutritionLogReading,
         client: GarminClient,
         outbox: Outbox,
         foodCache: FoodCacheStore,
-        coordinator: LogEntryCoordinator,
+        coordinator: any FoodLogging,
         digestStore: DayLogDigestStore? = nil,
         activityCache: ActivityCacheStore? = nil,
         now: Date = Date()
     ) {
+        self.reader = reader
         self.client = client
         self.outbox = outbox
         self.foodCache = foodCache
@@ -166,7 +172,7 @@ final class DayLogLoader {
         async let activeLoad: Void = loadActiveCalories(date: date)
 
         do {
-            if let log = try await client.dailyFoodLog(date: date) {
+            if let log = try await reader.dailyFoodLog(date: date) {
                 logsByDate[date] = log
                 if date == dateString { isStale = false }
                 try? await digestStore?.save(DayLogDigest(log: log, day: date, fetchedAt: Date()))
@@ -206,7 +212,7 @@ final class DayLogLoader {
 
     private func loadMealsIfNeeded(date: String) async {
         guard mealsByDate[date] == nil,
-              let meals = try? await client.mealsForDate(date: date).meals else { return }
+              let meals = try? await reader.mealsForDate(date: date).meals else { return }
         mealsByDate[date] = meals
     }
 
@@ -215,7 +221,7 @@ final class DayLogLoader {
     /// "Route unavailable" scenario. Never throws: this is an optional
     /// extra and must not affect the rest of the day's refresh.
     private func loadActiveCalories(date: String) async {
-        if let summary = try? await client.dailyUserSummary(date: date),
+        if let summary = try? await reader.dailyUserSummary(date: date),
            let active = summary.activeKilocalories {
             activeByDate[date] = active
             try? await activityCache?.recordActiveKcal(active, day: date)
@@ -233,9 +239,9 @@ final class DayLogLoader {
         var errorDescription: String? {
             switch self {
             case .missingIdentifier:
-                return "This entry has no Garmin identifier, so it can't be deleted from here. Delete it in Garmin Connect."
+                return String(localized: "This entry has no Garmin identifier, so it can't be deleted from here. Delete it in Garmin Connect.")
             case .garmin(let detail):
-                return "Garmin didn't delete this entry: \(detail). You can also delete it in Garmin Connect."
+                return String(localized: "Garmin didn't delete this entry: \(detail). You can also delete it in Garmin Connect.", comment: "%@ = short reason, e.g. 'HTTP 500' or 'not signed in'.")
             }
         }
     }
@@ -248,7 +254,7 @@ final class DayLogLoader {
         case .synced(let logId):
             guard !logId.isEmpty else { throw DeleteError.missingIdentifier }
             do {
-                try await client.deleteFoodLogEntries(logIds: [logId], date: dateString)
+                try await coordinator.deleteCommitted(logId: logId, date: dateString)
             } catch {
                 throw DeleteError.garmin(Self.describe(error))
             }
@@ -260,6 +266,8 @@ final class DayLogLoader {
             let outcome = try await coordinator.deletePending(outboxId: outboxId)
             await rebuild()
             if case .deleteOriginal(let date, let logId) = outcome {
+                // Stays a direct Garmin call: an outbox edit only ever
+                // replaces a Garmin entry, whatever the data mode is now.
                 do {
                     try await client.deleteFoodLogEntries(logIds: [logId], date: date)
                 } catch GarminClientError.httpError(let statusCode, _) where statusCode == 404 {
@@ -280,9 +288,9 @@ final class DayLogLoader {
         case GarminClientError.httpError(let statusCode, _):
             return "HTTP \(statusCode)"
         case GarminClientError.unauthorized:
-            return "not signed in"
+            return String(localized: "not signed in", comment: "Short reason after 'Garmin didn't delete this entry: '.")
         case GarminClientError.rateLimited:
-            return "too many requests, try again shortly"
+            return String(localized: "too many requests, try again shortly", comment: "Short reason after 'Garmin didn't delete this entry: '.")
         default:
             return error.localizedDescription
         }

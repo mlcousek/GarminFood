@@ -42,7 +42,7 @@ struct MealDetailView: View {
                         EmptyStateView(
                             systemImage: mealType.symbolName,
                             title: "Nothing logged",
-                            message: "Add a food to \(mealType.displayName.lowercased()) to see it here."
+                            message: "Add a food to this meal to see it here."
                         )
                     } else {
                         ForEach(section.entries) { entry in
@@ -117,7 +117,7 @@ struct MealDetailView: View {
                 }
                 .frame(width: ringSize, height: ringSize)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel("\(mealType.displayName) calories")
+                .accessibilityLabel("Calories: \(mealType.displayName)")
                 .accessibilityValue(targetText(section.totals.calories))
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -133,17 +133,17 @@ struct MealDetailView: View {
                         .foregroundStyle(.tertiary)
                 }
             }
-            MacroBar(title: "Carbs", progress: section.totals.carbs, unit: "g", tint: Theme.carbs)
-            MacroBar(title: "Protein", progress: section.totals.protein, unit: "g", tint: Theme.protein)
-            MacroBar(title: "Fat", progress: section.totals.fat, unit: "g", tint: Theme.fat)
+            MacroBar(title: String(localized: "Carbs"), progress: section.totals.carbs, unit: "g", tint: Theme.carbs)
+            MacroBar(title: String(localized: "Protein"), progress: section.totals.protein, unit: "g", tint: Theme.protein)
+            MacroBar(title: String(localized: "Fat"), progress: section.totals.fat, unit: "g", tint: Theme.fat)
         }
         .padding(.vertical, Theme.Spacing.xs)
     }
 
     private func targetText(_ calories: MacroProgress) -> String {
         let consumed = calories.consumed.wholeNumberText
-        guard let goal = calories.goal else { return "\(consumed) kcal, no target" }
-        return "\(consumed) of \(goal.wholeNumberText) kcal"
+        guard let goal = calories.goal else { return String(localized: "\(consumed) kcal, no target") }
+        return String(localized: "\(consumed) of \(goal.wholeNumberText) kcal")
     }
 }
 
