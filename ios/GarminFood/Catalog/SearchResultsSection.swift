@@ -216,8 +216,9 @@ struct SearchResultsSection: View {
     private func loadingText(_ snapshot: SearchSnapshot) -> String {
         let loading = SearchOrigin.allCases.filter { snapshot.statuses[$0] == .loading }
         let names = loading.map { $0.displayName }
-        guard !names.isEmpty else { return "Searching…" }
-        return "Searching " + ListFormatter.localizedString(byJoining: names) + "…"
+        guard !names.isEmpty else { return String(localized: "Searching…") }
+        let list = ListFormatter.localizedString(byJoining: names)
+        return String(localized: "Searching \(list)…", comment: "Search progress; %@ = list of sources still loading, e.g. 'Garmin and Open Food Facts'.")
     }
 
     private func footnotes(for snapshot: SearchSnapshot) -> [SearchFootnote] {
@@ -235,7 +236,7 @@ struct SearchResultsSection: View {
         // Auth failures are loud (CLAUDE.md): say exactly what to do.
         if failures.contains(where: { $0.origin == .garmin && $0.failure.kind == .signedOut }) {
             notes.append(SearchFootnote(
-                text: "Sign in to Garmin again (Settings) to search its food database.",
+                text: String(localized: "Sign in to Garmin again (Settings) to search its food database."),
                 systemImage: "person.crop.circle.badge.exclamationmark",
                 isWarning: true
             ))
@@ -249,15 +250,15 @@ struct SearchResultsSection: View {
             let hasOfflineResults = snapshot.results.contains { $0.origin == .offlineIndex }
             notes.append(SearchFootnote(
                 text: hasOfflineResults
-                    ? "Online food databases are unavailable right now, so these are your foods and the offline Czech database."
-                    : "Online food databases are unavailable right now, so these are foods you already have.",
+                    ? String(localized: "Online food databases are unavailable right now, so these are your foods and the offline Czech database.")
+                    : String(localized: "Online food databases are unavailable right now, so these are foods you already have."),
                 systemImage: "wifi.slash",
                 isWarning: false
             ))
         }
         for origin in unavailable where !(allOnlineUnavailable && onlineOrigins.contains(origin)) {
             notes.append(SearchFootnote(
-                text: "\(origin.sentenceName) is unavailable right now, so its results are missing.",
+                text: origin.unavailableNote,
                 systemImage: "exclamationmark.icloud",
                 isWarning: false
             ))
@@ -310,9 +311,10 @@ private struct SearchSourceBadges: View {
 }
 
 private extension SearchOrigin {
-    /// A list-item name, only ever used after a colon-style lead-in
-    /// ("Searching: …", "also in: …") so Czech can keep it in the
-    /// nominative instead of declining it per sentence.
+    /// A list-item name, only ever used as the `%@` list in "Searching %@…"
+    /// / "also in %@", whose Czech translations use a colon-style lead-in
+    /// ("Prohledávám: …", "také v: …") so the name can stay in the
+    /// nominative instead of being declined per sentence.
     var displayName: String {
         switch self {
         case .local: return String(localized: "your foods")

@@ -505,6 +505,18 @@
         }
       }
     },
+    "also in %@": {
+      "comment": "Caption under a search result found in several sources; %@ = list of the other sources.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "také v: %@"
+          }
+        }
+      }
+    },
     "App icon": {
       "comment": "Settings -> Appearance page. Section header above the icon grid.",
       "extractionState": "manual",
@@ -1213,6 +1225,18 @@
         }
       }
     },
+    "Czech DB": {
+      "comment": "Small source badge on a search result from the offline Czech database.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Česká DB"
+          }
+        }
+      }
+    },
     "Czech foods": {
       "comment": "Settings: offline database row label.",
       "extractionState": "manual",
@@ -1717,6 +1741,18 @@
         }
       }
     },
+    "Finds the matching Garmin food first": {
+      "comment": "VoiceOver hint on an Open Food Facts search result, which first needs a matching Garmin food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdřív najde odpovídající potravinu v Garminu"
+          }
+        }
+      }
+    },
     "Fine-tune": {
       "comment": "Settings -> Appearance page. Section header for style options.",
       "extractionState": "manual",
@@ -1777,6 +1813,30 @@
         }
       }
     },
+    "From %@": {
+      "comment": "VoiceOver label for a search result's source; %@ = source name, e.g. 'Garmin'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdroj: %@"
+          }
+        }
+      }
+    },
+    "From %@, also in %@": {
+      "comment": "VoiceOver label for a search result found in several sources; first %@ = main source, second %@ = list of other sources.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdroj: %1$@, také v: %2$@"
+          }
+        }
+      }
+    },
     "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.": {
       "comment": "Error: Garmin created the food but the response could not be parsed.",
       "extractionState": "manual",
@@ -1825,6 +1885,18 @@
         }
       }
     },
+    "Garmin is unavailable right now, so its results are missing.": {
+      "comment": "Search footnote when Garmin's food search failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin teď není dostupný, takže jeho výsledky chybí."
+          }
+        }
+      }
+    },
     "Garmin rejected the sign-in ticket (%@): %@": {
       "comment": "Sign-in error. First %@ = 'HTTP 401' or 'no HTTP response'; second %@ = short server detail.",
       "extractionState": "manual",
@@ -1869,6 +1941,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Databáze Garminu zřejmě neobsahuje „%@“. Můžeš ho tam vytvořit, nebo ho zapsat jako jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "Garmin's database doesn't seem to have this. Try another spelling.": {
+      "comment": "Empty search message when only Garmin foods can be picked.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Databáze Garminu to zřejmě nemá. Zkus jiný zápis."
           }
         }
       }
@@ -2169,6 +2253,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Světlý"
+          }
+        }
+      }
+    },
+    "Limit Open Food Facts results to Czech products": {
+      "comment": "VoiceOver label of the Czech-products-only toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omezit výsledky z Open Food Facts na české produkty"
           }
         }
       }
@@ -2545,6 +2641,18 @@
         }
       }
     },
+    "No matches": {
+      "comment": "Empty state title when a food search found nothing.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nenalezeno"
+          }
+        }
+      }
+    },
     "No servings": {
       "comment": "Serving picker empty state title (food has no servings).",
       "extractionState": "manual",
@@ -2701,6 +2809,30 @@
         }
       }
     },
+    "Online food databases are unavailable right now, so these are foods you already have.": {
+      "comment": "Search footnote when offline; only already-known foods are shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Online databáze potravin teď nejsou dostupné, takže vidíš jen potraviny, které už máš."
+          }
+        }
+      }
+    },
+    "Online food databases are unavailable right now, so these are your foods and the offline Czech database.": {
+      "comment": "Search footnote when offline and the offline Czech database returned results.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Online databáze potravin teď nejsou dostupné, takže vidíš jen své potraviny a offline českou databázi."
+          }
+        }
+      }
+    },
     "Only fires on a day you haven't logged anything yet, if you have a streak to lose.": {
       "comment": "Reminders screen footer under the streak reminder.",
       "extractionState": "manual",
@@ -2733,6 +2865,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open Food Facts (ODbL)"
+          }
+        }
+      }
+    },
+    "Open Food Facts is unavailable right now, so its results are missing.": {
+      "comment": "Search footnote when Open Food Facts failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Food Facts teď není dostupné, takže jeho výsledky chybí."
+          }
+        }
+      }
+    },
+    "Open Food Facts: Czech products only": {
+      "comment": "Toggle limiting Open Food Facts search results to Czech products.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Food Facts: jen české produkty"
           }
         }
       }
@@ -3001,6 +3157,18 @@
         }
       }
     },
+    "Results": {
+      "comment": "Section header above the ranked food search results.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výsledky"
+          }
+        }
+      }
+    },
     "Retry": {
       "comment": "Swipe action: retry sending a queued entry.",
       "extractionState": "manual",
@@ -3129,6 +3297,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Začni vyhledáním potraviny – nejčastěji zapisované potraviny se tu pak objeví v rychlém výběru."
+          }
+        }
+      }
+    },
+    "Searching %@…": {
+      "comment": "Search progress; %@ = list of sources still loading, e.g. 'Garmin and Open Food Facts'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prohledávám: %@…"
+          }
+        }
+      }
+    },
+    "Searching…": {
+      "comment": "Search progress when no specific source is named.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledám…"
+          }
+        }
+      }
+    },
+    "Selects this food": {
+      "comment": "VoiceOver hint on a search result that can be logged directly.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybere tuto potravinu"
           }
         }
       }
@@ -3265,6 +3469,18 @@
         }
       }
     },
+    "Show more from Garmin": {
+      "comment": "Button loading the next page of Garmin search results.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit další z Garminu"
+          }
+        }
+      }
+    },
     "Sign in to Garmin": {
       "comment": "Button: open the Garmin sign-in sheet.",
       "extractionState": "manual",
@@ -3273,6 +3489,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlásit se ke Garminu"
+          }
+        }
+      }
+    },
+    "Sign in to Garmin again (Settings) to search its food database.": {
+      "comment": "Search footnote when the Garmin sign-in expired.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlas se znovu ke Garminu (Nastavení), abys mohl hledat v jeho databázi potravin."
           }
         }
       }
@@ -3553,6 +3781,30 @@
         }
       }
     },
+    "the offline Czech database": {
+      "comment": "Search source name, used as a list item in 'Searching %@…' / 'also in %@'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "offline česká databáze"
+          }
+        }
+      }
+    },
+    "The offline Czech database is unavailable right now, so its results are missing.": {
+      "comment": "Search footnote when the offline Czech food database failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline česká databáze teď není dostupná, takže její výsledky chybí."
+          }
+        }
+      }
+    },
     "the response was an HTML page rather than an API error, most likely a Cloudflare challenge": {
       "comment": "Sign-in error detail shown after a colon in 'Garmin rejected the sign-in ticket (HTTP 403): …'. Lowercase start.",
       "extractionState": "manual",
@@ -3777,6 +4029,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
+    "Try another spelling, or create it as a custom food.": {
+      "comment": "Empty search message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkus jiný zápis, nebo si to vytvoř jako vlastní potravinu."
           }
         }
       }
@@ -4057,6 +4321,30 @@
         }
       }
     },
+    "your foods": {
+      "comment": "Search source name (the user's own custom foods), used as a list item in 'Searching %@…' / 'also in %@'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tvoje potraviny"
+          }
+        }
+      }
+    },
+    "Your foods are unavailable right now, so their results are missing.": {
+      "comment": "Search footnote when the user's own foods couldn't be searched.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje potraviny teď nejsou dostupné, takže jejich výsledky chybí."
+          }
+        }
+      }
+    },
     "Your own goals stay on this phone; Garmin Connect isn't changed.": {
       "comment": "Settings goals footer sentence.",
       "extractionState": "manual",
@@ -4077,6 +4365,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uložený vzhled nešel načíst, proto byl obnoven na výchozí."
+          }
+        }
+      }
+    },
+    "Yours": {
+      "comment": "Small source badge on a search result that is one of the user's own custom foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje"
           }
         }
       }
