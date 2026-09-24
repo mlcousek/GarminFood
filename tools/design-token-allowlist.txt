@@ -13,3 +13,4 @@ GarminFood/Profile/ProfileView.swift:tint\(\.white\)  # loading spinner drawn ov
 GarminFood/Profile/SettingsView.swift:foregroundStyle\(\.white\)  # sync-queue count badge on the warning fill
 GarminFoodWidget/GarminFoodHomeWidget.swift:foregroundStyle\(\.white\)  # widget fallback: fixed white on the accent gradient (the widget never loads settings, R4)
 GarminFoodWidget/GarminFoodStreakWidget.swift:foregroundStyle\(\.white\)  # widget fallback: fixed white on the flame gradient (R4)
+GarminFood/Profile/Appearance/ThemeDisplayName.swift:case \.(teal|indigo)  # BuiltInTheme case names, not colors

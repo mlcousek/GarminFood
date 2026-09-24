@@ -64,7 +64,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
   - *Status:* card styles, corners, container density (Today/Progress stacks, card padding) and number font are built (`CardStyle`, `Theme.Radius`, `Theme.Density`, `Font.heroNumber` etc. read `ThemeRuntime`). **Still open:** the `@ScaledMetric` hero/Level numbers (needs call-site edits in Today/Progress files other agents are translating; do after those land).
 
   CI green.
-- [ ] 2.6 **Optional Today gradient header** (off by default), with the Reduce Transparency flat tint. Add a contrast test of `.primary` against the blended stops. CI green.
+- [x] 2.6 **Optional Today gradient header** (off by default), with the Reduce Transparency flat tint. Add a contrast test of `.primary` against the blended stops. CI green.
 - [ ] 2.7 **Per-theme appearance** applied through `.preferredColorScheme` at the root. Any presenter found not inheriting the palette gets an explicit `.themed(store)`. CI green.
 - [ ] 2.8 **On-device check**:
   - Go through every theme in light and dark: Today, Log Food, the confirm sheet, Progress, the level-up overlay, alerts.

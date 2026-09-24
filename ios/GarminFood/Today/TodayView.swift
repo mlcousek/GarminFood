@@ -132,7 +132,7 @@ struct TodayView: View {
             }
             .padding(Theme.Spacing.md)
         }
-        .background(Theme.groupedBackground)
+        .background { GradientHeaderBackground() }
         .navigationTitle("Food log")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
