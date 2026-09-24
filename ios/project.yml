@@ -133,7 +133,10 @@ targets:
             CFBundleURLSchemes:
               - garminfood
         CFBundleIconName: AppIcon
-        # add-app-icon-picker (2026-09-22): the 5 alternates are loose PNG
+        # add-app-icon-picker (2026-09-22), replaced by add-themes-and-layout
+        # (2026-09-24, design.md R5: 11 "GF / by Jirka" gradient icons, one per
+        # theme; the old Streak/Macro/Midnight/Mint/Pastel set is gone -- keep
+        # these keys in sync with AppIconOption.swift): the alternates are loose PNG
         # pairs (`GarminFood/AppIcons/<Name>@2x.png`/`@3x.png`, iPhone-only
         # per this target's TARGETED_DEVICE_FAMILY, so no ~ipad sizes) --
         # NOT asset-catalog imagesets. This is the classic, stable
@@ -148,25 +151,49 @@ targets:
         # switch icons on a real device.
         CFBundleIcons:
           CFBundleAlternateIcons:
-            AppIcon-Streak:
+            AppIcon-Indigo:
               CFBundleIconFiles:
-                - AppIcon-Streak
+                - AppIcon-Indigo
               UIPrerenderedIcon: false
-            AppIcon-Macro:
+            AppIcon-Sunset:
               CFBundleIconFiles:
-                - AppIcon-Macro
+                - AppIcon-Sunset
               UIPrerenderedIcon: false
-            AppIcon-Midnight:
+            AppIcon-Forest:
               CFBundleIconFiles:
-                - AppIcon-Midnight
-              UIPrerenderedIcon: false
-            AppIcon-Mint:
-              CFBundleIconFiles:
-                - AppIcon-Mint
+                - AppIcon-Forest
               UIPrerenderedIcon: false
             AppIcon-Pastel:
               CFBundleIconFiles:
                 - AppIcon-Pastel
+              UIPrerenderedIcon: false
+            AppIcon-Slate:
+              CFBundleIconFiles:
+                - AppIcon-Slate
+              UIPrerenderedIcon: false
+            AppIcon-Citrus:
+              CFBundleIconFiles:
+                - AppIcon-Citrus
+              UIPrerenderedIcon: false
+            AppIcon-Ocean:
+              CFBundleIconFiles:
+                - AppIcon-Ocean
+              UIPrerenderedIcon: false
+            AppIcon-Coral:
+              CFBundleIconFiles:
+                - AppIcon-Coral
+              UIPrerenderedIcon: false
+            AppIcon-Berry:
+              CFBundleIconFiles:
+                - AppIcon-Berry
+              UIPrerenderedIcon: false
+            AppIcon-Graphite:
+              CFBundleIconFiles:
+                - AppIcon-Graphite
+              UIPrerenderedIcon: false
+            AppIcon-Gold:
+              CFBundleIconFiles:
+                - AppIcon-Gold
               UIPrerenderedIcon: false
         # add-garmin-auth-and-sync 9.5 / BackgroundRefresh.swift: delivers
         # queued entries while the app isn't open. The identifier must match

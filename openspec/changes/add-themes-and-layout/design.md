@@ -49,6 +49,118 @@ that shape this design:
 No Garmin route is involved. There is nothing to probe, and no private-API
 fallback is needed.
 
+## Revision 2026-09-24: owner decisions (these supersede D2, D3, D6, D10 below where they conflict)
+
+The owner answered `tasks.md` §0 on 2026-09-24. The decisions below win
+over anything later in this document.
+
+**R1. GF Teal is the new default.** With nothing stored, the app renders
+GF Teal, so the app finally matches the primary icon (PR #37). This is an
+intentional, visible change for every existing user. Today's coral look
+survives as the **Classic Coral** theme, still pixel-identical to the
+pre-change tokens and still covered by `ClassicIdentityTests` and the
+closed exemption list (D5). The "with nothing stored, the app looks
+exactly as it does today" goal is dropped.
+
+**R2. Thirteen themes, each paired with an icon.** The brand colors of each
+theme are derived from its icon's corner colors (listed in
+`ThemeCatalog.swift`). `supportedSchemes` decides the appearance:
+
+| ID | Name | Icon | Schemes |
+|---|---|---|---|
+| `teal` | GF Teal (**default**) | primary | light + dark |
+| `classic` | Classic Coral (= pre-change look) | Coral | light + dark |
+| `ocean` | Ocean | Ocean | light + dark |
+| `forest` | Forest | Forest | light + dark |
+| `sunset` | Sunset | Sunset | light + dark |
+| `slate` | Slate | Slate | light + dark |
+| `indigo` | Indigo Night | Indigo | dark only |
+| `berry` | Berry | Berry | dark only |
+| `graphite` | Graphite | Graphite | dark only |
+| `gold` | Gold (warm gold on near-black, the "premium" one) | Gold | dark only |
+| `pastel` | Pastel | Pastel | light only |
+| `citrus` | Citrus | Citrus | light only |
+| `highContrast` | High Contrast | primary | light + dark |
+
+Mono, Czech Autumn and Night Run are dropped. Dark-only themes force
+`.dark` and light-only themes force `.light`; themes with both follow the
+user's System / Light / Dark choice.
+
+**R3. Contrast is fitted, not hand-tuned.** A theme's catalog entry holds
+its raw icon-derived colors. `PaletteResolver` runs every `.rgb` role of a
+non-Classic theme through `AccentAdjuster.fit` against that scheme's
+surfaces with the D5 thresholds, and derives `onAccent` last. The
+contrast tests (D5) therefore run on the *resolved* palettes of all 13
+themes × supported schemes × {normal, increased}. Classic Coral alone
+skips fitting (except under Increase Contrast, D4 step 4), so it stays
+pixel-identical; its closed exemption list is unchanged. Distinctness
+(macros pairwise, accent vs macros) is also tested on the resolved
+palettes, and the colour-blind-safe macro set stays available for every
+theme.
+
+**R4. Token mechanism: keep the `Theme.*` API (replaces D2's
+`ThemeColor`/`\.palette` call-site migration).** Several other changes are
+editing most view files in parallel (gamification, localization), so a
+44-file token migration would conflict everywhere. Instead:
+
+- `Shared/Theme.swift` keeps every token name (`Theme.accent`,
+  `Theme.carbs`, `Theme.Radius.lg`, `Font.heroNumber`, …), but each is now
+  a computed property reading `ThemeRuntime.shared` (in `Shared/`).
+- `ThemeRuntime` is an `@Observable` holder of the current `ThemePalette`
+  and style. Because Observation records *any* read of an observable
+  property during `body`, even through a static getter, every view that
+  reads a token re-renders when the theme changes. No `.id()` reset, so
+  navigation state survives a theme switch.
+- Each palette color is a dynamic `UIColor` with a light and a dark value
+  (`userInterfaceStyle`), so the system scheme and `.preferredColorScheme`
+  resolve it without re-rendering anything.
+- A root `ThemeRootModifier` in `ContentView` applies
+  `.preferredColorScheme`, reads `colorSchemeContrast` and
+  `accessibilityDifferentiateWithoutColor`, and hands them to `ThemeStore`,
+  which re-resolves the palette.
+- New tokens are added next to the old ones: `water`, `danger`,
+  `onAccent`, `accentSecondary`, `bandApproaching`, `bandOver`, surface
+  roles. Only views that hard-code colors are edited (`.red` → `danger`,
+  `.green` → `success`, hydration → `water`, white-on-fill → `onAccent`).
+- Accepted risk: a color captured outside a `body` (stored in `@State`, a
+  UIKit appearance proxy) won't update until that view re-renders. None
+  exist today; the lint and review keep it that way.
+- The widget process never loads settings, so it renders the default
+  theme (GF Teal). The per-widget theme parameter (D13) is still deferred.
+
+**R5. Icons (replaces D10).** All alternates use the new "GF / by Jirka"
+gradient style of the PR #37 primary. The 5 old alternates (Streak, Macro,
+Midnight, Mint, Pastel) are removed and replaced by 11: Indigo, Sunset,
+Forest, Pastel, Slate, Citrus, Ocean, Coral, Berry, Graphite, Gold
+(`AppIcon-<Name>`, loose @2x/@3x files as before). The primary teal icon is
+unchanged. On launch, an `alternateIconName` that no longer exists resets
+to the primary icon; any other value is left alone.
+
+- "Match app icon to theme" is a **toggle, default on** (replaces
+  Ask/Never). Picking a theme with it on switches the icon to the theme's
+  icon through `setAlternateIconName` (iOS shows its own alert). The icon
+  can still be chosen independently in the same page.
+
+**R6. One "Appearance" page (Vzhled) holds all customization.** Settings
+gets one "Appearance" row (the old separate App Icon row goes). Sections,
+in order:
+
+1. Theme gallery with live mini previews.
+2. Appearance: System / Light / Dark, disabled with an explanation for a
+   single-scheme theme.
+3. App icon grid (the former picker) plus the "Match app icon to theme"
+   toggle.
+4. Customization: custom accent with contrast check, card style, corners,
+   density, number font, gradient header, colour-blind-safe macros.
+5. Layout: "Customize layout", shown as *Coming soon* (disabled) until
+   waves 3 and 4 land, because layout editing depends on the gamification
+   slot views.
+6. Share theme (wave 5, later).
+7. Reset to default.
+
+**R7. Appearance is one global choice**, not per theme (replaces D6's
+`[themeID: Appearance]`). Single-scheme themes simply override it.
+
 ## Goals / Non-Goals
 
 **Goals:**

@@ -1,16 +1,22 @@
 ## ADDED Requirements
 
-### Requirement: Default look is unchanged
+### Requirement: GF Teal is the default look
 
 With no appearance settings stored, the system SHALL render every screen
-with the Classic theme, whose color values equal the pre-change `Theme`
-tokens. It SHALL use System appearance, Filled cards, Standard corners,
-Comfortable density and Rounded numbers.
+with the GF Teal theme, which matches the primary app icon. It SHALL use
+System appearance, Filled cards, Standard corners, Comfortable density and
+Rounded numbers. The pre-change look SHALL remain available as the Classic
+Coral theme, whose color values equal the pre-change `Theme` tokens.
 
-#### Scenario: Upgrade keeps today's look
+#### Scenario: Upgrade switches to GF Teal
 
 - **WHEN** a user who has never opened Appearance settings installs the build that contains this change
-- **THEN** the accent is `#F56B4A`, macro bars are `#4A8FE3`/`#8C66DB`/`#EDB033`, cards use the system secondary grouped background at the same corner radius, and the "Log it" button is the same coral as before
+- **THEN** the accent, the tab bar tint and the "Log it" button use GF Teal's teal instead of coral
+
+#### Scenario: Classic Coral restores the old look
+
+- **WHEN** the user picks Classic Coral in Settings → Appearance
+- **THEN** the accent is `#F56B4A`, macro bars are `#4A8FE3`/`#8C66DB`/`#EDB033`, and cards use the system secondary grouped background, exactly as before this change
 
 #### Scenario: Unreadable settings fall back without losing data
 
@@ -19,37 +25,49 @@ Comfortable density and Rounded numbers.
 
 ### Requirement: Built-in themes
 
-The system SHALL offer the built-in themes Classic, GF Teal, Forest, Ocean,
-Sunset, Mono, High Contrast, Czech Autumn and Night Run. Each theme SHALL
-define separate light and dark values for its color tokens, except Night
-Run, which is dark only. Selecting a theme SHALL restyle every app screen
+The system SHALL offer 13 built-in themes, each paired with an app icon:
+GF Teal, Classic Coral, Ocean, Forest, Sunset, Slate and High Contrast
+(light and dark); Indigo Night, Berry, Graphite and Gold (dark only); and
+Pastel and Citrus (light only). Each theme's brand colors SHALL be derived
+from its icon. Selecting a theme SHALL restyle every app screen
 immediately, with no relaunch.
 
 #### Scenario: Switching theme applies everywhere
 
 - **WHEN** the user picks Forest in Settings → Appearance and then opens Today, Log Food and Progress
-- **THEN** the tab bar tint, the primary buttons, the day switcher and the ring's default tint all use Forest's green accent, and no screen still shows coral
+- **THEN** the tab bar tint, the primary buttons, the day switcher and the ring's default tint all use Forest's green accent, and no screen still shows teal
 
 #### Scenario: Dark-only theme
 
-- **WHEN** the user picks Night Run while the phone is in light mode
-- **THEN** the app renders dark with a black background and a lime accent, and the appearance picker offers no Light option for this theme
+- **WHEN** the user picks Gold while the phone is in light mode
+- **THEN** the app renders dark with near-black surfaces and a warm gold accent
 
-### Requirement: Appearance mode per theme
+#### Scenario: Light-only theme
+
+- **WHEN** the user picks Pastel while the phone is in dark mode
+- **THEN** the app renders in light appearance
+
+### Requirement: Appearance mode
 
 The system SHALL let the user choose System, Light or Dark appearance. The
-choice SHALL be remembered per theme and SHALL apply to every screen,
-sheet and overlay in the app.
+choice SHALL apply to every screen, sheet and overlay in the app. For a
+theme that supports only one appearance, that appearance SHALL be used and
+the picker SHALL be disabled with an explanation.
 
 #### Scenario: Forced dark
 
-- **WHEN** the user sets Classic to Dark while the phone is in light mode and opens the log-entry confirm sheet
+- **WHEN** the user sets Dark with Classic Coral active while the phone is in light mode and opens the log-entry confirm sheet
 - **THEN** both the Today screen and the sheet render in dark appearance
+
+#### Scenario: Picker disabled for a single-appearance theme
+
+- **WHEN** Graphite is active
+- **THEN** the appearance picker is disabled and says the theme is dark only
 
 ### Requirement: Contrast guarantees for non-Classic themes
 
-For every built-in theme except Classic's documented exemptions, the
-system SHALL keep:
+For every built-in theme except Classic Coral's documented exemptions, the
+system SHALL keep, after automatic fitting:
 
 - text on the accent at 4.5:1 or more
 - the accent against card and background surfaces at 3:1 or more
@@ -176,19 +194,25 @@ automatically. Appearance settings SHALL say so.
 - **WHEN** the app theme is changed to Forest
 - **THEN** a widget configured as Classic still shows the coral gradient
 
-### Requirement: Themes can suggest a matching app icon
+### Requirement: App icon follows the theme
 
-When the user applies a theme that has a matching alternate icon different
-from the current one, and the "Match app icon to theme" preference is Ask,
-the system SHALL offer to switch the icon. It SHALL change the icon only
-after the user confirms.
+The system SHALL offer 11 alternate app icons in the "GF / by Jirka"
+gradient style, plus the primary icon, on the Appearance page. A "Match app
+icon to theme" toggle, on by default, SHALL switch the app icon to the
+selected theme's icon when a theme is picked. The icon SHALL remain
+selectable independently of the theme.
 
-#### Scenario: Declining keeps the icon
+#### Scenario: Picking a theme switches the icon
 
-- **WHEN** the user applies Forest and declines "Also switch the app icon?"
+- **WHEN** "Match app icon to theme" is on and the user picks Sunset
+- **THEN** the app asks iOS to switch to the Sunset icon, and iOS shows its own icon-changed alert
+
+#### Scenario: Toggle off keeps the icon
+
+- **WHEN** "Match app icon to theme" is off and the user picks Ocean
 - **THEN** the Home Screen icon is unchanged and the theme is still applied
 
-#### Scenario: Preference set to Never
+#### Scenario: A removed alternate icon resets
 
-- **WHEN** "Match app icon to theme" is Never and the user applies Sunset
-- **THEN** no icon prompt appears
+- **WHEN** the app launches with an alternate icon from a previous build that no longer exists
+- **THEN** the app resets to the primary icon

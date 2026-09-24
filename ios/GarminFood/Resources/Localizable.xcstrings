@@ -1,53 +1,53 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%lld days left" : {
-      "comment" : "Challenge status: whole days remaining (1 or more). Plural.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Zbývají %lld dny"
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld days left": {
+      "comment": "Challenge status: whole days remaining (1 or more). Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zbývají %lld dny"
                 }
               },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Zbývá %lld dne"
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zbývá %lld dne"
                 }
               },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Zbývá %lld den"
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zbývá %lld den"
                 }
               },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Zbývá %lld dní"
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zbývá %lld dní"
                 }
               }
             }
           }
         },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld day left"
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day left"
                 }
               },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld days left"
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days left"
                 }
               }
             }
@@ -55,54 +55,210 @@
         }
       }
     },
-    "Ended" : {
-      "comment" : "Challenge status: its time window is over.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ukončeno"
+    "Berry": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bobule"
           }
         }
       }
     },
-    "Food log" : {
-      "comment" : "Navigation title of the Today screen.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deník jídla"
+    "Citrus": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Citrus"
           }
         }
       }
     },
-    "Last day" : {
-      "comment" : "Challenge status: today is the final day of its window.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poslední den"
+    "Coral": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Korál"
           }
         }
       }
     },
-    "Level %lld" : {
-      "comment" : "Current gamification level on the Today streak card.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Úroveň %lld"
+    "Ended": {
+      "comment": "Challenge status: its time window is over.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukončeno"
+          }
+        }
+      }
+    },
+    "Food log": {
+      "comment": "Navigation title of the Today screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deník jídla"
+          }
+        }
+      }
+    },
+    "Forest": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les"
+          }
+        }
+      }
+    },
+    "GF Teal": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GF tyrkys"
+          }
+        }
+      }
+    },
+    "Gold": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zlatá"
+          }
+        }
+      }
+    },
+    "Graphite": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafit"
+          }
+        }
+      }
+    },
+    "Indigo": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indigo"
+          }
+        }
+      }
+    },
+    "Last day": {
+      "comment": "Challenge status: today is the final day of its window.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední den"
+          }
+        }
+      }
+    },
+    "Level %lld": {
+      "comment": "Current gamification level on the Today streak card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úroveň %lld"
+          }
+        }
+      }
+    },
+    "Ocean": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oceán"
+          }
+        }
+      }
+    },
+    "Pastel": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Slate": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Břidlice"
+          }
+        }
+      }
+    },
+    "Sunset": {
+      "comment": "App icon / theme name shown in Appearance settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Západ slunce"
+          }
+        }
+      }
+    },
+    "This device doesn't support alternate app icons.": {
+      "comment": "Shown when iOS reports alternate icons are unsupported.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto zařízení nepodporuje alternativní ikony aplikace."
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
