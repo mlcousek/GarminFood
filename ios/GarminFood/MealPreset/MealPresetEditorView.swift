@@ -124,7 +124,7 @@ struct MealPresetEditorView: View {
                         .disabled(isSyncingToGarmin)
                     }
                     if let garminSyncErrorMessage {
-                        Text(garminSyncErrorMessage).foregroundStyle(.red).font(.footnote)
+                        Text(garminSyncErrorMessage).foregroundStyle(Theme.danger).font(.footnote)
                     }
                 } header: {
                     Text("Garmin")
@@ -148,7 +148,7 @@ struct MealPresetEditorView: View {
 
             if let saveErrorMessage {
                 Section {
-                    Text(saveErrorMessage).foregroundStyle(.red)
+                    Text(saveErrorMessage).foregroundStyle(Theme.danger)
                 }
             }
         }

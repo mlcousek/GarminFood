@@ -132,7 +132,7 @@ struct CustomFoodEditorView: View {
 
             if let saveErrorMessage {
                 Section {
-                    Text(saveErrorMessage).foregroundStyle(.red)
+                    Text(saveErrorMessage).foregroundStyle(Theme.danger)
                 }
             }
         }

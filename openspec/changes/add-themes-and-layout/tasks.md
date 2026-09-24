@@ -24,7 +24,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 - [x] 1.3 **`ThemeRole`, `TokenValue` (`.rgb` / `.system(name)`), `ThemeSpec`, and the Classic spec with today's values** (design D3 table), including the band colors from `Components.swift`, `water` = carbs, and `danger` = system red. `ClassicIdentityTests` compares each value with the literals in `Theme.swift` and `Components.swift`. CI green.
 - [x] 1.4 **`AppearanceSettings` v1** with lenient `Codable`, and `AppearanceMigration` (does nothing at v1). Tests: absent, missing fields, unknown enum values, extra fields, garbage. CI green.
 - [x] 1.5 **`PaletteResolver` for Classic**, both schemes. Test that it resolves to today's values. CI green.
-- [ ] 1.6 **App theming plumbing** (revised by design R4: the `Theme.*` API is kept, no `ThemeColor`/`\.palette` migration):
+- [x] 1.6 **App theming plumbing** (revised by design R4: the `Theme.*` API is kept, no `ThemeColor`/`\.palette` migration):
   - `Shared/ThemeRuntime.swift`: `ThemePalette` (dynamic light/dark `UIColor`-backed `Color`s) and the `@Observable` `ThemeRuntime.shared` that `Theme.*` tokens read
   - `ThemeStore` (`@MainActor @Observable`)
   - `AppPreferences` key `appearance.v1` plus quarantine and a `DiagnosticsLog` warning (`AppPreferences+Appearance.swift`)
@@ -32,11 +32,11 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
   - a root `.themed(store)` in `ContentView` that replaces `.tint(Theme.accent)`
 
   Every new file gets a header comment. CI green.
-- [ ] 1.7 **Migrate `DesignSystem/`** to palette roles: `CardStyle`, `ProgressRing`, `MacroBar`, `PrimaryButton` (label uses `onAccent`), `StatTile`, `DaySwitcher`, `Tag`, `FavoriteToggleButton`, `GoalState.tint`, and `CalorieBand.tint` (whose literals move into Classic). `BadgeMedallion` rarity colors stay as they are. CI green.
-- [ ] 1.8 **Migrate batch A** (R4: only hard-coded colors are edited): `Today/`, `Fasting/`, `Weight/`, `Hydration/`. Hydration moves from `carbs` to `water`. CI green.
-- [ ] 1.9 **Migrate batch B**: `Catalog/`, `LogEntry/`, `CustomFood/`, `MealPreset/`, `Shortcuts/`. The 9 `.red` error texts become `danger`, and the `.green` swipe tint becomes `success`. CI green.
-- [ ] 1.10 **Migrate batch C**: `Progress/`, `Trends/`, `Profile/`, `Home/` (`MomentOverlay`), `App/` banners. Text on colored fills uses `onAccent`. CI green.
-- [ ] 1.11 **Lint**: `tools/lint-design-tokens.sh`, plus `tools/design-token-allowlist.txt` with a reason on every line (`Shared/Theme.swift`, `BadgeMedallion` rarity, scanner and moment scrims, the widget fallback). Run it locally in Git Bash until it passes, then add it as a CI step before "Install XcodeGen". CI green.
+- [x] 1.7 **Migrate `DesignSystem/`** to palette roles: `CardStyle`, `ProgressRing`, `MacroBar`, `PrimaryButton` (label uses `onAccent`), `StatTile`, `DaySwitcher`, `Tag`, `FavoriteToggleButton`, `GoalState.tint`, and `CalorieBand.tint` (whose literals move into Classic). `BadgeMedallion` rarity colors stay as they are. CI green.
+- [x] 1.8 **Migrate batch A** (R4: only hard-coded colors are edited): `Today/`, `Fasting/`, `Weight/`, `Hydration/`. Hydration moves from `carbs` to `water`. CI green.
+- [x] 1.9 **Migrate batch B**: `Catalog/`, `LogEntry/`, `CustomFood/`, `MealPreset/`, `Shortcuts/`. The 9 `.red` error texts become `danger`, and the `.green` swipe tint becomes `success`. CI green.
+- [x] 1.10 **Migrate batch C**: `Progress/`, `Trends/`, `Profile/`, `Home/` (`MomentOverlay`), `App/` banners. Text on colored fills uses `onAccent`. CI green.
+- [x] 1.11 **Lint**: `tools/lint-design-tokens.sh`, plus `tools/design-token-allowlist.txt` with a reason on every line (`Shared/Theme.swift`, `BadgeMedallion` rarity, scanner and moment scrims, the widget fallback). Run it locally in Git Bash until it passes, then add it as a CI step before "Install XcodeGen". CI green.
 - [ ] 1.12 **On-device check** (AltStore build):
   - Take screenshots of Today, Log Food, Progress, a confirm sheet, the level-up overlay and Settings in light and dark mode, and compare them with screenshots from the previous build. They must look identical.
   - Settings → Diagnostics shows no `appearance` warnings.
@@ -47,7 +47,7 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 - [x] 2.1 **`ThemeCatalog` built-ins** (R2) as data: the Legible and CVD-safe macro and state sets and the 13 themes, brand colors from their icons, fitted by the resolver (R3). `BuiltInThemeContrastTests` and `DistinctnessTests` (D5) run over every theme, scheme and contrast mode, with Classic's closed exemption list. Record any value nudged to pass in the catalog comment. CI green.
 - [x] 2.2 **`PaletteResolver` steps 2 to 5** (D4): the macro set override, Differentiate Without Color mapped to CVD-safe, increased contrast (Classic included), and `onAccent` derivation. Tests. CI green.
 - [x] 2.3 **`AccentAdjuster`** plus the custom accent in the settings. Tests: coral in light is fitted with the hue kept, a passing color is unchanged, `#FFFF00` terminates, lime is darkened. Also test the macro-collision warning. CI green.
-- [ ] 2.4 **Settings → Appearance screen** (`Profile/Appearance/`, structure per R6, including the app icon grid and a disabled "Customize layout — Coming soon" row):
+- [x] 2.4 **Settings → Appearance screen** (`Profile/Appearance/`, structure per R6, including the app icon grid and a disabled "Customize layout — Coming soon" row):
   - a theme gallery grid of live mini previews (a small summary ring and macro bars drawn with that theme's palette)
   - an appearance picker (with Light and System hidden for dark-only themes)
   - custom accent: `ColorPicker(supportsOpacity: false)` plus curated swatches, the "Adjusted for light/dark mode" note, and the collision warning
@@ -61,10 +61,12 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
   - Container-level density.
   - Number font through `.numberStyle()` and `.fontDesign`.
   - Make `heroNumber` and the Level 48 pt number `@ScaledMetric`.
+  - *Status:* card styles, corners, container density (Today/Progress stacks, card padding) and number font are built (`CardStyle`, `Theme.Radius`, `Theme.Density`, `Font.heroNumber` etc. read `ThemeRuntime`). **Still open:** the `@ScaledMetric` hero/Level numbers (needs call-site edits in Today/Progress files other agents are translating; do after those land).
 
   CI green.
-- [ ] 2.6 **Optional Today gradient header** (off by default), with the Reduce Transparency flat tint. Add a contrast test of `.primary` against the blended stops. CI green.
-- [ ] 2.7 **Per-theme appearance** applied through `.preferredColorScheme` at the root. Any presenter found not inheriting the palette gets an explicit `.themed(store)`. CI green.
+- [x] 2.6 **Optional Today gradient header** (off by default), with the Reduce Transparency flat tint. Add a contrast test of `.primary` against the blended stops. CI green.
+- [x] 2.7 **Per-theme appearance** applied through `.preferredColorScheme` at the root. Any presenter found not inheriting the palette gets an explicit `.themed(store)`. CI green.
+  - *As built:* `ThemeRootModifier` (`ThemeStore.swift`, applied once in `ContentView`) forces the scheme of a single-scheme theme, else the global Light/Dark choice (R7), and feeds Increase Contrast / Differentiate Without Color to the store. Tokens read the global `ThemeRuntime`, so sheets and the moment overlay follow the theme without their own `.themed`; confirming that on device is part of 2.8.
 - [ ] 2.8 **On-device check**:
   - Go through every theme in light and dark: Today, Log Food, the confirm sheet, Progress, the level-up overlay, alerts.
   - Repeat with Increase Contrast, Reduce Transparency, Differentiate Without Color and the largest Dynamic Type.

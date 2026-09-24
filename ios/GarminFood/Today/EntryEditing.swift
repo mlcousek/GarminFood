@@ -97,7 +97,7 @@ private struct EntryActionsModifier: ViewModifier {
                     } label: {
                         Label("Duplicate", systemImage: "plus.square.on.square")
                     }
-                    .tint(.green)
+                    .tint(Theme.success)
                 }
             }
             .contextMenu {

@@ -88,7 +88,7 @@ public enum PaletteResolver {
     public static func resolve(settings: AppearanceSettings, environment: AppearanceEnvironment) -> ResolvedPalette {
         let theme = ThemeCatalog.themeOrDefault(id: settings.themeID)
         let requested: ThemeColorScheme
-        switch settings.appearance(for: theme.id) {
+        switch settings.appearance {
         case .system: requested = environment.systemScheme
         case .light: requested = .light
         case .dark: requested = .dark

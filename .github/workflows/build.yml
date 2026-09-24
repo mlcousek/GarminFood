@@ -129,6 +129,13 @@ jobs:
           cd AppearanceKit
           swift test
 
+      - name: Lint design tokens
+        # add-themes-and-layout D12: views use Theme tokens, never literal
+        # colors (exemptions, each with a reason, in
+        # tools/design-token-allowlist.txt). Before the slow Xcode steps so
+        # it fails fast.
+        run: sh ../tools/lint-design-tokens.sh
+
       - name: Install XcodeGen
         run: brew install xcodegen
 

@@ -1,5 +1,5 @@
-// AppearanceSettings — the user's persisted look (design.md D6, D7): theme,
-// per-theme Light/Dark/System choice, macro color set, optional custom
+// AppearanceSettings — the user's persisted look (design.md D6, D7, R7):
+// theme, one global Light/Dark/System choice, macro color set, optional custom
 // accent and the style options. Stored by the app as JSON `Data` under the
 // `appearance.v1` preferences key.
 //
@@ -18,7 +18,8 @@ import Foundation
 
 // MARK: - Options
 
-/// Light / Dark / follow the system. Stored per theme (D6).
+/// Light / Dark / follow the system. One global choice (design R7);
+/// single-scheme themes override it.
 public enum AppearanceMode: String, CaseIterable, Codable, Sendable {
     case system
     case light
@@ -116,8 +117,8 @@ public struct AppearanceSettings: Hashable, Sendable {
     /// (a newer build's theme); `PaletteResolver` falls back to the default
     /// theme for an unknown id.
     public var themeID: String
-    /// Light/Dark/System per theme id (D6). Absent entry = `.system`.
-    public var appearanceByTheme: [String: AppearanceMode]
+    /// Light/Dark/System, global (R7). A single-scheme theme overrides it.
+    public var appearance: AppearanceMode
     public var macroSet: MacroSetOption
     /// The user's raw custom accent pick, if any. Stored unfitted; fitting
     /// to the contrast policy happens at resolve time, per scheme (D5).
@@ -130,43 +131,25 @@ public struct AppearanceSettings: Hashable, Sendable {
     public init(
         version: Int = AppearanceSchema.currentVersion,
         themeID: String = AppearanceSettings.defaultThemeID,
-        appearanceByTheme: [String: AppearanceMode] = [:],
+        appearance: AppearanceMode = .system,
         macroSet: MacroSetOption = .theme,
         customAccent: RGBA? = nil,
         style: AppearanceStyle = .default
     ) {
         self.version = version
         self.themeID = themeID
-        self.appearanceByTheme = appearanceByTheme
+        self.appearance = appearance
         self.macroSet = macroSet
         self.customAccent = customAccent
         self.style = style
     }
 
     public static let `default` = AppearanceSettings()
-
-    /// The Light/Dark/System choice for `themeID` (default `.system`).
-    public func appearance(for themeID: String) -> AppearanceMode {
-        appearanceByTheme[themeID] ?? .system
-    }
-
-    public mutating func setAppearance(_ mode: AppearanceMode, for themeID: String) {
-        if mode == .system {
-            appearanceByTheme[themeID] = nil
-        } else {
-            appearanceByTheme[themeID] = mode
-        }
-    }
-
-    /// The appearance of the currently selected theme.
-    public var currentAppearance: AppearanceMode {
-        appearance(for: themeID)
-    }
 }
 
 extension AppearanceSettings: Codable {
     enum CodingKeys: String, CodingKey {
-        case version, themeID, appearanceByTheme, macroSet, customAccent, style
+        case version, themeID, appearance, macroSet, customAccent, style
     }
 
     /// Lenient: every field independently falls back to its default. Throws
@@ -183,11 +166,7 @@ extension AppearanceSettings: Codable {
             themeID = fallback.themeID
         }
 
-        if let raw = try? container.decodeIfPresent([String: String].self, forKey: .appearanceByTheme) {
-            appearanceByTheme = raw.compactMapValues { AppearanceMode(rawValue: $0) }
-        } else {
-            appearanceByTheme = fallback.appearanceByTheme
-        }
+        appearance = LenientDecoding.enumValue(AppearanceMode.self, container, .appearance) ?? fallback.appearance
 
         macroSet = LenientDecoding.enumValue(MacroSetOption.self, container, .macroSet) ?? fallback.macroSet
         // A garbled hex string decodes as "no custom accent", not a failure.

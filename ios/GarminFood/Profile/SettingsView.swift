@@ -84,10 +84,12 @@ struct SettingsView: View {
                 } label: {
                     Label("Diagnostics", systemImage: "stethoscope")
                 }
+                // add-themes-and-layout R6: theme, style, custom accent and the
+                // app icon grid all live on this one page.
                 NavigationLink {
-                    AppIconPickerView()
+                    AppearanceSettingsView()
                 } label: {
-                    Label("App Icon", systemImage: "app.badge")
+                    Label("Appearance", systemImage: "paintpalette")
                 }
             }
 

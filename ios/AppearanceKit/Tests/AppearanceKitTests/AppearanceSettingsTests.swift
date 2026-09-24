@@ -20,7 +20,7 @@ final class AppearanceSettingsTests: XCTestCase {
         XCTAssertEqual(result.settings.macroSet, .theme)
         XCTAssertNil(result.settings.customAccent)
         XCTAssertEqual(result.settings.style, .default)
-        XCTAssertEqual(result.settings.currentAppearance, .system)
+        XCTAssertEqual(result.settings.appearance, .system)
     }
 
     func testEmptyObjectGivesDefaults() {
@@ -30,18 +30,18 @@ final class AppearanceSettingsTests: XCTestCase {
     }
 
     func testRoundTrip() throws {
-        var settings = AppearanceSettings(
+        let settings = AppearanceSettings(
             themeID: "ocean",
+            appearance: .dark,
             macroSet: .colorBlindSafe,
             customAccent: RGBA(hex: 0x15808C),
             style: AppearanceStyle(cardStyle: .outlined, cornerShape: .round, density: .compact,
                                    numberFont: .serif, gradientHeader: true)
         )
-        settings.setAppearance(.dark, for: "ocean")
         let result = AppearanceSettings.load(from: try settings.encoded())
         XCTAssertEqual(result.status, .loaded)
         XCTAssertEqual(result.settings, settings)
-        XCTAssertEqual(result.settings.currentAppearance, .dark)
+        XCTAssertEqual(result.settings.appearance, .dark)
     }
 
     func testMissingFieldsFallBackIndividually() {
@@ -50,19 +50,19 @@ final class AppearanceSettingsTests: XCTestCase {
         XCTAssertEqual(result.settings.themeID, "forest")
         XCTAssertEqual(result.settings.macroSet, .theme)
         XCTAssertEqual(result.settings.style, .default)
-        XCTAssertEqual(result.settings.appearanceByTheme, [:])
+        XCTAssertEqual(result.settings.appearance, .system)
     }
 
     func testUnknownEnumValuesFallBackPerField() {
         let json = #"""
         {"version":1,"themeID":"ocean","macroSet":"ultraviolet",
-         "appearanceByTheme":{"ocean":"dark","forest":"sepia"},
+         "appearance":"sepia",
          "style":{"cardStyle":"neon","cornerShape":"round","density":"tiny","numberFont":"serif"}}
         """#
         let settings = load(json).settings
         XCTAssertEqual(settings.themeID, "ocean")
         XCTAssertEqual(settings.macroSet, .theme)
-        XCTAssertEqual(settings.appearanceByTheme, ["ocean": .dark])
+        XCTAssertEqual(settings.appearance, .system)
         XCTAssertEqual(settings.style.cardStyle, .filled)
         XCTAssertEqual(settings.style.cornerShape, .round)
         XCTAssertEqual(settings.style.density, .comfortable)
@@ -82,7 +82,7 @@ final class AppearanceSettingsTests: XCTestCase {
     }
 
     func testWrongTypesFallBackPerField() {
-        let json = ##"{"version":"one","themeID":42,"macroSet":7,"customAccent":"#nothex","style":"fancy","appearanceByTheme":[1]}"##
+        let json = ##"{"version":"one","themeID":42,"macroSet":7,"customAccent":"#nothex","style":"fancy","appearance":[1]}"##
         let result = load(json)
         XCTAssertEqual(result.status, .loaded)
         XCTAssertEqual(result.settings, .default)
@@ -111,11 +111,8 @@ final class AppearanceSettingsTests: XCTestCase {
         XCTAssertEqual(load(#"{"version":99,"themeID":"gold"}"#).settings.version, AppearanceSchema.currentVersion)
     }
 
-    func testSettingSystemAppearanceRemovesTheEntry() {
-        var settings = AppearanceSettings.default
-        settings.setAppearance(.light, for: "teal")
-        XCTAssertEqual(settings.appearance(for: "teal"), .light)
-        settings.setAppearance(.system, for: "teal")
-        XCTAssertEqual(settings.appearanceByTheme, [:])
+    func testAppearanceIsOneGlobalChoice() {
+        XCTAssertEqual(load(#"{"appearance":"dark"}"#).settings.appearance, .dark)
+        XCTAssertEqual(load(#"{"appearance":"light","themeID":"forest"}"#).settings.appearance, .light)
     }
 }

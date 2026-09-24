@@ -48,7 +48,7 @@ struct TodayView: View {
         let dashboard = dayLog.dashboard
 
         ScrollView {
-            VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
+            VStack(alignment: .leading, spacing: Theme.Density.stackSpacing) {
                 DaySwitcher(
                     date: dayLog.selectedDate,
                     isToday: dayLog.isToday,
@@ -132,7 +132,7 @@ struct TodayView: View {
             }
             .padding(Theme.Spacing.md)
         }
-        .background(Theme.groupedBackground)
+        .background { GradientHeaderBackground() }
         .navigationTitle("Food log")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
