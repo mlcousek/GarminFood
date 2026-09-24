@@ -240,3 +240,9 @@
 
 /* Fasting reminder notification body. %@ is a 24-hour clock time (HH:mm). */
 "Your fasting window starts at %@." = "Tvůj půst začíná v %@.";
+
+/* Error when a food entry has an invalid date (standalone mode, food log kept on the phone). */
+"This day can't be saved in the food log on this phone." = "Tento den nejde uložit do jídelníčku v telefonu.";
+
+/* Error when writing the on-phone food log fails (standalone mode). %@ is the system's reason. */
+"Couldn't save the food log on this phone: %@" = "Jídelníček v telefonu se nepodařilo uložit: %@";
