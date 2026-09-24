@@ -124,6 +124,7 @@ private struct MomentCard: View {
         case .challengeCompleted: return "target"
         case .dailyChallengeCompleted: return "checkmark.circle.fill"
         case .achievementUnlocked(_, let badgeSymbol, _): return badgeSymbol
+        case .feature(let feature): return feature.symbol
         }
     }
 
@@ -141,6 +142,7 @@ private struct MomentCard: View {
         case .streakMilestone(let days): return AchievementRarity.derive(from: .streakAtLeast(days: days))
         case .challengeCompleted, .dailyChallengeCompleted: return .uncommon
         case .achievementUnlocked(_, _, let rarity): return rarity
+        case .feature(let feature): return Self.rarity(for: feature.style)
         }
     }
 
@@ -151,6 +153,7 @@ private struct MomentCard: View {
         case .challengeCompleted(let name, _): return name
         case .dailyChallengeCompleted(let name, _): return name
         case .achievementUnlocked(let name, _, _): return name
+        case .feature(let feature): return feature.title
         }
     }
 
@@ -170,6 +173,21 @@ private struct MomentCard: View {
         case .challengeCompleted(_, let xp): return "Challenge done. +\(xp) XP."
         case .dailyChallengeCompleted(_, let xp): return "Today's challenge done. +\(xp) XP."
         case .achievementUnlocked: return "New achievement unlocked."
+        case .feature(let feature):
+            guard feature.xpAwarded > 0 else { return feature.message }
+            return String(localized: "\(feature.message) +\(feature.xpAwarded) XP",
+                          comment: "A gamification feature's celebration message followed by the XP it awarded.")
+        }
+    }
+
+    /// add-gamification-signals D12: a feature moment's style picks its
+    /// medallion colour ramp (the "style colour"), so every wave-2 feature
+    /// renders through this one generic card without editing it.
+    static func rarity(for style: FeatureMoment.Style) -> AchievementRarity {
+        switch style {
+        case .celebration, .freeze: return .uncommon
+        case .record, .event: return .rare
+        case .secret, .boss: return .epic
         }
     }
 }

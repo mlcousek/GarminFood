@@ -1,6 +1,18 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ +%lld XP": {
+      "comment": "Celebration card: a gamification feature's message (already localized) followed by the XP it awarded.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ +%lld XP"
+          }
+        }
+      }
+    },
     "%@ kcal": {
       "comment": "Energy of a serving, e.g. '290 kcal'. %@ = whole-number value.",
       "extractionState": "manual",
