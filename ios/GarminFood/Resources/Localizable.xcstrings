@@ -1,6 +1,18 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ kcal": {
+      "comment": "Energy of a serving, e.g. '290 kcal'. %@ = whole-number value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kcal"
+          }
+        }
+      }
+    },
     "%@ kg": {
       "comment": "A weight in kilograms; %@ is the formatted number.",
       "extractionState": "manual",
@@ -2269,6 +2281,18 @@
         }
       }
     },
+    "No servings": {
+      "comment": "Serving picker empty state title (food has no servings).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádné porce"
+          }
+        }
+      }
+    },
     "Not connected": {
       "comment": "Settings: Garmin connection status when signed out.",
       "extractionState": "manual",
@@ -3225,6 +3249,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Záznam mezitím do Garminu dorazil, takže není co zahodit."
+          }
+        }
+      }
+    },
+    "This food has no serving information to log against.": {
+      "comment": "Serving picker empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato potravina nemá žádné údaje o porcích, podle kterých by šla zapsat."
           }
         }
       }

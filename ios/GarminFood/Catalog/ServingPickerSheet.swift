@@ -51,7 +51,7 @@ struct ServingPickerSheet: View {
             }
             .overlay {
                 if food.servings.isEmpty {
-                    EmptyStateView(systemImage: "exclamationmark.triangle", title: "No servings", message: "This food has no serving information to log against.")
+                    EmptyStateView(systemImage: "exclamationmark.triangle", title: String(localized: "No servings"), message: String(localized: "This food has no serving information to log against."))
                 }
             }
         }
