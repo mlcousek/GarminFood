@@ -18,23 +18,23 @@ is its own branch + PR (`mlcousek/add-localization-wN`).
 
 ## 2. Wave 2 — App shell + most-used screens
 
-- [ ] 2.1 `docs/localization-glossary.md` (ty-form, domain terms: zapsat, série, úroveň, výzva, odznak, půst, jídlo/chod, porce).
-- [ ] 2.2 Tab bar, `ContentView`, `AuthBannerView`, `GarminErrorPresentation` (loud auth errors must be clear in Czech).
-- [ ] 2.3 Today (`TodayView`, `MealDetailView`, `DayNoteCard`, weight/hydration section): replace `n == 1 ?` ternaries and `+`-assembled accessibility labels with localizable strings/plurals.
-- [ ] 2.4 Log Food / search (`Catalog/*`), serving picker, barcode screen.
-- [ ] 2.5 Confirm + edit (`LogEntry/*`, `EntryEditing`), `MatchConfirmationView`.
-- [ ] 2.6 Settings/Profile (sign-in, sync queue, diagnostics screen chrome — not log text).
+- [x] 2.1 `docs/localization-glossary.md` (ty-form, domain terms: zapsat, série, úroveň, výzva, odznak, půst, jídlo/chod, porce). (Wave 6 added food/meal/preset terms and the VoiceOver-units and decimal-comma rules.)
+- [x] 2.2 Tab bar, `ContentView`, `AuthBannerView`, `GarminErrorPresentation` (loud auth errors must be clear in Czech).
+- [x] 2.3 Today (`TodayView`, `MealDetailView`, `DayNoteCard`, weight/hydration section): replace `n == 1 ?` ternaries and `+`-assembled accessibility labels with localizable strings/plurals.
+- [x] 2.4 Log Food / search (`Catalog/*`), serving picker, barcode screen.
+- [x] 2.5 Confirm + edit (`LogEntry/*`, `EntryEditing`), `MatchConfirmationView`. (Wave 6 closed the last confirm-screen literals: "When", "Date", "Confirm", "Choose…" and the save error.)
+- [x] 2.6 Settings/Profile (sign-in, sync queue, diagnostics screen chrome — not log text).
 - [ ] 2.7 Checker `--scan` clean for all Wave 2 files; on-device review with the fiancée.
 
 ## 3. Wave 3 — Remaining screens + FoodLogCore
 
 - [ ] 3.1 Fasting, Hydration, Weight, Trends, Meal presets, Custom food, Home `MomentOverlay`.
-- [ ] 3.2 FoodLogCore display text: `NutrientKind`/`NutrientGroup`, meal type names, `CalorieBand`, `ServingAmount`/`LogEntryEditError`/`OfflineFoodIndex` errors, `CustomFood` note, `FastingSession`, `DayNote`.
+- [x] 3.2 FoodLogCore display text: `NutrientKind`/`NutrientGroup`, meal type names, `CalorieBand`, `ServingAmount`/`LogEntryEditError`/`OfflineFoodIndex` errors, `CustomFood` note, `FastingSession`, `DayNote`.
 - [ ] 3.3 `NotificationPlanning`: one full sentence per meal type (Czech accusative), fasting texts; `NotificationScheduler` diff compares title/body so a language change re-plans (spec: pending reminder).
   - [x] 3.3a Texts: every `NotificationPlanning` title/body is `String(localized:bundle: .module)` with en + cs `.lproj` entries; per-meal full sentences replace the `displayNameLowercased` insertion; the "eating opens in N minutes" body is FoodLogCore's first `.stringsdict` plural (Czech one/few/many/other). `LocalizationTests` pins a Czech meal title and the plural body.
   - [ ] 3.3b Scheduler diff: still identifier-only, so **already-pending notifications keep the text they were scheduled with** after a language change. Date-scoped meal/streak/challenge reminders self-heal with the next day's requests; the *repeating* fasting reminders keep the old language until their schedule or lead time changes. Fix: include title/body in the diff (remove + re-add when content differs).
-- [ ] 3.4 GarminKit: `defaultLocalization` + resources; `PersistedJSONUnreadFileError` text.
-- [ ] 3.5 Tests pin Czech output for representative FoodLogCore strings via the `cs.lproj` bundle.
+- [x] 3.4 GarminKit: `defaultLocalization` + resources; `PersistedJSONUnreadFileError` text. GarminKit has `defaultLocalization: "en"`, `resources: [.process("Resources")]` and en/cs `.lproj`; `GarminKitTests/LocalizationTests` pins the Czech text.
+- [x] 3.5 Tests pin Czech output for representative FoodLogCore strings via the `cs.lproj` bundle. (`LocalizationTests`: quantity message, meal reminder, fasting plural, nutrient/section names, an edit error, the custom-food note.)
 
 ## 4. Wave 4 — Gamification (after each gamification change lands)
 

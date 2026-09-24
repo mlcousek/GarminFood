@@ -40,6 +40,7 @@
  * Usage:
  *   node tools/check-localizations.mjs            # blocking checks
  *   node tools/check-localizations.mjs --scan     # + untranslated-UI report
+ *   node tools/check-localizations.mjs --verbose  # + every literal, file:line
  *
  * Adding a language: add it to LANGUAGES (with its CLDR plural categories),
  * to every catalog and package lproj, and to CFBundleLocalizations in
@@ -53,7 +54,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const IOS = path.join(ROOT, 'ios');
-const SCAN = process.argv.includes('--scan');
+const VERBOSE = process.argv.includes('--verbose');
+const SCAN = process.argv.includes('--scan') || VERBOSE;
 
 /** Target languages and the CLDR plural categories each must provide. */
 const LANGUAGES = {
@@ -439,7 +441,10 @@ if (SCAN) {
         while ((m = UI.exec(src))) {
           const lit = readSwiftString(src, UI.lastIndex);
           if (!lit || !lit.parts.some((p) => p.text && /[A-Za-z]/.test(p.text))) continue;
-          if (!matches(keys, lit.parts)) n++;
+          if (!matches(keys, lit.parts)) {
+            n++;
+            if (VERBOSE) console.log(`    ${rel(f)}:${src.slice(0, m.index).split('\n').length}  ${m[1]}("${literalText(lit.parts)}")`);
+          }
         }
         if (n) { perFile.push([rel(f), n]); total += n; }
       }

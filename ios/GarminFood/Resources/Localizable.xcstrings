@@ -1111,6 +1111,18 @@
         }
       }
     },
+    "Choose…": {
+      "comment": "Confirm screen: serving row value before a serving is picked.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat…"
+          }
+        }
+      }
+    },
     "Citrus": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -1263,6 +1275,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dokončit přihlášení vloženým ticketem"
+          }
+        }
+      }
+    },
+    "Confirm": {
+      "comment": "Navigation title of the confirm-and-log screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potvrdit"
           }
         }
       }
@@ -1699,6 +1723,18 @@
         }
       }
     },
+    "Couldn't save this entry. Try again.": {
+      "comment": "Error on the confirm/add screens when saving locally failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo uložit. Zkus to znovu."
+          }
+        }
+      }
+    },
     "Couldn't search Garmin: sign in again in GarminFood first.": {
       "comment": "Siri reply: food search failed because the Garmin sign-in expired.",
       "extractionState": "manual",
@@ -1803,6 +1839,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tmavý"
+          }
+        }
+      }
+    },
+    "Date": {
+      "comment": "Date picker label (day of an entry).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datum"
           }
         }
       }
@@ -6369,6 +6417,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Čím byl tento den jiný?"
+          }
+        }
+      }
+    },
+    "When": {
+      "comment": "Section header: meal and date of an entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kdy"
           }
         }
       }
