@@ -6,15 +6,15 @@
 
 ## 1. Wave 1 — Pure core (FoodLogCore, no UI)
 
-- [ ] 1.1 Models: `Ingredient` (ids, canonical units, magnesium form), `IngredientAmount`, `SupplementProduct`, `SupplementSchedule` (slots and patterns incl. cycles, `effectiveFrom` history), `IntakeRecord`. Optional Codable fields; tolerant decoding.
-- [ ] 1.2 `ScheduleEvaluator.due(on:plan:trainingDays:)`: every pattern, cycles across phase boundaries, schedule edits applying from their day forward. Tests for each spec scenario.
-- [ ] 1.3 Stack-complete / neutral / partial / missed day classification. Tests.
-- [ ] 1.4 `IngredientTotals` with IU→µg conversion and multi-ingredient products. Tests (the zinc 10 + 25 mg case, ZMA).
-- [ ] 1.5 `EvidenceCatalog` + `SupplementCatalog`: ingredient cards and default limits entered **from the source PDFs** (design D8 table; don't trust summaries), en + cs texts written for the app, sources and disclaimer. Test: every catalog product's ingredients have a card; every limit has a source.
-- [ ] 1.6 Limits: defaults + user overrides + reset; over-limit evaluation incl. "no EU UL" cases. Tests.
-- [ ] 1.7 `LabelScore` (transparency 40 / dose 40 / headroom 20) with an explained breakdown. Tests (proprietary blend, effective creatine dose).
-- [ ] 1.8 `StockProjection`: stock after ticks, days left under the current schedule, restock trigger once per pack; cost per day/month. Tests.
-- [ ] 1.9 Past-day logging (design D14): intake for any day up to 365 days back evaluated against that day's schedule; stock counts only intake on/after `stockSetOn`; late entries (> 7 days after their date) grant no XP. Tests.
+- [x] 1.1 Models: `Ingredient` (ids, canonical units, magnesium form), `IngredientAmount`, `SupplementProduct`, `SupplementSchedule` (slots and patterns incl. cycles, `effectiveFrom` history), `IntakeRecord`. Optional Codable fields; tolerant decoding.
+- [x] 1.2 `ScheduleEvaluator.due(on:plan:trainingDays:)`: every pattern, cycles across phase boundaries, schedule edits applying from their day forward. Tests for each spec scenario.
+- [x] 1.3 Stack-complete / neutral / partial / missed day classification. Tests.
+- [x] 1.4 `IngredientTotals` with IU→µg conversion and multi-ingredient products. Tests (the zinc 10 + 25 mg case, ZMA).
+- [x] 1.5 `EvidenceCatalog` + `SupplementCatalog`: ingredient cards and default limits entered **from the source PDFs** (design D8 table; don't trust summaries), en + cs texts written for the app, sources and disclaimer. Test: every catalog product's ingredients have a card; every limit has a source.
+- [x] 1.6 Limits: defaults + user overrides + reset; over-limit evaluation incl. "no EU UL" cases. Tests.
+- [x] 1.7 `LabelScore` (transparency 40 / dose 40 / headroom 20) with an explained breakdown. Tests (proprietary blend, effective creatine dose).
+- [x] 1.8 `StockProjection`: stock after ticks, days left under the current schedule, restock trigger once per pack; cost per day/month. Tests.
+- [x] 1.9 Past-day logging (design D14): intake for any day up to 365 days back evaluated against that day's schedule; stock counts only intake on/after `stockSetOn`; late entries (> 7 days after their date) grant no XP. Tests.
 
 ## 2. Wave 2 — Stores and wiring
 
