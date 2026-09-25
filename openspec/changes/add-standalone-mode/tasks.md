@@ -7,13 +7,17 @@ Relative size per wave: S / M / L.
 
 ## 0. Owner decisions (before wave 2)
 
-- [ ] 0.1 Her data leaving the phone: manual export only, or also a shared-folder backup? (design Open Question 1)
-- [ ] 0.2 Manual activity entry: yes/no (default: no; separate change if yes).
-- [ ] 0.3 Backup: JSON + CSV and replace-only restore acceptable?
-- [ ] 0.4 Goal calculator: 1200 kcal floor for everyone or sex-specific; protein g/kg defaults; day targets only or per-meal too.
-- [ ] 0.5 Display name for her install ("GarminFood" or a neutral name like "GF"); language is Czech via add-localization.
-- [ ] 0.6 AltStore or SideStore for her phone.
-- [ ] 0.7 Build "Copy my last 90 days from Garmin" now or later.
+No owner answer arrived before waves 4–7 were built (2026-09-25), so each
+question below takes the design's proposed default. Each is **defaulted,
+owner may override** — a later answer becomes its own small follow-up.
+
+- [x] 0.1 Her data leaving the phone: manual export only, or also a shared-folder backup? (design Open Question 1) — *Defaulted, owner may override:* manual export only (Settings → Data, moved to `add-data-safety`); no automatic shared-folder backup.
+- [x] 0.2 Manual activity entry: yes/no (default: no; separate change if yes). — *Defaulted, owner may override:* no; standalone has no activity data and no eat-back (owner's 2026-09-23 decision).
+- [x] 0.3 Backup: JSON + CSV and replace-only restore acceptable? — *Defaulted, owner may override:* yes, JSON + CSV and replace-only restore (built in `add-data-safety`).
+- [x] 0.4 Goal calculator: 1200 kcal floor for everyone or sex-specific; protein g/kg defaults; day targets only or per-meal too. — *Defaulted, owner may override:* one 1200 kcal floor for everyone (plus never below BMR); protein 1.6 g/kg when losing, 1.4 g/kg otherwise; day targets only (no per-meal split in the UI; `mealSplit` stays in the stored shape for later).
+- [x] 0.5 Display name for her install ("GarminFood" or a neutral name like "GF"); language is Czech via add-localization. — *Defaulted, owner may override:* keep "GarminFood" (no second bundle display name); the Profile header shows her own local display name in standalone mode.
+- [x] 0.6 AltStore or SideStore for her phone. — *Defaulted, owner may override:* the install guide documents both, recommending SideStore (no weekly PC dependence), AltStore as the fallback the owner already runs.
+- [x] 0.7 Build "Copy my last 90 days from Garmin" now or later. — *Defaulted, owner may override:* later (task 5.5 skipped).
 
 ## 1. Wave 1 — Seams, zero behaviour change (M)
 
@@ -58,11 +62,14 @@ Relative size per wave: S / M / L.
 - [ ] 5.2 Hide Garmin-only surfaces in standalone (banners, sync queue row, Garmin account section → "Data" section, Garmin nutrition plan, "Use Garmin's goal", "Default meal from Garmin's schedule", backing picker, "Active today", Garmin profile → local display name).
 - [ ] 5.3 Foreground/background in standalone skip every Garmin call; `BackgroundRefresh` not scheduled. Test the planning function if extracted.
 - [ ] 5.4 Switching (Settings → Data): standalone → Garmin after successful sign-in (local log kept, backing-less custom foods flagged); Garmin → standalone refused during a drain, undelivered entries "Deliver first" / "Keep on this phone" (converted to local entries via `FoodCacheStore`). Tests for the conversion.
-- [ ] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only.
+- [ ] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only. — *Skipped: 0.7 defaulted to "later".*
 - [ ] 5.6 Mode-neutral `NSCameraUsageDescription` (en + cs via InfoPlist catalog).
 - [ ] 5.7 On-device: fresh install → choose "Just on this phone" in Czech → log a day with zero Garmin calls; the owner's phone skips onboarding.
 
 ## 6. Wave 6 — Backup and restore (M) — required before the fiancée relies on the app
+
+Moved to the `add-data-safety` change (PR #87), which builds Settings → Data
+with backup and restore for both modes. Tracked there, not here.
 
 - [ ] 6.1 `BackupBundle` (schema/version, every local store, non-device preferences; excludes tokens, health cache, outboxes, offline index, diagnostics) + `food-log.csv` writer. Tests: round trip, CSV escaping, no secrets.
 - [ ] 6.2 Settings → Data: "Back up now" (ShareLink), "Restore from backup…" (fileImporter → version check → preview → safety backup → replace → reload). Tests for version refusal and replace.
