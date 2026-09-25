@@ -20,8 +20,31 @@ replaces tuning by estimate with a budget table that tests can check.
 
 **Level 84 after 3 years (1,095 days) of a typical active day.** This is the
 promise from the 2026-09-18 retune that the owner has seen. Secondary
-checks: level 10 falls within 2–5 weeks and level 50 within 9–15 months.
-All three are asserted in tests.
+checks: level 10 within 7–21 days, level 50 within 150–300 days. All three
+are asserted in tests.
+
+**Why the secondary windows changed during implementation (owner-approved
+2026-09-25).** The first draft copied "level 10 in 2–5 weeks, level 50 in
+9–15 months" from the 2026-09-18 table, and that table was wrong. At
+1.045 and 75 XP/day, level 50 needs ~16.8k XP, which is 224 days, not ~1
+year. With the base fixed at 100 XP, solving the factor for level 84 at
+1,095 days always puts level 50 at ~170–225 days and level 10 at ~9–14
+days, whatever the daily XP. Meeting the old windows would need a base of
+~250–400 XP plus a factor of ~1.03–1.038. That would give existing users
+1–2 months with no level-ups and a progress bar stuck at 0: a user at
+~3k XP would stall 34–49 days. So the base stays 100, only the factor is
+solved, and the secondary windows now describe the curve that ships. On it
+(1.05358, at ≈ 128 XP/day): level 10 in ≈ 9 days (1,119 XP), level 50 in
+≈ 174 days (22,217 XP), level 84 in ≈ 1,095 days (140,168 XP).
+
+**What existing users see.** No level drops (`peakLevel`, D5). The owner
+has ≈ 3k XP; the 2026-09-24 migration seeded peak level 20 from 1.045. On
+the new curve 3,000 XP is level 19, so level 20 stays displayed with the
+bar at 0 for ≈ 1.3 days, and level 21 arrives after ≈ 3.4 days of typical
+XP (≈ 2.5 days on 1.0505): about one extra day. A much larger ledger with a
+1.045-seeded peak would wait longer (12k XP, peak 43: ≈ 29 days to level 44
+instead of ≈ 20), but no such ledger exists. `XPCurveMigrationTests`
+simulates the owner's ledger.
 
 ### D2 — `XPBudget` (pure)
 
@@ -54,36 +77,73 @@ public enum XPBudget {
 
 ### D3 — Audit of shipped amounts (to verify during implementation)
 
-During implementation, read each shipped reward constant and record it in
-the table. Known from PRs #69–#80:
+Every shipped reward constant, read from the code on 2026-09-25 (task 1.1).
+Feature badges also pay `XPAward.achievementBonus` (30 XP) on unlock
+(`FeatureHost`), so each feature line includes its badge unlocks.
+"≈ XP/day" is the line's value in `XPBudget.lines`, which is the
+authoritative copy.
 
-| Source | Shipped reward | Frequency assumption |
-|---|---|---|
-| Seasonal bonus quest | 25 XP | per event quest |
-| Collections | 5 XP / discovery | declining over time |
-| Journeys | 40 XP / milestone | a few per month |
-| Records | 20 XP / PR, max 1 per record per day | a few per month |
-| Sport & body | 0 XP | — |
-| Secrets | 50 XP each, 16 total | one-off |
-| Bingo | 25 per line; 350 full card + freeze | lines ~1.5/week, full card rare |
-| Weekly boss | defeat XP (read constant) | ~0.5/week |
+| Source (budget line) | Shipped reward (constant) | Frequency assumption | ≈ XP/day |
+|---|---|---|---|
+| `log` | 10 / entry (`XPAward.flatPerLog`) | 3.5 entries a day | 35.0 |
+| `streak` | 20 / day (`streakExtensionBonus`) | every active day | 20.0 |
+| `goal` | 25 / day (`goalHitBonus`) | 60% of days | 15.0 |
+| `dailyChallenge` | 15 each (`dailyChallengeBonus`), 2 a day | 60% completed | 18.0 |
+| `challenge` | 50 hand-authored (`challengeCompletionBonus`), ladders 45–300, creative 60–130; rotation-weighted mean ≈ 84 (assumed 85, checked ±10% by a test) | 1 completion / 9 days (one slot, ~7-day windows) | 9.4 |
+| `achievement` | 30 / core badge (`achievementBonus`) | 15 unlocks a year | 1.2 |
+| `bingo` | 25 / line (`bingoLine`); **150** full card + freeze (`bingoFullCard`) | lines 1.5/week; full card 1 in 8 weeks; 6 badges in 3 years | 8.2 |
+| `seasonal` | 50 / event per year (`seasonalEventCompleted`); 25 / bonus quest (`SeasonalEventCatalog.bonusQuestXP`) | 6 of 12 events and 3 of 8 bonus quests a year; 10 badges in 3 years | 1.3 |
+| `collections` | 5 / discovery (`collectionDiscovery`), 85 entries | 1 discovery / 2 weeks; 6 badges in 3 years | 0.5 |
+| `journeys` | 40 / milestone (`journeyMilestone`), 44 milestones | 40 milestones in 3 years (~1/month); 8 badges | 1.7 |
+| `records` | 20 / PR (`personalRecord`), max 1 per record per day | 3 PRs a month; 3 badges in 3 years | 2.1 |
+| `secrets` | 50 (`secretUnlocked`) + 30 badge, 16 secrets | 12 found in 3 years | 0.9 |
+| `sportBody` | 0 (`sportBadge`) + 30 badge | 10 badges in 3 years | 0.3 |
+| `boss` | 150 + 25 per target day above 3 (`bossDefeatedBase`, `bossDefeatedPerTargetDay`): 150–250 | 0.5 defeats/week at target 5 (200 XP); 6 badges in 3 years | 14.5 |
+| **core total** | | | **≈ 128.0** |
+
+Corrections to the earlier notes: the bingo full card pays **150 XP**, not
+350 (the constant never changed); sport & body pays only the generic badge
+bonus.
 
 Retune rule: if one wave-2 feature's expected daily XP is more than 25% of
 `coreDailyXP`, reduce its constants rather than steepen the curve for
-everyone. Bingo's 350-XP full card is the likely candidate. Changes to
-feature constants are listed in the PR description.
+everyone. **Result (task 1.3): no feature exceeds it.** The largest is the
+weekly boss at ≈ 14.5 XP/day, 11% of ≈ 128 (the limit is ≈ 32). Bingo is
+≈ 8.2 (6%). **No reward constants were changed.** The test
+`testNoWaveTwoFeatureExceedsAQuarterOfCore` enforces the rule from now on.
 
 ### D4 — Optional sources (supplements)
 
-The curve is solved for `coreDailyXP` only. An optional source gets a
-per-source multiplier `m = 1 − (optionalDailyXP / (coreDailyXP + optionalDailyXP))`.
-This is applied when the source grants XP (`RewardLedger` grant amount × m,
-rounded, minimum 1). As a result, a user with supplements on levels at the
-same pace as one without.
+The curve is solved for `coreDailyXP` only. Optional sources share one
+**allowance**: together they may add at most 0.5% of the core budget
+(`XPBudget.optionalPaceAllowance`). While any are enabled, every optional
+grant is scaled by
 
+`m = min(1, 0.005 × coreDailyXP / Σ expectedDailyXP of the enabled optional lines)`
+
+```swift
+XPBudget.optionalMultiplier(enabledOptionalSources: Set<String>) -> Double
+XPBudget.scaledGrant(_ xp: Int, multiplier: Double) -> Int   // rounded, min 1 for xp > 0
+XPBudget.optionalGrantXP(_ xp: Int, enabledOptionalSources:) // the two combined
+```
+
+The feature applies it when it fills its `RewardGrant.xp`; `RewardLedger`
+then pays the amount as-is. As a result, a user with supplements on levels
+at the same pace (±1%) as one without.
+
+- **Why an allowance, not a full offset.** The first draft used
+  `m = 1 − optional / (core + optional)`, which only shrinks optional XP by
+  a few percent: a 10 XP/day source still added ≈ 7% to the pace. The
+  allowance caps the effect directly, and the ±1% test follows from it.
+- **Minimum grant of 1.** A grant never silently pays nothing, so a source
+  may exceed its scaled budget when it pays many tiny grants. At ≈ 128
+  XP/day core, one 1-XP grant a day is 0.8%, inside ±1%. An optional
+  source should therefore pay at most about one grant a day.
 - Supplements are budgeted at a small daily amount (see `add-supplements`
-  D9) before the multiplier.
-- The multiplier comes from the same table, so a test can check it.
+  D9) before the multiplier, and add their `optional: true` line to
+  `XPBudget.lines` once this change has merged.
+- The multiplier comes from the same table, so a test can check it
+  (`testOptionalSourceKeepsLevel84WithinOnePercent`).
 
 ### D5 — Migration
 
@@ -102,6 +162,8 @@ same pace as one without.
   N.
 - Multiplier: with an optional line enabled, the simulated days to level 84
   are within ±1% of the core-only figure.
+- Owner ledger: ≈ 3k XP with peak 20 reaches level 21 within 5 typical
+  days, and the displayed level never drops (`XPCurveMigrationTests`).
 
 ## Risks / Trade-offs
 
