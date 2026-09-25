@@ -35,7 +35,7 @@ Relative size per wave: S / M / L.
 
 ## 3. Wave 3 — Food catalog without Garmin (M)
 
-- [ ] 3.1 `FoodSearchEngine.standard(garmin:)` accepts nil; standalone gets Local + offline index + OFF.
+- [x] 3.1 `FoodSearchEngine.standard(garmin:)` accepts nil; standalone gets Local + offline index + OFF.
 - [ ] 3.2 `SearchOrigin.isDirectlyLoggable(in:)`; OFF/offline results go to the serving picker in standalone; calories required, other missing macros shown as "some values missing". Tests.
 - [ ] 3.3 `CustomFoodDraft` backing food optional (decode-safe); editor hides the Garmin section in standalone; Garmin mode asks for a match for backing-less foods. Tests: old files decode unchanged, new ones without backing.
 - [ ] 3.4 Meal presets with any origin; "Sync to Garmin" hidden in standalone.

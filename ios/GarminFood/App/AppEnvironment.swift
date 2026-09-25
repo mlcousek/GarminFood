@@ -47,6 +47,12 @@ final class AppEnvironment {
     /// One instance per app process, so its remote term cache is shared by
     /// every catalog screen and the OFF -> Garmin match flow.
     let foodSearchEngine: FoodSearchEngine
+    /// add-standalone-mode D5: the catalog without Garmin -- your own foods
+    /// (including Open Food Facts products you've logged), the offline
+    /// Czech index and live Open Food Facts (`FoodSearchEngine.standard(
+    /// garmin: nil)`). Built once like `foodSearchEngine`; screens ask for
+    /// `catalogSearchEngine`, which picks one per the current mode.
+    let standaloneFoodSearchEngine: FoodSearchEngine
     /// add-offline-czech-food-index: the in-memory Czech offline index that
     /// `foodSearchEngine` and the barcode fallback read (never waiting on
     /// it), and the loader that keeps it downloaded and shows its status in
@@ -147,6 +153,14 @@ final class AppEnvironment {
         self.dayNoteStore = services.dayNoteStore
         self.foodSearchEngine = FoodSearchEngine.standard(
             garmin: client,
+            customFoods: services.customFoodStore,
+            favorites: services.favoriteFoodStore,
+            foodCache: services.foodCache,
+            usageHistory: services.usageHistory,
+            offlineIndex: services.offlineIndex
+        )
+        self.standaloneFoodSearchEngine = FoodSearchEngine.standard(
+            garmin: nil,
             customFoods: services.customFoodStore,
             favorites: services.favoriteFoodStore,
             foodCache: services.foodCache,
@@ -804,6 +818,18 @@ final class AppEnvironment {
     }
 
     // MARK: - Data mode (add-standalone-mode D1)
+
+    /// The effective data mode (observable -- see
+    /// `AppPreferences.effectiveDataMode`).
+    var dataMode: DataMode { preferences.effectiveDataMode }
+
+    /// The food search the catalog runs (add-standalone-mode D5): the
+    /// Garmin-wired `foodSearchEngine` in Garmin mode, exactly as before;
+    /// `standaloneFoodSearchEngine` (no Garmin source) in standalone mode.
+    /// The OFF -> Garmin match flow keeps using `foodSearchEngine` directly.
+    var catalogSearchEngine: FoodSearchEngine {
+        dataMode == .standalone ? standaloneFoodSearchEngine : foodSearchEngine
+    }
 
     /// Once per install: an install that predates `dataMode.v1` and has a
     /// Garmin token or any local history is the owner's phone, so it is

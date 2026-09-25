@@ -111,6 +111,9 @@ struct FoodCatalogView: View {
     /// tap in picker mode never logs a food").
     private var isPicking: Bool { isPickingBackingFood || isPickingIngredient }
 
+    /// add-standalone-mode: every standalone branch below is gated on this.
+    private var dataMode: DataMode { environment.dataMode }
+
     private var isSearchActive: Bool {
         !searchText.trimmingCharacters(in: .whitespaces).isEmpty
     }
@@ -253,8 +256,10 @@ struct FoodCatalogView: View {
             await loadLocalData()
             presentScannerIfRouteIsPending()
         }
-        .task(id: "\(searchText)#\(czechOnly)#\(searchModel.reloadToken)") {
-            await searchModel.run(query: searchText, engine: environment.foodSearchEngine, options: searchOptions)
+        // add-standalone-mode D5: the mode picks the engine (standalone has
+        // no Garmin source) and is part of the id, so flipping it re-runs.
+        .task(id: "\(searchText)#\(czechOnly)#\(searchModel.reloadToken)#\(dataMode.rawValue)") {
+            await searchModel.run(query: searchText, engine: environment.catalogSearchEngine, options: searchOptions)
         }
         // Wired for add-glanceable-surfaces' barcode-scan Control
         // (Shared/OpenBarcodeScannerIntent.swift): that intent only ever
