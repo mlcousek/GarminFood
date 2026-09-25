@@ -114,8 +114,9 @@ register its version.
   - `FoodLogCore/garmin-health-cache.json`, a Garmin read cache;
   - `FoodLogCore/OfflineIndex/`, which is large and re-downloadable;
   - `GarminFood/donations.json`, device-local Siri state;
-  - any path component that looks like a credential (`token`, `secret`,
-    `oauth`, `cookie`, `credential`, `password`);
+  - any path component that looks like a credential (`token`, `oauth`,
+    `cookie`, `credential`, `password`). "secret" is left off because the
+    `Gamification/features/secrets/` directory is legitimate;
   - any file whose **content** contains an OAuth or token JSON key
     (`BackupSecretPolicy`), which is skipped and logged.
 

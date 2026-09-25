@@ -1,0 +1,44 @@
+[
+  {
+    "id": "5A1B2C3D-4E5F-4061-8273-94A5B6C7D801",
+    "weightKg": 82.4,
+    "loggedAt": "2026-09-18T06:30:00Z",
+    "state": "sent",
+    "attemptCount": 0,
+    "nextAttemptAt": "2026-09-18T06:30:05Z"
+  },
+  {
+    "id": "5A1B2C3D-4E5F-4061-8273-94A5B6C7D802",
+    "weightKg": 81.9,
+    "loggedAt": "2026-09-20T06:15:00Z",
+    "state": "sent",
+    "attemptCount": 0,
+    "nextAttemptAt": "2026-09-20T06:15:02Z",
+    "operation": "add",
+    "deliveredAt": "2026-09-20T06:15:04Z",
+    "removalRequested": true
+  },
+  {
+    "id": "5A1B2C3D-4E5F-4061-8273-94A5B6C7D803",
+    "weightKg": 81.9,
+    "loggedAt": "2026-09-20T06:15:00Z",
+    "state": "pending",
+    "attemptCount": 1,
+    "lastError": "couldn't find the 81.9 kg weigh-in in Garmin's 2026-09-20 weigh-ins to delete it",
+    "nextAttemptAt": "2026-09-20T06:15:06Z",
+    "operation": "delete",
+    "calendarDate": "2026-09-20"
+  },
+  {
+    "id": "5A1B2C3D-4E5F-4061-8273-94A5B6C7D804",
+    "weightKg": 83.1,
+    "loggedAt": "2026-09-17T07:05:00Z",
+    "state": "failed",
+    "attemptCount": 5,
+    "lastError": "httpError(statusCode: 500, body: nil)",
+    "nextAttemptAt": "2026-09-19T20:00:08Z",
+    "operation": "delete",
+    "samplePk": 1758092700000,
+    "calendarDate": "2026-09-17"
+  }
+]

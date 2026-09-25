@@ -1,0 +1,23 @@
+[
+  {
+    "id": "9E8D7C6B-5A49-4382-9160-5F4E3D2C1B01",
+    "timestamp": "2026-09-20T08:15:01Z",
+    "level": "info",
+    "category": "Outbox",
+    "message": "drain: 1 delivered, 0 gave up, rateLimited=false, authOutcome=none"
+  },
+  {
+    "id": "9E8D7C6B-5A49-4382-9160-5F4E3D2C1B02",
+    "timestamp": "2026-09-20T09:00:00Z",
+    "level": "warning",
+    "category": "WeightOutbox",
+    "message": "drain: 0 delivered, 1 gave up, rateLimited=false, authOutcome=none"
+  },
+  {
+    "id": "9E8D7C6B-5A49-4382-9160-5F4E3D2C1B03",
+    "timestamp": "2026-09-20T10:30:45Z",
+    "level": "error",
+    "category": "GarminClient",
+    "message": "GET /nutrition-service/food/logs/2026-09-20 failed: 401"
+  }
+]

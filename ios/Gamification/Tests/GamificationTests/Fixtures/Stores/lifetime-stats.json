@@ -1,0 +1,24 @@
+{
+  "totalLogsEver" : 1287,
+  "totalCaloriesEver" : 412356.5,
+  "maxSingleDayCalories" : 4120.25,
+  "firstLogDate" : 795166330.5,
+  "goalHitDaysEver" : {
+    "calories" : 88,
+    "protein" : 61,
+    "fat" : 40
+  },
+  "lastCountedGoalDay" : {
+    "calories" : "2026-09-20",
+    "protein" : "2026-09-20",
+    "fat" : "2026-09-18"
+  },
+  "recentDayCalories" : {
+    "2026-09-19" : 2210,
+    "2026-09-20" : 1985.5
+  },
+  "recentDayOrder" : [
+    "2026-09-19",
+    "2026-09-20"
+  ]
+}

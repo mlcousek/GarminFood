@@ -1,0 +1,79 @@
+{
+  "weighInDays" : {
+    "2026-09-20" : {
+      "weighIns" : [
+        {
+          "samplePk" : 1789882200000,
+          "calendarDate" : "2026-09-20",
+          "weight" : 81900,
+          "timestampGMT" : 1789882200000,
+          "date" : 1789889400000,
+          "sourceType" : "MANUAL",
+          "weightDelta" : -500.0000000000057
+        }
+      ],
+      "fetchedAt" : "2026-09-22T08:00:00Z"
+    },
+    "2026-09-21" : {
+      "weighIns" : [
+        {
+          "samplePk" : 1789969500000,
+          "calendarDate" : "2026-09-21",
+          "weight" : 82300,
+          "timestampGMT" : 1789969500000,
+          "date" : 1789976700000,
+          "sourceType" : "MANUAL"
+        },
+        {
+          "samplePk" : 1790014200000,
+          "calendarDate" : "2026-09-21",
+          "weight" : 83100.5,
+          "timestampGMT" : 1790014200000,
+          "date" : 1790021400000,
+          "sourceType" : "INDEX_SCALE",
+          "weightDelta" : 800,
+          "bmi" : 24.6,
+          "bodyFat" : 18.2,
+          "bodyWater" : 58.9,
+          "boneMass" : 3400,
+          "muscleMass" : 38200,
+          "physiqueRating" : 5,
+          "visceralFat" : 7,
+          "metabolicAge" : 31
+        }
+      ],
+      "fetchedAt" : "2026-09-22T08:00:00Z"
+    },
+    "2026-09-22" : {
+      "weighIns" : [],
+      "fetchedAt" : "2026-09-22T08:00:00Z"
+    }
+  },
+  "hydrationDays" : {
+    "2026-09-21" : {
+      "daily" : {
+        "calendarDate" : "2026-09-21",
+        "valueInML" : 2250,
+        "goalInML" : 2800,
+        "lastEntryTimestampLocal" : "2026-09-21T21:05:12.387",
+        "sweatLossInML" : 640,
+        "activityIntakeInML" : 0
+      },
+      "fetchedAt" : "2026-09-21T21:10:00Z"
+    },
+    "2026-09-22" : {
+      "daily" : {
+        "valueInML" : 500
+      },
+      "fetchedAt" : "2026-09-22T08:00:05Z"
+    }
+  },
+  "weightGoal" : {
+    "startingWeightGrams" : 80400,
+    "targetWeightGrams" : 76000,
+    "weightChangeRateGramsPerWeek" : 250,
+    "weightChangeType" : "LOSS",
+    "fetchedAt" : "2026-09-22T08:00:02Z"
+  },
+  "lastFullWeightRangeFetchAt" : "2026-09-22T08:00:00Z"
+}

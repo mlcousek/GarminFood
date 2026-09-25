@@ -1,0 +1,41 @@
+{
+  "defeatCount" : 4,
+  "defeatedIds" : [
+    "breakfast-goblin",
+    "desert-dragon",
+    "soda-lich"
+  ],
+  "perfectDefeat" : true,
+  "weeks" : {
+    "2026-W37" : {
+      "bossId" : "desert-dragon",
+      "outcome" : "escaped"
+    },
+    "2026-W38" : {
+      "adherence" : 0.5357142857142857,
+      "bossId" : "soda-lich",
+      "consideredDays" : 28,
+      "defeatedOn" : "2026-09-18",
+      "goodDays" : 15,
+      "hits" : [
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-17",
+        "2026-09-18"
+      ],
+      "outcome" : "defeated",
+      "target" : 5
+    },
+    "2026-W39" : {
+      "adherence" : 0.25,
+      "bossId" : "breakfast-goblin",
+      "consideredDays" : 28,
+      "goodDays" : 7,
+      "hits" : [
+        "2026-09-21"
+      ],
+      "target" : 4
+    }
+  }
+}

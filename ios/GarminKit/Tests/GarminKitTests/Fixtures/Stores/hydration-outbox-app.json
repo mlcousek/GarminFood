@@ -1,0 +1,39 @@
+[
+  {
+    "id": "7C2D3E4F-5A6B-4C7D-8E9F-0A1B2C3D4E01",
+    "valueInML": 250,
+    "loggedAt": "2026-09-20T07:00:00Z",
+    "state": "sent",
+    "attemptCount": 0,
+    "nextAttemptAt": "2026-09-20T07:00:01Z",
+    "deliveredAt": "2026-09-20T07:00:03Z"
+  },
+  {
+    "id": "7C2D3E4F-5A6B-4C7D-8E9F-0A1B2C3D4E02",
+    "valueInML": 500,
+    "loggedAt": "2026-09-20T09:30:00Z",
+    "state": "sent",
+    "attemptCount": 0,
+    "nextAttemptAt": "2026-09-20T09:30:01Z",
+    "deliveredAt": "2026-09-20T09:30:02Z",
+    "removalRequested": true
+  },
+  {
+    "id": "7C2D3E4F-5A6B-4C7D-8E9F-0A1B2C3D4E03",
+    "valueInML": -500,
+    "loggedAt": "2026-09-20T09:30:00Z",
+    "state": "pending",
+    "attemptCount": 0,
+    "nextAttemptAt": "2026-09-20T09:30:01Z",
+    "correctsEntryId": "7C2D3E4F-5A6B-4C7D-8E9F-0A1B2C3D4E02"
+  },
+  {
+    "id": "7C2D3E4F-5A6B-4C7D-8E9F-0A1B2C3D4E04",
+    "valueInML": 330,
+    "loggedAt": "2026-09-19T15:45:00Z",
+    "state": "failed",
+    "attemptCount": 5,
+    "lastError": "httpError(statusCode: 500, body: nil)",
+    "nextAttemptAt": "2026-09-19T15:46:10Z"
+  }
+]

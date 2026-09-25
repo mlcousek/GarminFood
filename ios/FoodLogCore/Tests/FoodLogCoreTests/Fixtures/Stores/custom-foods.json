@@ -1,0 +1,36 @@
+[
+  {
+    "id" : "3F9A1C2E-7B4D-4E8F-9A0B-1C2D3E4F5A61",
+    "name" : "Babiččiny knedlíky",
+    "servingUnit" : "kus",
+    "numberOfUnits" : 1,
+    "createdAt" : "2026-09-10T17:20:00Z",
+    "backingFoodId" : "4471203",
+    "backingFoodName" : "Bread Dumpling",
+    "backingServingId" : "4629981",
+    "backingQuantityMultiplier" : 0.5
+  },
+  {
+    "id" : "A2B3C4D5-E6F7-4819-8A2B-3C4D5E6F7A82",
+    "name" : "Proteinová tyčinka",
+    "brandName" : "Nutrend",
+    "servingUnit" : "g",
+    "numberOfUnits" : 55,
+    "calories" : 199.5,
+    "carbs" : 14.2,
+    "protein" : 20,
+    "fat" : 6.1,
+    "fiber" : 3,
+    "sugar" : 1.8,
+    "saturatedFat" : 3.4,
+    "sodium" : 120,
+    "createdAt" : "2026-09-18T09:00:00Z",
+    "backingFoodId" : "90123456",
+    "backingFoodName" : "Protein Bar (custom)",
+    "backingServingId" : "91234567",
+    "backingQuantityMultiplier" : 1,
+    "note" : "Barcode 8594001234567 not found",
+    "backingRegionCode" : "CZ",
+    "backingLanguageCode" : "cs"
+  }
+]
