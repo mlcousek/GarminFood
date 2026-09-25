@@ -11,11 +11,15 @@
 // with the value to paste.
 //
 // Optional sources (design D4, e.g. supplements) are NOT part of the curve.
-// While enabled, their grants are scaled by `optionalMultiplier` so that
-// together they add at most `optionalPaceAllowance` (0.5%) of the core
-// budget, and turning a feature on can't speed levelling up. The feature
-// applies it itself before emitting its `RewardGrant`:
-// `.xp(XPBudget.scaledGrant(amount, multiplier: XPBudget.optionalMultiplier(enabledOptionalSources: ...)))`.
+// While enabled, their grants are scaled by `optionalMultiplier`,
+// m = min(1, 0.005 x core / enabled optional), so that together they add at
+// most `optionalPaceAllowance` (0.5%) of the core budget, and turning a
+// feature on can't speed levelling up. The feature applies it itself when
+// it fills its `RewardGrant.xp`:
+// `XPBudget.optionalGrantXP(amount, enabledOptionalSources: ...)`, i.e.
+// `scaledGrant(amount, multiplier: optionalMultiplier(...))`. A grant never
+// scales below 1 XP, so an optional source should pay at most about one
+// grant a day; its own test runs the +-1% simulation from XPBudgetTests.
 //
 // Pure: no I/O, no state.
 //

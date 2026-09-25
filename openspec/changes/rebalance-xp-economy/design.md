@@ -33,10 +33,18 @@ days, whatever the daily XP. Meeting the old windows would need a base of
 ~250–400 XP plus a factor of ~1.03–1.038. That would give existing users
 1–2 months with no level-ups and a progress bar stuck at 0: a user at
 ~3k XP would stall 34–49 days. So the base stays 100, only the factor is
-solved, and the secondary windows now describe the curve that ships. On it,
-at ≈ 128 XP/day: level 10 in ≈ 9 days, level 50 in ≈ 174 days, level 84 in
-≈ 1,095 days. Moving from 1.0505 costs existing users at most a few days of
-progress-bar movement (≈ 3 days at 12k XP, none at 3k).
+solved, and the secondary windows now describe the curve that ships. On it
+(1.05358, at ≈ 128 XP/day): level 10 in ≈ 9 days (1,119 XP), level 50 in
+≈ 174 days (22,217 XP), level 84 in ≈ 1,095 days (140,168 XP).
+
+**What existing users see.** No level drops (`peakLevel`, D5). The owner
+has ≈ 3k XP; the 2026-09-24 migration seeded peak level 20 from 1.045. On
+the new curve 3,000 XP is level 19, so level 20 stays displayed with the
+bar at 0 for ≈ 1.3 days, and level 21 arrives after ≈ 3.4 days of typical
+XP (≈ 2.5 days on 1.0505): about one extra day. A much larger ledger with a
+1.045-seeded peak would wait longer (12k XP, peak 43: ≈ 29 days to level 44
+instead of ≈ 20), but no such ledger exists. `XPCurveMigrationTests`
+simulates the owner's ledger.
 
 ### D2 — `XPBudget` (pure)
 
