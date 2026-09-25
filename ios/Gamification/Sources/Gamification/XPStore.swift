@@ -135,7 +135,7 @@ public actor XPStore {
         loaded = !result.isUnreadable
         snapshot = result.value ?? snapshot
         if snapshot.peakLevel == nil {
-            let legacy = LevelCurve.level(forTotalXP: snapshot.totalXP, growthFactor: LevelCurve.legacyGrowthFactor).level
+            let legacy = LevelCurve.level(forTotalXP: snapshot.totalXP, growthFactor: LevelCurve.pastGrowthFactors[0]).level
             let current = LevelCurve.level(forTotalXP: snapshot.totalXP).level
             snapshot.peakLevel = max(legacy, current)
         }

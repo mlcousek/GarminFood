@@ -6,7 +6,7 @@
 
 ## 2. Curve and migration
 
-- [ ] 2.1 Set `LevelCurve.growthFactor` to the solved literal; turn `legacyGrowthFactor` into `pastGrowthFactors: [1.045, 1.0505]`.
+- [x] 2.1 Set `LevelCurve.growthFactor` to the solved literal; turn `legacyGrowthFactor` into `pastGrowthFactors: [1.045, 1.0505]`.
 - [ ] 2.2 `XPStore`: seed `peakLevel` from the max level across past factors when the stored factor version is older (versioned key; Optional field so old files decode).
 - [ ] 2.3 Optional-source multiplier (design D4), exposed for `RewardLedger` grants from optional features.
 
