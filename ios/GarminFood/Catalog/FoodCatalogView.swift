@@ -92,6 +92,9 @@ struct FoodCatalogView: View {
     @State private var mealPresetBeingEdited: MealPreset?
     @State private var isPresentingBarcodeScanner = false
     @State private var barcodeNoteForNewCustomFood: String?
+    /// add-standalone-mode 3.5: an unknown scanned code, filled into the
+    /// custom-food editor's barcode field (standalone only).
+    @State private var barcodeForNewCustomFood: String?
 
     private var isPickingBackingFood: Bool {
         if case .pickBackingFood = mode { return true }
@@ -110,6 +113,9 @@ struct FoodCatalogView: View {
     /// logs anything (fix-testing-feedback-quick-wins, food-catalog spec "A
     /// tap in picker mode never logs a food").
     private var isPicking: Bool { isPickingBackingFood || isPickingIngredient }
+
+    /// add-standalone-mode: every standalone branch below is gated on this.
+    private var dataMode: DataMode { environment.dataMode }
 
     private var isSearchActive: Bool {
         !searchText.trimmingCharacters(in: .whitespaces).isEmpty
@@ -202,7 +208,8 @@ struct FoodCatalogView: View {
                     onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
                     onSelectFood: { select($0) },
                     onSelectCustomFood: { selectCustomFood($0) },
-                    onSelectOpenFoodFactsFood: { matchingTarget = $0 }
+                    onSelectOpenFoodFactsFood: { matchingTarget = $0 },
+                    dataMode: dataMode
                 )
             }
 
@@ -231,6 +238,7 @@ struct FoodCatalogView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         barcodeNoteForNewCustomFood = nil
+                        barcodeForNewCustomFood = nil
                         isPresentingCustomFoodEditor = true
                     } label: {
                         Label("New custom food", systemImage: "plus")
@@ -253,8 +261,10 @@ struct FoodCatalogView: View {
             await loadLocalData()
             presentScannerIfRouteIsPending()
         }
-        .task(id: "\(searchText)#\(czechOnly)#\(searchModel.reloadToken)") {
-            await searchModel.run(query: searchText, engine: environment.foodSearchEngine, options: searchOptions)
+        // add-standalone-mode D5: the mode picks the engine (standalone has
+        // no Garmin source) and is part of the id, so flipping it re-runs.
+        .task(id: "\(searchText)#\(czechOnly)#\(searchModel.reloadToken)#\(dataMode.rawValue)") {
+            await searchModel.run(query: searchText, engine: environment.catalogSearchEngine, options: searchOptions)
         }
         // Wired for add-glanceable-surfaces' barcode-scan Control
         // (Shared/OpenBarcodeScannerIntent.swift): that intent only ever
@@ -273,7 +283,7 @@ struct FoodCatalogView: View {
         }
         .sheet(isPresented: $isPresentingCustomFoodEditor, onDismiss: { Task { await loadLocalData() } }) {
             NavigationStack {
-                CustomFoodEditorView(prefillNote: barcodeNoteForNewCustomFood)
+                CustomFoodEditorView(prefillNote: barcodeNoteForNewCustomFood, prefillBarcode: barcodeForNewCustomFood)
             }
         }
         .sheet(isPresented: $isPresentingMealPresetEditor, onDismiss: { Task { await loadLocalData() } }) {
@@ -292,8 +302,9 @@ struct FoodCatalogView: View {
                     isPresentingBarcodeScanner = false
                     // A hit from the offline Czech index (add-offline-czech-
                     // food-index D4) is an Open Food Facts product: like a
-                    // tapped OFF search result, it needs its Garmin match first.
-                    if food.source == .openFoodFacts {
+                    // tapped OFF search result, it needs its Garmin match first
+                    // -- in Garmin mode. Standalone logs it as itself (D5).
+                    if food.source == .openFoodFacts, dataMode == .garminConnected {
                         matchingTarget = food
                     } else {
                         select(food)
@@ -301,10 +312,25 @@ struct FoodCatalogView: View {
                 },
                 onUnresolved: { code in
                     isPresentingBarcodeScanner = false
-                    barcodeNoteForNewCustomFood = String(localized: "Scanned barcode: \(code) (not found in Garmin's database)")
+                    if dataMode == .standalone {
+                        // add-standalone-mode 3.5 (spec "Unknown barcode"):
+                        // the code goes into the editor's barcode field, so
+                        // scanning it again finds the new food.
+                        barcodeNoteForNewCustomFood = nil
+                        barcodeForNewCustomFood = code
+                    } else {
+                        barcodeNoteForNewCustomFood = String(localized: "Scanned barcode: \(code) (not found in Garmin's database)")
+                        barcodeForNewCustomFood = nil
+                    }
                     isPresentingCustomFoodEditor = true
                 },
-                onCancel: { isPresentingBarcodeScanner = false }
+                onCancel: { isPresentingBarcodeScanner = false },
+                // Standalone chain only: the code is on one of her own
+                // custom foods -- the same path as tapping it in the list.
+                onResolvedCustomFood: { draft in
+                    isPresentingBarcodeScanner = false
+                    selectCustomFood(draft)
+                }
             )
         }
         .navigationDestination(item: $logTarget) { target in
@@ -430,6 +456,12 @@ struct FoodCatalogView: View {
             if item.food.source == .custom, draft == nil { return }
             let food = draft?.asFood() ?? item.food
             let serving = food.servings.first(where: { $0.id == item.serving.id }) ?? item.serving
+            // Same rule as `select`: an Open Food Facts product remembered
+            // in standalone mode needs its Garmin match in Garmin mode.
+            if food.source == .openFoodFacts, dataMode == .garminConnected, !isPickingBackingFood {
+                matchingTarget = food
+                return
+            }
 
             switch mode {
             case .pickIngredient(let onPick):
@@ -474,6 +506,14 @@ struct FoodCatalogView: View {
                     selectCustomFood(draft)
                 }
             }
+            return
+        }
+        // add-standalone-mode: an Open Food Facts product can only become
+        // one of "your" foods (favorite, cache) in standalone mode. If one
+        // is tapped in Garmin mode (after a mode switch), it still gets its
+        // Garmin match first, never a direct Garmin log of an OFF id.
+        if food.source == .openFoodFacts, dataMode == .garminConnected, !isPickingBackingFood {
+            matchingTarget = food
             return
         }
         switch mode {

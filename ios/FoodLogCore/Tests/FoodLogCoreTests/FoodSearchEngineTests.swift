@@ -493,3 +493,75 @@ private final class TestClock: @unchecked Sendable {
         lock.unlock()
     }
 }
+
+// MARK: - Standalone wiring (add-standalone-mode 3.1)
+
+final class StandaloneSearchWiringTests: XCTestCase {
+    private struct Stores {
+        let custom = CustomFoodStore(fileURL: tempURL("custom"))
+        let favorites = FavoriteFoodStore(fileURL: tempURL("fav"))
+        let cache = FoodCacheStore(fileURL: tempURL("cache"))
+        let usage = UsageHistoryStore(fileURL: tempURL("usage"))
+    }
+
+    /// design D5: `garmin: nil` leaves Garmin out entirely -- no request,
+    /// no status -- while local, the offline index and OFF are still asked.
+    func testWithoutGarminTheEngineAsksLocalOfflineIndexAndOpenFoodFactsOnly() async throws {
+        let stores = Stores()
+        try await stores.custom.upsert(draft("Domácí tvaroh"))
+        let off = FakeOpenFoodFacts(czech: [
+            "tvaroh": [OFFSearchHit(food: food("8594003963391", "Tvaroh odtučněný", source: .openFoodFacts))]
+        ])
+        let engine = FoodSearchEngine.standard(
+            garmin: nil,
+            customFoods: stores.custom,
+            favorites: stores.favorites,
+            foodCache: stores.cache,
+            usageHistory: stores.usage,
+            openFoodFacts: off,
+            offlineIndex: OfflineFoodIndexHolder()
+        )
+
+        let snapshot = await engine.search("tvaroh")
+
+        XCTAssertNil(snapshot.statuses[.garmin], "standalone never asks Garmin")
+        XCTAssertNotNil(snapshot.statuses[.local])
+        XCTAssertNotNil(snapshot.statuses[.offlineIndex])
+        XCTAssertNotNil(snapshot.statuses[.openFoodFacts])
+        XCTAssertEqual(Set(snapshot.results.map(\.origin)), [.local, .openFoodFacts])
+        XCTAssertTrue(snapshot.results.contains { $0.food.name == "Tvaroh odtučněný" })
+    }
+
+    /// Garmin mode's wiring is unchanged: passing a client still asks Garmin.
+    func testWithGarminTheEngineStillAsksGarmin() async {
+        let stores = Stores()
+        let garmin = FakeGarmin(answers: ["tvaroh": garminResponse([(id: "g-9", name: "Tvaroh")], more: false)])
+        let engine = FoodSearchEngine.standard(
+            garmin: garmin,
+            customFoods: stores.custom,
+            favorites: stores.favorites,
+            foodCache: stores.cache,
+            usageHistory: stores.usage,
+            openFoodFacts: FakeOpenFoodFacts()
+        )
+
+        let snapshot = await engine.search("tvaroh")
+
+        XCTAssertNotNil(snapshot.statuses[.garmin])
+        XCTAssertTrue(snapshot.results.contains { $0.origin == .garmin && $0.food.id == "g-9" })
+    }
+
+    /// An Open Food Facts product she has logged is one of "her" foods in
+    /// standalone mode, and still never in Garmin mode.
+    func testLoggedOpenFoodFactsFoodIsLocalOnlyWhenAsked() {
+        let offProduct = food("859", "Kefírové mléko", source: .openFoodFacts)
+        let usage = [UsageEvent(foodId: "859", servingId: "s", numberOfUnits: 1, timestamp: Date())]
+
+        let garminMode = LocalFoodSource.candidates(customFoods: [], favorites: [], cachedFoods: ["859": offProduct], usage: usage)
+        let standalone = LocalFoodSource.candidates(customFoods: [], favorites: [], cachedFoods: ["859": offProduct], usage: usage, includesOpenFoodFactsFoods: true)
+
+        XCTAssertTrue(garminMode.isEmpty)
+        XCTAssertEqual(standalone.map(\.food.id), ["859"])
+        XCTAssertEqual(standalone.first?.origin, .local)
+    }
+}

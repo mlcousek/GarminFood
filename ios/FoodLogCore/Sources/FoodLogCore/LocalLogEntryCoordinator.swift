@@ -32,6 +32,16 @@
 //   - A preset or a copy is ONE atomic write of all its entries, not N
 //     separate commits: the local store can offer that, so a failure can't
 //     leave half a meal logged.
+//   - wave 3 (design D5): a catalog serving with no calorie value is
+//     refused (`StandaloneLoggingError.caloriesUnknown`, see
+//     NutritionCompleteness.swift) -- an Open Food Facts product is logged as
+//     itself here, with no Garmin match step to catch it. And a logged Open
+//     Food Facts / offline-index product is put in the food cache: in Garmin
+//     mode a Garmin food is already there from search (FoodSearchEngine's
+//     back-fill), but nothing else caches an OFF product, and without it
+//     Quick pick, "Log again" and her own-foods search couldn't show it.
+//     Garmin/FatSecret foods are left alone, so the parity with Garmin mode
+//     above still holds for them.
 //   - The `OutboxEntry` values returned are receipts only (the protocol is
 //     `LogEntryCoordinator`'s exact shape, design D4, and no caller reads
 //     more than "it didn't throw"): `id` is the local entry's id, `state`
@@ -81,9 +91,11 @@ public struct LocalLogEntryCoordinator: FoodLogging {
         languageCode: String? = nil
     ) async throws -> OutboxEntry {
         guard LogQuantity.isValid(numberOfUnits) else { throw LogQuantityError.outOfRange }
+        guard serving.completeness.isLoggable else { throw StandaloneLoggingError.caloriesUnknown }
         let entry = catalogEntry(food: food, serving: serving, quantity: numberOfUnits, mealType: mealType, date: date, now: now, regionCode: regionCode, languageCode: languageCode, presetId: nil)
         try await store.append([entry])
         await recordCatalogUsage(entry, now: now)
+        await cacheIfOpenFoodFacts([food])
         return Self.receipt(for: entry, now: now)
     }
 
@@ -119,6 +131,10 @@ public struct LocalLogEntryCoordinator: FoodLogging {
         // there only the backing amount is extra, which doesn't exist here.
         let allValid = preset.ingredients.allSatisfy { LogQuantity.isValid($0.quantity * servingsMultiplier) }
         guard allValid else { throw LogQuantityError.outOfRange }
+        // A catalog ingredient without calories is refused before anything
+        // is written, like a bad quantity (NutritionCompleteness.swift).
+        let caloriesKnown = preset.ingredients.allSatisfy { $0.customFoodDraft != nil || $0.serving.completeness.isLoggable }
+        guard caloriesKnown else { throw StandaloneLoggingError.caloriesUnknown }
 
         let entries = preset.ingredients.map { ingredient -> LocalLogEntry in
             let quantity = ingredient.quantity * servingsMultiplier
@@ -128,6 +144,7 @@ public struct LocalLogEntryCoordinator: FoodLogging {
             return catalogEntry(food: ingredient.food, serving: ingredient.serving, quantity: quantity, mealType: mealType, date: date, now: now, regionCode: regionCode, languageCode: languageCode, presetId: preset.id)
         }
         try await store.append(entries)
+        await cacheIfOpenFoodFacts(preset.ingredients.filter { $0.customFoodDraft == nil }.map(\.food))
         for entry in entries {
             if entry.customFoodId != nil {
                 await recordCustomUsage(entry, now: now)
@@ -390,6 +407,14 @@ public struct LocalLogEntryCoordinator: FoodLogging {
         // entry that is already committed.
         try? await usageHistory.record(foodId: entry.food.id, servingId: entry.servingId, numberOfUnits: entry.quantity, timestamp: now, nutritionDay: entry.day, mealType: entry.mealType)
         try? await servingDefaults.setDefault(foodId: entry.food.id, servingId: entry.servingId, numberOfUnits: entry.quantity, updatedAt: now)
+    }
+
+    /// Wave 3: an Open Food Facts / offline-index product just logged goes
+    /// into the food cache (see the header); other sources are untouched.
+    private func cacheIfOpenFoodFacts(_ foods: [Food]) async {
+        let products = foods.filter { $0.source == .openFoodFacts }
+        guard !products.isEmpty else { return }
+        await foodCache?.upsert(products)
     }
 
     private func recordCustomUsage(_ entry: LocalLogEntry, now: Date) async {
