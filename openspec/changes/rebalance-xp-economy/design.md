@@ -54,24 +54,40 @@ public enum XPBudget {
 
 ### D3 — Audit of shipped amounts (to verify during implementation)
 
-During implementation, read each shipped reward constant and record it in
-the table. Known from PRs #69–#80:
+Every shipped reward constant, read from the code on 2026-09-25 (task 1.1).
+Feature badges also pay `XPAward.achievementBonus` (30 XP) on unlock
+(`FeatureHost`), so each feature line includes its badge unlocks.
+"≈ XP/day" is the line's value in `XPBudget.lines`, which is the
+authoritative copy.
 
-| Source | Shipped reward | Frequency assumption |
-|---|---|---|
-| Seasonal bonus quest | 25 XP | per event quest |
-| Collections | 5 XP / discovery | declining over time |
-| Journeys | 40 XP / milestone | a few per month |
-| Records | 20 XP / PR, max 1 per record per day | a few per month |
-| Sport & body | 0 XP | — |
-| Secrets | 50 XP each, 16 total | one-off |
-| Bingo | 25 per line; 350 full card + freeze | lines ~1.5/week, full card rare |
-| Weekly boss | defeat XP (read constant) | ~0.5/week |
+| Source (budget line) | Shipped reward (constant) | Frequency assumption | ≈ XP/day |
+|---|---|---|---|
+| `log` | 10 / entry (`XPAward.flatPerLog`) | 3.5 entries a day | 35.0 |
+| `streak` | 20 / day (`streakExtensionBonus`) | every active day | 20.0 |
+| `goal` | 25 / day (`goalHitBonus`) | 60% of days | 15.0 |
+| `dailyChallenge` | 15 each (`dailyChallengeBonus`), 2 a day | 60% completed | 18.0 |
+| `challenge` | 50 hand-authored (`challengeCompletionBonus`), ladders 45–300, creative 60–130; rotation-weighted mean ≈ 84 (assumed 85, checked ±10% by a test) | 1 completion / 9 days (one slot, ~7-day windows) | 9.4 |
+| `achievement` | 30 / core badge (`achievementBonus`) | 15 unlocks a year | 1.2 |
+| `bingo` | 25 / line (`bingoLine`); **150** full card + freeze (`bingoFullCard`) | lines 1.5/week; full card 1 in 8 weeks; 6 badges in 3 years | 8.2 |
+| `seasonal` | 50 / event per year (`seasonalEventCompleted`); 25 / bonus quest (`SeasonalEventCatalog.bonusQuestXP`) | 6 of 12 events and 3 of 8 bonus quests a year; 10 badges in 3 years | 1.3 |
+| `collections` | 5 / discovery (`collectionDiscovery`), 85 entries | 1 discovery / 2 weeks; 6 badges in 3 years | 0.5 |
+| `journeys` | 40 / milestone (`journeyMilestone`), 44 milestones | 40 milestones in 3 years (~1/month); 8 badges | 1.7 |
+| `records` | 20 / PR (`personalRecord`), max 1 per record per day | 3 PRs a month; 3 badges in 3 years | 2.1 |
+| `secrets` | 50 (`secretUnlocked`) + 30 badge, 16 secrets | 12 found in 3 years | 0.9 |
+| `sportBody` | 0 (`sportBadge`) + 30 badge | 10 badges in 3 years | 0.3 |
+| `boss` | 150 + 25 per target day above 3 (`bossDefeatedBase`, `bossDefeatedPerTargetDay`): 150–250 | 0.5 defeats/week at target 5 (200 XP); 6 badges in 3 years | 14.5 |
+| **core total** | | | **≈ 128.0** |
+
+Corrections to the earlier notes: the bingo full card pays **150 XP**, not
+350 (the constant never changed); sport & body pays only the generic badge
+bonus.
 
 Retune rule: if one wave-2 feature's expected daily XP is more than 25% of
 `coreDailyXP`, reduce its constants rather than steepen the curve for
-everyone. Bingo's 350-XP full card is the likely candidate. Changes to
-feature constants are listed in the PR description.
+everyone. **Result (task 1.3): no feature exceeds it.** The largest is the
+weekly boss at ≈ 14.5 XP/day, 11% of ≈ 128 (the limit is ≈ 32). Bingo is
+≈ 8.2 (6%). **No reward constants were changed.** The test
+`testNoWaveTwoFeatureExceedsAQuarterOfCore` enforces the rule from now on.
 
 ### D4 — Optional sources (supplements)
 
