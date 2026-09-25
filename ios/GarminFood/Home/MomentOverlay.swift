@@ -10,7 +10,9 @@
 // advances it. With Reduce Motion on, the same card appears with a plain
 // opacity change and no scale/bounce (levels spec: "an equivalent
 // non-animated confirmation SHALL still be shown"), and the haptic still
-// fires -- haptics are not motion.
+// fires -- haptics are not motion. A `.secret` feature moment (secret
+// achievement reveal) flips in instead of scaling (add-secret-achievements
+// D1), falling back to the same cross-fade.
 //
 // The card's icon is a `BadgeMedallion` (not a plain glyph) for every
 // moment kind, so a level-up genuinely shows its tier's rarity/art
@@ -37,9 +39,7 @@ struct MomentOverlay: View {
                     .accessibilityHidden(true)
 
                 MomentCard(moment: moment, animated: animated, onDone: dismiss)
-                    .transition(animated
-                        ? .scale(scale: 0.86).combined(with: .opacity)
-                        : .opacity)
+                    .transition(transition(for: moment))
             }
         }
         .animation(animated ? .spring(response: 0.45, dampingFraction: 0.78) : .easeInOut(duration: 0.15), value: shown)
@@ -52,6 +52,20 @@ struct MomentOverlay: View {
             if shown == nil { shown = next }
         }
         .onAppear { shown = environment.gamificationEngine.pendingMoments.first }
+    }
+
+    /// add-secret-achievements D1: a secret reveal flips the card in like a
+    /// turned-over tile; every other moment scales in. Without motion
+    /// (Reduce Motion / celebrations off) all of them just cross-fade.
+    private func transition(for moment: GamificationMoment) -> AnyTransition {
+        guard animated else { return .opacity }
+        if case .feature(let feature) = moment, feature.style == .secret {
+            return AnyTransition.modifier(
+                active: RevealFlip(degrees: 90),
+                identity: RevealFlip(degrees: 0)
+            ).combined(with: .opacity)
+        }
+        return AnyTransition.scale(scale: 0.86).combined(with: .opacity)
     }
 
     /// Movement only when both the system (Reduce Motion) and the user's
@@ -198,4 +212,13 @@ private struct MomentCard: View {
 
 #Preview("MomentCard -- achievement") {
     MomentCard(moment: .achievementUnlocked(title: "Century Club", badgeSymbol: "fork.knife", rarity: .epic), animated: true, onDone: {})
+}
+
+/// The secret reveal's flip: the card turns about its vertical axis.
+private struct RevealFlip: ViewModifier {
+    let degrees: Double
+
+    func body(content: Content) -> some View {
+        content.rotation3DEffect(.degrees(degrees), axis: (x: 0, y: 1, z: 0), perspective: 0.5)
+    }
 }
