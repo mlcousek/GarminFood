@@ -39,7 +39,9 @@ equally for the owner's fiancée in standalone mode.
 - **Daily checklist.**
   - Tick items individually or "Take all" for a slot.
   - One-off extra doses can be logged.
-  - Yesterday's checklist can be fixed from the Supplements screen.
+  - **Any past day** can be filled in or corrected from the Supplements
+    screen through a date picker or the adherence calendar: yesterday, a
+    week ago, a month ago, up to 365 days back.
   - A day where everything planned was taken counts as **stack complete**.
     Days with nothing planned are neutral.
 - **Today card, placed with the layout editor.** Two layouts: *current slot

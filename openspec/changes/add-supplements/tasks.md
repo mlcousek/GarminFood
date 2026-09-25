@@ -14,6 +14,7 @@
 - [ ] 1.6 Limits: defaults + user overrides + reset; over-limit evaluation incl. "no EU UL" cases. Tests.
 - [ ] 1.7 `LabelScore` (transparency 40 / dose 40 / headroom 20) with an explained breakdown. Tests (proprietary blend, effective creatine dose).
 - [ ] 1.8 `StockProjection`: stock after ticks, days left under the current schedule, restock trigger once per pack; cost per day/month. Tests.
+- [ ] 1.9 Past-day logging (design D14): intake for any day up to 365 days back evaluated against that day's schedule; stock counts only intake on/after `stockSetOn`; late entries (> 7 days after their date) grant no XP. Tests.
 
 ## 2. Wave 2 — Stores and wiring
 
@@ -25,7 +26,7 @@
 ## 3. Wave 3 — Screens
 
 - [ ] 3.1 Settings row "Supplements" / "Doplňky stravy" + first-enable onboarding (pick from catalog → slots and reminders).
-- [ ] 3.2 Supplements screen: Today checklist (tick, Take all, extra dose, yesterday), My stack, product editor (catalog / custom / ingredients / pack and price / certifications), schedule editor (slots, patterns, cycles).
+- [ ] 3.2 Supplements screen: Today checklist (tick, Take all, extra dose), past-day editing via date picker and adherence calendar (any day up to 365 days back), My stack, product editor (catalog / custom / ingredients / pack and price / certifications), schedule editor (slots, patterns, cycles).
 - [ ] 3.3 Totals and limits view with warnings; limit editor with default and source shown, and reset.
 - [ ] 3.4 Insights: adherence calendar and per-product 7/30-day %, stock overview, cost.
 - [ ] 3.5 Evidence card view and label score breakdown; "Verify certification" links and the manual certified badge.

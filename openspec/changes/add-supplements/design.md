@@ -30,7 +30,7 @@ Supplements follows it.
 | Gamification | Streak + badges, challenges, collection/journey; XP must not speed up levelling (→ `rebalance-xp-economy`) |
 | Streak rule | Stack complete = all planned items taken; unscheduled days neutral |
 | Freezes | Shared pool with the food streak |
-| Today card | Current-slot checklist and whole-day pills (two variants); tick yesterday from the screen |
+| Today card | Current-slot checklist and whole-day pills (two variants); tick any past day (up to 365 days back) from the screen |
 | Adding | Built-in catalog, custom product, barcode scan |
 | Surfaces | Notification "Taken" action only |
 | Modes | Both Garmin and standalone |
@@ -327,3 +327,28 @@ disabled.
   (salt = Na × 2.5)? Default: mg, with salt shown as secondary.
 - Default reminder times per slot: morning 08:00, evening 21:00, pre-workout
   none (manual). To be confirmed during implementation with the owner.
+
+### D14 — Logging past days (owner request, 2026-09-25)
+
+The owner wants to record intake "backwards": yesterday, a week ago, or a
+month ago.
+
+- **Where:** the Supplements screen has a date picker and a tappable
+  adherence calendar. Selecting a past day opens that day's checklist,
+  evaluated against the schedule in effect then (D3 `effectiveFrom`
+  history). The picker range is today − 365 days … today. Future days are
+  not editable.
+- **Streak and history** are recomputed from the intake log on every
+  evaluation, so a backfilled day can repair a broken streak. A freeze that
+  was already consumed for that day stays consumed (no refund), which keeps
+  the freeze pool simple and predictable.
+- **Stock:** each product stores `stockSetOn` (the date its pack count was
+  last set or refilled). Remaining stock counts only intake dated on or after
+  that date, so backfilling a day before the current pack doesn't drain it.
+- **XP:** to keep the pace promise and prevent history farming, intake
+  recorded more than 7 days after its date counts for history, streaks,
+  badges and statistics, but **grants no XP**. Grants are keyed by date, so
+  re-entering a day never double-pays.
+- **Tests:** backfill across a schedule change, streak repair, stock
+  unaffected by pre-pack backfill, no XP for late entries older than 7 days,
+  and the 365-day limit.
