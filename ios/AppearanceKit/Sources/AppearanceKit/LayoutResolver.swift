@@ -223,10 +223,16 @@ public extension LayoutConfig {
     }
 
     /// Applies one editor change to `screen`. Any Today edit clears the
-    /// applied preset, so the editor shows "Custom" (D9).
+    /// applied preset, so the editor shows "Custom" (D9). A change that
+    /// leaves the layout as it already resolves (showing a visible card,
+    /// moving a pinned one) is not an edit: nothing is stored and the
+    /// preset (including the implicit Full) is kept.
     mutating func edit(_ screen: LayoutScreen, _ change: (ScreenLayout?, [CardSpec]) -> ScreenLayout) {
         let specs = LayoutCatalog.specs(for: screen)
-        setLayout(change(layout(for: screen), specs), for: screen)
+        let stored = layout(for: screen)
+        let updated = change(stored, specs)
+        guard updated.placements != LayoutResolver.merged(stored: stored, specs: specs) else { return }
+        setLayout(updated, for: screen)
         if screen == .today { appliedPreset = nil }
     }
 
