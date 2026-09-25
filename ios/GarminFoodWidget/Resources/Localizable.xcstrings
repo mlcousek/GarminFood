@@ -624,6 +624,18 @@
           }
         }
       }
+    },
+    "Nothing logged: this food needs a Garmin match first. Log it once from the app.": {
+      "comment": "Error shown by a quick-log Control/Shortcut in Garmin mode: the food came from standalone mode and has no Garmin food yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezapsalo: tahle potravina nejdřív potřebuje shodu v Garminu. Jednou ji zapiš v aplikaci."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

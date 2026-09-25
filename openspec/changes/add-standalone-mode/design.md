@@ -49,7 +49,7 @@ Standalone mode calls **no Garmin route at all**.
 | Route | Status in `docs/garmin-routes.json` | Used here |
 |---|---|---|
 | `PUT /nutrition-service/food/logs/quickAdd` | "documented, not exercised" (2026-09-16) | **No.** It is the only candidate for a future backfill (Non-goals). |
-| `GET https://world.openfoodfacts.org/api/v2/product/{barcode}.json` (Open Food Facts, not Garmin) | not recorded; not probed | Only after task 3.5 probes it and records the status code and payload shape. Until then barcode lookups in standalone mode use the offline index only. |
+| `GET https://world.openfoodfacts.org/api/v2/product/{barcode}.json` (Open Food Facts, not Garmin) | Not a Garmin route. Probed read-only on 2026-09-25 and recorded in `docs/openfoodfacts-product-route.md`: found returns 200 + `status: 1`; an unknown code returns 404 | **Yes, in standalone mode only.** It is step 3 of the barcode chain (`StandaloneBarcodeResolution`: own custom foods, then the offline index, then this route). |
 
 ## Goals / Non-Goals
 

@@ -26,6 +26,18 @@
 // for that route is unconfirmed and, per openspec/config.yaml's task rule,
 // "no task writes to the Garmin account before the write contract is
 // documented" — this route's write contract is not.
+//
+// add-standalone-mode D5 (task 3.3): the backing food is OPTIONAL. A
+// standalone user has no Garmin to back anything with -- her custom food is
+// logged as itself, with its own macros (`LocalLogEntryCoordinator`). The
+// three backing fields are Optional Codable, so every file written before
+// this change (which always has them) decodes exactly as before, and a new
+// food simply omits them. A backing-less food seen in Garmin mode (after a
+// mode switch) is never logged silently or dropped: `resolvedLoggingTarget`
+// is nil, `LogEntryCoordinator` throws `CustomFoodLoggingError.
+// needsGarminMatch` before writing anything, and the confirm screen offers
+// the backing picker. `barcode` (optional, standalone's editor) lets a
+// scanned product the databases don't know be found again by its code.
 
 import Foundation
 
@@ -55,13 +67,13 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
     public var createdAt: Date
 
     /// The closest existing Garmin food this custom food actually logs as
-    /// (see file header). Required, not optional: without it there is
-    /// nothing this project can hand to `Outbox` at all, since only foods
-    /// Garmin recognises can be written back to it (design.md's own
-    /// non-goal: "Building a second food database").
-    public var backingFoodId: String
-    public var backingFoodName: String
-    public var backingServingId: String
+    /// in Garmin mode (see file header). Without it there is nothing this
+    /// project can hand to `Outbox`, since only foods Garmin recognises can
+    /// be written back to it -- so Garmin mode requires one before logging.
+    /// `nil` for a food created in standalone mode (add-standalone-mode D5).
+    public var backingFoodId: String?
+    public var backingFoodName: String?
+    public var backingServingId: String?
     /// Multiplies the user's chosen quantity before it's sent as the
     /// backing serving's `numberOfUnits` -- e.g. this custom food's "1
     /// homemade dumpling" might be declared as backed by "0.5x" a Garmin
@@ -78,6 +90,10 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
     /// account's region/language).
     public var backingRegionCode: String?
     public var backingLanguageCode: String?
+    /// The product barcode, when this food was created from a scan nobody
+    /// knew (standalone barcode chain, add-standalone-mode 3.5). `nil` for
+    /// every food created before it existed.
+    public var barcode: String?
 
     public init(
         id: UUID = UUID(),
@@ -94,13 +110,14 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
         saturatedFat: Double? = nil,
         sodium: Double? = nil,
         createdAt: Date = Date(),
-        backingFoodId: String,
-        backingFoodName: String,
-        backingServingId: String,
+        backingFoodId: String? = nil,
+        backingFoodName: String? = nil,
+        backingServingId: String? = nil,
         backingQuantityMultiplier: Double = 1,
         note: String? = nil,
         backingRegionCode: String? = nil,
-        backingLanguageCode: String? = nil
+        backingLanguageCode: String? = nil,
+        barcode: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -123,6 +140,14 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
         self.note = note
         self.backingRegionCode = backingRegionCode
         self.backingLanguageCode = backingLanguageCode
+        self.barcode = barcode
+    }
+
+    /// Whether this food can be logged to Garmin (it has a backing food
+    /// and serving). Always true for a food created in Garmin mode.
+    public var hasGarminBacking: Bool {
+        guard let backingFoodId, let backingServingId else { return false }
+        return !backingFoodId.isEmpty && !backingServingId.isEmpty
     }
 
     /// This custom food as a `Food`/`Serving` pair -- so the log-entry flow,
@@ -155,18 +180,36 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
     /// What actually gets sent to `Outbox.logFood` for a given user-chosen
     /// quantity (in units of THIS custom food's own declared serving) --
     /// pure, no network access, so the log-entry flow's zero-network-wait
-    /// requirement holds even for a custom food.
-    public func resolvedLoggingTarget(quantity: Double) -> (foodId: String, servingId: String, numberOfUnits: Double) {
-        (backingFoodId, backingServingId, backingQuantityMultiplier * quantity)
+    /// requirement holds even for a custom food. `nil` when there is no
+    /// backing food (`hasGarminBacking == false`): nothing can be sent.
+    public func resolvedLoggingTarget(quantity: Double) -> (foodId: String, servingId: String, numberOfUnits: Double)? {
+        guard hasGarminBacking, let backingFoodId, let backingServingId else { return nil }
+        return (backingFoodId, backingServingId, backingQuantityMultiplier * quantity)
     }
 
     /// Shown to the user per the food-catalog spec's "the discrepancy...
     /// is shown to the user" requirement -- never hidden.
+    /// Empty when there is no backing food (nothing is recorded in Garmin).
     public var discrepancyNote: String {
-        String(
+        guard hasGarminBacking, let backingFoodName else { return "" }
+        return String(
             localized: "Recorded in Garmin as \"\(backingFoodName)\" (closest match; custom-food creation isn't confirmed possible via Garmin's API yet).",
             bundle: .module,
             comment: "Note under a custom food. %@ is the name of the Garmin food it is actually logged as."
+        )
+    }
+}
+
+/// Thrown by the Garmin `LogEntryCoordinator` for a custom food without a
+/// backing food (add-standalone-mode D5) -- before anything is written.
+public enum CustomFoodLoggingError: Error, Sendable, Equatable, LocalizedError {
+    case needsGarminMatch
+
+    public var errorDescription: String? {
+        String(
+            localized: "Needs a Garmin match before it can be logged to Garmin.",
+            bundle: .module,
+            comment: "A custom food created without Garmin (standalone mode) can't be logged to Garmin until a closest Garmin food is picked."
         )
     }
 }
