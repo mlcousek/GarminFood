@@ -20,8 +20,8 @@
 
 - [x] 2.1 `SupplementPlanStore`, `SupplementIntakeStore` (month-sharded), `SupplementLimitsStore`: JSON actors, unreadable-file/quarantine contract, `save` loads first, idempotent intake writes keyed by (date, product, slot). Tests: round-trip, quarantine, old-file decode, idempotency.
 - [x] 2.2 Register the stores in `AppServices`/`AppEnvironment`; `AppPreferences.supplementsEnabled` (default false).
-- [ ] 2.3 Standalone backup/export includes the supplement stores (`add-standalone-mode` data-backup). Test export → import round-trip.
-- [ ] 2.4 Training-day input: read `ActivityCacheStore` (existing confirmed read-only route; no new Garmin route) + `race` day-note tags; standalone falls back to tags only.
+- [x] 2.3 Standalone backup/export includes the supplement stores (`add-standalone-mode` data-backup). Test export → import round-trip. **Covered by `add-data-safety`'s generic snapshot:** it copies the whole FoodLogCore data directory, and all three supplement stores live there (`supplement-plan.json`, `supplement-limits.json`, `SupplementIntake/<yyyy-MM>.json` under Application Support/FoodLogCore). The export → restore round-trip is tested there; supplement fixtures are added per `docs/data-compatibility.md` once `add-data-safety` merges.
+- [x] 2.4 Training-day input: read `ActivityCacheStore` (existing confirmed read-only route; no new Garmin route) + `race` day-note tags; standalone falls back to tags only.
 
 ## 3. Wave 3 — Screens
 
