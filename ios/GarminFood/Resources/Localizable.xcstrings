@@ -4501,6 +4501,18 @@
         }
       }
     },
+    "Language": {
+      "comment": "Settings row that opens the app's page in iOS Settings to change its language.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jazyk"
+          }
+        }
+      }
+    },
     "Last %lld days": {
       "comment": "Fasting history section header.",
       "extractionState": "manual",
@@ -6171,6 +6183,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře GarminFood rovnou ve skeneru čárových kódů."
+          }
+        }
+      }
+    },
+    "Opens GarminFood's page in iOS Settings, where the app's language can be changed": {
+      "comment": "VoiceOver hint of the Language settings row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře stránku GarminFood v Nastavení iOS, kde můžeš změnit jazyk aplikace"
           }
         }
       }

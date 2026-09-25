@@ -56,7 +56,7 @@ is its own branch + PR (`mlcousek/add-localization-wN`).
 - [x] 6.2 Plural audit: no `== 1 ?` ternaries left (checker rule). Checker rule (blocking): an `== 1 ?`/`!= 1 ?` ternary choosing text or an English plural ending fails the `localization` job. App-side ternaries are gone (meal presets now use the `%lld ingredients` plural); `PLURAL_TERNARY_BASELINE` lists the files still pending Wave 4 (Achievements, ChallengeTemplates, DailyChallenges, Progress streak card), reported as notes.
 - [ ] 6.3 Truncation pass: pseudo-localized build (+40 % length) sideloaded; fix Today hero, stat tiles, widgets, tab labels.
 - [ ] 6.4 Accessibility labels/hints/values fully localized (units spelled out in Czech).
-- [ ] 6.5 Settings row "Jazyk / Language" opening the per-app Settings page.
+- [x] 6.5 Settings row "Jazyk / Language" opening the per-app Settings page. Settings row "Language" / "Jazyk" (globe icon, current language named in itself) opens `UIApplication.openSettingsURLString`. On-device: tapping it lands on Settings › GarminFood with the Language picker.
 - [ ] 6.6 Promote checker `--scan` and the export-comparison to blocking.
 
 ## 7. Verify
