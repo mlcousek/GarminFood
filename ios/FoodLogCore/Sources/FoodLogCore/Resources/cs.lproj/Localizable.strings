@@ -462,3 +462,11 @@
 
 /* A custom food created without Garmin (standalone mode) can't be logged to Garmin until a closest Garmin food is picked. */
 "Needs a Garmin match before it can be logged to Garmin." = "Než to půjde zapsat do Garminu, je potřeba vybrat shodu v Garminu.";
+
+/* ---- Supplements: stores (Supplements/SupplementStoreSupport.swift) ---- */
+
+/* Error when supplement intake is logged for a future day or more than 365 days back. */
+"Only today and the last 365 days can be filled in." = "Vyplnit jde jen dnešek a posledních 365 dní.";
+
+/* Error when writing supplement data on the phone fails. %@ is the system's reason. */
+"Couldn't save your supplements on this phone: %@" = "Doplňky stravy se v telefonu nepodařilo uložit: %@";
