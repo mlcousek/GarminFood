@@ -239,6 +239,20 @@ final class StreakFreezeTests: XCTestCase {
         XCTAssertEqual(reloaded.consumptions, [consumption])
     }
 
+    func testStoreRecordReturnsOnlyTheConsumptionsItAdded() async throws {
+        // Two overlapping planner runs can plan the same freeze; only the
+        // run that actually recorded it may announce it.
+        let store = StreakFreezeStore(directory: BT.tempDirectory("freeze-store"))
+        let thursday = StreakFreezeStore.Consumption(frozenDay: BT.key(9, 24), consumedOn: BT.key(9, 25), protectedLength: 21)
+        let friday = StreakFreezeStore.Consumption(frozenDay: BT.key(9, 25), consumedOn: BT.key(9, 26), protectedLength: 21)
+        let first = try await store.record([thursday])
+        XCTAssertEqual(first, [thursday])
+        let second = try await store.record([thursday])
+        XCTAssertTrue(second.isEmpty, "already recorded by an earlier run")
+        let third = try await store.record([thursday, friday])
+        XCTAssertEqual(third, [friday])
+    }
+
     func testStoreSaveBeforeLoadKeepsExistingEntries() async throws {
         let directory = BT.tempDirectory("freeze-store")
         let first = StreakFreezeStore.Consumption(frozenDay: BT.key(9, 10), consumedOn: BT.key(9, 11), protectedLength: 4)
