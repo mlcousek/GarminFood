@@ -25,5 +25,73 @@
 			<string>%lld minutes</string>
 		</dict>
 	</dict>
+	<!-- Supplement serving size (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld capsules</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld capsule</string>
+			<key>other</key>
+			<string>%lld capsules</string>
+		</dict>
+	</dict>
+	<!-- Supplement serving size (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld tablets</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld tablet</string>
+			<key>other</key>
+			<string>%lld tablets</string>
+		</dict>
+	</dict>
+	<!-- Supplement serving size (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld gummies</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld gummy</string>
+			<key>other</key>
+			<string>%lld gummies</string>
+		</dict>
+	</dict>
+	<!-- Supplement serving size or dose count (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld servings</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld serving</string>
+			<key>other</key>
+			<string>%lld servings</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

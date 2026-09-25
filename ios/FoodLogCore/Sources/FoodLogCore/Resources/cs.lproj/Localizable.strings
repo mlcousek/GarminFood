@@ -246,3 +246,214 @@
 
 /* Error when writing the on-phone food log fails (standalone mode). %@ is the system's reason. */
 "Couldn't save the food log on this phone: %@" = "Jídelníček v telefonu se nepodařilo uložit: %@";
+
+/* ---- Supplements: evidence cards (Supplements/EvidenceCatalog.swift) ---- */
+
+/* Supplement evidence card: how strong the research support is. */
+"Strong evidence" = "Silné důkazy";
+
+/* Supplement evidence card: how strong the research support is. */
+"Moderate evidence" = "Středně silné důkazy";
+
+/* Supplement evidence card: how strong the research support is. */
+"Limited evidence" = "Omezené důkazy";
+
+/* Supplement evidence disclaimer shown on every evidence card. */
+"Information only, not medical advice. Talk to a doctor or pharmacist before starting a supplement, especially during pregnancy, when taking medication or with a health condition." = "Jen pro informaci, nejde o lékařskou radu. Než začneš doplněk stravy užívat, poraď se s lékařem nebo lékárníkem – zvlášť v těhotenství, při užívání léků nebo při zdravotních potížích.";
+
+/* Supplement evidence card / limits: the EU has no tolerable upper intake level for this ingredient. */
+"No EU upper limit set" = "V EU není stanoven horní přípustný limit";
+
+/* Supplement ingredient name. */
+"Creatine" = "Kreatin";
+
+/* Supplement ingredient name: the omega-3 fatty acids EPA and DHA combined. */
+"Omega-3 (EPA + DHA)" = "Omega-3 (EPA + DHA)";
+
+/* Supplement ingredient name. */
+"Caffeine" = "Kofein";
+
+/* Supplement ingredient name. */
+"Beta-alanine" = "Beta-alanin";
+
+/* Supplement ingredient name. */
+"Vitamin K2" = "Vitamín K2";
+
+/* Evidence card, creatine: what it is for. */
+"Supports repeated short, hard efforts and strength training. One of the best-studied sports supplements." = "Podporuje opakované krátké a intenzivní úsilí i silový trénink. Patří k nejlépe prozkoumaným sportovním doplňkům.";
+
+/* Evidence card, creatine: typical dose. */
+"3–5 g a day. Optional loading: about 0.3 g per kg of body weight a day for 5–7 days." = "3–5 g denně. Volitelná nasycovací fáze: asi 0,3 g na kg tělesné hmotnosti denně po 5–7 dní.";
+
+/* Evidence card, creatine: timing and food. */
+"Any time of day; taking it every day matters more than when. With a meal is fine." = "Kdykoli během dne – důležitější než načasování je brát ho každý den. Klidně s jídlem.";
+
+/* Evidence card, magnesium: what it is for. */
+"Helps muscle and nerve function and energy metabolism. Mainly worth it when your diet falls short." = "Pomáhá funkci svalů a nervů a energetickému metabolismu. Smysl má hlavně tehdy, když ho strava nepokryje.";
+
+/* Evidence card, magnesium: typical dose. */
+"Typically 100–250 mg a day from supplements. Citrate and bisglycinate are absorbed well, oxide less so." = "Obvykle 100–250 mg denně z doplňků. Citrát a bisglycinát se vstřebávají dobře, oxid hůře.";
+
+/* Evidence card, magnesium: timing and food. */
+"Often taken in the evening. Large single doses can loosen the stool; splitting them helps." = "Často se bere večer. Velké jednorázové dávky mohou změkčit stolici – pomáhá je rozdělit.";
+
+/* Evidence card, vitamin D: what it is for. */
+"Supports bones, muscles and the immune system. Matters most in autumn and winter, when the sun in Central Europe is too low." = "Podporuje kosti, svaly a imunitu. Nejvíc záleží na podzim a v zimě, kdy je slunce ve střední Evropě příliš nízko.";
+
+/* Evidence card, vitamin D: typical dose. */
+"Commonly 10–50 µg (400–2000 IU) a day. A blood test shows what you actually need." = "Běžně 10–50 µg (400–2000 IU) denně. Kolik opravdu potřebuješ, ukáže krevní test.";
+
+/* Evidence card, vitamin D: timing and food. */
+"With a meal that contains some fat, which helps absorption." = "S jídlem, které obsahuje trochu tuku – to pomáhá vstřebávání.";
+
+/* Evidence card, vitamin C: what it is for. */
+"An antioxidant needed for collagen and the immune system. A varied diet with fruit and vegetables usually covers it." = "Antioxidant potřebný pro kolagen a imunitu. Pestrá strava s ovocem a zeleninou ho obvykle pokryje.";
+
+/* Evidence card, vitamin C: typical dose. */
+"Typically 100–1000 mg a day; most of any excess is excreted." = "Obvykle 100–1000 mg denně; nadbytek se většinou vyloučí.";
+
+/* Evidence card, vitamin C: timing and food. */
+"Any time. With a meal it helps you absorb iron from plant foods." = "Kdykoli. S jídlem pomáhá vstřebávat železo z rostlinné stravy.";
+
+/* Evidence card, zinc: what it is for. */
+"Needed by the immune system, the skin and many enzymes. Endurance athletes and people who eat little meat may run low." = "Potřebuje ho imunita, pokožka i řada enzymů. Vytrvalcům a lidem, kteří jedí málo masa, může chybět.";
+
+/* Evidence card, zinc: typical dose. */
+"Typically 5–25 mg a day from supplements." = "Obvykle 5–25 mg denně z doplňků.";
+
+/* Evidence card, zinc: timing and food. */
+"Apart from iron and calcium supplements, which compete for absorption. With food if it upsets your stomach." = "Odděleně od železa a vápníku z doplňků, které mu konkurují při vstřebávání. S jídlem, pokud ti dělá potíže se žaludkem.";
+
+/* Evidence card, omega-3: what it is for. */
+"Fatty acids from fish or algae that support the heart and brain. Useful if you rarely eat oily fish." = "Mastné kyseliny z ryb nebo řas, které podporují srdce a mozek. Hodí se, pokud jen málokdy jíš tučné ryby.";
+
+/* Evidence card, omega-3: typical dose. */
+"Commonly 250–2000 mg of EPA and DHA combined a day. Count EPA + DHA, not the total amount of oil." = "Běžně 250–2000 mg EPA a DHA dohromady denně. Počítej EPA + DHA, ne celkové množství oleje.";
+
+/* Evidence card, omega-3 and vitamin K2: timing and food. */
+"With a meal that contains fat." = "S jídlem, které obsahuje tuk.";
+
+/* Evidence card, vitamin B12: what it is for. */
+"Needed for blood formation and the nervous system. Essential for vegans, because plant foods don't provide it." = "Potřebný pro tvorbu krve a nervovou soustavu. Pro vegany nezbytný, protože rostlinná strava ho neobsahuje.";
+
+/* Evidence card, vitamin B12: typical dose. */
+"Typically 4–1000 µg a day; only a small share of a large dose is absorbed." = "Obvykle 4–1000 µg denně; z velké dávky se vstřebá jen malá část.";
+
+/* Evidence card: the ingredient can be taken at any time. */
+"Any time of day." = "Kdykoli během dne.";
+
+/* Evidence card, iron: what it is for. */
+"Carries oxygen in the blood. Take it only when a blood test shows low iron: too much is harmful." = "Přenáší kyslík v krvi. Ber ho jen tehdy, když krevní test ukáže nedostatek – nadbytek škodí.";
+
+/* Evidence card, iron: typical dose. */
+"As advised after a blood test." = "Podle doporučení po krevním testu.";
+
+/* Evidence card, iron: timing and food. */
+"Apart from coffee, tea, calcium and zinc. Vitamin C helps absorption." = "Odděleně od kávy, čaje, vápníku a zinku. Vitamín C vstřebávání pomáhá.";
+
+/* Evidence card, selenium: what it is for. */
+"Part of antioxidant enzymes and needed by the thyroid. Central European soils contain little of it." = "Součást antioxidačních enzymů, potřebuje ho štítná žláza. Půdy ve střední Evropě ho obsahují málo.";
+
+/* Evidence card, selenium: typical dose. */
+"Typically 50–200 µg a day. The gap between enough and too much is small." = "Obvykle 50–200 µg denně. Rozdíl mezi dostatkem a nadbytkem je malý.";
+
+/* Evidence card, selenium: timing and food. */
+"Any time, with food." = "Kdykoli, s jídlem.";
+
+/* Evidence card, vitamin B6: what it is for. */
+"Supports protein metabolism and the nervous system. A normal diet rarely falls short." = "Podporuje metabolismus bílkovin a nervovou soustavu. Při běžné stravě chybí jen zřídka.";
+
+/* Evidence card, vitamin B6: typical dose. */
+"Typically 1–10 mg a day; high doses over a long time can harm the nerves." = "Obvykle 1–10 mg denně; dlouhodobě vysoké dávky mohou poškodit nervy.";
+
+/* Evidence card, caffeine: what it is for. */
+"Improves alertness and both endurance and strength performance for many people." = "U mnoha lidí zlepšuje bdělost i vytrvalostní a silový výkon.";
+
+/* Evidence card, caffeine: typical dose. */
+"About 3–6 mg per kg of body weight before exercise (roughly 100–400 mg); smaller doses help too." = "Asi 3–6 mg na kg tělesné hmotnosti před výkonem (zhruba 100–400 mg); pomáhají i menší dávky.";
+
+/* Evidence card, caffeine: timing and food. */
+"30–60 minutes before exercise. Skip the late afternoon and evening if it disturbs your sleep." = "30–60 minut před výkonem. Pozdnímu odpoledni a večeru se vyhni, pokud ti kazí spánek.";
+
+/* Evidence card, beta-alanine: what it is for. */
+"Buffers acid in the muscles and can help in hard efforts of about 1–4 minutes." = "Tlumí překyselení svalů a může pomoci při tvrdém úsilí trvajícím asi 1–4 minuty.";
+
+/* Evidence card, beta-alanine: typical dose. */
+"3.2–6.4 g a day in split doses, for at least 2–4 weeks." = "3,2–6,4 g denně v rozdělených dávkách, alespoň 2–4 týdny.";
+
+/* Evidence card, beta-alanine: timing and food. */
+"Split into smaller doses with meals to limit the harmless tingling it can cause." = "Rozděl ho do menších dávek k jídlu – omezíš tak neškodné mravenčení, které může způsobit.";
+
+/* Evidence card, sodium: what it is for. */
+"The main electrolyte lost in sweat. Replacing it matters in long or hot sessions." = "Hlavní elektrolyt, který ztrácíš potem. Doplňovat ho má smysl při dlouhém nebo horkém tréninku.";
+
+/* Evidence card, sodium: typical dose. */
+"Depends on your sweat losses; often 300–1000 mg per hour of long exercise." = "Záleží na tom, kolik vypotíš; často 300–1000 mg za hodinu dlouhého výkonu.";
+
+/* Evidence card, sodium: timing and food. */
+"During and after long or hot sessions, with fluids." = "Během dlouhého nebo horkého tréninku a po něm, spolu s tekutinami.";
+
+/* Evidence card, potassium: what it is for. */
+"An electrolyte for muscle and nerve function. Fruit, vegetables and potatoes are the main sources." = "Elektrolyt pro funkci svalů a nervů. Hlavními zdroji jsou ovoce, zelenina a brambory.";
+
+/* Evidence card, potassium: typical dose. */
+"Small amounts in electrolyte drinks; large doses from supplements only on medical advice." = "Malá množství v iontových nápojích; velké dávky z doplňků jen po poradě s lékařem.";
+
+/* Evidence card, potassium: timing and food. */
+"With fluids, during or after exercise." = "S tekutinami, během výkonu nebo po něm.";
+
+/* Evidence card, vitamin K2: what it is for. */
+"Supports blood clotting and bone health; often combined with vitamin D. If you take blood thinners, ask your doctor first." = "Podporuje srážení krve a zdraví kostí; často se kombinuje s vitamínem D. Pokud bereš léky na ředění krve, poraď se nejdřív s lékařem.";
+
+/* Evidence card, vitamin K2: typical dose. */
+"Typically 45–200 µg a day." = "Obvykle 45–200 µg denně.";
+
+/* Evidence card, creatine: note on the limit. */
+"No EU upper limit set. EFSA (2004) considers 3 g a day unlikely to pose a risk; studies commonly use 3–5 g." = "V EU není stanoven horní přípustný limit. Podle EFSA (2004) 3 g denně pravděpodobně nepředstavují riziko; studie běžně používají 3–5 g.";
+
+/* Evidence card, magnesium: the EFSA limit applies to supplemental magnesium only. */
+"Counts magnesium from supplements only (readily dissociable salts and oxide); magnesium in food is not included." = "Počítá jen hořčík z doplňků (snadno disociující soli a oxid); hořčík z běžné stravy se nezapočítává.";
+
+/* Evidence card, vitamin C: no EU limit; the US tolerable upper intake level, labelled as US. */
+"No EU upper limit set. The US figure is 2000 mg a day." = "V EU není stanoven horní přípustný limit. Údaj USA je 2000 mg denně.";
+
+/* Evidence card, omega-3: note on the limit. */
+"No EU upper limit set. EFSA (2012): up to 5 g a day from supplements raises no safety concern." = "V EU není stanoven horní přípustný limit. EFSA (2012): do 5 g denně z doplňků nevzbuzuje obavy o bezpečnost.";
+
+/* Evidence card, iron: the 40 mg figure is a safe level, not an upper limit. */
+"EFSA's safe level of intake, not a formal upper limit." = "Bezpečná úroveň příjmu podle EFSA, ne formální horní přípustný limit.";
+
+/* Evidence card, caffeine: note on the limit. */
+"EFSA (2015): up to 400 mg a day, and up to 200 mg at once, raises no safety concern for healthy adults. Coffee counts too, but only what you log here is added up." = "EFSA (2015): do 400 mg denně a do 200 mg najednou nevzbuzuje u zdravých dospělých obavy o bezpečnost. Počítá se i káva, sčítá se ale jen to, co zapíšeš tady.";
+
+/* ---- Supplements: built-in catalog (Supplements/SupplementCatalog.swift) ---- */
+
+/* Supplement serving size: one powder scoop of %lld grams. */
+"%lld g scoop" = "odměrka %lld g";
+
+/* Built-in supplement product name. */
+"Creatine monohydrate" = "Kreatin monohydrát";
+
+/* Built-in supplement product name. */
+"Magnesium citrate" = "Citrát hořečnatý";
+
+/* Built-in supplement product name. */
+"Magnesium bisglycinate" = "Bisglycinát hořečnatý";
+
+/* Built-in supplement product name. */
+"Magnesium oxide" = "Oxid hořečnatý";
+
+/* Built-in supplement product name. */
+"Vitamin D3" = "Vitamín D3";
+
+/* Built-in supplement product name. */
+"Vitamin D3 + K2" = "Vitamín D3 + K2";
+
+/* Built-in supplement product name. */
+"Omega-3 fish oil" = "Omega-3 rybí olej";
+
+/* Built-in supplement product name (vegan omega-3 from algae). */
+"Omega-3 algae oil" = "Omega-3 z řas";
+
+/* Built-in supplement product name (electrolyte tablet: sodium, potassium, magnesium). */
+"Electrolytes" = "Elektrolyty";

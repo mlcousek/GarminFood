@@ -12,7 +12,7 @@ final class IngredientTotalsTests: XCTestCase {
     private let takenAt = Date(timeIntervalSince1970: 1_790_000_000)
 
     private func record(_ product: SupplementProduct, day: String = "2026-10-02", servings: Double = 1, kind: IntakeKind = .planned) -> IntakeRecord {
-        IntakeRecord(day: day, productId: product.id, slot: kind == .planned ? .morning : nil, servings: servings, takenAt: takenAt, kind: kind)
+        IntakeRecord(day: day, productId: product.id, slot: kind == .planned ? TimeSlot.morning : nil, servings: servings, takenAt: takenAt, kind: kind)
     }
 
     // Spec: Zinc from two products (the over-limit half is in SupplementLimitsTests).
