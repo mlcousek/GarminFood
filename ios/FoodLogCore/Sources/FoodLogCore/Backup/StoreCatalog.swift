@@ -35,6 +35,7 @@ public enum BackupArea: String, Codable, Sendable, CaseIterable {
     case hydration
     case dayNotes
     case fasting
+    case supplements
     case history
     case progress
     case deviceOnly
@@ -110,6 +111,11 @@ public enum StoreCatalog {
         StoreCatalogEntry(id: "foodlog.food-provenance", location: .file("FoodLogCore/food-provenance.json"), schemaVersion: 1, area: .history),
         StoreCatalogEntry(id: "foodlog.garmin-health-cache", location: .file("FoodLogCore/garmin-health-cache.json"), schemaVersion: 1, area: .deviceOnly, inBackup: false),
         StoreCatalogEntry(id: "foodlog.offline-index", location: .directory("FoodLogCore/OfflineIndex", fileNames: ["offline-index-status.json"]), schemaVersion: 1, area: .deviceOnly, inBackup: false),
+        // add-supplements (#85): the plan, the limit overrides and the
+        // month-sharded intake log.
+        StoreCatalogEntry(id: "foodlog.supplement-plan", location: .file("FoodLogCore/supplement-plan.json"), schemaVersion: 1, area: .supplements),
+        StoreCatalogEntry(id: "foodlog.supplement-limits", location: .file("FoodLogCore/supplement-limits.json"), schemaVersion: 1, area: .supplements),
+        StoreCatalogEntry(id: "foodlog.supplement-intake", location: .directory("FoodLogCore/SupplementIntake", fileNames: []), schemaVersion: 1, area: .supplements),
 
         // Gamification
         StoreCatalogEntry(id: "gamification.xp-ledger", location: .file("Gamification/xp-ledger.json"), schemaVersion: 1, area: .progress),
