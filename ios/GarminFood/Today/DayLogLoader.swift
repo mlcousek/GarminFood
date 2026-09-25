@@ -38,6 +38,13 @@ final class DayLogLoader {
     @ObservationIgnored private var logsByDate: [String: DailyFoodLog] = [:]
     @ObservationIgnored private var mealsByDate: [String: [Meal]] = [:]
     @ObservationIgnored private var activeByDate: [String: Double] = [:]
+    /// The data mode the three per-date caches above were filled under
+    /// (code-review fix). Flipping the testing toggle changes `dataMode()`
+    /// mid-session; without dropping the caches, local standalone rows
+    /// would keep showing in Garmin mode as `.synced(logId: <local UUID>)`,
+    /// and editing or deleting one would queue a Garmin write for an id
+    /// Garmin never issued (and the reverse for Garmin rows in standalone).
+    @ObservationIgnored private var cacheMode: DataMode?
     /// add-gamification-signals 7.2: the day log and active kcal this
     /// loader ALREADY reads are also cached for the gamification signals
     /// (no new request). `nil` in previews/tests.
