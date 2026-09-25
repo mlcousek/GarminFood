@@ -72,7 +72,7 @@ public enum LayoutResolver {
         }
 
         // Rule 5.
-        let specByID = index(specs)
+        let specByID = specIndex(specs)
         var top: [CardPlacement] = []
         var middle: [CardPlacement] = []
         var bottom: [CardPlacement] = []
@@ -94,8 +94,8 @@ public enum LayoutResolver {
     /// What the screen renders (and the editor lists): known cards only
     /// (rule 2), with valid variants (rule 4).
     public static func resolve(stored: ScreenLayout?, specs: [CardSpec]) -> [ResolvedPlacement] {
-        let specByID = index(specs)
-        return merged(stored: stored, specs: specs).compactMap { placement in
+        let specByID = specIndex(specs)
+        return merged(stored: stored, specs: specs).compactMap { placement -> ResolvedPlacement? in
             guard let spec = specByID[placement.id] else { return nil }
             return ResolvedPlacement(
                 spec: spec,
@@ -146,7 +146,7 @@ public enum LayoutResolver {
     /// Shows or hides a card in place. A card that can't be hidden stays
     /// visible.
     public static func setVisible(_ visible: Bool, for id: String, in stored: ScreenLayout?, specs: [CardSpec]) -> ScreenLayout {
-        let specByID = index(specs)
+        let specByID = specIndex(specs)
         let placements = merged(stored: stored, specs: specs).map { placement -> CardPlacement in
             guard placement.id == id, let spec = specByID[id], spec.hideable else { return placement }
             var changed = placement
@@ -158,7 +158,7 @@ public enum LayoutResolver {
 
     /// Picks one of a card's variants; anything else is ignored.
     public static func setVariant(_ variant: String, for id: String, in stored: ScreenLayout?, specs: [CardSpec]) -> ScreenLayout {
-        let specByID = index(specs)
+        let specByID = specIndex(specs)
         let placements = merged(stored: stored, specs: specs).map { placement -> CardPlacement in
             guard placement.id == id, let spec = specByID[id], spec.variants.contains(variant) else { return placement }
             var changed = placement
@@ -209,7 +209,7 @@ public enum LayoutResolver {
         return (from, to)
     }
 
-    private static func index(_ specs: [CardSpec]) -> [String: CardSpec] {
+    private static func specIndex(_ specs: [CardSpec]) -> [String: CardSpec] {
         Dictionary(specs.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
     }
 }

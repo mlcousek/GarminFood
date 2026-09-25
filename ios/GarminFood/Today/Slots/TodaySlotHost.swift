@@ -4,7 +4,9 @@
 // banners (seasonal event, weekly boss), above the meals list. Both ship as
 // `EmptyView`; `add-seasonal-events` and `add-weekly-boss-and-streak-
 // freezes` replace their own banner file only. `TodayView` hosts this
-// with a single line.
+// as its `banners` layout card (add-themes-and-layout D8, task 3.7):
+// above the meals by default, and movable/hideable as one block in the
+// layout editor.
 //
 // Depends on: SeasonalBannerSlot, BossBannerSlot.
 // Depended on by: TodayView.
