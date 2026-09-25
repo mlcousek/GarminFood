@@ -16,14 +16,32 @@
 // Secret badges get their own group of "???" tiles (count shown, titles and
 // symbols hidden until unlocked); limited-edition (seasonal) badges get a
 // "Limited edition" group; everything else stays grouped by category.
+//
+// add-secret-achievements D4: `AchievementsView(focus: .secrets)` (from the
+// Progress tab's SecretsSlotView) scrolls to the Secret group once on
+// appear; plain `AchievementsView()` is unchanged.
 
 import SwiftUI
 import Gamification
 
 @MainActor
 struct AchievementsView: View {
+    /// A group to scroll to when the screen opens.
+    enum Focus {
+        case secrets
+    }
+
     @Environment(AppEnvironment.self) private var environment
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var selected: AchievementDefinition?
+    @State private var didFocus = false
+
+    private let focus: Focus?
+    private static let secretGroupId = "achievements-secret-group"
+
+    init(focus: Focus? = nil) {
+        self.focus = focus
+    }
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.sm), count: 3)
 
@@ -32,41 +50,53 @@ struct AchievementsView: View {
         let unlocked = engine.unlockedAchievements
         let catalog = engine.achievementCatalog
 
-        List {
-            Section {
-                AchievementsHeroCard(unlockedCount: unlocked.count, totalCount: catalog.count)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-            }
+        ScrollViewReader { proxy in
+            List {
+                Section {
+                    AchievementsHeroCard(unlockedCount: unlocked.count, totalCount: catalog.count)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                }
 
-            let secret = catalog.filter(\.isSecret)
-            let limited = catalog.filter { !$0.isSecret && $0.limitedEditionEventId != nil }
-            let regular = catalog.filter { !$0.isSecret && $0.limitedEditionEventId == nil }
-            let limitedUnlocked = limited.filter { unlocked[$0.id] != nil }.count
-            let secretUnlocked = secret.filter { unlocked[$0.id] != nil }.count
+                let secret = catalog.filter(\.isSecret)
+                let limited = catalog.filter { !$0.isSecret && $0.limitedEditionEventId != nil }
+                let regular = catalog.filter { !$0.isSecret && $0.limitedEditionEventId == nil }
+                let limitedUnlocked = limited.filter { unlocked[$0.id] != nil }.count
+                let secretUnlocked = secret.filter { unlocked[$0.id] != nil }.count
 
-            ForEach(AchievementCategory.allCases, id: \.self) { category in
-                let items = regular.filter { $0.category == category }
-                if !items.isEmpty {
-                    Section(title(for: category)) {
-                        badgeGrid(items, unlocked: unlocked)
+                ForEach(AchievementCategory.allCases, id: \.self) { category in
+                    let items = regular.filter { $0.category == category }
+                    if !items.isEmpty {
+                        Section(title(for: category)) {
+                            badgeGrid(items, unlocked: unlocked)
+                        }
+                    }
+                }
+
+                if !limited.isEmpty {
+                    Section {
+                        badgeGrid(limited, unlocked: unlocked)
+                    } header: {
+                        Text("Limited edition \(limitedUnlocked)/\(limited.count)")
+                    }
+                }
+
+                if !secret.isEmpty {
+                    Section {
+                        badgeGrid(secret, unlocked: unlocked)
+                            .id(Self.secretGroupId)
+                    } header: {
+                        Text("Secret \(secretUnlocked)/\(secret.count)")
                     }
                 }
             }
-
-            if !limited.isEmpty {
-                Section {
-                    badgeGrid(limited, unlocked: unlocked)
-                } header: {
-                    Text("Limited edition \(limitedUnlocked)/\(limited.count)")
-                }
-            }
-
-            if !secret.isEmpty {
-                Section {
-                    badgeGrid(secret, unlocked: unlocked)
-                } header: {
-                    Text("Secret \(secretUnlocked)/\(secret.count)")
+            .task {
+                guard focus == .secrets, !didFocus else { return }
+                didFocus = true
+                // Give the List a moment to lay out its rows before scrolling.
+                try? await Task.sleep(for: .milliseconds(250))
+                withAnimation(reduceMotion ? nil : .easeInOut) {
+                    proxy.scrollTo(Self.secretGroupId, anchor: .top)
                 }
             }
         }

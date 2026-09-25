@@ -11,11 +11,11 @@
 
 ## 3. UI (thin)
 
-- [ ] 3.1 `Progress/Slots/SecretsSlotView.swift`: count + keyhole; navigates to the Secret group of `AchievementsView`.
-- [ ] 3.2 Confirm locked secrets are never rendered or read by VoiceOver with their real title (manual check on device; UI is not unit-tested).
+- [x] 3.1 `Progress/Slots/SecretsSlotView.swift`: count + keyhole; navigates to the Secret group of `AchievementsView`.
+- [ ] 3.2 Confirm locked secrets are never rendered or read by VoiceOver with their real title (manual check on device; UI is not unit-tested). Code-reviewed: the slot shows counts only; tiles, detail sheet and VoiceOver labels use "???" / "Secret achievement, locked"; secret moments flip in (cross-fade with Reduce Motion).
 
 ## 4. Verify
 
-- [ ] 4.1 `openspec validate add-secret-achievements --strict` passes.
+- [x] 4.1 `openspec validate add-secret-achievements --strict` passes.
 - [ ] 4.2 CI green (`swift test` Gamification; app + widget build).
 - [ ] 4.3 On-device check: Achievements shows "??? × 15"; logging 5 coffees in a day reveals Barista Mode with the reveal moment once.
