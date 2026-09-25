@@ -59,7 +59,10 @@ let package = Package(
         ),
         .testTarget(
             name: "GarminKitTests",
-            dependencies: ["GarminKit"]
+            dependencies: ["GarminKit"],
+            // add-data-safety D2: store fixtures are read from disk via
+            // #filePath, not compiled or bundled.
+            exclude: ["Fixtures"]
         )
     ]
 )

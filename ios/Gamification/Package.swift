@@ -65,7 +65,10 @@ let package = Package(
         ),
         .testTarget(
             name: "GamificationTests",
-            dependencies: ["Gamification"]
+            dependencies: ["Gamification"],
+            // add-data-safety D2: store fixtures are read from disk via
+            // #filePath, not compiled or bundled.
+            exclude: ["Fixtures"]
         )
     ]
 )
