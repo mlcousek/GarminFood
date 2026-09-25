@@ -18,11 +18,11 @@
 
 ## 4. UI (thin)
 
-- [ ] 4.1 `Progress/Slots/BingoSlotView.swift`: mini grid, lines, days left.
-- [ ] 4.2 `Progress/Bingo/BingoCardView.swift` + square sheet + past-cards pager; line-stroke animation (Reduce Motion: fade); VoiceOver labels; Dynamic Type; dark mode.
+- [x] 4.1 `Progress/Slots/BingoSlotView.swift`: mini grid, lines, days left.
+- [x] 4.2 `Progress/Bingo/BingoCardView.swift` + square sheet + past-cards pager; line-stroke animation (Reduce Motion: fade); VoiceOver labels; Dynamic Type; dark mode.
 
 ## 5. Verify
 
-- [ ] 5.1 `openspec validate add-weekly-bingo --strict` passes.
+- [x] 5.1 `openspec validate add-weekly-bingo --strict` passes.
 - [ ] 5.2 CI green (`swift test` Gamification; app + widget build).
 - [ ] 5.3 On-device check: a card appears on Monday; logging a fruit ticks "An Apple a Day" if on the card; completing a line shows the BINGO moment once; card unchanged after app relaunch.

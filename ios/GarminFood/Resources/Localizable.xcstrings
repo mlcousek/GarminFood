@@ -7104,6 +7104,282 @@
           }
         }
       }
+    },
+    "Easy task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snadný úkol"
+          }
+        }
+      }
+    },
+    "Medium task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Středně těžký úkol"
+          }
+        }
+      }
+    },
+    "Hard task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Těžký úkol"
+          }
+        }
+      }
+    },
+    "Judged from your nutrition totals and goals.": {
+      "comment": "Bingo square sheet: the task uses macro data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých denních součtů živin a cílů."
+          }
+        }
+      }
+    },
+    "Judged from your water log and goal.": {
+      "comment": "Bingo square sheet: the task uses water data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle zapsané vody a tvého cíle pitného režimu."
+          }
+        }
+      }
+    },
+    "Judged from your Garmin activities.": {
+      "comment": "Bingo square sheet: the task uses Garmin activities.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých aktivit z Garminu."
+          }
+        }
+      }
+    },
+    "Judged from the foods you log.": {
+      "comment": "Bingo square sheet: the task uses only logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle jídel, která zapisuješ."
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, free square": {
+      "comment": "VoiceOver label of the bingo centre square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, volné pole"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, done on %@": {
+      "comment": "VoiceOver label of a done bingo square. Row, column, task title, weekday it was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, splněno: %4$@"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, not done": {
+      "comment": "VoiceOver label of a bingo square not done yet. Row, column, task title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, nesplněno"
+          }
+        }
+      }
+    },
+    "Shows the rule": {
+      "comment": "Accessibility hint of a bingo square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí pravidlo"
+          }
+        }
+      }
+    },
+    "FREE": {
+      "comment": "Label of the free centre square of the bingo card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZDARMA"
+          }
+        }
+      }
+    },
+    "Your bingo card appears after your next log.": {
+      "comment": "Bingo card placeholder before this week's card exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje bingo karta se objeví po dalším zápisu."
+          }
+        }
+      }
+    },
+    "Squares tick themselves from what you log. Each line earns %lld XP; a full card earns %lld XP and a streak freeze.": {
+      "comment": "Bingo screen footnote. First %lld = XP per line, second = XP for a full card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole se odškrtávají sama podle toho, co zapisuješ. Každá řada dává %1$lld XP, plná karta %2$lld XP a zmrazení série."
+          }
+        }
+      }
+    },
+    "Past cards": {
+      "comment": "Bingo screen section: previous weeks' cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minulé karty"
+          }
+        }
+      }
+    },
+    "Weekly Bingo": {
+      "comment": "Bingo card title on the Progress tab and bingo screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní bingo"
+          }
+        }
+      }
+    },
+    "Lines: %lld": {
+      "comment": "Bingo: number of completed lines.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řady: %lld"
+          }
+        }
+      }
+    },
+    "Squares: %lld/9": {
+      "comment": "Bingo: squares done out of 9.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole: %lld/9"
+          }
+        }
+      }
+    },
+    "Days left: %lld": {
+      "comment": "Bingo: days left in this week.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá dní: %lld"
+          }
+        }
+      }
+    },
+    "Full card": {
+      "comment": "Bingo: every square of a past card was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plná karta"
+          }
+        }
+      }
+    },
+    "Done on %@": {
+      "comment": "Bingo square sheet: the day it was done, e.g. 'Tuesday, 22 Sep'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněno: %@"
+          }
+        }
+      }
+    },
+    "Not done yet": {
+      "comment": "Bingo square sheet: square not done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nesplněno"
+          }
+        }
+      }
+    },
+    "Opens the bingo card": {
+      "comment": "Accessibility hint of the bingo card on the Progress tab.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře bingo kartu"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
