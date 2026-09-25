@@ -49,6 +49,24 @@ final class WeeklyBingoStoreTests: XCTestCase {
         XCTAssertEqual(full, 1)
     }
 
+    func testACardWithoutTaskIdsDoesNotSinkTheWholeFile() async throws {
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let json = """
+        {"cards":{"2026-W38":{"completed":{"0":"2026-09-15"}},"2026-W39":{"taskIds":["e-fruit","free"]}},"totalLines":7,"fullCards":2}
+        """
+        try Data(json.utf8).write(to: directory.appendingPathComponent("bingo.json"))
+
+        let store = BingoStore(directory: directory)
+        let broken = await store.card(week: week(38))
+        let intact = await store.card(week: week(39))
+        let lines = await store.totalLines()
+        let full = await store.fullCards()
+        XCTAssertEqual(broken?.taskIds, [])
+        XCTAssertEqual(intact?.taskIds, ["e-fruit", "free"])
+        XCTAssertEqual(lines, 7, "the lifetime counters survive")
+        XCTAssertEqual(full, 2)
+    }
+
     func testKeepsOnlyTheNewestTwelveWeeks() async throws {
         let store = BingoStore(directory: directory)
         for number in 26...39 {

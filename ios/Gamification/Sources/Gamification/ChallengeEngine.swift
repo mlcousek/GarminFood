@@ -73,6 +73,7 @@ public enum ChallengeEngine {
         goalStatuses: [DailyGoalStatus],
         now: Date,
         signals: SignalsSnapshot? = nil,
+        frozenDays: Set<Date> = [],
         boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
         calendar: Calendar = .current
     ) -> ChallengeProgress {
@@ -100,7 +101,11 @@ public enum ChallengeEngine {
             return ChallengeProgress(current: loggedDays.count, target: minCount)
 
         case .extendStreakBy(let days):
-            let currentStreak = StreakEngine.status(events: events, now: now, boundaryHour: boundaryHour, calendar: calendar).length
+            // `frozenDays`: the same streak-freeze days the app's displayed
+            // streak (and so `baselineStreakLength`) walks with -- without
+            // them a freeze-saved streak reads as reset here and the
+            // challenge could never progress past its baseline.
+            let currentStreak = StreakEngine.status(events: events, frozenDays: frozenDays, now: now, boundaryHour: boundaryHour, calendar: calendar).length
             let gained = max(0, currentStreak - active.baselineStreakLength)
             return ChallengeProgress(current: gained, target: days)
 

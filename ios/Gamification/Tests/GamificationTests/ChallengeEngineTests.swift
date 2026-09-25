@@ -82,6 +82,27 @@ final class ChallengeEngineTests: XCTestCase {
         XCTAssertEqual(result.current, 1)
     }
 
+    func testKeepTheFlameAliveCountsFreezeBridgedStreak() {
+        // Logged 1-10, 11 missed (grace), 12 missed but frozen, 13-15 logged.
+        // The app's streak (frozen-aware) was 10 when the challenge started
+        // on the 13th; it is 13 now, so the +3 target is met. Without the
+        // frozen day the walk resets on the 12th (streak 3) and the
+        // challenge could never progress past its baseline.
+        let events = (Array(1...10) + [13, 14, 15]).map { event("food-\($0)", day: $0) }
+        let frozen: Set<Date> = [
+            NutritionDayBoundary.nutritionDay(for: TestClock.date(2026, 1, 12, hour: 12), boundaryHour: NutritionDayBoundary.defaultBoundaryHour, calendar: .current)
+        ]
+        let template = self.template("keep-the-flame-alive")
+        let activeChallenge = active(startDay: 13, baselineStreakLength: 10)
+        let now = TestClock.date(2026, 1, 15, hour: 20)
+
+        let withFreeze = ChallengeEngine.progress(for: template, active: activeChallenge, events: events, goalStatuses: [], now: now, frozenDays: frozen)
+        XCTAssertTrue(withFreeze.isComplete)
+
+        let withoutFreeze = ChallengeEngine.progress(for: template, active: activeChallenge, events: events, goalStatuses: [], now: now)
+        XCTAssertEqual(withoutFreeze.current, 0, "no freezes passed: behaviour exactly as before")
+    }
+
     // MARK: - goalHitDays ("Protein Push")
 
     func testProteinPushCompletesOnFourOfFiveDays() {

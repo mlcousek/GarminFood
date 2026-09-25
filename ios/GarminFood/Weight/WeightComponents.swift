@@ -118,15 +118,22 @@ struct WeightDeltaBadge: View {
         return "arrow.right"
     }
 
+    /// |delta| rounded ONCE, half away from zero, to the tenth both the text
+    /// and VoiceOver use. Formatting the raw value would round half-to-even
+    /// (0.25 -> "0.2 kg") while `SpokenUnits` reads 0.3.
+    private var roundedMagnitude: Double {
+        (abs(delta) * 10).rounded() / 10
+    }
+
     /// Always one decimal ("1.0 kg" reads as a measurement, "1 kg" like a
     /// count), in the current locale ("1,0 kg" in Czech).
     private var text: String {
-        let number = abs(delta).formatted(.number.precision(.fractionLength(1)).grouping(.never))
+        let number = roundedMagnitude.formatted(.number.precision(.fractionLength(1)).grouping(.never))
         return "\(number) kg"
     }
 
     private var accessibilityText: String {
-        let amount = SpokenUnits.kilograms(abs(delta))
+        let amount = SpokenUnits.kilograms(roundedMagnitude)
         if delta > 0.05 {
             return String(localized: "up \(amount) since last time", comment: "VoiceOver: weight change since the previous weigh-in. %@ is an amount with its unit spelled out, e.g. 1.5 kilograms.")
         }
