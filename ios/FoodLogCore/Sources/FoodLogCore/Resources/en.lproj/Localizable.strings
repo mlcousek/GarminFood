@@ -474,3 +474,8 @@
 
 /* Error when writing supplement data on the phone fails. %@ is the system's reason. */
 "Couldn't save your supplements on this phone: %@" = "Couldn't save your supplements on this phone: %@";
+
+/* ---- add-standalone-mode waves 4-7 ---- */
+
+/* Error when saving a nutrition goal on the phone (standalone mode) with an invalid number. */
+"Enter a calorie target above zero." = "Enter a calorie target above zero.";

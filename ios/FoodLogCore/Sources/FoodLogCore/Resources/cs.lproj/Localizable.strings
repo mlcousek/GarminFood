@@ -470,3 +470,8 @@
 
 /* Error when writing supplement data on the phone fails. %@ is the system's reason. */
 "Couldn't save your supplements on this phone: %@" = "Doplňky stravy se v telefonu nepodařilo uložit: %@";
+
+/* ---- add-standalone-mode waves 4-7 ---- */
+
+/* Error when saving a nutrition goal on the phone (standalone mode) with an invalid number. */
+"Enter a calorie target above zero." = "Zadejte kalorický cíl větší než nula.";
