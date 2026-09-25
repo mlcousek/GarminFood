@@ -114,15 +114,36 @@ weekly boss at ≈ 14.5 XP/day, 11% of ≈ 128 (the limit is ≈ 32). Bingo is
 
 ### D4 — Optional sources (supplements)
 
-The curve is solved for `coreDailyXP` only. An optional source gets a
-per-source multiplier `m = 1 − (optionalDailyXP / (coreDailyXP + optionalDailyXP))`.
-This is applied when the source grants XP (`RewardLedger` grant amount × m,
-rounded, minimum 1). As a result, a user with supplements on levels at the
-same pace as one without.
+The curve is solved for `coreDailyXP` only. Optional sources share one
+**allowance**: together they may add at most 0.5% of the core budget
+(`XPBudget.optionalPaceAllowance`). While any are enabled, every optional
+grant is scaled by
 
+`m = min(1, 0.005 × coreDailyXP / Σ expectedDailyXP of the enabled optional lines)`
+
+```swift
+XPBudget.optionalMultiplier(enabledOptionalSources: Set<String>) -> Double
+XPBudget.scaledGrant(_ xp: Int, multiplier: Double) -> Int   // rounded, min 1 for xp > 0
+XPBudget.optionalGrantXP(_ xp: Int, enabledOptionalSources:) // the two combined
+```
+
+The feature applies it when it fills its `RewardGrant.xp`; `RewardLedger`
+then pays the amount as-is. As a result, a user with supplements on levels
+at the same pace (±1%) as one without.
+
+- **Why an allowance, not a full offset.** The first draft used
+  `m = 1 − optional / (core + optional)`, which only shrinks optional XP by
+  a few percent: a 10 XP/day source still added ≈ 7% to the pace. The
+  allowance caps the effect directly, and the ±1% test follows from it.
+- **Minimum grant of 1.** A grant never silently pays nothing, so a source
+  may exceed its scaled budget when it pays many tiny grants. At ≈ 128
+  XP/day core, one 1-XP grant a day is 0.8%, inside ±1%. An optional
+  source should therefore pay at most about one grant a day.
 - Supplements are budgeted at a small daily amount (see `add-supplements`
-  D9) before the multiplier.
-- The multiplier comes from the same table, so a test can check it.
+  D9) before the multiplier, and add their `optional: true` line to
+  `XPBudget.lines` once this change has merged.
+- The multiplier comes from the same table, so a test can check it
+  (`testOptionalSourceKeepsLevel84WithinOnePercent`).
 
 ### D5 — Migration
 
@@ -141,6 +162,8 @@ same pace as one without.
   N.
 - Multiplier: with an optional line enabled, the simulated days to level 84
   are within ±1% of the core-only figure.
+- Owner ledger: ≈ 3k XP with peak 20 reaches level 21 within 5 typical
+  days, and the displayed level never drops (`XPCurveMigrationTests`).
 
 ## Risks / Trade-offs
 
