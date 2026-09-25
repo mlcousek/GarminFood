@@ -90,6 +90,11 @@ final class AppEnvironment {
     let activityCacheStore: ActivityCacheStore
     let foodProvenanceStore: FoodProvenanceStore
     let gamificationSignalsSync: GamificationSignalsSync
+    /// add-supplements D1: the supplement stores (`AppServices`). Always
+    /// present; the feature is gated by `preferences.supplementsEnabled`.
+    let supplementPlanStore: SupplementPlanStore
+    let supplementIntakeStore: SupplementIntakeStore
+    let supplementLimitsStore: SupplementLimitsStore
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
     let preferences: AppPreferences
@@ -219,6 +224,9 @@ final class AppEnvironment {
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
         self.router = AppRouter()
+        self.supplementPlanStore = services.supplementPlanStore
+        self.supplementIntakeStore = services.supplementIntakeStore
+        self.supplementLimitsStore = services.supplementLimitsStore
 
         services.logObserver = donations
         Haptics.isEnabled = preferences.hapticsEnabled
