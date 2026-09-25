@@ -165,7 +165,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Log at least 3 entries in a day and no sugary drink.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .medium, family: "drinks",
             scope: .day(.noTag(.sugaryDrink, minEntries: 3)),
-            symbol: "nosign"
+            symbol: "nosign",
+            judgesCompletedDaysOnly: true
         ),
         BingoTask(
             id: "m-protein-2",
@@ -213,7 +214,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Log dinner and finish logging before 19:30.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .medium, family: "time",
             scope: .day(.all([.mealLogged(.dinner), .lastLogBefore(hour: 19, minute: 30)])),
-            symbol: "moon.fill"
+            symbol: "moon.fill",
+            judgesCompletedDaysOnly: true
         ),
         BingoTask(
             id: "m-whole-grain",
@@ -237,7 +239,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Reach your calorie goal on 2 days this week.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .medium, family: "goal",
             scope: .week(.daysSatisfying(.goalMet(.calories), atLeast: 2)),
-            symbol: "target"
+            symbol: "target",
+            judgesCompletedDaysOnly: true
         ),
     ]
 
@@ -286,7 +289,8 @@ public enum BingoTaskCatalog {
                 .noTag(.fish, minEntries: 3),
                 .noTag(.seafood, minEntries: 3),
             ])),
-            symbol: "leaf.circle.fill"
+            symbol: "leaf.circle.fill",
+            judgesCompletedDaysOnly: true
         ),
         BingoTask(
             id: "h-fibre-30",
@@ -302,7 +306,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Keep sugar at 25 g or less on a day with at least 3 entries.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .hard, family: "macros",
             scope: .day(.macroAtMost(.sugar, grams: 25, minEntries: 3)),
-            symbol: "cube.fill"
+            symbol: "cube.fill",
+            judgesCompletedDaysOnly: true
         ),
         BingoTask(
             id: "h-five-a-day",
@@ -326,7 +331,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Do an activity of at least 30 minutes and reach your calorie goal the same day.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .hard, family: "sport",
             scope: .day(.all([.hasActivity(minMinutes: 30), .goalMet(.calories)])),
-            symbol: "medal.fill"
+            symbol: "medal.fill",
+            judgesCompletedDaysOnly: true
         ),
         BingoTask(
             id: "h-clean-sweep",
@@ -334,7 +340,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Reach all four goals (calories, protein, carbs, fat) in one day.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .hard, family: "goal",
             scope: .day(.all([.goalMet(.calories), .goalMet(.protein), .goalMet(.carbs), .goalMet(.fat)])),
-            symbol: "checkmark.seal.fill"
+            symbol: "checkmark.seal.fill",
+            judgesCompletedDaysOnly: true
         ),
     ]
 

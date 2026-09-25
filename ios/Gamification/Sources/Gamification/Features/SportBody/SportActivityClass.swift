@@ -7,7 +7,9 @@
 // "yoga", ...), so classification is by keyword, not an exhaustive list:
 //
 //   - endurance: the key contains running / cycling / biking / hiking /
-//     swimming / skiing / rowing, or it is a walk of >= 45 minutes;
+//     swimming / skiing / rowing, is one of the few run/ride keys without
+//     that spelling (ultra_run, virtual_run, obstacle_run, virtual_ride,
+//     cyclocross), or it is a walk of >= 45 minutes;
 //   - strength: `strength_training` -- counts for Recovery Window only;
 //   - other: everything else (mobility, yoga, breathwork, short walks...).
 //
@@ -32,6 +34,9 @@ public enum SportActivityClass: String, Sendable, Equatable, CaseIterable {
     public static let minimumWalkMinutes: Double = 45
 
     static let enduranceKeywords = ["running", "cycling", "biking", "hiking", "swimming", "skiing", "rowing"]
+    /// Garmin run/ride keys the keywords above miss (not "-ing" spelled).
+    static let runKeys: Set<String> = ["ultra_run", "virtual_run", "obstacle_run"]
+    static let rideKeys: Set<String> = ["virtual_ride", "cyclocross"]
     static let strengthKeys: Set<String> = ["strength_training"]
 
     public static func classify(typeKey: String, durationMinutes: Double) -> SportActivityClass {
@@ -39,6 +44,7 @@ public enum SportActivityClass: String, Sendable, Equatable, CaseIterable {
         let key = typeKey.lowercased()
         if strengthKeys.contains(key) { return .strength }
         if enduranceKeywords.contains(where: { key.contains($0) }) { return .endurance }
+        if runKeys.contains(key) || rideKeys.contains(key) { return .endurance }
         if key.contains("walking") {
             return durationMinutes >= minimumWalkMinutes ? .endurance : .other
         }
@@ -61,9 +67,9 @@ public enum SportActivityKind: String, Sendable, Equatable, CaseIterable {
 
     public init(typeKey: String) {
         let key = typeKey.lowercased()
-        if key.contains("running") {
+        if key.contains("running") || SportActivityClass.runKeys.contains(key) {
             self = .run
-        } else if key.contains("cycling") || key.contains("biking") {
+        } else if key.contains("cycling") || key.contains("biking") || SportActivityClass.rideKeys.contains(key) {
             self = .ride
         } else if key.contains("hiking") {
             self = .hike

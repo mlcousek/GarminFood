@@ -220,6 +220,7 @@ final class FeatureHost {
             if requested.count != update.unlockBadgeIds.filter({ !unlocked.contains($0) }).count {
                 DiagnosticsLog.log(.error, category: "features", "\(id): dropped badge id(s) it does not declare")
             }
+            var badgeWriteFailed = false
             if !requested.isEmpty {
                 do {
                     let recorded = try await achievementStore.unlock(ids: requested, now: now)
@@ -238,11 +239,19 @@ final class FeatureHost {
                         }
                     }
                 } catch {
+                    badgeWriteFailed = true
                     DiagnosticsLog.log(.error, category: "features", "\(id): couldn't record badge unlocks: \(error)")
                 }
             }
 
-            outcome.moments.append(contentsOf: update.moments.map { GamificationMoment.feature($0) })
+            // A `.secret` reveal IS its badge unlock (it replaces the generic
+            // moment, see this file's header). If the unlock couldn't be
+            // recorded -- typically `unlockedIds()` read as empty because the
+            // achievements file isn't readable yet, so already-found secrets
+            // looked new -- don't show the reveal: it may name old secrets
+            // and claims XP nothing paid. The next run reveals what's real.
+            let moments = badgeWriteFailed ? update.moments.filter { $0.style != .secret } : update.moments
+            outcome.moments.append(contentsOf: moments.map { GamificationMoment.feature($0) })
         }
 
         if xpChanged {

@@ -385,11 +385,12 @@ public extension LayoutConfig {
 // MARK: - Migration
 
 /// The seam for future schema changes (D7). At v1 it only stamps the
-/// current version.
+/// current version -- upward only: a layout written by a newer build keeps
+/// its higher version, so this build never labels it as older than it is.
 public enum LayoutMigration {
     public static func migrate(_ config: LayoutConfig) -> LayoutConfig {
         var migrated = config
-        migrated.version = AppearanceSchema.layoutVersion
+        migrated.version = max(config.version, AppearanceSchema.layoutVersion)
         return migrated
     }
 }

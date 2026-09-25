@@ -179,6 +179,16 @@ public enum RecordsEvaluator {
                 let previous = record.current
                 record.previous = previous
                 record.current = RecordMark(value: candidate.value, day: candidate.day)
+                // A day that already has an announced PR for this record
+                // (e.g. Tuesday's PR, beaten on Wednesday, then Tuesday
+                // backfilled above both): update that event silently. A
+                // second announcement would repeat the moment, count the
+                // PR twice toward the badges and show XP the ledger never
+                // pays again (`records.<id>.<day>` is paid once).
+                if let index = history.lastIndex(where: { $0.recordId == definition.id.rawValue && $0.day == candidate.day }) {
+                    history[index].value = candidate.value
+                    continue
+                }
                 guard !wasFirstRun,
                       let previousValue = previous?.value,
                       qualifyingDays >= PersonalRecordCatalog.warmUpDays,

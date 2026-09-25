@@ -105,17 +105,23 @@ public actor StreakFreezeStore {
     /// Appends new consumptions (a day already frozen is ignored) and
     /// persists. Throws -- leaving memory unchanged -- when the file could
     /// not be written, so the next run re-plans the same freeze.
-    public func record(_ new: [Consumption]) throws {
+    ///
+    /// Returns only the consumptions actually added: two overlapping planner
+    /// runs (a refresh and a log confirm interleaving at their awaits) can
+    /// both plan the same freeze, and only the one that recorded it may
+    /// announce it.
+    @discardableResult
+    public func record(_ new: [Consumption]) throws -> [Consumption] {
         loadIfNeeded()
         var all = snapshot.consumptions ?? []
         var known = Set(all.map(\.frozenDay))
-        var changed = false
+        var added: [Consumption] = []
         for consumption in new where !known.contains(consumption.frozenDay) {
             known.insert(consumption.frozenDay)
             all.append(consumption)
-            changed = true
+            added.append(consumption)
         }
-        guard changed else { return }
+        guard !added.isEmpty else { return [] }
         let previous = snapshot
         snapshot.consumptions = all
         do {
@@ -124,6 +130,7 @@ public actor StreakFreezeStore {
             snapshot = previous
             throw error
         }
+        return added
     }
 }
 

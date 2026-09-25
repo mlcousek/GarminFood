@@ -101,7 +101,9 @@ public enum CollectionsEvaluator {
     /// joined for display, or nil. One food may supply several parts.
     static func veproKnedloZeloParts(in day: DaySignals) -> String? {
         guard let meat = day.entries.first(where: { $0.has(.meat) }),
-              let knedlik = day.entries.first(where: { $0.has(.knedlik) }),
+              // The collection's bread/potato-dumpling tag, not the core
+              // `.knedlik` one, which also covers fruit dumplings.
+              let knedlik = day.entries.first(where: { $0.has(.dishKnedliky) }),
               let zeli = day.entries.first(where: { $0.has(.dishZeli) }) else { return nil }
         var names: [String] = []
         for entry in [meat, knedlik, zeli] {

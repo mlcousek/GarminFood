@@ -63,12 +63,19 @@ enum CollectionTagRules {
         FoodTagRule(
             tags: [.dishTatarak],
             anyPhrases: ["tatarak*", "tatarsk* biftek*", "steak tartar*", "beef tartar*", "=tartare"],
-            excludePhrases: ["omack*", "sauce*"]
+            // Fish tartares are not tatarák (beef).
+            excludePhrases: ["omack*", "sauce*", "losos*", "salmon*", "tuna*", "tunak*"]
         ),
         FoodTagRule(tags: [.dishUtopenci], anyPhrases: ["utopen*"]),
         FoodTagRule(tags: [.dishNakladanyHermelin], anyPhrases: ["nakladan* hermelin*", "pickled camembert*"]),
         FoodTagRule(tags: [.dishCesnecka], anyPhrases: ["cesneck*", "cesnekov* polevk*", "garlic soup*"]),
-        FoodTagRule(tags: [.dishRajska], anyPhrases: ["rajsk* omack*", "=rajska", "=rajskou"]),
+        FoodTagRule(
+            tags: [.dishRajska],
+            anyPhrases: ["rajsk* omack*", "=rajska", "=rajskou"],
+            // Tomato soup ("rajská polévka") and tomatoes ("rajská
+            // jablíčka") are not the rajská omáčka dish.
+            excludePhrases: ["polevk*", "soup*", "jablic*"]
+        ),
         FoodTagRule(
             tags: [.dishOvocneKnedliky],
             anyPhrases: [
@@ -104,7 +111,8 @@ enum CollectionTagRules {
         FoodTagRule(
             tags: [.dishTikkaMasala],
             anyPhrases: ["tikka*", "masala*"],
-            excludePhrases: ["garam*"] + spiceWords
+            // "Masala chai" is spiced tea, not tikka masala.
+            excludePhrases: ["garam*", "chai*", "caj*"] + spiceWords
         ),
         FoodTagRule(tags: [.dishTacos], anyPhrases: ["=taco", "=tacos", "=tako"]),
         FoodTagRule(tags: [.dishBurrito], anyPhrases: ["burrit*"]),
@@ -138,7 +146,9 @@ enum CollectionTagRules {
 
     static let fermented: [FoodTagRule] = [
         FoodTagRule(tags: [.dishKefir], anyPhrases: ["kefir*"]),
-        FoodTagRule(tags: [.dishKysaneZeli], anyPhrases: ["kysan* zel*", "sauerkraut*"]),
+        // Stem "zeli" (zelí, zelím), not "zel*": "kysaná zelenina" is not
+        // sauerkraut.
+        FoodTagRule(tags: [.dishKysaneZeli], anyPhrases: ["kysan* zeli", "sauerkraut*"]),
         FoodTagRule(tags: [.dishKimchi], anyPhrases: ["kimchi*", "=kimci", "=kimchee"]),
         FoodTagRule(
             tags: [.dishJogurt],

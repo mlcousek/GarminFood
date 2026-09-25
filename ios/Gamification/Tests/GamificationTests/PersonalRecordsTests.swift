@@ -111,6 +111,31 @@ final class PersonalRecordsTests: XCTestCase {
         XCTAssertEqual(protein?.isRecentPR, true)
     }
 
+    func testBackfilledEarlierPRDayIsNotAnnouncedTwice() {
+        let history = (1...8).map { JR.protein($0, 150) }
+        var result = RecordsEvaluator.evaluate(state: RecordsState(), snapshot: JR.snapshot(history, today: 10))
+        XCTAssertTrue(result.announced.isEmpty, "first run is the silent baseline")
+
+        // Day 9: 175 g -- a PR.
+        result = RecordsEvaluator.evaluate(state: result.state, snapshot: JR.snapshot(history + [JR.protein(9, 175)], today: 10))
+        XCTAssertEqual(result.announced.map(\.day), [JR.key(9)])
+
+        // Day 10: 180 g -- another PR.
+        result = RecordsEvaluator.evaluate(state: result.state, snapshot: JR.snapshot(history + [JR.protein(9, 175), JR.protein(10, 180)], today: 10))
+        XCTAssertEqual(result.announced.map(\.day), [JR.key(10)])
+        let prCount = result.state.record(.proteinDay).prCount
+
+        // Day 9 backfilled to 190 g: the record moves, silently -- day 9's
+        // PR was already announced (and its grant key already paid).
+        result = RecordsEvaluator.evaluate(state: result.state, snapshot: JR.snapshot(history + [JR.protein(9, 190), JR.protein(10, 180)], today: 10))
+        XCTAssertTrue(result.announced.isEmpty)
+        XCTAssertEqual(result.state.record(.proteinDay).current?.value, 190)
+        XCTAssertEqual(result.state.record(.proteinDay).prCount, prCount)
+        let day9Events = (result.state.history ?? []).filter { $0.recordId == PersonalRecordId.proteinDay.rawValue && $0.day == JR.key(9) }
+        XCTAssertEqual(day9Events.count, 1)
+        XCTAssertEqual(day9Events.first?.value, 190)
+    }
+
     func testLowestSugarIsJudgedOnlyOnceTheDayIsClosed() {
         func onTarget(_ d: Int, sugar: Double) -> DaySignals {
             JR.day(d, entries: ["a", "b", "c"].enumerated().map { index, id in

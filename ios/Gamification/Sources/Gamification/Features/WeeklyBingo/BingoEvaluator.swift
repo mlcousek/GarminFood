@@ -80,21 +80,30 @@ public enum BingoEvaluator {
 
     /// The stored completions plus any square that newly holds on a day of
     /// `week` up to `today` (a `yyyy-MM-dd` key). Index -> completion day.
+    ///
+    /// A task that `judgesCompletedDaysOnly` sees only days BEFORE `today`
+    /// (a later entry today could still break it). `onlyCompletedDayTasks`
+    /// restricts the pass to those squares -- `WeeklyBingoFeature` uses it to
+    /// settle last week's Sunday, leaving every other square as it was.
     public static func completions(
         taskIds: [String],
         week: WeekKey,
         today: String,
         snapshot: SignalsSnapshot,
         calendar: Calendar,
-        stored: [Int: String]
+        stored: [Int: String],
+        onlyCompletedDayTasks: Bool = false
     ) -> [Int: String] {
         var result = stored
         let keys = week.dayKeys(calendar: calendar).filter { $0 <= today }
         let days = snapshot.days(keys)
-        guard !days.isEmpty else { return result }
+        let completedDays = days.filter { $0.day < today }
         for (index, taskId) in taskIds.enumerated() where result[index] == nil {
             guard let task = BingoTaskCatalog.task(id: taskId) else { continue }
-            if let day = completionDay(of: task, days: days, history: snapshot, calendar: calendar) {
+            if onlyCompletedDayTasks && !task.judgesCompletedDaysOnly { continue }
+            let candidates = task.judgesCompletedDaysOnly ? completedDays : days
+            guard !candidates.isEmpty else { continue }
+            if let day = completionDay(of: task, days: candidates, history: snapshot, calendar: calendar) {
                 result[index] = day
             }
         }
