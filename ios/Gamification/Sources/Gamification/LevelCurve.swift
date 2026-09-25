@@ -41,11 +41,27 @@ public enum LevelCurve {
     /// can map an existing XP total to a LOWER level, `XPStore` remembers
     /// the highest level ever reached (`peakLevel`) and the displayed level
     /// is never below it -- see `level(forTotalXP:peakLevel:)`.
-    public static let growthFactor: Double = 1.0505
+    ///
+    /// 2026-09-25 (`rebalance-xp-economy`): 1.0505 -> 1.05358, no longer an
+    /// estimate. `XPBudget` sums every source's expected XP/day (~128 for a
+    /// typical active day) and solves the factor that reaches level 84 in
+    /// 1,095 days. `XPBudgetTests.testGrowthFactorMatchesBudget` pins this
+    /// literal to the solved value (±1e-4) and prints the new one when a
+    /// reward changes. On this curve a typical day reaches level 10 in about
+    /// 9 days and level 50 in about 6 months. The base stays 100, so
+    /// existing users lose at most a few days of progress-bar movement.
+    public static let growthFactor: Double = 1.05358
 
-    /// The pre-2026-09-24 factor, only used to seed `XPStore.peakLevel` for
-    /// an XP ledger written before the retune (so nobody loses a level).
-    public static let legacyGrowthFactor: Double = 1.045
+    /// Every factor that shipped before `growthFactor`, oldest first
+    /// (1.045 from 2026-09-18, 1.0505 from 2026-09-24). Used only to seed
+    /// `XPStore.peakLevel` for a ledger written under an older curve, so a
+    /// retune never lowers anyone's level. Append the outgoing factor here
+    /// whenever `growthFactor` changes; `curveVersion` follows.
+    public static let pastGrowthFactors: [Double] = [1.045, 1.0505]
+
+    /// The version of the live curve: 1 = 1.045, 2 = 1.0505, 3 = today.
+    /// `XPStore` records it next to `peakLevel`.
+    public static var curveVersion: Int { pastGrowthFactors.count + 1 }
 
     /// A safety ceiling, not a design statement -- purely so
     /// `level(forTotalXP:)` always terminates. At `growthFactor` 1.3 this
