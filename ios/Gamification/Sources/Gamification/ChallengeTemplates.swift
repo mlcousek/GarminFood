@@ -236,8 +236,8 @@ public enum ChallengeCatalog {
     private static let handAuthored: [ChallengeTemplate] = [
         ChallengeTemplate(
             id: "perfect-week",
-            title: "Perfect Week",
-            subtitle: "Log something every day for the next 7 days.",
+            title: CatalogL10n.title("perfect-week", "Perfect Week"),
+            subtitle: CatalogL10n.subtitle("perfect-week", "Log something every day for the next 7 days."),
             category: .streakExtension,
             windowDays: 7,
             xpReward: XPAward.challengeCompletionBonus,
@@ -245,8 +245,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "keep-the-flame-alive",
-            title: "Keep the Flame Alive",
-            subtitle: "Extend your streak by 3 more days.",
+            title: CatalogL10n.title("keep-the-flame-alive", "Keep the Flame Alive"),
+            subtitle: CatalogL10n.subtitle("keep-the-flame-alive", "Extend your streak by 3 more days."),
             category: .streakExtension,
             windowDays: 10,
             xpReward: XPAward.challengeCompletionBonus,
@@ -254,8 +254,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "protein-push",
-            title: "Protein Push",
-            subtitle: "Hit your protein goal on 4 of the next 5 days.",
+            title: CatalogL10n.title("protein-push", "Protein Push"),
+            subtitle: CatalogL10n.subtitle("protein-push", "Hit your protein goal on 4 of the next 5 days."),
             category: .goalHitting,
             windowDays: 5,
             xpReward: XPAward.challengeCompletionBonus,
@@ -263,8 +263,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "calorie-control",
-            title: "Calorie Control",
-            subtitle: "Hit your calorie goal on 5 of the next 7 days.",
+            title: CatalogL10n.title("calorie-control", "Calorie Control"),
+            subtitle: CatalogL10n.subtitle("calorie-control", "Hit your calorie goal on 5 of the next 7 days."),
             category: .goalHitting,
             windowDays: 7,
             xpReward: XPAward.challengeCompletionBonus,
@@ -272,8 +272,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "goal-getter",
-            title: "Goal Getter",
-            subtitle: "Hit any nutrition goal 3 days running.",
+            title: CatalogL10n.title("goal-getter", "Goal Getter"),
+            subtitle: CatalogL10n.subtitle("goal-getter", "Hit any nutrition goal 3 days running."),
             category: .goalHitting,
             windowDays: 6,
             xpReward: XPAward.challengeCompletionBonus,
@@ -281,8 +281,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "carb-cutback",
-            title: "Carb Cutback",
-            subtitle: "Hit your carb goal on 4 of the next 6 days.",
+            title: CatalogL10n.title("carb-cutback", "Carb Cutback"),
+            subtitle: CatalogL10n.subtitle("carb-cutback", "Hit your carb goal on 4 of the next 6 days."),
             category: .goalHitting,
             windowDays: 6,
             xpReward: XPAward.challengeCompletionBonus,
@@ -290,8 +290,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "try-something-new",
-            title: "Try Something New",
-            subtitle: "Log 3 foods you haven't logged before.",
+            title: CatalogL10n.title("try-something-new", "Try Something New"),
+            subtitle: CatalogL10n.subtitle("try-something-new", "Log 3 foods you haven't logged before."),
             category: .varietySeeking,
             windowDays: 7,
             xpReward: XPAward.challengeCompletionBonus,
@@ -299,8 +299,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "explorer",
-            title: "Explorer",
-            subtitle: "Log 5 foods you haven't logged before.",
+            title: CatalogL10n.title("explorer", "Explorer"),
+            subtitle: CatalogL10n.subtitle("explorer", "Log 5 foods you haven't logged before."),
             category: .varietySeeking,
             windowDays: 10,
             xpReward: XPAward.challengeCompletionBonus,
@@ -308,8 +308,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "breakfast-club",
-            title: "Breakfast Club",
-            subtitle: "Log a breakfast-time entry 5 days this week.",
+            title: CatalogL10n.title("breakfast-club", "Breakfast Club"),
+            subtitle: CatalogL10n.subtitle("breakfast-club", "Log a breakfast-time entry 5 days this week."),
             category: .varietySeeking,
             windowDays: 7,
             xpReward: XPAward.challengeCompletionBonus,
@@ -317,8 +317,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "dinner-discipline",
-            title: "Dinner Discipline",
-            subtitle: "Log a dinner-time entry 4 days this week.",
+            title: CatalogL10n.title("dinner-discipline", "Dinner Discipline"),
+            subtitle: CatalogL10n.subtitle("dinner-discipline", "Log a dinner-time entry 4 days this week."),
             category: .varietySeeking,
             windowDays: 7,
             xpReward: XPAward.challengeCompletionBonus,
@@ -326,8 +326,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "full-plate",
-            title: "Full Plate",
-            subtitle: "Log 3 different times of day, on 3 separate days.",
+            title: CatalogL10n.title("full-plate", "Full Plate"),
+            subtitle: CatalogL10n.subtitle("full-plate", "Log 3 different times of day, on 3 separate days."),
             category: .varietySeeking,
             windowDays: 7,
             xpReward: XPAward.challengeCompletionBonus,
@@ -335,8 +335,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "triple-threat",
-            title: "Triple Threat",
-            subtitle: "Log at least 3 entries in a day, on 3 separate days.",
+            title: CatalogL10n.title("triple-threat", "Triple Threat"),
+            subtitle: CatalogL10n.subtitle("triple-threat", "Log at least 3 entries in a day, on 3 separate days."),
             category: .varietySeeking,
             windowDays: 7,
             xpReward: XPAward.challengeCompletionBonus,
@@ -344,8 +344,8 @@ public enum ChallengeCatalog {
         ),
         ChallengeTemplate(
             id: "weekend-warrior",
-            title: "Weekend Warrior",
-            subtitle: "Log on both Saturday and Sunday this weekend.",
+            title: CatalogL10n.title("weekend-warrior", "Weekend Warrior"),
+            subtitle: CatalogL10n.subtitle("weekend-warrior", "Log on both Saturday and Sunday this weekend."),
             category: .varietySeeking,
             windowDays: 9,
             xpReward: XPAward.challengeCompletionBonus,
@@ -360,8 +360,8 @@ public enum ChallengeCatalog {
             let count = counts[i]
             return ChallengeTemplate(
                 id: "log-streak-\(count)",
-                title: titles[i],
-                subtitle: "Log something on \(count) different days.",
+                title: CatalogL10n.title("log-streak-\(count)", titles[i]),
+                subtitle: CatalogL10n.subtitle("log-streak-\(count)", "Log something on \(count) different days."),
                 category: .streakExtension,
                 windowDays: count + 2,
                 xpReward: 20 + count * 6,
@@ -377,8 +377,8 @@ public enum ChallengeCatalog {
             let day = days[i]
             return ChallengeTemplate(
                 id: "extend-streak-\(day)",
-                title: titles[i],
-                subtitle: "Extend your streak by \(day) more day\(day == 1 ? "" : "s").",
+                title: CatalogL10n.title("extend-streak-\(day)", titles[i]),
+                subtitle: CatalogL10n.subtitle("extend-streak-\(day)", CatalogL10n.englishCount(day, one: "Extend your streak by 1 more day.", other: "Extend your streak by \(day) more days.")),
                 category: .streakExtension,
                 windowDays: day * 2 + 2,
                 xpReward: 25 + day * 7,
@@ -395,8 +395,8 @@ public enum ChallengeCatalog {
                 let count = counts[i]
                 return ChallengeTemplate(
                     id: "goal-days-\(macro.rawValue)-\(count)",
-                    title: "\(macroDisplayName(macro)) \(titles[i])",
-                    subtitle: "Hit your \(macro.rawValue) goal on \(count) days.",
+                    title: CatalogL10n.title("goal-days-\(macro.rawValue)-\(count)", "\(macroDisplayName(macro)) \(titles[i])"),
+                    subtitle: CatalogL10n.subtitle("goal-days-\(macro.rawValue)-\(count)", "Hit your \(macro.rawValue) goal on \(count) days."),
                     category: .goalHitting,
                     windowDays: count + 3,
                     xpReward: 25 + count * 7,
@@ -413,8 +413,8 @@ public enum ChallengeCatalog {
             let count = counts[i]
             return ChallengeTemplate(
                 id: "goal-any-streak-\(count)",
-                title: titles[i],
-                subtitle: "Hit any nutrition goal \(count) days running.",
+                title: CatalogL10n.title("goal-any-streak-\(count)", titles[i]),
+                subtitle: CatalogL10n.subtitle("goal-any-streak-\(count)", "Hit any nutrition goal \(count) days running."),
                 category: .goalHitting,
                 windowDays: count + 3,
                 xpReward: 25 + count * 8,
@@ -431,8 +431,8 @@ public enum ChallengeCatalog {
                 let count = counts[i]
                 return ChallengeTemplate(
                     id: "goal-\(macro.rawValue)-streak-\(count)",
-                    title: "\(macroDisplayName(macro)) \(titles[i])",
-                    subtitle: "Hit your \(macro.rawValue) goal \(count) days running.",
+                    title: CatalogL10n.title("goal-\(macro.rawValue)-streak-\(count)", "\(macroDisplayName(macro)) \(titles[i])"),
+                    subtitle: CatalogL10n.subtitle("goal-\(macro.rawValue)-streak-\(count)", "Hit your \(macro.rawValue) goal \(count) days running."),
                     category: .goalHitting,
                     windowDays: count + 3,
                     xpReward: 25 + count * 8,
@@ -449,8 +449,8 @@ public enum ChallengeCatalog {
             let count = counts[i]
             return ChallengeTemplate(
                 id: "new-foods-\(count)",
-                title: titles[i],
-                subtitle: "Log \(count) food\(count == 1 ? "" : "s") you haven't logged before.",
+                title: CatalogL10n.title("new-foods-\(count)", titles[i]),
+                subtitle: CatalogL10n.subtitle("new-foods-\(count)", CatalogL10n.englishCount(count, one: "Log 1 food you haven't logged before.", other: "Log \(count) foods you haven't logged before.")),
                 category: .varietySeeking,
                 windowDays: count * 2 + 3,
                 xpReward: 20 + count * 8,
@@ -467,8 +467,8 @@ public enum ChallengeCatalog {
                 let count = counts[i]
                 return ChallengeTemplate(
                     id: "meal-\(bucket.rawValue)-\(count)",
-                    title: "\(bucketDisplayName(bucket)) Ritual: \(titles[i])",
-                    subtitle: "Log a \(bucket.rawValue)-time entry on \(count) days.",
+                    title: CatalogL10n.title("meal-\(bucket.rawValue)-\(count)", "\(bucketDisplayName(bucket)) Ritual: \(titles[i])"),
+                    subtitle: CatalogL10n.subtitle("meal-\(bucket.rawValue)-\(count)", "Log a \(bucket.rawValue)-time entry on \(count) days."),
                     category: .varietySeeking,
                     windowDays: count + 2,
                     xpReward: 20 + count * 6,
@@ -479,21 +479,21 @@ public enum ChallengeCatalog {
     }()
 
     private static let multiMealFamily: [ChallengeTemplate] = [
-        ChallengeTemplate(id: "multi-meal-2-4", title: "Two-a-Day", subtitle: "Log 2 different times of day, on 4 separate days.", category: .varietySeeking, windowDays: 6, xpReward: 60, kind: .multiMealDays(minBucketsPerDay: 2, minDays: 4)),
-        ChallengeTemplate(id: "multi-meal-2-7", title: "Two-a-Day Week", subtitle: "Log 2 different times of day, on 7 separate days.", category: .varietySeeking, windowDays: 10, xpReward: 90, kind: .multiMealDays(minBucketsPerDay: 2, minDays: 7)),
-        ChallengeTemplate(id: "multi-meal-3-5", title: "Full Plate Plus", subtitle: "Log 3 different times of day, on 5 separate days.", category: .varietySeeking, windowDays: 8, xpReward: 100, kind: .multiMealDays(minBucketsPerDay: 3, minDays: 5)),
-        ChallengeTemplate(id: "multi-meal-3-7", title: "Full Plate Week", subtitle: "Log 3 different times of day, on 7 separate days.", category: .varietySeeking, windowDays: 10, xpReward: 130, kind: .multiMealDays(minBucketsPerDay: 3, minDays: 7)),
-        ChallengeTemplate(id: "multi-meal-4-3", title: "Full House", subtitle: "Log all 4 times of day in one day, on 3 separate days.", category: .varietySeeking, windowDays: 6, xpReward: 110, kind: .multiMealDays(minBucketsPerDay: 4, minDays: 3)),
-        ChallengeTemplate(id: "multi-meal-4-7", title: "Full House Week", subtitle: "Log all 4 times of day in one day, on 7 separate days.", category: .varietySeeking, windowDays: 10, xpReward: 180, kind: .multiMealDays(minBucketsPerDay: 4, minDays: 7))
+        ChallengeTemplate(id: "multi-meal-2-4", title: CatalogL10n.title("multi-meal-2-4", "Two-a-Day"), subtitle: CatalogL10n.subtitle("multi-meal-2-4", "Log 2 different times of day, on 4 separate days."), category: .varietySeeking, windowDays: 6, xpReward: 60, kind: .multiMealDays(minBucketsPerDay: 2, minDays: 4)),
+        ChallengeTemplate(id: "multi-meal-2-7", title: CatalogL10n.title("multi-meal-2-7", "Two-a-Day Week"), subtitle: CatalogL10n.subtitle("multi-meal-2-7", "Log 2 different times of day, on 7 separate days."), category: .varietySeeking, windowDays: 10, xpReward: 90, kind: .multiMealDays(minBucketsPerDay: 2, minDays: 7)),
+        ChallengeTemplate(id: "multi-meal-3-5", title: CatalogL10n.title("multi-meal-3-5", "Full Plate Plus"), subtitle: CatalogL10n.subtitle("multi-meal-3-5", "Log 3 different times of day, on 5 separate days."), category: .varietySeeking, windowDays: 8, xpReward: 100, kind: .multiMealDays(minBucketsPerDay: 3, minDays: 5)),
+        ChallengeTemplate(id: "multi-meal-3-7", title: CatalogL10n.title("multi-meal-3-7", "Full Plate Week"), subtitle: CatalogL10n.subtitle("multi-meal-3-7", "Log 3 different times of day, on 7 separate days."), category: .varietySeeking, windowDays: 10, xpReward: 130, kind: .multiMealDays(minBucketsPerDay: 3, minDays: 7)),
+        ChallengeTemplate(id: "multi-meal-4-3", title: CatalogL10n.title("multi-meal-4-3", "Full House"), subtitle: CatalogL10n.subtitle("multi-meal-4-3", "Log all 4 times of day in one day, on 3 separate days."), category: .varietySeeking, windowDays: 6, xpReward: 110, kind: .multiMealDays(minBucketsPerDay: 4, minDays: 3)),
+        ChallengeTemplate(id: "multi-meal-4-7", title: CatalogL10n.title("multi-meal-4-7", "Full House Week"), subtitle: CatalogL10n.subtitle("multi-meal-4-7", "Log all 4 times of day in one day, on 7 separate days."), category: .varietySeeking, windowDays: 10, xpReward: 180, kind: .multiMealDays(minBucketsPerDay: 4, minDays: 7))
     ]
 
     private static let busyDaysFamily: [ChallengeTemplate] = [
-        ChallengeTemplate(id: "busy-days-2-5", title: "Double Up", subtitle: "Log at least 2 entries in a day, on 5 separate days.", category: .varietySeeking, windowDays: 7, xpReward: 70, kind: .busyDays(minEntriesPerDay: 2, minDays: 5)),
-        ChallengeTemplate(id: "busy-days-2-7", title: "Double Up Week", subtitle: "Log at least 2 entries in a day, on 7 separate days.", category: .varietySeeking, windowDays: 9, xpReward: 95, kind: .busyDays(minEntriesPerDay: 2, minDays: 7)),
-        ChallengeTemplate(id: "busy-days-4-3", title: "Quad Squad", subtitle: "Log at least 4 entries in a day, on 3 separate days.", category: .varietySeeking, windowDays: 6, xpReward: 90, kind: .busyDays(minEntriesPerDay: 4, minDays: 3)),
-        ChallengeTemplate(id: "busy-days-4-5", title: "Quad Squad Week", subtitle: "Log at least 4 entries in a day, on 5 separate days.", category: .varietySeeking, windowDays: 8, xpReward: 130, kind: .busyDays(minEntriesPerDay: 4, minDays: 5)),
-        ChallengeTemplate(id: "busy-days-5-4", title: "High Volume", subtitle: "Log at least 5 entries in a day, on 4 separate days.", category: .varietySeeking, windowDays: 8, xpReward: 120, kind: .busyDays(minEntriesPerDay: 5, minDays: 4)),
-        ChallengeTemplate(id: "busy-days-6-3", title: "Power Days", subtitle: "Log at least 6 entries in a day, on 3 separate days.", category: .varietySeeking, windowDays: 7, xpReward: 130, kind: .busyDays(minEntriesPerDay: 6, minDays: 3))
+        ChallengeTemplate(id: "busy-days-2-5", title: CatalogL10n.title("busy-days-2-5", "Double Up"), subtitle: CatalogL10n.subtitle("busy-days-2-5", "Log at least 2 entries in a day, on 5 separate days."), category: .varietySeeking, windowDays: 7, xpReward: 70, kind: .busyDays(minEntriesPerDay: 2, minDays: 5)),
+        ChallengeTemplate(id: "busy-days-2-7", title: CatalogL10n.title("busy-days-2-7", "Double Up Week"), subtitle: CatalogL10n.subtitle("busy-days-2-7", "Log at least 2 entries in a day, on 7 separate days."), category: .varietySeeking, windowDays: 9, xpReward: 95, kind: .busyDays(minEntriesPerDay: 2, minDays: 7)),
+        ChallengeTemplate(id: "busy-days-4-3", title: CatalogL10n.title("busy-days-4-3", "Quad Squad"), subtitle: CatalogL10n.subtitle("busy-days-4-3", "Log at least 4 entries in a day, on 3 separate days."), category: .varietySeeking, windowDays: 6, xpReward: 90, kind: .busyDays(minEntriesPerDay: 4, minDays: 3)),
+        ChallengeTemplate(id: "busy-days-4-5", title: CatalogL10n.title("busy-days-4-5", "Quad Squad Week"), subtitle: CatalogL10n.subtitle("busy-days-4-5", "Log at least 4 entries in a day, on 5 separate days."), category: .varietySeeking, windowDays: 8, xpReward: 130, kind: .busyDays(minEntriesPerDay: 4, minDays: 5)),
+        ChallengeTemplate(id: "busy-days-5-4", title: CatalogL10n.title("busy-days-5-4", "High Volume"), subtitle: CatalogL10n.subtitle("busy-days-5-4", "Log at least 5 entries in a day, on 4 separate days."), category: .varietySeeking, windowDays: 8, xpReward: 120, kind: .busyDays(minEntriesPerDay: 5, minDays: 4)),
+        ChallengeTemplate(id: "busy-days-6-3", title: CatalogL10n.title("busy-days-6-3", "Power Days"), subtitle: CatalogL10n.subtitle("busy-days-6-3", "Log at least 6 entries in a day, on 3 separate days."), category: .varietySeeking, windowDays: 7, xpReward: 130, kind: .busyDays(minEntriesPerDay: 6, minDays: 3))
     ]
 
     private static let mealSlotAbsentFamily: [ChallengeTemplate] = {
@@ -504,8 +504,8 @@ public enum ChallengeCatalog {
                 let count = counts[i]
                 return ChallengeTemplate(
                     id: "absent-\(bucket.rawValue)-\(count)",
-                    title: "\(bucketDisplayName(bucket))-Free: \(titles[i])",
-                    subtitle: "Log something, but nothing in the \(bucket.rawValue) window, on \(count) days.",
+                    title: CatalogL10n.title("absent-\(bucket.rawValue)-\(count)", "\(bucketDisplayName(bucket))-Free: \(titles[i])"),
+                    subtitle: CatalogL10n.subtitle("absent-\(bucket.rawValue)-\(count)", "Log something, but nothing in the \(bucket.rawValue) window, on \(count) days."),
                     category: .varietySeeking,
                     windowDays: count + 3,
                     xpReward: 25 + count * 7,
@@ -522,8 +522,8 @@ public enum ChallengeCatalog {
             let count = counts[i]
             return ChallengeTemplate(
                 id: "all-goals-\(count)",
-                title: titles[i],
-                subtitle: "Hit calories, protein, carbs AND fat the same day, \(count) time\(count == 1 ? "" : "s").",
+                title: CatalogL10n.title("all-goals-\(count)", titles[i]),
+                subtitle: CatalogL10n.subtitle("all-goals-\(count)", CatalogL10n.englishCount(count, one: "Hit calories, protein, carbs AND fat the same day, 1 time.", other: "Hit calories, protein, carbs AND fat the same day, \(count) times.")),
                 category: .goalHitting,
                 windowDays: count + 3,
                 xpReward: 30 + count * 9,
@@ -539,8 +539,8 @@ public enum ChallengeCatalog {
             let count = counts[i]
             return ChallengeTemplate(
                 id: "full-course-\(count)",
-                title: titles[i],
-                subtitle: "Log breakfast, lunch, snack AND dinner in one day, \(count) time\(count == 1 ? "" : "s").",
+                title: CatalogL10n.title("full-course-\(count)", titles[i]),
+                subtitle: CatalogL10n.subtitle("full-course-\(count)", CatalogL10n.englishCount(count, one: "Log breakfast, lunch, snack AND dinner in one day, 1 time.", other: "Log breakfast, lunch, snack AND dinner in one day, \(count) times.")),
                 category: .varietySeeking,
                 windowDays: count + 3,
                 xpReward: 30 + count * 10,
@@ -556,8 +556,8 @@ public enum ChallengeCatalog {
             let count = counts[i]
             return ChallengeTemplate(
                 id: "same-food-\(count)",
-                title: titles[i],
-                subtitle: "Log the identical food \(count) days running.",
+                title: CatalogL10n.title("same-food-\(count)", titles[i]),
+                subtitle: CatalogL10n.subtitle("same-food-\(count)", "Log the identical food \(count) days running."),
                 category: .varietySeeking,
                 windowDays: count + 3,
                 xpReward: 25 + count * 8,
@@ -573,8 +573,8 @@ public enum ChallengeCatalog {
             let count = counts[i]
             return ChallengeTemplate(
                 id: "weekend-streak-\(count)",
-                title: titles[i],
-                subtitle: "Log both Saturday and Sunday, \(count) weekends in a row.",
+                title: CatalogL10n.title("weekend-streak-\(count)", titles[i]),
+                subtitle: CatalogL10n.subtitle("weekend-streak-\(count)", "Log both Saturday and Sunday, \(count) weekends in a row."),
                 category: .varietySeeking,
                 windowDays: count * 7 + 2,
                 xpReward: 40 + count * 15,

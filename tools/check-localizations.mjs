@@ -439,9 +439,6 @@ for (const pkg of PACKAGES) {
 // in-flight changes); they are reported, not failed. Remove an entry once
 // its file is clean (the checker says so).
 const PLURAL_TERNARY_BASELINE = new Set([
-  'ios/Gamification/Sources/Gamification/Achievements.swift',
-  'ios/Gamification/Sources/Gamification/ChallengeTemplates.swift',
-  'ios/Gamification/Sources/Gamification/DailyChallenges.swift',
   'ios/GarminFood/Progress/ProgressViews.swift',
 ]);
 {

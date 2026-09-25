@@ -486,3 +486,9 @@
 "You earned a streak freeze." = "Získáváš zamrazení série.";
 "Streak frozen" = "Série zamrazena";
 "A freeze covered %@ — your %lld-day streak lives on." = "Zamrazení zachránilo %@ – tvoje série %lld dní žije dál.";
+
+/* add-localization 4.1: názvy nutričních cílů (GoalMacro.displayName). */
+"Calories" = "Kalorie";
+"Protein" = "Bílkoviny";
+"Carbs" = "Sacharidy";
+"Fat" = "Tuky";

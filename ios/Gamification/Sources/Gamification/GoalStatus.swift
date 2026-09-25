@@ -61,6 +61,18 @@ public struct DailyGoalStatus: Sendable, Equatable, Codable {
 
 public enum GoalMacro: String, Sendable, Equatable, Codable, CaseIterable {
     case calories, protein, carbs, fat
+
+    /// The goal's name for display and VoiceOver ("met calories, protein"
+    /// on the Goals history rows) -- never `rawValue`, which is a storage
+    /// key (add-localization 4.1).
+    public var displayName: String {
+        switch self {
+        case .calories: return String(localized: "Calories", bundle: .module, comment: "Nutrition goal name (Goals history, VoiceOver).")
+        case .protein: return String(localized: "Protein", bundle: .module, comment: "Nutrition goal name (Goals history, VoiceOver).")
+        case .carbs: return String(localized: "Carbs", bundle: .module, comment: "Nutrition goal name (Goals history, VoiceOver).")
+        case .fat: return String(localized: "Fat", bundle: .module, comment: "Nutrition goal name (Goals history, VoiceOver).")
+        }
+    }
 }
 
 public actor GoalStatusStore {
