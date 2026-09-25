@@ -163,7 +163,9 @@ struct CustomFoodEditorView: View {
     }
 
     @ViewBuilder
-    private func macroField(_ title: String, text: Binding<String>) -> some View {
+    /// `title` is a `LocalizedStringKey`, so each literal call site
+    /// ("Carbs (g)") is a catalog key.
+    private func macroField(_ title: LocalizedStringKey, text: Binding<String>) -> some View {
         HStack {
             Text(title)
             Spacer()
