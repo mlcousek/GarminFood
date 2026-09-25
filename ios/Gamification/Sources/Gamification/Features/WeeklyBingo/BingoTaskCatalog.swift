@@ -239,7 +239,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Reach your calorie goal on 2 days this week.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .medium, family: "goal",
             scope: .week(.daysSatisfying(.goalMet(.calories), atLeast: 2)),
-            symbol: "target"
+            symbol: "target",
+            judgesCompletedDaysOnly: true
         ),
     ]
 
@@ -330,7 +331,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Do an activity of at least 30 minutes and reach your calorie goal the same day.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .hard, family: "sport",
             scope: .day(.all([.hasActivity(minMinutes: 30), .goalMet(.calories)])),
-            symbol: "medal.fill"
+            symbol: "medal.fill",
+            judgesCompletedDaysOnly: true
         ),
         BingoTask(
             id: "h-clean-sweep",
@@ -338,7 +340,8 @@ public enum BingoTaskCatalog {
             detail: String(localized: "Reach all four goals (calories, protein, carbs, fat) in one day.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .hard, family: "goal",
             scope: .day(.all([.goalMet(.calories), .goalMet(.protein), .goalMet(.carbs), .goalMet(.fat)])),
-            symbol: "checkmark.seal.fill"
+            symbol: "checkmark.seal.fill",
+            judgesCompletedDaysOnly: true
         ),
     ]
 

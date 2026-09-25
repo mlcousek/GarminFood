@@ -185,12 +185,18 @@ final class WeeklyBingoEvaluatorTests: XCTestCase {
     func testWholeDaySquaresNeverTickOnTodaysUnfinishedDay() {
         // Three entries and no soda by lunchtime says nothing yet: a cola
         // at 20:00 would still spoil the day. Judged once the day is over.
-        let wholeDayCases = ["m-no-soda", "m-early-dinner", "h-meatless", "h-sugar-low"]
-        for taskId in wholeDayCases {
+        // Same for the calorie goal: it is a 95-105 % band, met for a while
+        // mid-dinner and lost again after dessert. Last day of each
+        // positive case -> the square may only tick the day after.
+        let wholeDayCases: [(id: String, lastDay: Int)] = [
+            ("m-no-soda", 1), ("m-early-dinner", 1), ("h-meatless", 1), ("h-sugar-low", 1),
+            ("m-calories-2", 2), ("h-earned-it", 1), ("h-clean-sweep", 1),
+        ]
+        for (taskId, lastDay) in wholeDayCases {
             XCTAssertEqual(BingoTaskCatalog.task(id: taskId)?.judgesCompletedDaysOnly, true, taskId)
             guard let input = positiveCase(taskId) else { continue }
-            XCTAssertNil(completionDay(taskId, input.days, today: F.key(1)), "\(taskId) ticked on today's partial day")
-            XCTAssertEqual(completionDay(taskId, input.days, today: F.key(2)), F.key(1), taskId)
+            XCTAssertNil(completionDay(taskId, input.days, today: F.key(lastDay)), "\(taskId) ticked on today's partial day")
+            XCTAssertEqual(completionDay(taskId, input.days, today: F.key(lastDay + 1)), F.key(lastDay), taskId)
         }
         // An ordinary square still ticks the moment it holds.
         XCTAssertEqual(completionDay("m-fish", [tagged([.fish], on: 1)], today: F.key(1)), F.key(1))
