@@ -303,6 +303,7 @@ final class GamificationEngine {
             goalStatuses: goalStatuses,
             now: now,
             signals: signals,
+            frozenDays: frozenDays,
             boundaryHour: boundaryHour
         )
     }
@@ -321,6 +322,7 @@ final class GamificationEngine {
             goalStatuses: goalStatuses,
             now: now,
             signals: signals,
+            frozenDays: frozenDays,
             boundaryHour: boundaryHour
         )
         guard progress.isComplete else {
@@ -365,6 +367,7 @@ final class GamificationEngine {
                     goalStatuses: goalStatuses,
                     now: now,
                     signals: signals,
+                    frozenDays: frozenDays,
                     boundaryHour: boundaryHour
                 )
             }
