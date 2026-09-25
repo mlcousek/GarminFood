@@ -84,9 +84,11 @@ struct AchievementsView: View {
                 if !secret.isEmpty {
                     Section {
                         badgeGrid(secret, unlocked: unlocked)
-                            .id(Self.secretGroupId)
                     } header: {
+                        // The scroll target is the header, so "Secret x/15"
+                        // lands at the top instead of just above it.
                         Text("Secret \(secretUnlocked)/\(secret.count)")
+                            .id(Self.secretGroupId)
                     }
                 }
             }

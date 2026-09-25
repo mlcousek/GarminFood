@@ -186,6 +186,45 @@ final class LocalFoodLogStoreTests: XCTestCase {
         XCTAssertEqual(october.count, 1)
     }
 
+    func testEditAndDeleteInAnUnreadableMonthReportUnreadableNotChanged() async throws {
+        let directory = makeDirectory()
+        try FileManager.default.createDirectory(at: directory.appendingPathComponent("2026-09.json", isDirectory: true), withIntermediateDirectories: true)
+        let store = LocalFoodLogStore(directoryURL: directory)
+        let entry = makeEntry(day: "2026-09-25")
+
+        do {
+            try await store.update(entry)
+            XCTFail("an unread month must not report the entry as changed")
+        } catch {
+            XCTAssertTrue(error is PersistedJSONUnreadFileError, "got \(error)")
+        }
+        do {
+            try await store.delete(id: entry.id, day: entry.day)
+            XCTFail("an unread month must not report the entry as gone")
+        } catch {
+            XCTAssertTrue(error is PersistedJSONUnreadFileError, "got \(error)")
+        }
+    }
+
+    func testLookupByIdRetriesAMonthThatWasUnreadable() async throws {
+        let directory = makeDirectory()
+        let unreadable = directory.appendingPathComponent("2026-09.json", isDirectory: true)
+        try FileManager.default.createDirectory(at: unreadable, withIntermediateDirectories: true)
+        let store = LocalFoodLogStore(directoryURL: directory)
+        let entry = makeEntry(day: "2026-09-25")
+
+        let before = await store.entry(id: entry.id)
+        XCTAssertNil(before)
+
+        // The month becomes readable (e.g. the device is unlocked): the same
+        // store instance must look again instead of remembering "empty".
+        try FileManager.default.removeItem(at: unreadable)
+        try await LocalFoodLogStore(directoryURL: directory).append([entry])
+
+        let after = await store.entry(id: entry.id)
+        XCTAssertEqual(after, entry)
+    }
+
     func testUnknownKeysAndMissingOptionalFieldsDecode() async throws {
         let directory = makeDirectory()
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
