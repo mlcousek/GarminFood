@@ -69,6 +69,43 @@
 "Protein Breakfast" = "Bílkovinová snídaně";
 "Eat at least 20 g of protein at breakfast on 4 days." = "Sněz aspoň 20 g bílkovin ke snídani ve 4 dnech.";
 
+/* add-secret-achievements */
+"Secret Keeper" = "Strážce tajemství";
+"Find all 15 secret achievements." = "Najdi všech 15 tajných odznaků.";
+"Midnight Fridge Raid" = "Půlnoční nájezd na lednici";
+"Log something between midnight and 4 a.m. for that same day." = "Zapiš si něco mezi půlnocí a čtvrtou ráno, a to na ten samý den.";
+"Barista Mode" = "Režim baristy";
+"Log 5 coffees in one day." = "Zapiš si 5 káv za jeden den.";
+"Pizza Friday" = "Pizzový pátek";
+"Have pizza on 4 Fridays in a row." = "Dej si pizzu 4 pátky po sobě.";
+"Bullseye" = "Přesně do černého";
+"End a day of 3+ entries exactly on your calorie goal, to the kcal." = "Zakonči den s aspoň 3 záznamy přesně na svém kalorickém cíli, na kcal.";
+"Palindrome Day" = "Palindromový den";
+"End a day of 3+ entries on a calorie total that reads the same backwards, like 1221." = "Zakonči den s aspoň 3 záznamy součtem kalorií, který se čte stejně i pozpátku, třeba 1221.";
+"Groundhog Breakfast" = "Na Hromnice o snídani víc";
+"Have the same food for breakfast on 30 of 35 days." = "Dej si ke snídani stejné jídlo ve 30 z 35 dnů.";
+"Friday the 13th" = "Pátek třináctého";
+"Log food on a Friday the 13th." = "Zapiš si jídlo v pátek třináctého.";
+"World Tour Week" = "Týden kolem světa";
+"Eat 7 different cuisines in one week." = "Ochutnej za jeden týden 7 různých kuchyní.";
+"Pi Day" = "Den pí";
+"Have a pie, tart or strudel on 14 March." = "Dej si 14. března koláč, tartu nebo štrúdl.";
+"Déjà Vu" = "Déjà vu";
+"Eat exactly the same foods two days in a row, at least 3 different ones." = "Sněz dva dny po sobě úplně stejná jídla, aspoň 3 různá.";
+"Knedlík Marathon" = "Knedlíkový maraton";
+"Have knedlíky 3 days in a row." = "Dej si knedlíky 3 dny po sobě.";
+"Gone Fishing" = "Na rybách";
+"Eat fish 3 days in a row." = "Jez rybu 3 dny po sobě.";
+"Vodník's Apprentice" = "Vodníkův učeň";
+"Drink one and a half times your water goal in one day." = "Vypij za jeden den jedenapůlnásobek svého cíle vody.";
+"Dawn Patrol" = "Ranní hlídka";
+"Start a workout before 6 a.m. and log food within an hour of finishing it." = "Začni trénink před šestou ráno a do hodiny po jeho konci si zapiš jídlo.";
+"The Answer" = "Odpověď";
+"Log exactly 42 entries in one week." = "Zapiš si za jeden týden přesně 42 záznamů.";
+"Secret revealed!" = "Tajemství odhaleno!";
+"Secrets revealed!" = "Odhalená tajemství!";
+"Secrets" = "Tajemství";
+"Found: %lld of %lld" = "Nalezeno: %lld z %lld";
 /* add-seasonal-events: sezónní události, úkoly a odznaky. Neformální "ty". */
 "Masopust" = "Masopust";
 "Carnival feast before Lent: doughnuts and pig-slaughter treats." = "Masopustní hodování: koblihy a zabíjačkové dobroty.";
