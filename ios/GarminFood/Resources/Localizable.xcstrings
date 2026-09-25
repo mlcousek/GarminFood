@@ -871,6 +871,18 @@
         }
       }
     },
+    "Athlete": {
+      "comment": "Layout preset: weight and water moved up on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sportovec"
+          }
+        }
+      }
+    },
     "Back to today": {
       "comment": "Day switcher button returning to today.",
       "extractionState": "manual",
@@ -931,6 +943,18 @@
         }
       }
     },
+    "Big number": {
+      "comment": "Layout editor: Day summary variant showing calories as one big number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velké číslo"
+          }
+        }
+      }
+    },
     "Bonus +25 XP": {
       "comment": "Seasonal event: tag on an optional bonus quest.",
       "extractionState": "manual",
@@ -939,6 +963,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bonus +25 XP"
+          }
+        }
+      }
+    },
+    "Both": {
+      "comment": "Layout editor: Weight & Water shows both cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obojí"
           }
         }
       }
@@ -1059,6 +1095,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Styl karet"
+          }
+        }
+      }
+    },
+    "Cards go back to their default order and style.": {
+      "comment": "Layout editor: confirmation message for Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karty se vrátí do výchozího pořadí a stylu."
           }
         }
       }
@@ -1191,6 +1239,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "končí v %@ (%@)"
+          }
+        }
+      }
+    },
+    "Collapsed": {
+      "comment": "Layout editor: meal cards showing only header and macro bars.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sbalené"
           }
         }
       }
@@ -1759,18 +1819,6 @@
         }
       }
     },
-    "Customize layout": {
-      "comment": "Settings -> Appearance page. Disabled row for the future layout editor.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Upravit rozložení"
-          }
-        }
-      }
-    },
     "Czech DB": {
       "comment": "Small source badge on a search result from the offline Czech database.",
       "extractionState": "manual",
@@ -1815,6 +1863,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Den"
+          }
+        }
+      }
+    },
+    "Day note": {
+      "comment": "Layout editor row: the note and tags card for the day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poznámka ke dni"
+          }
+        }
+      }
+    },
+    "Day summary": {
+      "comment": "Layout editor row: calories ring and macro bars.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Souhrn dne"
+          }
+        }
+      }
+    },
+    "Day switcher": {
+      "comment": "Layout editor row: the date bar at the top of Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přepínač dnů"
           }
         }
       }
@@ -2053,6 +2137,18 @@
         }
       }
     },
+    "Drag to reorder. Changes show right away.": {
+      "comment": "Layout editor: footer under the card list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přetažením změníte pořadí. Změny se projeví hned."
+          }
+        }
+      }
+    },
     "Duplicate": {
       "comment": "Swipe/context action logging the same entry again.",
       "extractionState": "manual",
@@ -2121,6 +2217,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upravit záznam"
+          }
+        }
+      }
+    },
+    "Edit layout": {
+      "comment": "Layout editor: sheet title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit rozložení"
+          }
+        }
+      }
+    },
+    "Edit layout…": {
+      "comment": "Today: item in the toolbar's More menu that opens the layout editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit rozložení…"
           }
         }
       }
@@ -2257,6 +2377,18 @@
         }
       }
     },
+    "Event banners": {
+      "comment": "Layout editor row: seasonal event and weekly boss banners on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bannery událostí"
+          }
+        }
+      }
+    },
     "Event complete!": {
       "comment": "Seasonal event: all required quests done.",
       "extractionState": "manual",
@@ -2289,6 +2421,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Všechny zapsané záznamy dorazily do Garminu."
+          }
+        }
+      }
+    },
+    "Expanded": {
+      "comment": "Layout editor: meal cards showing their entries.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozbalené"
           }
         }
       }
@@ -2467,6 +2611,18 @@
         }
       }
     },
+    "Fixed position": {
+      "comment": "Layout editor: VoiceOver label of the lock on a card that can't be moved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pevná pozice"
+          }
+        }
+      }
+    },
     "Food log": {
       "comment": "Navigation title of the Today screen.",
       "extractionState": "manual",
@@ -2571,6 +2727,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zdroj: %1$@, také v: %2$@"
+          }
+        }
+      }
+    },
+    "Full": {
+      "comment": "Layout preset: everything on Today, as by default.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plné"
           }
         }
       }
@@ -2859,6 +3027,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Haptická odezva"
+          }
+        }
+      }
+    },
+    "Hidden": {
+      "comment": "Layout editor: VoiceOver value of a card that is hidden.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skryto"
+          }
+        }
+      }
+    },
+    "Hide %@": {
+      "comment": "Layout editor: VoiceOver label of the eye button on a shown card. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skrýt: %@"
           }
         }
       }
@@ -3391,6 +3583,18 @@
         }
       }
     },
+    "Log Food & Progress": {
+      "comment": "Settings -> Appearance -> Layout. Disabled row: those screens get a layout editor in a later update.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo a Pokrok"
+          }
+        }
+      }
+    },
     "Log it": {
       "comment": "Primary button confirming a food entry.",
       "extractionState": "manual",
@@ -3787,6 +3991,18 @@
         }
       }
     },
+    "Minimal": {
+      "comment": "Layout preset: only the essentials on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimální"
+          }
+        }
+      }
+    },
     "Missed": {
       "comment": "Seasonal event state: window ended without completing it.",
       "extractionState": "manual",
@@ -3823,6 +4039,30 @@
         }
       }
     },
+    "More": {
+      "comment": "Today: toolbar menu button (ellipsis).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další"
+          }
+        }
+      }
+    },
+    "Move down": {
+      "comment": "Layout editor: VoiceOver action that moves a card down one place.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posunout dolů"
+          }
+        }
+      }
+    },
     "Move to": {
       "comment": "Context submenu moving a logged entry to another meal.",
       "extractionState": "manual",
@@ -3843,6 +4083,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přesunout: %@"
+          }
+        }
+      }
+    },
+    "Move up": {
+      "comment": "Layout editor: VoiceOver action that moves a card up one place.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posunout nahoru"
           }
         }
       }
@@ -4459,6 +4711,18 @@
         }
       }
     },
+    "Opens the layout editor": {
+      "comment": "Settings -> Appearance -> Layout. VoiceOver hint of the Today row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře úpravu rozložení"
+          }
+        }
+      }
+    },
     "Opens water tracking": {
       "comment": "VoiceOver hint of Today's water card.",
       "extractionState": "manual",
@@ -4569,6 +4833,18 @@
     },
     "Preferences": {
       "comment": "Settings section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Presets": {
+      "comment": "Layout editor: toolbar menu with the Full / Minimal / Athlete layouts.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
@@ -4747,6 +5023,18 @@
         }
       }
     },
+    "Reorder, hide and restyle the cards. You can also open this from the menu on Today.": {
+      "comment": "Settings -> Appearance -> Layout section footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Měňte pořadí karet, skrývejte je a měňte jejich styl. Otevřít to jde i z nabídky na obrazovce Dnes."
+          }
+        }
+      }
+    },
     "Reset": {
       "comment": "Confirmation button that resets settings to defaults.",
       "extractionState": "manual",
@@ -4783,6 +5071,30 @@
         }
       }
     },
+    "Reset this layout?": {
+      "comment": "Layout editor: confirmation title for Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit toto rozložení?"
+          }
+        }
+      }
+    },
+    "Reset to default": {
+      "comment": "Layout editor: button that resets the screen's layout (asks first).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit výchozí"
+          }
+        }
+      }
+    },
     "Results": {
       "comment": "Section header above the ranked food search results.",
       "extractionState": "manual",
@@ -4803,6 +5115,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
+    "Ring": {
+      "comment": "Layout editor: Day summary variant with the calorie ring.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kruh"
           }
         }
       }
@@ -5287,6 +5611,18 @@
         }
       }
     },
+    "Show %@": {
+      "comment": "Layout editor: VoiceOver label of the eye button on a hidden card. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit: %@"
+          }
+        }
+      }
+    },
     "Show more from Garmin": {
       "comment": "Button loading the next page of Garmin search results.",
       "extractionState": "manual",
@@ -5307,6 +5643,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zobrazuji naposledy načtená čísla"
+          }
+        }
+      }
+    },
+    "Shown": {
+      "comment": "Layout editor: VoiceOver value of a card that is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazeno"
+          }
+        }
+      }
+    },
+    "Shows on today's date when there are foods to log again": {
+      "comment": "Layout editor: when the Log again shelf appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se u dnešního dne, když je co zapsat znovu"
+          }
+        }
+      }
+    },
+    "Shows on today's date when you have saved meals": {
+      "comment": "Layout editor: when the Log a meal shelf appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se u dnešního dne, když máte uložená jídla"
           }
         }
       }
@@ -5403,6 +5775,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlášení selhalo: %@"
+          }
+        }
+      }
+    },
+    "Signature": {
+      "comment": "Layout editor row: the GF by Jirka signature at the bottom of Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podpis"
           }
         }
       }
@@ -5527,6 +5911,18 @@
         }
       }
     },
+    "Streak & level": {
+      "comment": "Layout editor row: Today's streak and level strip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série a úroveň"
+          }
+        }
+      }
+    },
     "Streak at risk": {
       "comment": "Reminder toggle: warn when the logging streak is about to break.",
       "extractionState": "manual",
@@ -5589,6 +5985,30 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "Style": {
+      "comment": "Layout editor: title of a card's variant picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl"
+          }
+        }
+      }
+    },
+    "Style of %@": {
+      "comment": "Layout editor: VoiceOver label of a card's variant menu. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl: %@"
           }
         }
       }
@@ -6073,6 +6493,18 @@
         }
       }
     },
+    "Turn on fasting in Settings": {
+      "comment": "Layout editor: why the Fasting card isn't shown on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapněte půst v Nastavení"
+          }
+        }
+      }
+    },
     "Type the digits printed under the barcode -- usually 8 to 14 numbers.": {
       "comment": "Help text under the manual barcode field.",
       "extractionState": "manual",
@@ -6093,6 +6525,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "méně než polovina cíle"
+          }
+        }
+      }
+    },
+    "Undo reset": {
+      "comment": "Layout editor: brings back the layout from before Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrátit obnovení"
           }
         }
       }
@@ -6277,6 +6721,18 @@
         }
       }
     },
+    "Water": {
+      "comment": "Today: section header when only the water card is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voda"
+          }
+        }
+      }
+    },
     "Water %@ ml": {
       "comment": "Sync queue row title for a queued drink; %@ is the amount.",
       "extractionState": "manual",
@@ -6301,6 +6757,18 @@
         }
       }
     },
+    "Water only": {
+      "comment": "Layout editor: Weight & Water variant.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen voda"
+          }
+        }
+      }
+    },
     "Weigh-in %@ kg": {
       "comment": "Sync queue row title for a queued weigh-in; %@ is the weight.",
       "extractionState": "manual",
@@ -6309,6 +6777,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vážení %@ kg"
+          }
+        }
+      }
+    },
+    "Weight": {
+      "comment": "Today: section header when only the weight card is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váha"
           }
         }
       }
@@ -6345,6 +6825,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cíl váhy"
+          }
+        }
+      }
+    },
+    "Weight only": {
+      "comment": "Layout editor: Weight & Water variant.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen váha"
           }
         }
       }
@@ -6445,6 +6937,18 @@
         }
       }
     },
+    "Your saved layout couldn't be read and was reset.": {
+      "comment": "Settings -> Appearance page. One-time notice after an unreadable stored layout was quarantined.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložené rozložení nešlo načíst, proto bylo obnoveno na výchozí."
+          }
+        }
+      }
+    },
     "Your saved look couldn't be read and was reset.": {
       "comment": "Settings -> Appearance page. One-time notice after a corrupt settings blob was quarantined.",
       "extractionState": "manual",
@@ -6453,6 +6957,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uložený vzhled nešel načíst, proto byl obnoven na výchozí."
+          }
+        }
+      }
+    },
+    "Your theme, style and screen layouts go back to their defaults.": {
+      "comment": "Settings -> Appearance page. Message of the Reset all appearance confirmation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motiv, styl i rozložení obrazovek se vrátí na výchozí."
           }
         }
       }
