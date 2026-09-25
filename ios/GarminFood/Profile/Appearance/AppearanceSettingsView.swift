@@ -8,13 +8,16 @@
 //   3. app icon grid + "Match app icon to theme"
 //   4. customization: custom accent, card style, corners, density, number
 //      font, gradient header, macro colors
-//   5. layout: "Customize layout" -- Coming soon (waves 3-4)
+//   5. layout: Today opens LayoutEditorSheet (wave 3); Log Food and
+//      Progress are "Coming soon" until wave 4
 //   6. share / import a theme code (wave 5, ThemeShareSection)
 //   7. reset
-// Every change writes through ThemeStore immediately and applies live.
+// Every change writes through ThemeStore / LayoutStore immediately and
+// applies live. "Reset all appearance" resets the layouts too (design.md
+// Migration Plan: it is the one way back to both defaults).
 //
-// Depends on ThemeStore (via AppEnvironment) and AppearanceKit's option
-// enums. Reached from SettingsView.
+// Depends on ThemeStore and LayoutStore (via AppEnvironment) and
+// AppearanceKit's option enums. Reached from SettingsView.
 
 import SwiftUI
 import AppearanceKit
@@ -23,14 +26,22 @@ import AppearanceKit
 struct AppearanceSettingsView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var confirmsReset = false
+    @State private var isEditingTodayLayout = false
 
     private var store: ThemeStore { environment.themeStore }
+    private var layoutStore: LayoutStore { environment.layoutStore }
 
     var body: some View {
         Form {
             if store.showsResetNotice {
                 Section {
                     Label("Your saved look couldn't be read and was reset.", systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(Theme.warning)
+                }
+            }
+            if layoutStore.showsResetNotice {
+                Section {
+                    Label("Your saved layout couldn't be read and was reset.", systemImage: "exclamationmark.triangle")
                         .foregroundStyle(Theme.warning)
                 }
             }
@@ -52,18 +63,7 @@ struct AppearanceSettingsView: View {
 
             fineTuneSection
 
-            Section {
-                HStack {
-                    Label("Customize layout", systemImage: "rectangle.3.group")
-                    Spacer()
-                    Text("Coming soon")
-                        .foregroundStyle(.secondary)
-                }
-                .foregroundStyle(.secondary)
-                .accessibilityElement(children: .combine)
-            } header: {
-                Text("Layout")
-            }
+            layoutSection
 
             ThemeShareSection(store: store)
 
@@ -76,11 +76,60 @@ struct AppearanceSettingsView: View {
         .navigationTitle("Appearance")
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("Reset all appearance settings?", isPresented: $confirmsReset, titleVisibility: .visible) {
-            Button("Reset", role: .destructive) { store.resetAll() }
+            Button("Reset", role: .destructive) {
+                store.resetAll()
+                layoutStore.resetAll()
+            }
             Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Your theme, style and screen layouts go back to their defaults.")
+        }
+        .sheet(isPresented: $isEditingTodayLayout) {
+            // Only what Settings can know: fasting on/off. Log again / Log a
+            // meal depend on Today's loaded shelves, so they read as
+            // available here.
+            LayoutEditorSheet(screen: .today) { id in
+                TodayCardID(rawValue: id).map { TodayCardID.baseAvailability($0, preferences: environment.preferences) } ?? .available
+            }
         }
         .onDisappear {
             if store.showsResetNotice { store.dismissResetNotice() }
+            if layoutStore.showsResetNotice { layoutStore.dismissResetNotice() }
+        }
+    }
+
+    // MARK: Layout (design.md D9)
+
+    private var layoutSection: some View {
+        Section {
+            Button {
+                isEditingTodayLayout = true
+            } label: {
+                HStack {
+                    Label("Today", systemImage: "fork.knife")
+                        .foregroundStyle(Color.primary)
+                    Spacer()
+                    Text(layoutStore.currentTodayPreset?.displayName ?? String(localized: "Custom"))
+                        .foregroundStyle(.secondary)
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
+                }
+            }
+            .accessibilityHint("Opens the layout editor")
+
+            HStack {
+                Label("Log Food & Progress", systemImage: "rectangle.3.group")
+                Spacer()
+                Text("Coming soon")
+            }
+            .foregroundStyle(.secondary)
+            .accessibilityElement(children: .combine)
+        } header: {
+            Text("Layout")
+        } footer: {
+            Text("Reorder, hide and restyle the cards. You can also open this from the menu on Today.")
         }
     }
 

@@ -181,6 +181,18 @@
         }
       }
     },
+    "%@ on %lld of 7 days to defeat it.": {
+      "comment": "Weekly boss screen: the habit and the target. %@ is the habit (e.g. 'Log breakfast'), %lld a number of days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ve %2$lld ze 7 dnů a porazíš ho."
+          }
+        }
+      }
+    },
     "%@, %@ times %@": {
       "comment": "VoiceOver label of a quick-pick card. %1$@ = food name, %2$@ = usual quantity (e.g. 2), %3$@ = serving (e.g. 100 g).",
       "extractionState": "manual",
@@ -205,6 +217,42 @@
         }
       }
     },
+    "%@, %@, next milestone": {
+      "comment": "Accessibility: journey milestone name, its amount, the next one.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, další milník"
+          }
+        }
+      }
+    },
+    "%@, %@, not reached yet": {
+      "comment": "Accessibility: journey milestone name, its amount, still ahead.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, zatím nedosaženo"
+          }
+        }
+      }
+    },
+    "%@, %@, reached": {
+      "comment": "Accessibility: journey milestone name, its amount, reached.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, dosaženo"
+          }
+        }
+      }
+    },
     "%@, favorite": {
       "comment": "VoiceOver label of a favorite food card. %@ = food name.",
       "extractionState": "manual",
@@ -225,6 +273,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@, oblíbené, %2$@ kilokalorií"
+          }
+        }
+      }
+    },
+    "%@: %@ filled": {
+      "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: naplněno %@"
           }
         }
       }
@@ -583,6 +643,18 @@
         }
       }
     },
+    "A new PR is announced once a record has 7 days of data.": {
+      "comment": "Footnote on the personal records screen (warm-up rule).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nový rekord se oznámí, až má záznam aspoň 7 dní dat."
+          }
+        }
+      }
+    },
     "A secret achievement. Keep logging to reveal it.": {
       "comment": "Detail sheet text of a locked secret achievement.",
       "extractionState": "manual",
@@ -591,6 +663,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tajný odznak. Zapisuj dál a odhalíš ho."
+          }
+        }
+      }
+    },
+    "A streak freeze covers a second missed day that would otherwise end a streak of 3 days or more, and is used automatically. Earn one by defeating the weekly boss or completing a full bingo card; you can hold up to %lld.": {
+      "comment": "Streak screen, How streaks work: explains streak freezes. %lld is the maximum number of freezes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série pokryje druhý vynechaný den, který by jinak ukončil sérii dlouhou aspoň 3 dny, a použije se samo. Získáš ho poražením týdenního bosse nebo celou bingo kartou; mít můžeš nejvýš %lld."
           }
         }
       }
@@ -811,6 +895,18 @@
         }
       }
     },
+    "All milestones reached!": {
+      "comment": "Journey with every milestone reached.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny milníky máš za sebou!"
+          }
+        }
+      }
+    },
     "All synced": {
       "comment": "Sync queue empty state title.",
       "extractionState": "manual",
@@ -955,6 +1051,18 @@
         }
       }
     },
+    "Athlete": {
+      "comment": "Layout preset: weight and water moved up on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sportovec"
+          }
+        }
+      }
+    },
     "Back to today": {
       "comment": "Day switcher button returning to today.",
       "extractionState": "manual",
@@ -963,6 +1071,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zpět na dnešek"
+          }
+        }
+      }
+    },
+    "Bank full: the freeze earned on %@ was not added (you can hold %lld).": {
+      "comment": "Streak screen: a freeze was earned while the bank was full. %@ is a date, %lld the maximum number of freezes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásoba plná: zmrazení získané %1$@ nebylo přidáno (můžeš mít nejvýš %2$lld)."
           }
         }
       }
@@ -1015,6 +1135,30 @@
         }
       }
     },
+    "Bestiary": {
+      "comment": "Weekly boss screen: section listing every boss kind.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestiář"
+          }
+        }
+      }
+    },
+    "Big number": {
+      "comment": "Layout editor: Day summary variant showing calories as one big number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velké číslo"
+          }
+        }
+      }
+    },
     "Bonus +25 XP": {
       "comment": "Seasonal event: tag on an optional bonus quest.",
       "extractionState": "manual",
@@ -1023,6 +1167,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bonus +25 XP"
+          }
+        }
+      }
+    },
+    "Boss health": {
+      "comment": "VoiceOver label of the weekly boss health bar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Životy bosse"
+          }
+        }
+      }
+    },
+    "Both": {
+      "comment": "Layout editor: Weight & Water shows both cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obojí"
           }
         }
       }
@@ -1143,6 +1311,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Styl karet"
+          }
+        }
+      }
+    },
+    "Cards go back to their default order and style.": {
+      "comment": "Layout editor: confirmation message for Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karty se vrátí do výchozího pořadí a stylu."
           }
         }
       }
@@ -1275,6 +1455,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "končí v %@ (%@)"
+          }
+        }
+      }
+    },
+    "Collapsed": {
+      "comment": "Layout editor: meal cards showing only header and macro bars.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sbalené"
           }
         }
       }
@@ -1903,6 +2095,42 @@
         }
       }
     },
+    "Day note": {
+      "comment": "Layout editor row: the note and tags card for the day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poznámka ke dni"
+          }
+        }
+      }
+    },
+    "Day summary": {
+      "comment": "Layout editor row: calories ring and macro bars.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Souhrn dne"
+          }
+        }
+      }
+    },
+    "Day switcher": {
+      "comment": "Layout editor row: the date bar at the top of Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přepínač dnů"
+          }
+        }
+      }
+    },
     "Days kept in a row": {
       "comment": "Fasting stat tile label (number shown separately).",
       "extractionState": "manual",
@@ -1911,6 +2139,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dní v řadě dodrženo"
+          }
+        }
+      }
+    },
+    "Days left: %lld": {
+      "comment": "Bingo: days left in this week.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá dní: %lld"
           }
         }
       }
@@ -1947,6 +2187,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Výchozí jídlo podle rozvrhu v Garminu"
+          }
+        }
+      }
+    },
+    "Defeated": {
+      "comment": "Weekly boss outcome: beaten.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poražen"
           }
         }
       }
@@ -2059,6 +2311,18 @@
         }
       }
     },
+    "Done on %@": {
+      "comment": "Bingo square sheet: the day it was done, e.g. 'Tuesday, 22 Sep'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněno: %@"
+          }
+        }
+      }
+    },
     "Double-tap to toggle this tag": {
       "comment": "VoiceOver hint of a day-note tag chip.",
       "extractionState": "manual",
@@ -2137,6 +2401,18 @@
         }
       }
     },
+    "Drag to reorder. Changes show right away.": {
+      "comment": "Layout editor: footer under the card list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přetažením změníte pořadí. Změny se projeví hned."
+          }
+        }
+      }
+    },
     "Duplicate": {
       "comment": "Swipe/context action logging the same entry again.",
       "extractionState": "manual",
@@ -2157,6 +2433,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Získáno %@"
+          }
+        }
+      }
+    },
+    "Easy task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snadný úkol"
           }
         }
       }
@@ -2217,6 +2505,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upravit záznam"
+          }
+        }
+      }
+    },
+    "Edit layout": {
+      "comment": "Layout editor: sheet title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit rozložení"
+          }
+        }
+      }
+    },
+    "Edit layout…": {
+      "comment": "Today: item in the toolbar's More menu that opens the layout editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit rozložení…"
           }
         }
       }
@@ -2353,6 +2665,30 @@
         }
       }
     },
+    "Escaped": {
+      "comment": "Weekly boss outcome: the week ended without defeating it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utekl"
+          }
+        }
+      }
+    },
+    "Event banners": {
+      "comment": "Layout editor row: seasonal event and weekly boss banners on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bannery událostí"
+          }
+        }
+      }
+    },
     "Event complete!": {
       "comment": "Seasonal event: all required quests done.",
       "extractionState": "manual",
@@ -2389,6 +2725,18 @@
         }
       }
     },
+    "Every Monday a boss is picked from your weakest habit of the last four weeks. Defeat it for %lld–%lld XP and a streak freeze. If it escapes, nothing is lost.": {
+      "comment": "Weekly boss screen footnote. The two %lld are the XP range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každé pondělí se vybere boss podle tvého nejslabšího návyku za poslední čtyři týdny. Poraž ho a získáš %1$lld–%2$lld XP a zmrazení série. Když uteče, nic neztratíš."
+          }
+        }
+      }
+    },
     "Every secret found!": {
       "comment": "Progress tab secrets card: all secret achievements have been found.",
       "extractionState": "manual",
@@ -2397,6 +2745,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Všechna tajemství nalezena!"
+          }
+        }
+      }
+    },
+    "Expanded": {
+      "comment": "Layout editor: meal cards showing their entries.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozbalené"
           }
         }
       }
@@ -2587,6 +2947,18 @@
         }
       }
     },
+    "Fixed position": {
+      "comment": "Layout editor: VoiceOver label of the lock on a card that can't be moved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pevná pozice"
+          }
+        }
+      }
+    },
     "Food log": {
       "comment": "Navigation title of the Today screen.",
       "extractionState": "manual",
@@ -2671,6 +3043,18 @@
         }
       }
     },
+    "FREE": {
+      "comment": "Label of the free centre square of the bingo card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZDARMA"
+          }
+        }
+      }
+    },
     "From %@": {
       "comment": "VoiceOver label for a search result's source; %@ = source name, e.g. 'Garmin'.",
       "extractionState": "manual",
@@ -2695,6 +3079,18 @@
         }
       }
     },
+    "Frozen": {
+      "comment": "Streak calendar legend: a day covered by a streak freeze.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazeno"
+          }
+        }
+      }
+    },
     "Fuelled": {
       "comment": "Sport & body activity row: carbs logged 30-180 min before the start.",
       "extractionState": "manual",
@@ -2715,6 +3111,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Palivo %lld · Regenerace %lld · Zasloužené dny %lld · Závodní dny %lld"
+          }
+        }
+      }
+    },
+    "Full": {
+      "comment": "Layout preset: everything on Today, as by default.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plné"
+          }
+        }
+      }
+    },
+    "Full card": {
+      "comment": "Bingo: every square of a past card was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plná karta"
           }
         }
       }
@@ -3007,6 +3427,42 @@
         }
       }
     },
+    "Hard task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Těžký úkol"
+          }
+        }
+      }
+    },
+    "Hidden": {
+      "comment": "Layout editor: VoiceOver value of a card that is hidden.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skryto"
+          }
+        }
+      }
+    },
+    "Hide %@": {
+      "comment": "Layout editor: VoiceOver label of the eye button on a shown card. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skrýt: %@"
+          }
+        }
+      }
+    },
     "High Contrast": {
       "comment": "Theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -3031,6 +3487,42 @@
         }
       }
     },
+    "Hit": {
+      "comment": "VoiceOver: this day scored a hit on the weekly boss.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásah"
+          }
+        }
+      }
+    },
+    "Hits: %lld/%lld": {
+      "comment": "Weekly boss: hits so far out of the target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásahy: %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "HP %lld/%lld": {
+      "comment": "Weekly boss health bar: remaining health out of the total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Životy %1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "If the sign-in page above doesn't complete automatically, sign in to Garmin Connect in a regular browser instead, then copy the \"ticket\" value from the redirect URL here.": {
       "comment": "Sign-in sheet: instructions for the manual fallback. 'ticket' is the literal URL parameter name.",
       "extractionState": "manual",
@@ -3051,6 +3543,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Importovat motiv"
+          }
+        }
+      }
+    },
+    "In progress": {
+      "comment": "Weekly boss outcome: this week's fight is still running.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probíhá"
           }
         }
       }
@@ -3123,6 +3627,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "Položky"
+          }
+        }
+      }
+    },
+    "Journeys": {
+      "comment": "Progress card / screen title: real-world journeys (protein climb, water, road trip, food passport).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cesty"
+          }
+        }
+      }
+    },
+    "Judged from the foods you log.": {
+      "comment": "Bingo square sheet: the task uses only logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle jídel, která zapisuješ."
+          }
+        }
+      }
+    },
+    "Judged from your Garmin activities.": {
+      "comment": "Bingo square sheet: the task uses Garmin activities.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých aktivit z Garminu."
+          }
+        }
+      }
+    },
+    "Judged from your nutrition totals and goals.": {
+      "comment": "Bingo square sheet: the task uses macro data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých denních součtů živin a cílů."
+          }
+        }
+      }
+    },
+    "Judged from your water log and goal.": {
+      "comment": "Bingo square sheet: the task uses water data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle zapsané vody a tvého cíle pitného režimu."
           }
         }
       }
@@ -3439,6 +4003,18 @@
         }
       }
     },
+    "Lines: %lld": {
+      "comment": "Bingo: number of completed lines.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řady: %lld"
+          }
+        }
+      }
+    },
     "Locked": {
       "comment": "Badge state for VoiceOver.",
       "extractionState": "manual",
@@ -3555,6 +4131,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapsat jídlo"
+          }
+        }
+      }
+    },
+    "Log Food & Progress": {
+      "comment": "Settings -> Appearance -> Layout. Disabled row: those screens get a layout editor in a later update.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo a Pokrok"
           }
         }
       }
@@ -3955,6 +4543,18 @@
         }
       }
     },
+    "Medium task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Středně těžký úkol"
+          }
+        }
+      }
+    },
     "Mine": {
       "comment": "Settings: small label saying a goal is the user's own override (masculine, 'cíl').",
       "extractionState": "manual",
@@ -3967,6 +4567,18 @@
         }
       }
     },
+    "Minimal": {
+      "comment": "Layout preset: only the essentials on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimální"
+          }
+        }
+      }
+    },
     "Missed": {
       "comment": "Seasonal event state: window ended without completing it.",
       "extractionState": "manual",
@@ -3975,6 +4587,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Propásnuto"
+          }
+        }
+      }
+    },
+    "Missed, streak frozen": {
+      "comment": "Streak calendar day: a missed day covered by a streak freeze (VoiceOver).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vynecháno, série zmrazena"
           }
         }
       }
@@ -4003,6 +4627,30 @@
         }
       }
     },
+    "More": {
+      "comment": "Today: toolbar menu button (ellipsis).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další"
+          }
+        }
+      }
+    },
+    "Move down": {
+      "comment": "Layout editor: VoiceOver action that moves a card down one place.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posunout dolů"
+          }
+        }
+      }
+    },
     "Move to": {
       "comment": "Context submenu moving a logged entry to another meal.",
       "extractionState": "manual",
@@ -4023,6 +4671,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přesunout: %@"
+          }
+        }
+      }
+    },
+    "Move up": {
+      "comment": "Layout editor: VoiceOver action that moves a card up one place.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posunout nahoru"
           }
         }
       }
@@ -4111,6 +4771,18 @@
         }
       }
     },
+    "Next: %@ · %@ to go": {
+      "comment": "Next journey milestone. First %@ = milestone name, second %@ = distance left like \"1,015 m\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další: %@ · zbývá %@"
+          }
+        }
+      }
+    },
     "No calorie target": {
       "comment": "Calorie ring headline when Garmin has no calorie goal set.",
       "extractionState": "manual",
@@ -4147,6 +4819,18 @@
         }
       }
     },
+    "No hit": {
+      "comment": "VoiceOver: this day did not score a hit on the weekly boss.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez zásahu"
+          }
+        }
+      }
+    },
     "no HTTP response": {
       "comment": "Sign-in error detail used inside parentheses when no HTTP status came back, e.g. 'Garmin rejected the sign-in ticket (no HTTP response).'",
       "extractionState": "manual",
@@ -4179,6 +4863,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nic nenalezeno"
+          }
+        }
+      }
+    },
+    "No records yet. Keep logging and they will appear here.": {
+      "comment": "Personal records before any data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné rekordy. Zapisuj dál a objeví se tady."
           }
         }
       }
@@ -4243,6 +4939,18 @@
         }
       }
     },
+    "Not defeated yet": {
+      "comment": "VoiceOver: bestiary boss kind never defeated.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím neporažen"
+          }
+        }
+      }
+    },
     "Not delivered": {
       "comment": "VoiceOver label of an entry whose delivery to Garmin failed.",
       "extractionState": "manual",
@@ -4251,6 +4959,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nedoručeno"
+          }
+        }
+      }
+    },
+    "Not done yet": {
+      "comment": "Bingo square sheet: square not done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nesplněno"
           }
         }
       }
@@ -4663,6 +5383,30 @@
         }
       }
     },
+    "Opens journeys": {
+      "comment": "Accessibility hint of the journeys card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře cesty"
+          }
+        }
+      }
+    },
+    "Opens personal records": {
+      "comment": "Accessibility hint of the personal records card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře osobní rekordy"
+          }
+        }
+      }
+    },
     "Opens Progress": {
       "comment": "VoiceOver hint of Today's streak strip.",
       "extractionState": "manual",
@@ -4699,6 +5443,30 @@
         }
       }
     },
+    "Opens the bingo card": {
+      "comment": "Accessibility hint of the bingo card on the Progress tab.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře bingo kartu"
+          }
+        }
+      }
+    },
+    "Opens the layout editor": {
+      "comment": "Settings -> Appearance -> Layout. VoiceOver hint of the Today row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře úpravu rozložení"
+          }
+        }
+      }
+    },
     "Opens the secret achievements": {
       "comment": "VoiceOver hint of the Progress tab secrets card.",
       "extractionState": "manual",
@@ -4707,6 +5475,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře tajné odznaky"
+          }
+        }
+      }
+    },
+    "Opens the weekly boss": {
+      "comment": "VoiceOver hint of the weekly boss card and banner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře týdenního bosse"
           }
         }
       }
@@ -4747,6 +5527,18 @@
         }
       }
     },
+    "Over the last four weeks this was your weakest habit, so the target is two days better than your recent average.": {
+      "comment": "Weekly boss screen: how the boss and its target were chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za poslední čtyři týdny to byl tvůj nejslabší návyk, proto je cíl o dva dny lepší než tvůj nedávný průměr."
+          }
+        }
+      }
+    },
     "P": {
       "comment": "One-letter abbreviation of Protein on a compact macro bar.",
       "extractionState": "manual",
@@ -4755,6 +5547,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "B"
+          }
+        }
+      }
+    },
+    "Past cards": {
+      "comment": "Bingo screen section: previous weeks' cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minulé karty"
+          }
+        }
+      }
+    },
+    "Past weeks": {
+      "comment": "Weekly boss screen: section of previous weeks.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minulé týdny"
           }
         }
       }
@@ -4779,6 +5595,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Personal records": {
+      "comment": "Progress card / screen title: personal records.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Osobní rekordy"
           }
         }
       }
@@ -4827,6 +5655,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Presets": {
+      "comment": "Layout editor: toolbar menu with the Full / Minimal / Athlete layouts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Previous best: %@ (%@)": {
+      "comment": "Personal record's previous best. First %@ = value, second %@ = date.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předchozí rekord: %@ (%@)"
           }
         }
       }
@@ -4963,6 +5815,30 @@
         }
       }
     },
+    "Recent PR": {
+      "comment": "Accessibility label of the trophy on a record beaten in the last 7 days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávný rekord"
+          }
+        }
+      }
+    },
+    "Recent PRs": {
+      "comment": "Section header: the last personal records beaten.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávné rekordy"
+          }
+        }
+      }
+    },
     "Recovered": {
       "comment": "Sport & body activity row: 20 g+ protein within 60 min after the end.",
       "extractionState": "manual",
@@ -5023,6 +5899,18 @@
         }
       }
     },
+    "Reorder, hide and restyle the cards. You can also open this from the menu on Today.": {
+      "comment": "Settings -> Appearance -> Layout section footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Měňte pořadí karet, skrývejte je a měňte jejich styl. Otevřít to jde i z nabídky na obrazovce Dnes."
+          }
+        }
+      }
+    },
     "Reset": {
       "comment": "Confirmation button that resets settings to defaults.",
       "extractionState": "manual",
@@ -5055,6 +5943,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Obnovit všechna nastavení vzhledu?"
+          }
+        }
+      }
+    },
+    "Reset this layout?": {
+      "comment": "Layout editor: confirmation title for Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit toto rozložení?"
+          }
+        }
+      }
+    },
+    "Reset to default": {
+      "comment": "Layout editor: button that resets the screen's layout (asks first).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit výchozí"
           }
         }
       }
@@ -5095,6 +6007,18 @@
         }
       }
     },
+    "Ring": {
+      "comment": "Layout editor: Day summary variant with the calorie ring.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kruh"
+          }
+        }
+      }
+    },
     "Round": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -5127,6 +6051,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Veslování"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, done on %@": {
+      "comment": "VoiceOver label of a done bingo square. Row, column, task title, weekday it was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, splněno: %4$@"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, not done": {
+      "comment": "VoiceOver label of a bingo square not done yet. Row, column, task title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, nesplněno"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, free square": {
+      "comment": "VoiceOver label of the bingo centre square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, volné pole"
           }
         }
       }
@@ -5623,6 +6583,18 @@
         }
       }
     },
+    "Show %@": {
+      "comment": "Layout editor: VoiceOver label of the eye button on a hidden card. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit: %@"
+          }
+        }
+      }
+    },
     "Show more from Garmin": {
       "comment": "Button loading the next page of Garmin search results.",
       "extractionState": "manual",
@@ -5643,6 +6615,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zobrazuji naposledy načtená čísla"
+          }
+        }
+      }
+    },
+    "Shown": {
+      "comment": "Layout editor: VoiceOver value of a card that is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazeno"
+          }
+        }
+      }
+    },
+    "Shows on today's date when there are foods to log again": {
+      "comment": "Layout editor: when the Log again shelf appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se u dnešního dne, když je co zapsat znovu"
+          }
+        }
+      }
+    },
+    "Shows on today's date when you have saved meals": {
+      "comment": "Layout editor: when the Log a meal shelf appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se u dnešního dne, když máte uložená jídla"
+          }
+        }
+      }
+    },
+    "Shows the rule": {
+      "comment": "Accessibility hint of a bingo square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí pravidlo"
           }
         }
       }
@@ -5739,6 +6759,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlášení selhalo: %@"
+          }
+        }
+      }
+    },
+    "Signature": {
+      "comment": "Layout editor row: the GF by Jirka signature at the bottom of Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podpis"
           }
         }
       }
@@ -5863,6 +6895,42 @@
         }
       }
     },
+    "Squares tick themselves from what you log. Each line earns %lld XP; a full card earns %lld XP and a streak freeze.": {
+      "comment": "Bingo screen footnote. First %lld = XP per line, second = XP for a full card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole se odškrtávají sama podle toho, co zapisuješ. Každá řada dává %1$lld XP, plná karta %2$lld XP a zmrazení série."
+          }
+        }
+      }
+    },
+    "Squares: %lld/9": {
+      "comment": "Bingo: squares done out of 9.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole: %lld/9"
+          }
+        }
+      }
+    },
+    "Stage %lld of %lld: %@": {
+      "comment": "Journey stage. First = current stage number, second = stage count, %@ = stage name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etapa %lld z %lld: %@"
+          }
+        }
+      }
+    },
     "Standard": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -5923,6 +6991,18 @@
         }
       }
     },
+    "Streak & level": {
+      "comment": "Layout editor row: Today's streak and level strip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série a úroveň"
+          }
+        }
+      }
+    },
     "Streak at risk": {
       "comment": "Reminder toggle: warn when the logging streak is about to break.",
       "extractionState": "manual",
@@ -5931,6 +7011,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Série v ohrožení"
+          }
+        }
+      }
+    },
+    "Streak freezes": {
+      "comment": "Streak screen: title of the streak-freeze bank.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série"
+          }
+        }
+      }
+    },
+    "Streak freezes: %lld of %lld": {
+      "comment": "VoiceOver: available streak freezes out of the maximum.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série: %1$lld z %2$lld"
           }
         }
       }
@@ -5997,6 +7101,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Posilování"
+          }
+        }
+      }
+    },
+    "Style": {
+      "comment": "Layout editor: title of a card's variant picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl"
+          }
+        }
+      }
+    },
+    "Style of %@": {
+      "comment": "Layout editor: VoiceOver label of a card's variant menu. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl: %@"
           }
         }
       }
@@ -6397,6 +7525,42 @@
         }
       }
     },
+    "This week": {
+      "comment": "Weekly boss screen: section showing which days of this week scored a hit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento týden"
+          }
+        }
+      }
+    },
+    "This week's boss": {
+      "comment": "Today banner caption above the weekly boss name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boss tohoto týdne"
+          }
+        }
+      }
+    },
+    "This week's boss appears after your next log.": {
+      "comment": "Weekly boss placeholder before this week's boss exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boss tohoto týdne se objeví po dalším zápisu."
+          }
+        }
+      }
+    },
     "This will be sent to Garmin": {
       "comment": "Form section header: the values that will be uploaded to Garmin.",
       "extractionState": "manual",
@@ -6469,6 +7633,18 @@
         }
       }
     },
+    "Total: %@": {
+      "comment": "Journey total so far. %@ = an amount like \"1,640 m\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celkem: %@"
+          }
+        }
+      }
+    },
     "Try a different search term.": {
       "comment": "Empty state message (design-system preview).",
       "extractionState": "manual",
@@ -6517,6 +7693,18 @@
         }
       }
     },
+    "Turn on fasting in Settings": {
+      "comment": "Layout editor: why the Fasting card isn't shown on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapněte půst v Nastavení"
+          }
+        }
+      }
+    },
     "Type the digits printed under the barcode -- usually 8 to 14 numbers.": {
       "comment": "Help text under the manual barcode field.",
       "extractionState": "manual",
@@ -6537,6 +7725,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "méně než polovina cíle"
+          }
+        }
+      }
+    },
+    "Undo reset": {
+      "comment": "Layout editor: brings back the layout from before Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrátit obnovení"
           }
         }
       }
@@ -6637,6 +7837,18 @@
         }
       }
     },
+    "Used so far: %lld": {
+      "comment": "Streak screen: number of streak freezes used so far.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím použito: %lld"
+          }
+        }
+      }
+    },
     "Usual for breakfast": {
       "comment": "Log Food screen: shelf title of foods usually logged at breakfast.",
       "extractionState": "manual",
@@ -6733,6 +7945,30 @@
         }
       }
     },
+    "was %@": {
+      "comment": "Recent PR list: the previous record value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "předtím %@"
+          }
+        }
+      }
+    },
+    "Water": {
+      "comment": "Today: section header when only the water card is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voda"
+          }
+        }
+      }
+    },
     "Water %@ ml": {
       "comment": "Sync queue row title for a queued drink; %@ is the amount.",
       "extractionState": "manual",
@@ -6757,6 +7993,42 @@
         }
       }
     },
+    "Water only": {
+      "comment": "Layout editor: Weight & Water variant.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen voda"
+          }
+        }
+      }
+    },
+    "Weekly Bingo": {
+      "comment": "Bingo card title on the Progress tab and bingo screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní bingo"
+          }
+        }
+      }
+    },
+    "Weekly Boss": {
+      "comment": "Weekly boss card title and screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní boss"
+          }
+        }
+      }
+    },
     "Weigh-in %@ kg": {
       "comment": "Sync queue row title for a queued weigh-in; %@ is the weight.",
       "extractionState": "manual",
@@ -6765,6 +8037,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vážení %@ kg"
+          }
+        }
+      }
+    },
+    "Weight": {
+      "comment": "Today: section header when only the weight card is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váha"
           }
         }
       }
@@ -6805,6 +8089,18 @@
         }
       }
     },
+    "Weight only": {
+      "comment": "Layout editor: Weight & Water variant.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen váha"
+          }
+        }
+      }
+    },
     "well over target": {
       "comment": "VoiceOver: calorie ring band.",
       "extractionState": "manual",
@@ -6825,6 +8121,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Čím byl tento den jiný?"
+          }
+        }
+      }
+    },
+    "Why this boss": {
+      "comment": "Weekly boss screen: section explaining why this boss was chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proč tento boss"
           }
         }
       }
@@ -6865,6 +8173,18 @@
         }
       }
     },
+    "Your bingo card appears after your next log.": {
+      "comment": "Bingo card placeholder before this week's card exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje bingo karta se objeví po dalším zápisu."
+          }
+        }
+      }
+    },
     "Your custom foods": {
       "comment": "Log Food screen: section header listing the user's custom foods.",
       "extractionState": "manual",
@@ -6901,6 +8221,18 @@
         }
       }
     },
+    "Your journeys start with your first log.": {
+      "comment": "Journeys card before any data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje cesty začnou prvním zápisem."
+          }
+        }
+      }
+    },
     "Your own goals stay on this phone; Garmin Connect isn't changed.": {
       "comment": "Settings goals footer sentence.",
       "extractionState": "manual",
@@ -6909,6 +8241,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tvoje vlastní cíle zůstávají v tomto telefonu, Garmin Connect se nemění."
+          }
+        }
+      }
+    },
+    "Your saved layout couldn't be read and was reset.": {
+      "comment": "Settings -> Appearance page. One-time notice after an unreadable stored layout was quarantined.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložené rozložení nešlo načíst, proto bylo obnoveno na výchozí."
           }
         }
       }
@@ -6925,6 +8269,18 @@
         }
       }
     },
+    "Your theme, style and screen layouts go back to their defaults.": {
+      "comment": "Settings -> Appearance page. Message of the Reset all appearance confirmation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motiv, styl i rozložení obrazovek se vrátí na výchozí."
+          }
+        }
+      }
+    },
     "Yours": {
       "comment": "Small source badge on a search result that is one of the user's own custom foods.",
       "extractionState": "manual",
@@ -6933,834 +8289,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tvoje"
-          }
-        }
-      }
-    },
-    "Journeys": {
-      "comment": "Progress card / screen title: real-world journeys (protein climb, water, road trip, food passport).",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cesty"
-          }
-        }
-      }
-    },
-    "Your journeys start with your first log.": {
-      "comment": "Journeys card before any data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tvoje cesty začnou prvním zápisem."
-          }
-        }
-      }
-    },
-    "Opens journeys": {
-      "comment": "Accessibility hint of the journeys card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře cesty"
-          }
-        }
-      }
-    },
-    "Total: %@": {
-      "comment": "Journey total so far. %@ = an amount like \"1,640 m\".",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Celkem: %@"
-          }
-        }
-      }
-    },
-    "Stage %lld of %lld: %@": {
-      "comment": "Journey stage. First = current stage number, second = stage count, %@ = stage name.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Etapa %lld z %lld: %@"
-          }
-        }
-      }
-    },
-    "Next: %@ · %@ to go": {
-      "comment": "Next journey milestone. First %@ = milestone name, second %@ = distance left like \"1,015 m\".",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Další: %@ · zbývá %@"
-          }
-        }
-      }
-    },
-    "%@: %@ filled": {
-      "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@: naplněno %@"
-          }
-        }
-      }
-    },
-    "All milestones reached!": {
-      "comment": "Journey with every milestone reached.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Všechny milníky máš za sebou!"
-          }
-        }
-      }
-    },
-    "%@, %@, reached": {
-      "comment": "Accessibility: journey milestone name, its amount, reached.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, dosaženo"
-          }
-        }
-      }
-    },
-    "%@, %@, next milestone": {
-      "comment": "Accessibility: journey milestone name, its amount, the next one.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, další milník"
-          }
-        }
-      }
-    },
-    "%@, %@, not reached yet": {
-      "comment": "Accessibility: journey milestone name, its amount, still ahead.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, zatím nedosaženo"
-          }
-        }
-      }
-    },
-    "Personal records": {
-      "comment": "Progress card / screen title: personal records.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Osobní rekordy"
-          }
-        }
-      }
-    },
-    "No records yet. Keep logging and they will appear here.": {
-      "comment": "Personal records before any data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zatím žádné rekordy. Zapisuj dál a objeví se tady."
-          }
-        }
-      }
-    },
-    "Recent PR": {
-      "comment": "Accessibility label of the trophy on a record beaten in the last 7 days.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nedávný rekord"
-          }
-        }
-      }
-    },
-    "Opens personal records": {
-      "comment": "Accessibility hint of the personal records card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře osobní rekordy"
-          }
-        }
-      }
-    },
-    "Recent PRs": {
-      "comment": "Section header: the last personal records beaten.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nedávné rekordy"
-          }
-        }
-      }
-    },
-    "A new PR is announced once a record has 7 days of data.": {
-      "comment": "Footnote on the personal records screen (warm-up rule).",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nový rekord se oznámí, až má záznam aspoň 7 dní dat."
-          }
-        }
-      }
-    },
-    "Previous best: %@ (%@)": {
-      "comment": "Personal record's previous best. First %@ = value, second %@ = date.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Předchozí rekord: %@ (%@)"
-          }
-        }
-      }
-    },
-    "was %@": {
-      "comment": "Recent PR list: the previous record value.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "předtím %@"
-          }
-        }
-      }
-    },
-    "Easy task": {
-      "comment": "Bingo square difficulty.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Snadný úkol"
-          }
-        }
-      }
-    },
-    "Medium task": {
-      "comment": "Bingo square difficulty.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Středně těžký úkol"
-          }
-        }
-      }
-    },
-    "Hard task": {
-      "comment": "Bingo square difficulty.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Těžký úkol"
-          }
-        }
-      }
-    },
-    "Judged from your nutrition totals and goals.": {
-      "comment": "Bingo square sheet: the task uses macro data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle tvých denních součtů živin a cílů."
-          }
-        }
-      }
-    },
-    "Judged from your water log and goal.": {
-      "comment": "Bingo square sheet: the task uses water data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle zapsané vody a tvého cíle pitného režimu."
-          }
-        }
-      }
-    },
-    "Judged from your Garmin activities.": {
-      "comment": "Bingo square sheet: the task uses Garmin activities.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle tvých aktivit z Garminu."
-          }
-        }
-      }
-    },
-    "Judged from the foods you log.": {
-      "comment": "Bingo square sheet: the task uses only logged foods.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle jídel, která zapisuješ."
-          }
-        }
-      }
-    },
-    "Row %lld, column %lld, free square": {
-      "comment": "VoiceOver label of the bingo centre square.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řádek %1$lld, sloupec %2$lld, volné pole"
-          }
-        }
-      }
-    },
-    "Row %lld, column %lld, %@, done on %@": {
-      "comment": "VoiceOver label of a done bingo square. Row, column, task title, weekday it was done.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, splněno: %4$@"
-          }
-        }
-      }
-    },
-    "Row %lld, column %lld, %@, not done": {
-      "comment": "VoiceOver label of a bingo square not done yet. Row, column, task title.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, nesplněno"
-          }
-        }
-      }
-    },
-    "Shows the rule": {
-      "comment": "Accessibility hint of a bingo square.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zobrazí pravidlo"
-          }
-        }
-      }
-    },
-    "FREE": {
-      "comment": "Label of the free centre square of the bingo card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ZDARMA"
-          }
-        }
-      }
-    },
-    "Your bingo card appears after your next log.": {
-      "comment": "Bingo card placeholder before this week's card exists.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tvoje bingo karta se objeví po dalším zápisu."
-          }
-        }
-      }
-    },
-    "Squares tick themselves from what you log. Each line earns %lld XP; a full card earns %lld XP and a streak freeze.": {
-      "comment": "Bingo screen footnote. First %lld = XP per line, second = XP for a full card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pole se odškrtávají sama podle toho, co zapisuješ. Každá řada dává %1$lld XP, plná karta %2$lld XP a zmrazení série."
-          }
-        }
-      }
-    },
-    "Past cards": {
-      "comment": "Bingo screen section: previous weeks' cards.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Minulé karty"
-          }
-        }
-      }
-    },
-    "Weekly Bingo": {
-      "comment": "Bingo card title on the Progress tab and bingo screen.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Týdenní bingo"
-          }
-        }
-      }
-    },
-    "Lines: %lld": {
-      "comment": "Bingo: number of completed lines.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řady: %lld"
-          }
-        }
-      }
-    },
-    "Squares: %lld/9": {
-      "comment": "Bingo: squares done out of 9.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pole: %lld/9"
-          }
-        }
-      }
-    },
-    "Days left: %lld": {
-      "comment": "Bingo: days left in this week.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zbývá dní: %lld"
-          }
-        }
-      }
-    },
-    "Full card": {
-      "comment": "Bingo: every square of a past card was done.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plná karta"
-          }
-        }
-      }
-    },
-    "Done on %@": {
-      "comment": "Bingo square sheet: the day it was done, e.g. 'Tuesday, 22 Sep'.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Splněno: %@"
-          }
-        }
-      }
-    },
-    "Not done yet": {
-      "comment": "Bingo square sheet: square not done.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zatím nesplněno"
-          }
-        }
-      }
-    },
-    "Opens the bingo card": {
-      "comment": "Accessibility hint of the bingo card on the Progress tab.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře bingo kartu"
-          }
-        }
-      }
-    },
-    "Missed, streak frozen": {
-      "comment": "Streak calendar day: a missed day covered by a streak freeze (VoiceOver).",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vynecháno, série zmrazena"
-          }
-        }
-      }
-    },
-    "Frozen": {
-      "comment": "Streak calendar legend: a day covered by a streak freeze.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zmrazeno"
-          }
-        }
-      }
-    },
-    "Streak freezes": {
-      "comment": "Streak screen: title of the streak-freeze bank.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zmrazení série"
-          }
-        }
-      }
-    },
-    "Used so far: %lld": {
-      "comment": "Streak screen: number of streak freezes used so far.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zatím použito: %lld"
-          }
-        }
-      }
-    },
-    "Bank full: the freeze earned on %@ was not added (you can hold %lld).": {
-      "comment": "Streak screen: a freeze was earned while the bank was full. %@ is a date, %lld the maximum number of freezes.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zásoba plná: zmrazení získané %1$@ nebylo přidáno (můžeš mít nejvýš %2$lld)."
-          }
-        }
-      }
-    },
-    "Streak freezes: %lld of %lld": {
-      "comment": "VoiceOver: available streak freezes out of the maximum.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zmrazení série: %1$lld z %2$lld"
-          }
-        }
-      }
-    },
-    "A streak freeze covers a second missed day that would otherwise end a streak of 3 days or more, and is used automatically. Earn one by defeating the weekly boss or completing a full bingo card; you can hold up to %lld.": {
-      "comment": "Streak screen, How streaks work: explains streak freezes. %lld is the maximum number of freezes.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zmrazení série pokryje druhý vynechaný den, který by jinak ukončil sérii dlouhou aspoň 3 dny, a použije se samo. Získáš ho poražením týdenního bosse nebo celou bingo kartou; mít můžeš nejvýš %lld."
-          }
-        }
-      }
-    },
-    "This week's boss appears after your next log.": {
-      "comment": "Weekly boss placeholder before this week's boss exists.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boss tohoto týdne se objeví po dalším zápisu."
-          }
-        }
-      }
-    },
-    "Every Monday a boss is picked from your weakest habit of the last four weeks. Defeat it for %lld–%lld XP and a streak freeze. If it escapes, nothing is lost.": {
-      "comment": "Weekly boss screen footnote. The two %lld are the XP range.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Každé pondělí se vybere boss podle tvého nejslabšího návyku za poslední čtyři týdny. Poraž ho a získáš %1$lld–%2$lld XP a zmrazení série. Když uteče, nic neztratíš."
-          }
-        }
-      }
-    },
-    "Past weeks": {
-      "comment": "Weekly boss screen: section of previous weeks.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Minulé týdny"
-          }
-        }
-      }
-    },
-    "Bestiary": {
-      "comment": "Weekly boss screen: section listing every boss kind.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bestiář"
-          }
-        }
-      }
-    },
-    "Weekly Boss": {
-      "comment": "Weekly boss card title and screen title.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Týdenní boss"
-          }
-        }
-      }
-    },
-    "%@ on %lld of 7 days to defeat it.": {
-      "comment": "Weekly boss screen: the habit and the target. %@ is the habit (e.g. 'Log breakfast'), %lld a number of days.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ ve %2$lld ze 7 dnů a porazíš ho."
-          }
-        }
-      }
-    },
-    "Hits: %lld/%lld": {
-      "comment": "Weekly boss: hits so far out of the target.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zásahy: %1$lld/%2$lld"
-          }
-        }
-      }
-    },
-    "Why this boss": {
-      "comment": "Weekly boss screen: section explaining why this boss was chosen.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Proč tento boss"
-          }
-        }
-      }
-    },
-    "Over the last four weeks this was your weakest habit, so the target is two days better than your recent average.": {
-      "comment": "Weekly boss screen: how the boss and its target were chosen.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Za poslední čtyři týdny to byl tvůj nejslabší návyk, proto je cíl o dva dny lepší než tvůj nedávný průměr."
-          }
-        }
-      }
-    },
-    "This week": {
-      "comment": "Weekly boss screen: section showing which days of this week scored a hit.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tento týden"
-          }
-        }
-      }
-    },
-    "Hit": {
-      "comment": "VoiceOver: this day scored a hit on the weekly boss.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zásah"
-          }
-        }
-      }
-    },
-    "No hit": {
-      "comment": "VoiceOver: this day did not score a hit on the weekly boss.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bez zásahu"
-          }
-        }
-      }
-    },
-    "Defeated": {
-      "comment": "Weekly boss outcome: beaten.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Poražen"
-          }
-        }
-      }
-    },
-    "Not defeated yet": {
-      "comment": "VoiceOver: bestiary boss kind never defeated.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zatím neporažen"
-          }
-        }
-      }
-    },
-    "HP %lld/%lld": {
-      "comment": "Weekly boss health bar: remaining health out of the total.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Životy %1$lld/%2$lld"
-          }
-        }
-      }
-    },
-    "Boss health": {
-      "comment": "VoiceOver label of the weekly boss health bar.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Životy bosse"
-          }
-        }
-      }
-    },
-    "Escaped": {
-      "comment": "Weekly boss outcome: the week ended without defeating it.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Utekl"
-          }
-        }
-      }
-    },
-    "In progress": {
-      "comment": "Weekly boss outcome: this week's fight is still running.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Probíhá"
-          }
-        }
-      }
-    },
-    "Opens the weekly boss": {
-      "comment": "VoiceOver hint of the weekly boss card and banner.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře týdenního bosse"
-          }
-        }
-      }
-    },
-    "This week's boss": {
-      "comment": "Today banner caption above the weekly boss name.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boss tohoto týdne"
           }
         }
       }

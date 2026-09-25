@@ -76,11 +76,12 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
 
 ## 3. Wave 3: Today card registry and edit layout (size: L)
 
-- [ ] 3.1 **AppearanceKit layout model**: `TodayCardID`, `LogFoodShelfID`, `ProgressCardID`, `CardSpec` catalogs, `CardPlacement`, `ScreenLayout`, `LayoutConfig` v1 (lenient `Codable`), `LayoutResolver` (D8 rules 1–6), and `LayoutPreset` (Full, Minimal, Athlete). `LayoutResolverTests` includes a golden default order per screen that equals today's code, and a round trip with a card unknown to this build. CI green.
-- [ ] 3.2 **`LayoutStore`** (`@Observable`), `AppPreferences` key `layout.v1` plus quarantine (`AppPreferences+Layout.swift`), registered in `AppEnvironment`. CI green.
-- [ ] 3.3 **`TodayView` renders the resolved order** through one `@ViewBuilder switch` over `TodayCardID`. The existing show-when conditions (today and non-empty, fasting enabled) move into `availability(_:)` unchanged. CI green.
-- [ ] 3.4 **Variants**: summary `compact` and `hero`, `MealSectionCard` `collapsed`, and Weight & Water `weight` / `water`. CI green.
-- [ ] 3.5 **`LayoutEditorSheet`** (generic over a screen):
+- [x] 3.1 **AppearanceKit layout model**: `TodayCardID`, `LogFoodShelfID`, `ProgressCardID`, `CardSpec` catalogs, `CardPlacement`, `ScreenLayout`, `LayoutConfig` v1 (lenient `Codable`), `LayoutResolver` (D8 rules 1–6), and `LayoutPreset` (Full, Minimal, Athlete). `LayoutResolverTests` includes a golden default order per screen that equals today's code, and a round trip with a card unknown to this build. CI green.
+  - *As built:* the default Today order follows the pre-change code (fasting **before** the banners, as `TodayView` had them), not D8's enum listing, which puts `banners` before `fasting`; the golden test pins the code order. Titles and SF Symbols are not in `CardSpec` (AppearanceKit has no user-facing text): they live in the app's `Layout/LayoutCardInfo.swift`. The signature is pinned and not hideable until 0.6 is answered (one word in `LayoutCatalog.today`). One `LayoutConfig` per phone: per-person layouts (0.4) are not built.
+- [x] 3.2 **`LayoutStore`** (`@Observable`), `AppPreferences` key `layout.v1` plus quarantine (`AppPreferences+Layout.swift`), registered in `AppEnvironment`. CI green.
+- [x] 3.3 **`TodayView` renders the resolved order** through one `@ViewBuilder switch` over `TodayCardID`. The existing show-when conditions (today and non-empty, fasting enabled) move into `availability(_:)` unchanged. CI green.
+- [x] 3.4 **Variants**: summary `compact` and `hero`, `MealSectionCard` `collapsed`, and Weight & Water `weight` / `water`. CI green.
+- [x] 3.5 **`LayoutEditorSheet`** (generic over a screen):
   - `List` with `onMove` and edit mode active
   - visibility toggles, variant menus, greyed rows with their reason, locked pinned rows
   - the Presets menu, Reset with confirmation plus in-session Undo, and Done
@@ -88,8 +89,10 @@ Answered 2026-09-24; see design.md "Revision 2026-09-24" (R1–R7).
   - VoiceOver labels and Move actions
 
   CI green.
-- [ ] 3.6 **Entry points**: an "Edit layout…" item in Today's toolbar menu, and Settings → Appearance → Layout → Today. CI green.
-- [ ] 3.7 **Banners card**: if `add-gamification-signals` has merged, the `banners` card hosts `TodaySlotHost()` above `meals`. If it hasn't, leave the case returning `.unavailable` and make this a one-line follow-up in whichever change merges second. CI green.
+- [x] 3.6 **Entry points**: an "Edit layout…" item in Today's toolbar menu, and Settings → Appearance → Layout → Today. CI green.
+  - *As built:* Settings → Appearance → Layout has the Today row (showing the current preset or "Custom"); Log Food & Progress show "Coming soon" until wave 4. "Reset all appearance" resets the layouts too. The Settings editor only knows fasting on/off, so Log again / Log a meal read as available there.
+- [x] 3.7 **Banners card**: if `add-gamification-signals` has merged, the `banners` card hosts `TodaySlotHost()` above `meals`. If it hasn't, leave the case returning `.unavailable` and make this a one-line follow-up in whichever change merges second. CI green.
+  - *As built:* `add-gamification-signals` has merged, so `TodayView`'s `.banners` arm hosts `TodaySlotHost()` (seasonal event + weekly boss) as one block, after Fasting and above the meals by default, and it is always available: the slots decide their own content (and load it in their own `.task`), so gating the card on "has a banner" would stop them from ever loading.
 - [ ] 3.8 **On-device check**:
   - An upgrade with nothing stored shows the same order.
   - Drag and hide persist across a relaunch.
