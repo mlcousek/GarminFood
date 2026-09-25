@@ -24,8 +24,10 @@
 //      a line / the full card is recorded on the card, then requests the
 //      badges (D6) the counters and stored cards justify.
 //
-// The previous week's card is simply no longer evaluated from Monday on:
-// it is frozen as-is and stays in the 12-week history.
+// The previous week's card is no longer evaluated from Monday on -- it is
+// frozen as-is and stays in the 12-week history -- except for its whole-day
+// squares (`BingoTask.judgesCompletedDaysOnly`: today never ticks them, so
+// its Sunday can only be judged once the week is over).
 //
 // Depends on: GamificationFeature, BingoTaskCatalog, BingoCardGenerator,
 // BingoEvaluator, BingoStore, XPAward+Features, FoodLogCore.
@@ -100,6 +102,32 @@ public actor WeeklyBingoFeature: GamificationFeature {
             : context.snapshot.today
         guard let week = WeekKey(dayKey: today, calendar: calendar) else { return .empty }
 
+        var update = FeatureUpdate()
+
+        // Last week's card: only its whole-day squares ("no soda", "early
+        // dinner"...) are judged once more, now that its Sunday is over --
+        // they could never tick on the day itself. Everything else on it
+        // stays frozen as-is. Rewards/moments for anything this completes
+        // go out under LAST week's keys (idempotent in RewardLedger).
+        if let previousWeek = week.adding(weeks: -1, calendar: calendar),
+           var previous = await store.card(week: previousWeek),
+           previous.taskIds.count == BingoCardGenerator.cardSize {
+            let settled = BingoEvaluator.completions(
+                taskIds: previous.taskIds,
+                week: previousWeek,
+                today: today,
+                snapshot: context.snapshot,
+                calendar: calendar,
+                stored: previous.completedByIndex,
+                onlyCompletedDayTasks: true
+            )
+            if settled != previous.completedByIndex {
+                previous.setCompleted(settled)
+            }
+            await applyLinesAndFullCard(&previous, week: previousWeek, completed: settled, into: &update)
+            await store.setCard(previous, week: previousWeek)
+        }
+
         var record = await cardForWeek(week, snapshot: context.snapshot, calendar: calendar)
         let merged = BingoEvaluator.completions(
             taskIds: record.taskIds,
@@ -110,9 +138,28 @@ public actor WeeklyBingoFeature: GamificationFeature {
             stored: record.completedByIndex
         )
         record.setCompleted(merged)
+        await applyLinesAndFullCard(&record, week: week, completed: merged, into: &update)
 
-        var update = FeatureUpdate()
+        await store.setCard(record, week: week)
+        update.unlockBadgeIds = await badgeIds(alreadyUnlocked: context.unlockedBadgeIds)
+        await store.prune()
+        // A failed save costs at most a repeated moment next run: grants
+        // are idempotent in RewardLedger and badges in AchievementStore.
+        try? await store.save()
 
+        update.summary = Self.summary(for: Self.status(week: week, record: record), daysLeft: Self.daysLeft(week: week, today: today, calendar: calendar))
+        return update
+    }
+
+    /// Grants every complete line (and the full card) of `record` -- every
+    /// run, RewardLedger makes them idempotent -- and, only the first time
+    /// each is recorded on the card, a moment and the lifetime counters.
+    private func applyLinesAndFullCard(
+        _ record: inout BingoCardRecord,
+        week: WeekKey,
+        completed merged: [Int: String],
+        into update: inout FeatureUpdate
+    ) async {
         var linesDone = record.linesDone ?? []
         var newLines: [BingoLine] = []
         for line in BingoEvaluator.completedLines(taskIds: record.taskIds, completed: merged) {
@@ -154,16 +201,6 @@ public actor WeeklyBingoFeature: GamificationFeature {
                 ))
             }
         }
-
-        await store.setCard(record, week: week)
-        update.unlockBadgeIds = await badgeIds(alreadyUnlocked: context.unlockedBadgeIds)
-        await store.prune()
-        // A failed save costs at most a repeated moment next run: grants
-        // are idempotent in RewardLedger and badges in AchievementStore.
-        try? await store.save()
-
-        update.summary = Self.summary(for: Self.status(week: week, record: record), daysLeft: Self.daysLeft(week: week, today: today, calendar: calendar))
-        return update
     }
 
     // MARK: - UI reads (store only -- work before this launch's first run)
