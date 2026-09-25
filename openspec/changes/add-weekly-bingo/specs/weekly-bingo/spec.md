@@ -35,7 +35,7 @@ not available on any of the last 14 days.
 #### Scenario: No activities
 
 - **WHEN** no Garmin activity is cached for the last 14 days
-- **THEN** the new card contains neither "Refuel" nor "Earned It"
+- **THEN** the new card contains neither "Refuel" nor "Earned the Meal"
 
 ### Requirement: Squares complete automatically from the week's day signals and stay complete
 

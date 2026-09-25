@@ -322,7 +322,7 @@ public enum BingoTaskCatalog {
         ),
         BingoTask(
             id: "h-earned-it",
-            title: String(localized: "Earned It", bundle: .module, comment: "Bingo task title: a 30-minute activity and the calorie goal on the same day."),
+            title: String(localized: "Earned the Meal", bundle: .module, comment: "Bingo task title: a 30-minute activity and the calorie goal on the same day."),
             detail: String(localized: "Do an activity of at least 30 minutes and reach your calorie goal the same day.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .hard, family: "sport",
             scope: .day(.all([.hasActivity(minMinutes: 30), .goalMet(.calories)])),

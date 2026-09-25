@@ -100,7 +100,7 @@ struct ThemeImportPreviewSheet: View {
             }
 
             Section {
-                PrimaryButton(title: String(localized: "Apply")) {
+                PrimaryButton(title: "Apply") {
                     store.applyImported(settings)
                     dismiss()
                 }

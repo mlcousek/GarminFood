@@ -60,7 +60,7 @@ single day of the week, or `.week(WeekPredicate)`), and the predicate's
 | `h-sugar-low` | Sugar Low | ≤ 25 g sugar with ≥ 3 entries | H | macros | macros |
 | `h-five-a-day` | Five a Day | ≥ 5 fruit+veg entries in one day | H | fruit | – |
 | `h-rainbow` | Full Rainbow | all 6 colours across the week | H | colours | – |
-| `h-earned-it` | Earned It | activity ≥ 30 min and calorie goal the same day | H | sport | activities |
+| `h-earned-it` | Earned the Meal | activity ≥ 30 min and calorie goal the same day | H | sport | activities |
 | `h-clean-sweep` | Clean Sweep | all four goals in one day | H | goal | – |
 
 35 tasks: 10 easy, 14 medium, 11 hard. Adding a task later is a row in this

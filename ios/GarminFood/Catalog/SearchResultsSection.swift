@@ -116,7 +116,7 @@ struct SearchResultsSection: View {
             statusRows
         } header: {
             if !visibleResults.isEmpty {
-                SectionHeader(title: "Results")
+                SectionHeader(title: String(localized: "Results"))
             }
         }
         .animation(reduceMotion ? nil : .default, value: visibleResults.map(\.id))
@@ -147,7 +147,9 @@ struct SearchResultsSection: View {
     }
 
     private func hint(for result: SearchResult) -> String {
-        result.origin.isDirectlyLoggable ? "Selects this food" : "Finds the matching Garmin food first"
+        result.origin.isDirectlyLoggable
+            ? String(localized: "Selects this food")
+            : String(localized: "Finds the matching Garmin food first")
     }
 
     private func select(_ result: SearchResult) {
@@ -214,8 +216,9 @@ struct SearchResultsSection: View {
     private func loadingText(_ snapshot: SearchSnapshot) -> String {
         let loading = SearchOrigin.allCases.filter { snapshot.statuses[$0] == .loading }
         let names = loading.map { $0.displayName }
-        guard !names.isEmpty else { return "Searching…" }
-        return "Searching " + ListFormatter.localizedString(byJoining: names) + "…"
+        guard !names.isEmpty else { return String(localized: "Searching…") }
+        let list = ListFormatter.localizedString(byJoining: names)
+        return String(localized: "Searching \(list)…", comment: "Search progress; %@ = list of sources still loading, e.g. 'Garmin and Open Food Facts'.")
     }
 
     private func footnotes(for snapshot: SearchSnapshot) -> [SearchFootnote] {
@@ -233,7 +236,7 @@ struct SearchResultsSection: View {
         // Auth failures are loud (CLAUDE.md): say exactly what to do.
         if failures.contains(where: { $0.origin == .garmin && $0.failure.kind == .signedOut }) {
             notes.append(SearchFootnote(
-                text: "Sign in to Garmin again (Settings) to search its food database.",
+                text: String(localized: "Sign in to Garmin again (Settings) to search its food database."),
                 systemImage: "person.crop.circle.badge.exclamationmark",
                 isWarning: true
             ))
@@ -247,15 +250,15 @@ struct SearchResultsSection: View {
             let hasOfflineResults = snapshot.results.contains { $0.origin == .offlineIndex }
             notes.append(SearchFootnote(
                 text: hasOfflineResults
-                    ? "Online food databases are unavailable right now, so these are your foods and the offline Czech database."
-                    : "Online food databases are unavailable right now, so these are foods you already have.",
+                    ? String(localized: "Online food databases are unavailable right now, so these are your foods and the offline Czech database.")
+                    : String(localized: "Online food databases are unavailable right now, so these are foods you already have."),
                 systemImage: "wifi.slash",
                 isWarning: false
             ))
         }
         for origin in unavailable where !(allOnlineUnavailable && onlineOrigins.contains(origin)) {
             notes.append(SearchFootnote(
-                text: "\(origin.sentenceName) is unavailable right now, so its results are missing.",
+                text: origin.unavailableNote,
                 systemImage: "exclamationmark.icloud",
                 isWarning: false
             ))
@@ -287,7 +290,7 @@ private struct SearchSourceBadges: View {
                 .background(result.origin.badgeColor.opacity(0.15), in: Capsule())
                 .foregroundStyle(result.origin.badgeColor)
             if !result.alsoIn.isEmpty {
-                Text("also in " + result.alsoIn.map { $0.displayName }.joined(separator: ", "))
+                Text("also in \(alsoInList)")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -297,37 +300,46 @@ private struct SearchSourceBadges: View {
     }
 
     private var accessibilityText: String {
-        let source = "From \(result.origin.displayName)"
-        guard !result.alsoIn.isEmpty else { return source }
-        return source + ", also in " + result.alsoIn.map { $0.displayName }.joined(separator: ", ")
+        let source = result.origin.displayName
+        guard !result.alsoIn.isEmpty else { return String(localized: "From \(source)") }
+        return String(localized: "From \(source), also in \(alsoInList)")
+    }
+
+    private var alsoInList: String {
+        result.alsoIn.map { $0.displayName }.joined(separator: ", ")
     }
 }
 
 private extension SearchOrigin {
+    /// A list-item name, only ever used as the `%@` list in "Searching %@…"
+    /// / "also in %@", whose Czech translations use a colon-style lead-in
+    /// ("Prohledávám: …", "také v: …") so the name can stay in the
+    /// nominative instead of being declined per sentence.
     var displayName: String {
         switch self {
-        case .local: return "your foods"
+        case .local: return String(localized: "your foods")
         case .garmin: return "Garmin"
-        case .offlineIndex: return "the offline Czech database"
+        case .offlineIndex: return String(localized: "the offline Czech database")
         case .openFoodFacts: return "Open Food Facts"
         }
     }
 
-    /// `displayName` for the start of a sentence.
-    var sentenceName: String {
+    /// "<source> is unavailable right now…" as one whole-sentence key per
+    /// source (no glued-in name: Czech needs per-source gender/case).
+    var unavailableNote: String {
         switch self {
-        case .local: return "Your foods"
-        case .garmin: return "Garmin"
-        case .offlineIndex: return "The offline Czech database"
-        case .openFoodFacts: return "Open Food Facts"
+        case .local: return String(localized: "Your foods are unavailable right now, so their results are missing.")
+        case .garmin: return String(localized: "Garmin is unavailable right now, so its results are missing.")
+        case .offlineIndex: return String(localized: "The offline Czech database is unavailable right now, so its results are missing.")
+        case .openFoodFacts: return String(localized: "Open Food Facts is unavailable right now, so its results are missing.")
         }
     }
 
     var badgeTitle: String {
         switch self {
-        case .local: return "Yours"
+        case .local: return String(localized: "Yours")
         case .garmin: return "Garmin"
-        case .offlineIndex: return "Czech DB"
+        case .offlineIndex: return String(localized: "Czech DB")
         case .openFoodFacts: return "Open Food Facts"
         }
     }

@@ -44,7 +44,11 @@ final class AppServices {
     /// own `AppEnvironment`, for the same one-shared-instance-per-process
     /// reason `customFoodStore`/`mealPresetStore` are.
     let favoriteFoodStore: FavoriteFoodStore
-    let logEntryCoordinator: LogEntryCoordinator
+    /// Every food-log write (add-standalone-mode D4): routes to the
+    /// implementation for the current data mode -- always the Garmin
+    /// `LogEntryCoordinator` until standalone mode's wave 2. Same name and
+    /// call signatures as before, so no view or intent changed.
+    let logEntryCoordinator: ModeRoutingFoodLogging
     /// add-weight-tracking: the weight domain's own store/outbox/coordinator
     /// pair, following the exact same one-instance-per-process shape as the
     /// food-logging ones above -- see WeightTracking.swift/
@@ -124,7 +128,9 @@ final class AppServices {
         self.dayNoteStore = DayNoteStore()
         // `foodCache` so an edited/duplicated/copied entry can be named in
         // its meal before Garmin reads it back (add-log-entry-editing).
-        self.logEntryCoordinator = LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults, foodCache: foodCache)
+        self.logEntryCoordinator = ModeRoutingFoodLogging(
+            garmin: LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults, foodCache: foodCache, garminLog: client)
+        )
         self.weightStore = weightStore
         self.weightOutbox = weightOutbox
         self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox)

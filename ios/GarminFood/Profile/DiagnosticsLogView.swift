@@ -5,6 +5,11 @@
 // Console.app, so this screen plus its "Copy all" action are the only way
 // to see what actually happened on a real device and hand it off (e.g.
 // pasted into a chat) without any other tooling.
+//
+// Its "..." menu also carries the hidden developer toggle "Force standalone
+// mode (testing)" (add-standalone-mode 1.5): until onboarding exists, the
+// only way to try standalone mode on a device. It just stores
+// `AppPreferences.forceStandaloneMode`; wave 1 reads it nowhere.
 
 import SwiftUI
 import UIKit
@@ -12,17 +17,19 @@ import GarminKit
 
 @MainActor
 struct DiagnosticsLogView: View {
+    @Environment(AppEnvironment.self) private var environment
     @State private var entries: [DiagnosticsEntry] = []
     @State private var isConfirmingClear = false
     @State private var didCopy = false
 
     var body: some View {
+        @Bindable var preferences = environment.preferences
         List {
             if entries.isEmpty {
                 EmptyStateView(
                     systemImage: "checkmark.circle",
-                    title: String(localized: "Nothing logged"),
-                    message: String(localized: "Errors and warnings from Garmin sync and logging actions will show up here.")
+                    title: "Nothing logged",
+                    message: "Errors and warnings from Garmin sync and logging actions will show up here."
                 )
                 .listRowSeparator(.hidden)
             } else {
@@ -61,6 +68,8 @@ struct DiagnosticsLogView: View {
                     } label: {
                         Label("Clear log", systemImage: "trash")
                     }
+                    Divider()
+                    Toggle("Force standalone mode (testing)", isOn: $preferences.forceStandaloneMode)
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
