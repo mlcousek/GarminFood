@@ -92,6 +92,28 @@ final class LayoutConfigTests: XCTestCase {
         XCTAssertNil(LayoutPreset.current(in: config))
     }
 
+    func testNoOpEditKeepsThePreset() {
+        var config = LayoutConfig.default
+        config.edit(.today) { stored, specs in LayoutResolver.setVisible(true, for: "dayNote", in: stored, specs: specs) }
+        XCTAssertNil(config.today, "a no-op edit stores nothing")
+        XCTAssertEqual(LayoutPreset.current(in: config), .full)
+
+        config.edit(.today) { stored, specs in LayoutResolver.move("daySwitcher", .down, in: stored, specs: specs) }
+        XCTAssertEqual(LayoutPreset.current(in: config), .full, "a pinned card can't move")
+
+        config.apply(.athlete)
+        config.edit(.today) { stored, specs in LayoutResolver.setVisible(true, for: "dayNote", in: stored, specs: specs) }
+        XCTAssertEqual(LayoutPreset.current(in: config), .athlete)
+    }
+
+    func testMigrationKeepsANewerVersion() {
+        let newer = AppearanceSchema.layoutVersion + 3
+        let result = load("{\"version\":\(newer)}")
+        XCTAssertEqual(result.status, .loaded)
+        XCTAssertEqual(result.config.version, newer)
+        XCTAssertEqual(LayoutMigration.migrate(LayoutConfig(version: 0)).version, AppearanceSchema.layoutVersion)
+    }
+
     func testResetReturnsToFull() {
         var config = LayoutConfig.default
         config.apply(.minimal)
