@@ -4,8 +4,16 @@
 
 The system SHALL derive the level curve's growth factor from an explicit
 table of expected daily XP per always-on XP source, so that a typical active
-day reaches level 84 after 1,095 days, level 10 within 14–35 days, and
-level 50 within 270–460 days.
+day reaches level 84 after 1,095 days (±1%), level 10 within 7–21 days,
+and level 50 within 150–300 days. The first-level band stays 100 XP and
+only the growth factor is solved, so the level 10 and level 50 windows
+describe what that curve delivers. Meeting later windows would need a
+larger base, which would leave existing users weeks without a level-up.
+
+#### Scenario: Typical pace
+
+- **WHEN** a typical active day's budgeted XP is accumulated on the level curve
+- **THEN** level 10 is reached within 7–21 days, level 50 within 150–300 days, and level 84 within 1,084–1,106 days
 
 #### Scenario: Budget and curve agree
 
@@ -29,14 +37,21 @@ gamification feature registry.
 
 ### Requirement: Optional features do not speed up levelling
 
-The system SHALL scale XP granted by an optional, user-enabled source so
-that enabling it keeps the simulated days to reach level 84 within ±1% of
-the always-on budget alone.
+The system SHALL scale XP granted by optional, user-enabled sources by one
+shared multiplier, `min(1, 0.005 × core daily XP / enabled optional daily
+XP)`, with every positive grant paying at least 1 XP, so that enabling them
+keeps the simulated days to reach level 84 within ±1% of the always-on
+budget alone.
 
-#### Scenario: Supplements enabled
+#### Scenario: An optional source is enabled
 
-- **WHEN** the supplements feature is enabled and a typical day includes its expected supplement XP
-- **THEN** the simulated days to level 84 are between 1,084 and 1,106
+- **WHEN** an optional source that pays at most one grant a day is enabled and a typical day includes its scaled grant
+- **THEN** the simulated days to level 84 are within ±1% of the always-on figure
+
+#### Scenario: No optional source is enabled
+
+- **WHEN** no optional source is enabled
+- **THEN** the multiplier is 1 and no grant is scaled
 
 ### Requirement: A curve change never lowers the displayed level
 
@@ -47,3 +62,8 @@ lower than the highest level previously reached under any earlier factor.
 
 - **WHEN** a user at level 40 under the previous factor updates to a build whose factor maps their XP to level 38
 - **THEN** level 40 is still displayed and XP progress continues toward level 41
+
+#### Scenario: The owner's ledger after the update
+
+- **WHEN** a ledger of about 3,000 XP with a peak of level 20 updates to the budget-solved curve
+- **THEN** level 20 stays displayed and level 21 arrives within 5 typical days

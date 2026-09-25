@@ -1,9 +1,11 @@
 // LevelPeakTests.swift
 //
-// add-gamification-signals 6.6 (design D10): the 1.0505 curve, and the rule
-// that a level once reached is never taken away -- an XP ledger written on
-// the old 1.045 curve keeps its level, and a level-up moment fires only
-// when the new curve passes that peak.
+// add-gamification-signals 6.6 (design D10): the rule that a level once
+// reached is never taken away -- an XP ledger written on the old 1.045
+// curve keeps its level, and a level-up moment fires only when the live
+// curve passes that peak. rebalance-xp-economy moved the live curve to the
+// budget-solved factor (XPBudget); the 1.0505 -> today migration is in
+// XPCurveMigrationTests.
 
 import XCTest
 @testable import Gamification
@@ -14,7 +16,7 @@ final class LevelPeakTests: XCTestCase {
     }
 
     private func legacyThreshold(forLevel level: Int) -> Int {
-        (1..<level).reduce(0) { $0 + LevelCurve.xpRequired(afterLevel: $1, growthFactor: LevelCurve.legacyGrowthFactor) }
+        (1..<level).reduce(0) { $0 + LevelCurve.xpRequired(afterLevel: $1, growthFactor: LevelCurve.pastGrowthFactors[0]) }
     }
 
     private func writeLegacyLedger(totalXP: Int, to url: URL) throws {
@@ -22,11 +24,11 @@ final class LevelPeakTests: XCTestCase {
         try Data(json.utf8).write(to: url)
     }
 
-    func testLevel84NeedsAbout116kXP() {
-        XCTAssertEqual(LevelCurve.growthFactor, 1.0505)
+    func testLevel84NeedsAbout140kXP() {
+        XCTAssertEqual(LevelCurve.growthFactor, 1.05358)
         let threshold = LevelCurve.threshold(forLevel: 84)
-        XCTAssertGreaterThan(threshold, 114_000)
-        XCTAssertLessThan(threshold, 118_000)
+        XCTAssertGreaterThan(threshold, 138_000)
+        XCTAssertLessThan(threshold, 142_000)
         XCTAssertEqual(LevelCurve.level(forTotalXP: threshold).level, 84)
         XCTAssertEqual(LevelCurve.level(forTotalXP: threshold - 1).level, 83)
     }
