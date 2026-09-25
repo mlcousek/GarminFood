@@ -42,7 +42,7 @@ struct BingoCardView: View {
                 if let current {
                     VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         Text(verbatim: BingoFormat.weekRange(current.week))
-                            .font(Theme.sectionHeader)
+                            .font(.sectionHeader)
                             .foregroundStyle(.secondary)
                         BingoGrid(card: current, size: .large, animateLines: true) { square in
                             selection = BingoSquareSelection(week: current.week, square: square)
@@ -89,7 +89,7 @@ struct BingoCardView: View {
                 ForEach(past) { card in
                     VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                         Text(verbatim: BingoFormat.weekRange(card.week))
-                            .font(Theme.sectionHeader)
+                            .font(.sectionHeader)
                             .foregroundStyle(.secondary)
                         BingoGrid(card: card, size: .compact) { square in
                             selection = BingoSquareSelection(week: card.week, square: square)
