@@ -75,13 +75,19 @@ final class StoreFixtureTests: XCTestCase {
         "food-provenance.json",
         "offline-index-status.json",
         "FoodLog-2026-09.json",
+        "supplement-plan.json",
+        "supplement-limits.json",
+        "SupplementIntake-2026-09.json",
     ]
 
     /// Store files whose names are interpolated, which the literal-name
-    /// regex can't see: the interpolated source spelling -> its fixture.
-    private static let dynamicStoreFixtures: [String: String] = [
-        // LocalFoodLogStore.fileURL(month:) -- `FoodLog/<yyyy-MM>.json`.
-        "\\(month).json": "FoodLog-2026-09.json",
+    /// regex can't see: the interpolated source spelling -> its fixtures
+    /// (several stores can share one spelling).
+    private static let dynamicStoreFixtures: [String: [String]] = [
+        // LocalFoodLogStore.fileURL(month:) -- `FoodLog/<yyyy-MM>.json` --
+        // and SupplementIntakeStore.fileURL(month:) --
+        // `SupplementIntake/<yyyy-MM>.json`.
+        "\\(month).json": ["FoodLog-2026-09.json", "SupplementIntake-2026-09.json"],
     ]
 
     /// Literal `"<name>.json"` strings in Sources/FoodLogCore that are NOT a
@@ -797,6 +803,123 @@ final class StoreFixtureTests: XCTestCase {
         XCTAssertEqual(byId, dinner)
     }
 
+    // MARK: - supplement-plan.json (SupplementPlanStore: SupplementPlan, default JSONEncoder, .sortedKeys)
+
+    func testSupplementPlanFixtureDecodesThroughTheRealStore() async throws {
+        let copy = try copyFixture("supplement-plan.json")
+        let plan = try await SupplementPlanStore(fileURL: copy.file).plan()
+
+        assertNotQuarantined(copy)
+        XCTAssertEqual(plan.products.count, 3)
+        XCTAssertEqual(plan.items.count, 2)
+        guard plan.products.count == 3 else { return }
+
+        let creatineId = UUID(uuidString: "C1A2B3C4-D5E6-4F70-8192-A3B4C5D6E701")!
+        let zmaId = UUID(uuidString: "C1A2B3C4-D5E6-4F70-8192-A3B4C5D6E702")!
+
+        // A catalog product with every optional field set.
+        let creatine = try XCTUnwrap(plan.product(id: creatineId))
+        XCTAssertEqual(creatine.name, "Creatine Monohydrate")
+        XCTAssertEqual(creatine.brand, "Nutrend")
+        XCTAssertEqual(creatine.barcode, "8594001234567")
+        XCTAssertEqual(creatine.form, .powder)
+        XCTAssertEqual(creatine.servingDescription, "5 g scoop")
+        XCTAssertEqual(creatine.ingredients, [IngredientAmount(ingredient: .creatine, amount: 5, unit: .g)])
+        XCTAssertEqual(creatine.packServings, 100)
+        XCTAssertEqual(creatine.pricePerPack, 549)
+        XCTAssertEqual(creatine.effectiveCurrency, "CZK")
+        XCTAssertEqual(creatine.certifications, [Certification(body: .koelnerListe, checkedOn: "2026-09-02")])
+        XCTAssertEqual(creatine.source, .catalog("creatine-monohydrate"))
+        XCTAssertEqual(creatine.stockServings, 80)
+        XCTAssertEqual(creatine.stockSetOn, "2026-09-10")
+        XCTAssertEqual(creatine.restockRemindedFor, "2026-09-10")
+
+        // A custom multi-ingredient product with a proprietary blend.
+        let zma = try XCTUnwrap(plan.product(id: zmaId))
+        XCTAssertEqual(zma.ingredients.count, 3)
+        XCTAssertEqual(zma.ingredients.first { $0.ingredient == .magnesium }?.form, "aspartate")
+        XCTAssertEqual(zma.proprietaryBlends, ["Sleep blend"])
+        XCTAssertEqual(zma.notes, "Na noc")
+        XCTAssertEqual(zma.source, .custom)
+        XCTAssertNil(zma.currency)
+
+        // A barcode product in IU (converted for totals).
+        let vitaminD = plan.products[2]
+        XCTAssertEqual(vitaminD.source, .barcode("openFoodFacts"))
+        XCTAssertEqual(vitaminD.ingredients.first?.unit, .iu)
+        XCTAssertEqual(vitaminD.ingredients.first?.canonicalAmount ?? 0, 50, accuracy: 0.0001)
+
+        // Schedule history: a loading cycle, then removed from the stack.
+        let cycle = try XCTUnwrap(plan.schedule(of: creatineId, on: "2026-09-10"))
+        XCTAssertEqual(cycle.slots, [.morning])
+        XCTAssertEqual(
+            cycle.pattern,
+            .cycle(phases: [CyclePhase(servingsPerSlot: 4, days: 7), CyclePhase(servingsPerSlot: 1, days: 1)], anchor: "2026-09-01", repeats: false)
+        )
+        XCTAssertNil(plan.schedule(of: creatineId, on: "2026-09-25"), "removed from the stack from 2026-09-25")
+        XCTAssertNil(plan.schedule(of: zmaId, on: "2026-09-04"), "nothing planned before the first version")
+
+        let weekdays = try XCTUnwrap(plan.schedule(of: zmaId, on: "2026-09-20"))
+        XCTAssertEqual(weekdays.pattern, .weekdays([2, 4, 6]))
+        XCTAssertEqual(weekdays.servingsPerSlot, 2)
+        XCTAssertEqual(weekdays.slots, [.evening, .custom(name: "Po tréninku", minute: 1260)])
+    }
+
+    // MARK: - supplement-limits.json (SupplementLimitsStore: [LimitOverride], default JSONEncoder, .sortedKeys)
+
+    func testSupplementLimitsFixtureDecodesThroughTheRealStore() async throws {
+        let copy = try copyFixture("supplement-limits.json")
+        let overrides = try await SupplementLimitsStore(fileURL: copy.file).overrides()
+
+        assertNotQuarantined(copy)
+        XCTAssertEqual(overrides.count, 2)
+        XCTAssertEqual(overrides[.magnesium]?.upperLimit, 500)
+        XCTAssertNil(overrides[.magnesium]?.target)
+        XCTAssertEqual(overrides[.sodium]?.target, 1500)
+        XCTAssertEqual(overrides[.sodium]?.upperLimit, 4000)
+    }
+
+    // MARK: - SupplementIntake/<yyyy-MM>.json (SupplementIntakeStore: [IntakeRecord], default JSONEncoder, .sortedKeys)
+
+    func testSupplementIntakeMonthFixtureDecodesThroughTheRealStore() async throws {
+        let copy = try copyFixture("SupplementIntake-2026-09.json", to: "SupplementIntake/2026-09.json")
+        let store = SupplementIntakeStore(directoryURL: copy.file.deletingLastPathComponent())
+
+        let day20 = try await store.records(forDay: "2026-09-20")
+        let month = try await store.records(fromDay: "2026-09-01", toDay: "2026-09-30")
+
+        assertNotQuarantined(copy)
+        XCTAssertEqual(day20.count, 2)
+        XCTAssertEqual(month.count, 3)
+        guard day20.count == 2, month.count == 3 else { return }
+
+        // A planned morning tick (loading phase: 4 servings).
+        let planned = day20[0]
+        XCTAssertEqual(planned.id, UUID(uuidString: "D1E2F3A4-B5C6-4D7E-8F90-A1B2C3D4E501"))
+        XCTAssertEqual(planned.productId, UUID(uuidString: "C1A2B3C4-D5E6-4F70-8192-A3B4C5D6E701"))
+        XCTAssertEqual(planned.slot, .morning)
+        XCTAssertEqual(planned.kind, .planned)
+        XCTAssertEqual(planned.servings, 4)
+        XCTAssertEqual(planned.takenAt, ref(811580400))
+        XCTAssertEqual(planned.recordedOn, "2026-09-20")
+        XCTAssertNotNil(planned.plannedKey)
+
+        // An extra dose without a slot, written before `recordedOn` existed.
+        let extra = day20[1]
+        XCTAssertNil(extra.slot)
+        XCTAssertEqual(extra.kind, .extra)
+        XCTAssertEqual(extra.takenAt, ref(811600000.5))
+        XCTAssertNil(extra.recordedOn)
+        XCTAssertNil(extra.plannedKey)
+
+        // A late entry in a custom slot, the next day.
+        let late = month[2]
+        XCTAssertEqual(late.day, "2026-09-21")
+        XCTAssertEqual(late.slot, .custom(name: "Po tréninku", minute: 1260))
+        XCTAssertEqual(late.servings, 2)
+        XCTAssertEqual(late.recordedOn, "2026-09-29")
+    }
+
     // MARK: - Coverage of the fixture set itself
 
     func testEveryPersistedFileHasAFixture() throws {
@@ -866,12 +989,15 @@ final class StoreFixtureTests: XCTestCase {
             "interpolated store file names in Sources/FoodLogCore changed -- add a Fixtures/Stores/<name> for each and list it in `dynamicStoreFixtures` (see docs/data-compatibility.md)"
         )
         // ...and each listed one really exists and is tested.
-        for (sourceName, fixture) in Self.dynamicStoreFixtures.sorted(by: { $0.key < $1.key }) {
-            XCTAssertTrue(
-                fileManager.fileExists(atPath: Self.fixturesDirectory.appendingPathComponent(fixture).path),
-                "missing fixture for \(sourceName) -- add Fixtures/Stores/\(fixture) (see docs/data-compatibility.md)"
-            )
-            XCTAssertTrue(fixtures.contains(fixture), "\(fixture) is not in `allFixtures`")
+        for (sourceName, sourceFixtures) in Self.dynamicStoreFixtures.sorted(by: { $0.key < $1.key }) {
+            XCTAssertFalse(sourceFixtures.isEmpty, "no fixture listed for \(sourceName)")
+            for fixture in sourceFixtures {
+                XCTAssertTrue(
+                    fileManager.fileExists(atPath: Self.fixturesDirectory.appendingPathComponent(fixture).path),
+                    "missing fixture for \(sourceName) -- add Fixtures/Stores/\(fixture) (see docs/data-compatibility.md)"
+                )
+                XCTAssertTrue(fixtures.contains(fixture), "\(fixture) is not in `allFixtures`")
+            }
         }
     }
 }
