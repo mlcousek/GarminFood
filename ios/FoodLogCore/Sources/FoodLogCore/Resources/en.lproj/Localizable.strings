@@ -244,3 +244,9 @@
 
 /* Fasting reminder notification body. %@ is a 24-hour clock time (HH:mm). */
 "Your fasting window starts at %@." = "Your fasting window starts at %@.";
+
+/* Error when a food entry has an invalid date (standalone mode, food log kept on the phone). */
+"This day can't be saved in the food log on this phone." = "This day can't be saved in the food log on this phone.";
+
+/* Error when writing the on-phone food log fails (standalone mode). %@ is the system's reason. */
+"Couldn't save the food log on this phone: %@" = "Couldn't save the food log on this phone: %@";

@@ -8,8 +8,10 @@
 //
 // Its "..." menu also carries the hidden developer toggle "Force standalone
 // mode (testing)" (add-standalone-mode 1.5): until onboarding exists, the
-// only way to try standalone mode on a device. It just stores
-// `AppPreferences.forceStandaloneMode`; wave 1 reads it nowhere.
+// only way to try standalone mode on a device. It stores
+// `AppPreferences.forceStandaloneMode`, which since wave 2 routes food-log
+// writes and reads to the local food log (`DataMode.effective`); flipping
+// it re-reads the Today day so the switch shows at once.
 
 import SwiftUI
 import UIKit
@@ -85,6 +87,10 @@ struct DiagnosticsLogView: View {
         }
         .task { await load() }
         .refreshable { await load() }
+        .onChange(of: preferences.forceStandaloneMode) { _, isOn in
+            DiagnosticsLog.log(.info, category: "DataMode", "Force standalone mode (testing) \(isOn ? "on" : "off").")
+            Task { await environment.dayLog.refresh() }
+        }
     }
 
     private func load() async {

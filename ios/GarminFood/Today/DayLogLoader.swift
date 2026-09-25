@@ -13,6 +13,10 @@
 // fix-testing-feedback-quick-wins) for the summary card's informational
 // "Active today" line -- one extra read per refresh, run concurrently with
 // the food log and silently dropped on failure.
+//
+// add-standalone-mode 2.5: in standalone mode `reader` answers from the
+// local food log, deletes go to the local coordinator, and `rebuild()`
+// re-reads the (local, file-backed) day so a confirm shows immediately.
 
 import Foundation
 import Observation
@@ -39,6 +43,11 @@ final class DayLogLoader {
     /// (no new request). `nil` in previews/tests.
     @ObservationIgnored private let digestStore: DayLogDigestStore?
     @ObservationIgnored private let activityCache: ActivityCacheStore?
+    /// add-standalone-mode 2.5: the effective data mode, read per call.
+    /// In standalone mode the day log is the LOCAL food log, so `rebuild()`
+    /// re-reads it (a file read, no network) and a just-confirmed entry
+    /// shows at once -- the job the outbox overlay does in Garmin mode.
+    @ObservationIgnored private let dataMode: @Sendable () -> DataMode
 
     private(set) var selectedDate: Date
     private(set) var dashboard: DayDashboard
@@ -78,6 +87,7 @@ final class DayLogLoader {
         coordinator: any FoodLogging,
         digestStore: DayLogDigestStore? = nil,
         activityCache: ActivityCacheStore? = nil,
+        dataMode: @escaping @Sendable () -> DataMode = { .garminConnected },
         now: Date = Date()
     ) {
         self.reader = reader
@@ -87,6 +97,7 @@ final class DayLogLoader {
         self.coordinator = coordinator
         self.digestStore = digestStore
         self.activityCache = activityCache
+        self.dataMode = dataMode
         let day = Calendar.current.startOfDay(for: now)
         self.selectedDate = day
         self.dashboard = MealDashboard.build(
@@ -193,6 +204,11 @@ final class DayLogLoader {
     /// call, e.g. right after a log is confirmed.
     func rebuild() async {
         let date = dateString
+        if dataMode() == .standalone,
+           let local = try? await reader.dailyFoodLog(date: date) {
+            // A failed local read (e.g. before first unlock) keeps the copy.
+            logsByDate[date] = local
+        }
         let entries = await outbox.allEntries()
         let foods = await foodCache.all()
         let built = MealDashboard.build(
@@ -256,6 +272,9 @@ final class DayLogLoader {
             do {
                 try await coordinator.deleteCommitted(logId: logId, date: dateString)
             } catch {
+                // Standalone: a local delete, no Garmin involved -- its own
+                // error (e.g. "changed in the meantime") says it best.
+                if dataMode() == .standalone { throw error }
                 throw DeleteError.garmin(Self.describe(error))
             }
             await refresh()

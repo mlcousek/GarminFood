@@ -390,6 +390,12 @@ public struct LoggedFood: Decodable, Sendable, Equatable {
         logSource == FoodLogWriteBody.logSource
     }
 
+    /// The `logSource` THIS app's entries carry -- so FoodLogCore's
+    /// `LocalNutritionReader` (add-standalone-mode 2.3) can mark the
+    /// entries it builds as this app's own, exactly as a delivered entry
+    /// reads back. Additive; nothing in Garmin mode reads it.
+    public static var thisAppLogSource: String { FoodLogWriteBody.logSource }
+
     public func matchesQuantity(_ numberOfUnits: Double, tolerance: Double = 0.001) -> Bool {
         if let servingQty, abs(servingQty - numberOfUnits) < tolerance { return true }
         if let contentUnits = nutritionContent?.numberOfUnits, abs(contentUnits - numberOfUnits) < tolerance { return true }

@@ -24,7 +24,7 @@ Definitions used below:
   animation; Reduce Motion → cross-fade), then the tile is a normal badge
   with unlock date.
 
-### D2 — Rules (all `featureId: "secret"`, `.featureEvaluated`)
+### D2 — Rules (all `featureId: "secrets"` -- the registered feature id, `.featureEvaluated`)
 
 | id | Title (revealed) | Exact rule | Rarity |
 |---|---|---|---|
@@ -60,8 +60,12 @@ rule function; ids are never reused.
 - Several unlocks in one run → one combined `.secret` moment ("2 secrets
   revealed: Barista Mode, Gone Fishing").
 - Rewards: unlock via the host (adds the standard
-  `XPAward.achievementBonus`) plus `RewardGrant("secret.<id>",
-  .xp(XPAward.secretUnlocked = 50))`.
+  `XPAward.achievementBonus`) plus `RewardGrant("secrets.<badge id>",
+  .xp(XPAward.secretUnlocked = 50))`, e.g. `secrets.secret.barista`.
+  The key MUST start with the feature's registered id `secrets` plus "."
+  because `FeatureHost` drops any grant outside the feature's own
+  namespace (an earlier draft said `secret.<id>`, which would have been
+  silently dropped).
 - No store of its own is needed: unlock state is `AchievementStore`; the
   rules are pure functions of the snapshot. (Pizza Friday and Groundhog
   Breakfast fit inside 42 days.)
