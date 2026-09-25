@@ -113,6 +113,11 @@ public actor XPStore {
         /// `loadIfNeeded`) from the larger of the old-curve and new-curve
         /// level, so the 1.045 -> 1.0505 retune never lowers anyone.
         var peakLevel: Int?
+        /// rebalance-xp-economy D5: the `LevelCurve.curveVersion` the peak
+        /// was last seeded for. Optional so older files decode. `nil` means
+        /// version 1 (1.045) when `peakLevel` is also `nil`, else version 2
+        /// (1.0505, which introduced `peakLevel`).
+        var curveVersion: Int?
     }
 
     private let fileURL: URL
@@ -134,11 +139,31 @@ public actor XPStore {
         let result = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: JSONDecoder(), category: "XPStore")
         loaded = !result.isUnreadable
         snapshot = result.value ?? snapshot
-        if snapshot.peakLevel == nil {
-            let legacy = LevelCurve.level(forTotalXP: snapshot.totalXP, growthFactor: LevelCurve.pastGrowthFactors[0]).level
-            let current = LevelCurve.level(forTotalXP: snapshot.totalXP).level
-            snapshot.peakLevel = max(legacy, current)
+        if (snapshot.curveVersion ?? 0) < LevelCurve.curveVersion {
+            snapshot.peakLevel = Self.seededPeakLevel(
+                totalXP: snapshot.totalXP,
+                storedPeak: snapshot.peakLevel,
+                storedCurveVersion: snapshot.curveVersion
+            )
+            snapshot.curveVersion = LevelCurve.curveVersion
         }
+    }
+
+    /// rebalance-xp-economy D5: the peak for a ledger last seeded under an
+    /// older curve. It is the highest of the stored peak, the level on the
+    /// live curve, and the level under every past factor the file has lived
+    /// through since its version (`LevelCurve.pastGrowthFactors`). Pure and
+    /// idempotent: seeding the same file twice gives the same peak, and the
+    /// result is never below the stored peak.
+    static func seededPeakLevel(totalXP: Int, storedPeak: Int?, storedCurveVersion: Int?) -> Int {
+        let fileVersion = storedCurveVersion ?? (storedPeak == nil ? 1 : 2)
+        let past = LevelCurve.pastGrowthFactors
+        let firstIndex = min(max(fileVersion - 1, 0), past.count)
+        var peak = max(storedPeak ?? 1, LevelCurve.level(forTotalXP: totalXP).level)
+        for factor in past[firstIndex...] {
+            peak = max(peak, LevelCurve.level(forTotalXP: totalXP, growthFactor: factor).level)
+        }
+        return min(peak, LevelCurve.maxLevel)
     }
 
     /// Adds `xp` and raises the peak if the curve level passed it.
