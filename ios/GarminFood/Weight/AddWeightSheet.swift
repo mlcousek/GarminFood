@@ -41,6 +41,7 @@ struct AddWeightSheet: View {
                         .focused($weightFieldFocused)
                     Text("kg")
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel("kilograms")
                 }
                 DatePicker("When", selection: $loggedAt, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
             }
@@ -83,7 +84,7 @@ struct AddWeightSheet: View {
             await environment.weightLogged()
             dismiss()
         } catch {
-            errorMessage = "Couldn't save this weigh-in. Try again."
+            errorMessage = String(localized: "Couldn't save this weigh-in. Try again.")
         }
     }
 }

@@ -1,0 +1,7 @@
+/*
+  GarminKit — Czech. Keys are the English source text (see en.lproj).
+  Informal "ty" register; see docs/localization-glossary.md.
+*/
+
+/* Error when saving data whose file couldn't be read yet. %@ is a file name, e.g. outbox.json. */
+"%@ exists but could not be read yet (is the device still locked?), so it was not overwritten. Try again." = "Soubor %@ zatím nejde přečíst (není telefon ještě zamčený?), a tak nebyl přepsán. Zkus to znovu.";

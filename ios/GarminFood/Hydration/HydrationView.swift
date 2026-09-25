@@ -166,10 +166,10 @@ struct HydrationView: View {
     private func removeMessage(for entry: HydrationEntry) -> String {
         switch environment.hydrationLoader.outboxState(for: entry) {
         case .pending?, .failed?:
-            return "It hasn't reached Garmin yet, so it simply won't be sent."
+            return String(localized: "It hasn't reached Garmin yet, so it simply won't be sent.")
         // `.createdAwaitingDelete` is food-outbox-only (add-log-entry-editing).
         case .sent?, .createdAwaitingDelete?, nil:
-            return "Garmin's total for that day is lowered by \(entry.valueInML.formattedML) ml too."
+            return String(localized: "Garmin's total for that day is lowered by \(entry.valueInML.formattedML) ml too.", comment: "Remove-drink confirmation. %@ is an amount in ml, e.g. 250.")
         }
     }
 
@@ -178,7 +178,7 @@ struct HydrationView: View {
             _ = try await environment.hydrationLogCoordinator.logHydration(valueInML: amount)
             await environment.hydrationLogged()
         } catch {
-            actionError = "Couldn't save this entry."
+            actionError = String(localized: "Couldn't save this entry.")
         }
     }
 
@@ -186,7 +186,7 @@ struct HydrationView: View {
         do {
             try await environment.removeHydration(entry)
         } catch {
-            actionError = "Couldn't remove this drink."
+            actionError = String(localized: "Couldn't remove this drink.")
         }
     }
 
@@ -195,7 +195,7 @@ struct HydrationView: View {
         do {
             try await environment.retryHydrationQueued(id: outboxEntryId)
         } catch {
-            actionError = "Couldn't retry this entry."
+            actionError = String(localized: "Couldn't retry this entry.")
         }
     }
 }

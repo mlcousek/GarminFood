@@ -68,6 +68,48 @@ final class NumberDisplayTests: XCTestCase {
         XCTAssertEqual(NumberDisplay.whole(.nan), NumberDisplay.placeholder)
     }
 
+    // MARK: Locale (add-localization 6.1)
+
+    private let english = Locale(identifier: "en_US")
+    private let czech = Locale(identifier: "cs_CZ")
+
+    func testQuantityUsesTheLocalesDecimalSeparator() {
+        XCTAssertEqual(NumberDisplay.quantity(0.7, locale: english), "0.70")
+        XCTAssertEqual(NumberDisplay.quantity(0.7, locale: czech), "0,70", "spec: a serving of 0.7 cups reads 0,70 in Czech")
+        XCTAssertEqual(NumberDisplay.quantity(1.5, fractionDigits: 1, locale: english), "1.5")
+        XCTAssertEqual(NumberDisplay.quantity(1.5, fractionDigits: 1, locale: czech), "1,5")
+        XCTAssertEqual(NumberDisplay.quantity(1.25, locale: czech), "1,25")
+    }
+
+    func testWholeNumbersReadTheSameInBothLanguages() {
+        for locale in [english, czech] {
+            XCTAssertEqual(NumberDisplay.quantity(2, locale: locale), "2")
+            XCTAssertEqual(NumberDisplay.quantity(10000, locale: locale), "10000")
+            XCTAssertEqual(NumberDisplay.quantity(1e19, locale: locale), "10000000000000000000")
+        }
+    }
+
+    /// No grouping in either language: "12345,50", never "12 345,50" --
+    /// a number in a validation message must look like what can be typed.
+    func testDecimalsAreNeverGrouped() {
+        XCTAssertEqual(NumberDisplay.quantity(12345.5, locale: english), "12345.50")
+        XCTAssertEqual(NumberDisplay.quantity(12345.5, locale: czech), "12345,50")
+    }
+
+    func testANegativeValueThatRoundsToZeroHasNoSign() {
+        XCTAssertEqual(NumberDisplay.quantity(-0.001, locale: english), "0.00")
+        XCTAssertEqual(NumberDisplay.quantity(-0.001, locale: czech), "0,00")
+    }
+
+    func testTrimmedDropsTrailingZeros() {
+        XCTAssertEqual(NumberDisplay.trimmed(150, maxFractionDigits: 1, locale: czech), "150")
+        XCTAssertEqual(NumberDisplay.trimmed(12.5, maxFractionDigits: 1, locale: english), "12.5")
+        XCTAssertEqual(NumberDisplay.trimmed(12.5, maxFractionDigits: 1, locale: czech), "12,5")
+        XCTAssertEqual(NumberDisplay.trimmed(0.333, maxFractionDigits: 3, locale: czech), "0,333")
+        XCTAssertEqual(NumberDisplay.trimmed(149.96, maxFractionDigits: 1, locale: english), "150")
+        XCTAssertEqual(NumberDisplay.trimmed(.nan, maxFractionDigits: 1, locale: czech), NumberDisplay.placeholder)
+    }
+
     func testServingLabelsNoLongerTrapOnAHugeTypedServingSize() {
         let serving = Serving(id: "custom", unit: "bowl", numberOfUnits: 1e19)
         XCTAssertEqual(serving.displayLabel, "10000000000000000000 bowl")

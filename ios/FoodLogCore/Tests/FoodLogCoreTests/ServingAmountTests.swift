@@ -187,6 +187,27 @@ final class ServingQuantityInputTests: XCTestCase {
         XCTAssertEqual(ServingQuantityInput(serving: Serving(id: "m", unit: "100ml", numberOfUnits: 1)).amountLabel(forQuantity: 2), "200 ml")
     }
 
+    /// add-localization 6.1: the label follows the locale's decimal
+    /// separator; whole amounts read the same in both languages.
+    func testAmountLabelIsLocaleAware() {
+        let english = Locale(identifier: "en_US")
+        let czech = Locale(identifier: "cs_CZ")
+        XCTAssertEqual(hundredGrams.amountLabel(forQuantity: 0.125, locale: english), "12.5 g")
+        XCTAssertEqual(hundredGrams.amountLabel(forQuantity: 0.125, locale: czech), "12,5 g")
+        XCTAssertEqual(hundredGrams.amountLabel(forQuantity: 1.5, locale: czech), "150 g")
+        // Garmin's float32 read-back of 0.7 is still a clean 70 g.
+        XCTAssertEqual(gramsTimes100.amountLabel(forQuantity: 0.699999988079071, locale: czech), "70 g")
+    }
+
+    /// Parsing is locale-independent: a Czech decimal pad types ",", an
+    /// English one ".", and both mean the same quantity whatever language
+    /// the app is in.
+    func testBothDecimalSeparatorsParseToTheSameQuantity() {
+        XCTAssertEqual(hundredGrams.quantity(fromText: "1,5", mode: .servings), 1.5)
+        XCTAssertEqual(hundredGrams.quantity(fromText: "1.5", mode: .servings), 1.5)
+        XCTAssertEqual(hundredGrams.quantity(fromText: "12,5", mode: .amount), hundredGrams.quantity(fromText: "12.5", mode: .amount))
+    }
+
     // MARK: Validation (LogQuantity limits)
 
     func testInvalidTextIsRejected() {

@@ -100,8 +100,15 @@ public struct PersistedJSONUnreadFileError: Error, LocalizedError, Equatable, Se
         self.fileName = fileName
     }
 
+    /// Shown to the user as-is (the confirm screen's error line), so it is
+    /// localized -- GarminKit's one user-facing string (add-localization
+    /// task 3.4). `DiagnosticsLog` lines stay English.
     public var errorDescription: String? {
-        "\(fileName) exists but could not be read yet (is the device still locked?), so it was not overwritten. Try again."
+        String(
+            localized: "\(fileName) exists but could not be read yet (is the device still locked?), so it was not overwritten. Try again.",
+            bundle: .module,
+            comment: "Error when saving data whose file couldn't be read yet. %@ is a file name, e.g. outbox.json."
+        )
     }
 }
 
