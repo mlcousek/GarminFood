@@ -54,6 +54,20 @@ final class SportRulesTests: XCTestCase {
         XCTAssertEqual(SportActivityKind(typeKey: "yoga"), .other)
     }
 
+    func testGarminRunAndRideKeysWithoutAnIngSuffix() {
+        // Real Garmin typeKeys the "-ing" keywords used to miss: an ultra or
+        // a Zwift ride counted as "other" and never toward a sport badge.
+        for key in ["ultra_run", "virtual_run", "obstacle_run"] {
+            XCTAssertEqual(SportActivityClass.classify(typeKey: key, durationMinutes: 60), .endurance, key)
+            XCTAssertEqual(SportActivityKind(typeKey: key), .run, key)
+        }
+        for key in ["virtual_ride", "cyclocross"] {
+            XCTAssertEqual(SportActivityClass.classify(typeKey: key, durationMinutes: 60), .endurance, key)
+            XCTAssertEqual(SportActivityKind(typeKey: key), .ride, key)
+        }
+        XCTAssertEqual(SportActivityClass.classify(typeKey: "ultra_run", durationMinutes: 19), .other, "the 20-minute floor still applies")
+    }
+
     // MARK: - Fuel
 
     private let runStart = SportFixtures.at(2026, 9, 20, 7, 30)

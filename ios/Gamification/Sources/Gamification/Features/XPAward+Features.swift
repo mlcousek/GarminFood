@@ -1,12 +1,16 @@
 // XPAward+Features.swift
 //
 // Design D10: the XP budget for the new gamification sources, in one place
-// so wave-2 features never invent their own numbers. The total (~ +31 XP a
-// day on average) is why `LevelCurve.growthFactor` moved 1.045 -> 1.0505
-// in the same change: level 84 stays roughly three years away.
+// so wave-2 features never invent their own numbers.
+//
+// rebalance-xp-economy: each constant here feeds a line of `XPBudget`
+// (constant x assumed frequency), and `LevelCurve.growthFactor` is solved
+// from the sum. Changing a value here fails `XPBudgetTests` until the
+// factor is re-solved (the failure prints the new literal). The 2026-09-25
+// audit changed none of them: no feature exceeds 25% of the core budget.
 //
 // Depends on: XPAward (XPStore.swift). Depended on by: every wave-2
-// feature, ChallengeTemplates+Signals (creative challenge XP).
+// feature, ChallengeTemplates+Signals (creative challenge XP), XPBudget.
 
 import Foundation
 

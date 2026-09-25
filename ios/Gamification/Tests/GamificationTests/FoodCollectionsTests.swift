@@ -169,6 +169,19 @@ final class FoodCollectionsTests: XCTestCase {
         XCTAssertEqual(discovery?.foodName, "Vepřová pečeně + Houskový knedlík + Dušené zelí")
     }
 
+    func testVeproKnedloZeloIgnoresFruitDumplings() {
+        let day = dayKey(12)
+        let result = CollectionsEvaluator.evaluate(
+            snapshot: snapshot([day: [
+                food("Vepřová pečeně", day: day),
+                food("Švestkové knedlíky", day: day),
+                food("Dušené zelí", day: day),
+            ]]),
+            state: .empty
+        )
+        XCTAssertNil(result.state.discovered?[FoodCollectionCatalog.veproKnedloZeloId])
+    }
+
     func testVeproKnedloZeloPartsAcrossTwoDaysDoNotCount() {
         let result = CollectionsEvaluator.evaluate(
             snapshot: snapshot([

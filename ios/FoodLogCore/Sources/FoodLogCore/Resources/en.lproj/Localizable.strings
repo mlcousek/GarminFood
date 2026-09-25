@@ -251,8 +251,226 @@
 /* Error when writing the on-phone food log fails (standalone mode). %@ is the system's reason. */
 "Couldn't save the food log on this phone: %@" = "Couldn't save the food log on this phone: %@";
 
+/* ---- Supplements: evidence cards (Supplements/EvidenceCatalog.swift) ---- */
+
+/* Supplement evidence card: how strong the research support is. */
+"Strong evidence" = "Strong evidence";
+
+/* Supplement evidence card: how strong the research support is. */
+"Moderate evidence" = "Moderate evidence";
+
+/* Supplement evidence card: how strong the research support is. */
+"Limited evidence" = "Limited evidence";
+
+/* Supplement evidence disclaimer shown on every evidence card. */
+"Information only, not medical advice. Talk to a doctor or pharmacist before starting a supplement, especially during pregnancy, when taking medication or with a health condition." = "Information only, not medical advice. Talk to a doctor or pharmacist before starting a supplement, especially during pregnancy, when taking medication or with a health condition.";
+
+/* Supplement evidence card / limits: the EU has no tolerable upper intake level for this ingredient. */
+"No EU upper limit set" = "No EU upper limit set";
+
+/* Supplement ingredient name. */
+"Creatine" = "Creatine";
+
+/* Supplement ingredient name: the omega-3 fatty acids EPA and DHA combined. */
+"Omega-3 (EPA + DHA)" = "Omega-3 (EPA + DHA)";
+
+/* Supplement ingredient name. */
+"Caffeine" = "Caffeine";
+
+/* Supplement ingredient name. */
+"Beta-alanine" = "Beta-alanine";
+
+/* Supplement ingredient name. */
+"Vitamin K2" = "Vitamin K2";
+
+/* Evidence card, creatine: what it is for. */
+"Supports repeated short, hard efforts and strength training. One of the best-studied sports supplements." = "Supports repeated short, hard efforts and strength training. One of the best-studied sports supplements.";
+
+/* Evidence card, creatine: typical dose. */
+"3–5 g a day. Optional loading: about 0.3 g per kg of body weight a day for 5–7 days." = "3–5 g a day. Optional loading: about 0.3 g per kg of body weight a day for 5–7 days.";
+
+/* Evidence card, creatine: timing and food. */
+"Any time of day; taking it every day matters more than when. With a meal is fine." = "Any time of day; taking it every day matters more than when. With a meal is fine.";
+
+/* Evidence card, magnesium: what it is for. */
+"Helps muscle and nerve function and energy metabolism. Mainly worth it when your diet falls short." = "Helps muscle and nerve function and energy metabolism. Mainly worth it when your diet falls short.";
+
+/* Evidence card, magnesium: typical dose. */
+"Typically 100–250 mg a day from supplements. Citrate and bisglycinate are absorbed well, oxide less so." = "Typically 100–250 mg a day from supplements. Citrate and bisglycinate are absorbed well, oxide less so.";
+
+/* Evidence card, magnesium: timing and food. */
+"Often taken in the evening. Large single doses can loosen the stool; splitting them helps." = "Often taken in the evening. Large single doses can loosen the stool; splitting them helps.";
+
+/* Evidence card, vitamin D: what it is for. */
+"Supports bones, muscles and the immune system. Matters most in autumn and winter, when the sun in Central Europe is too low." = "Supports bones, muscles and the immune system. Matters most in autumn and winter, when the sun in Central Europe is too low.";
+
+/* Evidence card, vitamin D: typical dose. */
+"Commonly 10–50 µg (400–2000 IU) a day. A blood test shows what you actually need." = "Commonly 10–50 µg (400–2000 IU) a day. A blood test shows what you actually need.";
+
+/* Evidence card, vitamin D: timing and food. */
+"With a meal that contains some fat, which helps absorption." = "With a meal that contains some fat, which helps absorption.";
+
+/* Evidence card, vitamin C: what it is for. */
+"An antioxidant needed for collagen and the immune system. A varied diet with fruit and vegetables usually covers it." = "An antioxidant needed for collagen and the immune system. A varied diet with fruit and vegetables usually covers it.";
+
+/* Evidence card, vitamin C: typical dose. */
+"Typically 100–1000 mg a day; most of any excess is excreted." = "Typically 100–1000 mg a day; most of any excess is excreted.";
+
+/* Evidence card, vitamin C: timing and food. */
+"Any time. With a meal it helps you absorb iron from plant foods." = "Any time. With a meal it helps you absorb iron from plant foods.";
+
+/* Evidence card, zinc: what it is for. */
+"Needed by the immune system, the skin and many enzymes. Endurance athletes and people who eat little meat may run low." = "Needed by the immune system, the skin and many enzymes. Endurance athletes and people who eat little meat may run low.";
+
+/* Evidence card, zinc: typical dose. */
+"Typically 5–25 mg a day from supplements." = "Typically 5–25 mg a day from supplements.";
+
+/* Evidence card, zinc: timing and food. */
+"Apart from iron and calcium supplements, which compete for absorption. With food if it upsets your stomach." = "Apart from iron and calcium supplements, which compete for absorption. With food if it upsets your stomach.";
+
+/* Evidence card, omega-3: what it is for. */
+"Fatty acids from fish or algae that support the heart and brain. Useful if you rarely eat oily fish." = "Fatty acids from fish or algae that support the heart and brain. Useful if you rarely eat oily fish.";
+
+/* Evidence card, omega-3: typical dose. */
+"Commonly 250–2000 mg of EPA and DHA combined a day. Count EPA + DHA, not the total amount of oil." = "Commonly 250–2000 mg of EPA and DHA combined a day. Count EPA + DHA, not the total amount of oil.";
+
+/* Evidence card, omega-3 and vitamin K2: timing and food. */
+"With a meal that contains fat." = "With a meal that contains fat.";
+
+/* Evidence card, vitamin B12: what it is for. */
+"Needed for blood formation and the nervous system. Essential for vegans, because plant foods don't provide it." = "Needed for blood formation and the nervous system. Essential for vegans, because plant foods don't provide it.";
+
+/* Evidence card, vitamin B12: typical dose. */
+"Typically 4–1000 µg a day; only a small share of a large dose is absorbed." = "Typically 4–1000 µg a day; only a small share of a large dose is absorbed.";
+
+/* Evidence card: the ingredient can be taken at any time. */
+"Any time of day." = "Any time of day.";
+
+/* Evidence card, iron: what it is for. */
+"Carries oxygen in the blood. Take it only when a blood test shows low iron: too much is harmful." = "Carries oxygen in the blood. Take it only when a blood test shows low iron: too much is harmful.";
+
+/* Evidence card, iron: typical dose. */
+"As advised after a blood test." = "As advised after a blood test.";
+
+/* Evidence card, iron: timing and food. */
+"Apart from coffee, tea, calcium and zinc. Vitamin C helps absorption." = "Apart from coffee, tea, calcium and zinc. Vitamin C helps absorption.";
+
+/* Evidence card, selenium: what it is for. */
+"Part of antioxidant enzymes and needed by the thyroid. Central European soils contain little of it." = "Part of antioxidant enzymes and needed by the thyroid. Central European soils contain little of it.";
+
+/* Evidence card, selenium: typical dose. */
+"Typically 50–200 µg a day. The gap between enough and too much is small." = "Typically 50–200 µg a day. The gap between enough and too much is small.";
+
+/* Evidence card, selenium: timing and food. */
+"Any time, with food." = "Any time, with food.";
+
+/* Evidence card, vitamin B6: what it is for. */
+"Supports protein metabolism and the nervous system. A normal diet rarely falls short." = "Supports protein metabolism and the nervous system. A normal diet rarely falls short.";
+
+/* Evidence card, vitamin B6: typical dose. */
+"Typically 1–10 mg a day; high doses over a long time can harm the nerves." = "Typically 1–10 mg a day; high doses over a long time can harm the nerves.";
+
+/* Evidence card, caffeine: what it is for. */
+"Improves alertness and both endurance and strength performance for many people." = "Improves alertness and both endurance and strength performance for many people.";
+
+/* Evidence card, caffeine: typical dose. */
+"About 3–6 mg per kg of body weight before exercise (roughly 100–400 mg); smaller doses help too." = "About 3–6 mg per kg of body weight before exercise (roughly 100–400 mg); smaller doses help too.";
+
+/* Evidence card, caffeine: timing and food. */
+"30–60 minutes before exercise. Skip the late afternoon and evening if it disturbs your sleep." = "30–60 minutes before exercise. Skip the late afternoon and evening if it disturbs your sleep.";
+
+/* Evidence card, beta-alanine: what it is for. */
+"Buffers acid in the muscles and can help in hard efforts of about 1–4 minutes." = "Buffers acid in the muscles and can help in hard efforts of about 1–4 minutes.";
+
+/* Evidence card, beta-alanine: typical dose. */
+"3.2–6.4 g a day in split doses, for at least 2–4 weeks." = "3.2–6.4 g a day in split doses, for at least 2–4 weeks.";
+
+/* Evidence card, beta-alanine: timing and food. */
+"Split into smaller doses with meals to limit the harmless tingling it can cause." = "Split into smaller doses with meals to limit the harmless tingling it can cause.";
+
+/* Evidence card, sodium: what it is for. */
+"The main electrolyte lost in sweat. Replacing it matters in long or hot sessions." = "The main electrolyte lost in sweat. Replacing it matters in long or hot sessions.";
+
+/* Evidence card, sodium: typical dose. */
+"Depends on your sweat losses; often 300–1000 mg per hour of long exercise." = "Depends on your sweat losses; often 300–1000 mg per hour of long exercise.";
+
+/* Evidence card, sodium: timing and food. */
+"During and after long or hot sessions, with fluids." = "During and after long or hot sessions, with fluids.";
+
+/* Evidence card, potassium: what it is for. */
+"An electrolyte for muscle and nerve function. Fruit, vegetables and potatoes are the main sources." = "An electrolyte for muscle and nerve function. Fruit, vegetables and potatoes are the main sources.";
+
+/* Evidence card, potassium: typical dose. */
+"Small amounts in electrolyte drinks; large doses from supplements only on medical advice." = "Small amounts in electrolyte drinks; large doses from supplements only on medical advice.";
+
+/* Evidence card, potassium: timing and food. */
+"With fluids, during or after exercise." = "With fluids, during or after exercise.";
+
+/* Evidence card, vitamin K2: what it is for. */
+"Supports blood clotting and bone health; often combined with vitamin D. If you take blood thinners, ask your doctor first." = "Supports blood clotting and bone health; often combined with vitamin D. If you take blood thinners, ask your doctor first.";
+
+/* Evidence card, vitamin K2: typical dose. */
+"Typically 45–200 µg a day." = "Typically 45–200 µg a day.";
+
+/* Evidence card, creatine: note on the limit. */
+"No EU upper limit set. EFSA (2004) considers 3 g a day unlikely to pose a risk; studies commonly use 3–5 g." = "No EU upper limit set. EFSA (2004) considers 3 g a day unlikely to pose a risk; studies commonly use 3–5 g.";
+
+/* Evidence card, magnesium: the EFSA limit applies to supplemental magnesium only. */
+"Counts magnesium from supplements only (readily dissociable salts and oxide); magnesium in food is not included." = "Counts magnesium from supplements only (readily dissociable salts and oxide); magnesium in food is not included.";
+
+/* Evidence card, vitamin C: no EU limit; the US tolerable upper intake level, labelled as US. */
+"No EU upper limit set. The US figure is 2000 mg a day." = "No EU upper limit set. The US figure is 2000 mg a day.";
+
+/* Evidence card, omega-3: note on the limit. */
+"No EU upper limit set. EFSA (2012): up to 5 g a day from supplements raises no safety concern." = "No EU upper limit set. EFSA (2012): up to 5 g a day from supplements raises no safety concern.";
+
+/* Evidence card, iron: the 40 mg figure is a safe level, not an upper limit. */
+"EFSA's safe level of intake, not a formal upper limit." = "EFSA's safe level of intake, not a formal upper limit.";
+
+/* Evidence card, caffeine: note on the limit. */
+"EFSA (2015): up to 400 mg a day, and up to 200 mg at once, raises no safety concern for healthy adults. Coffee counts too, but only what you log here is added up." = "EFSA (2015): up to 400 mg a day, and up to 200 mg at once, raises no safety concern for healthy adults. Coffee counts too, but only what you log here is added up.";
+
+/* ---- Supplements: built-in catalog (Supplements/SupplementCatalog.swift) ---- */
+
+/* Supplement serving size: one powder scoop of %lld grams. */
+"%lld g scoop" = "%lld g scoop";
+
+/* Built-in supplement product name. */
+"Creatine monohydrate" = "Creatine monohydrate";
+
+/* Built-in supplement product name. */
+"Magnesium citrate" = "Magnesium citrate";
+
+/* Built-in supplement product name. */
+"Magnesium bisglycinate" = "Magnesium bisglycinate";
+
+/* Built-in supplement product name. */
+"Magnesium oxide" = "Magnesium oxide";
+
+/* Built-in supplement product name. */
+"Vitamin D3" = "Vitamin D3";
+
+/* Built-in supplement product name. */
+"Vitamin D3 + K2" = "Vitamin D3 + K2";
+
+/* Built-in supplement product name. */
+"Omega-3 fish oil" = "Omega-3 fish oil";
+
+/* Built-in supplement product name (vegan omega-3 from algae). */
+"Omega-3 algae oil" = "Omega-3 algae oil";
+
+/* Built-in supplement product name (electrolyte tablet: sodium, potassium, magnesium). */
+"Electrolytes" = "Electrolytes";
 /* Standalone mode: a food from Open Food Facts without calories can't be logged. */
 "This food has no calorie value, so it can't be logged. Create a custom food with its calories instead." = "This food has no calorie value, so it can't be logged. Create a custom food with its calories instead.";
 
 /* A custom food created without Garmin (standalone mode) can't be logged to Garmin until a closest Garmin food is picked. */
 "Needs a Garmin match before it can be logged to Garmin." = "Needs a Garmin match before it can be logged to Garmin.";
+
+/* ---- Supplements: stores (Supplements/SupplementStoreSupport.swift) ---- */
+
+/* Error when supplement intake is logged for a future day or more than 365 days back. */
+"Only today and the last 365 days can be filled in." = "Only today and the last 365 days can be filled in.";
+
+/* Error when writing supplement data on the phone fails. %@ is the system's reason. */
+"Couldn't save your supplements on this phone: %@" = "Couldn't save your supplements on this phone: %@";

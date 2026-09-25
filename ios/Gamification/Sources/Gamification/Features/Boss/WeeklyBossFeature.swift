@@ -346,14 +346,18 @@ public actor WeeklyBossFeature: GamificationFeature {
             calendar: calendar
         )
         guard !plan.newConsumptions.isEmpty else { return unchanged }
+        let recorded: [StreakFreezeStore.Consumption]
         do {
-            try await freezeStore.record(plan.newConsumptions)
+            recorded = try await freezeStore.record(plan.newConsumptions)
         } catch {
             // Not persisted: don't show (or announce) a freeze; the next run
             // re-plans from the stored list.
             return unchanged
         }
-        let moments = plan.newConsumptions.compactMap { consumption -> FeatureMoment? in
+        // Announce only what THIS run recorded: an overlapping run (refresh
+        // vs. log confirm, interleaved at the awaits above) may have planned
+        // and recorded the same freeze first, and it already announced it.
+        let moments = recorded.compactMap { consumption -> FeatureMoment? in
             guard let day = FreezeDayKey.date(for: consumption.frozenDay, calendar: calendar) else { return nil }
             return Self.freezeMoment(day: day, protectedLength: consumption.protectedLength ?? 0, calendar: calendar)
         }

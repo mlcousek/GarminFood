@@ -50,6 +50,13 @@ public struct BingoTask: Sendable, Equatable, Identifiable {
     public let scope: BingoTaskScope
     /// An SF Symbol for the square.
     public let symbol: String
+    /// The rule is about a WHOLE day ("no sugary drink", "nothing after
+    /// 19:30", "sugar at most 25 g"): a later entry the same day can still
+    /// break it, so today -- still in progress -- never ticks it. The day is
+    /// judged once it is over (the boss's `judgesCompletedDaysOnly`, same
+    /// idea). `WeeklyBingoFeature` settles a card's Sunday for these squares
+    /// on the first run of the next week.
+    public let judgesCompletedDaysOnly: Bool
 
     public init(
         id: String,
@@ -58,7 +65,8 @@ public struct BingoTask: Sendable, Equatable, Identifiable {
         difficulty: BingoDifficulty,
         family: String,
         scope: BingoTaskScope,
-        symbol: String
+        symbol: String,
+        judgesCompletedDaysOnly: Bool = false
     ) {
         self.id = id
         self.title = title
@@ -67,6 +75,7 @@ public struct BingoTask: Sendable, Equatable, Identifiable {
         self.family = family
         self.scope = scope
         self.symbol = symbol
+        self.judgesCompletedDaysOnly = judgesCompletedDaysOnly
     }
 
     public var requirement: DataRequirement { scope.requirement }

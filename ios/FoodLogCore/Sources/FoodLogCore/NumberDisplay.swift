@@ -18,8 +18,13 @@
 // in a validation message must read like what can be typed). Whole numbers
 // keep the "%.0f" path: its digits are the same in English and Czech, and
 // it prints any finite Double, however large, where `Int(_:)` traps. For
-// English, output is identical to the old helpers ("2", "0.70", "1.5"), so
-// no English screen's text changes. Input goes the other way through
+// English, output matches the old "%.Nf" helpers ("2", "0.70", "1.5") for
+// ordinary values, but not on a decimal tie: the format style rounds the
+// value's shortest decimal form half-to-even ("1.015" -> "1.02", "0.25" ->
+// "0.2" at one digit), where "%.Nf" rounded the exact binary value (1.015
+// is stored just below it -> "1.01"). Callers that must agree with another
+// rounding (e.g. a spoken label) should round the value themselves first.
+// Input goes the other way through
 // `DecimalInput`, which accepts both "," and ".".
 //
 // Pure and Foundation-only; tested in NumberDisplayTests

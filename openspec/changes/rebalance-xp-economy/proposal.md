@@ -6,8 +6,9 @@ weekly boss and streak freezes. `add-supplements` will add another XP source.
 `add-gamification-signals` D10 retuned the level curve once (growth
 1.045 → 1.0505) using an **estimate** of about 31 extra XP/day. That estimate
 came from the *designs*, and several shipped amounts differ from them. For
-example, bingo's full card pays 350 XP where the design said 150, and sport
-& body pays no XP.
+example, sport & body pays no XP of its own (only the generic badge bonus).
+(An earlier draft of this proposal said bingo's full card pays 350 XP. The
+audit found it pays 150, exactly as designed.)
 
 The owner wants levelling to keep **the same pace as now**: every new source
 must not add up to a faster climb. They said *"we will also need to edit
@@ -29,15 +30,16 @@ feature lands doesn't scale, so the pace becomes an explicit, tested budget.
   new source is added without updating the budget.
 - **Optional features count only when enabled.** Supplements (off by
   default) add their budget line only when switched on. The curve is
-  computed from the always-on budget, and optional sources are scaled with a
-  per-source **XP multiplier** so that switching a feature on doesn't change
-  the pace.
+  computed from the always-on budget. Optional sources are scaled with an
+  **XP multiplier** (design D4) so that together they add at most 0.5% of the
+  core budget, and switching a feature on doesn't change the pace.
 - **Levels never drop.** Existing `peakLevel` handling carries over: a
   steeper curve never lowers a displayed level. A one-time migration seeds
   `peakLevel` from the current factor before the new one applies.
-- **Retune shipped amounts where they're out of line** (listed in design
-  D3), e.g. bingo's full card and journeys milestones, so one feature can't
-  dominate the budget.
+- **Retune shipped amounts where they're out of line** (design D3's rule:
+  no single wave-2 feature above 25% of the core budget), so one feature
+  can't dominate the budget. The audit found none over the line, so no
+  constants changed. A test now enforces the rule.
 
 ## Capabilities
 

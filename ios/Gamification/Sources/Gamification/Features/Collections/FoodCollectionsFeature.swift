@@ -67,9 +67,15 @@ public actor FoodCollectionsFeature: GamificationFeature {
             newState.backfilledAt = context.now
         }
         if newState != state {
-            // A failed save costs at most a repeated moment next run: grants
-            // are idempotent in RewardLedger and badges in AchievementStore.
-            try? await store.save(newState)
+            do {
+                try await store.save(newState)
+            } catch {
+                // Not saved: announce nothing (as JourneysFeature/Records do).
+                // The store still holds the old state, so the next run finds
+                // the same discoveries and announces them once -- instead of
+                // re-announcing them on every run while saves keep failing.
+                return FeatureUpdate(summary: Self.summary(CollectionsEvaluator.overview(state: state)))
+            }
         }
 
         var update = FeatureUpdate()
