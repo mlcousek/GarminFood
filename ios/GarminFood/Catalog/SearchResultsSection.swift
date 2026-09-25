@@ -96,8 +96,13 @@ struct SearchResultsSection: View {
     /// A Garmin food (or one of the user's logged Garmin foods).
     let onSelectFood: (Food) -> Void
     let onSelectCustomFood: (CustomFoodDraft) -> Void
-    /// An Open Food Facts product -- needs the Garmin match step first.
+    /// An Open Food Facts product -- needs the Garmin match step first
+    /// (Garmin mode only; see `dataMode`).
     let onSelectOpenFoodFactsFood: (Food) -> Void
+    /// add-standalone-mode D5: in standalone mode every origin is logged
+    /// as itself, so an Open Food Facts / offline-index row goes to
+    /// `onSelectFood` (serving picker, confirm) and gets a favorite star.
+    var dataMode: DataMode = .garminConnected
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -138,7 +143,7 @@ struct SearchResultsSection: View {
             }
             .buttonStyle(.plain)
             .accessibilityHint(hint(for: result))
-            if let isFavorite, let onToggleFavorite, result.origin.isDirectlyLoggable {
+            if let isFavorite, let onToggleFavorite, result.origin.isDirectlyLoggable(in: dataMode) {
                 FavoriteToggleButton(isFavorite: isFavorite(result.food)) {
                     onToggleFavorite(result.food)
                 }
@@ -147,7 +152,7 @@ struct SearchResultsSection: View {
     }
 
     private func hint(for result: SearchResult) -> String {
-        result.origin.isDirectlyLoggable
+        result.origin.isDirectlyLoggable(in: dataMode)
             ? String(localized: "Selects this food")
             : String(localized: "Finds the matching Garmin food first")
     }
@@ -155,7 +160,7 @@ struct SearchResultsSection: View {
     private func select(_ result: SearchResult) {
         if let draft = result.customDraft {
             onSelectCustomFood(draft)
-        } else if result.origin.isDirectlyLoggable {
+        } else if result.origin.isDirectlyLoggable(in: dataMode) {
             onSelectFood(result.food)
         } else {
             onSelectOpenFoodFactsFood(result.food)

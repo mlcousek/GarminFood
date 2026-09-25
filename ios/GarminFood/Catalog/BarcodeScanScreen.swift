@@ -19,6 +19,14 @@
 // Garmin's own native scanner fails on Czech barcodes. The manual path
 // reuses `handleScan`/`BarcodeResolution.resolve` unchanged; only the entry
 // method differs.
+//
+// add-standalone-mode 3.5 (design D5): in standalone mode `handleScan`
+// runs `StandaloneBarcodeResolution` instead -- her own custom foods, the
+// offline Czech index, then Open Food Facts' product route -- and never
+// calls Garmin. A match on a custom food goes to `onResolvedCustomFood`. If
+// the Open Food Facts lookup fails (offline), the error offers "Create a
+// custom food" next to retrying, so an offline phone is never stuck. Garmin
+// mode is unchanged.
 
 import SwiftUI
 import FoodLogCore
@@ -29,8 +37,14 @@ struct BarcodeScanScreen: View {
     let onResolved: (Food) -> Void
     let onUnresolved: (String) -> Void
     let onCancel: () -> Void
+    /// Standalone chain only: the code is saved on one of her custom foods.
+    /// `nil` falls back to `onResolved` with the food's `asFood()`.
+    var onResolvedCustomFood: ((CustomFoodDraft) -> Void)? = nil
 
     @Environment(AppEnvironment.self) private var environment
+    /// Standalone: the code whose Open Food Facts lookup just failed, so
+    /// the error can offer a custom food for it instead.
+    @State private var failedStandaloneCode: String?
     @State private var isResolving = false
     @State private var resolutionErrorMessage: String?
     @State private var isPresentingManualEntry = false
@@ -71,11 +85,20 @@ struct BarcodeScanScreen: View {
                         if let resolutionErrorMessage {
                             VStack {
                                 Spacer()
-                                Text(resolutionErrorMessage)
-                                    .font(.footnote)
-                                    .padding(Theme.Spacing.sm)
-                                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.sm))
-                                    .padding(.bottom, Theme.Spacing.lg)
+                                VStack(spacing: Theme.Spacing.xs) {
+                                    Text(resolutionErrorMessage)
+                                        .font(.footnote)
+                                    // Standalone only: offline shouldn't strand her.
+                                    if let failedStandaloneCode {
+                                        Button("Create a custom food") {
+                                            onUnresolved(failedStandaloneCode)
+                                        }
+                                        .font(.footnote.weight(.semibold))
+                                    }
+                                }
+                                .padding(Theme.Spacing.sm)
+                                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.sm))
+                                .padding(.bottom, Theme.Spacing.lg)
                             }
                         }
                     }
@@ -113,6 +136,11 @@ struct BarcodeScanScreen: View {
         if isFromCamera { Haptics.success() }
         isResolving = true
         resolutionErrorMessage = nil
+        failedStandaloneCode = nil
+        if environment.dataMode == .standalone {
+            resolveStandalone(code)
+            return
+        }
         Task {
             defer { isResolving = false }
             do {
@@ -135,6 +163,39 @@ struct BarcodeScanScreen: View {
                 // let the user retry the scan, rather than silently
                 // treating a transient failure as "offer a custom food".
                 resolutionErrorMessage = String(localized: "Couldn't look that up right now. Try again.")
+            }
+        }
+    }
+
+    /// add-standalone-mode 3.5: her custom foods, the offline index, then
+    /// Open Food Facts (`StandaloneBarcodeResolution`) -- never Garmin.
+    private func resolveStandalone(_ code: String) {
+        Task {
+            defer { isResolving = false }
+            do {
+                let customFoods = await environment.customFoodStore.all()
+                let match = try await StandaloneBarcodeResolution.resolve(
+                    scannedCode: code,
+                    customFoods: customFoods,
+                    offlineIndex: environment.offlineIndex,
+                    productLookup: OpenFoodFactsClient()
+                )
+                switch match {
+                case .customFood(let draft)?:
+                    if let onResolvedCustomFood {
+                        onResolvedCustomFood(draft)
+                    } else {
+                        onResolved(draft.asFood())
+                    }
+                case .product(let food)?:
+                    onResolved(food)
+                case nil:
+                    onUnresolved(code)
+                }
+            } catch {
+                DiagnosticsLog.log(.warning, category: "BarcodeScanScreen", "standalone Open Food Facts lookup failed for \(code): \(error)")
+                failedStandaloneCode = code
+                resolutionErrorMessage = String(localized: "Couldn't reach Open Food Facts. Try again, or create a custom food for this barcode.")
             }
         }
     }

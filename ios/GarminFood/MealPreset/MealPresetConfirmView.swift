@@ -8,6 +8,12 @@
 // it" action that enqueues one outbox entry PER ingredient via
 // `LogEntryCoordinator.confirmMealPreset` -- see that method's header for
 // why this is durable-and-immediate exactly like a single food confirm.
+//
+// add-standalone-mode D5 (task 3.4): `logEntryCoordinator` is the
+// mode-routing `FoodLogging`, so in standalone mode the preset -- whatever
+// its ingredients' origin -- is one atomic local write. An ingredient that
+// can't be logged in the current mode (`MealPreset.blockingIngredients(in:)`)
+// disables "Log it" and is named, rather than failing at the tap.
 
 import SwiftUI
 import FoodLogCore
@@ -45,7 +51,29 @@ struct MealPresetConfirmView: View {
 
     private var totals: MealPreset.Totals { preset.totals(servingsMultiplier: portions) }
 
-    private var canConfirm: Bool { !didConfirm && !isSaving && !preset.ingredients.isEmpty && portionsAreValid }
+    private var canConfirm: Bool {
+        !didConfirm && !isSaving && !preset.ingredients.isEmpty && portionsAreValid && blockingMessage == nil
+    }
+
+    /// Why this preset can't be logged in the current mode, or `nil`.
+    private var blockingMessage: String? {
+        let mode = environment.dataMode
+        let blocking = preset.blockingIngredients(in: mode)
+        guard !blocking.isEmpty else { return nil }
+        let names = blocking.map(\.food.name).formatted(.list(type: .and))
+        switch mode {
+        case .standalone:
+            return String(
+                localized: "Can't log this meal: \(names) has no calorie value. Edit the meal to remove it or replace it with a custom food.",
+                comment: "Meal confirm screen, standalone mode. %@ is a list of ingredient names."
+            )
+        case .garminConnected:
+            return String(
+                localized: "Can't log this meal to Garmin yet: \(names) needs a Garmin match. Edit the meal to replace it.",
+                comment: "Meal confirm screen, Garmin mode. %@ is a list of ingredient names."
+            )
+        }
+    }
 
     /// Every ingredient's scaled amount within `LogQuantity`'s bound -- the
     /// same check `LogEntryCoordinator.confirmMealPreset` makes up front.
@@ -112,9 +140,9 @@ struct MealPresetConfirmView: View {
             // redesign-fasting-schedule 2.4: a note, never a block.
             FastingLogNoteSection(logDate: date)
 
-            if let errorMessage {
+            if let message = errorMessage ?? blockingMessage {
                 Section {
-                    Text(errorMessage).foregroundStyle(Theme.danger)
+                    Text(message).foregroundStyle(Theme.danger)
                 }
             }
         }
@@ -177,9 +205,20 @@ struct MealPresetConfirmView: View {
                 dismiss()
             } catch let error as LogQuantityError {
                 errorMessage = error.localizedDescription
+            } catch let error as StandaloneLoggingError {
+                errorMessage = error.localizedDescription
+            } catch let error as CustomFoodLoggingError {
+                errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "MealPresetConfirmView", "confirmMealPreset failed for preset=\(preset.name): \(error)")
-                errorMessage = String(localized: "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue.")
+                // Standalone mode writes the whole preset in one local write
+                // (LocalLogEntryCoordinator), so nothing is half-saved and
+                // there is no sync queue to point at.
+                if environment.dataMode == .standalone {
+                    errorMessage = String(localized: "Couldn't log this meal. Nothing was saved -- try again.")
+                } else {
+                    errorMessage = String(localized: "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue.")
+                }
             }
         }
     }

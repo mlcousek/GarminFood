@@ -20,6 +20,12 @@
 // panel is actually known and food-specific, unlike `MealDetailView`'s
 // "Nutrients" section which is capped at whatever Garmin's own daily/meal
 // aggregate returns (see `MealDashboard.nutrients`'s header comment).
+//
+// add-standalone-mode D5 (standalone only; Garmin mode is unchanged): an Open
+// Food Facts / offline-index product arrives here directly, logged as
+// itself. A serving with no calories can't be confirmed and offers "create
+// a custom food" instead; one missing a carb/protein/fat value says "some
+// values missing" (`NutritionCompleteness`, FoodLogCore).
 
 import SwiftUI
 import FoodLogCore
@@ -56,6 +62,11 @@ struct LogEntryConfirmView: View {
     @State private var didConfirm = false
     @State private var discrepancyNote: String?
     @State private var errorMessage: String?
+    @State private var isPresentingCustomFoodEditor = false
+    /// add-standalone-mode D5: the custom food after "Choose a Garmin
+    /// match" saved it with a backing food (Garmin mode only).
+    @State private var updatedDraft: CustomFoodDraft?
+    @State private var isPresentingGarminMatchEditor = false
     @FocusState private var isAmountFieldFocused: Bool
 
     init(target: LogTarget, presetMealType: MealType? = nil, presetDate: Date? = nil) {
@@ -102,13 +113,37 @@ struct LogEntryConfirmView: View {
     private var food: Food {
         switch target {
         case .catalog(let food, _, _): return food
-        case .custom(let draft, _): return draft.asFood()
+        case .custom(let draft, _): return (updatedDraft ?? draft).asFood()
         }
+    }
+
+    /// The custom food being confirmed, including a just-picked Garmin match.
+    private var customDraft: CustomFoodDraft? {
+        guard case .custom(let draft, _) = target else { return nil }
+        return updatedDraft ?? draft
+    }
+
+    /// add-standalone-mode D5: a custom food created without Garmin, seen in
+    /// Garmin mode, must get a Garmin match before it can be logged there --
+    /// never logged silently or dropped. Always false in standalone mode and
+    /// for every food created in Garmin mode.
+    private var needsGarminMatch: Bool {
+        guard environment.dataMode == .garminConnected, let customDraft else { return false }
+        return !customDraft.hasGarminBacking
     }
 
     private var isCustom: Bool {
         if case .custom = target { return true }
         return false
+    }
+
+    /// add-standalone-mode D5: how complete the chosen serving's nutrition
+    /// is -- only in standalone mode and only for a catalog food (a custom
+    /// food is her own numbers). `nil` in Garmin mode, so nothing below
+    /// changes there.
+    private var standaloneCompleteness: NutritionCompleteness? {
+        guard environment.dataMode == .standalone, !isCustom, let selectedServing else { return nil }
+        return selectedServing.completeness
     }
 
     private var caloriesForQuantity: Double? {
@@ -168,6 +203,20 @@ struct LogEntryConfirmView: View {
                         Text("Calories")
                         Spacer()
                         MacroBadge.calories(caloriesForQuantity)
+                    }
+                }
+            }
+
+            if let standaloneCompleteness, standaloneCompleteness != .complete {
+                completenessSection(standaloneCompleteness)
+            }
+
+            if needsGarminMatch {
+                Section {
+                    Label(String(localized: "Needs a Garmin match before it can be logged to Garmin."), systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(Theme.warning)
+                    Button(String(localized: "Choose a Garmin match")) {
+                        isPresentingGarminMatchEditor = true
                     }
                 }
             }
@@ -245,6 +294,44 @@ struct LogEntryConfirmView: View {
         .animation(Theme.confirmAnimation(reduceMotion: reduceMotion), value: didConfirm)
         .interactiveDismissDisabled(isSaving)
         .onAppear(perform: applyContextOnce)
+        .sheet(isPresented: $isPresentingCustomFoodEditor) {
+            NavigationStack {
+                CustomFoodEditorView(
+                    prefillName: food.name,
+                    prefillBrand: food.brandName,
+                    prefillBarcode: food.source == .openFoodFacts ? food.id : nil
+                )
+            }
+        }
+        .sheet(isPresented: $isPresentingGarminMatchEditor) {
+            NavigationStack {
+                CustomFoodEditorView(existing: customDraft, onSaved: { saved in
+                    updatedDraft = saved
+                    selectedServing = saved.asFood().servings.first
+                })
+            }
+        }
+    }
+
+    /// Standalone only (`standaloneCompleteness`).
+    @ViewBuilder
+    private func completenessSection(_ completeness: NutritionCompleteness) -> some View {
+        Section {
+            switch completeness {
+            case .caloriesUnknown:
+                Label(String(localized: "This food has no calorie value, so it can't be logged."), systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(Theme.warning)
+                Button(String(localized: "Create a custom food instead")) {
+                    isPresentingCustomFoodEditor = true
+                }
+            case .someValuesMissing:
+                Label(String(localized: "Some values missing: nutrients this food doesn't list count as 0 in your totals."), systemImage: "info.circle")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            case .complete:
+                EmptyView()
+            }
+        }
     }
 
     /// A meal chosen on the dashboard (`presetMealType`, already applied in
@@ -266,6 +353,8 @@ struct LogEntryConfirmView: View {
     /// `MealPresetConfirmView.canConfirm` already guards the same way.
     private var canConfirm: Bool {
         !didConfirm && !isSaving && (isCustom || selectedServing != nil) && isQuantityValid
+            && (standaloneCompleteness?.isLoggable ?? true)
+            && !needsGarminMatch
     }
 
     /// The same bound `LogEntryCoordinator` enforces (finite, > 0,
@@ -298,7 +387,7 @@ struct LogEntryConfirmView: View {
                     )
                 case .custom(let draft, _):
                     let (_, note) = try await environment.logEntryCoordinator.confirmCustomFood(
-                        draft,
+                        updatedDraft ?? draft,
                         quantity: quantity,
                         mealType: mealType,
                         date: dateString,
@@ -329,6 +418,10 @@ struct LogEntryConfirmView: View {
                 try? await Task.sleep(nanoseconds: 500_000_000)
                 dismiss()
             } catch let error as LogQuantityError {
+                errorMessage = error.localizedDescription
+            } catch let error as StandaloneLoggingError {
+                errorMessage = error.localizedDescription
+            } catch let error as CustomFoodLoggingError {
                 errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "LogEntryConfirmView", "confirm failed for foodId=\(food.id): \(error)")
