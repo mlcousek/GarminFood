@@ -61,6 +61,15 @@
 // accessibility-facing half of that task; the system's own built-in
 // momentary success/failure indication after a Control's action
 // completes/throws covers the rest until this is verified in Xcode.
+//
+// add-standalone-mode 3.6 (design D5; rules in FoodLogCore's
+// ShortcutLoggingRules.swift): `logEntryCoordinator` is the mode-routing
+// `FoodLogging`, so in standalone mode a quick pick is a local commit, and
+// `briefDelivery` is skipped -- `savedButSignedOut` can't happen there. In
+// Garmin mode a quick pick Garmin can't take (an Open Food Facts product or
+// a backing-less custom food, only ever logged standalone) is refused with
+// `needsGarminMatch` before anything is written, instead of queueing an id
+// Garmin doesn't know. Garmin mode is otherwise unchanged.
 
 import AppIntents
 import GarminKit
@@ -80,6 +89,9 @@ enum QuickPickControlAction {
         /// instead of a success it hasn't earned (add-glanceable-surfaces
         /// 21.2: an expired sign-in must fail loudly).
         case savedButSignedOut
+        /// add-standalone-mode: Garmin mode, a quick pick Garmin can't take
+        /// (`QuickPickLogTarget.needsGarminMatch`). Nothing was saved.
+        case needsGarminMatch
 
         var localizedStringResource: LocalizedStringResource {
             switch self {
@@ -89,6 +101,8 @@ enum QuickPickControlAction {
                 return "That food's details aren't saved locally yet -- open the app and log it once from there."
             case .savedButSignedOut:
                 return "Saved in GarminFood, but not sent: sign in to Garmin again in the app."
+            case .needsGarminMatch:
+                return "Nothing logged: this food needs a Garmin match first. Log it once from the app."
             }
         }
     }
@@ -126,6 +140,11 @@ enum QuickPickControlAction {
             throw ranked.indices.contains(rankIndex) ? ActionError.foodNotCachedLocally : ActionError.nothingRankedYet
         }
 
+        let mode = AppServices.currentDataMode()
+        if mode == .garminConnected, loggable[rankIndex].needsGarminMatch {
+            throw ActionError.needsGarminMatch
+        }
+
         let date = NutritionDate.todayString()
         let mealType = MealTypeDefaulting.defaultMealType()
         switch loggable[rankIndex] {
@@ -154,6 +173,8 @@ enum QuickPickControlAction {
         // network. Delivery after it is waited for, but only briefly
         // (add-garmin-auth-and-sync 9.6): past ~2 s the Control reports
         // success and the drain finishes on its own.
+        // Standalone mode has nothing to deliver (add-standalone-mode D5).
+        guard ShortcutLoggingRules.waitsForGarminDelivery(in: mode) else { return }
         if let result = await services.briefDelivery(), isSignedOut(result.authOutcome) {
             throw ActionError.savedButSignedOut
         }

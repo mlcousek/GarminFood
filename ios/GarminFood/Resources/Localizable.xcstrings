@@ -10176,6 +10176,54 @@
           }
         }
       }
+    },
+    "Couldn't find \"%@\" in your foods or the Czech food database.": {
+      "comment": "Siri reply, standalone mode (no Garmin). %@ is the food name the user said.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V tvých potravinách ani v české databázi potravin se nenašlo „%@“."
+          }
+        }
+      }
+    },
+    "Saved %@.": {
+      "comment": "Siri reply, standalone mode: the food was logged on this phone. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloženo: %@."
+          }
+        }
+      }
+    },
+    "%@ has no calorie value, so it can't be logged. Open GarminFood to add it as a custom food.": {
+      "comment": "Siri reply, standalone mode. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potravina %@ nemá kalorickou hodnotu, takže ji nejde zapsat. V GarminFood ji přidej jako vlastní potravinu."
+          }
+        }
+      }
+    },
+    "Nothing logged: this food needs a Garmin match first. Log it once from the app.": {
+      "comment": "Error shown by a quick-log Control/Shortcut in Garmin mode: the food came from standalone mode and has no Garmin food yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezapsalo: tahle potravina nejdřív potřebuje shodu v Garminu. Jednou ji zapiš v aplikaci."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
