@@ -119,6 +119,17 @@ final class AppPreferences {
         }
     }
 
+    /// add-standalone-mode wave 3: the EFFECTIVE mode (`DataMode.effective`,
+    /// the same rule `AppServices.currentDataMode` applies to the same two
+    /// keys), observable, so a screen that hides a Garmin-only control or
+    /// picks the standalone catalog re-renders the moment the testing
+    /// toggle flips.
+    var effectiveDataMode: DataMode {
+        DataMode.effective(stored: storedDataMode, forceStandalone: storedForceStandaloneMode)
+    }
+
+    var isStandalone: Bool { effectiveDataMode == .standalone }
+
     var hapticsEnabled: Bool {
         get { storedHaptics }
         set {

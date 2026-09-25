@@ -9984,6 +9984,246 @@
           }
         }
       }
+    },
+    "This food has no calorie value, so it can't be logged.": {
+      "comment": "Confirm screen, standalone mode: the chosen product has no calories.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle potravina nemá uvedené kalorie, takže ji nejde zapsat."
+          }
+        }
+      }
+    },
+    "Create a custom food instead": {
+      "comment": "Confirm screen, standalone mode: button that opens the custom-food editor for a product without calories.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit místo toho vlastní potravinu"
+          }
+        }
+      }
+    },
+    "Some values missing: nutrients this food doesn't list count as 0 in your totals.": {
+      "comment": "Confirm screen, standalone mode: the product lacks carbs, protein or fat.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některé hodnoty chybí: živiny, které potravina neuvádí, se do součtů počítají jako 0."
+          }
+        }
+      }
+    },
+    "Needs a Garmin match before it can be logged to Garmin.": {
+      "comment": "A custom food created without Garmin (standalone mode) can't be logged to Garmin until a closest Garmin food is picked.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Než to půjde zapsat do Garminu, je potřeba vybrat shodu v Garminu."
+          }
+        }
+      }
+    },
+    "Choose a Garmin match": {
+      "comment": "Confirm screen, Garmin mode: opens the custom-food editor to pick the closest Garmin food for a custom food created without Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat shodu v Garminu"
+          }
+        }
+      }
+    },
+    "Edit Custom Food": {
+      "comment": "Title of the custom-food editor when editing an existing food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit vlastní potravinu"
+          }
+        }
+      }
+    },
+    "Calories are required; leave anything else you don't know empty.": {
+      "comment": "Custom-food editor footer, standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie jsou povinné; cokoli dalšího, co nevíš, nech prázdné."
+          }
+        }
+      }
+    },
+    "Barcode (optional)": {
+      "comment": "Custom-food editor field, standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čárový kód (nepovinné)"
+          }
+        }
+      }
+    },
+    "Scanning this barcode later finds this food.": {
+      "comment": "Custom-food editor footer under the barcode field, standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Když tenhle čárový kód později naskenuješ, najde se tahle potravina."
+          }
+        }
+      }
+    },
+    "No calorie value: %@. Remove it or add it as a custom food with its calories, or this meal can't be logged.": {
+      "comment": "Meal editor, standalone mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez kalorické hodnoty: %@. Odeber ji, nebo ji přidej jako vlastní potravinu s kaloriemi, jinak toto jídlo nepůjde zapsat."
+          }
+        }
+      }
+    },
+    "Needs a Garmin match before this meal can be logged to Garmin: %@.": {
+      "comment": "Meal editor, Garmin mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Než půjde toto jídlo zapsat do Garminu, je potřeba vybrat shodu v Garminu pro: %@."
+          }
+        }
+      }
+    },
+    "Can't log this meal: %@ has no calorie value. Edit the meal to remove it or replace it with a custom food.": {
+      "comment": "Meal confirm screen, standalone mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo nejde zapsat: %@ nemá kalorickou hodnotu. Uprav jídlo a odeber ji, nebo ji nahraď vlastní potravinou."
+          }
+        }
+      }
+    },
+    "Can't log this meal to Garmin yet: %@ needs a Garmin match. Edit the meal to replace it.": {
+      "comment": "Meal confirm screen, Garmin mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo zatím nejde zapsat do Garminu: %@ potřebuje shodu v Garminu. Uprav jídlo a nahraď ji."
+          }
+        }
+      }
+    },
+    "Couldn't log this meal. Nothing was saved -- try again.": {
+      "comment": "Meal confirm screen, standalone mode: logging the meal failed and nothing was written.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se nepodařilo zapsat. Nic se neuložilo – zkus to znovu."
+          }
+        }
+      }
+    },
+    "Create a custom food": {
+      "comment": "Barcode scanner, standalone mode: the Open Food Facts lookup failed; opens the custom-food editor with the scanned barcode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit vlastní potravinu"
+          }
+        }
+      }
+    },
+    "Couldn't reach Open Food Facts. Try again, or create a custom food for this barcode.": {
+      "comment": "Barcode scanner, standalone mode: the online product lookup failed (e.g. offline).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se spojit s Open Food Facts. Zkus to znovu, nebo pro tento čárový kód vytvoř vlastní potravinu."
+          }
+        }
+      }
+    },
+    "Couldn't find \"%@\" in your foods or the Czech food database.": {
+      "comment": "Siri reply, standalone mode (no Garmin). %@ is the food name the user said.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V tvých potravinách ani v české databázi potravin se nenašlo „%@“."
+          }
+        }
+      }
+    },
+    "Saved %@.": {
+      "comment": "Siri reply, standalone mode: the food was logged on this phone. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloženo: %@."
+          }
+        }
+      }
+    },
+    "%@ has no calorie value, so it can't be logged. Open GarminFood to add it as a custom food.": {
+      "comment": "Siri reply, standalone mode. %@ is a food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potravina %@ nemá kalorickou hodnotu, takže ji nejde zapsat. V GarminFood ji přidej jako vlastní potravinu."
+          }
+        }
+      }
+    },
+    "Nothing logged: this food needs a Garmin match first. Log it once from the app.": {
+      "comment": "Error shown by a quick-log Control/Shortcut in Garmin mode: the food came from standalone mode and has no Garmin food yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezapsalo: tahle potravina nejdřív potřebuje shodu v Garminu. Jednou ji zapiš v aplikaci."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

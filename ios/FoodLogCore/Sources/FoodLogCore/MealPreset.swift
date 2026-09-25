@@ -122,8 +122,14 @@ public struct MealPreset: Codable, Sendable, Equatable, Hashable, Identifiable {
     /// fully-unconfirmed Garmin route for uncertain benefit -- so syncing
     /// to Garmin is offered only when this is `false`. See
     /// `openspec/changes/sync-meal-presets-to-garmin/design.md` D2.
+    ///
+    /// add-standalone-mode D5: an ingredient that needs a Garmin match
+    /// (`MealPresetIngredient.needsGarminMatch` -- an Open Food Facts
+    /// product added in standalone mode) is unsyncable too. Such an
+    /// ingredient can't be in a preset built in Garmin mode, so the owner's
+    /// presets answer exactly as before.
     public var hasUnsyncableIngredients: Bool {
-        ingredients.contains { $0.customFoodDraft != nil }
+        ingredients.contains { $0.customFoodDraft != nil || $0.needsGarminMatch }
     }
 
     /// The preset's nutrition, summed across every ingredient at its own
@@ -144,6 +150,52 @@ public struct MealPreset: Codable, Sendable, Equatable, Hashable, Identifiable {
             protein: protein * servingsMultiplier,
             fat: fat * servingsMultiplier
         )
+    }
+}
+
+// MARK: - Presets in either data mode (add-standalone-mode D5, task 3.4)
+//
+// In standalone mode a preset's ingredients may be of any origin -- a Garmin
+// food remembered earlier, an Open Food Facts / offline-index product logged
+// as itself, a custom food with or without a Garmin backing -- because the
+// local coordinator logs each one with its own snapshot nutrients. Two
+// judgements the screens need, kept here so they are testable:
+//   - Garmin mode can't send an Open Food Facts id or a backing-less custom
+//     food to Garmin: such an ingredient needs a Garmin match first
+//     (`LogEntryCoordinator.confirmMealPreset` refuses the whole preset
+//     before writing anything, so it's never logged silently or dropped).
+//   - Standalone mode can't log a catalog ingredient without calories
+//     (NutritionCompleteness.swift; `LocalLogEntryCoordinator` refuses it).
+// "Sync to Garmin" is a Garmin-mode action only.
+
+extension MealPresetIngredient {
+    /// Garmin can't log this ingredient as it is: an Open Food Facts product
+    /// (only standalone mode adds one as itself) or a custom food without a
+    /// Garmin backing food.
+    public var needsGarminMatch: Bool {
+        if let customFoodDraft { return !customFoodDraft.hasGarminBacking }
+        return food.source == .openFoodFacts
+    }
+}
+
+extension MealPreset {
+    /// The ingredients that stop this preset from being logged in `mode`:
+    /// in Garmin mode those needing a Garmin match, in standalone mode the
+    /// catalog ingredients without a calorie value. Empty = loggable.
+    public func blockingIngredients(in mode: DataMode) -> [MealPresetIngredient] {
+        switch mode {
+        case .garminConnected:
+            return ingredients.filter(\.needsGarminMatch)
+        case .standalone:
+            return ingredients.filter { $0.customFoodDraft == nil && !$0.serving.completeness.isLoggable }
+        }
+    }
+
+    /// Whether the experimental "Sync to Garmin" action is offered: never
+    /// in standalone mode; in Garmin mode, as before, only for a preset of
+    /// real catalog/matched foods.
+    public func offersGarminSync(in mode: DataMode) -> Bool {
+        mode == .garminConnected && !hasUnsyncableIngredients
     }
 }
 

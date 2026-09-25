@@ -33,10 +33,10 @@ final class CustomFoodTests: XCTestCase {
         XCTAssertEqual(food.servings.first?.calories, 220)
     }
 
-    func testResolvedLoggingTargetScalesQuantityByTheBackingMultiplier() {
+    func testResolvedLoggingTargetScalesQuantityByTheBackingMultiplier() throws {
         let draft = makeDraft(multiplier: 0.5)
 
-        let target = draft.resolvedLoggingTarget(quantity: 2)
+        let target = try XCTUnwrap(draft.resolvedLoggingTarget(quantity: 2))
 
         XCTAssertEqual(target.foodId, "garmin-food-42")
         XCTAssertEqual(target.servingId, "garmin-serving-7")
