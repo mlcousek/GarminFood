@@ -258,6 +258,14 @@ summarizer returned wrong EFSA values during research.
   taken. **Journey**: creatine grams (e.g. 100 g → 1 kg → 5 kg milestones).
 - **XP**: the budget line is ~6 XP/day before the optional multiplier
   (`rebalance-xp-economy` D4). Grant keys are `supplements.<…>`.
+  - **Few, larger grants** (xp-economy decision, relayed 2026-09-25):
+    optional sources are priced with `XPBudget.optionalMultiplier(...)` and
+    `XPBudget.scaledGrant(_:multiplier:)`, capped so that all optional
+    sources together add at most 0.5 % of core daily XP, and every grant is
+    at least 1 XP. Many tiny grants would each round up to 1 XP and break
+    that allowance, so supplements grants **one grant per stack-complete
+    day plus milestone grants** (badges, journey steps), never one per
+    tick.
 - **Disabled feature**: when disabled, the feature doesn't evaluate. Earned
   badges stay, challenges leave the rotation, and the streak is frozen in
   place (it is neither lost nor extended).
