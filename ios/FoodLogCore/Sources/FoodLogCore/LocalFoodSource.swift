@@ -16,6 +16,12 @@
 // means nothing to Garmin), and Open Food Facts foods are never local
 // (they aren't loggable without the Garmin match step).
 //
+// add-standalone-mode D5: standalone mode's engine
+// (`FoodSearchEngine.standard(garmin: nil)`) builds this with
+// `includesOpenFoodFactsFoods: true` -- there an OFF / offline-index product
+// is logged as itself, so one she has logged or starred is "hers" like any
+// other. Garmin mode keeps the default (`false`), unchanged.
+//
 // It returns the whole library unscored -- a few hundred foods at most --
 // and lets `SearchRanker` filter, which is instant and needs no network.
 // Also derives the personal-boost context from the same stores.
@@ -30,12 +36,20 @@ public struct LocalFoodSource: FoodSearchSource {
     private let favorites: FavoriteFoodStore
     private let foodCache: FoodCacheStore
     private let usageHistory: UsageHistoryStore
+    private let includesOpenFoodFactsFoods: Bool
 
-    public init(customFoods: CustomFoodStore, favorites: FavoriteFoodStore, foodCache: FoodCacheStore, usageHistory: UsageHistoryStore) {
+    public init(
+        customFoods: CustomFoodStore,
+        favorites: FavoriteFoodStore,
+        foodCache: FoodCacheStore,
+        usageHistory: UsageHistoryStore,
+        includesOpenFoodFactsFoods: Bool = false
+    ) {
         self.customFoods = customFoods
         self.favorites = favorites
         self.foodCache = foodCache
         self.usageHistory = usageHistory
+        self.includesOpenFoodFactsFoods = includesOpenFoodFactsFoods
     }
 
     public var origin: SearchOrigin { .local }
@@ -47,7 +61,13 @@ public struct LocalFoodSource: FoodSearchSource {
         let favoriteFoods = await favorites.all()
         let cached = await foodCache.all()
         let events = await usageHistory.all()
-        return SourcePage(candidates: Self.candidates(customFoods: drafts, favorites: favoriteFoods, cachedFoods: cached, usage: events))
+        return SourcePage(candidates: Self.candidates(
+            customFoods: drafts,
+            favorites: favoriteFoods,
+            cachedFoods: cached,
+            usage: events,
+            includesOpenFoodFactsFoods: includesOpenFoodFactsFoods
+        ))
     }
 
     /// Usage-frequency and favorite signals for `SearchRanker`.
@@ -58,12 +78,14 @@ public struct LocalFoodSource: FoodSearchSource {
     }
 
     /// The local library, pure. Custom foods first, then favorites, then
-    /// logged foods most-recent first; each food once.
+    /// logged foods most-recent first; each food once. Open Food Facts
+    /// products only when `includesOpenFoodFactsFoods` (standalone mode).
     public static func candidates(
         customFoods: [CustomFoodDraft],
         favorites: [FavoriteFood],
         cachedFoods: [String: Food],
-        usage: [UsageEvent]
+        usage: [UsageEvent],
+        includesOpenFoodFactsFoods: Bool = false
     ) -> [SearchCandidate] {
         let draftsById = Dictionary(customFoods.map { ($0.id.uuidString, $0) }, uniquingKeysWith: { first, _ in first })
         var seen = Set<String>()
@@ -77,7 +99,9 @@ public struct LocalFoodSource: FoodSearchSource {
                 seen.insert(food.id)
                 library.append(SearchCandidate(food: draft.asFood(), origin: .local, customDraft: draft))
             case .openFoodFacts:
-                return
+                guard includesOpenFoodFactsFoods else { return }
+                seen.insert(food.id)
+                library.append(SearchCandidate(food: food, origin: .local))
             case .garmin, .fatSecret:
                 seen.insert(food.id)
                 library.append(SearchCandidate(food: food, origin: .local))

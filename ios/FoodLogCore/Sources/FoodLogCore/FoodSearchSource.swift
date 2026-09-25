@@ -44,11 +44,26 @@ public enum SearchOrigin: String, Sendable, Hashable, CaseIterable, Codable {
         }
     }
 
-    /// Whether a result can be logged straight away. Open Food Facts
-    /// products (live or offline) first need the Garmin match step
-    /// (`MatchConfirmationView`), because Garmin only accepts its own foods.
+    /// Whether a result can be logged straight away IN GARMIN MODE. Open
+    /// Food Facts products (live or offline) first need the Garmin match
+    /// step (`MatchConfirmationView`), because Garmin only accepts its own
+    /// foods. Also the ranking prior (`SearchRanker`) and the "real Garmin
+    /// foods only" filter of the custom-food backing picker, which exist
+    /// only in Garmin mode. Anything that routes a tap uses
+    /// `isDirectlyLoggable(in:)`.
     public var isDirectlyLoggable: Bool {
-        self == .local || self == .garmin
+        isDirectlyLoggable(in: .garminConnected)
+    }
+
+    /// add-standalone-mode D5: in standalone mode EVERY origin is logged as
+    /// itself (serving picker, then the confirm screen; the local log keeps
+    /// its nutrients), so nothing needs a Garmin match. Garmin mode keeps
+    /// today's rule.
+    public func isDirectlyLoggable(in mode: DataMode) -> Bool {
+        switch mode {
+        case .standalone: return true
+        case .garminConnected: return self == .local || self == .garmin
+        }
     }
 }
 

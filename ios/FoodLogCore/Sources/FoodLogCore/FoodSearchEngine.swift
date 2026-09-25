@@ -77,8 +77,15 @@ public actor FoodSearchEngine {
     /// the downloaded Czech offline index (when a holder is passed; it
     /// answers empty until an index is loaded) and live Open Food Facts,
     /// personalized from the same local stores.
+    ///
+    /// add-standalone-mode D5: `garmin: nil` is standalone mode's catalog --
+    /// no Garmin source at all (no Garmin request, no Garmin status, no
+    /// "Show more from Garmin"), and the user's own foods then include the
+    /// Open Food Facts products she has logged, because in that mode an OFF
+    /// product is logged as itself (`SearchOrigin.isDirectlyLoggable(in:)`).
+    /// Passing a client keeps the Garmin wiring exactly as before.
     public static func standard(
-        garmin: any GarminFoodSearching,
+        garmin: (any GarminFoodSearching)?,
         customFoods: CustomFoodStore,
         favorites: FavoriteFoodStore,
         foodCache: FoodCacheStore,
@@ -86,8 +93,17 @@ public actor FoodSearchEngine {
         openFoodFacts: any OpenFoodFactsSearching = OpenFoodFactsClient(),
         offlineIndex: OfflineFoodIndexHolder? = nil
     ) -> FoodSearchEngine {
-        let local = LocalFoodSource(customFoods: customFoods, favorites: favorites, foodCache: foodCache, usageHistory: usageHistory)
-        var sources: [any FoodSearchSource] = [local, GarminSearchSource(searcher: garmin)]
+        let local = LocalFoodSource(
+            customFoods: customFoods,
+            favorites: favorites,
+            foodCache: foodCache,
+            usageHistory: usageHistory,
+            includesOpenFoodFactsFoods: garmin == nil
+        )
+        var sources: [any FoodSearchSource] = [local]
+        if let garmin {
+            sources.append(GarminSearchSource(searcher: garmin))
+        }
         if let offlineIndex {
             sources.append(OfflineCzechIndexSource(holder: offlineIndex))
         }
