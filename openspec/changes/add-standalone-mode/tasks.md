@@ -28,7 +28,7 @@ Relative size per wave: S / M / L.
 
 - [x] 2.1 `LocalLogEntry` + `LocalFoodLogStore` (month-sharded JSON, unreadable-file contract, atomic writes). Tests: commit/edit/delete, sharding across months, quarantine, unknown-key decode.
 - [x] 2.2 `LocalLogEntryCoordinator: FoodLogging` (nutrient snapshot = serving × quantity; custom foods use their own macros; presets; edit rescales; move; duplicate; copyMeal; deletes; usage/serving-default/food-cache side effects identical to Garmin's). Tests.
-- [ ] 2.3 `LocalNutritionReader: NutritionLogReading` (day log with meal details and sums, goals from `LocalGoalStore` once wave 4 lands, `mealsForDate` default meals, `calorieSummaryDaily`, `dailyUserSummary` throws `.unavailable`). Golden tests through `MealDashboard.build` and `CopyMealPlanner`.
+- [x] 2.3 `LocalNutritionReader: NutritionLogReading` (day log with meal details and sums, goals from `LocalGoalStore` once wave 4 lands, `mealsForDate` default meals, `calorieSummaryDaily`, `dailyUserSummary` throws `.unavailable`). Golden tests through `MealDashboard.build` and `CopyMealPlanner`.
 - [ ] 2.4 `GoalStatusEvaluator` (pure): move the goal-met judgement out of `GamificationEngine`; both modes use it. Tests (same results as before for Garmin logs).
 - [ ] 2.5 Routing: `ModeRoutingFoodLogging` and the reader choose the local implementation when standalone.
 - [ ] 2.6 On-device (testing toggle on): log, edit, move, duplicate, copy, delete offline; totals and Trends correct.
