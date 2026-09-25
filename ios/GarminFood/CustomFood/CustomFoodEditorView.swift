@@ -162,9 +162,9 @@ struct CustomFoodEditorView: View {
         }
     }
 
-    @ViewBuilder
     /// `title` is a `LocalizedStringKey`, so each literal call site
     /// ("Carbs (g)") is a catalog key.
+    @ViewBuilder
     private func macroField(_ title: LocalizedStringKey, text: Binding<String>) -> some View {
         HStack {
             Text(title)
@@ -206,7 +206,7 @@ struct CustomFoodEditorView: View {
             await environment.foodCache.upsert([draft.asFood()])
             dismiss()
         } catch {
-            saveErrorMessage = "Couldn't save this custom food. Try again."
+            saveErrorMessage = String(localized: "Couldn't save this custom food. Try again.")
         }
     }
 }

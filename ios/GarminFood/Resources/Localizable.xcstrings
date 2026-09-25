@@ -1,6 +1,18 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ · %@": {
+      "comment": "Food name · serving label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
     "%@ · %lld g carbs, %lld min before": {
       "comment": "Sport & body activity row: a fuel entry. %@ = food name, then grams, then minutes before the start.",
       "extractionState": "manual",
@@ -1591,6 +1603,18 @@
         }
       }
     },
+    "Brand (optional)": {
+      "comment": "Custom food editor field placeholder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Značka (nepovinné)"
+          }
+        }
+      }
+    },
     "Breakfast": {
       "comment": "Meal name.",
       "extractionState": "manual",
@@ -1663,6 +1687,18 @@
         }
       }
     },
+    "Calories (kcal)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie (kcal)"
+          }
+        }
+      }
+    },
     "Calories: %@": {
       "comment": "VoiceOver label of the meal detail calorie ring; %@ = meal name, e.g. 'Breakfast'.",
       "extractionState": "manual",
@@ -1695,6 +1731,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sacharidy"
+          }
+        }
+      }
+    },
+    "Carbs (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sacharidy (g)"
           }
         }
       }
@@ -1851,6 +1899,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "končí v %@ (%@)"
+          }
+        }
+      }
+    },
+    "Closest match in Garmin": {
+      "comment": "Custom food editor: the Garmin food this custom food is actually logged as.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejbližší shoda v Garminu"
           }
         }
       }
@@ -2439,6 +2499,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nepodařilo se uložit"
+          }
+        }
+      }
+    },
+    "Couldn't save this custom food. Try again.": {
+      "comment": "Error in the custom food editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastní jídlo se nepodařilo uložit. Zkus to znovu."
           }
         }
       }
@@ -3427,6 +3499,18 @@
         }
       }
     },
+    "Fat (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuky (g)"
+          }
+        }
+      }
+    },
     "Favorite": {
       "comment": "Tag on a food row: marked favorite in Garmin.",
       "extractionState": "manual",
@@ -3483,6 +3567,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Doladění"
+          }
+        }
+      }
+    },
+    "Food": {
+      "comment": "Custom food editor: section with the food's name and serving.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo"
           }
         }
       }
@@ -5359,6 +5455,18 @@
         }
       }
     },
+    "New Custom Food": {
+      "comment": "Custom food editor title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nové vlastní jídlo"
+          }
+        }
+      }
+    },
     "New meal": {
       "comment": "Toolbar menu item: create a saved multi-food meal.",
       "extractionState": "manual",
@@ -5839,6 +5947,18 @@
         }
       }
     },
+    "Number of units": {
+      "comment": "Custom food editor field placeholder: how many serving units one serving is.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počet jednotek"
+          }
+        }
+      }
+    },
     "Nutrients": {
       "comment": "Meal detail section header listing Garmin's nutrient totals.",
       "extractionState": "manual",
@@ -5847,6 +5967,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Živiny"
+          }
+        }
+      }
+    },
+    "Nutrition (per serving)": {
+      "comment": "Custom food editor section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutriční hodnoty (na porci)"
           }
         }
       }
@@ -6367,6 +6499,18 @@
         }
       }
     },
+    "Protein (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bílkoviny (g)"
+          }
+        }
+      }
+    },
     "Pull to refresh to try again.": {
       "comment": "Trends empty state message after a load failure.",
       "extractionState": "manual",
@@ -6399,6 +6543,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Počet porcí"
+          }
+        }
+      }
+    },
+    "Quantity multiplier": {
+      "comment": "Custom food editor: how many of the Garmin food's servings one custom serving is.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Násobek množství"
           }
         }
       }
@@ -6579,6 +6735,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odstranit toto pití?"
+          }
+        }
+      }
+    },
+    "Required — pick one": {
+      "comment": "Custom food editor: no Garmin match picked yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povinné – vyber jednu"
           }
         }
       }
@@ -7111,6 +7279,18 @@
         }
       }
     },
+    "Serving unit (e.g. \"bowl\", \"slice\")": {
+      "comment": "Custom food editor field placeholder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jednotka porce (např. „miska“, „plátek“)"
+          }
+        }
+      }
+    },
     "Serving: %@": {
       "comment": "Edit-entry sheet: the entry's serving; %@ = serving description, e.g. '1 cup'.",
       "extractionState": "manual",
@@ -7375,6 +7555,18 @@
         }
       }
     },
+    "Since custom-food creation isn't confirmed possible via Garmin's private API yet, this food will actually be logged as the Garmin food you pick here, scaled by the multiplier.": {
+      "comment": "Custom food editor: explanation above the Garmin match.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytváření vlastních jídel přes soukromé API Garminu zatím není ověřené, takže se toto jídlo ve skutečnosti zapíše jako potravina z Garminu, kterou tu vybereš, vynásobená násobkem."
+          }
+        }
+      }
+    },
     "Size": {
       "comment": "Settings: offline database size on disk.",
       "extractionState": "manual",
@@ -7431,6 +7623,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Svačina"
+          }
+        }
+      }
+    },
+    "Sodium (mg)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sodík (mg)"
           }
         }
       }
@@ -7665,6 +7869,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Posilování"
+          }
+        }
+      }
+    },
+    "Sugar (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cukry (g)"
           }
         }
       }
