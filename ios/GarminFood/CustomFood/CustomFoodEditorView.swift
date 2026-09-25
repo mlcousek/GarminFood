@@ -15,6 +15,10 @@ import FoodLogCore
 @MainActor
 struct CustomFoodEditorView: View {
     var prefillNote: String?
+    /// add-standalone-mode D5: a catalog product that can't be logged
+    /// (no calories) starts a custom food under its own name and brand.
+    var prefillName: String?
+    var prefillBrand: String?
 
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
@@ -158,6 +162,12 @@ struct CustomFoodEditorView: View {
         .onAppear {
             if let prefillNote, note.isEmpty {
                 note = prefillNote
+            }
+            if let prefillName, name.isEmpty {
+                name = prefillName
+            }
+            if let prefillBrand, brandName.isEmpty {
+                brandName = prefillBrand
             }
         }
     }

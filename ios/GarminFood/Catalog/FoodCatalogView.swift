@@ -205,7 +205,8 @@ struct FoodCatalogView: View {
                     onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
                     onSelectFood: { select($0) },
                     onSelectCustomFood: { selectCustomFood($0) },
-                    onSelectOpenFoodFactsFood: { matchingTarget = $0 }
+                    onSelectOpenFoodFactsFood: { matchingTarget = $0 },
+                    dataMode: dataMode
                 )
             }
 
@@ -297,8 +298,9 @@ struct FoodCatalogView: View {
                     isPresentingBarcodeScanner = false
                     // A hit from the offline Czech index (add-offline-czech-
                     // food-index D4) is an Open Food Facts product: like a
-                    // tapped OFF search result, it needs its Garmin match first.
-                    if food.source == .openFoodFacts {
+                    // tapped OFF search result, it needs its Garmin match first
+                    // -- in Garmin mode. Standalone logs it as itself (D5).
+                    if food.source == .openFoodFacts, dataMode == .garminConnected {
                         matchingTarget = food
                     } else {
                         select(food)
@@ -435,6 +437,12 @@ struct FoodCatalogView: View {
             if item.food.source == .custom, draft == nil { return }
             let food = draft?.asFood() ?? item.food
             let serving = food.servings.first(where: { $0.id == item.serving.id }) ?? item.serving
+            // Same rule as `select`: an Open Food Facts product remembered
+            // in standalone mode needs its Garmin match in Garmin mode.
+            if food.source == .openFoodFacts, dataMode == .garminConnected, !isPickingBackingFood {
+                matchingTarget = food
+                return
+            }
 
             switch mode {
             case .pickIngredient(let onPick):
@@ -479,6 +487,14 @@ struct FoodCatalogView: View {
                     selectCustomFood(draft)
                 }
             }
+            return
+        }
+        // add-standalone-mode: an Open Food Facts product can only become
+        // one of "your" foods (favorite, cache) in standalone mode. If one
+        // is tapped in Garmin mode (after a mode switch), it still gets its
+        // Garmin match first, never a direct Garmin log of an OFF id.
+        if food.source == .openFoodFacts, dataMode == .garminConnected, !isPickingBackingFood {
+            matchingTarget = food
             return
         }
         switch mode {

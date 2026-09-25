@@ -7440,6 +7440,42 @@
           }
         }
       }
+    },
+    "This food has no calorie value, so it can't be logged.": {
+      "comment": "Confirm screen, standalone mode: the chosen product has no calories.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle potravina nemá uvedené kalorie, takže ji nejde zapsat."
+          }
+        }
+      }
+    },
+    "Create a custom food instead": {
+      "comment": "Confirm screen, standalone mode: button that opens the custom-food editor for a product without calories.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit místo toho vlastní potravinu"
+          }
+        }
+      }
+    },
+    "Some values missing: nutrients this food doesn't list count as 0 in your totals.": {
+      "comment": "Confirm screen, standalone mode: the product lacks carbs, protein or fat.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některé hodnoty chybí: živiny, které potravina neuvádí, se do součtů počítají jako 0."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
