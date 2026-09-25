@@ -10045,18 +10045,6 @@
         }
       }
     },
-    "New Custom Food": {
-      "comment": "Title of the custom-food editor when creating a food.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nová vlastní potravina"
-          }
-        }
-      }
-    },
     "Edit Custom Food": {
       "comment": "Title of the custom-food editor when editing an existing food.",
       "extractionState": "manual",
@@ -10101,6 +10089,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "Když tenhle čárový kód později naskenuješ, najde se tahle potravina."
+          }
+        }
+      }
+    },
+    "No calorie value: %@. Remove it or add it as a custom food with its calories, or this meal can't be logged.": {
+      "comment": "Meal editor, standalone mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez kalorické hodnoty: %@. Odeber ji, nebo ji přidej jako vlastní potravinu s kaloriemi, jinak toto jídlo nepůjde zapsat."
+          }
+        }
+      }
+    },
+    "Needs a Garmin match before this meal can be logged to Garmin: %@.": {
+      "comment": "Meal editor, Garmin mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Než půjde toto jídlo zapsat do Garminu, je potřeba vybrat shodu v Garminu pro: %@."
+          }
+        }
+      }
+    },
+    "Can't log this meal: %@ has no calorie value. Edit the meal to remove it or replace it with a custom food.": {
+      "comment": "Meal confirm screen, standalone mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo nejde zapsat: %@ nemá kalorickou hodnotu. Uprav jídlo a odeber ji, nebo ji nahraď vlastní potravinou."
+          }
+        }
+      }
+    },
+    "Can't log this meal to Garmin yet: %@ needs a Garmin match. Edit the meal to replace it.": {
+      "comment": "Meal confirm screen, Garmin mode. %@ is a list of ingredient names.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo zatím nejde zapsat do Garminu: %@ potřebuje shodu v Garminu. Uprav jídlo a nahraď ji."
+          }
+        }
+      }
+    },
+    "Couldn't log this meal. Nothing was saved -- try again.": {
+      "comment": "Meal confirm screen, standalone mode: logging the meal failed and nothing was written.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se nepodařilo zapsat. Nic se neuložilo – zkus to znovu."
           }
         }
       }

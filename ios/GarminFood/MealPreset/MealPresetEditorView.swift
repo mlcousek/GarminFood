@@ -9,6 +9,13 @@
 // Also handles EDITING an existing preset (`existing:`), not just creating
 // one -- there is no separate "edit" screen, per config.yaml's "small,
 // composable views" principle: one form, two entry points.
+//
+// add-standalone-mode D5 (task 3.4): in standalone mode ingredients may be
+// of any origin (the ingredient picker already routes an Open Food Facts
+// product straight to its serving picker there), the Garmin section ("Sync
+// to Garmin") is hidden, and an ingredient that would stop the preset from
+// being logged in the current mode (`MealPreset.blockingIngredients(in:)`)
+// is named under the list. Garmin mode behaves as before.
 
 import SwiftUI
 import FoodLogCore
@@ -47,7 +54,34 @@ struct MealPresetEditorView: View {
     }
 
     private var totals: MealPreset.Totals {
-        MealPreset(id: UUID(), name: name, ingredients: ingredients).totals()
+        draftPreset.totals()
+    }
+
+    /// The preset as currently edited, for the pure FoodLogCore rules.
+    private var draftPreset: MealPreset {
+        MealPreset(id: existing?.id ?? UUID(), name: name, ingredients: ingredients)
+    }
+
+    private var dataMode: DataMode { environment.dataMode }
+
+    /// Ingredients that stop this preset from being logged in the current
+    /// mode, named in the list's footer (never silently skipped at log time).
+    private var blockingIngredientsMessage: String? {
+        let blocking = draftPreset.blockingIngredients(in: dataMode)
+        guard !blocking.isEmpty else { return nil }
+        let names = blocking.map(\.food.name).formatted(.list(type: .and))
+        switch dataMode {
+        case .standalone:
+            return String(
+                localized: "No calorie value: \(names). Remove it or add it as a custom food with its calories, or this meal can't be logged.",
+                comment: "Meal editor, standalone mode. %@ is a list of ingredient names."
+            )
+        case .garminConnected:
+            return String(
+                localized: "Needs a Garmin match before this meal can be logged to Garmin: \(names).",
+                comment: "Meal editor, Garmin mode. %@ is a list of ingredient names."
+            )
+        }
     }
 
     /// The Garmin-sync confirmation title. The count is its own plural
@@ -82,6 +116,9 @@ struct MealPresetEditorView: View {
             } footer: {
                 if ingredients.isEmpty {
                     Text("Add at least one ingredient -- each one logs as its own entry when you log this meal.")
+                } else if let blockingIngredientsMessage {
+                    Text(blockingIngredientsMessage)
+                        .foregroundStyle(Theme.danger)
                 }
             }
 
@@ -110,14 +147,15 @@ struct MealPresetEditorView: View {
                 }
             }
 
-            if existing != nil, !ingredients.isEmpty {
+            // add-standalone-mode: Garmin-only, hidden in standalone mode.
+            if existing != nil, !ingredients.isEmpty, dataMode == .garminConnected {
                 Section {
                     if let garminSyncedAt {
                         Label("Synced to Garmin \(garminSyncedAt.formatted(.relative(presentation: .named)))", systemImage: "checkmark.circle.fill")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
-                    if ingredients.contains(where: { $0.customFoodDraft != nil }) {
+                    if !draftPreset.offersGarminSync(in: dataMode) {
                         Text("This meal includes a custom food, which can't be synced to Garmin yet -- only real catalog/matched foods can.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)

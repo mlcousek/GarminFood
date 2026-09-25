@@ -187,9 +187,11 @@ public struct LogEntryCoordinator: Sendable {
         // Checked for every ingredient up front: this path isn't
         // transactional (see above), so finding a bad quantity halfway
         // through would leave the ingredients before it already logged.
-        // Likewise a custom food without a Garmin backing (add-standalone-
-        // mode D5): refused before the first ingredient is written.
-        guard preset.ingredients.allSatisfy({ $0.customFoodDraft?.hasGarminBacking ?? true }) else {
+        // Likewise a custom food without a Garmin backing, or an Open Food
+        // Facts product added in standalone mode (add-standalone-mode D5,
+        // `MealPresetIngredient.needsGarminMatch`): refused before the first
+        // ingredient is written.
+        guard !preset.ingredients.contains(where: { $0.needsGarminMatch }) else {
             throw CustomFoodLoggingError.needsGarminMatch
         }
         let allValid = preset.ingredients.allSatisfy { ingredient in
