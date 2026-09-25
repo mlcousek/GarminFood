@@ -67,6 +67,10 @@ final class FeatureHost {
     let badgeCatalog: [AchievementDefinition]
     /// The latest hub-card summary per feature id.
     private(set) var summaries: [String: FeatureSummary] = [:]
+    /// Bumped after every completed pass. Detail screens key their reload
+    /// on it, because a pass can change what they show (e.g. body progress
+    /// after a weigh-in) without changing the feature's hub summary.
+    private(set) var completedRuns = 0
 
     private let sources: Sources
     private let ledger: RewardLedger
@@ -179,7 +183,10 @@ final class FeatureHost {
         // correct, but one pass at a time keeps the moments tidy.
         guard !isRunning else { return Outcome() }
         isRunning = true
-        defer { isRunning = false }
+        defer {
+            isRunning = false
+            completedRuns += 1
+        }
 
         var outcome = Outcome()
         var unlocked = await achievementStore.unlockedIds()

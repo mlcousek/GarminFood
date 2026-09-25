@@ -27,13 +27,16 @@ extension AppPreferences {
         let data = defaults.data(forKey: Key.appearance)
         let result = AppearanceSettings.load(from: data)
         if result.status == .undecodable, let data {
-            defaults.set(data, forKey: Key.appearanceQuarantine)
+            // Never overwrite an earlier quarantined blob (see
+            // AppPreferences+Layout.swift's freeQuarantineKey).
+            let quarantineKey = freeQuarantineKey(Key.appearanceQuarantine, in: defaults)
+            defaults.set(data, forKey: quarantineKey)
             defaults.removeObject(forKey: Key.appearance)
             defaults.set(true, forKey: Key.appearanceResetNotice)
             DiagnosticsLog.log(
                 .warning,
                 category: "appearance",
-                "Stored appearance (\(data.count) bytes) could not be decoded; moved to \(Key.appearanceQuarantine) and reset to defaults."
+                "Stored appearance (\(data.count) bytes) could not be decoded; moved to \(quarantineKey) and reset to defaults."
             )
         }
         return result.settings

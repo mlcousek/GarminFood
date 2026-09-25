@@ -17,6 +17,9 @@
 // add-standalone-mode 2.5: in standalone mode `reader` answers from the
 // local food log, deletes go to the local coordinator, and `rebuild()`
 // re-reads the (local, file-backed) day so a confirm shows immediately.
+// The per-date caches are dropped whenever the data mode changes (the
+// Diagnostics testing toggle), so one source's rows never show, or get
+// edited/deleted, under the other.
 
 import Foundation
 import Observation
@@ -38,6 +41,13 @@ final class DayLogLoader {
     @ObservationIgnored private var logsByDate: [String: DailyFoodLog] = [:]
     @ObservationIgnored private var mealsByDate: [String: [Meal]] = [:]
     @ObservationIgnored private var activeByDate: [String: Double] = [:]
+    /// The data mode the three per-date caches above were filled under
+    /// (code-review fix). Flipping the testing toggle changes `dataMode()`
+    /// mid-session; without dropping the caches, local standalone rows
+    /// would keep showing in Garmin mode as `.synced(logId: <local UUID>)`,
+    /// and editing or deleting one would queue a Garmin write for an id
+    /// Garmin never issued (and the reverse for Garmin rows in standalone).
+    @ObservationIgnored private var cacheMode: DataMode?
     /// add-gamification-signals 7.2: the day log and active kcal this
     /// loader ALREADY reads are also cached for the gamification signals
     /// (no new request). `nil` in previews/tests.
@@ -177,6 +187,7 @@ final class DayLogLoader {
         guard !loadingDates.contains(date) else { return }
         loadingDates.insert(date)
         defer { loadingDates.remove(date) }
+        let mode = dropCachesIfModeChanged()
 
         // Fetched alongside the food log, not after it, so the extra read
         // never lengthens "Updating…"; its failure is swallowed inside.
@@ -184,6 +195,14 @@ final class DayLogLoader {
 
         do {
             if let log = try await reader.dailyFoodLog(date: date) {
+                // The mode flipped while this read was in flight: the log
+                // belongs to the other source, so it must not enter the
+                // (just dropped) cache. The rebuild below re-reads.
+                guard dropCachesIfModeChanged() == mode else {
+                    await activeLoad
+                    await rebuild()
+                    return
+                }
                 logsByDate[date] = log
                 if date == dateString { isStale = false }
                 try? await digestStore?.save(DayLogDigest(log: log, day: date, fetchedAt: Date()))
@@ -204,7 +223,7 @@ final class DayLogLoader {
     /// call, e.g. right after a log is confirmed.
     func rebuild() async {
         let date = dateString
-        if dataMode() == .standalone,
+        if dropCachesIfModeChanged() == .standalone,
            let local = try? await reader.dailyFoodLog(date: date) {
             // A failed local read (e.g. before first unlock) keeps the copy.
             logsByDate[date] = local
@@ -224,6 +243,22 @@ final class DayLogLoader {
         if !built.windows.isEmpty {
             latestWindows = built.windows
         }
+    }
+
+    /// Reads the current data mode and, when it differs from the one the
+    /// per-date caches were filled under, drops all three (see
+    /// `cacheMode`). Returns the current mode.
+    @discardableResult
+    private func dropCachesIfModeChanged() -> DataMode {
+        let mode = dataMode()
+        if let previous = cacheMode, previous != mode {
+            logsByDate.removeAll()
+            mealsByDate.removeAll()
+            activeByDate.removeAll()
+            isStale = false
+        }
+        cacheMode = mode
+        return mode
     }
 
     private func loadMealsIfNeeded(date: String) async {

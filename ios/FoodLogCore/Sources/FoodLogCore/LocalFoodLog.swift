@@ -319,7 +319,9 @@ public actor LocalFoodLogStore {
         for month in shards.keys.sorted(by: >) {
             if let found = shards[month]?.first(where: { $0.id == id }) { return found }
         }
-        for month in monthsOnDisk().sorted(by: >) where shards[month] == nil {
+        // Not-yet-loaded months, including one that was unreadable last time
+        // (its shard is `[]` but it isn't in `loadedMonths`), so it's retried.
+        for month in monthsOnDisk().sorted(by: >) where !loadedMonths.contains(month) {
             loadIfNeeded(month)
             if let found = shards[month]?.first(where: { $0.id == id }) { return found }
         }
@@ -347,8 +349,9 @@ public actor LocalFoodLogStore {
     /// Replaces the stored entry with the same id and day, in place.
     public func update(_ entry: LocalLogEntry) throws {
         let month = try Self.month(ofDay: entry.day)
-        loadIfNeeded(month)
-        var entries = shards[month] ?? []
+        // An unreadable month throws its own error, not a misleading
+        // `.entryNotFound` ("changed in the meantime").
+        var entries = try readableShard(month)
         guard let index = entries.firstIndex(where: { $0.id == entry.id && $0.day == entry.day }) else {
             throw LocalFoodLogError.entryNotFound
         }
@@ -360,8 +363,8 @@ public actor LocalFoodLogStore {
     @discardableResult
     public func delete(id: UUID, day: String) throws -> LocalLogEntry {
         let month = try Self.month(ofDay: day)
-        loadIfNeeded(month)
-        var entries = shards[month] ?? []
+        // Same as `update`: an unreadable month throws its own error.
+        var entries = try readableShard(month)
         guard let index = entries.firstIndex(where: { $0.id == id && $0.day == day }) else {
             throw LocalFoodLogError.entryNotFound
         }
