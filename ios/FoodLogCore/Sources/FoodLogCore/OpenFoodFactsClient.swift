@@ -38,6 +38,13 @@
 // deliberately NOT mapped onto `Serving.calcium`/`.iron`, which hold
 // Garmin's %-of-daily-value convention (see `Serving`'s header in Food.swift).
 //
+// add-standalone-mode 3.5: `product(barcode:)`, the product-by-barcode
+// route `GET https://world.openfoodfacts.org/api/v2/product/{code}.json`
+// (probed read-only 2026-09-25, docs/openfoodfacts-product-route.md): found
+// is 200 + `status: 1`; an unknown code is a 404 with a JSON body; an
+// invalid one is 200 + `status: 0`. Standalone mode's barcode chain only
+// (StandaloneBarcodeResolution.swift); Garmin mode never calls it.
+//
 // User-Agent: OFF asks integrators to identify themselves. A descriptive UA
 // got normal 200s from both endpoints on 2026-09-23; the 503s above hit a
 // default curl UA just the same, so they are server load, not UA blocking.
@@ -287,6 +294,24 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
         return OFFSearchHit(food: food, alternateNames: names.alternates)
     }
 
+    /// The product-by-barcode body (`{ code, status, status_verbose,
+    /// product }`): the product as a `Food` with the same single 100 g
+    /// serving search produces, or `nil` when OFF says it has none
+    /// (`status != 1`, no product, or no usable name).
+    static func decodeProduct(_ data: Data) throws -> Food? {
+        let decoded: OFFProductResponse
+        do {
+            decoded = try JSONDecoder().decode(OFFProductResponse.self, from: data)
+        } catch {
+            throw OpenFoodFactsError.decodingFailed(description: String(describing: error))
+        }
+        guard decoded.status == 1, var product = decoded.product else { return nil }
+        if product.code?.isEmpty ?? true {
+            product.code = decoded.code
+        }
+        return hit(from: product)?.food
+    }
+
     private static func milligrams(fromGrams grams: Double?) -> Double? {
         grams.map { $0 * 1_000 }
     }
@@ -296,7 +321,68 @@ public struct OpenFoodFactsClient: OpenFoodFactsSearching, Sendable {
     }
 }
 
+// MARK: - Product by barcode (add-standalone-mode 3.5)
+
+/// The seam the standalone barcode chain depends on (and its tests fake:
+/// the network is never touched in tests).
+public protocol OpenFoodFactsProductLookup: Sendable {
+    /// The product for `barcode`, or `nil` when Open Food Facts has none
+    /// (a 404, `status != 1`) or the code isn't plausible (8-14 digits).
+    /// Throws for anything else (offline, 5xx, an undecodable body), so a
+    /// failure is never mistaken for "no product".
+    func product(barcode: String) async throws -> Food?
+}
+
+extension OpenFoodFactsClient: OpenFoodFactsProductLookup {
+    static let productFields = "code,product_name,product_name_cs,product_name_en,generic_name,generic_name_cs,lang,brands,quantity,serving_size,serving_quantity,nutriments"
+
+    /// `GET {legacyBaseURL}/api/v2/product/{code}.json?fields=...`
+    public func product(barcode: String) async throws -> Food? {
+        let code = barcode.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard ManualBarcodeEntry.looksPlausible(code) else { return nil }
+        guard var components = URLComponents(string: legacyBaseURL + "/api/v2/product/" + code + ".json") else {
+            throw OpenFoodFactsError.invalidURL
+        }
+        components.queryItems = [URLQueryItem(name: "fields", value: Self.productFields)]
+        guard let url = components.url else { throw OpenFoodFactsError.invalidURL }
+
+        var request = URLRequest(url: url)
+        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
+        let (data, response) = try await urlSession.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw OpenFoodFactsError.noHTTPResponse
+        }
+        // Probed: an unknown code is a 404 (with `status: 0` in the body).
+        if http.statusCode == 404 { return nil }
+        guard (200..<300).contains(http.statusCode) else {
+            throw OpenFoodFactsError.httpError(statusCode: http.statusCode, body: String(data: data, encoding: .utf8).map { String($0.prefix(300)) })
+        }
+        return try Self.decodeProduct(data)
+    }
+}
+
 // MARK: - Wire format
+
+/// `/api/v2/product/{code}.json` (probed 2026-09-25). `status` is 1 when
+/// found; read leniently so an odd value means "not found", not a failure.
+struct OFFProductResponse: Decodable, Sendable {
+    let code: String?
+    let status: Int?
+    let product: OFFProduct?
+
+    enum CodingKeys: String, CodingKey {
+        case code
+        case status
+        case product
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        code = try? container.decodeIfPresent(String.self, forKey: .code)
+        status = try? container.decodeIfPresent(Int.self, forKey: .status)
+        product = try? container.decodeIfPresent(OFFProduct.self, forKey: .product)
+    }
+}
 
 /// Legacy `search.pl` (confirmed live 2026-09-16, "tvaroh").
 struct OFFSearchResponse: Decodable, Sendable {
@@ -324,7 +410,9 @@ struct SearchALiciousResponse: Decodable, Sendable {
 /// leniently: a single odd value (Search-a-licious sends `brands` as an
 /// array, search.pl as a string) must never drop the whole product.
 struct OFFProduct: Decodable, Sendable {
-    let code: String?
+    /// `var`: the product route's top-level `code` fills it in when the
+    /// product object lacks one (`decodeProduct`).
+    var code: String?
     let productName: String?
     let productNameCs: String?
     let productNameEn: String?

@@ -10152,6 +10152,30 @@
           }
         }
       }
+    },
+    "Create a custom food": {
+      "comment": "Barcode scanner, standalone mode: the Open Food Facts lookup failed; opens the custom-food editor with the scanned barcode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit vlastní potravinu"
+          }
+        }
+      }
+    },
+    "Couldn't reach Open Food Facts. Try again, or create a custom food for this barcode.": {
+      "comment": "Barcode scanner, standalone mode: the online product lookup failed (e.g. offline).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se spojit s Open Food Facts. Zkus to znovu, nebo pro tento čárový kód vytvoř vlastní potravinu."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

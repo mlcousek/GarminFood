@@ -92,6 +92,9 @@ struct FoodCatalogView: View {
     @State private var mealPresetBeingEdited: MealPreset?
     @State private var isPresentingBarcodeScanner = false
     @State private var barcodeNoteForNewCustomFood: String?
+    /// add-standalone-mode 3.5: an unknown scanned code, filled into the
+    /// custom-food editor's barcode field (standalone only).
+    @State private var barcodeForNewCustomFood: String?
 
     private var isPickingBackingFood: Bool {
         if case .pickBackingFood = mode { return true }
@@ -235,6 +238,7 @@ struct FoodCatalogView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         barcodeNoteForNewCustomFood = nil
+                        barcodeForNewCustomFood = nil
                         isPresentingCustomFoodEditor = true
                     } label: {
                         Label("New custom food", systemImage: "plus")
@@ -279,7 +283,7 @@ struct FoodCatalogView: View {
         }
         .sheet(isPresented: $isPresentingCustomFoodEditor, onDismiss: { Task { await loadLocalData() } }) {
             NavigationStack {
-                CustomFoodEditorView(prefillNote: barcodeNoteForNewCustomFood)
+                CustomFoodEditorView(prefillNote: barcodeNoteForNewCustomFood, prefillBarcode: barcodeForNewCustomFood)
             }
         }
         .sheet(isPresented: $isPresentingMealPresetEditor, onDismiss: { Task { await loadLocalData() } }) {
@@ -308,10 +312,25 @@ struct FoodCatalogView: View {
                 },
                 onUnresolved: { code in
                     isPresentingBarcodeScanner = false
-                    barcodeNoteForNewCustomFood = String(localized: "Scanned barcode: \(code) (not found in Garmin's database)")
+                    if dataMode == .standalone {
+                        // add-standalone-mode 3.5 (spec "Unknown barcode"):
+                        // the code goes into the editor's barcode field, so
+                        // scanning it again finds the new food.
+                        barcodeNoteForNewCustomFood = nil
+                        barcodeForNewCustomFood = code
+                    } else {
+                        barcodeNoteForNewCustomFood = String(localized: "Scanned barcode: \(code) (not found in Garmin's database)")
+                        barcodeForNewCustomFood = nil
+                    }
                     isPresentingCustomFoodEditor = true
                 },
-                onCancel: { isPresentingBarcodeScanner = false }
+                onCancel: { isPresentingBarcodeScanner = false },
+                // Standalone chain only: the code is on one of her own
+                // custom foods -- the same path as tapping it in the list.
+                onResolvedCustomFood: { draft in
+                    isPresentingBarcodeScanner = false
+                    selectCustomFood(draft)
+                }
             )
         }
         .navigationDestination(item: $logTarget) { target in
