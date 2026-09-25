@@ -64,6 +64,12 @@ Relative size per wave: S / M / L.
 
 ## 6. Wave 6 — Backup and restore (M) — required before the fiancée relies on the app
 
+> **Moved to `add-data-safety` (2026-09-25).** Tasks 6.1–6.3 are now owned by
+> `openspec/changes/add-data-safety`, generalised to both modes: automatic
+> snapshots, staged restore, and single-file export and import. The CSV export
+> from 6.1 is a non-goal there, and is left for a later change. 6.4 (the
+> on-device check) still applies to her install.
+
 - [ ] 6.1 `BackupBundle` (schema/version, every local store, non-device preferences; excludes tokens, health cache, outboxes, offline index, diagnostics) + `food-log.csv` writer. Tests: round trip, CSV escaping, no secrets.
 - [ ] 6.2 Settings → Data: "Back up now" (ShareLink), "Restore from backup…" (fileImporter → version check → preview → safety backup → replace → reload). Tests for version refusal and replace.
 - [ ] 6.3 "Last backup: N days ago" + Today reminder card after 14 days (dismiss for 14 days). Czech strings.
