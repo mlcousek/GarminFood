@@ -63,6 +63,10 @@ struct LogEntryConfirmView: View {
     @State private var discrepancyNote: String?
     @State private var errorMessage: String?
     @State private var isPresentingCustomFoodEditor = false
+    /// add-standalone-mode D5: the custom food after "Choose a Garmin
+    /// match" saved it with a backing food (Garmin mode only).
+    @State private var updatedDraft: CustomFoodDraft?
+    @State private var isPresentingGarminMatchEditor = false
     @FocusState private var isAmountFieldFocused: Bool
 
     init(target: LogTarget, presetMealType: MealType? = nil, presetDate: Date? = nil) {
@@ -109,8 +113,23 @@ struct LogEntryConfirmView: View {
     private var food: Food {
         switch target {
         case .catalog(let food, _, _): return food
-        case .custom(let draft, _): return draft.asFood()
+        case .custom(let draft, _): return (updatedDraft ?? draft).asFood()
         }
+    }
+
+    /// The custom food being confirmed, including a just-picked Garmin match.
+    private var customDraft: CustomFoodDraft? {
+        guard case .custom(let draft, _) = target else { return nil }
+        return updatedDraft ?? draft
+    }
+
+    /// add-standalone-mode D5: a custom food created without Garmin, seen in
+    /// Garmin mode, must get a Garmin match before it can be logged there --
+    /// never logged silently or dropped. Always false in standalone mode and
+    /// for every food created in Garmin mode.
+    private var needsGarminMatch: Bool {
+        guard environment.dataMode == .garminConnected, let customDraft else { return false }
+        return !customDraft.hasGarminBacking
     }
 
     private var isCustom: Bool {
@@ -192,6 +211,16 @@ struct LogEntryConfirmView: View {
                 completenessSection(standaloneCompleteness)
             }
 
+            if needsGarminMatch {
+                Section {
+                    Label(String(localized: "Needs a Garmin match before it can be logged to Garmin."), systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(Theme.warning)
+                    Button(String(localized: "Choose a Garmin match")) {
+                        isPresentingGarminMatchEditor = true
+                    }
+                }
+            }
+
             // implement-micronutrients (2026-09-22): the full vitamin/
             // mineral/macro panel for the SERVING actually being logged --
             // per-serving values (not scaled by `quantity`, matching how
@@ -269,8 +298,17 @@ struct LogEntryConfirmView: View {
             NavigationStack {
                 CustomFoodEditorView(
                     prefillName: food.name,
-                    prefillBrand: food.brandName
+                    prefillBrand: food.brandName,
+                    prefillBarcode: food.source == .openFoodFacts ? food.id : nil
                 )
+            }
+        }
+        .sheet(isPresented: $isPresentingGarminMatchEditor) {
+            NavigationStack {
+                CustomFoodEditorView(existing: customDraft, onSaved: { saved in
+                    updatedDraft = saved
+                    selectedServing = saved.asFood().servings.first
+                })
             }
         }
     }
@@ -316,6 +354,7 @@ struct LogEntryConfirmView: View {
     private var canConfirm: Bool {
         !didConfirm && !isSaving && (isCustom || selectedServing != nil) && isQuantityValid
             && (standaloneCompleteness?.isLoggable ?? true)
+            && !needsGarminMatch
     }
 
     /// The same bound `LogEntryCoordinator` enforces (finite, > 0,
@@ -348,7 +387,7 @@ struct LogEntryConfirmView: View {
                     )
                 case .custom(let draft, _):
                     let (_, note) = try await environment.logEntryCoordinator.confirmCustomFood(
-                        draft,
+                        updatedDraft ?? draft,
                         quantity: quantity,
                         mealType: mealType,
                         date: dateString,
@@ -381,6 +420,8 @@ struct LogEntryConfirmView: View {
             } catch let error as LogQuantityError {
                 errorMessage = error.localizedDescription
             } catch let error as StandaloneLoggingError {
+                errorMessage = error.localizedDescription
+            } catch let error as CustomFoodLoggingError {
                 errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "LogEntryConfirmView", "confirm failed for foodId=\(food.id): \(error)")

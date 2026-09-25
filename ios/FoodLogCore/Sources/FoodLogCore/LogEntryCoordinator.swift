@@ -121,7 +121,11 @@ public struct LogEntryCoordinator: Sendable {
         languageCode: String? = nil
     ) async throws -> (entry: OutboxEntry, discrepancyNote: String) {
         guard LogQuantity.isValid(quantity) else { throw LogQuantityError.outOfRange }
-        let target = customFood.resolvedLoggingTarget(quantity: quantity)
+        // add-standalone-mode D5: a custom food created without Garmin has
+        // nothing to send -- refused, never logged silently or dropped.
+        guard let target = customFood.resolvedLoggingTarget(quantity: quantity) else {
+            throw CustomFoodLoggingError.needsGarminMatch
+        }
         // The backing amount is the quantity times the custom food's own
         // multiplier, which may legitimately be large (a "1 g" backing
         // serving); it only has to be a real, positive number.
@@ -183,11 +187,16 @@ public struct LogEntryCoordinator: Sendable {
         // Checked for every ingredient up front: this path isn't
         // transactional (see above), so finding a bad quantity halfway
         // through would leave the ingredients before it already logged.
+        // Likewise a custom food without a Garmin backing (add-standalone-
+        // mode D5): refused before the first ingredient is written.
+        guard preset.ingredients.allSatisfy({ $0.customFoodDraft?.hasGarminBacking ?? true }) else {
+            throw CustomFoodLoggingError.needsGarminMatch
+        }
         let allValid = preset.ingredients.allSatisfy { ingredient in
             let quantity = ingredient.quantity * servingsMultiplier
             guard LogQuantity.isValid(quantity) else { return false }
             guard let draft = ingredient.customFoodDraft else { return true }
-            let backing = draft.resolvedLoggingTarget(quantity: quantity).numberOfUnits
+            guard let backing = draft.resolvedLoggingTarget(quantity: quantity)?.numberOfUnits else { return false }
             return backing.isFinite && backing > 0
         }
         guard allValid else { throw LogQuantityError.outOfRange }

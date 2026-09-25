@@ -7476,6 +7476,90 @@
           }
         }
       }
+    },
+    "Needs a Garmin match before it can be logged to Garmin.": {
+      "comment": "A custom food created without Garmin (standalone mode) can't be logged to Garmin until a closest Garmin food is picked.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Než to půjde zapsat do Garminu, je potřeba vybrat shodu v Garminu."
+          }
+        }
+      }
+    },
+    "Choose a Garmin match": {
+      "comment": "Confirm screen, Garmin mode: opens the custom-food editor to pick the closest Garmin food for a custom food created without Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat shodu v Garminu"
+          }
+        }
+      }
+    },
+    "New Custom Food": {
+      "comment": "Title of the custom-food editor when creating a food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nová vlastní potravina"
+          }
+        }
+      }
+    },
+    "Edit Custom Food": {
+      "comment": "Title of the custom-food editor when editing an existing food.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit vlastní potravinu"
+          }
+        }
+      }
+    },
+    "Calories are required; leave anything else you don't know empty.": {
+      "comment": "Custom-food editor footer, standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie jsou povinné; cokoli dalšího, co nevíš, nech prázdné."
+          }
+        }
+      }
+    },
+    "Barcode (optional)": {
+      "comment": "Custom-food editor field, standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čárový kód (nepovinné)"
+          }
+        }
+      }
+    },
+    "Scanning this barcode later finds this food.": {
+      "comment": "Custom-food editor footer under the barcode field, standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Když tenhle čárový kód později naskenuješ, najde se tahle potravina."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

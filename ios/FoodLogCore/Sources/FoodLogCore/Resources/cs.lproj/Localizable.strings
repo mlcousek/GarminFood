@@ -249,3 +249,6 @@
 
 /* Standalone mode: a food from Open Food Facts without calories can't be logged. */
 "This food has no calorie value, so it can't be logged. Create a custom food with its calories instead." = "Tahle potravina nemá uvedené kalorie, takže ji nejde zapsat. Vytvoř si místo ní vlastní potravinu s kaloriemi.";
+
+/* A custom food created without Garmin (standalone mode) can't be logged to Garmin until a closest Garmin food is picked. */
+"Needs a Garmin match before it can be logged to Garmin." = "Než to půjde zapsat do Garminu, je potřeba vybrat shodu v Garminu.";
