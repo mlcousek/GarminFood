@@ -38,6 +38,22 @@ public struct BingoCardRecord: Codable, Equatable, Sendable {
         self.full = full
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case taskIds, completed, linesDone, full
+    }
+
+    /// Lenient like every other field: one card without `taskIds` decodes
+    /// as an empty card (which `WeeklyBingoFeature` regenerates / skips)
+    /// instead of failing -- and quarantining -- the whole file with all
+    /// 12 weeks of cards and the lifetime counters.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        taskIds = try container.decodeIfPresent([String].self, forKey: .taskIds) ?? []
+        completed = try container.decodeIfPresent([String: String].self, forKey: .completed)
+        linesDone = try container.decodeIfPresent([String].self, forKey: .linesDone)
+        full = try container.decodeIfPresent(Bool.self, forKey: .full)
+    }
+
     /// `completed` with integer keys (unparsable keys are dropped).
     public var completedByIndex: [Int: String] {
         var result: [Int: String] = [:]
