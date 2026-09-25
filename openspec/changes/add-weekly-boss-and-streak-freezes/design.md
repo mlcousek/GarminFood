@@ -120,6 +120,9 @@ Loop:
 Run by `GamificationEngine` at the start of `refresh` and
 `handleLogConfirmed`, before the two existing streak computations, then the
 new frozen set is passed into them. Local, synchronous-fast, no network.
+(Implementation: the engine calls `WeeklyBossFeature.applyStreakFreezes`,
+which owns `StreakFreezeStore` and runs the pure planner; while the freeze
+file is unreadable the engine keeps its last known frozen days.)
 Each consumption → moment style `.freeze` ("❄️ Freeze used for Tuesday —
 your 23-day streak lives on") and badges `freeze.first` (Cool Head,
 common), `freeze.saved-100` (a freeze saved a streak ≥ 100 days, epic).
