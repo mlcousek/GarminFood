@@ -69,12 +69,15 @@ final class SupplementStoresTests: XCTestCase {
 
         try await store.setStock(of: product.id, servingsOnHand: 40, on: "2026-09-25", records: [tick])
         try await store.markRestockReminded(product.id)
-        var stored = try XCTUnwrap(try await SupplementPlanStore(fileURL: url).plan().product(id: product.id))
+        // `await` can't sit inside XCTUnwrap's (synchronous) autoclosure.
+        var reloaded = try await SupplementPlanStore(fileURL: url).plan()
+        var stored = try XCTUnwrap(reloaded.product(id: product.id))
         XCTAssertEqual(StockProjection.remainingServings(of: stored, records: [tick]), 40)
         XCTAssertEqual(stored.restockRemindedFor, "2026-09-25")
 
         try await store.refill(product.id, on: "2026-09-26", records: [tick])
-        stored = try XCTUnwrap(try await SupplementPlanStore(fileURL: url).plan().product(id: product.id))
+        reloaded = try await SupplementPlanStore(fileURL: url).plan()
+        stored = try XCTUnwrap(reloaded.product(id: product.id))
         XCTAssertEqual(StockProjection.remainingServings(of: stored, records: [tick]), 140)
         XCTAssertTrue(StockProjection.shouldRemindRestock(stored, daysLeft: 1), "a refill re-arms the reminder")
     }
