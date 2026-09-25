@@ -40,14 +40,16 @@ struct AddHydrationSheet: View {
                         .focused($amountFieldFocused)
                     Text("ml")
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel("milliliters")
                 }
                 HStack(spacing: Theme.Spacing.sm) {
                     ForEach(presets, id: \.self) { preset in
-                        Button("\(Int(preset))") {
+                        Button(String(Int(preset))) {
                             amountText = String(Int(preset))
                         }
                         .buttonStyle(.bordered)
                         .tint(Theme.water)
+                        .accessibilityLabel(SpokenUnits.milliliters(preset))
                     }
                 }
                 DatePicker("When", selection: $loggedAt, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
@@ -86,7 +88,7 @@ struct AddHydrationSheet: View {
             await environment.hydrationLogged()
             dismiss()
         } catch {
-            errorMessage = "Couldn't save this entry. Try again."
+            errorMessage = String(localized: "Couldn't save this entry. Try again.")
         }
     }
 }

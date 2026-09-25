@@ -238,6 +238,80 @@ public enum NotificationPlanning {
         let minute = FastingSchedule.normalized(minuteOfDay)
         return String(format: "%02d:%02d", minute / 60, minute % 60)
     }
+
+    // MARK: - Diff against what's pending (add-localization 3.3b)
+
+    /// The text a notification shows -- what a pending request carries and
+    /// what the current plan would give it.
+    public struct NotificationText: Sendable, Equatable {
+        public let title: String
+        public let body: String
+
+        public init(title: String, body: String) {
+            self.title = title
+            self.body = body
+        }
+    }
+
+    /// What the scheduler must do to make the pending requests it owns
+    /// match the plan. Both lists are sorted, so the outcome is
+    /// deterministic whatever order the dictionaries iterate in.
+    public struct PendingDiff: Sendable, Equatable {
+        /// Owned pending identifiers that are no longer planned.
+        public let toRemove: [String]
+        /// Planned identifiers to add: not pending yet, OR pending with
+        /// different text. Re-adding a request under an identifier that is
+        /// still pending replaces it (`UNUserNotificationCenter.add`), so a
+        /// changed one needs no separate remove.
+        public let toAdd: [String]
+
+        public init(toRemove: [String], toAdd: [String]) {
+            self.toRemove = toRemove
+            self.toAdd = toAdd
+        }
+    }
+
+    /// Compares identifiers AND text. Notification text is the one place
+    /// display text gets frozen (design.md D6): a request keeps the words
+    /// it was scheduled with, so after the phone's (or the app's) language
+    /// changes, an identifier-only diff would leave every pending reminder
+    /// in the old language -- for the REPEATING fasting reminders, forever,
+    /// until their schedule changed. Comparing the text replaces them with
+    /// the current language's on the next replan (spec: "Pending reminder
+    /// after language change"); any other text change (a new copy
+    /// revision) is picked up the same way.
+    ///
+    /// - Parameters:
+    ///   - planned: the full identifier (as scheduled) -> text the current
+    ///     plan wants pending.
+    ///   - pending: every pending request's identifier -> its text, as
+    ///     reported by the system; only those starting with `ownedPrefix`
+    ///     are considered, so another cycle's requests are never touched.
+    ///   - ownedPrefix: the identifier namespace of the calling cycle.
+    public static func diff(
+        planned: [String: NotificationText],
+        pending: [String: NotificationText],
+        ownedPrefix: String
+    ) -> PendingDiff {
+        let owned = pending.filter { $0.key.hasPrefix(ownedPrefix) }
+        let toRemove = owned.keys.filter { planned[$0] == nil }.sorted()
+        let toAdd = planned.filter { owned[$0.key] != $0.value }.keys.sorted()
+        return PendingDiff(toRemove: toRemove, toAdd: toAdd)
+    }
+}
+
+extension NotificationPlanning.PlannedNotification {
+    /// This notification's title and body, for `NotificationPlanning.diff`.
+    public var text: NotificationPlanning.NotificationText {
+        NotificationPlanning.NotificationText(title: title, body: body)
+    }
+}
+
+extension NotificationPlanning.PlannedFastingReminder {
+    /// This reminder's title and body, for `NotificationPlanning.diff`.
+    public var text: NotificationPlanning.NotificationText {
+        NotificationPlanning.NotificationText(title: title, body: body)
+    }
 }
 
 extension MealType {

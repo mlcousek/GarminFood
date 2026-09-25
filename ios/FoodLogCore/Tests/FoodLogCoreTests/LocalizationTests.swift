@@ -64,6 +64,24 @@ final class LocalizationTests: XCTestCase {
         )
     }
 
+    /// Representative display text from the rest of the package (task 3.5):
+    /// a nutrient name, a nutrition-breakdown section header, an edit error
+    /// and the custom-food discrepancy note with its placeholder.
+    func testRepresentativeDisplayTextResolvesInCzech() throws {
+        let bundle = try czechBundle()
+        func czech(_ key: String) -> String {
+            bundle.localizedString(forKey: key, value: "<missing>", table: nil)
+        }
+        XCTAssertEqual(czech("Carbohydrates"), "Sacharidy")
+        XCTAssertEqual(czech("Vitamins"), "Vitamíny")
+        XCTAssertEqual(czech("Nothing changed."), "Nic se nezměnilo.")
+        let note = czech("Recorded in Garmin as \"%@\" (closest match; custom-food creation isn't confirmed possible via Garmin's API yet).")
+        XCTAssertEqual(
+            String(format: note, "Rohlík"),
+            "V Garminu zapsáno jako „Rohlík“ (nejbližší shoda; vytvoření vlastního jídla přes Garmin API zatím není ověřené)."
+        )
+    }
+
     func testEnglishTextIsUnchanged() {
         XCTAssertEqual(LogQuantity.invalidMessage, "Enter an amount greater than zero and at most 10000.")
     }

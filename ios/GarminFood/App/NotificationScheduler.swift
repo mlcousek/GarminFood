@@ -15,7 +15,11 @@
 // after logging something, and after a notification setting changes -- it
 // re-plans from current state and diffs against what's actually pending:
 // anything no longer planned (already logged, disabled, or a stale date) is
-// removed, anything newly planned and not yet pending is added. This is the
+// removed, anything newly planned and not yet pending is added, and anything
+// pending whose title/body differs from the plan (e.g. scheduled before a
+// language switch -- add-localization 3.3b) is re-added with the current
+// text. The diff itself is `NotificationPlanning.diff` (FoodLogCore, unit
+// tested). This is the
 // same "replan and reconcile" shape `Reconciliation`/`Outbox` already use
 // for Garmin delivery, applied to local notifications instead.
 //
@@ -143,16 +147,20 @@ final class NotificationScheduler {
             plannedByIdentifier[Self.identifierPrefix + item.id + "." + dateKey] = item
         }
 
-        let pending = await center.pendingNotificationRequests()
-        let ourStaleIdentifiers = pending
-            .map(\.identifier)
-            .filter { $0.hasPrefix(Self.identifierPrefix) && plannedByIdentifier[$0] == nil }
-        if !ourStaleIdentifiers.isEmpty {
-            center.removePendingNotificationRequests(withIdentifiers: ourStaleIdentifiers)
+        let pending = await pendingTexts()
+        let diff = NotificationPlanning.diff(
+            planned: plannedByIdentifier.mapValues(\.text),
+            pending: pending,
+            ownedPrefix: Self.identifierPrefix
+        )
+        if !diff.toRemove.isEmpty {
+            center.removePendingNotificationRequests(withIdentifiers: diff.toRemove)
         }
 
-        let alreadyPending = Set(pending.map(\.identifier))
-        for (identifier, item) in plannedByIdentifier where !alreadyPending.contains(identifier) {
+        // New requests, and pending ones whose text changed (e.g. after a
+        // language switch): adding under a pending identifier replaces it.
+        for identifier in diff.toAdd {
+            guard let item = plannedByIdentifier[identifier] else { continue }
             guard let fireDate = Self.fireDate(hour: item.hour, minute: item.minute, on: now), fireDate > now else { continue }
             let content = UNMutableNotificationContent()
             content.title = item.title
@@ -171,6 +179,22 @@ final class NotificationScheduler {
 
     private static func fireDate(hour: Int, minute: Int, on date: Date) -> Date? {
         Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: date)
+    }
+
+    /// Every pending request's identifier -> the text it will show, for
+    /// `NotificationPlanning.diff` (add-localization 3.3b): comparing text,
+    /// not just identifiers, is what replaces reminders scheduled in the
+    /// previous language.
+    private func pendingTexts() async -> [String: NotificationPlanning.NotificationText] {
+        let requests = await center.pendingNotificationRequests()
+        var texts: [String: NotificationPlanning.NotificationText] = [:]
+        for request in requests {
+            texts[request.identifier] = NotificationPlanning.NotificationText(
+                title: request.content.title,
+                body: request.content.body
+            )
+        }
+        return texts
     }
 
     // MARK: - Fasting reminders
@@ -243,15 +267,21 @@ final class NotificationScheduler {
             plannedByIdentifier[Self.fastingIdentifierPrefix + item.id] = item
         }
 
-        let pending = await center.pendingNotificationRequests()
-        let ourPending = pending.map(\.identifier).filter { $0.hasPrefix(Self.fastingIdentifierPrefix) }
-        let stale = ourPending.filter { plannedByIdentifier[$0] == nil }
-        if !stale.isEmpty {
-            center.removePendingNotificationRequests(withIdentifiers: stale)
+        let pending = await pendingTexts()
+        let diff = NotificationPlanning.diff(
+            planned: plannedByIdentifier.mapValues(\.text),
+            pending: pending,
+            ownedPrefix: Self.fastingIdentifierPrefix
+        )
+        if !diff.toRemove.isEmpty {
+            center.removePendingNotificationRequests(withIdentifiers: diff.toRemove)
         }
 
-        let alreadyPending = Set(ourPending)
-        for (identifier, item) in plannedByIdentifier where !alreadyPending.contains(identifier) {
+        // Repeating requests never expire on their own, so this text
+        // comparison is what moves them to a new language (3.3b); the add
+        // replaces the pending request with the same identifier.
+        for identifier in diff.toAdd {
+            guard let item = plannedByIdentifier[identifier] else { continue }
             let content = UNMutableNotificationContent()
             content.title = item.title
             content.body = item.body

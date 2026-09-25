@@ -33,6 +33,14 @@ import PackageDescription
 
 let package = Package(
     name: "GarminKit",
+    // add-localization (openspec/changes/add-localization/design.md D3,
+    // task 3.4): GarminKit's first user-facing string is
+    // `PersistedJSONUnreadFileError`'s message, which the app shows as-is.
+    // English source strings are the keys; translations live in
+    // Sources/GarminKit/Resources/<lang>.lproj/Localizable.strings, looked
+    // up with `String(localized:bundle: .module)`. .lproj rather than an
+    // .xcstrings catalog because plain `swift test` can't compile catalogs.
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
@@ -46,7 +54,8 @@ let package = Package(
     targets: [
         .target(
             name: "GarminKit",
-            dependencies: []
+            dependencies: [],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "GarminKitTests",

@@ -29,7 +29,9 @@
  *     of that package's .strings/.stringsdict (these are all hand-written, so
  *     a typo is otherwise invisible);
  *   - a key used in ios/Shared/ (compiled into BOTH the app and the widget)
- *     that is in one of the two catalogs is in the other as well.
+ *     that is in one of the two catalogs is in the other as well;
+ *   - no `n == 1 ? "day" : "days"`-style plural ternary in any Swift source
+ *     (PLURAL_TERNARY_BASELINE lists the Wave 4 files still pending).
  *
  * Report-only (never fails): with --scan, SwiftUI string literals
  * (Text("…"), Label("…"), .navigationTitle("…"), …) in the app/widget that no
@@ -40,6 +42,7 @@
  * Usage:
  *   node tools/check-localizations.mjs            # blocking checks
  *   node tools/check-localizations.mjs --scan     # + untranslated-UI report
+ *   node tools/check-localizations.mjs --verbose  # + every literal, file:line
  *
  * Adding a language: add it to LANGUAGES (with its CLDR plural categories),
  * to every catalog and package lproj, and to CFBundleLocalizations in
@@ -53,7 +56,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const IOS = path.join(ROOT, 'ios');
-const SCAN = process.argv.includes('--scan');
+const VERBOSE = process.argv.includes('--verbose');
+const SCAN = process.argv.includes('--scan') || VERBOSE;
 
 /** Target languages and the CLDR plural categories each must provide. */
 const LANGUAGES = {
@@ -424,6 +428,54 @@ for (const pkg of PACKAGES) {
   }
 }
 
+// Plural ternaries (design.md D5, task 6.2): `n == 1 ? "day" : "days"` or
+// `"food\(n == 1 ? "" : "s")"` can't express Czech one/few/many/other --
+// counts use catalog plural variations / .stringsdict instead. A line is
+// flagged when a `== 1 ?` / `!= 1 ?` ternary picks between string literals
+// that are text (contain a space) or English plural suffixes ("", "s",
+// "y", "ies", "es"); a ternary choosing SF Symbol names ("key.fill") is not
+// text and passes. Files listed in PLURAL_TERNARY_BASELINE still have such
+// lines and are translated in Wave 4 (gamification copy, owned by other
+// in-flight changes); they are reported, not failed. Remove an entry once
+// its file is clean (the checker says so).
+const PLURAL_TERNARY_BASELINE = new Set([
+  'ios/Gamification/Sources/Gamification/Achievements.swift',
+  'ios/Gamification/Sources/Gamification/ChallengeTemplates.swift',
+  'ios/Gamification/Sources/Gamification/DailyChallenges.swift',
+  'ios/GarminFood/Progress/ProgressViews.swift',
+]);
+{
+  const TERNARY = /[!=]=\s*1\s*\?/;
+  const SUFFIXES = new Set(['', 's', 'y', 'ies', 'es']);
+  const flagged = new Map();
+  for (const f of walk(IOS, (p) => p.endsWith('.swift') && !/[\\/]Tests[\\/]/.test(p))) {
+    const lines = stripComments(fs.readFileSync(f, 'utf8')).split('\n');
+    lines.forEach((line, i) => {
+      const m = TERNARY.exec(line);
+      if (!m) return;
+      const tail = line.slice(m.index);
+      const literals = [...tail.matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((x) => x[1]);
+      // "day" / "days", "entry" / "entries": one literal is the other plus
+      // an English plural ending.
+      const singularPlural = literals.some((a) => /[A-Za-z]/.test(a) && literals.some((b) =>
+        b !== a && (b.startsWith(a) && SUFFIXES.has(b.slice(a.length)) || (a.endsWith('y') && b === `${a.slice(0, -1)}ies`))));
+      if (singularPlural || literals.some((s) => s.includes(' ') || SUFFIXES.has(s))) {
+        const r = rel(f);
+        if (!flagged.has(r)) flagged.set(r, []);
+        flagged.get(r).push(i + 1);
+      }
+    });
+  }
+  for (const [file, lineNos] of flagged) {
+    const where = `${file}:${lineNos.join(',')}`;
+    if (PLURAL_TERNARY_BASELINE.has(file)) notes.push(`${where}: plural ternary (baseline, Wave 4)`);
+    else err(where, 'plural chosen with an `== 1 ?` ternary -- use a catalog plural variation / .stringsdict (design.md D5)');
+  }
+  for (const file of PLURAL_TERNARY_BASELINE) {
+    if (!flagged.has(file)) notes.push(`${file}: no plural ternaries left -- remove it from PLURAL_TERNARY_BASELINE`);
+  }
+}
+
 // --scan: SwiftUI literals with no catalog key (report only).
 if (SCAN) {
   const UI = /\b(Text|Label|Button|navigationTitle|Section|Toggle|TextField|Picker|alert|confirmationDialog|LabeledContent|ContentUnavailableView|Stepper|DatePicker|NavigationLink|Menu|accessibilityLabel|accessibilityHint|accessibilityValue|help|configurationDisplayName|description|displayName)\(\s*(?=")/g;
@@ -439,7 +491,10 @@ if (SCAN) {
         while ((m = UI.exec(src))) {
           const lit = readSwiftString(src, UI.lastIndex);
           if (!lit || !lit.parts.some((p) => p.text && /[A-Za-z]/.test(p.text))) continue;
-          if (!matches(keys, lit.parts)) n++;
+          if (!matches(keys, lit.parts)) {
+            n++;
+            if (VERBOSE) console.log(`    ${rel(f)}:${src.slice(0, m.index).split('\n').length}  ${m[1]}("${literalText(lit.parts)}")`);
+          }
         }
         if (n) { perFile.push([rel(f), n]); total += n; }
       }

@@ -46,9 +46,13 @@ struct HydrationHeroCard: View {
                     .font(.heroUnit)
                     .foregroundStyle(.secondary)
             }
+            // One phrase with the unit spelled out ("1250 mililitrů"), not
+            // "1250" then "ml" (add-localization 6.4).
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(SpokenUnits.milliliters(todayTotalML))
             ProgressView(value: fraction)
                 .tint(Theme.water)
-            Text(goalML > 0 ? "Goal \(goalML.formattedML) ml" : "No goal set")
+            goalText
                 .font(.caption)
                 .foregroundStyle(.secondary)
             if refreshFailed {
@@ -57,6 +61,15 @@ struct HydrationHeroCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
+    }
+
+    /// Two literals, so each is a catalog key (a ternary inside `Text(...)`
+    /// would not reliably be).
+    private var goalText: Text {
+        if goalML > 0 {
+            return Text("Goal \(goalML.formattedML) ml")
+        }
+        return Text("No goal set")
     }
 }
 
@@ -168,14 +181,18 @@ struct HydrationRow: View {
         }
     }
 
+    /// VoiceOver reads the parts as a list, each a whole localized phrase.
     private var accessibilityLabel: String {
-        var label = "\(entry.valueInML.formattedML) milliliters, \(entry.loggedAt.formatted(date: .abbreviated, time: .shortened))"
+        var parts = [
+            SpokenUnits.milliliters(entry.valueInML),
+            entry.loggedAt.formatted(date: .abbreviated, time: .shortened)
+        ]
         switch syncState {
-        case .pending: label += ", waiting to sync"
-        case .failed: label += ", sync failed"
+        case .pending: parts.append(String(localized: "waiting to sync", comment: "VoiceOver: sync state of a weigh-in or drink row."))
+        case .failed: parts.append(String(localized: "sync failed", comment: "VoiceOver: sync state of a weigh-in or drink row."))
         case .sent, .createdAwaitingDelete, .none: break
         }
-        return label
+        return parts.joined(separator: ", ")
     }
 }
 

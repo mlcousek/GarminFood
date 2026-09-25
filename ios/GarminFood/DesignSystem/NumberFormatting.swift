@@ -13,11 +13,15 @@
 // what the old helpers printed ("2", "0.70", "290"). The input side of the
 // same bug -- refusing such a quantity in the first place -- is
 // `LogQuantity` (FoodLogCore), enforced by `LogEntryCoordinator`.
+//
+// Locale-aware since add-localization 6.1: `NumberDisplay` formats decimals
+// with the current locale, so a Czech phone reads "0,70" / "1,5" here.
 
 import FoodLogCore
 
 extension Double {
-    /// A logged quantity: "2" for a whole number, "0.70" otherwise.
+    /// A logged quantity: "2" for a whole number, "0.70" otherwise
+    /// ("0,70" in Czech).
     var formattedQuantity: String {
         NumberDisplay.quantity(self)
     }

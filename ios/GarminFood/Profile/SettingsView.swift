@@ -6,13 +6,48 @@
 // About.
 
 import SwiftUI
+import UIKit
 import GarminKit
 
 @MainActor
 struct SettingsView: View {
     @Environment(AppEnvironment.self) private var environment
+    @Environment(\.openURL) private var openURL
     @State private var isPresentingSignIn = false
     @State private var isConfirmingSignOut = false
+
+    /// add-localization 6.5 / design.md D1: the app follows the iOS
+    /// language and has no in-app picker; iOS itself offers Settings ›
+    /// GarminFood › Language once the app declares en + cs. This row shows
+    /// the language in use and opens that page -- the only way to pin
+    /// English on a Czech phone (or the reverse).
+    private var languageRow: some View {
+        Button {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                openURL(url)
+            }
+        } label: {
+            HStack {
+                Label("Language", systemImage: "globe")
+                    .foregroundStyle(.primary)
+                Spacer()
+                Text(currentLanguageName)
+                    .foregroundStyle(.secondary)
+                Image(systemName: "arrow.up.forward.app")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .accessibilityHint("Opens GarminFood's page in iOS Settings, where the app's language can be changed")
+    }
+
+    /// The localization iOS picked for this app ("Čeština", "English"),
+    /// named in that same language.
+    private var currentLanguageName: String {
+        let code = Bundle.main.preferredLocalizations.first ?? "en"
+        let locale = Locale(identifier: code)
+        return locale.localizedString(forLanguageCode: code)?.capitalized(with: locale) ?? code
+    }
 
     var body: some View {
         @Bindable var preferences = environment.preferences
@@ -91,6 +126,7 @@ struct SettingsView: View {
                 } label: {
                     Label("Appearance", systemImage: "paintpalette")
                 }
+                languageRow
             }
 
             Section("Preferences") {

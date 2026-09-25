@@ -264,7 +264,7 @@ struct CreateInGarminConfirmView: View {
                 LabeledContent("Serving", value: serving?.displayLabel ?? "100 g")
                 if let calories = serving?.calories {
                     LabeledContent("Calories") {
-                        MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
+                        MacroBadge.calories(calories)
                     }
                 }
                 if let protein = serving?.protein {

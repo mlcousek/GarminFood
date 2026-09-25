@@ -50,6 +50,16 @@ struct MealPresetEditorView: View {
         MealPreset(id: UUID(), name: name, ingredients: ingredients).totals()
     }
 
+    /// The Garmin-sync confirmation title. The count is its own plural
+    /// phrase ("3 ingredients" / "3 suroviny"), never an `== 1 ?` suffix.
+    private var garminSyncConfirmationTitle: String {
+        let count = String(localized: "\(ingredients.count) ingredients", comment: "Number of ingredients in a saved meal. Plural.")
+        return String(
+            localized: "Send \(count) to Garmin as \"\(name)\"?",
+            comment: "Confirmation title. First %@ is a counted phrase like '3 ingredients', second the meal's name."
+        )
+    }
+
     var body: some View {
         Form {
             Section("Meal") {
@@ -80,7 +90,7 @@ struct MealPresetEditorView: View {
                     HStack {
                         Text("Calories")
                         Spacer()
-                        MacroBadge(value: totals.calories, unit: " kcal", accessibleUnit: "kilocalories")
+                        MacroBadge.calories(totals.calories)
                     }
                     HStack {
                         Text("Carbs")
@@ -118,7 +128,11 @@ struct MealPresetEditorView: View {
                             if isSyncingToGarmin {
                                 ProgressView()
                             } else {
-                                Text(garminCustomMealId == nil ? "Sync to Garmin (experimental)" : "Re-sync to Garmin (experimental)")
+                                if garminCustomMealId == nil {
+                                    Text("Sync to Garmin (experimental)")
+                                } else {
+                                    Text("Re-sync to Garmin (experimental)")
+                                }
                             }
                         }
                         .disabled(isSyncingToGarmin)
@@ -129,10 +143,12 @@ struct MealPresetEditorView: View {
                 } header: {
                     Text("Garmin")
                 } footer: {
-                    Text("Creates this meal as a real, named meal in your Garmin account (an experimental, unconfirmed route -- see openspec/changes/sync-meal-presets-to-garmin). Logging this preset already works fully without this; this only makes Garmin's own app show it as one grouped meal too.")
+                    // User-facing: the route's design notes live in
+                    // openspec/changes/sync-meal-presets-to-garmin.
+                    Text("Creates this meal as a real, named meal in your Garmin account, using an experimental, unconfirmed Garmin route. Logging this meal already works fully without it; this only makes Garmin's own app show it as one grouped meal too.")
                 }
                 .confirmationDialog(
-                    "Send \(ingredients.count) ingredient\(ingredients.count == 1 ? "" : "s") to Garmin as \"\(name)\"?",
+                    garminSyncConfirmationTitle,
                     isPresented: $isConfirmingGarminSync,
                     titleVisibility: .visible
                 ) {
@@ -152,7 +168,7 @@ struct MealPresetEditorView: View {
                 }
             }
         }
-        .navigationTitle(existing == nil ? "New Meal" : "Edit Meal")
+        .navigationTitle(existing == nil ? String(localized: "New Meal") : String(localized: "Edit Meal"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -191,7 +207,7 @@ struct MealPresetEditorView: View {
             try await environment.mealPresetStore.upsert(preset)
             dismiss()
         } catch {
-            saveErrorMessage = "Couldn't save this meal. Try again."
+            saveErrorMessage = String(localized: "Couldn't save this meal. Try again.")
         }
     }
 
@@ -238,7 +254,10 @@ struct MealPresetEditorView: View {
             try? await environment.mealPresetStore.upsert(preset)
         } catch {
             DiagnosticsLog.log(.warning, category: "MealPresetEditorView", "createCustomMeal failed for preset=\(name): \(error)")
-            garminSyncErrorMessage = "Couldn't sync to Garmin: this route is experimental and may not be supported. \(error)"
+            garminSyncErrorMessage = String(
+                localized: "Couldn't sync to Garmin: this route is experimental and may not be supported. \(error.localizedDescription)",
+                comment: "Error under the experimental meal sync. %@ is the underlying error's description."
+            )
         }
     }
 }
@@ -301,13 +320,13 @@ private struct IngredientRow: View {
                     environment.preferences.quantityInputMode = mode == .amount ? .servings : .amount
                 }
                 .buttonStyle(.borderless)
-                .accessibilityLabel(mode == .amount ? "Grams or millilitres. Switch to servings" : "Servings. Switch to grams or millilitres")
+                .accessibilityLabel(mode == .amount ? String(localized: "Grams or millilitres. Switch to servings") : String(localized: "Servings. Switch to grams or millilitres"))
             } else {
                 Text(unitLabel)
                     .foregroundStyle(.secondary)
             }
             if let calories = ingredient.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: "kilocalories")
+                MacroBadge.calories(calories)
             }
         }
         .onAppear {

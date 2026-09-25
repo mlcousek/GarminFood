@@ -147,7 +147,7 @@ struct LogEntryConfirmView: View {
                         HStack {
                             Text("Serving")
                             Spacer()
-                            Text(selectedServing?.displayLabel ?? "Choose…")
+                            Text(selectedServing?.displayLabel ?? String(localized: "Choose…"))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -167,7 +167,7 @@ struct LogEntryConfirmView: View {
                     HStack {
                         Text("Calories")
                         Spacer()
-                        MacroBadge(value: caloriesForQuantity, unit: " kcal", accessibleUnit: "kilocalories")
+                        MacroBadge.calories(caloriesForQuantity)
                     }
                 }
             }
@@ -332,7 +332,7 @@ struct LogEntryConfirmView: View {
                 errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "LogEntryConfirmView", "confirm failed for foodId=\(food.id): \(error)")
-                errorMessage = "Couldn't save this entry. Try again."
+                errorMessage = String(localized: "Couldn't save this entry. Try again.")
             }
         }
     }
