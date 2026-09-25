@@ -1,7 +1,7 @@
 ## 1. Audit and budget (Gamification, pure)
 
-- [ ] 1.1 Read every shipped XP constant: `XPAward`, challenges, daily challenges, seasonal, collections, journeys, records, sport & body, secrets, bingo, boss. Record each in design D3's table with its frequency assumption.
-- [ ] 1.2 `XPBudget.swift`: `XPBudgetLine` table (one line per source, commented with its constant and frequency), `coreDailyXP`, `solveGrowthFactor(targetLevel:days:dailyXP:)` (bisection, 0.1% tolerance).
+- [x] 1.1 Read every shipped XP constant: `XPAward`, challenges, daily challenges, seasonal, collections, journeys, records, sport & body, secrets, bingo, boss. Record each in design D3's table with its frequency assumption.
+- [x] 1.2 `XPBudget.swift`: `XPBudgetLine` table (one line per source, commented with its constant and frequency), `coreDailyXP`, `solveGrowthFactor(targetLevel:days:dailyXP:)` (bisection, 0.1% tolerance).
 - [ ] 1.3 Apply D3's retune rule (no wave-2 feature over 25% of core daily XP); adjust the offending constants and list them in the PR.
 
 ## 2. Curve and migration
