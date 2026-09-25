@@ -106,6 +106,15 @@ final class AppServices {
     let dayLogDigestStore: DayLogDigestStore
     let activityCacheStore: ActivityCacheStore
     let foodProvenanceStore: FoodProvenanceStore
+    /// add-supplements D1: the supplement stack, the month-sharded intake
+    /// log and the user's limit overrides. Purely local (no Garmin route),
+    /// one instance per process like every store here -- the reminder's
+    /// "Taken" action (wave 4) must write through the same intake actor
+    /// the screen reads. Created even while the feature is off, so turning
+    /// it off and on keeps the data (spec "disabling keeps data").
+    let supplementPlanStore: SupplementPlanStore
+    let supplementIntakeStore: SupplementIntakeStore
+    let supplementLimitsStore: SupplementLimitsStore
 
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
@@ -169,6 +178,9 @@ final class AppServices {
         self.dayLogDigestStore = DayLogDigestStore()
         self.activityCacheStore = ActivityCacheStore()
         self.foodProvenanceStore = FoodProvenanceStore()
+        self.supplementPlanStore = SupplementPlanStore()
+        self.supplementIntakeStore = SupplementIntakeStore()
+        self.supplementLimitsStore = SupplementLimitsStore()
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`

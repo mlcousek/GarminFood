@@ -73,7 +73,8 @@ what was due on earlier days.
 
 The system SHALL show each day's planned items grouped by time slot. The
 user SHALL be able to tick an item, "Take all" for a slot, log a one-off
-extra dose, and change yesterday's checklist. Every change SHALL be
+extra dose, and fill in or change the checklist of any past day up to 365
+days back. Every change SHALL be
 committed to local storage and shown immediately, with no network request.
 
 #### Scenario: Take all
@@ -85,6 +86,16 @@ committed to local storage and shown immediately, with no network request.
 
 - **WHEN** the user forgot to tick the evening magnesium yesterday and ticks it from the Supplements screen today
 - **THEN** yesterday's record includes magnesium and yesterday becomes a stack-complete day if nothing else was missing
+
+#### Scenario: Backfill a month ago
+
+- **WHEN** the user opens 2026-08-25 in the adherence calendar on 2026-09-25 and ticks creatine and vitamin D
+- **THEN** both are recorded for 2026-08-25, evaluated against the schedule that was active on that day, and the adherence history and streak are recalculated
+
+#### Scenario: Too far back
+
+- **WHEN** the user tries to open a day more than 365 days ago
+- **THEN** the date picker does not allow it
 
 #### Scenario: Airplane mode
 

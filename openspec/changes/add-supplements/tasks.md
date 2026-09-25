@@ -6,26 +6,27 @@
 
 ## 1. Wave 1 — Pure core (FoodLogCore, no UI)
 
-- [ ] 1.1 Models: `Ingredient` (ids, canonical units, magnesium form), `IngredientAmount`, `SupplementProduct`, `SupplementSchedule` (slots and patterns incl. cycles, `effectiveFrom` history), `IntakeRecord`. Optional Codable fields; tolerant decoding.
-- [ ] 1.2 `ScheduleEvaluator.due(on:plan:trainingDays:)`: every pattern, cycles across phase boundaries, schedule edits applying from their day forward. Tests for each spec scenario.
-- [ ] 1.3 Stack-complete / neutral / partial / missed day classification. Tests.
-- [ ] 1.4 `IngredientTotals` with IU→µg conversion and multi-ingredient products. Tests (the zinc 10 + 25 mg case, ZMA).
-- [ ] 1.5 `EvidenceCatalog` + `SupplementCatalog`: ingredient cards and default limits entered **from the source PDFs** (design D8 table; don't trust summaries), en + cs texts written for the app, sources and disclaimer. Test: every catalog product's ingredients have a card; every limit has a source.
-- [ ] 1.6 Limits: defaults + user overrides + reset; over-limit evaluation incl. "no EU UL" cases. Tests.
-- [ ] 1.7 `LabelScore` (transparency 40 / dose 40 / headroom 20) with an explained breakdown. Tests (proprietary blend, effective creatine dose).
-- [ ] 1.8 `StockProjection`: stock after ticks, days left under the current schedule, restock trigger once per pack; cost per day/month. Tests.
+- [x] 1.1 Models: `Ingredient` (ids, canonical units, magnesium form), `IngredientAmount`, `SupplementProduct`, `SupplementSchedule` (slots and patterns incl. cycles, `effectiveFrom` history), `IntakeRecord`. Optional Codable fields; tolerant decoding.
+- [x] 1.2 `ScheduleEvaluator.due(on:plan:trainingDays:)`: every pattern, cycles across phase boundaries, schedule edits applying from their day forward. Tests for each spec scenario.
+- [x] 1.3 Stack-complete / neutral / partial / missed day classification. Tests.
+- [x] 1.4 `IngredientTotals` with IU→µg conversion and multi-ingredient products. Tests (the zinc 10 + 25 mg case, ZMA).
+- [x] 1.5 `EvidenceCatalog` + `SupplementCatalog`: ingredient cards and default limits entered **from the source PDFs** (design D8 table; don't trust summaries), en + cs texts written for the app, sources and disclaimer. Test: every catalog product's ingredients have a card; every limit has a source.
+- [x] 1.6 Limits: defaults + user overrides + reset; over-limit evaluation incl. "no EU UL" cases. Tests.
+- [x] 1.7 `LabelScore` (transparency 40 / dose 40 / headroom 20) with an explained breakdown. Tests (proprietary blend, effective creatine dose).
+- [x] 1.8 `StockProjection`: stock after ticks, days left under the current schedule, restock trigger once per pack; cost per day/month. Tests.
+- [x] 1.9 Past-day logging (design D14): intake for any day up to 365 days back evaluated against that day's schedule; stock counts only intake on/after `stockSetOn`; late entries (> 7 days after their date) grant no XP. Tests.
 
 ## 2. Wave 2 — Stores and wiring
 
-- [ ] 2.1 `SupplementPlanStore`, `SupplementIntakeStore` (month-sharded), `SupplementLimitsStore`: JSON actors, unreadable-file/quarantine contract, `save` loads first, idempotent intake writes keyed by (date, product, slot). Tests: round-trip, quarantine, old-file decode, idempotency.
-- [ ] 2.2 Register the stores in `AppServices`/`AppEnvironment`; `AppPreferences.supplementsEnabled` (default false).
-- [ ] 2.3 Standalone backup/export includes the supplement stores (`add-standalone-mode` data-backup). Test export → import round-trip.
-- [ ] 2.4 Training-day input: read `ActivityCacheStore` (existing confirmed read-only route; no new Garmin route) + `race` day-note tags; standalone falls back to tags only.
+- [x] 2.1 `SupplementPlanStore`, `SupplementIntakeStore` (month-sharded), `SupplementLimitsStore`: JSON actors, unreadable-file/quarantine contract, `save` loads first, idempotent intake writes keyed by (date, product, slot). Tests: round-trip, quarantine, old-file decode, idempotency.
+- [x] 2.2 Register the stores in `AppServices`/`AppEnvironment`; `AppPreferences.supplementsEnabled` (default false).
+- [x] 2.3 Standalone backup/export includes the supplement stores (`add-standalone-mode` data-backup). Test export → import round-trip. **Covered by `add-data-safety`'s generic snapshot:** it copies the whole FoodLogCore data directory, and all three supplement stores live there (`supplement-plan.json`, `supplement-limits.json`, `SupplementIntake/<yyyy-MM>.json` under Application Support/FoodLogCore). The export → restore round-trip is tested there; supplement fixtures are added per `docs/data-compatibility.md` once `add-data-safety` merges.
+- [x] 2.4 Training-day input: read `ActivityCacheStore` (existing confirmed read-only route; no new Garmin route) + `race` day-note tags; standalone falls back to tags only.
 
 ## 3. Wave 3 — Screens
 
 - [ ] 3.1 Settings row "Supplements" / "Doplňky stravy" + first-enable onboarding (pick from catalog → slots and reminders).
-- [ ] 3.2 Supplements screen: Today checklist (tick, Take all, extra dose, yesterday), My stack, product editor (catalog / custom / ingredients / pack and price / certifications), schedule editor (slots, patterns, cycles).
+- [ ] 3.2 Supplements screen: Today checklist (tick, Take all, extra dose), past-day editing via date picker and adherence calendar (any day up to 365 days back), My stack, product editor (catalog / custom / ingredients / pack and price / certifications), schedule editor (slots, patterns, cycles).
 - [ ] 3.3 Totals and limits view with warnings; limit editor with default and source shown, and reset.
 - [ ] 3.4 Insights: adherence calendar and per-product 7/30-day %, stock overview, cost.
 - [ ] 3.5 Evidence card view and label score breakdown; "Verify certification" links and the manual certified badge.
@@ -47,7 +48,7 @@
 
 ## 6. Wave 6 — Gamification
 
-- [ ] 6.1 Feature `supplements` in the registry (grant keys `supplements.*`), reading a `SupplementSignals` digest passed in by the host; budget line in `XPBudget` (optional source, ~6 XP/day before the multiplier).
+- [ ] 6.1 Feature `supplements` in the registry (grant keys `supplements.*`), reading a `SupplementSignals` digest passed in by the host; budget line in `XPBudget` (optional source, ~6 XP/day before the multiplier). Since `rebalance-xp-economy` (#83): pay through `XPBudget.optionalMultiplier(enabledOptionalSources:lines:)` + `scaledGrant(_:multiplier:)` (or `optionalGrantXP`), and at most about ONE grant per day (e.g. stack complete), because every grant is at least 1 XP and the cap is 0.5% of core.
 - [ ] 6.2 Supplement streak with neutral days; freeze planner extended to a shared pool across the food and supplement streaks (only streaks ≥ 3; at most one freeze per missed day per streak). Tests incl. both spec scenarios; food-streak results unchanged when supplements are off.
 - [ ] 6.3 Badges (design D9) with rarities; challenges in rotation only while enabled with a plan; vitamin collection; creatine journey. Tests.
 - [ ] 6.4 UI: streak and badges on the Supplements screen and in Achievements; en + cs.
