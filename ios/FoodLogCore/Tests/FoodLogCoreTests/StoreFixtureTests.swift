@@ -212,8 +212,8 @@ final class StoreFixtureTests: XCTestCase {
         let foods = await CustomFoodStore(fileURL: copy.file).all()
 
         assertNotQuarantined(copy)
-        XCTAssertEqual(foods.count, 2)
-        guard foods.count == 2 else { return }
+        XCTAssertEqual(foods.count, 3)
+        guard foods.count == 3 else { return }
 
         // Every optional field present.
         let bar = foods[0]
@@ -238,8 +238,10 @@ final class StoreFixtureTests: XCTestCase {
         XCTAssertEqual(bar.note, "Barcode 8594001234567 not found")
         XCTAssertEqual(bar.backingRegionCode, "CZ")
         XCTAssertEqual(bar.backingLanguageCode, "cs")
+        XCTAssertEqual(bar.barcode, "8594001234567")
+        XCTAssertTrue(bar.hasGarminBacking)
 
-        // Only the required fields (the pre-region/language shape).
+        // The pre-region/language/barcode shape: no brand, macros or note.
         let dumplings = foods[1]
         XCTAssertEqual(dumplings.id, UUID(uuidString: "3F9A1C2E-7B4D-4E8F-9A0B-1C2D3E4F5A61"))
         XCTAssertEqual(dumplings.name, "Babiččiny knedlíky")
@@ -250,7 +252,8 @@ final class StoreFixtureTests: XCTestCase {
         XCTAssertNil(dumplings.backingRegionCode)
         XCTAssertNil(dumplings.backingLanguageCode)
         XCTAssertEqual(dumplings.createdAt, iso("2026-09-10T17:20:00Z"))
-        let target = dumplings.resolvedLoggingTarget(quantity: 4)
+        // Optional since add-standalone-mode D5 (nil without a backing food).
+        let target = try XCTUnwrap(dumplings.resolvedLoggingTarget(quantity: 4))
         XCTAssertEqual(target.foodId, "4471203")
         XCTAssertEqual(target.servingId, "4629981")
         XCTAssertEqual(target.numberOfUnits, 2)

@@ -31,6 +31,18 @@
     "backingQuantityMultiplier" : 1,
     "note" : "Barcode 8594001234567 not found",
     "backingRegionCode" : "CZ",
-    "backingLanguageCode" : "cs"
+    "backingLanguageCode" : "cs",
+    "barcode" : "8594001234567"
+  },
+  {
+    "id" : "C4D5E6F7-A8B9-4C0D-9E1F-2A3B4C5D6E93",
+    "name" : "Domácí granola",
+    "servingUnit" : "g",
+    "numberOfUnits" : 40,
+    "calories" : 190,
+    "protein" : 5.5,
+    "createdAt" : "2026-09-05T08:15:00Z",
+    "backingQuantityMultiplier" : 1,
+    "barcode" : "8590000000017"
   }
 ]

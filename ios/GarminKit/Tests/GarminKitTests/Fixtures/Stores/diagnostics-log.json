@@ -18,6 +18,6 @@
     "timestamp": "2026-09-20T10:30:45Z",
     "level": "error",
     "category": "GarminClient",
-    "message": "GET /nutrition-service/food/logs/2026-09-20 failed: 401"
+    "message": "GET \/nutrition-service\/food\/logs\/2026-09-20 failed: 401"
   }
 ]

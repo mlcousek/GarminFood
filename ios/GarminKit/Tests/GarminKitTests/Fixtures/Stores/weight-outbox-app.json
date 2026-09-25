@@ -24,7 +24,7 @@
     "loggedAt": "2026-09-20T06:15:00Z",
     "state": "pending",
     "attemptCount": 1,
-    "lastError": "couldn't find the 81.9 kg weigh-in in Garmin's 2026-09-20 weigh-ins to delete it",
+    "lastError": "couldn't find the 81.9 kg weigh-in at 2026-09-20 06:15:00 +0000 in Garmin's 2026-09-20 weigh-ins to delete it",
     "nextAttemptAt": "2026-09-20T06:15:06Z",
     "operation": "delete",
     "calendarDate": "2026-09-20"
