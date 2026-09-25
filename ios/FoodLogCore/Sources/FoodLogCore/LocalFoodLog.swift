@@ -347,8 +347,9 @@ public actor LocalFoodLogStore {
     /// Replaces the stored entry with the same id and day, in place.
     public func update(_ entry: LocalLogEntry) throws {
         let month = try Self.month(ofDay: entry.day)
-        loadIfNeeded(month)
-        var entries = shards[month] ?? []
+        // An unreadable month throws its own error, not a misleading
+        // `.entryNotFound` ("changed in the meantime").
+        var entries = try readableShard(month)
         guard let index = entries.firstIndex(where: { $0.id == entry.id && $0.day == entry.day }) else {
             throw LocalFoodLogError.entryNotFound
         }
