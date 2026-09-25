@@ -25,6 +25,18 @@
         }
       }
     },
+    "%@ g": {
+      "comment": "An amount in grams, e.g. 25 g.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ g"
+          }
+        }
+      }
+    },
     "%@ has no serving Garmin can log.": {
       "comment": "Siri reply. %@ is a food name.",
       "extractionState": "manual",
@@ -145,6 +157,18 @@
         }
       }
     },
+    "%@ kilocalories": {
+      "comment": "VoiceOver: an energy amount, e.g. 290 (Czech: 290 kilokalorií).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kilokalorií"
+          }
+        }
+      }
+    },
     "%@ kilograms": {
       "comment": "VoiceOver: a weight with a decimal part, e.g. 83.9 (Czech: genitive singular, 83,9 kilogramu).",
       "extractionState": "manual",
@@ -225,6 +249,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@, %2$@krát %3$@, %4$@ kilokalorií"
+          }
+        }
+      }
+    },
+    "%@, %@, %@": {
+      "comment": "VoiceOver label of a saved meal card: name, ingredient count ('3 ingredients'), energy with its unit spelled out.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
           }
         }
       }
@@ -435,6 +471,114 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld h %lld min"
+          }
+        }
+      }
+    },
+    "%lld ingredients": {
+      "comment": "Number of ingredients in a saved meal. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld suroviny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld suroviny"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld surovina"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld surovin"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ingredient"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ingredients"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld kilocalories": {
+      "comment": "VoiceOver: an energy amount in whole kilocalories. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorie"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorie"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorie"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorií"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilocalorie"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilocalories"
+                }
+              }
+            }
           }
         }
       }
@@ -915,6 +1059,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přidej do tohoto jídla potravinu a uvidíš ji tady."
+          }
+        }
+      }
+    },
+    "Add at least one ingredient -- each one logs as its own entry when you log this meal.": {
+      "comment": "Meal editor footer when there are no ingredients.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidej aspoň jednu surovinu – při zapsání jídla se každá zapíše jako samostatný záznam."
           }
         }
       }
@@ -1627,6 +1783,18 @@
         }
       }
     },
+    "Confirm meal": {
+      "comment": "Navigation title of the log-a-saved-meal screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potvrdit jídlo"
+          }
+        }
+      }
+    },
     "Connect Garmin": {
       "comment": "Sign-in sheet: navigation title.",
       "extractionState": "manual",
@@ -1999,6 +2167,18 @@
         }
       }
     },
+    "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue.": {
+      "comment": "Error on the meal confirm screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se nepodařilo zapsat. Některé suroviny už možná uložené jsou – zkontroluj frontu synchronizace."
+          }
+        }
+      }
+    },
     "Couldn't look that up right now. Try again.": {
       "comment": "Error: resolving a scanned barcode failed (network/auth), not 'no product'.",
       "extractionState": "manual",
@@ -2131,6 +2311,18 @@
         }
       }
     },
+    "Couldn't save this meal. Try again.": {
+      "comment": "Error in the meal editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se nepodařilo uložit. Zkus to znovu."
+          }
+        }
+      }
+    },
     "Couldn't save this weigh-in. Try again.": {
       "comment": "Error on the add-weight sheet.",
       "extractionState": "manual",
@@ -2155,6 +2347,18 @@
         }
       }
     },
+    "Couldn't sync to Garmin: this route is experimental and may not be supported. %@": {
+      "comment": "Error under the experimental meal sync. %@ is the underlying error's description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizace do Garminu se nepovedla: tahle cesta je experimentální a nemusí být podporovaná. %@"
+          }
+        }
+      }
+    },
     "Create in Garmin": {
       "comment": "Button / navigation title: create this Open Food Facts item as a custom food in Garmin.",
       "extractionState": "manual",
@@ -2163,6 +2367,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vytvořit v Garminu"
+          }
+        }
+      }
+    },
+    "Creates this meal as a real, named meal in your Garmin account, using an experimental, unconfirmed Garmin route. Logging this meal already works fully without it; this only makes Garmin's own app show it as one grouped meal too.": {
+      "comment": "Meal editor: footer explaining the experimental Garmin sync.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvoří toto jídlo jako skutečné pojmenované jídlo ve tvém účtu Garmin, a to přes experimentální, neověřenou cestu Garminu. Zapisování tohoto jídla funguje plně i bez toho; díky tomu ho jen i aplikace Garmin ukáže jako jedno seskupené jídlo."
           }
         }
       }
@@ -2689,6 +2905,18 @@
         }
       }
     },
+    "Edit Meal": {
+      "comment": "Meal editor title when editing a meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit jídlo"
+          }
+        }
+      }
+    },
     "Edited, but the old entry is still in Garmin": {
       "comment": "Sync queue row status: an edit whose old entry couldn't be removed.",
       "extractionState": "manual",
@@ -3151,6 +3379,18 @@
         }
       }
     },
+    "Garmin": {
+      "comment": "Section header (brand name, not translated).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin"
+          }
+        }
+      }
+    },
     "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.": {
       "comment": "Error: Garmin created the food but the response could not be parsed.",
       "extractionState": "manual",
@@ -3475,6 +3715,18 @@
         }
       }
     },
+    "Grams or millilitres. Switch to servings": {
+      "comment": "VoiceOver label of the unit button next to an ingredient amount (currently grams/ml).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gramy nebo mililitry. Přepnout na porce"
+          }
+        }
+      }
+    },
     "Graphite": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -3591,6 +3843,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indigová noc"
+          }
+        }
+      }
+    },
+    "Ingredients": {
+      "comment": "Section header: the ingredients of a saved meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suroviny"
           }
         }
       }
@@ -4663,6 +4927,18 @@
         }
       }
     },
+    "Name (e.g. \"Breakfast bowl\")": {
+      "comment": "Placeholder of the meal name field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název (např. „Snídaňová miska“)"
+          }
+        }
+      }
+    },
     "New custom food": {
       "comment": "Toolbar menu item: create a custom food.",
       "extractionState": "manual",
@@ -4677,6 +4953,18 @@
     },
     "New meal": {
       "comment": "Toolbar menu item: create a saved multi-food meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nové jídlo"
+          }
+        }
+      }
+    },
+    "New Meal": {
+      "comment": "Meal editor title when creating a meal.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
@@ -5287,6 +5575,18 @@
         }
       }
     },
+    "Opens this meal to log it": {
+      "comment": "VoiceOver hint of a saved meal card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře toto jídlo k zapsání"
+          }
+        }
+      }
+    },
     "Opens water tracking": {
       "comment": "VoiceOver hint of Today's water card.",
       "extractionState": "manual",
@@ -5407,6 +5707,18 @@
         }
       }
     },
+    "Portions": {
+      "comment": "Meal confirm screen: how many portions of the saved meal to log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce"
+          }
+        }
+      }
+    },
     "Preferences": {
       "comment": "Settings section header.",
       "extractionState": "manual",
@@ -5523,6 +5835,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rychlý výběr"
+          }
+        }
+      }
+    },
+    "Re-sync to Garmin (experimental)": {
+      "comment": "Button: send a saved meal to Garmin again.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znovu synchronizovat do Garminu (experimentální)"
           }
         }
       }
@@ -6007,6 +6331,18 @@
         }
       }
     },
+    "Send %@ to Garmin as \"%@\"?": {
+      "comment": "Confirmation title. First %@ is a counted phrase like '3 ingredients', second the meal's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslat do Garminu jako „%2$@“? (%1$@)"
+          }
+        }
+      }
+    },
     "Sent": {
       "comment": "Sync queue row status for a weigh-in or drink.",
       "extractionState": "manual",
@@ -6075,6 +6411,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Porce"
+          }
+        }
+      }
+    },
+    "Servings. Switch to grams or millilitres": {
+      "comment": "VoiceOver label of the unit button next to an ingredient amount (currently servings).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce. Přepnout na gramy nebo mililitry"
           }
         }
       }
@@ -6493,6 +6841,18 @@
         }
       }
     },
+    "Sync": {
+      "comment": "Confirmation button: send the meal to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizovat"
+          }
+        }
+      }
+    },
     "sync failed": {
       "comment": "VoiceOver: sync state of a weigh-in or drink row.",
       "extractionState": "manual",
@@ -6525,6 +6885,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fronta synchronizace"
+          }
+        }
+      }
+    },
+    "Sync to Garmin (experimental)": {
+      "comment": "Button: send a saved meal to Garmin for the first time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizovat do Garminu (experimentální)"
+          }
+        }
+      }
+    },
+    "Synced to Garmin %@": {
+      "comment": "When a saved meal was last sent to Garmin. %@ is a relative date, e.g. 'yesterday'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizováno do Garminu %@"
           }
         }
       }
@@ -6841,6 +7225,18 @@
         }
       }
     },
+    "This is an experimental, unconfirmed Garmin route -- it may fail. If it succeeds, it creates a new meal in your Garmin account; it never deletes or replaces anything there.": {
+      "comment": "Confirmation message for the experimental meal sync.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jde o experimentální, neověřenou cestu Garminu – může selhat. Když se povede, vytvoří ve tvém účtu Garmin nové jídlo; nikdy tam nic nemaže ani nenahrazuje."
+          }
+        }
+      }
+    },
     "This item has no calorie value from Open Food Facts, so it can't be created in Garmin.": {
       "comment": "Empty-state message: calories are required to create a food in Garmin.",
       "extractionState": "manual",
@@ -6849,6 +7245,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tahle položka nemá v Open Food Facts hodnotu kalorií, takže ji v Garminu nejde vytvořit."
+          }
+        }
+      }
+    },
+    "This meal includes a custom food, which can't be synced to Garmin yet -- only real catalog/matched foods can.": {
+      "comment": "Meal editor: why this meal can't be sent to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo obsahuje vlastní potravinu, kterou zatím do Garminu synchronizovat nejde – jde to jen se skutečnými potravinami z katalogu nebo spárovanými."
           }
         }
       }
@@ -6957,6 +7365,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "příliš mnoho požadavků, zkus to za chvíli"
+          }
+        }
+      }
+    },
+    "Total": {
+      "comment": "Meal editor: section with the summed nutrition.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celkem"
           }
         }
       }

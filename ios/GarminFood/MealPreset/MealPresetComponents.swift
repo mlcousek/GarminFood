@@ -29,25 +29,30 @@ struct MealPresetShelf: View {
                 title: preset.name,
                 subtitle: ingredientCountText(preset),
                 calories: preset.totals().calories,
-                accessibilityLabel: "\(preset.name), \(ingredientCountText(preset)), \(preset.totals().calories.wholeNumberText) kilocalories",
-                accessibilityHint: "Opens this meal to log it",
+                accessibilityLabel: String(
+                    localized: "\(preset.name), \(ingredientCountText(preset)), \(SpokenUnits.kilocalories(preset.totals().calories))",
+                    comment: "VoiceOver label of a saved meal card: name, ingredient count ('3 ingredients'), energy with its unit spelled out."
+                ),
+                accessibilityHint: String(localized: "Opens this meal to log it"),
                 actions: actions(for: preset),
                 onTap: { onTap(preset) }
             )
         }
     }
 
+    /// "3 ingredients" / "3 suroviny" -- a catalog plural (Czech one/few/
+    /// many/other), not an `== 1 ?` suffix.
     private func ingredientCountText(_ preset: MealPreset) -> String {
-        "\(preset.ingredients.count) ingredient\(preset.ingredients.count == 1 ? "" : "s")"
+        String(localized: "\(preset.ingredients.count) ingredients", comment: "Number of ingredients in a saved meal. Plural.")
     }
 
     private func actions(for preset: MealPreset) -> [FoodShelfCardAction] {
         var actions: [FoodShelfCardAction] = []
         if let onEdit {
-            actions.append(FoodShelfCardAction(title: "Edit", systemImage: "pencil", perform: { onEdit(preset) }))
+            actions.append(FoodShelfCardAction(title: String(localized: "Edit"), systemImage: "pencil", perform: { onEdit(preset) }))
         }
         if let onDelete {
-            actions.append(FoodShelfCardAction(title: "Delete", systemImage: "trash", isDestructive: true, perform: { onDelete(preset) }))
+            actions.append(FoodShelfCardAction(title: String(localized: "Delete"), systemImage: "trash", isDestructive: true, perform: { onDelete(preset) }))
         }
         return actions
     }

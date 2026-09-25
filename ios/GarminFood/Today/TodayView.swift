@@ -595,7 +595,7 @@ struct MealEntryRow: View {
             Spacer(minLength: Theme.Spacing.sm)
             statusIcon
             if let calories = entry.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: String(localized: "kilocalories"))
+                MacroBadge.calories(calories)
             }
         }
         .accessibilityElement(children: .combine)

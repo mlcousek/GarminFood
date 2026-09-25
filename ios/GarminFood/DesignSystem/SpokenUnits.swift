@@ -1,6 +1,6 @@
 // SpokenUnits.swift
 //
-// Weights and volumes as VoiceOver should READ them: the unit spelled out
+// Weights, volumes and energy as VoiceOver should READ them: the unit spelled out
 // and agreeing with the number ("1 kilogram", "2 kilogramy", "83,9
 // kilogramu", "250 mililitrů"). Exists because the on-screen symbols
 // ("kg", "ml") are fine to look at but VoiceOver reads a bare symbol
@@ -13,8 +13,9 @@
 // with a decimal part uses its own "%@ ..." key whose Czech form is the
 // decimal one. The number itself comes from `NumberDisplay` (FoodLogCore),
 // so it carries the locale's decimal separator and never traps. Used by
-// the weight and water accessibility labels and chart summaries. Screen
-// text keeps the symbols.
+// the weight and water accessibility labels and chart summaries, and by
+// `MacroBadge.calories` (every "290 kcal" pill). Screen text keeps the
+// symbols.
 
 import Foundation
 import FoodLogCore
@@ -37,6 +38,16 @@ enum SpokenUnits {
             return String(localized: "\(whole) milliliters", comment: "VoiceOver: a water amount in whole milliliters. Plural.")
         }
         return String(localized: "\(NumberDisplay.whole(value)) milliliters", comment: "VoiceOver: a water amount too large for a whole-number count (practically never).")
+    }
+
+    /// "290 kilocalories" / "290 kilokalorií", "1 kilokalorie" -- energy is
+    /// always shown rounded to a whole number (`wholeNumberText`), and so
+    /// is read that way.
+    static func kilocalories(_ value: Double) -> String {
+        if let whole = wholeCount(value.rounded()) {
+            return String(localized: "\(whole) kilocalories", comment: "VoiceOver: an energy amount in whole kilocalories. Plural.")
+        }
+        return String(localized: "\(NumberDisplay.whole(value)) kilocalories", comment: "VoiceOver: an energy amount, e.g. 290 (Czech: 290 kilokalorií).")
     }
 
     /// `value` as an `Int` when it is a whole number that fits one; `nil`

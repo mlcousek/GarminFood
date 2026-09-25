@@ -167,7 +167,7 @@ struct LogEntryConfirmView: View {
                     HStack {
                         Text("Calories")
                         Spacer()
-                        MacroBadge(value: caloriesForQuantity, unit: " kcal", accessibleUnit: "kilocalories")
+                        MacroBadge.calories(caloriesForQuantity)
                     }
                 }
             }
