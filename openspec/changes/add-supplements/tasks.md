@@ -48,7 +48,7 @@
 
 ## 6. Wave 6 — Gamification
 
-- [ ] 6.1 Feature `supplements` in the registry (grant keys `supplements.*`), reading a `SupplementSignals` digest passed in by the host; budget line in `XPBudget` (optional source, ~6 XP/day before the multiplier).
+- [ ] 6.1 Feature `supplements` in the registry (grant keys `supplements.*`), reading a `SupplementSignals` digest passed in by the host; budget line in `XPBudget` (optional source, ~6 XP/day before the multiplier). Since `rebalance-xp-economy` (#83): pay through `XPBudget.optionalMultiplier(enabledOptionalSources:lines:)` + `scaledGrant(_:multiplier:)` (or `optionalGrantXP`), and at most about ONE grant per day (e.g. stack complete), because every grant is at least 1 XP and the cap is 0.5% of core.
 - [ ] 6.2 Supplement streak with neutral days; freeze planner extended to a shared pool across the food and supplement streaks (only streaks ≥ 3; at most one freeze per missed day per streak). Tests incl. both spec scenarios; food-streak results unchanged when supplements are off.
 - [ ] 6.3 Badges (design D9) with rarities; challenges in rotation only while enabled with a plan; vitamin collection; creatine journey. Tests.
 - [ ] 6.4 UI: streak and badges on the Supplements screen and in Achievements; en + cs.
