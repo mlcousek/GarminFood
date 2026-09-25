@@ -72,6 +72,8 @@ final class CollectionsTaggerTests: XCTestCase {
         Fixture(name: "Kari koření", mustInclude: [], mustExclude: [.dishCurry]),
         Fixture(name: "Chicken tikka masala", mustInclude: [.dishTikkaMasala]),
         Fixture(name: "Garam masala koření", mustInclude: [], mustExclude: [.dishTikkaMasala]),
+        Fixture(name: "Masala chai latte", mustInclude: [], mustExclude: [.dishTikkaMasala]),
+        Fixture(name: "Masala čaj", mustInclude: [], mustExclude: [.dishTikkaMasala]),
         Fixture(name: "Tacos s hovězím", mustInclude: [.dishTacos]),
         Fixture(name: "Burrito bowl", mustInclude: [.dishBurrito]),
         Fixture(name: "Phở bò", mustInclude: [.dishPho]),
@@ -97,6 +99,8 @@ final class CollectionsTaggerTests: XCTestCase {
         // Fermented Friends
         Fixture(name: "Kefírové mléko", mustInclude: [.dishKefir]),
         Fixture(name: "Kysané zelí", mustInclude: [.dishKysaneZeli, .dishZeli]),
+        Fixture(name: "Kysané zelím", mustInclude: [.dishKysaneZeli]),
+        Fixture(name: "Kysaná zelenina", mustInclude: [], mustExclude: [.dishKysaneZeli, .dishZeli]),
         Fixture(name: "Kimchi", mustInclude: [.dishKimchi]),
         Fixture(name: "Bílý jogurt", mustInclude: [.dishJogurt]),
         Fixture(name: "Mléčná čokoláda s jogurtovou náplní", mustInclude: [], mustExclude: [.dishJogurt]),
