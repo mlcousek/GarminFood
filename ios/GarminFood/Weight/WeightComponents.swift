@@ -51,6 +51,10 @@ struct WeightHeroCard: View {
                         .font(.heroUnit)
                         .foregroundStyle(.secondary)
                 }
+                // Read as one phrase with the unit spelled out ("83,9
+                // kilogramu"), not "83,9" then "kg" (add-localization 6.4).
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(SpokenUnits.kilograms(latest.weightKg))
                 HStack(spacing: Theme.Spacing.sm) {
                     Text("Logged \(latest.loggedAt.formatted(.relative(presentation: .named)))")
                         .font(.caption)
@@ -114,12 +118,22 @@ struct WeightDeltaBadge: View {
         return "arrow.right"
     }
 
-    private var text: String { String(format: "%.1f kg", abs(delta)) }
+    /// Always one decimal ("1.0 kg" reads as a measurement, "1 kg" like a
+    /// count), in the current locale ("1,0 kg" in Czech).
+    private var text: String {
+        let number = abs(delta).formatted(.number.precision(.fractionLength(1)).grouping(.never))
+        return "\(number) kg"
+    }
 
     private var accessibilityText: String {
-        if delta > 0.05 { return "up \(text) since last time" }
-        if delta < -0.05 { return "down \(text) since last time" }
-        return "unchanged since last time"
+        let amount = SpokenUnits.kilograms(abs(delta))
+        if delta > 0.05 {
+            return String(localized: "up \(amount) since last time", comment: "VoiceOver: weight change since the previous weigh-in. %@ is an amount with its unit spelled out, e.g. 1.5 kilograms.")
+        }
+        if delta < -0.05 {
+            return String(localized: "down \(amount) since last time", comment: "VoiceOver: weight change since the previous weigh-in. %@ is an amount with its unit spelled out, e.g. 1.5 kilograms.")
+        }
+        return String(localized: "unchanged since last time", comment: "VoiceOver: weight unchanged since the previous weigh-in.")
     }
 }
 
@@ -157,18 +171,21 @@ struct WeightGoalBar: View {
         .accessibilityElement(children: .combine)
     }
 
+    /// One whole localizable string per shape (design.md D5: no sentence
+    /// glued from fragments).
     private var summary: String {
         if progress.isReached {
-            return "Goal reached"
+            return String(localized: "Goal reached", comment: "Weight goal bar: the target weight has been reached.")
         }
-        var text = "\(progress.kgToGo.formattedKg) kg to go"
-        if let eta = progress.eta {
-            text += " · about \(eta.formatted(.dateTime.day().month(.abbreviated).year()))"
-            if progress.etaSource == .garminPlan {
-                text += " at Garmin's planned rate"
-            }
+        let toGo = progress.kgToGo.formattedKg
+        guard let eta = progress.eta else {
+            return String(localized: "\(toGo) kg to go", comment: "Weight goal bar. %@ is a weight, e.g. 3.5.")
         }
-        return text
+        let date = eta.formatted(.dateTime.day().month(.abbreviated).year())
+        if progress.etaSource == .garminPlan {
+            return String(localized: "\(toGo) kg to go · about \(date) at Garmin's planned rate", comment: "Weight goal bar. First %@ is a weight, second a date (estimated arrival at the goal, from Garmin's weekly plan).")
+        }
+        return String(localized: "\(toGo) kg to go · about \(date)", comment: "Weight goal bar. First %@ is a weight, second a date (estimated arrival at the goal at the current trend).")
     }
 }
 
@@ -216,8 +233,14 @@ struct WeightChartView: View {
     }
 
     private var accessibilitySummary: String {
-        guard let first = rows.first, let last = rows.last else { return "No data" }
-        return "From \(first.weightKg.formattedKg) to \(last.weightKg.formattedKg) kilograms over \(rows.count) entries"
+        guard let first = rows.first, let last = rows.last else {
+            return String(localized: "No data", comment: "VoiceOver value of an empty chart.")
+        }
+        let count = String(localized: "\(rows.count) weigh-ins", comment: "VoiceOver: number of weigh-ins in the weight chart. Plural.")
+        return String(
+            localized: "From \(SpokenUnits.kilograms(first.weightKg)) to \(SpokenUnits.kilograms(last.weightKg)), \(count)",
+            comment: "VoiceOver summary of a trend chart. First two %@ are amounts with their unit spelled out (oldest, newest), the third a counted phrase like '12 weigh-ins'."
+        )
     }
 }
 
@@ -298,16 +321,21 @@ struct WeightRow: View {
         }
     }
 
+    /// VoiceOver reads the parts as a list (", " pauses), each one a whole
+    /// localized phrase -- no sentence is assembled from them.
     private var accessibilityLabel: String {
-        var label = "\(row.weightKg.formattedKg) kilograms, \(row.loggedAt.formatted(date: .abbreviated, time: .shortened))"
-        if let note = row.note, !note.isEmpty { label += ", \(note)" }
+        var parts = [
+            SpokenUnits.kilograms(row.weightKg),
+            row.loggedAt.formatted(date: .abbreviated, time: .shortened)
+        ]
+        if let note = row.note, !note.isEmpty { parts.append(note) }
         switch row.syncState {
-        case .pending: label += ", waiting to sync"
-        case .failed: label += ", sync failed"
-        case .deleteFailed: label += ", delete in Garmin failed"
+        case .pending: parts.append(String(localized: "waiting to sync", comment: "VoiceOver: sync state of a weigh-in or drink row."))
+        case .failed: parts.append(String(localized: "sync failed", comment: "VoiceOver: sync state of a weigh-in or drink row."))
+        case .deleteFailed: parts.append(String(localized: "delete in Garmin failed", comment: "VoiceOver: sync state of a weigh-in row."))
         case .synced: break
         }
-        return label
+        return parts.joined(separator: ", ")
     }
 }
 
