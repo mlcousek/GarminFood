@@ -247,8 +247,9 @@ public struct LocalLogEntryCoordinator: FoodLogging {
     /// Nothing in the local log is ever pending: its rows are all
     /// `.synced`. A still-queued dashboard row is an OUTBOX entry (left over
     /// from Garmin mode), which `ModeRoutingFoodLogging` always sends to the
-    /// Garmin coordinator. For completeness this removes a local entry
-    /// that happens to carry this id, and otherwise reports it gone.
+    /// Garmin coordinator (a local-only outbox cancel). Reached only if a
+    /// caller holds this coordinator directly: removes a local entry that
+    /// carries this id, and otherwise reports it gone.
     public func deletePending(outboxId: UUID) async throws -> LogEntryCoordinator.PendingDeletion {
         guard let stored = await store.entry(id: outboxId) else { throw LogEntryEditError.entryGone }
         try await deleteStored(id: stored.id, day: stored.day)
