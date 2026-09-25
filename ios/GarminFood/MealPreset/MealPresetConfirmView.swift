@@ -59,7 +59,7 @@ struct MealPresetConfirmView: View {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     Text(preset.name)
                         .font(.title3.weight(.semibold))
-                    Text("\(preset.ingredients.count) ingredient\(preset.ingredients.count == 1 ? "" : "s")")
+                    Text("\(preset.ingredients.count) ingredients", comment: "Number of ingredients in a saved meal. Plural.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -78,7 +78,7 @@ struct MealPresetConfirmView: View {
                 HStack {
                     Text("Calories")
                     Spacer()
-                    MacroBadge(value: totals.calories, unit: " kcal", accessibleUnit: "kilocalories")
+                    MacroBadge.calories(totals.calories)
                 }
             }
 
@@ -94,7 +94,7 @@ struct MealPresetConfirmView: View {
                         }
                         Spacer(minLength: Theme.Spacing.sm)
                         if let calories = ingredient.calories {
-                            MacroBadge(value: calories * portions, unit: " kcal", accessibleUnit: "kilocalories")
+                            MacroBadge.calories(calories * portions)
                         }
                     }
                 }
@@ -179,7 +179,7 @@ struct MealPresetConfirmView: View {
                 errorMessage = error.localizedDescription
             } catch {
                 DiagnosticsLog.log(.error, category: "MealPresetConfirmView", "confirmMealPreset failed for preset=\(preset.name): \(error)")
-                errorMessage = "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue."
+                errorMessage = String(localized: "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue.")
             }
         }
     }

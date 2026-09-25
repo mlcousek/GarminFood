@@ -18,6 +18,10 @@ public enum StreakHistory {
         case grace
         /// Missed, and not forgiven (or no streak was running).
         case missed
+        /// Missed, but covered by a consumed streak freeze (design D5 of
+        /// add-weekly-boss-and-streak-freezes): the streak survived without
+        /// growing.
+        case frozen
         /// Today, with nothing logged yet.
         case pending
         /// Later than today.
@@ -44,26 +48,26 @@ public enum StreakHistory {
 
     public static func summary(
         events: [UsageEvent],
+        frozenDays: Set<Date> = [],
         now: Date = Date(),
         weeks: Int = 6,
         boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
         calendar: Calendar = .current
     ) -> Summary {
-        let loggedDays = Set(events.map {
-            NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour, calendar: calendar)
-        })
+        let loggedDays = StreakEngine.loggedDays(events: events, boundaryHour: boundaryHour, calendar: calendar)
         let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
-        return summary(loggedDays: loggedDays, today: today, weeks: weeks, calendar: calendar)
+        return summary(loggedDays: loggedDays, frozenDays: frozenDays, today: today, weeks: weeks, calendar: calendar)
     }
 
     public static func summary(
         loggedDays: Set<Date>,
+        frozenDays: Set<Date> = [],
         today: Date,
         weeks: Int = 6,
         calendar: Calendar = .current
     ) -> Summary {
-        let walk = StreakEngine.simulate(loggedDays: loggedDays, today: today, calendar: calendar)
-        let current = StreakEngine.status(loggedDays: loggedDays, today: today, calendar: calendar).length
+        let walk = StreakEngine.simulate(loggedDays: loggedDays, frozenDays: frozenDays, today: today, calendar: calendar)
+        let current = StreakEngine.status(loggedDays: loggedDays, frozenDays: frozenDays, today: today, calendar: calendar).length
         let earliest = loggedDays.min()
 
         let weekCount = max(weeks, 1)
@@ -102,6 +106,7 @@ public enum StreakHistory {
             case .logged: return .logged
             case .grace: return .grace
             case .missed: return .missed
+            case .frozen: return .frozen
             }
         }
         if day == today {

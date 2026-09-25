@@ -135,13 +135,13 @@ struct WeightView: View {
 
     private func deleteMessage(for row: WeighInDisplayEntry) -> String {
         if row.isFromGarmin {
-            return "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online."
+            return String(localized: "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online.")
         }
         switch row.syncState {
         case .pending, .failed:
-            return "It hasn't reached Garmin yet, so it simply won't be sent."
+            return String(localized: "It hasn't reached Garmin yet, so it simply won't be sent.")
         case .synced, .deleteFailed:
-            return "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online."
+            return String(localized: "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online.")
         }
     }
 
@@ -149,7 +149,7 @@ struct WeightView: View {
         do {
             try await environment.deleteWeighIn(row)
         } catch {
-            actionError = "Couldn't delete this entry."
+            actionError = String(localized: "Couldn't delete this entry.")
         }
     }
 
@@ -158,7 +158,7 @@ struct WeightView: View {
         do {
             try await environment.retryWeightQueued(id: outboxEntryId)
         } catch {
-            actionError = "Couldn't retry this entry."
+            actionError = String(localized: "Couldn't retry this entry.")
         }
     }
 }

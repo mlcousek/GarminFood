@@ -92,6 +92,14 @@ final class FeatureHost {
         return nil
     }
 
+    /// add-weekly-boss-and-streak-freezes D4: every streak-freeze grant the
+    /// ledger has recorded (bingo full cards, boss defeats), for the freeze
+    /// balance. The ledger stays private to this host -- one instance per
+    /// process -- so the engine reads it through here.
+    func freezeGrants() async -> [RewardLedger.FreezeGrant] {
+        await ledger.freezeGrants()
+    }
+
     // MARK: - Snapshot (local reads only)
 
     func buildSnapshot(goalStatuses: [DailyGoalStatus], now: Date, calendar: Calendar = .current) async -> SignalsSnapshot {

@@ -237,12 +237,14 @@ public struct ServingQuantityInput: Sendable, Equatable {
         }
     }
 
-    /// The g/ml `quantity` logs, as display text ("150 g"), or `nil`
-    /// without a metric size.
-    public func amountLabel(forQuantity quantity: Double) -> String? {
+    /// The g/ml `quantity` logs, as display text ("150 g"; "12,5 g" in
+    /// Czech -- `NumberDisplay`, add-localization 6.1), or `nil` without a
+    /// metric size.
+    public func amountLabel(forQuantity quantity: Double, locale: Locale = .current) -> String? {
         guard let size else { return nil }
         let amount = size.amount(forQuantity: quantity)
-        return "\(Self.inputText(amount, maxFractionDigits: Self.amountFractionDigits)) \(size.unit.symbol)"
+        let number = NumberDisplay.trimmed(amount, maxFractionDigits: Self.amountFractionDigits, locale: locale)
+        return "\(number) \(size.unit.symbol)"
     }
 
     /// Why the field's text was rejected, in the unit being typed -- the

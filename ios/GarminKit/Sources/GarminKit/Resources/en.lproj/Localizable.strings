@@ -1,0 +1,12 @@
+/*
+  GarminKit — English (development language).
+
+  Keys ARE the English source text (add-localization design.md D4), so this
+  file maps every key to itself. It must exist and list every key that
+  cs.lproj lists: without an en.lproj, a phone preferring English would pick
+  the only localization present (Czech). tools/check-localizations.mjs
+  enforces en/cs key parity. UTF-8, one `"key" = "value";` per string.
+*/
+
+/* Error when saving data whose file couldn't be read yet. %@ is a file name, e.g. outbox.json. */
+"%@ exists but could not be read yet (is the device still locked?), so it was not overwritten. Try again." = "%@ exists but could not be read yet (is the device still locked?), so it was not overwritten. Try again.";

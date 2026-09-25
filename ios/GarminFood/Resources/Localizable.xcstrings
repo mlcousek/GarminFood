@@ -1,6 +1,18 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ · %@": {
+      "comment": "Food name · serving label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
     "%@ · %lld g carbs, %lld min before": {
       "comment": "Sport & body activity row: a fuel entry. %@ = food name, then grams, then minutes before the start.",
       "extractionState": "manual",
@@ -57,6 +69,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ půst · %@ jídlo"
+          }
+        }
+      }
+    },
+    "%@ g": {
+      "comment": "An amount in grams, e.g. 25 g.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ g"
           }
         }
       }
@@ -145,6 +169,78 @@
         }
       }
     },
+    "%@ kg to go": {
+      "comment": "Weight goal bar. %@ is a weight, e.g. 3.5.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá %@ kg"
+          }
+        }
+      }
+    },
+    "%@ kg to go · about %@": {
+      "comment": "Weight goal bar. First %@ is a weight, second a date (estimated arrival at the goal at the current trend).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá %1$@ kg · zhruba %2$@"
+          }
+        }
+      }
+    },
+    "%@ kg to go · about %@ at Garmin's planned rate": {
+      "comment": "Weight goal bar. First %@ is a weight, second a date (estimated arrival at the goal, from Garmin's weekly plan).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá %1$@ kg · zhruba %2$@ podle tempa naplánovaného v Garminu"
+          }
+        }
+      }
+    },
+    "%@ kilocalories": {
+      "comment": "VoiceOver: an energy amount, e.g. 290 (Czech: 290 kilokalorií).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kilokalorií"
+          }
+        }
+      }
+    },
+    "%@ kilograms": {
+      "comment": "VoiceOver: a weight with a decimal part, e.g. 83.9 (Czech: genitive singular, 83,9 kilogramu).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kilogramu"
+          }
+        }
+      }
+    },
+    "%@ milliliters": {
+      "comment": "VoiceOver: a water amount too large for a whole-number count (practically never).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ mililitrů"
+          }
+        }
+      }
+    },
     "%@ ml": {
       "comment": "An amount of water in millilitres; %@ is the formatted number.",
       "extractionState": "manual",
@@ -181,6 +277,18 @@
         }
       }
     },
+    "%@ on %lld of 7 days to defeat it.": {
+      "comment": "Weekly boss screen: the habit and the target. %@ is the habit (e.g. 'Log breakfast'), %lld a number of days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ve %2$lld ze 7 dnů a porazíš ho."
+          }
+        }
+      }
+    },
     "%@, %@ times %@": {
       "comment": "VoiceOver label of a quick-pick card. %1$@ = food name, %2$@ = usual quantity (e.g. 2), %3$@ = serving (e.g. 100 g).",
       "extractionState": "manual",
@@ -205,6 +313,54 @@
         }
       }
     },
+    "%@, %@, %@": {
+      "comment": "VoiceOver label of a saved meal card: name, ingredient count ('3 ingredients'), energy with its unit spelled out.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "%@, %@, next milestone": {
+      "comment": "Accessibility: journey milestone name, its amount, the next one.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, další milník"
+          }
+        }
+      }
+    },
+    "%@, %@, not reached yet": {
+      "comment": "Accessibility: journey milestone name, its amount, still ahead.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, zatím nedosaženo"
+          }
+        }
+      }
+    },
+    "%@, %@, reached": {
+      "comment": "Accessibility: journey milestone name, its amount, reached.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, dosaženo"
+          }
+        }
+      }
+    },
     "%@, favorite": {
       "comment": "VoiceOver label of a favorite food card. %@ = food name.",
       "extractionState": "manual",
@@ -225,6 +381,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@, oblíbené, %2$@ kilokalorií"
+          }
+        }
+      }
+    },
+    "%@: %@ filled": {
+      "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: naplněno %@"
           }
         }
       }
@@ -427,6 +595,168 @@
         }
       }
     },
+    "%lld ingredients": {
+      "comment": "Number of ingredients in a saved meal. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld suroviny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld suroviny"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld surovina"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld surovin"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ingredient"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ingredients"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld kilocalories": {
+      "comment": "VoiceOver: an energy amount in whole kilocalories. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorie"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorie"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorie"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilokalorií"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilocalorie"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilocalories"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld kilograms": {
+      "comment": "VoiceOver: a weight in whole kilograms. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilogramy"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilogramu"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilogram"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilogramů"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilogram"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kilograms"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld m": {
       "comment": "Fasting duration in minutes, e.g. 45 m.",
       "extractionState": "manual",
@@ -435,6 +765,60 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld min"
+          }
+        }
+      }
+    },
+    "%lld milliliters": {
+      "comment": "VoiceOver: a water amount in whole milliliters. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld mililitry"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld mililitru"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld mililitr"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld mililitrů"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld milliliter"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld milliliters"
+                }
+              }
+            }
           }
         }
       }
@@ -571,6 +955,60 @@
         }
       }
     },
+    "%lld weigh-ins": {
+      "comment": "VoiceOver: number of weigh-ins in the weight chart. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld vážení"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld vážení"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld vážení"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld vážení"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld weigh-in"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld weigh-ins"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "A daily nudge to check today's challenges.": {
       "comment": "Reminders screen footer under the challenges reminder.",
       "extractionState": "manual",
@@ -583,6 +1021,18 @@
         }
       }
     },
+    "A new PR is announced once a record has 7 days of data.": {
+      "comment": "Footnote on the personal records screen (warm-up rule).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nový rekord se oznámí, až má záznam aspoň 7 dní dat."
+          }
+        }
+      }
+    },
     "A secret achievement. Keep logging to reveal it.": {
       "comment": "Detail sheet text of a locked secret achievement.",
       "extractionState": "manual",
@@ -591,6 +1041,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tajný odznak. Zapisuj dál a odhalíš ho."
+          }
+        }
+      }
+    },
+    "A streak freeze covers a second missed day that would otherwise end a streak of 3 days or more, and is used automatically. Earn one by defeating the weekly boss or completing a full bingo card; you can hold up to %lld.": {
+      "comment": "Streak screen, How streaks work: explains streak freezes. %lld is the maximum number of freezes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série pokryje druhý vynechaný den, který by jinak ukončil sérii dlouhou aspoň 3 dny, a použije se samo. Získáš ho poražením týdenního bosse nebo celou bingo kartou; mít můžeš nejvýš %lld."
           }
         }
       }
@@ -691,6 +1153,72 @@
         }
       }
     },
+    "Add %lld milliliters": {
+      "comment": "VoiceOver label of a quick-add water button. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld mililitry"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld mililitru"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld mililitr"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld mililitrů"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld milliliter"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld milliliters"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Add a custom amount": {
+      "comment": "VoiceOver label of the Custom water button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat vlastní množství"
+          }
+        }
+      }
+    },
     "Add a food to this meal to see it here.": {
       "comment": "Meal detail empty state message.",
       "extractionState": "manual",
@@ -699,6 +1227,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přidej do tohoto jídla potravinu a uvidíš ji tady."
+          }
+        }
+      }
+    },
+    "Add at least one ingredient -- each one logs as its own entry when you log this meal.": {
+      "comment": "Meal editor footer when there are no ingredients.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidej aspoň jednu surovinu – při zapsání jídla se každá zapíše jako samostatný záznam."
           }
         }
       }
@@ -747,6 +1287,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přidat do oblíbených"
+          }
+        }
+      }
+    },
+    "Add water": {
+      "comment": "VoiceOver label of the + button on the water screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat vodu"
+          }
+        }
+      }
+    },
+    "Add Water": {
+      "comment": "Add-water sheet title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat vodu"
+          }
+        }
+      }
+    },
+    "Add weight": {
+      "comment": "VoiceOver label of the + button on the weight screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat váhu"
+          }
+        }
+      }
+    },
+    "Add Weight": {
+      "comment": "Add-weight sheet title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat váhu"
           }
         }
       }
@@ -807,6 +1395,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Všechny odznaky za půst získány"
+          }
+        }
+      }
+    },
+    "All milestones reached!": {
+      "comment": "Journey with every milestone reached.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny milníky máš za sebou!"
           }
         }
       }
@@ -955,6 +1555,18 @@
         }
       }
     },
+    "Athlete": {
+      "comment": "Layout preset: weight and water moved up on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sportovec"
+          }
+        }
+      }
+    },
     "Back to today": {
       "comment": "Day switcher button returning to today.",
       "extractionState": "manual",
@@ -963,6 +1575,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zpět na dnešek"
+          }
+        }
+      }
+    },
+    "Bank full: the freeze earned on %@ was not added (you can hold %lld).": {
+      "comment": "Streak screen: a freeze was earned while the bank was full. %@ is a date, %lld the maximum number of freezes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásoba plná: zmrazení získané %1$@ nebylo přidáno (můžeš mít nejvýš %2$lld)."
           }
         }
       }
@@ -1015,6 +1639,30 @@
         }
       }
     },
+    "Bestiary": {
+      "comment": "Weekly boss screen: section listing every boss kind.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestiář"
+          }
+        }
+      }
+    },
+    "Big number": {
+      "comment": "Layout editor: Day summary variant showing calories as one big number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velké číslo"
+          }
+        }
+      }
+    },
     "Bonus +25 XP": {
       "comment": "Seasonal event: tag on an optional bonus quest.",
       "extractionState": "manual",
@@ -1023,6 +1671,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bonus +25 XP"
+          }
+        }
+      }
+    },
+    "Boss health": {
+      "comment": "VoiceOver label of the weekly boss health bar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Životy bosse"
+          }
+        }
+      }
+    },
+    "Both": {
+      "comment": "Layout editor: Weight & Water shows both cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obojí"
+          }
+        }
+      }
+    },
+    "Brand (optional)": {
+      "comment": "Custom food editor field placeholder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Značka (nepovinné)"
           }
         }
       }
@@ -1099,6 +1783,18 @@
         }
       }
     },
+    "Calories (kcal)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie (kcal)"
+          }
+        }
+      }
+    },
     "Calories: %@": {
       "comment": "VoiceOver label of the meal detail calorie ring; %@ = meal name, e.g. 'Breakfast'.",
       "extractionState": "manual",
@@ -1135,6 +1831,18 @@
         }
       }
     },
+    "Carbs (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sacharidy (g)"
+          }
+        }
+      }
+    },
     "Card style": {
       "comment": "Settings -> Appearance page. Picker label.",
       "extractionState": "manual",
@@ -1143,6 +1851,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Styl karet"
+          }
+        }
+      }
+    },
+    "Cards go back to their default order and style.": {
+      "comment": "Layout editor: confirmation message for Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karty se vrátí do výchozího pořadí a stylu."
           }
         }
       }
@@ -1191,6 +1911,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kontroluje se…"
+          }
+        }
+      }
+    },
+    "Choose…": {
+      "comment": "Confirm screen: serving row value before a serving is picked.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat…"
           }
         }
       }
@@ -1279,6 +2011,30 @@
         }
       }
     },
+    "Closest match in Garmin": {
+      "comment": "Custom food editor: the Garmin food this custom food is actually logged as.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejbližší shoda v Garminu"
+          }
+        }
+      }
+    },
+    "Collapsed": {
+      "comment": "Layout editor: meal cards showing only header and macro bars.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sbalené"
+          }
+        }
+      }
+    },
     "Colour-blind safe": {
       "comment": "Settings -> Appearance page. Macro colors option.",
       "extractionState": "manual",
@@ -1347,6 +2103,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dokončit přihlášení vloženým ticketem"
+          }
+        }
+      }
+    },
+    "Confirm": {
+      "comment": "Navigation title of the confirm-and-log screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potvrdit"
+          }
+        }
+      }
+    },
+    "Confirm meal": {
+      "comment": "Navigation title of the log-a-saved-meal screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potvrdit jídlo"
           }
         }
       }
@@ -1603,6 +2383,18 @@
         }
       }
     },
+    "Couldn't delete in Garmin": {
+      "comment": "Weight history row: deleting this weigh-in in Garmin failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V Garminu se nepodařilo smazat"
+          }
+        }
+      }
+    },
     "Couldn't delete this entry: %@": {
       "comment": "Sync queue error; %@ is the system error description.",
       "extractionState": "manual",
@@ -1611,6 +2403,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Záznam se nepodařilo smazat: %@"
+          }
+        }
+      }
+    },
+    "Couldn't delete this entry.": {
+      "comment": "Error alert message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo smazat."
           }
         }
       }
@@ -1699,6 +2503,18 @@
         }
       }
     },
+    "Couldn't log this meal. Some ingredients may already be saved -- check the sync queue.": {
+      "comment": "Error on the meal confirm screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se nepodařilo zapsat. Některé suroviny už možná uložené jsou – zkontroluj frontu synchronizace."
+          }
+        }
+      }
+    },
     "Couldn't look that up right now. Try again.": {
       "comment": "Error: resolving a scanned barcode failed (network/auth), not 'no product'.",
       "extractionState": "manual",
@@ -1747,6 +2563,30 @@
         }
       }
     },
+    "Couldn't refresh from Garmin. Showing the last values.": {
+      "comment": "Quiet caption on the weight/water cards when a Garmin refresh failed (not an auth error).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z Garminu se nepodařilo načíst novinky. Zobrazují se poslední hodnoty."
+          }
+        }
+      }
+    },
+    "Couldn't remove this drink.": {
+      "comment": "Error alert message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pití se nepodařilo odstranit."
+          }
+        }
+      }
+    },
     "Couldn't retry this entry: %@": {
       "comment": "Sync queue error; %@ is the system error description.",
       "extractionState": "manual",
@@ -1755,6 +2595,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Záznam se nepodařilo zkusit znovu: %@"
+          }
+        }
+      }
+    },
+    "Couldn't retry this entry.": {
+      "comment": "Error alert message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo znovu odeslat."
           }
         }
       }
@@ -1771,6 +2623,18 @@
         }
       }
     },
+    "Couldn't save this custom food. Try again.": {
+      "comment": "Error in the custom food editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastní jídlo se nepodařilo uložit. Zkus to znovu."
+          }
+        }
+      }
+    },
     "Couldn't save this entry.": {
       "comment": "Error shown when a water entry couldn't be saved locally.",
       "extractionState": "manual",
@@ -1779,6 +2643,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tento záznam se nepodařilo uložit."
+          }
+        }
+      }
+    },
+    "Couldn't save this entry. Try again.": {
+      "comment": "Error on the confirm/add screens when saving locally failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam se nepodařilo uložit. Zkus to znovu."
+          }
+        }
+      }
+    },
+    "Couldn't save this meal. Try again.": {
+      "comment": "Error in the meal editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se nepodařilo uložit. Zkus to znovu."
+          }
+        }
+      }
+    },
+    "Couldn't save this weigh-in. Try again.": {
+      "comment": "Error on the add-weight sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vážení se nepodařilo uložit. Zkus to znovu."
           }
         }
       }
@@ -1795,6 +2695,18 @@
         }
       }
     },
+    "Couldn't sync to Garmin: this route is experimental and may not be supported. %@": {
+      "comment": "Error under the experimental meal sync. %@ is the underlying error's description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizace do Garminu se nepovedla: tahle cesta je experimentální a nemusí být podporovaná. %@"
+          }
+        }
+      }
+    },
     "Create in Garmin": {
       "comment": "Button / navigation title: create this Open Food Facts item as a custom food in Garmin.",
       "extractionState": "manual",
@@ -1807,6 +2719,18 @@
         }
       }
     },
+    "Creates this meal as a real, named meal in your Garmin account, using an experimental, unconfirmed Garmin route. Logging this meal already works fully without it; this only makes Garmin's own app show it as one grouped meal too.": {
+      "comment": "Meal editor: footer explaining the experimental Garmin sync.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvoří toto jídlo jako skutečné pojmenované jídlo ve tvém účtu Garmin, a to přes experimentální, neověřenou cestu Garminu. Zapisování tohoto jídla funguje plně i bez toho; díky tomu ho jen i aplikace Garmin ukáže jako jedno seskupené jídlo."
+          }
+        }
+      }
+    },
     "Current streak": {
       "comment": "Profile stat tile: consecutive logged days now.",
       "extractionState": "manual",
@@ -1815,6 +2739,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktuální série"
+          }
+        }
+      }
+    },
+    "Current weight": {
+      "comment": "Weight card: small caps title above the latest weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuální váha"
           }
         }
       }
@@ -1879,6 +2815,18 @@
         }
       }
     },
+    "Daily goal": {
+      "comment": "Alert title: edit the daily water goal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denní cíl"
+          }
+        }
+      }
+    },
     "Dark": {
       "comment": "Settings -> Appearance page. Appearance option: dark mode.",
       "extractionState": "manual",
@@ -1887,6 +2835,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tmavý"
+          }
+        }
+      }
+    },
+    "Date": {
+      "comment": "Date picker label (day of an entry).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datum"
           }
         }
       }
@@ -1903,6 +2863,42 @@
         }
       }
     },
+    "Day note": {
+      "comment": "Layout editor row: the note and tags card for the day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poznámka ke dni"
+          }
+        }
+      }
+    },
+    "Day summary": {
+      "comment": "Layout editor row: calories ring and macro bars.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Souhrn dne"
+          }
+        }
+      }
+    },
+    "Day switcher": {
+      "comment": "Layout editor row: the date bar at the top of Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přepínač dnů"
+          }
+        }
+      }
+    },
     "Days kept in a row": {
       "comment": "Fasting stat tile label (number shown separately).",
       "extractionState": "manual",
@@ -1911,6 +2907,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dní v řadě dodrženo"
+          }
+        }
+      }
+    },
+    "Days left: %lld": {
+      "comment": "Bingo: days left in this week.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá dní: %lld"
           }
         }
       }
@@ -1951,6 +2959,18 @@
         }
       }
     },
+    "Defeated": {
+      "comment": "Weekly boss outcome: beaten.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poražen"
+          }
+        }
+      }
+    },
     "Delete": {
       "comment": "Destructive button / swipe action.",
       "extractionState": "manual",
@@ -1975,6 +2995,18 @@
         }
       }
     },
+    "delete in Garmin failed": {
+      "comment": "VoiceOver: sync state of a weigh-in row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "smazání v Garminu selhalo"
+          }
+        }
+      }
+    },
     "Delete this entry?": {
       "comment": "Confirmation dialog title in the sync queue.",
       "extractionState": "manual",
@@ -1987,6 +3019,18 @@
         }
       }
     },
+    "Delete this weigh-in?": {
+      "comment": "Confirmation dialog title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat toto vážení?"
+          }
+        }
+      }
+    },
     "Delete weigh-in %@ kg": {
       "comment": "Sync queue row title for a queued weigh-in delete; %@ is the weight.",
       "extractionState": "manual",
@@ -1995,6 +3039,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Smazat vážení %@ kg"
+          }
+        }
+      }
+    },
+    "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online.": {
+      "comment": "Delete confirmation message for an entry that is already in Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smaže se i z Garmin Connect. Pokud jsi offline, smaže se tam, jakmile budeš zase online."
           }
         }
       }
@@ -2059,6 +3115,18 @@
         }
       }
     },
+    "Done on %@": {
+      "comment": "Bingo square sheet: the day it was done, e.g. 'Tuesday, 22 Sep'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněno: %@"
+          }
+        }
+      }
+    },
     "Double-tap to toggle this tag": {
       "comment": "VoiceOver hint of a day-note tag chip.",
       "extractionState": "manual",
@@ -2067,6 +3135,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dvojitým klepnutím štítek přepneš"
+          }
+        }
+      }
+    },
+    "down %@ since last time": {
+      "comment": "VoiceOver: weight change since the previous weigh-in. %@ is an amount with its unit spelled out, e.g. 1.5 kilograms.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "o %@ méně než minule"
           }
         }
       }
@@ -2137,6 +3217,18 @@
         }
       }
     },
+    "Drag to reorder. Changes show right away.": {
+      "comment": "Layout editor: footer under the card list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přetažením změníte pořadí. Změny se projeví hned."
+          }
+        }
+      }
+    },
     "Duplicate": {
       "comment": "Swipe/context action logging the same entry again.",
       "extractionState": "manual",
@@ -2149,6 +3241,30 @@
         }
       }
     },
+    "e.g. 250": {
+      "comment": "Water amount input placeholder (ml).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "např. 250"
+          }
+        }
+      }
+    },
+    "e.g. 75.5": {
+      "comment": "Weight input placeholder (a number in kg). Use the local decimal separator.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "např. 75,5"
+          }
+        }
+      }
+    },
     "Earned %@": {
       "comment": "Limited-edition badge: the years it was earned. %@ = e.g. \"2026, 2027\".",
       "extractionState": "manual",
@@ -2157,6 +3273,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Získáno %@"
+          }
+        }
+      }
+    },
+    "Easy task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snadný úkol"
           }
         }
       }
@@ -2217,6 +3345,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upravit záznam"
+          }
+        }
+      }
+    },
+    "Edit goal": {
+      "comment": "Water screen menu item.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit cíl"
+          }
+        }
+      }
+    },
+    "Edit layout": {
+      "comment": "Layout editor: sheet title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit rozložení"
+          }
+        }
+      }
+    },
+    "Edit layout…": {
+      "comment": "Today: item in the toolbar's More menu that opens the layout editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit rozložení…"
+          }
+        }
+      }
+    },
+    "Edit Meal": {
+      "comment": "Meal editor title when editing a meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit jídlo"
           }
         }
       }
@@ -2353,6 +3529,30 @@
         }
       }
     },
+    "Escaped": {
+      "comment": "Weekly boss outcome: the week ended without defeating it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utekl"
+          }
+        }
+      }
+    },
+    "Event banners": {
+      "comment": "Layout editor row: seasonal event and weekly boss banners on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bannery událostí"
+          }
+        }
+      }
+    },
     "Event complete!": {
       "comment": "Seasonal event: all required quests done.",
       "extractionState": "manual",
@@ -2389,6 +3589,18 @@
         }
       }
     },
+    "Every Monday a boss is picked from your weakest habit of the last four weeks. Defeat it for %lld–%lld XP and a streak freeze. If it escapes, nothing is lost.": {
+      "comment": "Weekly boss screen footnote. The two %lld are the XP range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každé pondělí se vybere boss podle tvého nejslabšího návyku za poslední čtyři týdny. Poraž ho a získáš %1$lld–%2$lld XP a zmrazení série. Když uteče, nic neztratíš."
+          }
+        }
+      }
+    },
     "Every secret found!": {
       "comment": "Progress tab secrets card: all secret achievements have been found.",
       "extractionState": "manual",
@@ -2397,6 +3609,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Všechna tajemství nalezena!"
+          }
+        }
+      }
+    },
+    "Expanded": {
+      "comment": "Layout editor: meal cards showing their entries.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozbalené"
           }
         }
       }
@@ -2527,6 +3751,18 @@
         }
       }
     },
+    "Fat (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuky (g)"
+          }
+        }
+      }
+    },
     "Favorite": {
       "comment": "Tag on a food row: marked favorite in Garmin.",
       "extractionState": "manual",
@@ -2583,6 +3819,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Doladění"
+          }
+        }
+      }
+    },
+    "Fixed position": {
+      "comment": "Layout editor: VoiceOver label of the lock on a card that can't be moved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pevná pozice"
+          }
+        }
+      }
+    },
+    "Food": {
+      "comment": "Custom food editor: section with the food's name and serving.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo"
           }
         }
       }
@@ -2671,6 +3931,18 @@
         }
       }
     },
+    "FREE": {
+      "comment": "Label of the free centre square of the bingo card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZDARMA"
+          }
+        }
+      }
+    },
     "From %@": {
       "comment": "VoiceOver label for a search result's source; %@ = source name, e.g. 'Garmin'.",
       "extractionState": "manual",
@@ -2683,6 +3955,18 @@
         }
       }
     },
+    "From %@ to %@, %@": {
+      "comment": "VoiceOver summary of a trend chart. First two %@ are amounts with their unit spelled out (oldest, newest), the third a counted phrase like '12 weigh-ins'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Od %1$@ do %2$@, %3$@"
+          }
+        }
+      }
+    },
     "From %@, also in %@": {
       "comment": "VoiceOver label for a search result found in several sources; first %@ = main source, second %@ = list of other sources.",
       "extractionState": "manual",
@@ -2691,6 +3975,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zdroj: %1$@, také v: %2$@"
+          }
+        }
+      }
+    },
+    "Frozen": {
+      "comment": "Streak calendar legend: a day covered by a streak freeze.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazeno"
           }
         }
       }
@@ -2715,6 +4011,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Palivo %lld · Regenerace %lld · Zasloužené dny %lld · Závodní dny %lld"
+          }
+        }
+      }
+    },
+    "Full": {
+      "comment": "Layout preset: everything on Today, as by default.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plné"
+          }
+        }
+      }
+    },
+    "Full card": {
+      "comment": "Bingo: every square of a past card was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plná karta"
+          }
+        }
+      }
+    },
+    "Garmin": {
+      "comment": "Section header (brand name, not translated).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin"
           }
         }
       }
@@ -2863,6 +4195,18 @@
         }
       }
     },
+    "Garmin's total for that day is lowered by %@ ml too.": {
+      "comment": "Remove-drink confirmation. %@ is an amount in ml, e.g. 250.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Součet v Garminu se za ten den také sníží o %@ ml."
+          }
+        }
+      }
+    },
     "Garmin's water goal: %@ ml.": {
       "comment": "Settings goals footer sentence; %@ is the amount.",
       "extractionState": "manual",
@@ -2947,6 +4291,54 @@
         }
       }
     },
+    "Goal": {
+      "comment": "Chart: the goal line.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl"
+          }
+        }
+      }
+    },
+    "Goal %@ kg": {
+      "comment": "Weight goal bar: the target weight. %@ is a weight, e.g. 75.5.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl %@ kg"
+          }
+        }
+      }
+    },
+    "Goal %@ ml": {
+      "comment": "Water card: daily goal. %@ is an amount in ml, e.g. 2000.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl %@ ml"
+          }
+        }
+      }
+    },
+    "Goal reached": {
+      "comment": "Weight goal bar: the target weight has been reached.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl splněn"
+          }
+        }
+      }
+    },
     "Goals": {
       "comment": "Settings section header: water and weight goals.",
       "extractionState": "manual",
@@ -2983,6 +4375,18 @@
         }
       }
     },
+    "Grams or millilitres. Switch to servings": {
+      "comment": "VoiceOver label of the unit button next to an ingredient amount (currently grams/ml).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gramy nebo mililitry. Přepnout na porce"
+          }
+        }
+      }
+    },
     "Graphite": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -3003,6 +4407,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Haptická odezva"
+          }
+        }
+      }
+    },
+    "Hard task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Těžký úkol"
+          }
+        }
+      }
+    },
+    "Hidden": {
+      "comment": "Layout editor: VoiceOver value of a card that is hidden.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skryto"
+          }
+        }
+      }
+    },
+    "Hide %@": {
+      "comment": "Layout editor: VoiceOver label of the eye button on a shown card. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skrýt: %@"
           }
         }
       }
@@ -3031,6 +4471,78 @@
         }
       }
     },
+    "History": {
+      "comment": "Section header: list of past entries.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historie"
+          }
+        }
+      }
+    },
+    "Hit": {
+      "comment": "VoiceOver: this day scored a hit on the weekly boss.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásah"
+          }
+        }
+      }
+    },
+    "Hits: %lld/%lld": {
+      "comment": "Weekly boss: hits so far out of the target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásahy: %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "How much water you're aiming for each day. Stays on this phone; Garmin's own goal is unchanged.": {
+      "comment": "Water goal alert message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kolik vody chceš denně vypít. Zůstane jen v tomto telefonu, cíl v Garminu se nezmění."
+          }
+        }
+      }
+    },
+    "HP %lld/%lld": {
+      "comment": "Weekly boss health bar: remaining health out of the total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Životy %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "Hydration options": {
+      "comment": "VoiceOver label of the water screen's ... menu.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Možnosti pitného režimu"
+          }
+        }
+      }
+    },
     "If the sign-in page above doesn't complete automatically, sign in to Garmin Connect in a regular browser instead, then copy the \"ticket\" value from the redirect URL here.": {
       "comment": "Sign-in sheet: instructions for the manual fallback. 'ticket' is the literal URL parameter name.",
       "extractionState": "manual",
@@ -3055,6 +4567,18 @@
         }
       }
     },
+    "In progress": {
+      "comment": "Weekly boss outcome: this week's fight is still running.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probíhá"
+          }
+        }
+      }
+    },
     "Indigo": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -3075,6 +4599,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indigová noc"
+          }
+        }
+      }
+    },
+    "Ingredients": {
+      "comment": "Section header: the ingredients of a saved meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suroviny"
+          }
+        }
+      }
+    },
+    "It hasn't reached Garmin yet, so it simply won't be sent.": {
+      "comment": "Delete confirmation message for an entry not yet delivered to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do Garminu se ještě nedostal, takže se prostě neodešle."
           }
         }
       }
@@ -3123,6 +4671,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "Položky"
+          }
+        }
+      }
+    },
+    "Journeys": {
+      "comment": "Progress card / screen title: real-world journeys (protein climb, water, road trip, food passport).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cesty"
+          }
+        }
+      }
+    },
+    "Judged from the foods you log.": {
+      "comment": "Bingo square sheet: the task uses only logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle jídel, která zapisuješ."
+          }
+        }
+      }
+    },
+    "Judged from your Garmin activities.": {
+      "comment": "Bingo square sheet: the task uses Garmin activities.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých aktivit z Garminu."
+          }
+        }
+      }
+    },
+    "Judged from your nutrition totals and goals.": {
+      "comment": "Bingo square sheet: the task uses macro data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých denních součtů živin a cílů."
+          }
+        }
+      }
+    },
+    "Judged from your water log and goal.": {
+      "comment": "Bingo square sheet: the task uses water data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle zapsané vody a tvého cíle pitného režimu."
           }
         }
       }
@@ -3205,6 +4813,18 @@
         }
       }
     },
+    "kg": {
+      "comment": "Unit symbol for kilograms, shown next to a number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kg"
+          }
+        }
+      }
+    },
     "kilocalories": {
       "comment": "Spoken unit after an energy value (VoiceOver), e.g. '290 kilocalories'.",
       "extractionState": "manual",
@@ -3225,6 +4845,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kilokalorie: %@"
+          }
+        }
+      }
+    },
+    "kilograms": {
+      "comment": "VoiceOver label of the 'kg' unit next to the weight input field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kilogramy"
+          }
+        }
+      }
+    },
+    "Language": {
+      "comment": "Settings row that opens the app's page in iOS Settings to change its language.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jazyk"
           }
         }
       }
@@ -3439,6 +5083,18 @@
         }
       }
     },
+    "Lines: %lld": {
+      "comment": "Bingo: number of completed lines.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řady: %lld"
+          }
+        }
+      }
+    },
     "Locked": {
       "comment": "Badge state for VoiceOver.",
       "extractionState": "manual",
@@ -3559,6 +5215,18 @@
         }
       }
     },
+    "Log Food & Progress": {
+      "comment": "Settings -> Appearance -> Layout. Disabled row: those screens get a layout editor in a later update.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat jídlo a Pokrok"
+          }
+        }
+      }
+    },
     "Log it": {
       "comment": "Primary button confirming a food entry.",
       "extractionState": "manual",
@@ -3655,6 +5323,30 @@
         }
       }
     },
+    "Log your weight here or on a Garmin scale -- it shows up in both places.": {
+      "comment": "Weight card empty state.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš si váhu tady nebo na váze Garmin – objeví se na obou místech."
+          }
+        }
+      }
+    },
+    "Logged %@": {
+      "comment": "When the latest weigh-in was logged. %@ is a relative date, e.g. '2 hours ago' / 'yesterday'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsáno %@"
+          }
+        }
+      }
+    },
     "Logged %@ to Garmin.": {
       "comment": "Siri reply: logged and delivered. %@ is a food name.",
       "extractionState": "manual",
@@ -3663,6 +5355,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@: zapsáno do Garminu."
+          }
+        }
+      }
+    },
+    "Logged in this app": {
+      "comment": "Water screen: header of the list of drinks logged here.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsáno v této aplikaci"
           }
         }
       }
@@ -3955,6 +5659,42 @@
         }
       }
     },
+    "Medium task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Středně těžký úkol"
+          }
+        }
+      }
+    },
+    "milliliters": {
+      "comment": "VoiceOver label of the 'ml' unit next to the water input field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mililitry"
+          }
+        }
+      }
+    },
+    "Milliliters": {
+      "comment": "Placeholder of the water goal field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mililitry"
+          }
+        }
+      }
+    },
     "Mine": {
       "comment": "Settings: small label saying a goal is the user's own override (masculine, 'cíl').",
       "extractionState": "manual",
@@ -3963,6 +5703,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Můj"
+          }
+        }
+      }
+    },
+    "Minimal": {
+      "comment": "Layout preset: only the essentials on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimální"
           }
         }
       }
@@ -3979,6 +5731,18 @@
         }
       }
     },
+    "Missed, streak frozen": {
+      "comment": "Streak calendar day: a missed day covered by a streak freeze (VoiceOver).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vynecháno, série zmrazena"
+          }
+        }
+      }
+    },
     "Missing calories": {
       "comment": "Empty-state title: the Open Food Facts item has no calorie value.",
       "extractionState": "manual",
@@ -3991,6 +5755,18 @@
         }
       }
     },
+    "ml": {
+      "comment": "Unit symbol for milliliters, shown next to a number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ml"
+          }
+        }
+      }
+    },
     "Monospaced": {
       "comment": "Settings -> Appearance page. Number font option.",
       "extractionState": "manual",
@@ -3999,6 +5775,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neproporcionální"
+          }
+        }
+      }
+    },
+    "More": {
+      "comment": "Today: toolbar menu button (ellipsis).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další"
+          }
+        }
+      }
+    },
+    "Move down": {
+      "comment": "Layout editor: VoiceOver action that moves a card down one place.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posunout dolů"
           }
         }
       }
@@ -4023,6 +5823,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přesunout: %@"
+          }
+        }
+      }
+    },
+    "Move up": {
+      "comment": "Layout editor: VoiceOver action that moves a card up one place.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posunout nahoru"
           }
         }
       }
@@ -4063,6 +5875,18 @@
         }
       }
     },
+    "Name (e.g. \"Breakfast bowl\")": {
+      "comment": "Placeholder of the meal name field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název (např. „Snídaňová miska“)"
+          }
+        }
+      }
+    },
     "New custom food": {
       "comment": "Toolbar menu item: create a custom food.",
       "extractionState": "manual",
@@ -4075,8 +5899,32 @@
         }
       }
     },
+    "New Custom Food": {
+      "comment": "Custom food editor title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nové vlastní jídlo"
+          }
+        }
+      }
+    },
     "New meal": {
       "comment": "Toolbar menu item: create a saved multi-food meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nové jídlo"
+          }
+        }
+      }
+    },
+    "New Meal": {
+      "comment": "Meal editor title when creating a meal.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
@@ -4111,6 +5959,18 @@
         }
       }
     },
+    "Next: %@ · %@ to go": {
+      "comment": "Next journey milestone. First %@ = milestone name, second %@ = distance left like \"1,015 m\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další: %@ · zbývá %@"
+          }
+        }
+      }
+    },
     "No calorie target": {
       "comment": "Calorie ring headline when Garmin has no calorie goal set.",
       "extractionState": "manual",
@@ -4135,6 +5995,18 @@
         }
       }
     },
+    "No data": {
+      "comment": "VoiceOver value of an empty chart.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádná data"
+          }
+        }
+      }
+    },
     "No data yet": {
       "comment": "Trends empty state title before anything was logged.",
       "extractionState": "manual",
@@ -4143,6 +6015,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zatím žádná data"
+          }
+        }
+      }
+    },
+    "No goal set": {
+      "comment": "Water card when there is no daily goal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl není nastavený"
+          }
+        }
+      }
+    },
+    "No hit": {
+      "comment": "VoiceOver: this day did not score a hit on the weekly boss.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez zásahu"
           }
         }
       }
@@ -4183,6 +6079,18 @@
         }
       }
     },
+    "No records yet. Keep logging and they will appear here.": {
+      "comment": "Personal records before any data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné rekordy. Zapisuj dál a objeví se tady."
+          }
+        }
+      }
+    },
     "No results": {
       "comment": "Empty state title (design-system preview).",
       "extractionState": "manual",
@@ -4219,6 +6127,30 @@
         }
       }
     },
+    "No water logged in this app yet": {
+      "comment": "Water screen empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V této aplikaci zatím nemáš zapsanou žádnou vodu"
+          }
+        }
+      }
+    },
+    "No weigh-ins yet": {
+      "comment": "Weight card/screen empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné vážení"
+          }
+        }
+      }
+    },
     "Not connected": {
       "comment": "Settings: Garmin connection status when signed out.",
       "extractionState": "manual",
@@ -4243,6 +6175,18 @@
         }
       }
     },
+    "Not defeated yet": {
+      "comment": "VoiceOver: bestiary boss kind never defeated.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím neporažen"
+          }
+        }
+      }
+    },
     "Not delivered": {
       "comment": "VoiceOver label of an entry whose delivery to Garmin failed.",
       "extractionState": "manual",
@@ -4251,6 +6195,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nedoručeno"
+          }
+        }
+      }
+    },
+    "Not done yet": {
+      "comment": "Bingo square sheet: square not done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nesplněno"
           }
         }
       }
@@ -4459,6 +6415,18 @@
         }
       }
     },
+    "Number of units": {
+      "comment": "Custom food editor field placeholder: how many serving units one serving is.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počet jednotek"
+          }
+        }
+      }
+    },
     "Nutrients": {
       "comment": "Meal detail section header listing Garmin's nutrient totals.",
       "extractionState": "manual",
@@ -4467,6 +6435,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Živiny"
+          }
+        }
+      }
+    },
+    "Nutrition (per serving)": {
+      "comment": "Custom food editor section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutriční hodnoty (na porci)"
           }
         }
       }
@@ -4663,6 +6643,42 @@
         }
       }
     },
+    "Opens GarminFood's page in iOS Settings, where the app's language can be changed": {
+      "comment": "VoiceOver hint of the Language settings row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře stránku GarminFood v Nastavení iOS, kde můžeš změnit jazyk aplikace"
+          }
+        }
+      }
+    },
+    "Opens journeys": {
+      "comment": "Accessibility hint of the journeys card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře cesty"
+          }
+        }
+      }
+    },
+    "Opens personal records": {
+      "comment": "Accessibility hint of the personal records card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře osobní rekordy"
+          }
+        }
+      }
+    },
     "Opens Progress": {
       "comment": "VoiceOver hint of Today's streak strip.",
       "extractionState": "manual",
@@ -4699,6 +6715,30 @@
         }
       }
     },
+    "Opens the bingo card": {
+      "comment": "Accessibility hint of the bingo card on the Progress tab.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře bingo kartu"
+          }
+        }
+      }
+    },
+    "Opens the layout editor": {
+      "comment": "Settings -> Appearance -> Layout. VoiceOver hint of the Today row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře úpravu rozložení"
+          }
+        }
+      }
+    },
     "Opens the secret achievements": {
       "comment": "VoiceOver hint of the Progress tab secrets card.",
       "extractionState": "manual",
@@ -4707,6 +6747,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře tajné odznaky"
+          }
+        }
+      }
+    },
+    "Opens the weekly boss": {
+      "comment": "VoiceOver hint of the weekly boss card and banner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře týdenního bosse"
+          }
+        }
+      }
+    },
+    "Opens this meal to log it": {
+      "comment": "VoiceOver hint of a saved meal card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře toto jídlo k zapsání"
           }
         }
       }
@@ -4735,6 +6799,18 @@
         }
       }
     },
+    "Optional note": {
+      "comment": "Placeholder of an optional note field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepovinná poznámka"
+          }
+        }
+      }
+    },
     "Outlined": {
       "comment": "Settings -> Appearance page. Card style option (border only).",
       "extractionState": "manual",
@@ -4747,6 +6823,18 @@
         }
       }
     },
+    "Over the last four weeks this was your weakest habit, so the target is two days better than your recent average.": {
+      "comment": "Weekly boss screen: how the boss and its target were chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za poslední čtyři týdny to byl tvůj nejslabší návyk, proto je cíl o dva dny lepší než tvůj nedávný průměr."
+          }
+        }
+      }
+    },
     "P": {
       "comment": "One-letter abbreviation of Protein on a compact macro bar.",
       "extractionState": "manual",
@@ -4755,6 +6843,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "B"
+          }
+        }
+      }
+    },
+    "Past cards": {
+      "comment": "Bingo screen section: previous weeks' cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minulé karty"
+          }
+        }
+      }
+    },
+    "Past weeks": {
+      "comment": "Weekly boss screen: section of previous weeks.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minulé týdny"
           }
         }
       }
@@ -4779,6 +6891,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Personal records": {
+      "comment": "Progress card / screen title: personal records.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Osobní rekordy"
           }
         }
       }
@@ -4819,6 +6943,18 @@
         }
       }
     },
+    "Portions": {
+      "comment": "Meal confirm screen: how many portions of the saved meal to log.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce"
+          }
+        }
+      }
+    },
     "Preferences": {
       "comment": "Settings section header.",
       "extractionState": "manual",
@@ -4827,6 +6963,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Presets": {
+      "comment": "Layout editor: toolbar menu with the Full / Minimal / Athlete layouts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Previous best: %@ (%@)": {
+      "comment": "Personal record's previous best. First %@ = value, second %@ = date.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předchozí rekord: %@ (%@)"
           }
         }
       }
@@ -4879,6 +7039,18 @@
         }
       }
     },
+    "Protein (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bílkoviny (g)"
+          }
+        }
+      }
+    },
     "Pull to refresh to try again.": {
       "comment": "Trends empty state message after a load failure.",
       "extractionState": "manual",
@@ -4915,6 +7087,30 @@
         }
       }
     },
+    "Quantity multiplier": {
+      "comment": "Custom food editor: how many of the Garmin food's servings one custom serving is.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Násobek množství"
+          }
+        }
+      }
+    },
+    "Quick add": {
+      "comment": "Water screen: section with one-tap amounts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlé přidání"
+          }
+        }
+      }
+    },
     "Quick pick": {
       "comment": "Log Food screen: shelf title for the most-logged foods.",
       "extractionState": "manual",
@@ -4923,6 +7119,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rychlý výběr"
+          }
+        }
+      }
+    },
+    "Re-sync to Garmin (experimental)": {
+      "comment": "Button: send a saved meal to Garmin again.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znovu synchronizovat do Garminu (experimentální)"
           }
         }
       }
@@ -4963,6 +7171,30 @@
         }
       }
     },
+    "Recent PR": {
+      "comment": "Accessibility label of the trophy on a record beaten in the last 7 days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávný rekord"
+          }
+        }
+      }
+    },
+    "Recent PRs": {
+      "comment": "Section header: the last personal records beaten.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávné rekordy"
+          }
+        }
+      }
+    },
     "Recovered": {
       "comment": "Sport & body activity row: 20 g+ protein within 60 min after the end.",
       "extractionState": "manual",
@@ -4999,6 +7231,18 @@
         }
       }
     },
+    "Remove": {
+      "comment": "Destructive button: remove a drink.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstranit"
+          }
+        }
+      }
+    },
     "Remove %@ ml of water": {
       "comment": "Sync queue row title for a queued water correction; %@ is the amount.",
       "extractionState": "manual",
@@ -5019,6 +7263,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odebrat z oblíbených"
+          }
+        }
+      }
+    },
+    "Remove this drink?": {
+      "comment": "Confirmation dialog title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstranit toto pití?"
+          }
+        }
+      }
+    },
+    "Reorder, hide and restyle the cards. You can also open this from the menu on Today.": {
+      "comment": "Settings -> Appearance -> Layout section footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Měňte pořadí karet, skrývejte je a měňte jejich styl. Otevřít to jde i z nabídky na obrazovce Dnes."
+          }
+        }
+      }
+    },
+    "Required — pick one": {
+      "comment": "Custom food editor: no Garmin match picked yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povinné – vyber jednu"
           }
         }
       }
@@ -5059,6 +7339,30 @@
         }
       }
     },
+    "Reset this layout?": {
+      "comment": "Layout editor: confirmation title for Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit toto rozložení?"
+          }
+        }
+      }
+    },
+    "Reset to default": {
+      "comment": "Layout editor: button that resets the screen's layout (asks first).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit výchozí"
+          }
+        }
+      }
+    },
     "Results": {
       "comment": "Section header above the ranked food search results.",
       "extractionState": "manual",
@@ -5095,6 +7399,18 @@
         }
       }
     },
+    "Ring": {
+      "comment": "Layout editor: Day summary variant with the calorie ring.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kruh"
+          }
+        }
+      }
+    },
     "Round": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -5127,6 +7443,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Veslování"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, done on %@": {
+      "comment": "VoiceOver label of a done bingo square. Row, column, task title, weekday it was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, splněno: %4$@"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, not done": {
+      "comment": "VoiceOver label of a bingo square not done yet. Row, column, task title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, nesplněno"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, free square": {
+      "comment": "VoiceOver label of the bingo centre square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, volné pole"
           }
         }
       }
@@ -5455,6 +7807,18 @@
         }
       }
     },
+    "Send %@ to Garmin as \"%@\"?": {
+      "comment": "Confirmation title. First %@ is a counted phrase like '3 ingredients', second the meal's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslat do Garminu jako „%2$@“? (%1$@)"
+          }
+        }
+      }
+    },
     "Sent": {
       "comment": "Sync queue row status for a weigh-in or drink.",
       "extractionState": "manual",
@@ -5503,6 +7867,18 @@
         }
       }
     },
+    "Serving unit (e.g. \"bowl\", \"slice\")": {
+      "comment": "Custom food editor field placeholder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jednotka porce (např. „miska“, „plátek“)"
+          }
+        }
+      }
+    },
     "Serving: %@": {
       "comment": "Edit-entry sheet: the entry's serving; %@ = serving description, e.g. '1 cup'.",
       "extractionState": "manual",
@@ -5523,6 +7899,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Porce"
+          }
+        }
+      }
+    },
+    "Servings. Switch to grams or millilitres": {
+      "comment": "VoiceOver label of the unit button next to an ingredient amount (currently servings).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porce. Přepnout na gramy nebo mililitry"
           }
         }
       }
@@ -5623,6 +8011,18 @@
         }
       }
     },
+    "Show %@": {
+      "comment": "Layout editor: VoiceOver label of the eye button on a hidden card. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit: %@"
+          }
+        }
+      }
+    },
     "Show more from Garmin": {
       "comment": "Button loading the next page of Garmin search results.",
       "extractionState": "manual",
@@ -5643,6 +8043,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zobrazuji naposledy načtená čísla"
+          }
+        }
+      }
+    },
+    "Shown": {
+      "comment": "Layout editor: VoiceOver value of a card that is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazeno"
+          }
+        }
+      }
+    },
+    "Shows on today's date when there are foods to log again": {
+      "comment": "Layout editor: when the Log again shelf appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se u dnešního dne, když je co zapsat znovu"
+          }
+        }
+      }
+    },
+    "Shows on today's date when you have saved meals": {
+      "comment": "Layout editor: when the Log a meal shelf appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se u dnešního dne, když máte uložená jídla"
+          }
+        }
+      }
+    },
+    "Shows the rule": {
+      "comment": "Accessibility hint of a bingo square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí pravidlo"
           }
         }
       }
@@ -5743,6 +8191,30 @@
         }
       }
     },
+    "Signature": {
+      "comment": "Layout editor row: the GF by Jirka signature at the bottom of Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podpis"
+          }
+        }
+      }
+    },
+    "Since custom-food creation isn't confirmed possible via Garmin's private API yet, this food will actually be logged as the Garmin food you pick here, scaled by the multiplier.": {
+      "comment": "Custom food editor: explanation above the Garmin match.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytváření vlastních jídel přes soukromé API Garminu zatím není ověřené, takže se toto jídlo ve skutečnosti zapíše jako potravina z Garminu, kterou tu vybereš, vynásobená násobkem."
+          }
+        }
+      }
+    },
     "Size": {
       "comment": "Settings: offline database size on disk.",
       "extractionState": "manual",
@@ -5799,6 +8271,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Svačina"
+          }
+        }
+      }
+    },
+    "Sodium (mg)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sodík (mg)"
           }
         }
       }
@@ -5863,6 +8347,42 @@
         }
       }
     },
+    "Squares tick themselves from what you log. Each line earns %lld XP; a full card earns %lld XP and a streak freeze.": {
+      "comment": "Bingo screen footnote. First %lld = XP per line, second = XP for a full card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole se odškrtávají sama podle toho, co zapisuješ. Každá řada dává %1$lld XP, plná karta %2$lld XP a zmrazení série."
+          }
+        }
+      }
+    },
+    "Squares: %lld/9": {
+      "comment": "Bingo: squares done out of 9.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole: %lld/9"
+          }
+        }
+      }
+    },
+    "Stage %lld of %lld: %@": {
+      "comment": "Journey stage. First = current stage number, second = stage count, %@ = stage name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etapa %lld z %lld: %@"
+          }
+        }
+      }
+    },
     "Standard": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -5923,6 +8443,18 @@
         }
       }
     },
+    "Streak & level": {
+      "comment": "Layout editor row: Today's streak and level strip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série a úroveň"
+          }
+        }
+      }
+    },
     "Streak at risk": {
       "comment": "Reminder toggle: warn when the logging streak is about to break.",
       "extractionState": "manual",
@@ -5931,6 +8463,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Série v ohrožení"
+          }
+        }
+      }
+    },
+    "Streak freezes": {
+      "comment": "Streak screen: title of the streak-freeze bank.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série"
+          }
+        }
+      }
+    },
+    "Streak freezes: %lld of %lld": {
+      "comment": "VoiceOver: available streak freezes out of the maximum.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série: %1$lld z %2$lld"
           }
         }
       }
@@ -6001,6 +8557,42 @@
         }
       }
     },
+    "Style": {
+      "comment": "Layout editor: title of a card's variant picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl"
+          }
+        }
+      }
+    },
+    "Style of %@": {
+      "comment": "Layout editor: VoiceOver label of a card's variant menu. %@ is the card's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl: %@"
+          }
+        }
+      }
+    },
+    "Sugar (g)": {
+      "comment": "Custom food editor field label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cukry (g)"
+          }
+        }
+      }
+    },
     "Suggested by Garmin Connect": {
       "comment": "Caption under a meal's calorie target and time window, which come from Garmin Connect.",
       "extractionState": "manual",
@@ -6037,6 +8629,30 @@
         }
       }
     },
+    "Sync": {
+      "comment": "Confirmation button: send the meal to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizovat"
+          }
+        }
+      }
+    },
+    "sync failed": {
+      "comment": "VoiceOver: sync state of a weigh-in or drink row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "synchronizace selhala"
+          }
+        }
+      }
+    },
     "Sync now": {
       "comment": "Sync queue toolbar button.",
       "extractionState": "manual",
@@ -6061,6 +8677,42 @@
         }
       }
     },
+    "Sync to Garmin (experimental)": {
+      "comment": "Button: send a saved meal to Garmin for the first time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizovat do Garminu (experimentální)"
+          }
+        }
+      }
+    },
+    "Synced to Garmin %@": {
+      "comment": "When a saved meal was last sent to Garmin. %@ is a relative date, e.g. 'yesterday'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizováno do Garminu %@"
+          }
+        }
+      }
+    },
+    "Synced to your Garmin account automatically. Removing a drink lowers Garmin's total too.": {
+      "comment": "Water screen: list footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automaticky se synchronizuje s tvým účtem Garmin. Když pití odstraníš, sníží se i součet v Garminu."
+          }
+        }
+      }
+    },
     "Syncing": {
       "comment": "Status on a meal/entry still being delivered to Garmin.",
       "extractionState": "manual",
@@ -6081,6 +8733,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Systém"
+          }
+        }
+      }
+    },
+    "Tap + to log your weight. It's saved on this phone right away and synced to Garmin in the background. Weigh-ins from a Garmin scale or Garmin Connect show up here too.": {
+      "comment": "Weight screen empty state.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klepni na + a zapiš si váhu. Hned se uloží v telefonu a na pozadí se pošle do Garminu. Objeví se tu i vážení z váhy Garmin nebo z Garmin Connect."
+          }
+        }
+      }
+    },
+    "Tap an amount above to log a drink. It's saved on this phone right away and synced to Garmin in the background.": {
+      "comment": "Water screen empty state.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klepni na množství výše a zapiš si pití. Hned se uloží v telefonu a na pozadí se pošle do Garminu."
           }
         }
       }
@@ -6349,6 +9025,18 @@
         }
       }
     },
+    "This is an experimental, unconfirmed Garmin route -- it may fail. If it succeeds, it creates a new meal in your Garmin account; it never deletes or replaces anything there.": {
+      "comment": "Confirmation message for the experimental meal sync.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jde o experimentální, neověřenou cestu Garminu – může selhat. Když se povede, vytvoří ve tvém účtu Garmin nové jídlo; nikdy tam nic nemaže ani nenahrazuje."
+          }
+        }
+      }
+    },
     "This item has no calorie value from Open Food Facts, so it can't be created in Garmin.": {
       "comment": "Empty-state message: calories are required to create a food in Garmin.",
       "extractionState": "manual",
@@ -6357,6 +9045,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tahle položka nemá v Open Food Facts hodnotu kalorií, takže ji v Garminu nejde vytvořit."
+          }
+        }
+      }
+    },
+    "This meal includes a custom food, which can't be synced to Garmin yet -- only real catalog/matched foods can.": {
+      "comment": "Meal editor: why this meal can't be sent to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto jídlo obsahuje vlastní potravinu, kterou zatím do Garminu synchronizovat nejde – jde to jen se skutečnými potravinami z katalogu nebo spárovanými."
           }
         }
       }
@@ -6393,6 +9093,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tento motiv je jen světlý."
+          }
+        }
+      }
+    },
+    "This week": {
+      "comment": "Weekly boss screen: section showing which days of this week scored a hit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento týden"
+          }
+        }
+      }
+    },
+    "This week's boss": {
+      "comment": "Today banner caption above the weekly boss name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boss tohoto týdne"
+          }
+        }
+      }
+    },
+    "This week's boss appears after your next log.": {
+      "comment": "Weekly boss placeholder before this week's boss exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boss tohoto týdne se objeví po dalším zápisu."
           }
         }
       }
@@ -6457,6 +9193,18 @@
         }
       }
     },
+    "Today's total comes from Garmin, so water logged on your watch or in Garmin Connect counts too.": {
+      "comment": "Water screen footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnešní součet pochází z Garminu, takže se počítá i voda zapsaná v hodinkách nebo v Garmin Connect."
+          }
+        }
+      }
+    },
     "too many requests, try again shortly": {
       "comment": "Short reason after 'Garmin didn't delete this entry: '.",
       "extractionState": "manual",
@@ -6465,6 +9213,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "příliš mnoho požadavků, zkus to za chvíli"
+          }
+        }
+      }
+    },
+    "Total": {
+      "comment": "Meal editor: section with the summed nutrition.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celkem"
+          }
+        }
+      }
+    },
+    "Total: %@": {
+      "comment": "Journey total so far. %@ = an amount like \"1,640 m\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celkem: %@"
+          }
+        }
+      }
+    },
+    "Trend": {
+      "comment": "Weight screen: chart section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vývoj"
           }
         }
       }
@@ -6517,6 +9301,18 @@
         }
       }
     },
+    "Turn on fasting in Settings": {
+      "comment": "Layout editor: why the Fasting card isn't shown on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapněte půst v Nastavení"
+          }
+        }
+      }
+    },
     "Type the digits printed under the barcode -- usually 8 to 14 numbers.": {
       "comment": "Help text under the manual barcode field.",
       "extractionState": "manual",
@@ -6529,6 +9325,18 @@
         }
       }
     },
+    "unchanged since last time": {
+      "comment": "VoiceOver: weight unchanged since the previous weigh-in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "beze změny od minula"
+          }
+        }
+      }
+    },
     "under half of target": {
       "comment": "VoiceOver: calorie ring band, spoken after '<n> of <goal> kilocalories, '.",
       "extractionState": "manual",
@@ -6537,6 +9345,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "méně než polovina cíle"
+          }
+        }
+      }
+    },
+    "Undo reset": {
+      "comment": "Layout editor: brings back the layout from before Reset.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrátit obnovení"
           }
         }
       }
@@ -6561,6 +9381,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Do %@"
+          }
+        }
+      }
+    },
+    "up %@ since last time": {
+      "comment": "VoiceOver: weight change since the previous weigh-in. %@ is an amount with its unit spelled out, e.g. 1.5 kilograms.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "o %@ víc než minule"
           }
         }
       }
@@ -6601,6 +9433,18 @@
         }
       }
     },
+    "Use Garmin's goal": {
+      "comment": "Water screen menu item: drop the local goal override.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít cíl z Garminu"
+          }
+        }
+      }
+    },
     "Use Garmin's water goal": {
       "comment": "Settings toggle: follow Garmin's water goal instead of a local override.",
       "extractionState": "manual",
@@ -6633,6 +9477,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Použít tuto shodu"
+          }
+        }
+      }
+    },
+    "Used so far: %lld": {
+      "comment": "Streak screen: number of streak freezes used so far.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím použito: %lld"
           }
         }
       }
@@ -6709,6 +9565,18 @@
         }
       }
     },
+    "waiting to sync": {
+      "comment": "VoiceOver: sync state of a weigh-in or drink row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "čeká na synchronizaci"
+          }
+        }
+      }
+    },
     "Waiting to sync": {
       "comment": "Sync queue row status.",
       "extractionState": "manual",
@@ -6729,6 +9597,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chůze"
+          }
+        }
+      }
+    },
+    "was %@": {
+      "comment": "Recent PR list: the previous record value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "předtím %@"
+          }
+        }
+      }
+    },
+    "Water": {
+      "comment": "Today: section header when only the water card is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voda"
           }
         }
       }
@@ -6757,6 +9649,42 @@
         }
       }
     },
+    "Water only": {
+      "comment": "Layout editor: Weight & Water variant.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen voda"
+          }
+        }
+      }
+    },
+    "Weekly Bingo": {
+      "comment": "Bingo card title on the Progress tab and bingo screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní bingo"
+          }
+        }
+      }
+    },
+    "Weekly Boss": {
+      "comment": "Weekly boss card title and screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní boss"
+          }
+        }
+      }
+    },
     "Weigh-in %@ kg": {
       "comment": "Sync queue row title for a queued weigh-in; %@ is the weight.",
       "extractionState": "manual",
@@ -6765,6 +9693,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vážení %@ kg"
+          }
+        }
+      }
+    },
+    "Weight": {
+      "comment": "Today: section header when only the weight card is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váha"
           }
         }
       }
@@ -6805,6 +9745,30 @@
         }
       }
     },
+    "Weight only": {
+      "comment": "Layout editor: Weight & Water variant.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen váha"
+          }
+        }
+      }
+    },
+    "Weight trend": {
+      "comment": "VoiceOver label of the weight chart.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vývoj váhy"
+          }
+        }
+      }
+    },
     "well over target": {
       "comment": "VoiceOver: calorie ring band.",
       "extractionState": "manual",
@@ -6825,6 +9789,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Čím byl tento den jiný?"
+          }
+        }
+      }
+    },
+    "When": {
+      "comment": "Section header: meal and date of an entry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kdy"
+          }
+        }
+      }
+    },
+    "Why this boss": {
+      "comment": "Weekly boss screen: section explaining why this boss was chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proč tento boss"
           }
         }
       }
@@ -6865,6 +9853,18 @@
         }
       }
     },
+    "Your bingo card appears after your next log.": {
+      "comment": "Bingo card placeholder before this week's card exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje bingo karta se objeví po dalším zápisu."
+          }
+        }
+      }
+    },
     "Your custom foods": {
       "comment": "Log Food screen: section header listing the user's custom foods.",
       "extractionState": "manual",
@@ -6901,50 +9901,14 @@
         }
       }
     },
-    "Your own goals stay on this phone; Garmin Connect isn't changed.": {
-      "comment": "Settings goals footer sentence.",
+    "Your Garmin weigh-ins, plus any logged here that haven't synced yet. Deleting one here deletes it in Garmin too.": {
+      "comment": "Weight screen: history footer.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tvoje vlastní cíle zůstávají v tomto telefonu, Garmin Connect se nemění."
-          }
-        }
-      }
-    },
-    "Your saved look couldn't be read and was reset.": {
-      "comment": "Settings -> Appearance page. One-time notice after a corrupt settings blob was quarantined.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uložený vzhled nešel načíst, proto byl obnoven na výchozí."
-          }
-        }
-      }
-    },
-    "Yours": {
-      "comment": "Small source badge on a search result that is one of the user's own custom foods.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tvoje"
-          }
-        }
-      }
-    },
-    "Journeys": {
-      "comment": "Progress card / screen title: real-world journeys (protein climb, water, road trip, food passport).",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cesty"
+            "value": "Tvoje vážení z Garminu a k tomu ta zapsaná tady, která se ještě nesynchronizovala. Když ho tady smažeš, smaže se i v Garminu."
           }
         }
       }
@@ -6961,482 +9925,62 @@
         }
       }
     },
-    "Opens journeys": {
-      "comment": "Accessibility hint of the journeys card.",
+    "Your own goals stay on this phone; Garmin Connect isn't changed.": {
+      "comment": "Settings goals footer sentence.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevře cesty"
+            "value": "Tvoje vlastní cíle zůstávají v tomto telefonu, Garmin Connect se nemění."
           }
         }
       }
     },
-    "Total: %@": {
-      "comment": "Journey total so far. %@ = an amount like \"1,640 m\".",
+    "Your saved layout couldn't be read and was reset.": {
+      "comment": "Settings -> Appearance page. One-time notice after an unreadable stored layout was quarantined.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Celkem: %@"
+            "value": "Uložené rozložení nešlo načíst, proto bylo obnoveno na výchozí."
           }
         }
       }
     },
-    "Stage %lld of %lld: %@": {
-      "comment": "Journey stage. First = current stage number, second = stage count, %@ = stage name.",
+    "Your saved look couldn't be read and was reset.": {
+      "comment": "Settings -> Appearance page. One-time notice after a corrupt settings blob was quarantined.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Etapa %lld z %lld: %@"
+            "value": "Uložený vzhled nešel načíst, proto byl obnoven na výchozí."
           }
         }
       }
     },
-    "Next: %@ · %@ to go": {
-      "comment": "Next journey milestone. First %@ = milestone name, second %@ = distance left like \"1,015 m\".",
+    "Your theme, style and screen layouts go back to their defaults.": {
+      "comment": "Settings -> Appearance page. Message of the Reset all appearance confirmation.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Další: %@ · zbývá %@"
+            "value": "Motiv, styl i rozložení obrazovek se vrátí na výchozí."
           }
         }
       }
     },
-    "%@: %@ filled": {
-      "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
+    "Yours": {
+      "comment": "Small source badge on a search result that is one of the user's own custom foods.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@: naplněno %@"
-          }
-        }
-      }
-    },
-    "All milestones reached!": {
-      "comment": "Journey with every milestone reached.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Všechny milníky máš za sebou!"
-          }
-        }
-      }
-    },
-    "%@, %@, reached": {
-      "comment": "Accessibility: journey milestone name, its amount, reached.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, dosaženo"
-          }
-        }
-      }
-    },
-    "%@, %@, next milestone": {
-      "comment": "Accessibility: journey milestone name, its amount, the next one.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, další milník"
-          }
-        }
-      }
-    },
-    "%@, %@, not reached yet": {
-      "comment": "Accessibility: journey milestone name, its amount, still ahead.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, zatím nedosaženo"
-          }
-        }
-      }
-    },
-    "Personal records": {
-      "comment": "Progress card / screen title: personal records.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Osobní rekordy"
-          }
-        }
-      }
-    },
-    "No records yet. Keep logging and they will appear here.": {
-      "comment": "Personal records before any data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zatím žádné rekordy. Zapisuj dál a objeví se tady."
-          }
-        }
-      }
-    },
-    "Recent PR": {
-      "comment": "Accessibility label of the trophy on a record beaten in the last 7 days.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nedávný rekord"
-          }
-        }
-      }
-    },
-    "Opens personal records": {
-      "comment": "Accessibility hint of the personal records card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře osobní rekordy"
-          }
-        }
-      }
-    },
-    "Recent PRs": {
-      "comment": "Section header: the last personal records beaten.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nedávné rekordy"
-          }
-        }
-      }
-    },
-    "A new PR is announced once a record has 7 days of data.": {
-      "comment": "Footnote on the personal records screen (warm-up rule).",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nový rekord se oznámí, až má záznam aspoň 7 dní dat."
-          }
-        }
-      }
-    },
-    "Previous best: %@ (%@)": {
-      "comment": "Personal record's previous best. First %@ = value, second %@ = date.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Předchozí rekord: %@ (%@)"
-          }
-        }
-      }
-    },
-    "was %@": {
-      "comment": "Recent PR list: the previous record value.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "předtím %@"
-          }
-        }
-      }
-    },
-    "Easy task": {
-      "comment": "Bingo square difficulty.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Snadný úkol"
-          }
-        }
-      }
-    },
-    "Medium task": {
-      "comment": "Bingo square difficulty.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Středně těžký úkol"
-          }
-        }
-      }
-    },
-    "Hard task": {
-      "comment": "Bingo square difficulty.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Těžký úkol"
-          }
-        }
-      }
-    },
-    "Judged from your nutrition totals and goals.": {
-      "comment": "Bingo square sheet: the task uses macro data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle tvých denních součtů živin a cílů."
-          }
-        }
-      }
-    },
-    "Judged from your water log and goal.": {
-      "comment": "Bingo square sheet: the task uses water data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle zapsané vody a tvého cíle pitného režimu."
-          }
-        }
-      }
-    },
-    "Judged from your Garmin activities.": {
-      "comment": "Bingo square sheet: the task uses Garmin activities.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle tvých aktivit z Garminu."
-          }
-        }
-      }
-    },
-    "Judged from the foods you log.": {
-      "comment": "Bingo square sheet: the task uses only logged foods.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hodnotí se podle jídel, která zapisuješ."
-          }
-        }
-      }
-    },
-    "Row %lld, column %lld, free square": {
-      "comment": "VoiceOver label of the bingo centre square.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řádek %1$lld, sloupec %2$lld, volné pole"
-          }
-        }
-      }
-    },
-    "Row %lld, column %lld, %@, done on %@": {
-      "comment": "VoiceOver label of a done bingo square. Row, column, task title, weekday it was done.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, splněno: %4$@"
-          }
-        }
-      }
-    },
-    "Row %lld, column %lld, %@, not done": {
-      "comment": "VoiceOver label of a bingo square not done yet. Row, column, task title.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, nesplněno"
-          }
-        }
-      }
-    },
-    "Shows the rule": {
-      "comment": "Accessibility hint of a bingo square.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zobrazí pravidlo"
-          }
-        }
-      }
-    },
-    "FREE": {
-      "comment": "Label of the free centre square of the bingo card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ZDARMA"
-          }
-        }
-      }
-    },
-    "Your bingo card appears after your next log.": {
-      "comment": "Bingo card placeholder before this week's card exists.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tvoje bingo karta se objeví po dalším zápisu."
-          }
-        }
-      }
-    },
-    "Squares tick themselves from what you log. Each line earns %lld XP; a full card earns %lld XP and a streak freeze.": {
-      "comment": "Bingo screen footnote. First %lld = XP per line, second = XP for a full card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pole se odškrtávají sama podle toho, co zapisuješ. Každá řada dává %1$lld XP, plná karta %2$lld XP a zmrazení série."
-          }
-        }
-      }
-    },
-    "Past cards": {
-      "comment": "Bingo screen section: previous weeks' cards.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Minulé karty"
-          }
-        }
-      }
-    },
-    "Weekly Bingo": {
-      "comment": "Bingo card title on the Progress tab and bingo screen.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Týdenní bingo"
-          }
-        }
-      }
-    },
-    "Lines: %lld": {
-      "comment": "Bingo: number of completed lines.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Řady: %lld"
-          }
-        }
-      }
-    },
-    "Squares: %lld/9": {
-      "comment": "Bingo: squares done out of 9.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pole: %lld/9"
-          }
-        }
-      }
-    },
-    "Days left: %lld": {
-      "comment": "Bingo: days left in this week.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zbývá dní: %lld"
-          }
-        }
-      }
-    },
-    "Full card": {
-      "comment": "Bingo: every square of a past card was done.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plná karta"
-          }
-        }
-      }
-    },
-    "Done on %@": {
-      "comment": "Bingo square sheet: the day it was done, e.g. 'Tuesday, 22 Sep'.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Splněno: %@"
-          }
-        }
-      }
-    },
-    "Not done yet": {
-      "comment": "Bingo square sheet: square not done.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zatím nesplněno"
-          }
-        }
-      }
-    },
-    "Opens the bingo card": {
-      "comment": "Accessibility hint of the bingo card on the Progress tab.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře bingo kartu"
+            "value": "Tvoje"
           }
         }
       }

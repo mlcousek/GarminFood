@@ -16,17 +16,25 @@ import AppearanceKit
 
 /// A compact "290 kcal" / "9g protein" pill. VoiceOver reads the full label
 /// ("290 kilocalories"), not the abbreviated glyph text, per config.yaml's
-/// accessibility baseline.
+/// accessibility baseline -- `accessibilityText` is the whole spoken
+/// phrase, so the unit can agree with the number in Czech ("290
+/// kilokalorií", "1 kilokalorie"; `SpokenUnits`, add-localization 6.4).
 struct MacroBadge: View {
     let value: Double
     let unit: String
-    let accessibleUnit: String
+    let accessibilityText: String
 
     var body: some View {
-        Text("\(value.wholeNumberText)\(unit)")
+        Text(verbatim: "\(value.wholeNumberText)\(unit)")
             .font(.macroBadge)
             .foregroundStyle(.secondary)
-            .accessibilityLabel("\(value.wholeNumberText) \(accessibleUnit)")
+            .accessibilityLabel(accessibilityText)
+    }
+
+    /// The energy pill every screen shows: "290 kcal", read as "290
+    /// kilocalories".
+    static func calories(_ value: Double) -> MacroBadge {
+        MacroBadge(value: value, unit: " kcal", accessibilityText: SpokenUnits.kilocalories(value))
     }
 }
 
@@ -86,7 +94,7 @@ struct FoodListRow: View {
             }
             Spacer(minLength: Theme.Spacing.sm)
             if let calories = serving?.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: String(localized: "kilocalories"))
+                MacroBadge.calories(calories)
             }
         }
         .padding(.vertical, Theme.Spacing.xs)

@@ -20,11 +20,24 @@
 // shelves above it, which hide when empty): an empty weight/hydration
 // history is itself useful information here ("log your weight to start"),
 // and the water card's quick-add row is useful with zero history too.
+//
+// add-themes-and-layout (design.md D8, wave 3): the cards are no longer a
+// fixed stack. The body renders `LayoutStore`'s resolved Today order through
+// one `@ViewBuilder switch` over `TodayCardID` (`todayCard(_:variant:)`), showing
+// a card only when the user left it visible AND `availability(_:)` says it
+// has something to show. The show-when rules that used to be `if`s here
+// (Log again / Log a meal only on today's date and non-empty, fasting only
+// while enabled) moved into `availability(_:)` unchanged. With nothing
+// stored, the order is exactly the one described above (golden test:
+// AppearanceKit's LayoutResolverTests), so a user who never edits sees no
+// change. "Edit layout…" in the toolbar menu opens `LayoutEditorSheet` at
+// half height over this screen, which updates live underneath it.
 
 import SwiftUI
 import FoodLogCore
 import GarminKit
 import Gamification
+import AppearanceKit
 
 @MainActor
 struct TodayView: View {
@@ -42,95 +55,21 @@ struct TodayView: View {
     @State private var showFasting = false
     @State private var isPresentingAddHydration = false
     @State private var hydrationActionError: String?
+    @State private var isEditingLayout = false
 
     var body: some View {
         let dayLog = environment.dayLog
-        let dashboard = dayLog.dashboard
 
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Density.stackSpacing) {
-                DaySwitcher(
-                    date: dayLog.selectedDate,
-                    isToday: dayLog.isToday,
-                    onStep: { days in Task { await environment.stepDay(byDays: days) } },
-                    onToday: { Task { await environment.goToToday() } }
-                )
-
-                DaySummaryCard(
-                    dashboard: dashboard,
-                    isStale: dayLog.isStale,
-                    isLoading: dayLog.isLoading,
-                    activeKilocalories: dayLog.activeKilocalories,
-                    isToday: dayLog.isToday
-                )
-
-                ProgressStrip(
-                    streak: environment.gamificationEngine.streakStatus,
-                    level: environment.gamificationEngine.levelProgress
-                ) {
-                    environment.router.selectedTab = .progress
-                }
-
-                FastingHomeSection { showFasting = true }
-
-                TodaySlotHost() // add-gamification-signals D12: feature banners
-
-                VStack(spacing: Theme.Spacing.md) {
-                    ForEach(dashboard.sections) { section in
-                        MealSectionCard(
-                            section: section,
-                            editor: entryEditor,
-                            onOpen: { openMeal = section.mealType },
-                            onAdd: { startLog(meal: section.mealType) }
-                        )
+                // Each card is a direct child of this stack (a ForEach
+                // element's views flatten into it), so spacing is exactly
+                // what the fixed stack had.
+                ForEach(renderedCards) { placement in
+                    if let card = TodayCardID(rawValue: placement.id) {
+                        todayCard(card, variant: placement.variant)
                     }
                 }
-
-                if dayLog.isToday, !quickPickItems.isEmpty {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                        SectionHeader(title: String(localized: "Log again"))
-                            .padding(.horizontal, Theme.Spacing.md)
-                        QuickPickShelf(items: quickPickItems) { item in
-                            logAgain(item)
-                        }
-                    }
-                    .padding(.horizontal, -Theme.Spacing.md)
-                }
-
-                if dayLog.isToday, !mealPresets.isEmpty {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                        SectionHeader(title: String(localized: "Log a meal"))
-                            .padding(.horizontal, Theme.Spacing.md)
-                        MealPresetShelf(presets: mealPresets) { preset in
-                            mealPresetTarget = preset
-                        }
-                    }
-                    .padding(.horizontal, -Theme.Spacing.md)
-                }
-
-                VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                    SectionHeader(title: String(localized: "Weight & Water"))
-                    TodayWeightCard(
-                        latest: environment.weightLoader.latest,
-                        previous: environment.weightLoader.previous,
-                        progress: environment.weightLoader.progress,
-                        refreshFailed: environment.weightLoader.lastGarminRefreshFailed
-                    )
-                    TodayHydrationCard(
-                        todayTotalML: environment.hydrationLoader.todayTotalML,
-                        goalML: environment.hydrationLoader.goalML,
-                        refreshFailed: environment.hydrationLoader.lastGarminRefreshFailed,
-                        onQuickAdd: { amount in Task { await quickAddHydration(amount) } },
-                        onCustom: { isPresentingAddHydration = true }
-                    )
-                }
-
-                // add-day-notes: note + tags for the selected day (see
-                // DayNoteCard.swift's header).
-                DayNoteCard(day: dayLog.dateString, store: environment.dayNoteStore)
-
-                AppSignatureView()
-                    .padding(.top, Theme.Spacing.xs)
             }
             .padding(Theme.Spacing.md)
         }
@@ -138,6 +77,17 @@ struct TodayView: View {
         .navigationTitle("Food log")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Menu {
+                    Button {
+                        isEditingLayout = true
+                    } label: {
+                        Label("Edit layout…", systemImage: "rectangle.3.group")
+                    }
+                } label: {
+                    Label("More", systemImage: "ellipsis.circle")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     startLog(meal: nil)
@@ -165,6 +115,13 @@ struct TodayView: View {
         .sheet(isPresented: $isPresentingAddHydration) {
             NavigationStack {
                 AddHydrationSheet()
+            }
+        }
+        // add-themes-and-layout D9: half height over this screen, which
+        // stays live and scrollable underneath as rows move.
+        .sheet(isPresented: $isEditingLayout) {
+            LayoutEditorSheet(screen: .today) { id in
+                TodayCardID(rawValue: id).map { availability($0) } ?? .available
             }
         }
         .alert(
@@ -208,6 +165,153 @@ struct TodayView: View {
             // scanner itself without needing a new push here.
             guard !environment.router.isCatalogPresented else { return }
             catalogContext = LogContext(mealType: nil, date: nil)
+        }
+    }
+
+    // MARK: - Cards (add-themes-and-layout D8)
+
+    /// The resolved Today order, keeping only cards the user left visible
+    /// that have something to show.
+    private var renderedCards: [ResolvedPlacement] {
+        environment.layoutStore.resolved(.today).filter { placement in
+            guard placement.isVisible, let card = TodayCardID(rawValue: placement.id) else { return false }
+            return availability(card).isAvailable
+        }
+    }
+
+    /// The show-when rules the fixed stack had, unchanged: Log again and
+    /// Log a meal only on today's date with something in them, fasting only
+    /// while enabled. Everything else always shows (the banner slots and
+    /// Weight & Water decide their own content, as before).
+    private func availability(_ card: TodayCardID) -> CardAvailability {
+        let dayLog = environment.dayLog
+        switch card {
+        case .logAgain:
+            return dayLog.isToday && !quickPickItems.isEmpty
+                ? .available
+                : .empty(String(localized: "Shows on today's date when there are foods to log again", comment: "Layout editor: when the Log again shelf appears on Today."))
+        case .logMeal:
+            return dayLog.isToday && !mealPresets.isEmpty
+                ? .available
+                : .empty(String(localized: "Shows on today's date when you have saved meals", comment: "Layout editor: when the Log a meal shelf appears on Today."))
+        default:
+            return TodayCardID.baseAvailability(card, preferences: environment.preferences)
+        }
+    }
+
+    /// One Today card. Each arm is the view the fixed stack had in that
+    /// position, plus its variant (D8 variants table).
+    @ViewBuilder
+    private func todayCard(_ card: TodayCardID, variant: String?) -> some View {
+        let dayLog = environment.dayLog
+        switch card {
+        case .daySwitcher:
+            DaySwitcher(
+                date: dayLog.selectedDate,
+                isToday: dayLog.isToday,
+                onStep: { days in Task { await environment.stepDay(byDays: days) } },
+                onToday: { Task { await environment.goToToday() } }
+            )
+
+        case .summary:
+            DaySummaryCard(
+                dashboard: dayLog.dashboard,
+                isStale: dayLog.isStale,
+                isLoading: dayLog.isLoading,
+                activeKilocalories: dayLog.activeKilocalories,
+                isToday: dayLog.isToday,
+                style: variant.flatMap(SummaryVariant.init(rawValue:)) ?? .ring
+            )
+
+        case .progressStrip:
+            ProgressStrip(
+                streak: environment.gamificationEngine.streakStatus,
+                level: environment.gamificationEngine.levelProgress
+            ) {
+                environment.router.selectedTab = .progress
+            }
+
+        case .fasting:
+            FastingHomeSection { showFasting = true }
+
+        case .banners:
+            TodaySlotHost() // add-gamification-signals D12: feature banners
+
+        case .meals:
+            VStack(spacing: Theme.Spacing.md) {
+                ForEach(dayLog.dashboard.sections) { section in
+                    MealSectionCard(
+                        section: section,
+                        editor: entryEditor,
+                        onOpen: { openMeal = section.mealType },
+                        onAdd: { startLog(meal: section.mealType) },
+                        isCollapsed: variant == MealsVariant.collapsed.rawValue
+                    )
+                }
+            }
+
+        case .logAgain:
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                SectionHeader(title: String(localized: "Log again"))
+                    .padding(.horizontal, Theme.Spacing.md)
+                QuickPickShelf(items: quickPickItems) { item in
+                    logAgain(item)
+                }
+            }
+            .padding(.horizontal, -Theme.Spacing.md)
+
+        case .logMeal:
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                SectionHeader(title: String(localized: "Log a meal"))
+                    .padding(.horizontal, Theme.Spacing.md)
+                MealPresetShelf(presets: mealPresets) { preset in
+                    mealPresetTarget = preset
+                }
+            }
+            .padding(.horizontal, -Theme.Spacing.md)
+
+        case .weightWater:
+            weightWater(variant.flatMap(WeightWaterVariant.init(rawValue:)) ?? .both)
+
+        case .dayNote:
+            // add-day-notes: note + tags for the selected day (see
+            // DayNoteCard.swift's header).
+            DayNoteCard(day: dayLog.dateString, store: environment.dayNoteStore)
+
+        case .signature:
+            AppSignatureView()
+                .padding(.top, Theme.Spacing.xs)
+        }
+    }
+
+    /// "Weight & Water": both cards (today's look), or just one.
+    private func weightWater(_ variant: WeightWaterVariant) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            switch variant {
+            case .both:
+                SectionHeader(title: String(localized: "Weight & Water"))
+            case .weight:
+                SectionHeader(title: String(localized: "Weight", comment: "Today: section header when only the weight card is shown."))
+            case .water:
+                SectionHeader(title: String(localized: "Water", comment: "Today: section header when only the water card is shown."))
+            }
+            if variant != .water {
+                TodayWeightCard(
+                    latest: environment.weightLoader.latest,
+                    previous: environment.weightLoader.previous,
+                    progress: environment.weightLoader.progress,
+                    refreshFailed: environment.weightLoader.lastGarminRefreshFailed
+                )
+            }
+            if variant != .weight {
+                TodayHydrationCard(
+                    todayTotalML: environment.hydrationLoader.todayTotalML,
+                    goalML: environment.hydrationLoader.goalML,
+                    refreshFailed: environment.hydrationLoader.lastGarminRefreshFailed,
+                    onQuickAdd: { amount in Task { await quickAddHydration(amount) } },
+                    onCustom: { isPresentingAddHydration = true }
+                )
+            }
         }
     }
 
@@ -285,10 +389,27 @@ struct DaySummaryCard: View {
     /// Picks the line's wording: "Active today" vs. a past day's "Active".
     var isToday: Bool = true
 
+    /// add-themes-and-layout D8: the layout editor's summary variant.
+    /// `.ring` is the look this card always had.
+    var style: SummaryVariant = .ring
+
     @ScaledMetric(relativeTo: .largeTitle) private var ringSize: CGFloat = 132
+    @ScaledMetric(relativeTo: .largeTitle) private var compactRingSize: CGFloat = 72
 
     var body: some View {
         let calories = dashboard.totals.calories
+        switch style {
+        case .ring:
+            ringCard(calories)
+        case .compact:
+            compactCard(calories)
+        case .hero:
+            heroCard(calories)
+        }
+    }
+
+    /// Today's look: the 132 pt ring beside the numbers, macro bars below.
+    private func ringCard(_ calories: MacroProgress) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             HStack(alignment: .center, spacing: Theme.Spacing.lg) {
                 ProgressRing(
@@ -330,13 +451,103 @@ struct DaySummaryCard: View {
                 }
             }
 
-            VStack(spacing: Theme.Spacing.sm) {
-                MacroBar(title: String(localized: "Carbs"), progress: dashboard.totals.carbs, unit: "g", tint: Theme.carbs)
-                MacroBar(title: String(localized: "Protein"), progress: dashboard.totals.protein, unit: "g", tint: Theme.protein)
-                MacroBar(title: String(localized: "Fat"), progress: dashboard.totals.fat, unit: "g", tint: Theme.fat)
+            macroBars
+        }
+        .card()
+    }
+
+    /// One row: a 72 pt (scaled) ring, what's left, and compact macro bars.
+    private func compactCard(_ calories: MacroProgress) -> some View {
+        HStack(alignment: .center, spacing: Theme.Spacing.md) {
+            ProgressRing(
+                fraction: calories.fraction ?? 0,
+                lineWidth: 7,
+                tint: calories.calorieBand?.tint ?? Theme.accent
+            ) {
+                Text(verbatim: calories.consumed.wholeNumberText)
+                    .font(.macroValue)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                    .padding(Theme.Spacing.xs)
+            }
+            .frame(width: compactRingSize, height: compactRingSize)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Calories")
+            .accessibilityValue(caloriesAccessibility(calories))
+
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text(remainingText(calories))
+                    .font(.headline)
+                compactMacroBars
+                statusLine
             }
         }
         .card()
+    }
+
+    /// The day's calories as one big number (no ring) over a bar in the
+    /// calorie-band color, then the same lines and macro bars as the ring.
+    private func heroCard(_ calories: MacroProgress) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
+                    Text(verbatim: calories.consumed.wholeNumberText)
+                        .heroNumberFont()
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                    Text("kcal")
+                        .font(.heroUnit)
+                        .foregroundStyle(.secondary)
+                }
+                if calories.goal != nil {
+                    ProgressView(value: min(max(calories.fraction ?? 0, 0), 1))
+                        .tint(calories.calorieBand?.tint ?? Theme.accent)
+                }
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Calories")
+            .accessibilityValue(caloriesAccessibility(calories))
+
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                Text(remainingText(calories))
+                    .font(.headline)
+                if let goal = calories.goal {
+                    Text("Target \(goal.wholeNumberText) kcal")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                if let activeKilocalories {
+                    Label(activeText(activeKilocalories), systemImage: "flame")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel(activeAccessibility(activeKilocalories))
+                }
+                statusLine
+            }
+
+            macroBars
+        }
+        .card()
+    }
+
+    private var macroBars: some View {
+        VStack(spacing: Theme.Spacing.sm) {
+            MacroBar(title: String(localized: "Carbs"), progress: dashboard.totals.carbs, unit: "g", tint: Theme.carbs)
+            MacroBar(title: String(localized: "Protein"), progress: dashboard.totals.protein, unit: "g", tint: Theme.protein)
+            MacroBar(title: String(localized: "Fat"), progress: dashboard.totals.fat, unit: "g", tint: Theme.fat)
+        }
+    }
+
+    /// The meal cards' compact bars (same keys and labels as `MealSectionCard`).
+    private var compactMacroBars: some View {
+        HStack(spacing: Theme.Spacing.sm) {
+            MacroBar(title: String(localized: "C", comment: "One-letter abbreviation of Carbs on a compact macro bar."), progress: dashboard.totals.carbs, unit: "g", tint: Theme.carbs, compact: true)
+                .accessibilityLabel("Carbs")
+            MacroBar(title: String(localized: "P", comment: "One-letter abbreviation of Protein on a compact macro bar."), progress: dashboard.totals.protein, unit: "g", tint: Theme.protein, compact: true)
+                .accessibilityLabel("Protein")
+            MacroBar(title: String(localized: "F", comment: "One-letter abbreviation of Fat on a compact macro bar."), progress: dashboard.totals.fat, unit: "g", tint: Theme.fat, compact: true)
+                .accessibilityLabel("Fat")
+        }
     }
 
     @ViewBuilder
@@ -479,8 +690,44 @@ struct MealSectionCard: View {
     let editor: EntryEditor
     let onOpen: () -> Void
     let onAdd: () -> Void
+    /// add-themes-and-layout D8 "Collapsed" variant: header (with calories)
+    /// and macro bars only, the whole card one tap into `MealDetailView`,
+    /// where the entries and their actions are.
+    var isCollapsed = false
 
     var body: some View {
+        if isCollapsed {
+            collapsedCard
+        } else {
+            expandedCard
+        }
+    }
+
+    private var collapsedCard: some View {
+        Button(action: onOpen) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                header
+                macroBars
+            }
+            .card()
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Opens \(section.mealType.displayName) details")
+    }
+
+    private var macroBars: some View {
+        HStack(spacing: Theme.Spacing.sm) {
+            MacroBar(title: String(localized: "C", comment: "One-letter abbreviation of Carbs on a compact macro bar."), progress: section.totals.carbs, unit: "g", tint: Theme.carbs, compact: true)
+                .accessibilityLabel("Carbs")
+            MacroBar(title: String(localized: "P", comment: "One-letter abbreviation of Protein on a compact macro bar."), progress: section.totals.protein, unit: "g", tint: Theme.protein, compact: true)
+                .accessibilityLabel("Protein")
+            MacroBar(title: String(localized: "F", comment: "One-letter abbreviation of Fat on a compact macro bar."), progress: section.totals.fat, unit: "g", tint: Theme.fat, compact: true)
+                .accessibilityLabel("Fat")
+        }
+    }
+
+    /// The look this card always had.
+    private var expandedCard: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             Button(action: onOpen) {
                 header
@@ -488,14 +735,7 @@ struct MealSectionCard: View {
             .buttonStyle(.plain)
             .accessibilityHint("Opens \(section.mealType.displayName) details")
 
-            HStack(spacing: Theme.Spacing.sm) {
-                MacroBar(title: String(localized: "C", comment: "One-letter abbreviation of Carbs on a compact macro bar."), progress: section.totals.carbs, unit: "g", tint: Theme.carbs, compact: true)
-                    .accessibilityLabel("Carbs")
-                MacroBar(title: String(localized: "P", comment: "One-letter abbreviation of Protein on a compact macro bar."), progress: section.totals.protein, unit: "g", tint: Theme.protein, compact: true)
-                    .accessibilityLabel("Protein")
-                MacroBar(title: String(localized: "F", comment: "One-letter abbreviation of Fat on a compact macro bar."), progress: section.totals.fat, unit: "g", tint: Theme.fat, compact: true)
-                    .accessibilityLabel("Fat")
-            }
+            macroBars
 
             if !section.entries.isEmpty {
                 Divider()
@@ -595,7 +835,7 @@ struct MealEntryRow: View {
             Spacer(minLength: Theme.Spacing.sm)
             statusIcon
             if let calories = entry.calories {
-                MacroBadge(value: calories, unit: " kcal", accessibleUnit: String(localized: "kilocalories"))
+                MacroBadge.calories(calories)
             }
         }
         .accessibilityElement(children: .combine)
