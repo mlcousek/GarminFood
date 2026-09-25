@@ -53,7 +53,7 @@ is its own branch + PR (`mlcousek/add-localization-wN`).
 ## 6. Wave 6 — Polish
 
 - [x] 6.1 Locale-aware number display (`NumberDisplay`, `ServingAmount`, app `NumberFormatting`) via `FormatStyle`; tests pin `en` and `cs` output. `NumberDisplay.quantity`/`trimmed` take a `locale` (default current) and format decimals with `FloatingPointFormatStyle`, grouping off; whole numbers keep the non-trapping "%.0f" path. `ServingQuantityInput.amountLabel` uses it; the app's `formattedQuantity`/`wholeNumberText` and every `formattedKg` go through it. `NumberDisplayTests`/`ServingAmountTests` pin `en_US` and `cs_CZ`; input parsing (`DecimalInput`) is unchanged and tested with both separators.
-- [ ] 6.2 Plural audit: no `== 1 ?` ternaries left (checker rule).
+- [x] 6.2 Plural audit: no `== 1 ?` ternaries left (checker rule). Checker rule (blocking): an `== 1 ?`/`!= 1 ?` ternary choosing text or an English plural ending fails the `localization` job. App-side ternaries are gone (meal presets now use the `%lld ingredients` plural); `PLURAL_TERNARY_BASELINE` lists the files still pending Wave 4 (Achievements, ChallengeTemplates, DailyChallenges, Progress streak card), reported as notes.
 - [ ] 6.3 Truncation pass: pseudo-localized build (+40 % length) sideloaded; fix Today hero, stat tiles, widgets, tab labels.
 - [ ] 6.4 Accessibility labels/hints/values fully localized (units spelled out in Czech).
 - [ ] 6.5 Settings row "Jazyk / Language" opening the per-app Settings page.
