@@ -74,4 +74,46 @@ public actor FoodCacheStore {
         for food in foods { foodsById[food.id] = food }
         persist()
     }
+
+    /// The food-cache side effect of an edit, duplicate or copy, shared by
+    /// `LogEntryCoordinator` and `LocalLogEntryCoordinator` so both modes
+    /// behave the same (add-standalone-mode D4). Never overwrites a food
+    /// already cached (e.g. from a search) -- at most adds the missing
+    /// serving to it; otherwise caches the food as the entry describes it.
+    func cacheForDisplay(
+        foodId: String,
+        name: String,
+        brandName: String?,
+        source: FoodSource,
+        serving: Serving?,
+        regionCode: String?,
+        languageCode: String?
+    ) {
+        guard let serving else { return }
+        if let existing = food(forId: foodId) {
+            guard !existing.servings.contains(where: { $0.id == serving.id }) else { return }
+            upsert([Food(
+                id: existing.id,
+                name: existing.name,
+                brandName: existing.brandName,
+                source: existing.source,
+                servings: existing.servings + [serving],
+                imageURL: existing.imageURL,
+                garminIsFavorite: existing.garminIsFavorite,
+                garminIsRecent: existing.garminIsRecent,
+                regionCode: existing.regionCode,
+                languageCode: existing.languageCode
+            )])
+        } else {
+            upsert([Food(
+                id: foodId,
+                name: name,
+                brandName: brandName,
+                source: source,
+                servings: [serving],
+                regionCode: regionCode,
+                languageCode: languageCode
+            )])
+        }
+    }
 }
