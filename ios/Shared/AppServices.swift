@@ -45,10 +45,18 @@ final class AppServices {
     /// reason `customFoodStore`/`mealPresetStore` are.
     let favoriteFoodStore: FavoriteFoodStore
     /// Every food-log write (add-standalone-mode D4): routes to the
-    /// implementation for the current data mode -- always the Garmin
-    /// `LogEntryCoordinator` until standalone mode's wave 2. Same name and
+    /// implementation for the current data mode -- the Garmin
+    /// `LogEntryCoordinator`, or `LocalLogEntryCoordinator` while the
+    /// effective mode is standalone (`DataMode.effective`, only reachable
+    /// through the hidden testing toggle until onboarding). Same name and
     /// call signatures as before, so no view or intent changed.
     let logEntryCoordinator: ModeRoutingFoodLogging
+    /// add-standalone-mode D2: the local system of record for standalone
+    /// mode (month-sharded JSON). Nothing touches it in Garmin mode.
+    let localFoodLog: LocalFoodLogStore
+    /// add-standalone-mode D3: every nutrition read, routed like
+    /// `logEntryCoordinator` -- the very same `garminClient` in Garmin mode.
+    let nutritionReader: ModeRoutingNutritionReader
     /// add-weight-tracking: the weight domain's own store/outbox/coordinator
     /// pair, following the exact same one-instance-per-process shape as the
     /// food-logging ones above -- see WeightTracking.swift/
@@ -102,6 +110,11 @@ final class AppServices {
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
 
+    /// add-standalone-mode 2.5: the effective data mode, read from
+    /// `UserDefaults` on every call (never cached), so the hidden testing
+    /// toggle applies at once. Every mode-routed piece uses this one.
+    static let currentDataMode: @Sendable () -> DataMode = { DataMode.effective(in: .standard) }
+
     private init() {
         let client = GarminClient()
         let outbox = Outbox(processName: "app")
@@ -128,8 +141,20 @@ final class AppServices {
         self.dayNoteStore = DayNoteStore()
         // `foodCache` so an edited/duplicated/copied entry can be named in
         // its meal before Garmin reads it back (add-log-entry-editing).
+        let dataMode = Self.currentDataMode
+        let localFoodLog = LocalFoodLogStore()
+        self.localFoodLog = localFoodLog
         self.logEntryCoordinator = ModeRoutingFoodLogging(
-            garmin: LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults, foodCache: foodCache, garminLog: client)
+            garmin: LogEntryCoordinator(outbox: outbox, usageHistory: usageHistory, servingDefaults: servingDefaults, foodCache: foodCache, garminLog: client),
+            local: LocalLogEntryCoordinator(store: localFoodLog, usageHistory: usageHistory, servingDefaults: servingDefaults, foodCache: foodCache),
+            mode: dataMode
+        )
+        // Goals: none yet in standalone -- LocalNutritionReader's documented
+        // placeholder until wave 4's LocalGoalStore is passed here.
+        self.nutritionReader = ModeRoutingNutritionReader(
+            garmin: client,
+            local: LocalNutritionReader(store: localFoodLog),
+            mode: dataMode
         )
         self.weightStore = weightStore
         self.weightOutbox = weightOutbox
