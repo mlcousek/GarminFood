@@ -22,8 +22,9 @@ import Gamification
 final class AppEnvironment {
     let garminClient: GarminClient
     /// add-standalone-mode D3: every nutrition READ the day log, Trends,
-    /// gamification and copy-meal make. The very same `garminClient` value
-    /// for now; wave 2 swaps in a local reader in standalone mode.
+    /// gamification and copy-meal make. `AppServices.nutritionReader`: the
+    /// very same `garminClient` in Garmin mode, the local food log while
+    /// the effective data mode is standalone (wave 2).
     let nutritionReader: any NutritionLogReading
     let authState: GarminAuthState
     let outbox: Outbox
@@ -131,7 +132,7 @@ final class AppEnvironment {
         let preferences = AppPreferences()
 
         self.garminClient = client
-        let reader: any NutritionLogReading = client
+        let reader: any NutritionLogReading = services.nutritionReader
         self.nutritionReader = reader
         self.authState = GarminAuthState()
         self.outbox = services.outbox
@@ -191,7 +192,8 @@ final class AppEnvironment {
             foodCache: services.foodCache,
             coordinator: services.logEntryCoordinator,
             digestStore: services.dayLogDigestStore,
-            activityCache: services.activityCacheStore
+            activityCache: services.activityCacheStore,
+            dataMode: AppServices.currentDataMode
         )
         self.preferences = preferences
         self.themeStore = ThemeStore()

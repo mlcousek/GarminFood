@@ -305,7 +305,9 @@ struct LogEntryConfirmView: View {
                         regionCode: environment.profile.settings?.regionCode,
                         languageCode: environment.profile.settings?.languageCode
                     )
-                    discrepancyNote = note
+                    // Empty in standalone mode: a custom food is logged as
+                    // itself there, so there is no Garmin stand-in to explain.
+                    discrepancyNote = note.isEmpty ? nil : note
                 }
 
                 // Success is shown NOW -- the commit above is already

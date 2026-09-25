@@ -1,6 +1,42 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ · %lld g carbs, %lld min before": {
+      "comment": "Sport & body activity row: a fuel entry. %@ = food name, then grams, then minutes before the start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld g sacharidů, %lld min před"
+          }
+        }
+      }
+    },
+    "%@ · %lld g protein": {
+      "comment": "Sport & body activity row: an entry after the activity. %@ = food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld g bílkovin"
+          }
+        }
+      }
+    },
+    "%@ · carb-rich, %lld min before": {
+      "comment": "Sport & body activity row: a fuel entry with unknown carbs. %@ = food name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · bohaté na sacharidy, %lld min před"
+          }
+        }
+      }
+    },
     "%@ +%lld XP": {
       "comment": "Celebration card: a gamification feature's message (already localized) followed by the XP it awarded.",
       "extractionState": "manual",
@@ -265,6 +301,42 @@
         }
       }
     },
+    "%@, %@, next milestone": {
+      "comment": "Accessibility: journey milestone name, its amount, the next one.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, další milník"
+          }
+        }
+      }
+    },
+    "%@, %@, not reached yet": {
+      "comment": "Accessibility: journey milestone name, its amount, still ahead.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, zatím nedosaženo"
+          }
+        }
+      }
+    },
+    "%@, %@, reached": {
+      "comment": "Accessibility: journey milestone name, its amount, reached.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, dosaženo"
+          }
+        }
+      }
+    },
     "%@, favorite": {
       "comment": "VoiceOver label of a favorite food card. %@ = food name.",
       "extractionState": "manual",
@@ -285,6 +357,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@, oblíbené, %2$@ kilokalorií"
+          }
+        }
+      }
+    },
+    "%@: %@ filled": {
+      "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: naplněno %@"
           }
         }
       }
@@ -447,6 +531,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld g protein within 60 min": {
+      "comment": "Sport & body activity row: protein total logged within 60 min after the end.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld g bílkovin do 60 min"
           }
         }
       }
@@ -769,6 +865,18 @@
         }
       }
     },
+    "%lld of %lld secrets found": {
+      "comment": "Progress tab secrets card (and its VoiceOver label): secret achievements found / total. Only counts, never titles.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nalezeno %lld z %lld tajných odznaků"
+          }
+        }
+      }
+    },
     "%lld products": {
       "comment": "Settings: number of products in the offline database. Plural.",
       "extractionState": "manual",
@@ -889,6 +997,18 @@
         }
       }
     },
+    "A new PR is announced once a record has 7 days of data.": {
+      "comment": "Footnote on the personal records screen (warm-up rule).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nový rekord se oznámí, až má záznam aspoň 7 dní dat."
+          }
+        }
+      }
+    },
     "A secret achievement. Keep logging to reveal it.": {
       "comment": "Detail sheet text of a locked secret achievement.",
       "extractionState": "manual",
@@ -981,6 +1101,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktivní: %@ kcal"
+          }
+        }
+      }
+    },
+    "Activities appear here once Garmin has synced them.": {
+      "comment": "Sport & body: no Garmin activity data yet (neutral, not an error).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivity se tu objeví, jakmile je Garmin synchronizuje."
           }
         }
       }
@@ -1215,6 +1347,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upraveno pro světlý režim, aby zůstalo čitelné."
+          }
+        }
+      }
+    },
+    "All fasting badges earned": {
+      "comment": "Sport & body screen: every fasting badge unlocked.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny odznaky za půst získány"
+          }
+        }
+      }
+    },
+    "All milestones reached!": {
+      "comment": "Journey with every milestone reached.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny milníky máš za sebou!"
           }
         }
       }
@@ -2527,6 +2683,18 @@
         }
       }
     },
+    "Days left: %lld": {
+      "comment": "Bingo: days left in this week.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá dní: %lld"
+          }
+        }
+      }
+    },
     "Days logged": {
       "comment": "Profile stat tile: number of days with at least one entry.",
       "extractionState": "manual",
@@ -2707,6 +2875,18 @@
         }
       }
     },
+    "Done on %@": {
+      "comment": "Bingo square sheet: the day it was done, e.g. 'Tuesday, 22 Sep'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněno: %@"
+          }
+        }
+      }
+    },
     "Double-tap to toggle this tag": {
       "comment": "VoiceOver hint of a day-note tag chip.",
       "extractionState": "manual",
@@ -2841,6 +3021,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Získáno %@"
+          }
+        }
+      }
+    },
+    "Easy task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snadný úkol"
+          }
+        }
+      }
+    },
+    "Eaten during: %lld": {
+      "comment": "Sport & body activity row: number of entries logged during the activity.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snědeno během: %lld"
           }
         }
       }
@@ -3085,6 +3289,18 @@
         }
       }
     },
+    "Every secret found!": {
+      "comment": "Progress tab secrets card: all secret achievements have been found.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechna tajemství nalezena!"
+          }
+        }
+      }
+    },
     "F": {
       "comment": "One-letter abbreviation of Fat on a compact macro bar.",
       "extractionState": "manual",
@@ -3183,6 +3399,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Půst"
+          }
+        }
+      }
+    },
+    "Fasting streak": {
+      "comment": "Sport & body: kept-fast streak label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série půstu"
           }
         }
       }
@@ -3343,6 +3571,18 @@
         }
       }
     },
+    "FREE": {
+      "comment": "Label of the free centre square of the bingo card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZDARMA"
+          }
+        }
+      }
+    },
     "From %@": {
       "comment": "VoiceOver label for a search result's source; %@ = source name, e.g. 'Garmin'.",
       "extractionState": "manual",
@@ -3375,6 +3615,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zdroj: %1$@, také v: %2$@"
+          }
+        }
+      }
+    },
+    "Fuelled": {
+      "comment": "Sport & body activity row: carbs logged 30-180 min before the start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Natankováno"
+          }
+        }
+      }
+    },
+    "Fuelled %lld · Recovered %lld · Earned days %lld · Race days %lld": {
+      "comment": "Sport & body screen: lifetime counts behind the tiered badges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palivo %lld · Regenerace %lld · Zasloužené dny %lld · Závodní dny %lld"
+          }
+        }
+      }
+    },
+    "Full card": {
+      "comment": "Bingo: every square of a past card was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plná karta"
           }
         }
       }
@@ -3751,6 +4027,18 @@
         }
       }
     },
+    "Hard task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Těžký úkol"
+          }
+        }
+      }
+    },
     "High Contrast": {
       "comment": "Theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -3759,6 +4047,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vysoký kontrast"
+          }
+        }
+      }
+    },
+    "Hike": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Túra"
           }
         }
       }
@@ -3915,6 +4215,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "Položky"
+          }
+        }
+      }
+    },
+    "Journeys": {
+      "comment": "Progress card / screen title: real-world journeys (protein climb, water, road trip, food passport).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cesty"
+          }
+        }
+      }
+    },
+    "Judged from the foods you log.": {
+      "comment": "Bingo square sheet: the task uses only logged foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle jídel, která zapisuješ."
+          }
+        }
+      }
+    },
+    "Judged from your Garmin activities.": {
+      "comment": "Bingo square sheet: the task uses Garmin activities.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých aktivit z Garminu."
+          }
+        }
+      }
+    },
+    "Judged from your nutrition totals and goals.": {
+      "comment": "Bingo square sheet: the task uses macro data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle tvých denních součtů živin a cílů."
+          }
+        }
+      }
+    },
+    "Judged from your water log and goal.": {
+      "comment": "Bingo square sheet: the task uses water data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnotí se podle zapsané vody a tvého cíle pitného režimu."
           }
         }
       }
@@ -4123,6 +4483,18 @@
         }
       }
     },
+    "Latest %@": {
+      "comment": "Sport & body weight goal: newest weigh-in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední %@"
+          }
+        }
+      }
+    },
     "Layout": {
       "comment": "Settings -> Appearance page. Section header.",
       "extractionState": "manual",
@@ -4239,6 +4611,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Limitované odznaky"
+          }
+        }
+      }
+    },
+    "Lines: %lld": {
+      "comment": "Bingo: number of completed lines.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řady: %lld"
           }
         }
       }
@@ -4711,6 +5095,18 @@
         }
       }
     },
+    "Maintenance goal: stay within 1 kg of your target.": {
+      "comment": "Sport & body weight goal: target within 0.5 kg of the start weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl udržení: drž se do 1 kg od cílové váhy."
+          }
+        }
+      }
+    },
     "Manual fallback": {
       "comment": "Sign-in sheet: section header for the manual ticket-paste path.",
       "extractionState": "manual",
@@ -4779,6 +5175,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jídla"
+          }
+        }
+      }
+    },
+    "Medium task": {
+      "comment": "Bingo square difficulty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Středně těžký úkol"
           }
         }
       }
@@ -4975,6 +5383,18 @@
         }
       }
     },
+    "Next badge at %lld days": {
+      "comment": "Sport & body screen: next fasting badge threshold (3, 7, 14 or 30 days).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další odznak při %lld dnech"
+          }
+        }
+      }
+    },
     "Next day": {
       "comment": "VoiceOver label of the day switcher's forward arrow.",
       "extractionState": "manual",
@@ -4987,6 +5407,18 @@
         }
       }
     },
+    "Next: %@ · %@ to go": {
+      "comment": "Next journey milestone. First %@ = milestone name, second %@ = distance left like \"1,015 m\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další: %@ · zbývá %@"
+          }
+        }
+      }
+    },
     "No calorie target": {
       "comment": "Calorie ring headline when Garmin has no calorie goal set.",
       "extractionState": "manual",
@@ -4995,6 +5427,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bez cíle kalorií"
+          }
+        }
+      }
+    },
+    "No counted activities in the last 14 days.": {
+      "comment": "Sport & body screen: empty activity list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za posledních 14 dní žádné započítané aktivity."
           }
         }
       }
@@ -5067,6 +5511,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nic nenalezeno"
+          }
+        }
+      }
+    },
+    "No records yet. Keep logging and they will appear here.": {
+      "comment": "Personal records before any data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné rekordy. Zapisuj dál a objeví se tady."
           }
         }
       }
@@ -5167,6 +5623,18 @@
         }
       }
     },
+    "Not done yet": {
+      "comment": "Bingo square sheet: square not done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nesplněno"
+          }
+        }
+      }
+    },
     "Not downloaded": {
       "comment": "Settings: offline database not installed yet.",
       "extractionState": "manual",
@@ -5179,6 +5647,18 @@
         }
       }
     },
+    "Not fuelled": {
+      "comment": "Sport & body activity row: no qualifying carbs before the start.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez paliva"
+          }
+        }
+      }
+    },
     "Not loaded from Garmin yet": {
       "comment": "Today status line before any Garmin data arrived for the day.",
       "extractionState": "manual",
@@ -5187,6 +5667,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Z Garminu zatím nenačteno"
+          }
+        }
+      }
+    },
+    "Not recovered": {
+      "comment": "Sport & body activity row: not enough protein after the end.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez regenerace"
           }
         }
       }
@@ -5551,6 +6043,30 @@
         }
       }
     },
+    "Opens journeys": {
+      "comment": "Accessibility hint of the journeys card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře cesty"
+          }
+        }
+      }
+    },
+    "Opens personal records": {
+      "comment": "Accessibility hint of the personal records card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře osobní rekordy"
+          }
+        }
+      }
+    },
     "Opens Progress": {
       "comment": "VoiceOver hint of Today's streak strip.",
       "extractionState": "manual",
@@ -5571,6 +6087,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře sezónní události"
+          }
+        }
+      }
+    },
+    "Opens Sport & Body": {
+      "comment": "VoiceOver hint of the Sport & body card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře Sport a tělo"
+          }
+        }
+      }
+    },
+    "Opens the bingo card": {
+      "comment": "Accessibility hint of the bingo card on the Progress tab.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře bingo kartu"
+          }
+        }
+      }
+    },
+    "Opens the secret achievements": {
+      "comment": "VoiceOver hint of the Progress tab secrets card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře tajné odznaky"
           }
         }
       }
@@ -5647,6 +6199,18 @@
         }
       }
     },
+    "Past cards": {
+      "comment": "Bingo screen section: previous weeks' cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minulé karty"
+          }
+        }
+      }
+    },
     "Paste service ticket": {
       "comment": "Sign-in sheet: placeholder of the manual ticket text field. 'Service ticket' is Garmin's SSO term.",
       "extractionState": "manual",
@@ -5667,6 +6231,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pastel"
+          }
+        }
+      }
+    },
+    "Personal records": {
+      "comment": "Progress card / screen title: personal records.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Osobní rekordy"
           }
         }
       }
@@ -5727,6 +6303,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Předvolby"
+          }
+        }
+      }
+    },
+    "Previous best: %@ (%@)": {
+      "comment": "Personal record's previous best. First %@ = value, second %@ = date.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předchozí rekord: %@ (%@)"
           }
         }
       }
@@ -5875,6 +6463,54 @@
         }
       }
     },
+    "Recent activities": {
+      "comment": "Sport & body screen: section header (last 14 days).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední aktivity"
+          }
+        }
+      }
+    },
+    "Recent PR": {
+      "comment": "Accessibility label of the trophy on a record beaten in the last 7 days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávný rekord"
+          }
+        }
+      }
+    },
+    "Recent PRs": {
+      "comment": "Section header: the last personal records beaten.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávné rekordy"
+          }
+        }
+      }
+    },
+    "Recovered": {
+      "comment": "Sport & body activity row: 20 g+ protein within 60 min after the end.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regenerace splněna"
+          }
+        }
+      }
+    },
     "Reminders": {
       "comment": "Settings row / screen title: local notification settings.",
       "extractionState": "manual",
@@ -6007,6 +6643,18 @@
         }
       }
     },
+    "Ride": {
+      "comment": "Activity type name (Garmin activity: cycling).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jízda"
+          }
+        }
+      }
+    },
     "Round": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -6027,6 +6675,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zaoblené"
+          }
+        }
+      }
+    },
+    "Row": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veslování"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, done on %@": {
+      "comment": "VoiceOver label of a done bingo square. Row, column, task title, weekday it was done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, splněno: %4$@"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, %@, not done": {
+      "comment": "VoiceOver label of a bingo square not done yet. Row, column, task title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, %3$@, nesplněno"
+          }
+        }
+      }
+    },
+    "Row %lld, column %lld, free square": {
+      "comment": "VoiceOver label of the bingo centre square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řádek %1$lld, sloupec %2$lld, volné pole"
+          }
+        }
+      }
+    },
+    "Run": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Běh"
           }
         }
       }
@@ -6307,6 +7015,18 @@
         }
       }
     },
+    "Secrets": {
+      "comment": "Progress tab: title of the secret achievements card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tajemství"
+          }
+        }
+      }
+    },
     "selected": {
       "comment": "VoiceOver value of a selected day-note tag chip.",
       "extractionState": "manual",
@@ -6427,6 +7147,18 @@
         }
       }
     },
+    "Set a weight goal in Garmin Connect or Settings to track milestones.": {
+      "comment": "Sport & body screen: no weight goal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastav si cílovou váhu v Garmin Connect nebo v Nastavení a sleduj milníky."
+          }
+        }
+      }
+    },
     "Set in Garmin Connect. GarminFood only displays it.": {
       "comment": "Settings: footer under the read-only nutrition plan.",
       "extractionState": "manual",
@@ -6531,6 +7263,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zobrazuji naposledy načtená čísla"
+          }
+        }
+      }
+    },
+    "Shows the rule": {
+      "comment": "Accessibility hint of a bingo square.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí pravidlo"
           }
         }
       }
@@ -6643,6 +7387,18 @@
         }
       }
     },
+    "Ski": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyže"
+          }
+        }
+      }
+    },
     "Slate": {
       "comment": "App icon / theme name shown in Appearance settings.",
       "extractionState": "manual",
@@ -6679,6 +7435,18 @@
         }
       }
     },
+    "Some habits reveal hidden badges.": {
+      "comment": "Progress tab secrets card: teaser under the count while secrets remain (no hints about which).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některé zvyky odhalí skryté odznaky."
+          }
+        }
+      }
+    },
     "Some items may already be logged -- check the sync queue. %@": {
       "comment": "Copy-meal save error; %@ = the underlying error's description.",
       "extractionState": "manual",
@@ -6703,6 +7471,66 @@
         }
       }
     },
+    "Sport & Body": {
+      "comment": "Sport & body: card header and screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport a tělo"
+          }
+        }
+      }
+    },
+    "Sport & body badges": {
+      "comment": "Sport & body screen: badge grid section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odznaky sportu a těla"
+          }
+        }
+      }
+    },
+    "Squares tick themselves from what you log. Each line earns %lld XP; a full card earns %lld XP and a streak freeze.": {
+      "comment": "Bingo screen footnote. First %lld = XP per line, second = XP for a full card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole se odškrtávají sama podle toho, co zapisuješ. Každá řada dává %1$lld XP, plná karta %2$lld XP a zmrazení série."
+          }
+        }
+      }
+    },
+    "Squares: %lld/9": {
+      "comment": "Bingo: squares done out of 9.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pole: %lld/9"
+          }
+        }
+      }
+    },
+    "Stage %lld of %lld: %@": {
+      "comment": "Journey stage. First = current stage number, second = stage count, %@ = stage name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etapa %lld z %lld: %@"
+          }
+        }
+      }
+    },
     "Standard": {
       "comment": "Settings -> Appearance page. Corner option.",
       "extractionState": "manual",
@@ -6711,6 +7539,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Standardní"
+          }
+        }
+      }
+    },
+    "Start %@ · Target %@": {
+      "comment": "Sport & body weight goal: start and target weights (e.g. 82 kg).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start %@ · Cíl %@"
           }
         }
       }
@@ -6817,6 +7657,18 @@
         }
       }
     },
+    "Strength": {
+      "comment": "Activity type name (Garmin activity: strength training).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posilování"
+          }
+        }
+      }
+    },
     "Suggested by Garmin Connect": {
       "comment": "Caption under a meal's calorie target and time window, which come from Garmin Connect.",
       "extractionState": "manual",
@@ -6837,6 +7689,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Západ slunce"
+          }
+        }
+      }
+    },
+    "Swim": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plavání"
           }
         }
       }
@@ -6969,6 +7833,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klepni na množství výše a zapiš si pití. Hned se uloží v telefonu a na pozadí se pošle do Garminu."
+          }
+        }
+      }
+    },
+    "Target %@": {
+      "comment": "Sport & body weight goal: target weight (no start weight known).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl %@"
           }
         }
       }
@@ -7261,6 +8137,18 @@
         }
       }
     },
+    "This month: %lld fuelled · %lld recovered": {
+      "comment": "Sport & body card: activities fuelled before / recovered after this month.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento měsíc: palivo %lld · regenerace %lld"
+          }
+        }
+      }
+    },
     "This theme is dark only.": {
       "comment": "Settings -> Appearance page. Why the light/dark picker is disabled.",
       "extractionState": "manual",
@@ -7377,6 +8265,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Celkem"
+          }
+        }
+      }
+    },
+    "Total: %@": {
+      "comment": "Journey total so far. %@ = an amount like \"1,640 m\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celkem: %@"
           }
         }
       }
@@ -7693,6 +8593,30 @@
         }
       }
     },
+    "Walk": {
+      "comment": "Activity type name (Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chůze"
+          }
+        }
+      }
+    },
+    "was %@": {
+      "comment": "Recent PR list: the previous record value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "předtím %@"
+          }
+        }
+      }
+    },
     "Water": {
       "comment": "Water screen title.",
       "extractionState": "manual",
@@ -7725,6 +8649,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cíl vody"
+          }
+        }
+      }
+    },
+    "Weekly Bingo": {
+      "comment": "Bingo card title on the Progress tab and bingo screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní bingo"
           }
         }
       }
@@ -7861,6 +8797,30 @@
         }
       }
     },
+    "Workout": {
+      "comment": "Activity type name (any other Garmin activity).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trénink"
+          }
+        }
+      }
+    },
+    "Your bingo card appears after your next log.": {
+      "comment": "Bingo card placeholder before this week's card exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje bingo karta se objeví po dalším zápisu."
+          }
+        }
+      }
+    },
     "Your custom foods": {
       "comment": "Log Food screen: section header listing the user's custom foods.",
       "extractionState": "manual",
@@ -7909,6 +8869,18 @@
         }
       }
     },
+    "Your journeys start with your first log.": {
+      "comment": "Journeys card before any data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje cesty začnou prvním zápisem."
+          }
+        }
+      }
+    },
     "Your own goals stay on this phone; Garmin Connect isn't changed.": {
       "comment": "Settings goals footer sentence.",
       "extractionState": "manual",
@@ -7941,234 +8913,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tvoje"
-          }
-        }
-      }
-    },
-    "Journeys": {
-      "comment": "Progress card / screen title: real-world journeys (protein climb, water, road trip, food passport).",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cesty"
-          }
-        }
-      }
-    },
-    "Your journeys start with your first log.": {
-      "comment": "Journeys card before any data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tvoje cesty začnou prvním zápisem."
-          }
-        }
-      }
-    },
-    "Opens journeys": {
-      "comment": "Accessibility hint of the journeys card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře cesty"
-          }
-        }
-      }
-    },
-    "Total: %@": {
-      "comment": "Journey total so far. %@ = an amount like \"1,640 m\".",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Celkem: %@"
-          }
-        }
-      }
-    },
-    "Stage %lld of %lld: %@": {
-      "comment": "Journey stage. First = current stage number, second = stage count, %@ = stage name.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Etapa %lld z %lld: %@"
-          }
-        }
-      }
-    },
-    "Next: %@ · %@ to go": {
-      "comment": "Next journey milestone. First %@ = milestone name, second %@ = distance left like \"1,015 m\".",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Další: %@ · zbývá %@"
-          }
-        }
-      }
-    },
-    "%@: %@ filled": {
-      "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@: naplněno %@"
-          }
-        }
-      }
-    },
-    "All milestones reached!": {
-      "comment": "Journey with every milestone reached.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Všechny milníky máš za sebou!"
-          }
-        }
-      }
-    },
-    "%@, %@, reached": {
-      "comment": "Accessibility: journey milestone name, its amount, reached.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, dosaženo"
-          }
-        }
-      }
-    },
-    "%@, %@, next milestone": {
-      "comment": "Accessibility: journey milestone name, its amount, the next one.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, další milník"
-          }
-        }
-      }
-    },
-    "%@, %@, not reached yet": {
-      "comment": "Accessibility: journey milestone name, its amount, still ahead.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %@, zatím nedosaženo"
-          }
-        }
-      }
-    },
-    "Personal records": {
-      "comment": "Progress card / screen title: personal records.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Osobní rekordy"
-          }
-        }
-      }
-    },
-    "No records yet. Keep logging and they will appear here.": {
-      "comment": "Personal records before any data.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zatím žádné rekordy. Zapisuj dál a objeví se tady."
-          }
-        }
-      }
-    },
-    "Recent PR": {
-      "comment": "Accessibility label of the trophy on a record beaten in the last 7 days.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nedávný rekord"
-          }
-        }
-      }
-    },
-    "Opens personal records": {
-      "comment": "Accessibility hint of the personal records card.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otevře osobní rekordy"
-          }
-        }
-      }
-    },
-    "Recent PRs": {
-      "comment": "Section header: the last personal records beaten.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nedávné rekordy"
-          }
-        }
-      }
-    },
-    "A new PR is announced once a record has 7 days of data.": {
-      "comment": "Footnote on the personal records screen (warm-up rule).",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nový rekord se oznámí, až má záznam aspoň 7 dní dat."
-          }
-        }
-      }
-    },
-    "Previous best: %@ (%@)": {
-      "comment": "Personal record's previous best. First %@ = value, second %@ = date.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Předchozí rekord: %@ (%@)"
-          }
-        }
-      }
-    },
-    "was %@": {
-      "comment": "Recent PR list: the previous record value.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "předtím %@"
           }
         }
       }

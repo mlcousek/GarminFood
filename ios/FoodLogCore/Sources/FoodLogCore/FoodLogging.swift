@@ -20,6 +20,12 @@
 // compiling unchanged, with no protocol-extension overloads that could make
 // a concrete `LogEntryCoordinator` call ambiguous.
 //
+// Wave 2 (task 2.5): `LocalLogEntryCoordinator` is the second
+// implementation, and the router picks it on every call while the
+// effective `DataMode` is `.standalone` (only reachable through the hidden
+// testing toggle until onboarding exists). Garmin mode forwards exactly as
+// in wave 1.
+//
 // Depended on by: Shared/AppServices.swift (holds the one router per
 // process as `logEntryCoordinator`), GarminFood/Today/DayLogLoader.swift
 // (deletes), and every confirm/edit/duplicate/copy caller through
@@ -28,8 +34,8 @@
 import Foundation
 import GarminKit
 
-/// Every food-log write. `LogEntryCoordinator` (Garmin, via the outbox) is
-/// the only implementation until standalone mode's wave 2.
+/// Every food-log write. `LogEntryCoordinator` (Garmin, via the outbox) and
+/// `LocalLogEntryCoordinator` (standalone, the local food log).
 public protocol FoodLogging: Sendable {
     @discardableResult
     func confirm(
@@ -115,18 +121,29 @@ public enum CommittedDeleteError: Error, Sendable, Equatable {
 
 /// Held by `AppServices` as the one `logEntryCoordinator` per process.
 /// Design D4: forwards each call to the implementation for the current
-/// `DataMode`, read on every call. Wave 1 has only the Garmin
-/// implementation, so it always forwards there -- zero behaviour change;
-/// wave 2 adds the local coordinator and the mode read in `current`.
+/// `DataMode`, read on every call (`mode`), so flipping the mode needs no
+/// relaunch. Built without `local` (wave 1's shape, and tests) it always
+/// forwards to Garmin.
 public struct ModeRoutingFoodLogging: FoodLogging {
     private let garmin: any FoodLogging
+    private let local: (any FoodLogging)?
+    private let mode: @Sendable () -> DataMode
 
-    public init(garmin: any FoodLogging) {
+    public init(
+        garmin: any FoodLogging,
+        local: (any FoodLogging)? = nil,
+        mode: @escaping @Sendable () -> DataMode = { .garminConnected }
+    ) {
         self.garmin = garmin
+        self.local = local
+        self.mode = mode
     }
 
-    /// The implementation for the current data mode. Garmin only, for now.
-    private var current: any FoodLogging { garmin }
+    /// The implementation for the current data mode.
+    private var current: any FoodLogging {
+        if let local, mode() == .standalone { return local }
+        return garmin
+    }
 
     @discardableResult
     public func confirm(
@@ -250,8 +267,12 @@ public struct ModeRoutingFoodLogging: FoodLogging {
         )
     }
 
+    /// Always the Garmin coordinator, in either mode: a pending row is an
+    /// OUTBOX entry (the local log has no pending state), and cancelling it
+    /// is a local outbox write -- no network. In standalone mode that only
+    /// happens for an entry queued before the mode was switched.
     public func deletePending(outboxId: UUID) async throws -> LogEntryCoordinator.PendingDeletion {
-        try await current.deletePending(outboxId: outboxId)
+        try await garmin.deletePending(outboxId: outboxId)
     }
 
     public func deleteCommitted(logId: String, date: String) async throws {

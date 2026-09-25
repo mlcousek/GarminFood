@@ -242,21 +242,18 @@ final class GamificationEngine {
         guard let log = try? await garminClient.dailyFoodLog(date: dateString) else { return }
         // add-gamification-signals 7.2: cache the day log already fetched.
         try? await dayLogDigestStore?.save(DayLogDigest(log: log, day: dateString, fetchedAt: Date()))
-        guard let goals = log.dailyNutritionGoals,
-              let content = log.dailyNutritionContent
-        else { return }
-
-        // The FIXED goal, same as the Today Target (today-dashboard spec,
-        // owner decision 2026-09-23): the `adjusted*` values include burned
-        // calories, so "goal met" used to move after every workout while
-        // the home screen showed a different target. Adjusted is only the
-        // fallback for a payload with no base value (`MealDashboard.target`).
+        // The judgement itself (fixed goal, adjusted only as a fallback;
+        // CalorieBand for calories, at-least for macros) lives in
+        // FoodLogCore's pure `GoalStatusEvaluator` (add-standalone-mode 2.4),
+        // unchanged, so a local day is judged by the same code. `nil` = no
+        // goals or no content: nothing is recorded, as before.
+        guard let judgement = GoalStatusEvaluator.evaluate(log) else { return }
         let status = DailyGoalStatus(
             date: dateString,
-            metCalorieGoal: CalorieBand.isGoalMet(consumed: content.calories, goal: goals.calories ?? goals.adjustedCalories),
-            metProteinGoal: Self.metAtLeast(actual: content.protein, goal: goals.protein ?? goals.adjustedProtein),
-            metCarbGoal: Self.metAtLeast(actual: content.carbs, goal: goals.carbs ?? goals.adjustedCarbs),
-            metFatGoal: Self.metAtLeast(actual: content.fat, goal: goals.fat ?? goals.adjustedFat)
+            metCalorieGoal: judgement.metCalorieGoal,
+            metProteinGoal: judgement.metProteinGoal,
+            metCarbGoal: judgement.metCarbGoal,
+            metFatGoal: judgement.metFatGoal
         )
         try? await goalStatusStore.record(status)
         try? await lifetimeStatsStore.recordGoalStatus(status)
@@ -513,10 +510,5 @@ final class GamificationEngine {
         pendingMoments.append(contentsOf: outcome.moments)
         if let progress = outcome.levelProgress { levelProgress = progress }
         if outcome.unlockedBadges { unlockedAchievements = await achievementStore.all() }
-    }
-
-    private static func metAtLeast(actual: Double?, goal: Double?) -> Bool {
-        guard let actual, let goal, goal > 0 else { return false }
-        return actual >= goal
     }
 }

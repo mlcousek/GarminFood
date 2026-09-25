@@ -33,10 +33,12 @@ final class AppPreferences {
         static let quantityInputMode = "preferences.quantityInputMode"
         // add-standalone-mode D1: which system of record this install uses.
         // Absent = not yet classified (AppEnvironment.classifyDataModeIfNeeded).
-        static let dataMode = "dataMode.v1"
+        static let dataMode = DataMode.storageKey
         // add-standalone-mode 1.5: developer-only switch (Diagnostics menu)
         // so each wave can be tried on a device before onboarding exists.
-        static let forceStandaloneMode = "developer.forceStandaloneMode.v1"
+        // The key strings live in FoodLogCore (`DataMode`) because
+        // AppServices (Shared/) reads them on every routed call.
+        static let forceStandaloneMode = DataMode.forceStandaloneStorageKey
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -89,8 +91,9 @@ final class AppPreferences {
 
     /// add-standalone-mode D1: the install's system of record, or `nil`
     /// until classified. Set once at launch by
-    /// `AppEnvironment.classifyDataModeIfNeeded()`; nothing reads it to
-    /// change behaviour yet (wave 1 is seams only).
+    /// `AppEnvironment.classifyDataModeIfNeeded()`. Behaviour follows the
+    /// EFFECTIVE mode (`DataMode.effective`, read by `AppServices` from the
+    /// same key), where an unclassified install counts as Garmin.
     var dataMode: DataMode? {
         get { storedDataMode }
         set {
@@ -104,9 +107,10 @@ final class AppPreferences {
     }
 
     /// add-standalone-mode 1.5: "Force standalone mode (testing)", a hidden
-    /// Diagnostics toggle. Wave 1 only STORES it -- nothing reads it, so the
-    /// app behaves exactly as before whichever way it is set. A later wave
-    /// makes the effective data mode honour it for on-device checks.
+    /// Diagnostics toggle. Since wave 2 it makes the effective data mode
+    /// standalone (`DataMode.effective`): food-log writes and reads go to
+    /// the local food log on this phone. Off by default, so the owner's
+    /// phone behaves exactly as before unless he turns it on.
     var forceStandaloneMode: Bool {
         get { storedForceStandaloneMode }
         set {
