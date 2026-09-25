@@ -39,6 +39,8 @@ final class AppPreferences {
         // The key strings live in FoodLogCore (`DataMode`) because
         // AppServices (Shared/) reads them on every routed call.
         static let forceStandaloneMode = DataMode.forceStandaloneStorageKey
+        // add-supplements: the optional supplements feature. Off by default.
+        static let supplementsEnabled = "preferences.supplements.enabled"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -61,6 +63,7 @@ final class AppPreferences {
     private var storedQuantityInputMode: QuantityInputMode
     private var storedDataMode: DataMode?
     private var storedForceStandaloneMode: Bool
+    private var storedSupplementsEnabled: Bool
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -87,6 +90,8 @@ final class AppPreferences {
             .flatMap(QuantityInputMode.init(rawValue:)) ?? .amount
         storedDataMode = defaults.string(forKey: Key.dataMode).flatMap(DataMode.init(rawValue:))
         storedForceStandaloneMode = defaults.object(forKey: Key.forceStandaloneMode) as? Bool ?? false
+        // Off: nothing about supplements shows until the user turns it on.
+        storedSupplementsEnabled = defaults.object(forKey: Key.supplementsEnabled) as? Bool ?? false
     }
 
     /// add-standalone-mode D1: the install's system of record, or `nil`
@@ -282,6 +287,20 @@ final class AppPreferences {
         set {
             storedWeightGoalStartKg = newValue
             setOptional(newValue, forKey: Key.weightGoalStartKg)
+        }
+    }
+
+    // MARK: Supplements (add-supplements)
+
+    /// The optional supplements feature (Settings -> Supplements). Off by
+    /// default. Turning it off only hides the screens, Today card and
+    /// reminders; the supplement stores keep every product and intake, so
+    /// turning it back on restores them (spec "disabling keeps data").
+    var supplementsEnabled: Bool {
+        get { storedSupplementsEnabled }
+        set {
+            storedSupplementsEnabled = newValue
+            defaults.set(newValue, forKey: Key.supplementsEnabled)
         }
     }
 

@@ -27,5 +27,89 @@
 			<string>%lld minut</string>
 		</dict>
 	</dict>
+	<!-- Supplement serving size (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld capsules</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld kapsle</string>
+			<key>few</key>
+			<string>%lld kapsle</string>
+			<key>many</key>
+			<string>%lld kapsle</string>
+			<key>other</key>
+			<string>%lld kapslí</string>
+		</dict>
+	</dict>
+	<!-- Supplement serving size (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld tablets</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld tableta</string>
+			<key>few</key>
+			<string>%lld tablety</string>
+			<key>many</key>
+			<string>%lld tablety</string>
+			<key>other</key>
+			<string>%lld tablet</string>
+		</dict>
+	</dict>
+	<!-- Supplement serving size (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld gummies</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld želé bonbon</string>
+			<key>few</key>
+			<string>%lld želé bonbony</string>
+			<key>many</key>
+			<string>%lld želé bonbonu</string>
+			<key>other</key>
+			<string>%lld želé bonbonů</string>
+		</dict>
+	</dict>
+	<!-- Supplement serving size or dose count (Supplements/SupplementCatalog.swift, ProductForm.servingText). -->
+	<key>%lld servings</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld dávka</string>
+			<key>few</key>
+			<string>%lld dávky</string>
+			<key>many</key>
+			<string>%lld dávky</string>
+			<key>other</key>
+			<string>%lld dávek</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
