@@ -415,7 +415,9 @@ public struct LogEntryCoordinator: Sendable {
     /// Best-effort: lets the queued row show a name and calories before
     /// Garmin reads it back (`MealDashboard.pendingEntry` looks foods up in
     /// this cache). Never overwrites a food already cached from a search --
-    /// at most adds the missing serving to it.
+    /// at most adds the missing serving to it. The rule itself lives in
+    /// `FoodCacheStore.cacheForDisplay` (add-standalone-mode 2.2) so the
+    /// local coordinator applies exactly the same one.
     private func cacheForDisplay(
         foodId: String,
         name: String,
@@ -425,32 +427,16 @@ public struct LogEntryCoordinator: Sendable {
         regionCode: String?,
         languageCode: String?
     ) async {
-        guard let foodCache, let serving else { return }
-        if let existing = await foodCache.food(forId: foodId) {
-            guard !existing.servings.contains(where: { $0.id == serving.id }) else { return }
-            await foodCache.upsert([Food(
-                id: existing.id,
-                name: existing.name,
-                brandName: existing.brandName,
-                source: existing.source,
-                servings: existing.servings + [serving],
-                imageURL: existing.imageURL,
-                garminIsFavorite: existing.garminIsFavorite,
-                garminIsRecent: existing.garminIsRecent,
-                regionCode: existing.regionCode,
-                languageCode: existing.languageCode
-            )])
-        } else {
-            await foodCache.upsert([Food(
-                id: foodId,
-                name: name,
-                brandName: brandName,
-                source: source == .fatSecret ? .fatSecret : .garmin,
-                servings: [serving],
-                regionCode: regionCode,
-                languageCode: languageCode
-            )])
-        }
+        guard let foodCache else { return }
+        await foodCache.cacheForDisplay(
+            foodId: foodId,
+            name: name,
+            brandName: brandName,
+            source: source == .fatSecret ? .fatSecret : .garmin,
+            serving: serving,
+            regionCode: regionCode,
+            languageCode: languageCode
+        )
     }
 }
 
