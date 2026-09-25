@@ -520,5 +520,35 @@ final class GamificationEngine {
         pendingMoments.append(contentsOf: outcome.moments)
         if let progress = outcome.levelProgress { levelProgress = progress }
         if outcome.unlockedBadges { unlockedAchievements = await achievementStore.all() }
+        // A boss defeat or a full bingo card may just have granted a freeze:
+        // refresh the displayed bank. (It can't cover an earlier miss --
+        // design D6 only spends grants dated before the miss.)
+        if let boss = featureHost.feature(WeeklyBossFeature.self) {
+            let grants = await featureHost.freezeGrants()
+            freezeBalance = await boss.freezeBalance(grants: grants)
+        }
+    }
+
+    // MARK: - Streak freezes (add-weekly-boss-and-streak-freezes D6)
+
+    /// Runs the pure `StreakFreezePlanner` (through the boss feature, which
+    /// owns `StreakFreezeStore`) BEFORE any streak computation, so the
+    /// frozen days it returns feed `StreakEngine.status` and
+    /// `StreakHistory.summary`. Local file I/O only, no network. With no
+    /// freeze ever granted it freezes nothing, so the streak is exactly the
+    /// pre-freeze one. While the freeze file can't be read (device locked)
+    /// the last known frozen days are kept rather than dropped, so a
+    /// protected streak never flickers to a reset.
+    private func applyStreakFreezes(events: [UsageEvent], now: Date) async {
+        guard let featureHost, let boss = featureHost.feature(WeeklyBossFeature.self) else { return }
+        let calendar = Calendar.current
+        let loggedDays = StreakEngine.loggedDays(events: events, boundaryHour: boundaryHour, calendar: calendar)
+        let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
+        let grants = await featureHost.freezeGrants()
+        let run = await boss.applyStreakFreezes(loggedDays: loggedDays, grants: grants, today: today, calendar: calendar)
+        guard run.isReadable else { return }
+        frozenDays = run.frozenDays
+        freezeBalance = run.balance
+        pendingMoments.append(contentsOf: run.moments.map { GamificationMoment.feature($0) })
     }
 }
