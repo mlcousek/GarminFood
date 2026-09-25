@@ -42,6 +42,16 @@
 // Monday-starting) -- this is what makes "a miss straddling a week
 // boundary" (design.md's named risk) a non-issue: there is no boundary to
 // straddle, only a distance between two dates.
+//
+// STREAK FREEZES (add-weekly-boss-and-streak-freezes design D5): an
+// optional, explicitly persisted `frozenDays` set (chosen by the pure
+// `StreakFreezePlanner`, stored by `StreakFreezeStore`). A day in it that
+// is NOT logged walks as `.frozen`: the running length is unchanged (like
+// grace), the day is NOT added to the trailing-miss window (so it neither
+// uses up nor triggers the grace rule), and it never resets the streak. A
+// frozen day that later gains a log is simply `.logged`. Every parameter
+// defaults to `[]`, so with no freezes the walk is exactly as before --
+// the walk stays a pure function of its (now two) inputs.
 
 import FoodLogCore
 import Foundation
@@ -95,25 +105,42 @@ public enum StreakEngine {
     /// Garmin), and toward its bucketed timestamp otherwise.
     public static func status(
         events: [UsageEvent],
+        frozenDays: Set<Date> = [],
         now: Date = Date(),
         boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
         calendar: Calendar = .current
     ) -> Status {
-        let loggedDays = Set(events.map {
+        let loggedDays = loggedDays(events: events, boundaryHour: boundaryHour, calendar: calendar)
+        let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
+        return status(loggedDays: loggedDays, frozenDays: frozenDays, today: today, calendar: calendar)
+    }
+
+    /// The nutrition days (midnight markers) `events` were logged for --
+    /// the same bucketing `status(events:...)` uses, exposed so the app can
+    /// feed `StreakFreezePlanner` exactly the days the streak walks.
+    public static func loggedDays(
+        events: [UsageEvent],
+        boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
+        calendar: Calendar = .current
+    ) -> Set<Date> {
+        Set(events.map {
             NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour, calendar: calendar)
         })
-        let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
-        return status(loggedDays: loggedDays, today: today, calendar: calendar)
     }
 
     /// The pure core: day markers (midnight of each nutrition day) in,
     /// status out.
-    public static func status(loggedDays: Set<Date>, today: Date, calendar: Calendar = .current) -> Status {
+    public static func status(
+        loggedDays: Set<Date>,
+        frozenDays: Set<Date> = [],
+        today: Date,
+        calendar: Calendar = .current
+    ) -> Status {
         guard let lastLoggedDay = loggedDays.max() else {
             return Status(length: 0, hasLoggedToday: false, isAtRiskToday: false, lastLoggedDay: nil)
         }
         let hasLoggedToday = loggedDays.contains(today)
-        let walk = simulate(loggedDays: loggedDays, today: today, calendar: calendar)
+        let walk = simulate(loggedDays: loggedDays, frozenDays: frozenDays, today: today, calendar: calendar)
         // 2026-09-21 bug fix: this used to additionally require
         // `loggedDays.contains(yesterday)`, which was false -- and so
         // reported "not at risk" -- on exactly the day after yesterday's
@@ -138,10 +165,17 @@ public enum StreakEngine {
         case grace
         /// A miss that ended a streak, or that fell while no streak ran.
         case missed
+        /// A miss covered by a consumed streak freeze (design D5): length
+        /// unchanged, not part of the grace window, never a reset.
+        case frozen
     }
 
     struct Walk {
         var outcomes: [Date: DayOutcome] = [:]
+        /// The running length immediately BEFORE each walked day (what a
+        /// miss on that day would destroy) -- `StreakFreezePlanner` only
+        /// protects streaks of at least 3 days.
+        var lengthBefore: [Date: Int] = [:]
         var currentLength = 0
         var longestLength = 0
     }
@@ -149,7 +183,7 @@ public enum StreakEngine {
     /// The forward simulation described in this file's header, recording
     /// what happened on each walked day so the streak calendar can show it
     /// with exactly the same rule the current streak uses.
-    static func simulate(loggedDays: Set<Date>, today: Date, calendar: Calendar) -> Walk {
+    static func simulate(loggedDays: Set<Date>, frozenDays: Set<Date> = [], today: Date, calendar: Calendar) -> Walk {
         var walk = Walk()
         guard let earliest = loggedDays.min() else { return walk }
 
@@ -170,10 +204,15 @@ public enum StreakEngine {
 
         while cursor <= endDay, iterations < maxIterations {
             iterations += 1
+            walk.lengthBefore[cursor] = walk.currentLength
             if loggedDays.contains(cursor) {
                 walk.currentLength += 1
                 walk.longestLength = max(walk.longestLength, walk.currentLength)
                 walk.outcomes[cursor] = .logged
+            } else if frozenDays.contains(cursor) {
+                // Design D5: bridged by a freeze -- no length change, not
+                // remembered as a miss, never a reset.
+                walk.outcomes[cursor] = .frozen
             } else {
                 recentMisses.removeAll { daysBetween($0, cursor, calendar: calendar) > Self.graceWindowDays - 1 }
                 if recentMisses.isEmpty {

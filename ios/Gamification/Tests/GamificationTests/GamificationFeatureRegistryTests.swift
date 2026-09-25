@@ -13,6 +13,7 @@ final class GamificationFeatureRegistryTests: XCTestCase {
     private let implemented: Set<String> = [
         SeasonalEventsFeature.id, FoodCollectionsFeature.id, JourneysFeature.id, PersonalRecordsFeature.id,
         SportAndBodyFeature.id, SecretAchievementsFeature.id, WeeklyBingoFeature.id,
+        WeeklyBossFeature.id,
     ]
 
     private func tempDirectory() -> URL {

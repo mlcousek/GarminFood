@@ -55,6 +55,11 @@ final class GamificationEngine {
     private let boundaryHour = NutritionDayBoundary.loggedDateBoundaryHour
 
     private(set) var streakStatus = StreakEngine.Status(length: 0, hasLoggedToday: false, isAtRiskToday: false, lastLoggedDay: nil)
+    /// add-weekly-boss-and-streak-freezes D5/D6: missed days covered by a
+    /// consumed streak freeze (empty until one is earned AND used, so the
+    /// streak is exactly the pre-freeze one) and the current freeze bank.
+    private(set) var frozenDays: Set<Date> = []
+    private(set) var freezeBalance: FreezeBalance.Result = .zero
     private(set) var levelProgress = LevelCurve.level(forTotalXP: 0)
     private(set) var activeChallengeTemplate: ChallengeTemplate?
     private(set) var challengeProgress: ChallengeProgress?
@@ -137,7 +142,8 @@ final class GamificationEngine {
         lastKnownGoalStatuses = goalStatuses
         signals = await featureHost?.buildSnapshot(goalStatuses: goalStatuses, now: now)
 
-        streakStatus = StreakEngine.status(events: events, now: now, boundaryHour: boundaryHour)
+        await applyStreakFreezes(events: events, now: now)
+        streakStatus = StreakEngine.status(events: events, frozenDays: frozenDays, now: now, boundaryHour: boundaryHour)
         // add-gamification-signals D10: never below the peak level reached.
         levelProgress = await xpStore.currentProgress()
         updateHistory(events: events, goalStatuses: goalStatuses, now: now)
@@ -189,9 +195,13 @@ final class GamificationEngine {
     /// engine that needs it (achievements spec's lifetime-calories ledger,
     /// design.md D4); nothing else here reads it.
     func handleLogConfirmed(now: Date = Date(), calories: Double? = nil) async {
-        let previousStreak = StreakEngine.status(events: lastKnownEvents, now: now, boundaryHour: boundaryHour)
         let events = await usageHistory.all() // already includes the entry that was just confirmed
-        let newStreak = StreakEngine.status(events: events, now: now, boundaryHour: boundaryHour)
+        // Freezes first (design D6), so "before" and "after" walk the same
+        // frozen days -- a freeze consumed right now must not read as the
+        // log having extended the streak by 20 days.
+        await applyStreakFreezes(events: events, now: now)
+        let previousStreak = StreakEngine.status(events: lastKnownEvents, frozenDays: frozenDays, now: now, boundaryHour: boundaryHour)
+        let newStreak = StreakEngine.status(events: events, frozenDays: frozenDays, now: now, boundaryHour: boundaryHour)
         let streakExtended = newStreak.length > previousStreak.length
 
         let goalStatuses = await goalStatusStore.all()
@@ -270,7 +280,7 @@ final class GamificationEngine {
     // MARK: - Private
 
     private func updateHistory(events: [UsageEvent], goalStatuses: [DailyGoalStatus], now: Date) {
-        streakSummary = StreakHistory.summary(events: events, now: now, weeks: 6, boundaryHour: boundaryHour)
+        streakSummary = StreakHistory.summary(events: events, frozenDays: frozenDays, now: now, weeks: 6, boundaryHour: boundaryHour)
         goalHistory = goalStatuses.sorted { $0.date > $1.date }
         totalLogCount = events.count
     }
@@ -510,5 +520,35 @@ final class GamificationEngine {
         pendingMoments.append(contentsOf: outcome.moments)
         if let progress = outcome.levelProgress { levelProgress = progress }
         if outcome.unlockedBadges { unlockedAchievements = await achievementStore.all() }
+        // A boss defeat or a full bingo card may just have granted a freeze:
+        // refresh the displayed bank. (It can't cover an earlier miss --
+        // design D6 only spends grants dated before the miss.)
+        if let boss = featureHost.feature(WeeklyBossFeature.self) {
+            let grants = await featureHost.freezeGrants()
+            freezeBalance = await boss.freezeBalance(grants: grants)
+        }
+    }
+
+    // MARK: - Streak freezes (add-weekly-boss-and-streak-freezes D6)
+
+    /// Runs the pure `StreakFreezePlanner` (through the boss feature, which
+    /// owns `StreakFreezeStore`) BEFORE any streak computation, so the
+    /// frozen days it returns feed `StreakEngine.status` and
+    /// `StreakHistory.summary`. Local file I/O only, no network. With no
+    /// freeze ever granted it freezes nothing, so the streak is exactly the
+    /// pre-freeze one. While the freeze file can't be read (device locked)
+    /// the last known frozen days are kept rather than dropped, so a
+    /// protected streak never flickers to a reset.
+    private func applyStreakFreezes(events: [UsageEvent], now: Date) async {
+        guard let featureHost, let boss = featureHost.feature(WeeklyBossFeature.self) else { return }
+        let calendar = Calendar.current
+        let loggedDays = StreakEngine.loggedDays(events: events, boundaryHour: boundaryHour, calendar: calendar)
+        let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
+        let grants = await featureHost.freezeGrants()
+        let run = await boss.applyStreakFreezes(loggedDays: loggedDays, grants: grants, today: today, calendar: calendar)
+        guard run.isReadable else { return }
+        frozenDays = run.frozenDays
+        freezeBalance = run.balance
+        pendingMoments.append(contentsOf: run.moments.map { GamificationMoment.feature($0) })
     }
 }
