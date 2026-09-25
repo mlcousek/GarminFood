@@ -111,7 +111,7 @@ final class StandaloneBarcodeResolutionTests: XCTestCase {
 
         let match = try await StandaloneBarcodeResolution.resolve(scannedCode: "8594001234567", customFoods: [], offlineIndex: offlineHolder, productLookup: lookup)
 
-        guard case .product(let food) = match else { return XCTFail("expected the offline product, got \(String(describing: match))") }
+        guard case .product(let food)? = match else { return XCTFail("expected the offline product, got \(String(describing: match))") }
         XCTAssertEqual(food.name, "Jihočeský tvaroh měkký")
         let queried = await lookup.queried
         XCTAssertTrue(queried.isEmpty)
@@ -119,7 +119,7 @@ final class StandaloneBarcodeResolutionTests: XCTestCase {
 
     func testAZeroPaddedUPCAFindsTheOfflineProduct() async throws {
         let match = try await StandaloneBarcodeResolution.resolve(scannedCode: "0012345678905", customFoods: [], offlineIndex: offlineHolder, productLookup: nil)
-        guard case .product(let food) = match else { return XCTFail("expected a product") }
+        guard case .product(let food)? = match else { return XCTFail("expected a product") }
         XCTAssertEqual(food.id, "012345678905")
     }
 

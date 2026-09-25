@@ -67,7 +67,7 @@ final class ShortcutLoggingRulesTests: XCTestCase {
     /// empty.
     func testAStandaloneLogThroughTheProxyIsLocal() async throws {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent("shortcut-rules-\(UUID().uuidString)")
-        let usage = UsageHistoryStore(fileURL: dir.appendingPathComponent("usage.json"))
+        let usage = UsageHistoryStore(fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("shortcut-rules-usage-\(UUID().uuidString).json"))
         let outbox = Outbox(processName: "shortcut-rules-\(UUID().uuidString)")
         let log = LocalFoodLogStore(directoryURL: dir.appendingPathComponent("log"))
         let proxy = ModeRoutingFoodLogging(
