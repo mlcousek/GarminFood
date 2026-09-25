@@ -83,6 +83,14 @@ public actor StreakFreezeStore {
         )
     }
 
+    /// Every consumption, in the order recorded, and whether the file could
+    /// be read. While `isReadable` is false (file exists but is locked) the
+    /// caller must not plan new freezes -- it can't know which were spent.
+    public func load() -> (consumptions: [Consumption], isReadable: Bool) {
+        loadIfNeeded()
+        return (snapshot.consumptions ?? [], loaded)
+    }
+
     /// Every consumption, in the order recorded.
     public func consumptions() -> [Consumption] {
         loadIfNeeded()
