@@ -7440,6 +7440,330 @@
           }
         }
       }
+    },
+    "Missed, streak frozen": {
+      "comment": "Streak calendar day: a missed day covered by a streak freeze (VoiceOver).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vynecháno, série zmrazena"
+          }
+        }
+      }
+    },
+    "Frozen": {
+      "comment": "Streak calendar legend: a day covered by a streak freeze.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazeno"
+          }
+        }
+      }
+    },
+    "Streak freezes": {
+      "comment": "Streak screen: title of the streak-freeze bank.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série"
+          }
+        }
+      }
+    },
+    "Used so far: %lld": {
+      "comment": "Streak screen: number of streak freezes used so far.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím použito: %lld"
+          }
+        }
+      }
+    },
+    "Bank full: the freeze earned on %@ was not added (you can hold %lld).": {
+      "comment": "Streak screen: a freeze was earned while the bank was full. %@ is a date, %lld the maximum number of freezes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásoba plná: zmrazení získané %1$@ nebylo přidáno (můžeš mít nejvýš %2$lld)."
+          }
+        }
+      }
+    },
+    "Streak freezes: %lld of %lld": {
+      "comment": "VoiceOver: available streak freezes out of the maximum.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série: %1$lld z %2$lld"
+          }
+        }
+      }
+    },
+    "A streak freeze covers a second missed day that would otherwise end a streak of 3 days or more, and is used automatically. Earn one by defeating the weekly boss or completing a full bingo card; you can hold up to %lld.": {
+      "comment": "Streak screen, How streaks work: explains streak freezes. %lld is the maximum number of freezes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmrazení série pokryje druhý vynechaný den, který by jinak ukončil sérii dlouhou aspoň 3 dny, a použije se samo. Získáš ho poražením týdenního bosse nebo celou bingo kartou; mít můžeš nejvýš %lld."
+          }
+        }
+      }
+    },
+    "This week's boss appears after your next log.": {
+      "comment": "Weekly boss placeholder before this week's boss exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boss tohoto týdne se objeví po dalším zápisu."
+          }
+        }
+      }
+    },
+    "Every Monday a boss is picked from your weakest habit of the last four weeks. Defeat it for %lld–%lld XP and a streak freeze. If it escapes, nothing is lost.": {
+      "comment": "Weekly boss screen footnote. The two %lld are the XP range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každé pondělí se vybere boss podle tvého nejslabšího návyku za poslední čtyři týdny. Poraž ho a získáš %1$lld–%2$lld XP a zmrazení série. Když uteče, nic neztratíš."
+          }
+        }
+      }
+    },
+    "Past weeks": {
+      "comment": "Weekly boss screen: section of previous weeks.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minulé týdny"
+          }
+        }
+      }
+    },
+    "Bestiary": {
+      "comment": "Weekly boss screen: section listing every boss kind.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestiář"
+          }
+        }
+      }
+    },
+    "Weekly Boss": {
+      "comment": "Weekly boss card title and screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní boss"
+          }
+        }
+      }
+    },
+    "%@ on %lld of 7 days to defeat it.": {
+      "comment": "Weekly boss screen: the habit and the target. %@ is the habit (e.g. 'Log breakfast'), %lld a number of days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ve %2$lld ze 7 dnů a porazíš ho."
+          }
+        }
+      }
+    },
+    "Hits: %lld/%lld": {
+      "comment": "Weekly boss: hits so far out of the target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásahy: %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "Why this boss": {
+      "comment": "Weekly boss screen: section explaining why this boss was chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proč tento boss"
+          }
+        }
+      }
+    },
+    "Over the last four weeks this was your weakest habit, so the target is two days better than your recent average.": {
+      "comment": "Weekly boss screen: how the boss and its target were chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za poslední čtyři týdny to byl tvůj nejslabší návyk, proto je cíl o dva dny lepší než tvůj nedávný průměr."
+          }
+        }
+      }
+    },
+    "This week": {
+      "comment": "Weekly boss screen: section showing which days of this week scored a hit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento týden"
+          }
+        }
+      }
+    },
+    "Hit": {
+      "comment": "VoiceOver: this day scored a hit on the weekly boss.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásah"
+          }
+        }
+      }
+    },
+    "No hit": {
+      "comment": "VoiceOver: this day did not score a hit on the weekly boss.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez zásahu"
+          }
+        }
+      }
+    },
+    "Defeated": {
+      "comment": "Weekly boss outcome: beaten.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poražen"
+          }
+        }
+      }
+    },
+    "Not defeated yet": {
+      "comment": "VoiceOver: bestiary boss kind never defeated.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím neporažen"
+          }
+        }
+      }
+    },
+    "HP %lld/%lld": {
+      "comment": "Weekly boss health bar: remaining health out of the total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Životy %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "Boss health": {
+      "comment": "VoiceOver label of the weekly boss health bar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Životy bosse"
+          }
+        }
+      }
+    },
+    "Escaped": {
+      "comment": "Weekly boss outcome: the week ended without defeating it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utekl"
+          }
+        }
+      }
+    },
+    "In progress": {
+      "comment": "Weekly boss outcome: this week's fight is still running.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probíhá"
+          }
+        }
+      }
+    },
+    "Opens the weekly boss": {
+      "comment": "VoiceOver hint of the weekly boss card and banner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře týdenního bosse"
+          }
+        }
+      }
+    },
+    "This week's boss": {
+      "comment": "Today banner caption above the weekly boss name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boss tohoto týdne"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -4,6 +4,13 @@
 // challenges and goal history, each with its own detail screen. Everything
 // shown is computed locally by the Gamification package; nothing here waits
 // on the network.
+//
+// add-weekly-boss-and-streak-freezes D7: the streak card and screen show
+// the streak-freeze bank ("n/2" chip, `FreezeChip`), a frozen day is its
+// own `StreakDot` style (ice fill + snowflake, "Missed, streak frozen"),
+// and "How streaks work" explains freezes. The freeze data comes from
+// `GamificationEngine.freezeBalance` / `.streakSummary` (already frozen-
+// aware); nothing here computes a freeze.
 
 import SwiftUI
 import Gamification
@@ -23,7 +30,7 @@ struct ProgressHomeView: View {
                 NavigationLink {
                     StreakDetailView()
                 } label: {
-                    StreakSummaryCard(summary: engine.streakSummary, status: engine.streakStatus)
+                    StreakSummaryCard(summary: engine.streakSummary, status: engine.streakStatus, freezes: engine.freezeBalance)
                 }
                 .buttonStyle(.plain)
 
@@ -122,6 +129,7 @@ private struct CardHeader: View {
 private struct StreakSummaryCard: View {
     let summary: StreakHistory.Summary
     let status: StreakEngine.Status
+    let freezes: FreezeBalance.Result
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
@@ -132,6 +140,7 @@ private struct StreakSummaryCard: View {
                 Text(summary.currentLength == 1 ? "day" : "days")
                     .font(.streakLabel)
                     .foregroundStyle(.secondary)
+                FreezeChip(available: freezes.available)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 0) {
                     Text("Best \(summary.longestLength)")
@@ -146,6 +155,7 @@ private struct StreakSummaryCard: View {
         .card()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Streak \(summary.currentLength) days, best \(summary.longestLength)")
+        .accessibilityValue(FreezeChip.accessibilityText(available: freezes.available))
         .accessibilityHint("Opens streak history")
     }
 }
@@ -405,6 +415,10 @@ struct StreakDot: View {
                 Image(systemName: "shield.fill")
                     .font(.system(size: size * 0.45))
                     .foregroundStyle(.white)
+            } else if mark == .frozen {
+                Image(systemName: "snowflake")
+                    .font(.system(size: size * 0.5))
+                    .foregroundStyle(.white)
             }
         }
         .frame(width: size, height: size)
@@ -422,6 +436,7 @@ struct StreakDot: View {
         switch mark {
         case .logged: return AnyShapeStyle(Theme.flameGradient)
         case .grace: return AnyShapeStyle(Theme.grace)
+        case .frozen: return AnyShapeStyle(Theme.water)
         case .missed: return AnyShapeStyle(Color.primary.opacity(0.12))
         case .pending: return AnyShapeStyle(Theme.ember.opacity(0.18))
         case .future, .beforeHistory: return AnyShapeStyle(Color.primary.opacity(0.04))
@@ -432,6 +447,7 @@ struct StreakDot: View {
         switch mark {
         case .logged: return "Logged"
         case .grace: return "Missed, forgiven"
+        case .frozen: return String(localized: "Missed, streak frozen")
         case .missed: return "Missed"
         case .pending: return "Today, nothing logged yet"
         case .future: return "Upcoming"
@@ -449,6 +465,7 @@ struct StreakDetailView: View {
     var body: some View {
         let summary = environment.gamificationEngine.streakSummary
         let status = environment.gamificationEngine.streakStatus
+        let freezes = environment.gamificationEngine.freezeBalance
 
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
@@ -457,6 +474,8 @@ struct StreakDetailView: View {
                     StatTile(value: "\(summary.longestLength)", label: "Longest streak", systemImage: "trophy.fill")
                     StatTile(value: "\(summary.loggedDayCount)", label: "Days logged", systemImage: "calendar")
                 }
+
+                freezeBank(freezes)
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                     SectionHeader(title: "Last 6 weeks")
@@ -484,6 +503,10 @@ struct StreakDetailView: View {
                     Text("Log at least one food on a day to count it. One missed day in any 7 is forgiven, shown with a shield. A second miss in the same 7 days starts the streak over.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    Text("A streak freeze covers a second missed day that would otherwise end a streak of 3 days or more, and is used automatically. Earn one by defeating the weekly boss or completing a full bingo card; you can hold up to \(FreezeBalance.cap).")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     if status.isAtRiskToday {
                         Label("Log something today to keep your \(status.length)-day streak.", systemImage: "exclamationmark.circle")
                             .font(.subheadline.weight(.semibold))
@@ -513,10 +536,47 @@ struct StreakDetailView: View {
         HStack(spacing: Theme.Spacing.md) {
             legendItem(.logged, "Logged")
             legendItem(.grace, "Forgiven")
+            legendItem(.frozen, String(localized: "Frozen"))
             legendItem(.missed, "Missed")
         }
         .font(.caption)
         .foregroundStyle(.secondary)
+    }
+
+    /// The freeze bank: available / cap, and the spec's "bank was full"
+    /// note when a grant arrived while two were already held.
+    private func freezeBank(_ freezes: FreezeBalance.Result) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            HStack(spacing: Theme.Spacing.sm) {
+                Image(systemName: "snowflake")
+                    .font(.title3)
+                    .foregroundStyle(Theme.water)
+                Text("Streak freezes")
+                    .font(.headline)
+                Spacer()
+                Text(verbatim: "\(freezes.available)/\(FreezeBalance.cap)")
+                    .font(.macroValue.monospacedDigit())
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(FreezeChip.accessibilityText(available: freezes.available))
+            if freezes.used > 0 {
+                Text("Used so far: \(freezes.used)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            if let day = freezes.lastWastedDay {
+                Label(bankFullText(day), systemImage: "exclamationmark.circle")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .card()
+    }
+
+    private func bankFullText(_ dayKey: String) -> String {
+        let date = FreezeDayKey.date(for: dayKey, calendar: .current)
+        let day = date.map { $0.formatted(.dateTime.day().month(.wide)) } ?? dayKey
+        return String(localized: "Bank full: the freeze earned on \(day) was not added (you can hold \(FreezeBalance.cap)).")
     }
 
     private func legendItem(_ mark: StreakHistory.Mark, _ title: String) -> some View {
@@ -524,6 +584,30 @@ struct StreakDetailView: View {
             StreakDot(mark: mark, isToday: false, size: 14)
             Text(title)
         }
+    }
+}
+
+/// The streak-freeze bank ("snowflake 1/2") on the streak card.
+struct FreezeChip: View {
+    let available: Int
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Image(systemName: "snowflake")
+            Text(verbatim: "\(available)/\(FreezeBalance.cap)")
+                .monospacedDigit()
+        }
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(Theme.water)
+        .padding(.horizontal, Theme.Spacing.sm)
+        .padding(.vertical, 2)
+        .background(Theme.water.opacity(0.15), in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Self.accessibilityText(available: available))
+    }
+
+    static func accessibilityText(available: Int) -> Text {
+        Text("Streak freezes: \(available) of \(FreezeBalance.cap)")
     }
 }
 
