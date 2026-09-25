@@ -20,8 +20,23 @@ replaces tuning by estimate with a budget table that tests can check.
 
 **Level 84 after 3 years (1,095 days) of a typical active day.** This is the
 promise from the 2026-09-18 retune that the owner has seen. Secondary
-checks: level 10 falls within 2–5 weeks and level 50 within 9–15 months.
-All three are asserted in tests.
+checks: level 10 within 7–21 days, level 50 within 150–300 days. All three
+are asserted in tests.
+
+**Why the secondary windows changed during implementation (owner-approved
+2026-09-25).** The first draft copied "level 10 in 2–5 weeks, level 50 in
+9–15 months" from the 2026-09-18 table, and that table was wrong. At
+1.045 and 75 XP/day, level 50 needs ~16.8k XP, which is 224 days, not ~1
+year. With the base fixed at 100 XP, solving the factor for level 84 at
+1,095 days always puts level 50 at ~170–225 days and level 10 at ~9–14
+days, whatever the daily XP. Meeting the old windows would need a base of
+~250–400 XP plus a factor of ~1.03–1.038. That would give existing users
+1–2 months with no level-ups and a progress bar stuck at 0: a user at
+~3k XP would stall 34–49 days. So the base stays 100, only the factor is
+solved, and the secondary windows now describe the curve that ships. On it,
+at ≈ 128 XP/day: level 10 in ≈ 9 days, level 50 in ≈ 174 days, level 84 in
+≈ 1,095 days. Moving from 1.0505 costs existing users at most a few days of
+progress-bar movement (≈ 3 days at 12k XP, none at 3k).
 
 ### D2 — `XPBudget` (pure)
 

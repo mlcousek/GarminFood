@@ -231,6 +231,13 @@ public enum XPBudget {
         return min(1, optionalPaceAllowance * core / optional)
     }
 
+    /// The XP an optional source should put in its `RewardGrant.xp`:
+    /// `xp` scaled by the multiplier for the currently enabled optional
+    /// sources (`RewardLedger` then applies it as-is).
+    public static func optionalGrantXP(_ xp: Int, enabledOptionalSources: Set<String>) -> Int {
+        scaledGrant(xp, multiplier: optionalMultiplier(enabledOptionalSources: enabledOptionalSources))
+    }
+
     /// `xp` x `multiplier`, rounded, at least 1 for a positive grant (a
     /// grant never silently pays nothing); 0 for a non-positive `xp`.
     public static func scaledGrant(_ xp: Int, multiplier: Double) -> Int {
