@@ -92,6 +92,12 @@ final class LayoutStore {
         }
     }
 
+    /// The tab the app opens on next launch (task 4.3). Not a screen edit:
+    /// it leaves "Undo reset" and Today's preset alone.
+    func setStartTab(_ tab: StartTab) {
+        write { $0.setStartTab(tab) }
+    }
+
     /// Overwrites Today with a preset (D9).
     func apply(_ preset: LayoutPreset) {
         resetSnapshot = nil

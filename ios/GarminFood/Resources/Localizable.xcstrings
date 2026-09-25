@@ -2875,6 +2875,174 @@
         }
       }
     },
+    "Usual for this meal": {
+      "comment": "Layout editor row: the Log Food shelf of foods usually logged for the current meal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé k tomuto jídlu"
+          }
+        }
+      }
+    },
+    "Streak": {
+      "comment": "Layout editor row: the streak card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série"
+          }
+        }
+      }
+    },
+    "Weekly boss": {
+      "comment": "Layout editor row: the weekly boss card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní boss"
+          }
+        }
+      }
+    },
+    "Weekly bingo": {
+      "comment": "Layout editor row: the weekly bingo card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní bingo"
+          }
+        }
+      }
+    },
+    "Records": {
+      "comment": "Layout editor row: the personal records card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekordy"
+          }
+        }
+      }
+    },
+    "Collections": {
+      "comment": "Layout editor row: the collections card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sbírky"
+          }
+        }
+      }
+    },
+    "Challenges": {
+      "comment": "Layout editor row: the challenges card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výzvy"
+          }
+        }
+      }
+    },
+    "Achievements": {
+      "comment": "Layout editor row: the achievements card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odznaky"
+          }
+        }
+      }
+    },
+    "Hydration": {
+      "comment": "Layout editor row: the hydration card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pitný režim"
+          }
+        }
+      }
+    },
+    "Trends": {
+      "comment": "Layout editor row: the trends card on Progress.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trendy"
+          }
+        }
+      }
+    },
+    "Goals, last 14 days": {
+      "comment": "Progress: header of the goal history list; also its layout editor row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíle za posledních 14 dní"
+          }
+        }
+      }
+    },
+    "Start on": {
+      "comment": "Settings -> Appearance -> Layout: picker for the tab the app opens on.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevírat na"
+          }
+        }
+      }
+    },
+    "Start tab": {
+      "comment": "Settings -> Appearance: section header of the start tab picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úvodní karta"
+          }
+        }
+      }
+    },
+    "Applies the next time the app opens. Widgets and links still open where they point.": {
+      "comment": "Settings -> Appearance: footer under the start tab picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projeví se při příštím otevření aplikace. Widgety a odkazy dál otevřou to, na co ukazují."
+          }
+        }
+      }
+    },
     "Day summary": {
       "comment": "Layout editor row: calories ring and macro bars.",
       "extractionState": "manual",
