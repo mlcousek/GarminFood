@@ -71,7 +71,12 @@ struct DiagnosticsLogView: View {
                         Label("Clear log", systemImage: "trash")
                     }
                     Divider()
-                    Toggle("Force standalone mode (testing)", isOn: $preferences.forceStandaloneMode)
+                    // The second Text shows as the item's subtitle in the
+                    // menu, so the warning sits right under the toggle.
+                    Toggle(isOn: $preferences.forceStandaloneMode) {
+                        Text("Force standalone mode (testing)")
+                        Text("Entries logged now stay on this phone only; XP, streak and usage still count them.")
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
