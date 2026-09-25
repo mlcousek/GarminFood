@@ -60,7 +60,7 @@ single day of the week, or `.week(WeekPredicate)`), and the predicate's
 | `h-sugar-low` | Sugar Low | ≤ 25 g sugar with ≥ 3 entries | H | macros | macros |
 | `h-five-a-day` | Five a Day | ≥ 5 fruit+veg entries in one day | H | fruit | – |
 | `h-rainbow` | Full Rainbow | all 6 colours across the week | H | colours | – |
-| `h-earned-it` | Earned It | activity ≥ 30 min and calorie goal the same day | H | sport | activities |
+| `h-earned-it` | Earned the Meal | activity ≥ 30 min and calorie goal the same day | H | sport | activities |
 | `h-clean-sweep` | Clean Sweep | all four goals in one day | H | goal | – |
 
 35 tasks: 10 easy, 14 medium, 11 hard. Adding a task later is a row in this
@@ -162,12 +162,14 @@ decode. Uses `GamificationStorage` load/quarantine helpers.
 - A hard square may be unreachable in a given week (e.g. no activity
   happened). Accepted: bingo is about "any line", not a full card every
   week.
-- Tagging errors can tick or miss a square. The square sheet shows *which
-  entry* ticked it, so the owner can report bad tags.
+- Tagging errors can tick or miss a square. The square sheet shows the
+  rule, the day it was ticked and which data it is judged from; the store
+  keeps only the completion day (ids, never food names), so *which entry*
+  ticked it is not shown -- the owner can find it in that day's log.
 
 ## Open Questions
 
-1. Free centre square: kept (owner said "optional"). Alternative: centre
-   is always a "wildcard" easy task. Default: free.
+1. Free centre square: **decided -- kept.** The owner confirmed the card
+   keeps a FREE centre (the "wildcard easy task" alternative is dropped).
 2. Should a blackout also grant a small bonus for doing it before Friday?
    Not planned.

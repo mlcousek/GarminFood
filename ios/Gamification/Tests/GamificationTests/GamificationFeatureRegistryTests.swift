@@ -12,7 +12,7 @@ final class GamificationFeatureRegistryTests: XCTestCase {
     /// id here) -- they are tested in their own *Tests.swift files.
     private let implemented: Set<String> = [
         SeasonalEventsFeature.id, FoodCollectionsFeature.id, JourneysFeature.id, PersonalRecordsFeature.id,
-        SportAndBodyFeature.id, SecretAchievementsFeature.id,
+        SportAndBodyFeature.id, SecretAchievementsFeature.id, WeeklyBingoFeature.id,
     ]
 
     private func tempDirectory() -> URL {
