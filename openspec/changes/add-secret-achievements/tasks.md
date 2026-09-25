@@ -1,13 +1,13 @@
 ## 1. Rules (Gamification, pure)
 
-- [ ] 1.1 `Features/Secret/SecretCatalog.swift`: 15 secret definitions + `secret.keeper` (`visibility`, `featureId: "secret"`, rarity overrides).
-- [ ] 1.2 `Features/Secret/SecretRules.swift`: one pure function per rule over `SignalsSnapshot` (design D2).
-- [ ] 1.3 Tests: one positive + ≥ 1 negative per rule (design D5 list), ids unique, all secret except keeper.
+- [x] 1.1 `Features/Secret/SecretCatalog.swift`: 15 secret definitions + `secret.keeper` (`visibility`, `featureId: "secrets"`, rarity overrides).
+- [x] 1.2 `Features/Secret/SecretRules.swift`: one pure function per rule over `SignalsSnapshot` (design D2).
+- [x] 1.3 Tests: one positive + ≥ 1 negative per rule (design D5 list), ids unique, all secret except keeper.
 
 ## 2. Feature
 
-- [ ] 2.1 Replace the stub `SecretAchievementsFeature`: evaluate locked secrets, unlock ids, grants `secret.<id>`, one combined `.secret` moment, summary ("3/15").
-- [ ] 2.2 Tests: combined moment; XP once across two runs (real `RewardLedger`); keeper after all 15; no evaluation of the current day for completed-day rules.
+- [x] 2.1 Replace the stub `SecretAchievementsFeature`: evaluate locked secrets, unlock ids, grants `secrets.<badge id>`, one combined `.secret` moment, summary ("3/15").
+- [x] 2.2 Tests: combined moment; XP once across two runs (real `RewardLedger`); keeper after all 15; no evaluation of the current day for completed-day rules.
 
 ## 3. UI (thin)
 
