@@ -14,6 +14,7 @@
 import SwiftUI
 import FoodLogCore
 import GarminKit
+import AppearanceKit
 
 // `@MainActor` on this and the other flow screens (LogEntryConfirmView,
 // CustomFoodEditorView, BarcodeScanScreen) so their private helper methods
@@ -140,55 +141,16 @@ struct FoodCatalogView: View {
             // wins) and hands the food back instead of logging, favorite
             // stars are off, and the Meals shelf is hidden (presets can't
             // nest).
+            //
+            // add-themes-and-layout (design.md D8, wave 4): that order is now
+            // the user's -- `LayoutStore`'s resolved Log Food order, one
+            // `switch` arm per shelf (`shelf(_:)`). The rules above (empty
+            // shelf hidden, Meals hidden while picking) are `isShelfAvailable`
+            // on top of the user's show/hide choice; with nothing stored the
+            // order is the fixed one above (LayoutResolverTests golden).
             if !isPickingBackingFood, searchText.trimmingCharacters(in: .whitespaces).isEmpty {
-                if !quickPickItems.isEmpty {
-                    shelfSection(title: String(localized: "Quick pick")) {
-                        rememberedFoodShelf(quickPickItems)
-                    }
-                }
-
-                if !favoriteFoods.isEmpty {
-                    shelfSection(title: String(localized: "Favorites")) {
-                        FavoritesShelf(
-                            items: favoriteFoods,
-                            onTap: { food in select(food) },
-                            onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
-                            cardAccessibilityHint: isPickingIngredient ? String(localized: "Adds this to the meal") : String(localized: "Logs this food")
-                        )
-                    }
-                }
-
-                if !usualItems.isEmpty {
-                    shelfSection(title: usualShelfTitle) {
-                        rememberedFoodShelf(usualItems)
-                    }
-                }
-
-                if !isPicking, !mealPresets.isEmpty {
-                    shelfSection(title: String(localized: "Meals")) {
-                        MealPresetShelf(
-                            presets: mealPresets,
-                            onTap: { preset in mealPresetTarget = preset },
-                            onEdit: { preset in mealPresetBeingEdited = preset },
-                            onDelete: { preset in Task { await deleteMealPreset(preset) } }
-                        )
-                    }
-                }
-
-                if !recentItems.isEmpty {
-                    shelfSection(title: String(localized: "Recent")) {
-                        rememberedFoodShelf(recentItems)
-                    }
-                }
-
-                if !customFoods.isEmpty {
-                    Section {
-                        ForEach(customFoods) { draft in
-                            customFoodRow(draft)
-                        }
-                    } header: {
-                        SectionHeader(title: String(localized: "Your custom foods"))
-                    }
+                ForEach(renderedShelves, id: \.self) { shelfID in
+                    shelf(shelfID)
                 }
             }
 
@@ -396,6 +358,79 @@ struct FoodCatalogView: View {
                 FavoriteToggleButton(isFavorite: isFoodFavorited(draft.asFood())) {
                     toggleFavorite(draft.asFood())
                 }
+            }
+        }
+    }
+
+    /// The empty-query shelves to render, in the user's order: visible in
+    /// the layout (Settings -> Appearance -> Layout -> Log Food) and with
+    /// something to show in this mode.
+    private var renderedShelves: [LogFoodShelfID] {
+        environment.layoutStore.resolved(.logFood).compactMap { placement in
+            guard placement.isVisible,
+                  let shelfID = LogFoodShelfID(rawValue: placement.id),
+                  isShelfAvailable(shelfID)
+            else { return nil }
+            return shelfID
+        }
+    }
+
+    /// The pre-layout show-when rules, unchanged: a shelf with no items is
+    /// hidden, and the Meals shelf never shows while picking (presets can't
+    /// nest, and can't back a custom food).
+    private func isShelfAvailable(_ shelfID: LogFoodShelfID) -> Bool {
+        switch shelfID {
+        case .quickPick: return !quickPickItems.isEmpty
+        case .favorites: return !favoriteFoods.isEmpty
+        case .usual: return !usualItems.isEmpty
+        case .meals: return !isPicking && !mealPresets.isEmpty
+        case .recent: return !recentItems.isEmpty
+        case .customFoods: return !customFoods.isEmpty
+        }
+    }
+
+    /// One shelf of the empty-query list (the arms are the former fixed
+    /// `if` chain's bodies, unchanged).
+    @ViewBuilder
+    private func shelf(_ shelfID: LogFoodShelfID) -> some View {
+        switch shelfID {
+        case .quickPick:
+            shelfSection(title: String(localized: "Quick pick")) {
+                rememberedFoodShelf(quickPickItems)
+            }
+        case .favorites:
+            shelfSection(title: String(localized: "Favorites")) {
+                FavoritesShelf(
+                    items: favoriteFoods,
+                    onTap: { food in select(food) },
+                    onToggleFavorite: isPicking ? nil : { toggleFavorite($0) },
+                    cardAccessibilityHint: isPickingIngredient ? String(localized: "Adds this to the meal") : String(localized: "Logs this food")
+                )
+            }
+        case .usual:
+            shelfSection(title: usualShelfTitle) {
+                rememberedFoodShelf(usualItems)
+            }
+        case .meals:
+            shelfSection(title: String(localized: "Meals")) {
+                MealPresetShelf(
+                    presets: mealPresets,
+                    onTap: { preset in mealPresetTarget = preset },
+                    onEdit: { preset in mealPresetBeingEdited = preset },
+                    onDelete: { preset in Task { await deleteMealPreset(preset) } }
+                )
+            }
+        case .recent:
+            shelfSection(title: String(localized: "Recent")) {
+                rememberedFoodShelf(recentItems)
+            }
+        case .customFoods:
+            Section {
+                ForEach(customFoods) { draft in
+                    customFoodRow(draft)
+                }
+            } header: {
+                SectionHeader(title: String(localized: "Your custom foods"))
             }
         }
     }
