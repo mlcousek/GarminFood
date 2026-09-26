@@ -8,6 +8,11 @@
 // (The "Fasting" row that used to live here was removed by
 // redesign-fasting-schedule: fasting is now a daily window set in Settings,
 // and its detail screen is reached from the always-on home card.)
+//
+// add-standalone-mode 5.2: in standalone mode there is no Garmin profile;
+// the header shows the user's own display name (`AppPreferences.
+// localDisplayName`), editable from a button under it, and nothing is read
+// from Garmin (no pull-to-refresh).
 
 import SwiftUI
 import GarminKit
@@ -15,14 +20,28 @@ import GarminKit
 @MainActor
 struct ProfileView: View {
     @Environment(AppEnvironment.self) private var environment
+    @State private var isEditingName = false
+    @State private var nameText = ""
 
     var body: some View {
         let engine = environment.gamificationEngine
         let profile = environment.profile
+        let isStandalone = environment.dataMode == .standalone
 
         ScrollView {
             VStack(spacing: Theme.Spacing.lg) {
-                ProfileHeader(profile: profile.profile, failed: profile.profileFailed, isLoading: profile.isLoading)
+                if isStandalone {
+                    ProfileHeader(profile: nil, failed: false, isLoading: false, localName: environment.preferences.localDisplayName)
+                    Button {
+                        nameText = environment.preferences.localDisplayName ?? ""
+                        isEditingName = true
+                    } label: {
+                        Label(environment.preferences.localDisplayName == nil ? String(localized: "Add your name") : String(localized: "Change name"), systemImage: "pencil")
+                            .font(.subheadline)
+                    }
+                } else {
+                    ProfileHeader(profile: profile.profile, failed: profile.profileFailed, isLoading: profile.isLoading)
+                }
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Theme.Spacing.sm) {
                     StatTile(value: "\(engine.levelProgress.level)", label: String(localized: "Level"), systemImage: "sparkles")
@@ -55,7 +74,17 @@ struct ProfileView: View {
         .background(Theme.groupedBackground)
         .navigationTitle("Profile")
         .refreshable {
+            guard !isStandalone else { return }
             await profile.refresh()
+        }
+        .alert(String(localized: "Your name"), isPresented: $isEditingName) {
+            TextField(String(localized: "Your display name"), text: $nameText)
+            Button(String(localized: "Cancel"), role: .cancel) {}
+            Button(String(localized: "Save")) {
+                environment.preferences.localDisplayName = nameText
+            }
+        } message: {
+            Text("Shown on your profile. Stays on this phone.")
         }
     }
 }
@@ -64,6 +93,8 @@ private struct ProfileHeader: View {
     let profile: SocialProfile?
     let failed: Bool
     let isLoading: Bool
+    /// Standalone mode's own display name (`nil` = none set).
+    var localName: String? = nil
 
     var body: some View {
         VStack(spacing: Theme.Spacing.sm) {
@@ -90,6 +121,9 @@ private struct ProfileHeader: View {
     /// 2026-09-23), so preferring it showed an opaque id instead of a name.
     /// An empty string counts as missing, so it falls through too.
     private var headerName: String {
+        if let localName, !localName.isEmpty {
+            return localName
+        }
         if let fullName = profile?.fullName, !fullName.trimmingCharacters(in: .whitespaces).isEmpty {
             return fullName
         }

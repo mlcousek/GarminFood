@@ -10980,6 +10980,138 @@
           }
         }
       }
+    },
+    "GarminFood logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
+      "comment": "Settings, About footer (standalone mode, no Garmin).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GarminFood zapisuje jídlo na dvě klepnutí a uchovává ho v tomto telefonu. Česká data o výrobcích © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+          }
+        }
+      }
+    },
+    "Water goal: %@ ml": {
+      "comment": "Settings, Goals (standalone mode): water goal stepper. %@ is millilitres.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl pitného režimu: %@ ml"
+          }
+        }
+      }
+    },
+    "Set a weight goal": {
+      "comment": "Settings, Goals (standalone mode): button to add a weight target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavit cílovou hmotnost"
+          }
+        }
+      }
+    },
+    "Remove weight goal": {
+      "comment": "Settings, Goals (standalone mode): removes the weight target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat cílovou hmotnost"
+          }
+        }
+      }
+    },
+    "Your goals stay on this phone.": {
+      "comment": "Settings, Goals footer (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše cíle zůstávají jen v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Add your name": {
+      "comment": "Profile (standalone mode): button to set the display name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat jméno"
+          }
+        }
+      }
+    },
+    "Change name": {
+      "comment": "Profile (standalone mode): button to change the display name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Změnit jméno"
+          }
+        }
+      }
+    },
+    "Your name": {
+      "comment": "Profile (standalone mode): title of the name editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše jméno"
+          }
+        }
+      }
+    },
+    "Shown on your profile. Stays on this phone.": {
+      "comment": "Profile (standalone mode): name editor message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se na vašem profilu. Zůstává jen v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Log your weight here. It stays on this phone.": {
+      "comment": "Weight card empty state (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapisujte hmotnost tady. Zůstává jen v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Your display name": {
+      "comment": "Profile (standalone mode): name text field placeholder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše jméno pro zobrazení"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

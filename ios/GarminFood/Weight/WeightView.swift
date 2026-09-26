@@ -45,7 +45,8 @@ struct WeightView: View {
                     latest: loader.latest,
                     previous: loader.previous,
                     progress: loader.progress,
-                    refreshFailed: loader.lastGarminRefreshFailed
+                    refreshFailed: loader.lastGarminRefreshFailed,
+                    isStandalone: isStandalone
                 )
             }
 

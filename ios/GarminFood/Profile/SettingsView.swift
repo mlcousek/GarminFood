@@ -4,6 +4,11 @@
 // nutrition plan shown read-only (changed in Garmin Connect, never here, per
 // the spec's own words), the sync queue, preferences that persist, and
 // About.
+//
+// add-standalone-mode 5.2: in standalone mode every Garmin-only row is
+// hidden -- the Garmin account section, Garmin's read-only plan (replaced
+// by the local editable one), the sync queue and "Default meal from
+// Garmin's schedule" -- and About no longer says it syncs to Garmin.
 
 import SwiftUI
 import UIKit
@@ -51,8 +56,10 @@ struct SettingsView: View {
 
     var body: some View {
         @Bindable var preferences = environment.preferences
+        let isStandalone = environment.dataMode == .standalone
 
         Form {
+            if !isStandalone {
             Section("Garmin account") {
                 HStack {
                     Text("Status")
@@ -70,10 +77,11 @@ struct SettingsView: View {
                     }
                 }
             }
+            }
 
             // add-standalone-mode 4.3: standalone's plan is the local,
             // editable goal; Garmin mode keeps Garmin's read-only plan.
-            if environment.dataMode == .standalone {
+            if isStandalone {
                 LocalNutritionPlanSection()
             } else {
                 garminNutritionPlan
@@ -83,6 +91,7 @@ struct SettingsView: View {
             GoalsSettingsSection()
 
             Section {
+                if !isStandalone {
                 NavigationLink {
                     SyncQueueView()
                 } label: {
@@ -98,6 +107,7 @@ struct SettingsView: View {
                                 .background(Theme.warning, in: Capsule())
                         }
                     }
+                }
                 }
                 NavigationLink {
                     NotificationSettingsView()
@@ -122,7 +132,9 @@ struct SettingsView: View {
             Section("Preferences") {
                 Toggle("Haptic feedback", isOn: $preferences.hapticsEnabled)
                 Toggle("Celebration animations", isOn: $preferences.celebrationsEnabled)
-                Toggle("Default meal from Garmin's schedule", isOn: $preferences.useGarminMealWindows)
+                if !isStandalone {
+                    Toggle("Default meal from Garmin's schedule", isOn: $preferences.useGarminMealWindows)
+                }
                 Toggle("Search Czech foods only", isOn: $preferences.czechOnlySearch)
             }
             .onChange(of: preferences.hapticsEnabled) {
@@ -153,7 +165,11 @@ struct SettingsView: View {
             } header: {
                 Text("About")
             } footer: {
-                Text("GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                if isStandalone {
+                    Text("GarminFood logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                } else {
+                    Text("GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                }
             }
         }
         .navigationTitle("Settings")

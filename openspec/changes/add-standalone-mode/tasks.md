@@ -59,7 +59,7 @@ owner may override** — a later answer becomes its own small follow-up.
 ## 5. Wave 5 — Onboarding, hidden surfaces, switching (L)
 
 - [ ] 5.1 `Onboarding/` flow (welcome → mode choice → standalone goal setup (skippable) → backup explainer); shown only when the mode is unset. Czech strings.
-- [ ] 5.2 Hide Garmin-only surfaces in standalone (banners, sync queue row, Garmin account section → "Data" section, Garmin nutrition plan, "Use Garmin's goal", "Default meal from Garmin's schedule", backing picker, "Active today", Garmin profile → local display name).
+- [x] 5.2 Hide Garmin-only surfaces in standalone (banners, sync queue row, Garmin account section → "Data" section, Garmin nutrition plan, "Use Garmin's goal", "Default meal from Garmin's schedule", backing picker, "Active today", Garmin profile → local display name).
 - [x] 5.3 Foreground/background in standalone skip every Garmin call; `BackgroundRefresh` not scheduled. Test the planning function if extracted.
 - [ ] 5.4 Switching (Settings → Data): standalone → Garmin after successful sign-in (local log kept, backing-less custom foods flagged); Garmin → standalone refused during a drain, undelivered entries "Deliver first" / "Keep on this phone" (converted to local entries via `FoodCacheStore`). Tests for the conversion.
 - [ ] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only. — *Skipped: 0.7 defaulted to "later".*

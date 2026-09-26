@@ -300,7 +300,8 @@ struct TodayView: View {
                     latest: environment.weightLoader.latest,
                     previous: environment.weightLoader.previous,
                     progress: environment.weightLoader.progress,
-                    refreshFailed: environment.weightLoader.lastGarminRefreshFailed
+                    refreshFailed: environment.weightLoader.lastGarminRefreshFailed,
+                    isStandalone: environment.dataMode == .standalone
                 )
             }
             if variant != .weight {
