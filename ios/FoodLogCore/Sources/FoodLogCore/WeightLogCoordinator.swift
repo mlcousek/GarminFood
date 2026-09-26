@@ -14,6 +14,12 @@
 // row of the merged Garmin + local history (`WeightHistoryMerge`): deleting
 // a Garmin weigh-in now deletes it in Garmin too, through the same durable
 // outbox (a `.delete` operation), never a blocking call.
+//
+// add-standalone-mode D7 (task 4.4): `deliversToGarmin`, read on EVERY call
+// (the app passes "the effective data mode is Garmin-connected"). When it
+// is false -- standalone mode -- a weigh-in is committed to `WeightStore`
+// only: no outbox entry, and a delete removes the local record with no
+// Garmin delete queued. Garmin mode (the default) is unchanged.
 
 import Foundation
 import GarminKit
@@ -21,10 +27,12 @@ import GarminKit
 public struct WeightLogCoordinator: Sendable {
     private let store: WeightStore
     private let outbox: WeightOutbox
+    private let deliversToGarmin: @Sendable () -> Bool
 
-    public init(store: WeightStore, outbox: WeightOutbox) {
+    public init(store: WeightStore, outbox: WeightOutbox, deliversToGarmin: @escaping @Sendable () -> Bool = { true }) {
         self.store = store
         self.outbox = outbox
+        self.deliversToGarmin = deliversToGarmin
     }
 
     /// Commits a weigh-in locally and enqueues it for delivery, in that
@@ -39,6 +47,10 @@ public struct WeightLogCoordinator: Sendable {
         loggedAt: Date = Date(),
         now: Date = Date()
     ) async throws -> WeightEntry {
+        guard deliversToGarmin() else {
+            // Standalone: the local store IS the record; nothing to send.
+            return try await store.upsert(WeightEntry(weightKg: weightKg, loggedAt: loggedAt, note: note, createdAt: now))
+        }
         let outboxEntry = try await outbox.logWeight(weightKg: weightKg, loggedAt: loggedAt)
         let entry = WeightEntry(
             weightKg: weightKg,
@@ -63,6 +75,7 @@ public struct WeightLogCoordinator: Sendable {
     @discardableResult
     public func deleteWeight(_ entry: WeightEntry) async throws -> Bool {
         try await store.delete(id: entry.id)
+        guard deliversToGarmin() else { return false }
         return try await withdrawAdd(of: entry) == .cancelled
     }
 
@@ -118,6 +131,18 @@ public struct WeightLogCoordinator: Sendable {
     ///   matching sample meanwhile.
     @discardableResult
     public func delete(_ entry: WeighInDisplayEntry, calendar: Calendar = .current) async throws -> WeighInDeletion {
+        guard deliversToGarmin() else {
+            // Standalone: remove the local record only -- no Garmin delete,
+            // and an entry still queued from Garmin mode stays untouched
+            // (it's shown in the sync queue after switching back).
+            switch entry.source {
+            case .local(let local):
+                try await store.delete(id: local.id)
+            case .garmin(_, let matchedLocal):
+                if let matchedLocal { try await store.delete(id: matchedLocal.id) }
+            }
+            return .cancelledBeforeDelivery
+        }
         switch entry.source {
         case .local(let local):
             switch try await withdrawAdd(of: local) {

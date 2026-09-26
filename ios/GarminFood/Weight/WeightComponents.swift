@@ -33,6 +33,8 @@ struct WeightHeroCard: View {
     /// Shows the quiet "couldn't refresh" caption (design.md "Fallback
     /// when routes break").
     var refreshFailed: Bool = false
+    /// add-standalone-mode 5.2: no Garmin scale to mention.
+    var isStandalone: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
@@ -71,7 +73,9 @@ struct WeightHeroCard: View {
                 Text("No weigh-ins yet")
                     .font(.headline)
                     .foregroundStyle(.secondary)
-                Text("Log your weight here or on a Garmin scale -- it shows up in both places.")
+                Text(isStandalone
+                     ? "Log your weight here. It stays on this phone."
+                     : "Log your weight here or on a Garmin scale -- it shows up in both places.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

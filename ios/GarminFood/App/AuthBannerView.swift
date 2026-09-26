@@ -28,7 +28,9 @@ struct AuthBannerView: View {
     var body: some View {
         let authState = environment.authState
 
-        if authState.state != .authenticated {
+        // add-standalone-mode 5.2: no Garmin, no sign-in banner -- in
+        // standalone mode or while a fresh install is still in onboarding.
+        if environment.currentSyncPlan.allows(.authRefresh), authState.state != .authenticated {
             Button {
                 isPresentingSignIn = true
             } label: {
@@ -71,7 +73,8 @@ struct DeliveryBannerView: View {
     @Environment(AppEnvironment.self) private var environment
 
     var body: some View {
-        if environment.undeliveredCount > 0 {
+        // add-standalone-mode 5.2: nothing is delivered in standalone mode.
+        if environment.currentSyncPlan.allows(.drainAndReconcile), environment.undeliveredCount > 0 {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: Theme.Spacing.sm) {
                     Image(systemName: "arrow.triangle.2.circlepath.circle")

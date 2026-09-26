@@ -134,7 +134,7 @@ targets:
           - cs
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSCameraUsageDescription: "GarminFood uses the camera to scan a product barcode and look it up in Garmin's food database."
+        NSCameraUsageDescription: "GarminFood uses the camera to scan a product barcode and look it up in food databases."
         CFBundleURLTypes:
           - CFBundleURLName: com.mlcousek.garminfood
             CFBundleURLSchemes:
