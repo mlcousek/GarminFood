@@ -76,7 +76,12 @@ final class GamificationEngine {
 
     var catalog: [ChallengeTemplate] { ChallengeCatalog.all }
     /// Core achievements + every feature's badges (`BadgeRegistry`, D9).
-    var achievementCatalog: [AchievementDefinition] { featureHost?.badgeCatalog ?? AchievementCatalog.all }
+    /// add-standalone-mode 7.1: in standalone mode, Garmin-only badges not
+    /// yet earned are hidden rather than shown locked forever.
+    var achievementCatalog: [AchievementDefinition] {
+        guard let featureHost else { return AchievementCatalog.all }
+        return featureHost.visibleBadgeCatalog(unlockedIds: Set(unlockedAchievements.keys))
+    }
 
     /// The last nutrition day the active challenge can still be completed on.
     var challengeWindowEnd: Date? {
@@ -452,8 +457,11 @@ final class GamificationEngine {
         let lifetime = await lifetimeStatsStore.current()
         let dailyCompletedEver = await dailyChallengeStore.totalCompletedEver()
         let loggedDays = Set(events.map { NutritionDayBoundary.nutritionDay(for: $0, boundaryHour: boundaryHour) })
+        // add-standalone-mode 7.1: standalone mode never gets activity
+        // templates, so they don't count toward "complete every challenge".
         let allChallengesProgress = ChallengeRotationPolicy.allChallengesProgress(
-            completedTemplateIds: Set(completedChallenges.map(\.templateId))
+            completedTemplateIds: Set(completedChallenges.map(\.templateId)),
+            excluding: featureHost?.isStandalone == true ? StandaloneAvailability.unavailableData : []
         )
 
         return AchievementContext(

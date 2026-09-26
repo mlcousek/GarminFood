@@ -78,8 +78,8 @@ with backup and restore for both modes. Tracked there, not here.
 
 ## 7. Wave 7 — Gamification gating, install guide, her first install (S)
 
-- [ ] 7.1 Standalone availability: activity/active-kcal challenges, bingo squares, bosses, journeys and records never offered; Garmin-only achievements hidden (not locked). Coordinate with `add-gamification-signals` (`DaySignals` reads totals via `NutritionLogReading`; `hasFoodLog` true for local days). Tests.
-- [ ] 7.2 Adapt whichever of this change and `add-gamification-signals` ships second (design D11).
-- [ ] 7.3 `docs/install-second-phone.md` (her iPhone, her Apple ID, AltStore/SideStore, 7-day re-sign, 3-app limit, 10 App IDs/week, bundle-ID suffixing, no shared data, don't downgrade), in English and Czech.
+- [x] 7.1 Standalone availability: activity/active-kcal challenges, bingo squares, bosses, journeys and records never offered; Garmin-only achievements hidden (not locked). Coordinate with `add-gamification-signals` (`DaySignals` reads totals via `NutritionLogReading`; `hasFoodLog` true for local days). Tests.
+- [x] 7.2 Adapt whichever of this change and `add-gamification-signals` ships second (design D11). *Signals shipped first: `SignalsInput.standalone` strips Garmin-only sources before `DaySignalsBuilder`, and `SignalAvailability.hasFoodLog` aliases `hasGarminLog` (true for a local day log too).*
+- [x] 7.3 `docs/install-second-phone.md` (her iPhone, her Apple ID, AltStore/SideStore, 7-day re-sign, 3-app limit, 10 App IDs/week, bundle-ID suffixing, no shared data, don't downgrade), in English and Czech.
 - [ ] 7.4 CI green on every wave PR.
 - [ ] 7.5 Her first install on her iPhone: onboarding in Czech, standalone, a first logged day, a backup; record the bundle-ID behaviour and any surprises.
