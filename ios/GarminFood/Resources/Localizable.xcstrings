@@ -11112,6 +11112,150 @@
           }
         }
       }
+    },
+    "Welcome to GarminFood": {
+      "comment": "Onboarding: welcome title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vítejte v GarminFood"
+          }
+        }
+      }
+    },
+    "Log what you eat in two taps, keep a streak going and see how your days add up.": {
+      "comment": "Onboarding: welcome text.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapisujte, co jíte, na dvě klepnutí, udržujte sérii a sledujte, jak se vaše dny sčítají."
+          }
+        }
+      }
+    },
+    "Get started": {
+      "comment": "Onboarding: welcome button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Začít"
+          }
+        }
+      }
+    },
+    "How do you want to use GarminFood?": {
+      "comment": "Onboarding: mode choice title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jak chcete GarminFood používat?"
+          }
+        }
+      }
+    },
+    "You can change this later in Settings.": {
+      "comment": "Onboarding: mode choice subtitle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Později to můžete změnit v Nastavení."
+          }
+        }
+      }
+    },
+    "With my Garmin account": {
+      "comment": "Onboarding: choose Garmin-connected mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S mým účtem Garmin"
+          }
+        }
+      }
+    },
+    "Your food goes to Garmin Connect, next to your activities.": {
+      "comment": "Onboarding: Garmin mode explanation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se ukládá do Garmin Connect vedle vašich aktivit."
+          }
+        }
+      }
+    },
+    "Just on this phone": {
+      "comment": "Onboarding: choose standalone mode (no Garmin account).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen v tomto telefonu"
+          }
+        }
+      }
+    },
+    "No account needed. Everything stays on this phone.": {
+      "comment": "Onboarding: standalone mode explanation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Není potřeba žádný účet. Vše zůstává v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Back up regularly": {
+      "comment": "Onboarding (standalone): backup explainer title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pravidelně zálohujte"
+          }
+        }
+      }
+    },
+    "Your food log lives only on this phone. If you delete the app or lose the phone, everything since your last backup is gone. Make a backup from Settings every week or two and keep it in Files or send it to yourself.": {
+      "comment": "Onboarding (standalone): backup explainer text.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váš jídelníček je jen v tomto telefonu. Když aplikaci smažete nebo telefon ztratíte, přijdete o vše od poslední zálohy. Jednou za týden nebo dva si v Nastavení udělejte zálohu a uložte ji do Souborů nebo si ji pošlete."
+          }
+        }
+      }
+    },
+    "Start logging": {
+      "comment": "Onboarding: final button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Začít zapisovat"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

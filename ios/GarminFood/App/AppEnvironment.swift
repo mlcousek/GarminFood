@@ -951,6 +951,29 @@ final class AppEnvironment {
         DiagnosticsLog.log(.info, category: "DataMode", "Classified as \(decided.rawValue) (token: \(hasGarminToken), local history: \(hasLocalHistory)).")
     }
 
+    // MARK: - Onboarding (add-standalone-mode D10, task 5.1)
+
+    /// Onboarding's mode choice. Stored at once, so an app killed during
+    /// the remaining steps doesn't ask again; onboarding stays up until
+    /// `finishOnboarding()`.
+    func chooseDataMode(_ mode: DataMode) {
+        preferences.dataMode = mode
+        DiagnosticsLog.log(.info, category: "DataMode", "Onboarding chose \(mode.rawValue).")
+    }
+
+    /// Closes onboarding and runs the first real foreground for the chosen
+    /// mode (in Garmin mode that is today's auth refresh and drain).
+    func finishOnboarding() {
+        guard needsOnboarding else { return }
+        if preferences.dataMode == nil {
+            // Closed without a choice (can't happen from the UI): today's
+            // behaviour, Garmin-connected.
+            preferences.dataMode = .garminConnected
+        }
+        needsOnboarding = false
+        Task { await self.refreshOnForeground() }
+    }
+
     // MARK: - Local goals (add-standalone-mode D6, task 4.3)
 
     /// Re-reads the goal in effect today (a file read, no network).
