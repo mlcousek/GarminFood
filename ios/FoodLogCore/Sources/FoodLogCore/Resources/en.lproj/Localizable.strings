@@ -523,3 +523,6 @@
 
 /* Name of a food entry kept on the phone whose food details are unknown (switching from Garmin to standalone mode). */
 "Unknown food" = "Unknown food";
+
+/* Name of an entry copied from Garmin Connect whose food name Garmin didn't send. */
+"Food from Garmin" = "Food from Garmin";
