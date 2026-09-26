@@ -96,8 +96,6 @@ final class FeatureHost {
         self.badgeCatalog = BadgeRegistry.badges(features: features)
     }
 
-    /// A registered feature by concrete type, for a slot's detail screen
-    /// (`featureHost.feature(WeeklyBingoFeature.self)`).
     /// add-standalone-mode 7.1: the effective data mode is standalone.
     var isStandalone: Bool { sources.preferences.isStandalone }
 
@@ -107,6 +105,8 @@ final class FeatureHost {
         StandaloneAvailability.visibleBadges(badgeCatalog, isStandalone: isStandalone, unlockedIds: unlockedIds)
     }
 
+    /// A registered feature by concrete type, for a slot's detail screen
+    /// (`featureHost.feature(WeeklyBingoFeature.self)`).
     func feature<T: GamificationFeature>(_ type: T.Type) -> T? {
         for feature in features {
             if let match = feature as? T { return match }
