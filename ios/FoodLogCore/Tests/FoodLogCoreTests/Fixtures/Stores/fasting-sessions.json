@@ -1,0 +1,31 @@
+{
+  "active" : {
+    "id" : "D1E2F3A4-B5C6-4D7E-8F9A-0B1C2D3E4F01",
+    "protocolKind" : {
+      "kind" : "sixteenEight"
+    },
+    "startedAt" : "2026-09-22T18:30:00Z"
+  },
+  "history" : [
+    {
+      "id" : "D1E2F3A4-B5C6-4D7E-8F9A-0B1C2D3E4F02",
+      "protocolKind" : {
+        "kind" : "custom",
+        "fastingHours" : 14.5,
+        "eatingHours" : 9.5
+      },
+      "startedAt" : "2026-09-20T19:00:00Z",
+      "fastingEndedAt" : "2026-09-21T09:30:00Z",
+      "eatingEndedAt" : "2026-09-21T18:45:00Z"
+    },
+    {
+      "id" : "D1E2F3A4-B5C6-4D7E-8F9A-0B1C2D3E4F03",
+      "protocolKind" : {
+        "kind" : "omad"
+      },
+      "startedAt" : "2026-09-21T18:45:00Z",
+      "fastingEndedAt" : "2026-09-22T17:40:00Z",
+      "eatingEndedAt" : "2026-09-22T18:30:00Z"
+    }
+  ]
+}

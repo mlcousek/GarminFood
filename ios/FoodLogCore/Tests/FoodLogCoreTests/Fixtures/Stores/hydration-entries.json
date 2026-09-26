@@ -1,0 +1,22 @@
+[
+  {
+    "id" : "F1A2B3C4-D5E6-4F7A-8B9C-0D1E2F3A4B01",
+    "valueInML" : 250,
+    "loggedAt" : "2026-09-20T07:00:00Z",
+    "createdAt" : "2026-09-20T07:00:00Z",
+    "outboxEntryId" : "7C2D3E4F-5A6B-4C7D-8E9F-0A1B2C3D4E01"
+  },
+  {
+    "id" : "F1A2B3C4-D5E6-4F7A-8B9C-0D1E2F3A4B02",
+    "valueInML" : 500,
+    "loggedAt" : "2026-09-20T12:30:00Z",
+    "createdAt" : "2026-09-20T18:05:00Z",
+    "outboxEntryId" : "7C2D3E4F-5A6B-4C7D-8E9F-0A1B2C3D4E02"
+  },
+  {
+    "id" : "F1A2B3C4-D5E6-4F7A-8B9C-0D1E2F3A4B03",
+    "valueInML" : 330.5,
+    "loggedAt" : "2026-09-21T09:10:00Z",
+    "createdAt" : "2026-09-21T09:10:00Z"
+  }
+]

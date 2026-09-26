@@ -1,0 +1,16 @@
+{
+  "consumptions" : [
+    {
+      "consumedOn" : "2026-09-10",
+      "frozenDay" : "2026-09-09",
+      "protectedLength" : 104
+    },
+    {
+      "consumedOn" : "2026-09-22",
+      "frozenDay" : "2026-09-21"
+    },
+    {
+      "frozenDay" : "2026-08-30"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "history" : [
+    {
+      "day" : "2026-08-30",
+      "recordId" : "distinct-foods-day",
+      "value" : 14
+    },
+    {
+      "day" : "2026-09-14",
+      "previousValue" : 172.5,
+      "recordId" : "protein-day",
+      "value" : 188
+    }
+  ],
+  "records" : {
+    "distinct-foods-day" : {
+      "current" : {
+        "day" : "2026-08-30",
+        "value" : 14
+      },
+      "prCount" : 1,
+      "sealedQualifyingDays" : 30
+    },
+    "protein-day" : {
+      "current" : {
+        "day" : "2026-09-14",
+        "value" : 188
+      },
+      "ledger" : {
+        "openDays" : {
+          "2026-09-19" : 151,
+          "2026-09-20" : 96.5
+        },
+        "sealedThrough" : "2026-09-18"
+      },
+      "prCount" : 2,
+      "previous" : {
+        "day" : "2026-08-22",
+        "value" : 172.5
+      },
+      "sealedQualifyingDays" : 35
+    }
+  },
+  "startedOn" : "2026-08-10",
+  "waterStreakCarry" : {
+    "day" : "2026-09-18",
+    "length" : 6
+  }
+}

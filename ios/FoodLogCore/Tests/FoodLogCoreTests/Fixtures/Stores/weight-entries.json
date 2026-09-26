@@ -1,0 +1,23 @@
+[
+  {
+    "id" : "E1F2A3B4-C5D6-4E7F-8A9B-0C1D2E3F4A01",
+    "weightKg" : 82.4,
+    "loggedAt" : "2026-09-18T06:30:00Z",
+    "createdAt" : "2026-09-18T06:30:00Z",
+    "outboxEntryId" : "5A1B2C3D-4E5F-4061-8273-94A5B6C7D801"
+  },
+  {
+    "id" : "E1F2A3B4-C5D6-4E7F-8A9B-0C1D2E3F4A02",
+    "weightKg" : 81.9,
+    "loggedAt" : "2026-09-20T06:15:00Z",
+    "note" : "po závodě",
+    "createdAt" : "2026-09-21T08:00:00Z",
+    "outboxEntryId" : "5A1B2C3D-4E5F-4061-8273-94A5B6C7D802"
+  },
+  {
+    "id" : "E1F2A3B4-C5D6-4E7F-8A9B-0C1D2E3F4A03",
+    "weightKg" : 83,
+    "loggedAt" : "2026-09-10T05:50:00Z",
+    "createdAt" : "2026-09-10T05:50:00Z"
+  }
+]

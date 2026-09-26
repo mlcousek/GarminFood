@@ -68,8 +68,11 @@ owner may override** — a later answer becomes its own small follow-up.
 
 ## 6. Wave 6 — Backup and restore (M) — required before the fiancée relies on the app
 
-Moved to the `add-data-safety` change (PR #87), which builds Settings → Data
-with backup and restore for both modes. Tracked there, not here.
+> **Moved to `add-data-safety` (2026-09-25).** Tasks 6.1–6.3 are now owned by
+> `openspec/changes/add-data-safety`, generalised to both modes: automatic
+> snapshots, staged restore, and single-file export and import. The CSV export
+> from 6.1 is a non-goal there, and is left for a later change. 6.4 (the
+> on-device check) still applies to her install.
 
 - [ ] 6.1 `BackupBundle` (schema/version, every local store, non-device preferences; excludes tokens, health cache, outboxes, offline index, diagnostics) + `food-log.csv` writer. Tests: round trip, CSV escaping, no secrets.
 - [ ] 6.2 Settings → Data: "Back up now" (ShareLink), "Restore from backup…" (fileImporter → version check → preview → safety backup → replace → reload). Tests for version refusal and replace.

@@ -1,0 +1,38 @@
+{
+  "byDay" : {
+    "2026-09-19" : {
+      "completedTemplateIds" : [
+        "daily-log-3-0",
+        "daily-calorie-goal-1"
+      ],
+      "templateIds" : [
+        "daily-log-3-0",
+        "daily-calorie-goal-1"
+      ]
+    },
+    "2026-09-20" : {
+      "completedTemplateIds" : [
+        "daily-distinct-5-0"
+      ],
+      "templateIds" : [
+        "daily-distinct-5-0",
+        "daily-macro-protein-2"
+      ]
+    },
+    "2026-09-21" : {
+      "completedTemplateIds" : [
+
+      ],
+      "templateIds" : [
+        "daily-log-5-1",
+        "daily-calorie-goal-0"
+      ]
+    }
+  },
+  "order" : [
+    "2026-09-19",
+    "2026-09-20",
+    "2026-09-21"
+  ],
+  "totalCompletedEver" : 37
+}

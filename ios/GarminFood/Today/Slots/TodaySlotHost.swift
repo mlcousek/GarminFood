@@ -8,7 +8,10 @@
 // above the meals by default, and movable/hideable as one block in the
 // layout editor.
 //
-// Depends on: SeasonalBannerSlot, BossBannerSlot.
+// add-data-safety D6: also the export reminder (BackupReminderBanner),
+// last, so a game banner stays on top.
+//
+// Depends on: SeasonalBannerSlot, BossBannerSlot, BackupReminderBanner.
 // Depended on by: TodayView.
 
 import SwiftUI
@@ -18,5 +21,6 @@ struct TodaySlotHost: View {
     var body: some View {
         SeasonalBannerSlot()
         BossBannerSlot()
+        BackupReminderBanner()
     }
 }

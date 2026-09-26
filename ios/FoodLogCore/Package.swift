@@ -64,7 +64,10 @@ let package = Package(
         ),
         .testTarget(
             name: "FoodLogCoreTests",
-            dependencies: ["FoodLogCore"]
+            dependencies: ["FoodLogCore"],
+            // add-data-safety D2: store fixtures are read from disk via
+            // #filePath, not compiled or bundled.
+            exclude: ["Fixtures"]
         )
     ]
 )

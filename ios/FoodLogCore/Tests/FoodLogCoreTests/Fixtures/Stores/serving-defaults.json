@@ -1,0 +1,14 @@
+[
+  {
+    "foodId" : "5638212",
+    "servingId" : "5801234",
+    "numberOfUnits" : 1.5,
+    "updatedAt" : "2026-09-20T06:45:00Z"
+  },
+  {
+    "foodId" : "3F9A1C2E-7B4D-4E8F-9A0B-1C2D3E4F5A61",
+    "servingId" : "custom",
+    "numberOfUnits" : 2,
+    "updatedAt" : "2026-09-23T11:05:00Z"
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "day" : "2026-09-19",
+    "text" : "Half marathon PB",
+    "tags" : [
+      "race",
+      "celebration"
+    ],
+    "updatedAt" : "2026-09-19T20:15:00Z"
+  },
+  {
+    "day" : "2026-09-20",
+    "text" : "",
+    "tags" : [
+      "restDay"
+    ],
+    "updatedAt" : "2026-09-20T21:00:00Z"
+  },
+  {
+    "day" : "2026-09-21",
+    "text" : "Grilovačka u Petra\nhodně piva",
+    "tags" : [],
+    "updatedAt" : "2026-09-21T22:40:00Z"
+  }
+]

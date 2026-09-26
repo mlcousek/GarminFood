@@ -11592,6 +11592,828 @@
           }
         }
       }
+    },
+    "There's nothing to back up yet.": {
+      "comment": "Data screen: Back up now with no data on the phone.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím není co zálohovat."
+          }
+        }
+      }
+    },
+    "Backup saved on this phone.": {
+      "comment": "Data screen: Back up now succeeded.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záloha je uložená v telefonu."
+          }
+        }
+      }
+    },
+    "Backup exported.": {
+      "comment": "Data screen: the export file was saved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záloha je exportovaná."
+          }
+        }
+      }
+    },
+    "Something went wrong. Settings › Diagnostics has the details.": {
+      "comment": "Data screen: a backup operation failed for a reason other than the file itself.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Něco se nepovedlo. Podrobnosti najdeš v Nastavení › Diagnostika."
+          }
+        }
+      }
+    },
+    "This isn't a GarminFood backup.": {
+      "comment": "Data screen: the imported file isn't a backup.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle není záloha GarminFood."
+          }
+        }
+      }
+    },
+    "This backup is from a newer version of GarminFood. Update the app, then try again.": {
+      "comment": "Data screen: the backup was written by a newer app.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle záloha je z novější verze GarminFood. Aktualizuj aplikaci a zkus to znovu."
+          }
+        }
+      }
+    },
+    "That backup is no longer on this phone.": {
+      "comment": "Data screen: the chosen snapshot was deleted meanwhile.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle záloha už v telefonu není."
+          }
+        }
+      }
+    },
+    "Restore this backup?": {
+      "comment": "Data screen: confirmation title before staging a restore.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit tuto zálohu?"
+          }
+        }
+      }
+    },
+    "Restore": {
+      "comment": "Button: stage a restore from a backup.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit"
+          }
+        }
+      }
+    },
+    "Your data will be replaced with the backup from %@ the next time you open GarminFood. Your current data is saved as a safety backup first.": {
+      "comment": "Data screen: confirming a restore from a snapshot. %@ = the backup's date and time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Při příštím otevření GarminFood se tvoje data nahradí zálohou z %@. Současná data se nejdřív uloží jako pojistná záloha."
+          }
+        }
+      }
+    },
+    "Close GarminFood and open it again to finish restoring the backup from %@.": {
+      "comment": "Data screen: a restore is staged. %@ = the backup's date and time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zavři GarminFood a otevři ho znovu, aby se dokončila obnova zálohy z %@."
+          }
+        }
+      }
+    },
+    "Cancel restore": {
+      "comment": "Data screen: drop the staged restore.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zrušit obnovu"
+          }
+        }
+      }
+    },
+    "Restore waiting": {
+      "comment": "Data screen: section header while a restore is staged.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnova čeká"
+          }
+        }
+      }
+    },
+    "Restored the backup from %@.": {
+      "comment": "Data screen: the last restore worked. %@ = the backup's date and time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovena záloha z %@."
+          }
+        }
+      }
+    },
+    "The backup was restored.": {
+      "comment": "Data screen: the last restore worked (date unknown).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záloha je obnovená."
+          }
+        }
+      }
+    },
+    "The restore failed and your data was left as it was. Settings › Diagnostics has the details.": {
+      "comment": "Data screen: the last restore failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnova se nepovedla a data zůstala beze změny. Podrobnosti najdeš v Nastavení › Diagnostika."
+          }
+        }
+      }
+    },
+    "Last restore": {
+      "comment": "Data screen: section header for the last restore result.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední obnova"
+          }
+        }
+      }
+    },
+    "Last backup": {
+      "comment": "Data screen: when the last snapshot was taken.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední záloha"
+          }
+        }
+      }
+    },
+    "The last automatic backup failed. Settings › Diagnostics has the details.": {
+      "comment": "Data screen: the daily snapshot failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední automatická záloha se nepovedla. Podrobnosti najdeš v Nastavení › Diagnostika."
+          }
+        }
+      }
+    },
+    "Back up now": {
+      "comment": "Data screen: take a snapshot now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zálohovat teď"
+          }
+        }
+      }
+    },
+    "Restores this backup after a confirmation": {
+      "comment": "VoiceOver hint on a snapshot row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po potvrzení obnoví tuto zálohu"
+          }
+        }
+      }
+    },
+    "Backups on this phone": {
+      "comment": "Data screen: section header for the snapshot list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zálohy v tomto telefonu"
+          }
+        }
+      }
+    },
+    "GarminFood backs up once a day when you open it and keeps the last 14 backups. They're deleted with the app, so export one now and then.": {
+      "comment": "Data screen: footer under the snapshot list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GarminFood se zálohuje jednou denně, když ho otevřeš, a nechává si posledních 14 záloh. S aplikací se ale smažou, tak občas nějakou exportuj."
+          }
+        }
+      }
+    },
+    "Export backup…": {
+      "comment": "Data screen: build and save the export file.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportovat zálohu…"
+          }
+        }
+      }
+    },
+    "Last export": {
+      "comment": "Data screen: when the last export was saved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední export"
+          }
+        }
+      }
+    },
+    "Never": {
+      "comment": "Data screen: no export yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nikdy"
+          }
+        }
+      }
+    },
+    "Export": {
+      "comment": "Data screen section header, and the button on the Today backup reminder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export"
+          }
+        }
+      }
+    },
+    "Saves everything in one file you can keep in Files or iCloud Drive, and restore after reinstalling or on a new phone. Your Garmin sign-in isn't included.": {
+      "comment": "Data screen: footer under Export.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloží všechno do jednoho souboru, který si můžeš nechat v Souborech nebo na iCloud Drivu a obnovit po přeinstalaci nebo v novém telefonu. Přihlášení ke Garminu v něm není."
+          }
+        }
+      }
+    },
+    "%lld entries are still waiting for Garmin. Backups don't include them, so let them sync first.": {
+      "comment": "Data screen: undelivered entries aren't backed up. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznam ještě čeká na Garmin. Zálohy ho neobsahují, tak ho nech nejdřív odeslat."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamy ještě čekají na Garmin. Zálohy je neobsahují, tak je nech nejdřív odeslat."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamu ještě čeká na Garmin. Zálohy ho neobsahují, tak ho nech nejdřív odeslat."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamů ještě čeká na Garmin. Zálohy je neobsahují, tak je nech nejdřív odeslat."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entry is still waiting for Garmin. Backups don't include it, so let it sync first."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entries are still waiting for Garmin. Backups don't include them, so let them sync first."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Import backup…": {
+      "comment": "Data screen: pick a backup file.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importovat zálohu…"
+          }
+        }
+      }
+    },
+    "Import": {
+      "comment": "Data screen: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import"
+          }
+        }
+      }
+    },
+    "Shows what's in the file before anything changes.": {
+      "comment": "Data screen: footer under Import.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Než se cokoli změní, ukáže, co v souboru je."
+          }
+        }
+      }
+    },
+    "None yet": {
+      "comment": "Data screen: no backup has been taken yet (záloha, feminine).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádná"
+          }
+        }
+      }
+    },
+    "Yesterday": {
+      "comment": "Data screen: last backup or export was yesterday.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Včera"
+          }
+        }
+      }
+    },
+    "%lld days ago": {
+      "comment": "Data screen: last backup or export, in whole days. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "před %lld dnem"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "před %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "před %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "před %lld dny"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day ago"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days ago"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Automatic": {
+      "comment": "Data screen: a daily snapshot (záloha, feminine).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatická"
+          }
+        }
+      }
+    },
+    "Manual": {
+      "comment": "Data screen: a snapshot from Back up now.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruční"
+          }
+        }
+      }
+    },
+    "Before a restore": {
+      "comment": "Data screen: the safety snapshot taken right before a restore.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Před obnovou"
+          }
+        }
+      }
+    },
+    "Imported": {
+      "comment": "Data screen: a snapshot of kind export (záloha, feminine).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importovaná"
+          }
+        }
+      }
+    },
+    "%lld files": {
+      "comment": "Data screen: number of files in a snapshot. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld soubor"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld soubory"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld souboru"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld souborů"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld files"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Created": {
+      "comment": "Import preview: when the backup was made.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořeno"
+          }
+        }
+      }
+    },
+    "App version": {
+      "comment": "Import preview: the app version that made the backup.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verze aplikace"
+          }
+        }
+      }
+    },
+    "Progress and history files": {
+      "comment": "Import preview: XP, achievements, challenges, usage history files.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soubory s pokrokem a historií"
+          }
+        }
+      }
+    },
+    "In this backup": {
+      "comment": "Import preview: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V této záloze"
+          }
+        }
+      }
+    },
+    "Your current data is replaced the next time you open GarminFood. It's saved as a safety backup first, so you can go back.": {
+      "comment": "Import preview: what Restore does.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Při příštím otevření GarminFood se současná data nahradí. Nejdřív se ale uloží jako pojistná záloha, takže se k nim můžeš vrátit."
+          }
+        }
+      }
+    },
+    "Restore backup?": {
+      "comment": "Import preview: title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit zálohu?"
+          }
+        }
+      }
+    },
+    "Food log entries": {
+      "comment": "Import preview row: logged foods kept on the phone (standalone mode), summed over all months.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy jídel"
+          }
+        }
+      }
+    },
+    "Custom foods": {
+      "comment": "Import preview row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastní jídla"
+          }
+        }
+      }
+    },
+    "Meal presets": {
+      "comment": "Import preview row: saved meals (glossary: Jídlo).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložená jídla"
+          }
+        }
+      }
+    },
+    "Weigh-ins": {
+      "comment": "Import preview row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vážení"
+          }
+        }
+      }
+    },
+    "Drinks": {
+      "comment": "Import preview row: logged drinks.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pití"
+          }
+        }
+      }
+    },
+    "Day notes": {
+      "comment": "Import preview row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poznámky ke dnům"
+          }
+        }
+      }
+    },
+    "Fasts": {
+      "comment": "Import preview row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půsty"
+          }
+        }
+      }
+    },
+    "Supplements": {
+      "comment": "Import preview row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doplňky stravy"
+          }
+        }
+      }
+    },
+    "Other files": {
+      "comment": "Import preview row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ostatní soubory"
+          }
+        }
+      }
+    },
+    "Keep a copy of your data": {
+      "comment": "Today backup reminder: title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nech si kopii svých dat"
+          }
+        }
+      }
+    },
+    "Export a backup to Files so a reinstall or a new phone doesn't lose anything.": {
+      "comment": "Today backup reminder: why to export.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportuj zálohu do Souborů, ať o nic nepřijdeš při přeinstalaci ani s novým telefonem."
+          }
+        }
+      }
+    },
+    "Not now": {
+      "comment": "Today backup reminder: dismiss for 14 days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teď ne"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

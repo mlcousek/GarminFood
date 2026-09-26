@@ -1,0 +1,35 @@
+{
+  "passport" : {
+    "foodIds" : [
+      "5638212",
+      "5712904",
+      "6120033"
+    ],
+    "reachedMilestones" : [
+
+    ]
+  },
+  "protein" : {
+    "ledger" : {
+      "openDays" : {
+        "2026-09-19" : 142.5,
+        "2026-09-20" : 118
+      },
+      "sealedThrough" : "2026-09-18"
+    },
+    "reachedMilestones" : [
+      "petrin",
+      "lysa-hora",
+      "snezka"
+    ],
+    "sealedTotal" : 1850.25
+  },
+  "road" : {
+    "lastKnownWeightKg" : 82.4,
+    "ledger" : {
+      "sealedThrough" : "2026-09-18"
+    },
+    "sealedTotal" : 212.5
+  },
+  "startedOn" : "2026-08-10"
+}
