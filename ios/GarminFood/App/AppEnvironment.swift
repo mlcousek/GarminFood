@@ -60,6 +60,11 @@ final class AppEnvironment {
     let offlineIndex: OfflineFoodIndexHolder
     let offlineIndexLoader: OfflineIndexLoader
     let logEntryCoordinator: ModeRoutingFoodLogging
+    /// add-standalone-mode D6: standalone mode's goal history
+    /// (`AppServices.localGoalStore`) and the goal in effect today, for
+    /// Settings' editable Nutrition plan. Unused in Garmin mode.
+    let localGoalStore: LocalGoalStore
+    private(set) var currentLocalGoal: LocalNutritionGoals?
     /// add-weight-tracking: mirrors `outbox`/`logEntryCoordinator` above,
     /// plus a loader (`weightLoader`) since, unlike the food dashboard,
     /// there's no existing `dayLog`-shaped object weight can piggyback on.
@@ -178,6 +183,7 @@ final class AppEnvironment {
         self.offlineIndex = services.offlineIndex
         self.offlineIndexLoader = OfflineIndexLoader(store: services.offlineIndexStore, preferences: preferences)
         self.logEntryCoordinator = services.logEntryCoordinator
+        self.localGoalStore = services.localGoalStore
         self.weightOutbox = services.weightOutbox
         self.weightLogCoordinator = services.weightLogCoordinator
         self.weightLoader = WeightLoader(store: services.weightStore, outbox: services.weightOutbox, cache: services.garminHealthCache, preferences: preferences)
@@ -875,6 +881,30 @@ final class AppEnvironment {
         ) else { return }
         preferences.dataMode = decided
         DiagnosticsLog.log(.info, category: "DataMode", "Classified as \(decided.rawValue) (token: \(hasGarminToken), local history: \(hasLocalHistory)).")
+    }
+
+    // MARK: - Local goals (add-standalone-mode D6, task 4.3)
+
+    /// Re-reads the goal in effect today (a file read, no network).
+    func reloadLocalGoal(now: Date = Date()) async {
+        currentLocalGoal = await localGoalStore.goal(on: NutritionDate.string(from: now))
+    }
+
+    /// Saves new targets as a goal starting TODAY (earlier days keep theirs),
+    /// then re-reads the day so the ring and goal status follow at once.
+    /// Local writes only.
+    func saveLocalGoal(calories: Double, proteinG: Double?, carbsG: Double?, fatG: Double?, now: Date = Date()) async throws {
+        let goal = LocalNutritionGoals(
+            effectiveFrom: NutritionDate.string(from: now),
+            calories: calories,
+            proteinG: proteinG,
+            carbsG: carbsG,
+            fatG: fatG
+        )
+        try await localGoalStore.save(goal)
+        await reloadLocalGoal(now: now)
+        await dayLog.rebuild()
+        await gamificationEngine.refreshGoalStatus(for: dayLog.selectedDate)
     }
 
     // MARK: - Private
