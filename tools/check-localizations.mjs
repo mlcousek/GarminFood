@@ -33,15 +33,16 @@
  *   - no `n == 1 ? "day" : "days"`-style plural ternary in any Swift source
  *     (PLURAL_TERNARY_BASELINE lists the Wave 4 files still pending).
  *
- * Report-only (never fails): with --scan, SwiftUI string literals
- * (Text("…"), Label("…"), .navigationTitle("…"), …) in the app/widget that no
- * catalog key matches — the backlog of untranslated UI. Heuristic: the
- * authoritative, compiler-extracted list is the `xcodebuild
- * -exportLocalizations` artifact from CI's macOS job.
+ * With --scan (blocking since add-localization task 6.6): SwiftUI string
+ * literals (Text("…"), Label("…"), .navigationTitle("…"), …) in the
+ * app/widget that no catalog key matches. Heuristic; the authoritative,
+ * compiler-extracted list is the `xcodebuild -exportLocalizations` export
+ * from CI's macOS job, compared with --xliff <cs.xliff> (also blocking).
  *
  * Usage:
  *   node tools/check-localizations.mjs            # blocking checks
- *   node tools/check-localizations.mjs --scan     # + untranslated-UI report
+ *   node tools/check-localizations.mjs --scan     # + untranslated SwiftUI literals
+ *   node tools/check-localizations.mjs --xliff <path/to/cs.xliff>  # + export comparison
  *   node tools/check-localizations.mjs --verbose  # + every literal, file:line
  *
  * Adding a language: add it to LANGUAGES (with its CLDR plural categories),
@@ -499,6 +500,44 @@ if (SCAN) {
     }
     console.log(`\n[scan] ${t.name}: ~${total} SwiftUI literals without a catalog key`);
     for (const [f, n] of perFile.sort((a, b) => b[1] - a[1]).slice(0, 25)) console.log(`  ${String(n).padStart(4)}  ${f}`);
+    // Blocking since add-localization task 6.6 (the backlog reached 0):
+    // new UI text must arrive with its catalog key (CLAUDE.md convention).
+    if (total) err(`[scan] ${t.name}`, `${total} SwiftUI literal(s) have no catalog key -- add them to ${t.catalog} (run with --verbose for file:line)`);
+  }
+}
+
+// --xliff <cs.xliff>: the compiler-extracted key list from CI's
+// `xcodebuild -exportLocalizations` (design.md D9.2), compared with the
+// hand-written catalogs. Xcode syncs every key the Swift compiler extracted
+// into the export, so a key the catalog lacks -- a typo'd specifier, a
+// `Text(variable)` that turned out to be a literal, a string the --scan
+// heuristic can't see -- shows up here without a Czech target. Only the
+// .xcstrings files are compared: package .lproj tables are checked in full
+// above, and their .stringsdict plurals also appear under .strings in the
+// export without a target, which would be a false alarm.
+{
+  const i = process.argv.indexOf('--xliff');
+  if (i >= 0) {
+    const file = process.argv[i + 1];
+    if (!file || !fs.existsSync(file)) err('--xliff', `file not found: ${file}`);
+    else {
+      const xliff = fs.readFileSync(file, 'utf8');
+      const unesc = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+      let compared = 0;
+      for (const f of xliff.matchAll(/<file\b[^>]*\boriginal="([^"]+)"[^>]*>([\s\S]*?)<\/file>/g)) {
+        if (!f[1].endsWith('.xcstrings')) continue;
+        for (const u of f[2].matchAll(/<trans-unit\b([^>]*)>([\s\S]*?)<\/trans-unit>/g)) {
+          if (/\btranslate="no"/.test(u[1])) continue;
+          compared++;
+          const id = unesc((u[1].match(/\bid="([^"]*)"/) ?? [])[1] ?? '');
+          const target = u[2].match(/<target\b([^>]*)>/);
+          const state = target && (target[1].match(/\bstate="([^"]*)"/) ?? [])[1];
+          if (!target) err(`${f[1]} (export)`, `${JSON.stringify(id)} has no Czech translation -- a key the compiler extracted that the catalog lacks or leaves untranslated`);
+          else if (state && /^(new|needs-)/.test(state)) err(`${f[1]} (export)`, `${JSON.stringify(id)} is "${state}"`);
+        }
+      }
+      console.log(`[xliff] compared ${compared} exported catalog units`);
+    }
   }
 }
 

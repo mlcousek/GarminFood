@@ -1,6 +1,11 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "CFBundleName" : {
+      "comment" : "Bundle name from Info.plist; the product name is not translated.",
+      "extractionState" : "manual",
+      "shouldTranslate" : false
+    },
     "NSCameraUsageDescription" : {
       "comment" : "Camera permission prompt (Info.plist key; the English text is the value in ios/project.yml). Shown before barcode scanning.",
       "extractionState" : "manual",

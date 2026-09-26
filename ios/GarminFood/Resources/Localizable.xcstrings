@@ -1,6 +1,48 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "0": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
+    "1": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
+    "100": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
+    "": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
+    "%@": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
+    "%@ %@": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
+    "%@ goal": {
+      "comment": "Trends chart series name (VoiceOver): the goal line of a macro. %@ = macro name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl: %@"
+          }
+        }
+      }
+    },
     "%@ grams": {
       "comment": "VoiceOver: a macro amount too large for a whole-number count (practically never).",
       "extractionState": "manual",
@@ -325,6 +367,16 @@
         }
       }
     },
+    "%@ × %@": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
+    "%@ – %@": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
     "%@, %@ achievement, unlocked %@": {
       "comment": "VoiceOver: an unlocked badge tile. Title, rarity (adjective; Czech agrees with \"odznak\"), unlock date.",
       "extractionState": "manual",
@@ -469,6 +521,11 @@
         }
       }
     },
+    "%@: %@": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
     "%@: %@ filled": {
       "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
       "extractionState": "manual",
@@ -504,6 +561,11 @@
           }
         }
       }
+    },
+    "%lld": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
     },
     "%lld XP": {
       "comment": "Total XP earned.",
@@ -1321,6 +1383,11 @@
         }
       }
     },
+    "%lld%": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
+    },
     "%lld-day streak": {
       "comment": "Celebration title: a streak milestone (a multiple of 7 days). Plural.",
       "extractionState": "manual",
@@ -1428,6 +1495,11 @@
           }
         }
       }
+    },
+    "%lld/%lld": {
+      "comment": "Format-only text (numbers, names, separators) the compiler extracts from interpolation-only Text literals; nothing to translate.",
+      "extractionState": "manual",
+      "shouldTranslate": false
     },
     "%lldd": {
       "comment": "Challenge list: the time window, abbreviated days (\"7d\"). Czech: \"7 d\".",
