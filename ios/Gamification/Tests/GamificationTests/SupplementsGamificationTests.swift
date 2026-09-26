@@ -56,7 +56,9 @@ final class SupplementsGamificationTests: XCTestCase {
 
         // "Unlocked once": the host records it through AchievementStore,
         // which only reports a badge the first time.
-        let store = AchievementStore(fileURL: ST.tempDirectory().appendingPathComponent("achievements.json"))
+        let directory = ST.tempDirectory()
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let store = AchievementStore(fileURL: directory.appendingPathComponent("achievements.json"))
         let first = try await store.unlock(ids: result.badgeIds, now: TestClock.date(2027, 3, 31))
         let second = try await store.unlock(ids: evaluate(sixty, today: today).badgeIds, now: TestClock.date(2027, 3, 31))
         XCTAssertTrue(first.contains(SupplementsCatalog.sunshineBadge))

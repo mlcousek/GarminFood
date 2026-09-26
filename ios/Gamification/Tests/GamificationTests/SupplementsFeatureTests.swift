@@ -113,6 +113,7 @@ final class SupplementsFeatureTests: XCTestCase {
         XCTAssertEqual(first.grants, second.grants)
 
         let directory = ST.tempDirectory()
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let ledger = RewardLedger(fileURL: directory.appendingPathComponent("reward-ledger.json"))
         let xpStore = XPStore(fileURL: directory.appendingPathComponent("xp-ledger.json"))
         let paid = try await ledger.apply(first.grants, day: today, now: context.now, xpStore: xpStore)
