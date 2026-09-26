@@ -20,5 +20,5 @@
 ## 4. Verify
 
 - [x] 4.1 `openspec validate rebalance-xp-economy --strict`.
-- [ ] 4.2 CI green (`swift test` Gamification; app build).
+- [x] 4.2 CI green (`swift test` Gamification; app build). *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.3 On device: after updating, the displayed level is unchanged and the "XP to next level" bar is plausible; no level-down moment.

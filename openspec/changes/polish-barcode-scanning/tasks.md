@@ -78,7 +78,7 @@
 
 ## 6. Verification
 
-- [ ] 6.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain (no Mac) --
+- [x] 6.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain (no Mac) -- *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
       push this branch and let `.github/workflows/build.yml` run `swift
       test` for `FoodLogCore` (task 3.2's new tests) and `xcodebuild` for
       the app target. That is the real correctness signal for the SwiftUI

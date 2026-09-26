@@ -15,7 +15,7 @@
 
 ## 3. Verify
 
-- [ ] 3.1 CI green.
+- [x] 3.1 CI green. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 3.2 On device:
   - Set 20:00–12:00.
   - The home card is correct morning and evening.

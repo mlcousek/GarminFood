@@ -18,5 +18,5 @@
 
 ## 4. Verification
 
-- [ ] 4.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain -- push this branch and let `.github/workflows/build.yml` confirm both packages and the app target still build and the new/existing tests pass.
+- [x] 4.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain -- push this branch and let `.github/workflows/build.yml` confirm both packages and the app target still build and the new/existing tests pass. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.2 **CARRIED, needs a real device.** The stuck "ginger shot" outbox entry from before this fix must be deleted from the Sync Queue (retrying it replays the same stale `nil` region/language and will 400 again) and re-logged fresh. Confirm the new attempt either succeeds, or -- if it still 400s -- report the new diagnostics line back, since the account's actual `regionCode`/`languageCode` value from `nutritionSettings` has never been directly observed and this fix's premise (that it differs from `"US"`/`"en"` in a way that matters here) is itself unconfirmed until a real device proves it one way or the other.

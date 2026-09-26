@@ -48,7 +48,7 @@
 
 ## 4. Verification
 
-- [ ] 4.1 Push a branch/PR so CI (`swift test` for `GarminKit`/
+- [x] 4.1 Push a branch/PR so CI (`swift test` for `GarminKit`/ *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
       `FoodLogCore`, `xcodebuild` for the app) is the real correctness
       signal -- no local Swift toolchain to check this against first.
 - [ ] 4.2 Device check (needs a real sideload): confirm

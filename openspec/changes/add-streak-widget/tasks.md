@@ -25,7 +25,7 @@
 
 ## 3. Verification
 
-- [ ] 3.1 **Requires CI (no local Xcode/Swift toolchain -- "no Mac"
+- [x] 3.1 **Requires CI (no local Xcode/Swift toolchain -- "no Mac" *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
       constraint).** Push a branch/PR so `.github/workflows/build.yml` runs
       `xcodebuild` for the widget extension target and confirms this new
       file compiles and the bundle registers cleanly.

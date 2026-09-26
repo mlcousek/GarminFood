@@ -25,5 +25,5 @@
 ## 5. Verify
 
 - [x] 5.1 `openspec validate add-sport-and-body-achievements --strict` passes.
-- [ ] 5.2 CI green (`swift test` FoodLogCore + Gamification; app + widget build).
+- [x] 5.2 CI green (`swift test` FoodLogCore + Gamification; app + widget build). *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 5.3 On-device check: after a real run synced to Garmin, a pre-run carb log shows the run as fuelled in Sport & Body and unlocks "Fuelled Up" once; a post-run protein log marks it recovered.
