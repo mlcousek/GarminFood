@@ -50,9 +50,9 @@ owner may override** — a later answer becomes its own small follow-up.
 
 ## 4. Wave 4 — Local goals, weight and water (M)
 
-- [ ] 4.1 `LocalGoalStore` (history by `effectiveFrom`). Tests: goal in effect per day, editing keeps history.
-- [ ] 4.2 `GoalCalculator` (Mifflin-St Jeor × activity ± pace; floors 1200 kcal / BMR; pace cap 0.75 kg/wk and 1 % body weight; macros). Tests with reference people and floors.
-- [ ] 4.3 Settings "Nutrition plan" becomes the editable local goal with "Recalculate" in standalone; disclaimer text; Czech strings.
+- [x] 4.1 `LocalGoalStore` (history by `effectiveFrom`). Tests: goal in effect per day, editing keeps history.
+- [x] 4.2 `GoalCalculator` (Mifflin-St Jeor × activity ± pace; floors 1200 kcal / BMR; pace cap 0.75 kg/wk and 1 % body weight; macros). Tests with reference people and floors.
+- [x] 4.3 Settings "Nutrition plan" becomes the editable local goal with "Recalculate" in standalone; disclaimer text; Czech strings.
 - [ ] 4.4 `WeightLogCoordinator`/`HydrationLogCoordinator` `deliversToGarmin` flag from `DataMode`; skip `refreshGarminHealth` and the weight/water drains in standalone; hide "not in Garmin yet" badges; local water total. Tests.
 - [ ] 4.5 On-device: set goals with the calculator, edit them, log weight and water; Today ring and water card correct.
 

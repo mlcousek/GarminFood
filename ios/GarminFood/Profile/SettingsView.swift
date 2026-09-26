@@ -71,22 +71,12 @@ struct SettingsView: View {
                 }
             }
 
-            Section {
-                nutritionRow(String(localized: "Calorie goal"), value: calorieGoalText)
-                nutritionRow(String(localized: "Carbs"), value: macroText(environment.profile.settings?.macroGoals?.carbs))
-                nutritionRow(String(localized: "Protein"), value: macroText(environment.profile.settings?.macroGoals?.protein))
-                nutritionRow(String(localized: "Fat"), value: macroText(environment.profile.settings?.macroGoals?.fat))
-                ForEach(environment.dayLog.latestWindows.sorted { $0.mealType.rawValue < $1.mealType.rawValue }, id: \.mealType) { window in
-                    nutritionRow(window.mealType.displayName, value: window.displayText)
-                }
-            } header: {
-                Text("Nutrition plan")
-            } footer: {
-                if environment.profile.settingsFailed {
-                    Text("Couldn't load from Garmin.")
-                } else {
-                    Text("Set in Garmin Connect. GarminFood only displays it.")
-                }
+            // add-standalone-mode 4.3: standalone's plan is the local,
+            // editable goal; Garmin mode keeps Garmin's read-only plan.
+            if environment.dataMode == .standalone {
+                LocalNutritionPlanSection()
+            } else {
+                garminNutritionPlan
             }
 
             // sync-weight-hydration-with-garmin 3.5 (GoalsSettingsSection.swift).
@@ -181,6 +171,27 @@ struct SettingsView: View {
             }
         } message: {
             Text("Entries waiting to sync stay queued and send once you sign in again.")
+        }
+    }
+
+    /// Garmin's nutrition plan, read-only (Garmin mode only).
+    private var garminNutritionPlan: some View {
+        Section {
+            nutritionRow(String(localized: "Calorie goal"), value: calorieGoalText)
+            nutritionRow(String(localized: "Carbs"), value: macroText(environment.profile.settings?.macroGoals?.carbs))
+            nutritionRow(String(localized: "Protein"), value: macroText(environment.profile.settings?.macroGoals?.protein))
+            nutritionRow(String(localized: "Fat"), value: macroText(environment.profile.settings?.macroGoals?.fat))
+            ForEach(environment.dayLog.latestWindows.sorted { $0.mealType.rawValue < $1.mealType.rawValue }, id: \.mealType) { window in
+                nutritionRow(window.mealType.displayName, value: window.displayText)
+            }
+        } header: {
+            Text("Nutrition plan")
+        } footer: {
+            if environment.profile.settingsFailed {
+                Text("Couldn't load from Garmin.")
+            } else {
+                Text("Set in Garmin Connect. GarminFood only displays it.")
+            }
         }
     }
 

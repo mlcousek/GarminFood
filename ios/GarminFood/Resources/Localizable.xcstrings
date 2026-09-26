@@ -10236,6 +10236,522 @@
           }
         }
       }
+    },
+    "Set targets": {
+      "comment": "Settings, Nutrition plan (standalone mode): button when no daily targets exist yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavit cíle"
+          }
+        }
+      }
+    },
+    "Edit targets": {
+      "comment": "Settings, Nutrition plan (standalone mode): button to edit the daily targets.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit cíle"
+          }
+        }
+      }
+    },
+    "Recalculate": {
+      "comment": "Settings, Nutrition plan (standalone mode): opens the goal calculator.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přepočítat"
+          }
+        }
+      }
+    },
+    "No targets yet: Today shows what you ate without a goal. Stays on this phone.": {
+      "comment": "Settings, Nutrition plan footer (standalone mode) when no targets are set.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím bez cílů: Dnešek ukazuje, co jste snědli, bez cíle. Zůstává jen v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Changes apply from today; earlier days keep the targets they had. Stays on this phone.": {
+      "comment": "Settings, Nutrition plan footer (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Změny platí od dneška; dřívější dny si ponechají své cíle. Zůstává jen v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Calculate a suggestion": {
+      "comment": "Daily targets editor: opens the goal calculator.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spočítat návrh"
+          }
+        }
+      }
+    },
+    "A few questions about you give a starting point. You can change every number before saving.": {
+      "comment": "Daily targets editor: footer under the calculator button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pár otázek o vás dá výchozí bod. Každé číslo můžete před uložením změnit."
+          }
+        }
+      }
+    },
+    "Daily targets": {
+      "comment": "Title/header of the daily calorie and macro targets editor (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denní cíle"
+          }
+        }
+      }
+    },
+    "Protein, carbs and fat are optional.": {
+      "comment": "Daily targets editor footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bílkoviny, sacharidy a tuky jsou nepovinné."
+          }
+        }
+      }
+    },
+    "These are general estimates, not medical advice. If you're pregnant, have a medical condition or want to lose weight fast, ask a doctor or dietitian first.": {
+      "comment": "Daily targets editor: medical disclaimer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jde o obecné odhady, ne o lékařskou radu. Pokud jste těhotná, máte zdravotní potíže nebo chcete rychle zhubnout, poraďte se nejdřív s lékařem nebo nutričním terapeutem."
+          }
+        }
+      }
+    },
+    "Skip": {
+      "comment": "Onboarding: skip an optional step (e.g. goal setup).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přeskočit"
+          }
+        }
+      }
+    },
+    "Enter numbers only, like 1800.": {
+      "comment": "Daily targets editor: a field contains something that isn't a number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte jen čísla, např. 1800."
+          }
+        }
+      }
+    },
+    "Sex": {
+      "comment": "Goal calculator: sex picker (only picks the formula's constant).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pohlaví"
+          }
+        }
+      }
+    },
+    "Female": {
+      "comment": "Goal calculator: sex option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žena"
+          }
+        }
+      }
+    },
+    "Male": {
+      "comment": "Goal calculator: sex option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muž"
+          }
+        }
+      }
+    },
+    "Born in %@": {
+      "comment": "Goal calculator: birth year stepper. %@ is a year, e.g. 1996.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rok narození %@"
+          }
+        }
+      }
+    },
+    "Height": {
+      "comment": "Goal calculator: height field (cm).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výška"
+          }
+        }
+      }
+    },
+    "About you": {
+      "comment": "Goal calculator: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O vás"
+          }
+        }
+      }
+    },
+    "Sex only picks the formula's constant (Mifflin-St Jeor). Nothing leaves this phone.": {
+      "comment": "Goal calculator: why it asks for sex.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pohlaví jen vybírá konstantu ve vzorci (Mifflin-St Jeor). Nic neopouští tento telefon."
+          }
+        }
+      }
+    },
+    "Activity": {
+      "comment": "Goal calculator: activity level picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivita"
+          }
+        }
+      }
+    },
+    "Mostly sitting": {
+      "comment": "Goal calculator: activity level (factor 1.2).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Převážně sedím"
+          }
+        }
+      }
+    },
+    "Lightly active": {
+      "comment": "Goal calculator: activity level (factor 1.375).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lehce aktivní"
+          }
+        }
+      }
+    },
+    "Moderately active": {
+      "comment": "Goal calculator: activity level (factor 1.55).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Středně aktivní"
+          }
+        }
+      }
+    },
+    "Very active": {
+      "comment": "Goal calculator: activity level (factor 1.725).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velmi aktivní"
+          }
+        }
+      }
+    },
+    "Extremely active": {
+      "comment": "Goal calculator: activity level (factor 1.9).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extrémně aktivní"
+          }
+        }
+      }
+    },
+    "Lose weight": {
+      "comment": "Goal calculator: goal option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zhubnout"
+          }
+        }
+      }
+    },
+    "Keep my weight": {
+      "comment": "Goal calculator: goal option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Udržet váhu"
+          }
+        }
+      }
+    },
+    "Gain weight": {
+      "comment": "Goal calculator: goal option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přibrat"
+          }
+        }
+      }
+    },
+    "Pace": {
+      "comment": "Goal calculator: weekly weight-change pace picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo"
+          }
+        }
+      }
+    },
+    "%@ kg a week": {
+      "comment": "Goal calculator: pace option. %@ is a number of kilograms, e.g. 0.50.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kg týdně"
+          }
+        }
+      }
+    },
+    "Activity and goal": {
+      "comment": "Goal calculator: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivita a cíl"
+          }
+        }
+      }
+    },
+    "At most 0.75 kg a week, and never more than one percent of your body weight.": {
+      "comment": "Goal calculator: pace limit explanation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejvýš 0,75 kg týdně a nikdy víc než jedno procento vaší hmotnosti."
+          }
+        }
+      }
+    },
+    "Use these numbers": {
+      "comment": "Goal calculator: copies the suggestion into the targets editor.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít tato čísla"
+          }
+        }
+      }
+    },
+    "Enter your height and weight.": {
+      "comment": "Goal calculator: shown until height and weight are filled in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte výšku a hmotnost."
+          }
+        }
+      }
+    },
+    "Suggestion": {
+      "comment": "Goal calculator: result section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Návrh"
+          }
+        }
+      }
+    },
+    "General estimates, not medical advice.": {
+      "comment": "Goal calculator: disclaimer footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obecné odhady, ne lékařská rada."
+          }
+        }
+      }
+    },
+    "Goal calculator": {
+      "comment": "Goal calculator: screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalkulačka cílů"
+          }
+        }
+      }
+    },
+    "Raised to 1200 kcal: a lower daily target isn't safe without a doctor.": {
+      "comment": "Goal calculator: the 1200 kcal floor raised the target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zvýšeno na 1200 kcal: nižší denní cíl není bez lékaře bezpečný."
+          }
+        }
+      }
+    },
+    "Raised to what your body burns at rest: going lower isn't safe without a doctor.": {
+      "comment": "Goal calculator: the BMR floor raised the target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zvýšeno na to, co tělo spálí v klidu: jít níž není bez lékaře bezpečné."
+          }
+        }
+      }
+    },
+    "The calculator works for ages 14 to 100.": {
+      "comment": "Goal calculator: age out of range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalkulačka počítá pro věk 14 až 100 let."
+          }
+        }
+      }
+    },
+    "Enter a height between 100 and 250 cm.": {
+      "comment": "Goal calculator: height out of range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte výšku mezi 100 a 250 cm."
+          }
+        }
+      }
+    },
+    "Enter a weight between 30 and 300 kg.": {
+      "comment": "Goal calculator: weight out of range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte hmotnost mezi 30 a 300 kg."
+          }
+        }
+      }
+    },
+    "That pace is too fast for your weight. Pick a slower one.": {
+      "comment": "Goal calculator: pace above 1 % of body weight.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto tempo je na vaši hmotnost příliš rychlé. Zvolte pomalejší."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
