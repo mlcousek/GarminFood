@@ -13,6 +13,18 @@
         }
       }
     },
+    "%@ of %@": {
+      "comment": "VoiceOver value of a macro bar: amount eaten, then the goal, both with the unit spelled out (\"42 grams of 120 grams\").",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ z %2$@"
+          }
+        }
+      }
+    },
     "%@ trend": {
       "comment": "VoiceOver label of a Trends chart; %@ = the macro name (Calories, Protein...).",
       "extractionState": "manual",
