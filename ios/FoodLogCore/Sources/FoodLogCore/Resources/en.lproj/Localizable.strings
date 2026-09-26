@@ -475,6 +475,47 @@
 /* Error when writing supplement data on the phone fails. %@ is the system's reason. */
 "Couldn't save your supplements on this phone: %@" = "Couldn't save your supplements on this phone: %@";
 
+/* ---- Supplements: slots and reminders (Supplements/SupplementTexts.swift, SupplementReminderPlanning.swift) ---- */
+
+/* Supplement time slot name. */
+"Morning" = "Morning";
+
+/* Supplement time slot name: taken together with breakfast. */
+"With breakfast" = "With breakfast";
+
+/* Supplement time slot name: before a training session. */
+"Pre-workout" = "Pre-workout";
+
+/* Supplement time slot name. */
+"Evening" = "Evening";
+
+/* Supplement slot reminder title. */
+"Morning supplements" = "Morning supplements";
+
+/* Supplement slot reminder title. */
+"Supplements with breakfast" = "Supplements with breakfast";
+
+/* Supplement slot reminder title. */
+"Pre-workout supplements" = "Pre-workout supplements";
+
+/* Supplement slot reminder title. */
+"Evening supplements" = "Evening supplements";
+
+/* Supplement reminder title for a slot the user named. %@ is that name. */
+"Supplements: %@" = "Supplements: %@";
+
+/* Supplement slot reminder body when no product name is known. */
+"Time for your supplements." = "Time for your supplements.";
+
+/* Supplement slot reminder body. %@ is a comma-separated list of product names. */
+"Take: %@" = "Take: %@";
+
+/* Supplement restock reminder title. %@ is the product name. */
+"Running low: %@" = "Running low: %@";
+
+/* Supplement restock reminder body when nothing is left. */
+"It has run out. Time to restock." = "It has run out. Time to restock.";
+
 /* ---- add-standalone-mode waves 4-7 ---- */
 
 /* Error when saving a nutrition goal on the phone (standalone mode) with an invalid number. */
