@@ -216,7 +216,9 @@ final class AppEnvironment {
             garminHealthCache: services.garminHealthCache,
             dayNotes: services.dayNoteStore,
             preferences: preferences,
-            weight: services.weightStore
+            weight: services.weightStore,
+            supplementPlan: services.supplementPlanStore,
+            supplementIntake: services.supplementIntakeStore
         ))
         self.gamificationEngine = GamificationEngine(
             usageHistory: services.usageHistory,
@@ -262,12 +264,16 @@ final class AppEnvironment {
         // slot's reminder is removed).
         supplements.onDataChanged = { [weak self] in
             await self?.syncSupplementReminders()
+            // add-supplements D9: a tick can complete the stack (streak,
+            // XP, badges) -- re-run gamification. Local work only.
+            await self?.gamificationEngine.refresh()
         }
         // A slot ticked from its reminder's "Taken" button while the app
         // runs: show it, and drop that slot's other pending reminder.
         SupplementNotificationHandler.shared.onTaken = { [weak self] in
             await self?.supplements.reload()
             await self?.syncSupplementReminders()
+            await self?.gamificationEngine.refresh()
         }
     }
 

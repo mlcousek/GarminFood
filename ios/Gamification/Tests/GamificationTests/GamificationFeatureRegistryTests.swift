@@ -13,7 +13,7 @@ final class GamificationFeatureRegistryTests: XCTestCase {
     private let implemented: Set<String> = [
         SeasonalEventsFeature.id, FoodCollectionsFeature.id, JourneysFeature.id, PersonalRecordsFeature.id,
         SportAndBodyFeature.id, SecretAchievementsFeature.id, WeeklyBingoFeature.id,
-        WeeklyBossFeature.id,
+        WeeklyBossFeature.id, SupplementsFeature.id,
     ]
 
     private func tempDirectory() -> URL {
@@ -23,7 +23,7 @@ final class GamificationFeatureRegistryTests: XCTestCase {
     func testIdsAreUniqueAndInFixedOrder() {
         let features = GamificationFeatureRegistry.makeAll(directory: tempDirectory())
         let ids = features.map { $0.featureId }
-        XCTAssertEqual(ids, ["bingo", "seasonal", "collections", "journeys", "records", "secrets", "sportBody", "boss"])
+        XCTAssertEqual(ids, ["bingo", "seasonal", "collections", "journeys", "records", "secrets", "sportBody", "boss", "supplements"])
         XCTAssertEqual(ids, GamificationFeatureRegistry.orderedIds)
         XCTAssertEqual(Set(ids).count, ids.count)
     }

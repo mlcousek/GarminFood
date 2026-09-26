@@ -32,4 +32,9 @@ extension XPAward {
     public static let bossDefeatedPerTargetDay = 25
     /// The range creative long-running challenges award (design D11).
     public static let creativeChallengeRange: ClosedRange<Int> = 60...160
+    /// add-supplements D9: one grant per stack-complete day, BEFORE the
+    /// optional-source multiplier (`XPBudget.optionalGrantXP`) -- the
+    /// supplements feature is optional, so what it actually pays is scaled
+    /// down to fit the 0.5% allowance (in practice 1 XP).
+    public static let supplementStackComplete = 6
 }

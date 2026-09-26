@@ -27,6 +27,8 @@
 //    `StreakFreezePlanner`, records new consumptions in `StreakFreezeStore`
 //    (owned here), and returns the frozen days plus one `.freeze` moment
 //    per freeze just used. Local and fast; never the network.
+//    add-supplements D9: with an active supplement digest the planner also
+//    protects the supplement streak from the SAME pool (`planShared`).
 //
 // Depends on: BossCatalog, BossPicker, BossFight, BossStore,
 // StreakFreezeStore, StreakFreezePlanner, FreezeBalance, WeekKey.
@@ -67,13 +69,16 @@ public struct BossBestiaryEntry: Sendable, Equatable, Identifiable {
 
 /// The outcome of `applyStreakFreezes`.
 public struct StreakFreezeRun: Sendable, Equatable {
-    /// Every frozen day (midnights), to pass into `StreakEngine`/`StreakHistory`.
+    /// Every frozen FOOD day (midnights), to pass into `StreakEngine`/`StreakHistory`.
     public let frozenDays: Set<Date>
     public let balance: FreezeBalance.Result
     /// One `.freeze` moment per freeze consumed in this run.
     public let moments: [FeatureMoment]
     /// False while the freeze file exists but can't be read (no planning).
     public let isReadable: Bool
+    /// add-supplements D9: every frozen SUPPLEMENT day (`yyyy-MM-dd`), for
+    /// `SupplementSignals.frozenDays`.
+    public var supplementFrozenDays: Set<String> = []
 
     public static let none = StreakFreezeRun(frozenDays: [], balance: .zero, moments: [], isReadable: true)
 }
@@ -320,26 +325,38 @@ public actor WeeklyBossFeature: GamificationFeature {
 
     /// Design D6, run by the app before every streak computation. With no
     /// grant ever recorded this never freezes anything (streak unchanged).
+    ///
+    /// add-supplements D9: `supplements` (an ACTIVE digest, else `nil`) adds
+    /// the supplement streak to the same pool (`StreakFreezePlanner.
+    /// planShared`); its frozen days come back in `supplementFrozenDays`.
     public func applyStreakFreezes(
         loggedDays: Set<Date>,
         grants: [RewardLedger.FreezeGrant],
         today: Date,
-        calendar: Calendar
+        calendar: Calendar,
+        supplements: SupplementSignals? = nil
     ) async -> StreakFreezeRun {
         let loaded = await freezeStore.load()
         guard loaded.isReadable else {
             return StreakFreezeRun(frozenDays: [], balance: .zero, moments: [], isReadable: false)
         }
         let existing = StreakFreezePlanner.frozenDays(from: loaded.consumptions, calendar: calendar)
+        let existingSupplement = StreakFreezePlanner.supplementFrozenDays(from: loaded.consumptions)
         let unchanged = StreakFreezeRun(
             frozenDays: existing,
             balance: FreezeBalance.compute(grants: grants, consumptions: loaded.consumptions),
             moments: [],
-            isReadable: true
+            isReadable: true,
+            supplementFrozenDays: existingSupplement
         )
-        let plan = StreakFreezePlanner.plan(
+        let supplementInput = supplements.flatMap { signals -> StreakFreezePlanner.SupplementStreakInput? in
+            guard signals.isActive else { return nil }
+            return StreakFreezePlanner.SupplementStreakInput(days: signals.days, frozenDays: existingSupplement)
+        }
+        let plan = StreakFreezePlanner.planShared(
             loggedDays: loggedDays,
             frozenDays: existing,
+            supplements: supplementInput,
             grants: grants,
             consumptions: loaded.consumptions,
             today: today,
@@ -359,13 +376,18 @@ public actor WeeklyBossFeature: GamificationFeature {
         // and recorded the same freeze first, and it already announced it.
         let moments = recorded.compactMap { consumption -> FeatureMoment? in
             guard let day = FreezeDayKey.date(for: consumption.frozenDay, calendar: calendar) else { return nil }
-            return Self.freezeMoment(day: day, protectedLength: consumption.protectedLength ?? 0, calendar: calendar)
+            let length = consumption.protectedLength ?? 0
+            if consumption.streakKind == .supplements {
+                return Self.supplementFreezeMoment(day: day, protectedLength: length, calendar: calendar)
+            }
+            return Self.freezeMoment(day: day, protectedLength: length, calendar: calendar)
         }
         return StreakFreezeRun(
             frozenDays: plan.frozenDays,
             balance: FreezeBalance.compute(grants: grants, consumptions: loaded.consumptions + plan.newConsumptions),
             moments: moments,
-            isReadable: true
+            isReadable: true,
+            supplementFrozenDays: plan.supplementFrozenDays
         )
     }
 
@@ -379,6 +401,22 @@ public actor WeeklyBossFeature: GamificationFeature {
             featureId: id,
             title: String(localized: "Streak frozen", bundle: .module, comment: "Moment title: a streak freeze was used automatically."),
             message: String(localized: "A freeze covered \(weekday) — your \(length)-day streak lives on.", bundle: .module, comment: "Moment message: which missed day a freeze covered and the streak it saved. First value is a weekday name, second a number of days (always 3 or more)."),
+            symbol: "snowflake",
+            style: .freeze
+        )
+    }
+
+    /// add-supplements D9: the same moment for the supplement streak.
+    static func supplementFreezeMoment(day: Date, protectedLength: Int, calendar: Calendar) -> FeatureMoment {
+        var style = Date.FormatStyle.dateTime.weekday(.wide)
+        style.calendar = calendar
+        style.timeZone = calendar.timeZone
+        let weekday = day.formatted(style)
+        let length = protectedLength
+        return FeatureMoment(
+            featureId: id,
+            title: String(localized: "Supplement streak frozen", bundle: .module, comment: "Moment title: a streak freeze was used automatically for the supplement streak."),
+            message: String(localized: "A freeze covered \(weekday) — your \(length)-day supplement streak lives on.", bundle: .module, comment: "Moment message: which missed supplement day a freeze covered and the supplement streak it saved. First value is a weekday name, second a number of days (always 3 or more)."),
             symbol: "snowflake",
             style: .freeze
         )

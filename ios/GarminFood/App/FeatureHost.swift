@@ -35,6 +35,12 @@
 // from this phone -- so nothing needing activities is ever offered, and
 // `visibleBadgeCatalog` hides Garmin-only badges not yet earned
 // (`StandaloneAvailability`).
+//
+// add-supplements D9: also builds the supplement digest
+// (`buildSupplementSignals`, FoodLogCore's pure `SupplementSignalsBuilder`
+// over the supplement stores) that GamificationEngine passes to the shared
+// freeze planner and into `FeatureContext.supplements`; an optional
+// source's badge bonus is scaled by `XPBudget.optionalGrantXP`.
 // Depended on by: GamificationEngine; Progress/Today slot views (via
 // `feature(_:)` and `summaries`).
 
@@ -60,6 +66,9 @@ final class FeatureHost {
         let preferences: AppPreferences
         /// This phone's weigh-ins (standalone mode's weight signal).
         let weight: WeightStore
+        /// add-supplements D9: the supplement digest's inputs.
+        let supplementPlan: SupplementPlanStore
+        let supplementIntake: SupplementIntakeStore
     }
 
     struct Outcome {
@@ -101,8 +110,11 @@ final class FeatureHost {
 
     /// The badges the Achievements screen lists (Garmin-only ones not yet
     /// earned are hidden in standalone mode).
+    /// add-supplements D9: while supplements are off, their badges show
+    /// only once earned.
     func visibleBadgeCatalog(unlockedIds: Set<String>) -> [AchievementDefinition] {
-        StandaloneAvailability.visibleBadges(badgeCatalog, isStandalone: isStandalone, unlockedIds: unlockedIds)
+        let visible = StandaloneAvailability.visibleBadges(badgeCatalog, isStandalone: isStandalone, unlockedIds: unlockedIds)
+        return SupplementsCatalog.visibleBadges(visible, isEnabled: sources.preferences.supplementsEnabled, unlockedIds: unlockedIds)
     }
 
     /// A registered feature by concrete type, for a slot's detail screen
@@ -195,10 +207,57 @@ final class FeatureHost {
         return DaySignalsBuilder.build(input: effectiveInput, today: now, calendar: calendar)
     }
 
+    // MARK: - Supplements (add-supplements D9)
+
+    /// Optional gamification sources the owner has switched on (design D4
+    /// of rebalance-xp-economy): their grants and badge bonuses are scaled
+    /// by `XPBudget.optionalMultiplier`.
+    var enabledOptionalSources: Set<String> {
+        sources.preferences.supplementsEnabled ? [SupplementsFeature.id] : []
+    }
+
+    /// The supplement digest from the local supplement stores (never the
+    /// network), or `nil` when a store can't be read right now -- the
+    /// supplements feature and the supplement streak then sit this run out
+    /// instead of reading an unreadable plan as "no supplements".
+    func buildSupplementSignals(now: Date, calendar: Calendar = .current) async -> SupplementSignals? {
+        let preferences = sources.preferences
+        let today = NutritionDate.string(from: now)
+        let from = SupplementDate.adding(-SupplementSignalsBuilder.defaultLookbackDays, to: today) ?? today
+        do {
+            let plan = try await sources.supplementPlan.plan()
+            let records = try await sources.supplementIntake.records(fromDay: from, toDay: today)
+            let trainingDays = await SupplementTrainingDays.load(
+                from: from,
+                to: today,
+                activityCache: sources.activityCache,
+                dayNotes: sources.dayNotes,
+                mode: preferences.effectiveDataMode
+            )
+            let raw = SupplementSignalsBuilder.build(
+                isEnabled: preferences.supplementsEnabled,
+                plan: plan,
+                records: records,
+                trainingDays: trainingDays,
+                fromDay: from,
+                today: today,
+                calendar: calendar
+            )
+            // D10: days the feature was off read as neutral (streak frozen
+            // in place); `nil` when its state can't be read this run.
+            guard let supplementsFeature = feature(SupplementsFeature.self) else { return raw }
+            return await supplementsFeature.prepare(raw)
+        } catch {
+            DiagnosticsLog.log(.warning, category: "features", "supplements: couldn't read the supplement stores: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
     // MARK: - Running features
 
     func run(
         snapshot: SignalsSnapshot,
+        supplements: SupplementSignals? = nil,
         streak: StreakEngine.Status,
         level: Int,
         isConfirmPath: Bool,
@@ -227,7 +286,8 @@ final class FeatureHost {
             streak: streak,
             level: level,
             unlockedBadgeIds: unlocked,
-            isConfirmPath: isConfirmPath
+            isConfirmPath: isConfirmPath,
+            supplements: supplements
         )
 
         for feature in features {
@@ -256,13 +316,18 @@ final class FeatureHost {
                 DiagnosticsLog.log(.error, category: "features", "\(id): dropped badge id(s) it does not declare")
             }
             var badgeWriteFailed = false
+            // An optional source's badge bonus is scaled like its other
+            // grants, so enabling it can't speed levelling up (XPBudget D4).
+            let badgeBonus = XPBudget.isOptional(source: id)
+                ? XPBudget.optionalGrantXP(XPAward.achievementBonus, enabledOptionalSources: enabledOptionalSources.union([id]))
+                : XPAward.achievementBonus
             if !requested.isEmpty {
                 do {
                     let recorded = try await achievementStore.unlock(ids: requested, now: now)
                     for badgeId in recorded {
                         unlocked.insert(badgeId)
                         outcome.unlockedBadges = true
-                        if (try? await xpStore.recordChallengeCompletion(xp: XPAward.achievementBonus)) != nil {
+                        if (try? await xpStore.recordChallengeCompletion(xp: badgeBonus)) != nil {
                             xpChanged = true
                         }
                         if let definition = declared[badgeId], !definition.isSecret {

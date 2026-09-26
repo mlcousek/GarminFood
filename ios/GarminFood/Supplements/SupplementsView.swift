@@ -7,6 +7,8 @@
 // - the checklist for that day, one section per slot, with "Take all";
 // - extra doses logged that day, and "Log an extra dose";
 // - the day's limit warnings (calm, amber, D6);
+// - the supplement streak, badges, vitamin alphabet and creatine journey
+//   (SupplementProgressSection, wave 6);
 // - links to My stack, Totals and limits, Insights, Evidence and Reminder
 //   times; the disclaimer last.
 //
@@ -16,7 +18,7 @@
 // Depends on: SupplementsController, SupplementChecklistSection,
 // ExtraDoseSheet, SupplementStackView, SupplementLimitsView,
 // SupplementInsightsView, SupplementEvidenceListView,
-// SupplementReminderTimesView. Depended on by: SupplementsTodayCard,
+// SupplementReminderTimesView, SupplementProgressSection. Depended on by: SupplementsTodayCard,
 // ProgressViews (entry row).
 
 import SwiftUI
@@ -72,6 +74,11 @@ struct SupplementsView: View {
                 } header: {
                     Text("Over your limits")
                 }
+            }
+
+            // add-supplements 6.4: streak, badges, vitamin alphabet, journey.
+            if controller.isAvailable {
+                SupplementProgressSection()
             }
 
             Section {

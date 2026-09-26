@@ -73,6 +73,7 @@ public enum ChallengeEngine {
         goalStatuses: [DailyGoalStatus],
         now: Date,
         signals: SignalsSnapshot? = nil,
+        supplements: SupplementSignals? = nil,
         frozenDays: Set<Date> = [],
         boundaryHour: Int = NutritionDayBoundary.defaultBoundaryHour,
         calendar: Calendar = .current
@@ -263,6 +264,16 @@ public enum ChallengeEngine {
             let days = signalDays(signals, from: windowStart, to: evaluableEnd, calendar: calendar)
             let count = SignalEvaluator.progress(predicate, over: days, history: signals, calendar: calendar)
             return ChallengeProgress(current: count, target: predicate.target)
+
+        case .supplementDays(let rule, let minDays):
+            // add-supplements D9: days of the window on which the rule holds
+            // in the supplement digest (keyed by the same yyyy-MM-dd day).
+            guard let supplements else { return ChallengeProgress(current: 0, target: minDays) }
+            let count = eachDay(from: windowStart, to: evaluableEnd, calendar: calendar).filter { day in
+                let key = NutritionDayBoundary.string(forNutritionDay: day, calendar: calendar)
+                return supplements.day(key).map(rule.holds) ?? false
+            }.count
+            return ChallengeProgress(current: count, target: minDays)
         }
     }
 
@@ -293,6 +304,7 @@ public enum ChallengeEngine {
         case .consecutiveWeekendsBothDays(let weekends): return weekends
         case .signalDays(_, let minDays): return minDays
         case .signalWeek(let predicate): return predicate.target
+        case .supplementDays(_, let minDays): return minDays
         }
     }
 

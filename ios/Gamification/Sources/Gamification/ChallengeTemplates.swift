@@ -113,6 +113,11 @@ public enum ChallengeKind: Sendable, Equatable {
     /// add-gamification-signals D11: a span rule over the whole window
     /// ("all six colours", "3 different Czech brands").
     case signalWeek(WeekPredicate)
+    /// add-supplements D9: the supplement rule holds on at least `minDays`
+    /// days of the window, from the supplement digest
+    /// (`ChallengeEngine.progress(... supplements:)`; none = 0 progress).
+    /// Offered only while supplements are active (ChallengeRotationPolicy).
+    case supplementDays(SupplementDayRule, minDays: Int)
 
     /// The data a signal kind needs (`[]` for every classic kind, which
     /// reads only the usage history / goal status it always did).
@@ -122,7 +127,8 @@ public enum ChallengeKind: Sendable, Equatable {
         case .signalWeek(let predicate): return predicate.requirement
         case .logOnDistinctDays, .extendStreakBy, .goalHitDays, .goalHitStreak, .newFoodsTried,
              .mealTimeOnDistinctDays, .multiMealDays, .busyDays, .weekendBothDays, .mealSlotAbsent,
-             .allGoalsHitDays, .allFourMealSlotsDays, .sameFoodConsecutiveDays, .consecutiveWeekendsBothDays:
+             .allGoalsHitDays, .allFourMealSlotsDays, .sameFoodConsecutiveDays, .consecutiveWeekendsBothDays,
+             .supplementDays:
             return []
         }
     }
@@ -189,6 +195,7 @@ public enum ChallengeCatalog {
         + sameFoodFamily
         + weekendStreakFamily
         + signalTemplates // add-gamification-signals D11 (ChallengeTemplates+Signals.swift)
+        + supplementTemplates // add-supplements D9 (Features/Supplements/ChallengeTemplates+Supplements.swift)
 
     /// The 13 original hand-authored template ids (rotation weight 2 in
     /// `ChallengeRotationPolicy`).

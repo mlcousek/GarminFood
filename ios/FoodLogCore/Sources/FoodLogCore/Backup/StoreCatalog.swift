@@ -118,6 +118,8 @@ public enum StoreCatalog {
         StoreCatalogEntry(id: "foodlog.supplement-plan", location: .file("FoodLogCore/supplement-plan.json"), schemaVersion: 1, area: .supplements),
         StoreCatalogEntry(id: "foodlog.supplement-limits", location: .file("FoodLogCore/supplement-limits.json"), schemaVersion: 1, area: .supplements),
         StoreCatalogEntry(id: "foodlog.supplement-intake", location: .directory("FoodLogCore/SupplementIntake", fileNames: []), schemaVersion: 1, area: .supplements),
+        // add-supplements 5.3: barcode lookups already made (offline rescans).
+        StoreCatalogEntry(id: "foodlog.supplement-barcode-cache", location: .file("FoodLogCore/supplement-barcode-cache.json"), schemaVersion: 1, area: .supplements),
 
         // Gamification
         StoreCatalogEntry(id: "gamification.xp-ledger", location: .file("Gamification/xp-ledger.json"), schemaVersion: 1, area: .progress),
@@ -128,13 +130,18 @@ public enum StoreCatalog {
         StoreCatalogEntry(id: "gamification.goal-status", location: .file("Gamification/goal-status.json"), schemaVersion: 1, area: .progress),
         StoreCatalogEntry(id: "gamification.lifetime-stats", location: .file("Gamification/lifetime-stats.json"), schemaVersion: 1, area: .progress),
         StoreCatalogEntry(id: "gamification.reward-ledger", location: .file("Gamification/reward-ledger.json"), schemaVersion: 1, area: .progress),
+        // add-supplements 6.2: v2 -- a streak-freezes.json consumption may
+        // now belong to the supplement streak (`streak`), which an older
+        // build would misread as a frozen FOOD day; plus the supplements
+        // feature's own supplements.json.
         StoreCatalogEntry(
             id: "gamification.features",
             location: .directory("Gamification/features", fileNames: [
                 "bingo.json", "seasonal.json", "collections.json", "journeys.json",
-                "records.json", "sport.json", "boss.json", "streak-freezes.json"
+                "records.json", "sport.json", "boss.json", "streak-freezes.json",
+                "supplements.json"
             ]),
-            schemaVersion: 1,
+            schemaVersion: 2,
             area: .progress
         ),
 

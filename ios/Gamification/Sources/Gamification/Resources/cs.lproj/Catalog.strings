@@ -1004,3 +1004,13 @@
 "tier.196.flavor" = "Krok od vrcholu.";
 "tier.200.title" = "Legenda";
 "tier.200.flavor" = "Strop je dosažen. Opravdu.";
+
+/* Supplement challenges (Features/Supplements/ChallengeTemplates+Supplements.swift), in the rotation only while supplements are on. */
+"supp-stack-5.title" = "Týden s doplňky";
+"supp-stack-5.subtitle" = "Vezmi si všechny naplánované doplňky v 5 dnech.";
+"supp-stack-10.title" = "Doplňky bez výmluv";
+"supp-stack-10.subtitle" = "Vezmi si všechny naplánované doplňky v 10 dnech.";
+"supp-evening-22.title" = "Večerní rutina";
+"supp-evening-22.subtitle" = "Vezmi si večerní doplňky před 22:00 ve 3 dnech.";
+"supp-morning-9.title" = "Ranní start";
+"supp-morning-9.subtitle" = "Vezmi si ranní doplňky před 9:00 v 5 dnech.";

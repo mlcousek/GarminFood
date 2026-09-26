@@ -9,7 +9,10 @@ import Foundation
 // lives in `AchievementEngine.swift`; persistence in `AchievementStore.swift`.
 
 public enum AchievementCategory: String, Sendable, Equatable, CaseIterable {
-    case streak, level, volume, variety, challenges, dailyChallenges, goalHitting, extreme, funnyFacts, calendar, meta
+    case streak, level, volume, variety, challenges, dailyChallenges, goalHitting, extreme, funnyFacts, calendar
+    /// add-supplements D9: the optional supplements feature's badges.
+    case supplements
+    case meta
 }
 
 /// A locally-evaluable achievement condition, each case reading exactly

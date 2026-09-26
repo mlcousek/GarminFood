@@ -1,0 +1,23 @@
+[
+  {
+    "barcode" : "0733739020307",
+    "brand" : "NOW Sports",
+    "ingredients" : [
+      {
+        "amount" : 5,
+        "ingredient" : "creatine",
+        "unit" : "g"
+      }
+    ],
+    "name" : "Creatine Monohydrate",
+    "provider" : "labelDatabaseV2",
+    "servingDescription" : "1.5 tsp",
+    "scannedAt" : "2026-09-26T08:00:00Z"
+  },
+  {
+    "barcode" : "4058172309250",
+    "brand" : "Mivolis",
+    "name" : "Magnesium",
+    "provider" : "openFoodFacts"
+  }
+]
