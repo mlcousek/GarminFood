@@ -41,10 +41,10 @@
 
 ## 5. Wave 5 — Barcode prefill
 
-- [ ] 5.1 Probe (read-only) the Open Food Facts product endpoint `GET https://world.openfoodfacts.org/api/v2/product/{barcode}.json` with 3 real supplement barcodes (one Czech, one German, one US brand). Record the status code and payload shape (which fields hold name, brand, quantity; whether nutriments hold per-serving values) in `docs/supplement-data-sources.md`, dated.
-- [ ] 5.2 Probe (read-only) DSLD `GET https://api.ods.od.nih.gov/dsld/v9/search-filter?q=<spaced UPC-A>` and `/label/{id}` for a US product. Record status, shape and observed rate-limit headers in the same doc.
-- [ ] 5.3 `SupplementBarcodeLookup`: OFF → DSLD (only for 0-prefixed codes, converted to spaced UPC-A) → manual; local cache by barcode; no network on any confirm path. Tests with fixture JSON (no live network in tests).
-- [ ] 5.4 Read the terms of use of NSF Certified for Sport, Informed Sport and Kölner Liste; link only to their public search pages; record the finding in the doc.
+- [x] 5.1 Probe (read-only) the Open Food Facts product endpoint `GET https://world.openfoodfacts.org/api/v2/product/{barcode}.json` with 3 real supplement barcodes (one Czech, one German, one US brand). Record the status code and payload shape (which fields hold name, brand, quantity; whether nutriments hold per-serving values) in `docs/supplement-data-sources.md`, dated.
+- [x] 5.2 Probe (read-only) DSLD `GET https://api.ods.od.nih.gov/dsld/v9/search-filter?q=<spaced UPC-A>` and `/label/{id}` for a US product. Record status, shape and observed rate-limit headers in the same doc.
+- [x] 5.3 `SupplementBarcodeLookup`: OFF → DSLD (only for 0-prefixed codes, converted to spaced UPC-A) → manual; local cache by barcode; no network on any confirm path. Tests with fixture JSON (no live network in tests).
+- [x] 5.4 Read the terms of use of NSF Certified for Sport, Informed Sport and Kölner Liste; link only to their public search pages; record the finding in the doc.
 
 ## 6. Wave 6 — Gamification
 

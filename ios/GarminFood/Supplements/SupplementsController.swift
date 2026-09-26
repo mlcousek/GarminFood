@@ -42,6 +42,9 @@ final class SupplementsController {
 
     /// Runs after every change (reminder re-plan).
     @ObservationIgnored var onDataChanged: (() async -> Void)?
+    /// add-supplements 5.3: barcode prefill (Open Food Facts, then DSLD),
+    /// with its cache -- one instance per process, like every store.
+    let barcodeLookup = SupplementBarcodeLookup(cache: SupplementBarcodeCache())
 
     private(set) var plan = SupplementPlan()
     private(set) var overrides: SupplementLimits.Overrides = [:]

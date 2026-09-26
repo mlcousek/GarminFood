@@ -118,6 +118,8 @@ public enum StoreCatalog {
         StoreCatalogEntry(id: "foodlog.supplement-plan", location: .file("FoodLogCore/supplement-plan.json"), schemaVersion: 1, area: .supplements),
         StoreCatalogEntry(id: "foodlog.supplement-limits", location: .file("FoodLogCore/supplement-limits.json"), schemaVersion: 1, area: .supplements),
         StoreCatalogEntry(id: "foodlog.supplement-intake", location: .directory("FoodLogCore/SupplementIntake", fileNames: []), schemaVersion: 1, area: .supplements),
+        // add-supplements 5.3: barcode lookups already made (offline rescans).
+        StoreCatalogEntry(id: "foodlog.supplement-barcode-cache", location: .file("FoodLogCore/supplement-barcode-cache.json"), schemaVersion: 1, area: .supplements),
 
         // Gamification
         StoreCatalogEntry(id: "gamification.xp-ledger", location: .file("Gamification/xp-ledger.json"), schemaVersion: 1, area: .progress),

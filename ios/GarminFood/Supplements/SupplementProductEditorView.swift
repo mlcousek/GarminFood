@@ -34,6 +34,9 @@ struct SupplementProductEditorView: View {
     @State private var originalStockText = ""
     @State private var packText = ""
     @State private var priceText = ""
+    @State private var isScanning = false
+    @State private var isLookingUp = false
+    @State private var lookupMessage: String?
 
     private var supplements: SupplementsController { environment.supplements }
 
@@ -110,9 +113,89 @@ struct SupplementProductEditorView: View {
                 get: { product.wrappedValue.servingDescription ?? "" },
                 set: { product.wrappedValue.servingDescription = $0.isEmpty ? nil : $0 }
             ))
+            barcodeRow(product)
         } header: {
             Text("Label")
+        } footer: {
+            if let lookupMessage {
+                Text(verbatim: lookupMessage)
+            }
         }
+        .sheet(isPresented: $isScanning) {
+            NavigationStack {
+                Group {
+                    if BarcodeScannerAvailability.isSupported, BarcodeScannerAvailability.isAvailable {
+                        BarcodeScannerRepresentable { code in
+                            isScanning = false
+                            product.wrappedValue.barcode = code
+                            Task { await lookUp(code, into: product) }
+                        }
+                        .ignoresSafeArea()
+                    } else {
+                        Text("The camera can't scan barcodes on this device. Type the number instead.", comment: "Supplement editor: scanner unavailable.")
+                            .padding()
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { isScanning = false }
+                    }
+                }
+            }
+        }
+    }
+
+    /// add-supplements 5.3: the barcode, a scan button, and "Look up",
+    /// which prefills what the label databases know. The user confirms
+    /// every amount (design D7); a miss just means typing it in.
+    private func barcodeRow(_ product: Binding<SupplementProduct>) -> some View {
+        HStack {
+            TextField("Barcode", text: Binding(
+                get: { product.wrappedValue.barcode ?? "" },
+                set: { product.wrappedValue.barcode = $0.isEmpty ? nil : $0 }
+            ))
+            .keyboardType(.numberPad)
+            Button {
+                isScanning = true
+            } label: {
+                Image(systemName: "barcode.viewfinder")
+            }
+            .accessibilityLabel(Text("Scan barcode"))
+            Button {
+                guard let code = product.wrappedValue.barcode else { return }
+                Task { await lookUp(code, into: product) }
+            } label: {
+                if isLookingUp {
+                    ProgressView()
+                } else {
+                    Text("Look up")
+                }
+            }
+            .disabled(isLookingUp || (product.wrappedValue.barcode ?? "").count < 8)
+        }
+        .buttonStyle(.borderless)
+    }
+
+    private func lookUp(_ code: String, into product: Binding<SupplementProduct>) async {
+        isLookingUp = true
+        defer { isLookingUp = false }
+        guard let result = await supplements.barcodeLookup.lookup(code) else {
+            lookupMessage = String(localized: "Not found in the label databases. Type the label in.", comment: "Supplement editor: barcode lookup found nothing (or no connection).")
+            return
+        }
+        // Fill only what's still empty; the user's own text wins.
+        if product.wrappedValue.name.trimmingCharacters(in: .whitespaces).isEmpty {
+            product.wrappedValue.name = result.name
+        }
+        if product.wrappedValue.brand == nil { product.wrappedValue.brand = result.brand }
+        if product.wrappedValue.servingDescription == nil { product.wrappedValue.servingDescription = result.servingDescription }
+        if product.wrappedValue.ingredients.isEmpty { product.wrappedValue.ingredients = result.ingredients }
+        if case .custom = product.wrappedValue.source {
+            product.wrappedValue.source = .barcode(result.provider.rawValue)
+        }
+        lookupMessage = result.ingredients.isEmpty
+            ? String(localized: "Name and brand filled in. Copy the amounts from your label.", comment: "Supplement editor: barcode lookup found the product but no amounts.")
+            : String(localized: "Filled in from the label database. Check every amount against your label.", comment: "Supplement editor: barcode lookup found amounts (US database).")
     }
 
     private func ingredientsSection(_ product: Binding<SupplementProduct>) -> some View {

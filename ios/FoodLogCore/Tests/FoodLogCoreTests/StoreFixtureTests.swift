@@ -78,6 +78,7 @@ final class StoreFixtureTests: XCTestCase {
         "FoodLog-2026-09.json",
         "supplement-plan.json",
         "supplement-limits.json",
+        "supplement-barcode-cache.json",
         "SupplementIntake-2026-09.json",
     ]
 
@@ -498,6 +499,25 @@ final class StoreFixtureTests: XCTestCase {
         XCTAssertEqual(history[1].carbsG, 210)
         XCTAssertEqual(history[1].fatG, 65)
         XCTAssertEqual(history[1].mealSplit?["breakfast"], 0.3)
+    }
+
+    // MARK: - supplement-barcode-cache.json (SupplementBarcodeCache: [SupplementBarcodeResult])
+
+    func testSupplementBarcodeCacheFixtureDecodesThroughTheRealStore() async throws {
+        let copy = try copyFixture("supplement-barcode-cache.json")
+        let cache = SupplementBarcodeCache(fileURL: copy.file)
+
+        let off = await cache.result(for: "4058172309250")
+        let dsld = await cache.result(for: "0733739020307")
+
+        assertNotQuarantined(copy)
+        XCTAssertEqual(off?.provider, .openFoodFacts)
+        XCTAssertEqual(off?.name, "Magnesium")
+        XCTAssertEqual(off?.brand, "Mivolis")
+        XCTAssertEqual(off?.ingredients, [])
+        // Unknown provider falls back; an unknown key is ignored.
+        XCTAssertEqual(dsld?.provider, .openFoodFacts)
+        XCTAssertEqual(dsld?.ingredients, [IngredientAmount(ingredient: .creatine, amount: 5, unit: .g)])
     }
 
     // MARK: - weight-entries.json (WeightStore: [WeightEntry], .iso8601)

@@ -230,7 +230,8 @@ struct LabelScoreView: View {
 }
 
 /// The three certifiers the design names (D7), linked only to their public
-/// search pages (no scraping, no API).
+/// search pages (no scraping, no API, no logos) -- their terms were read
+/// for this on 2026-09-26 (task 5.4, docs/supplement-data-sources.md).
 enum SupplementCertificationLinks {
     static let bodies: [CertificationBody] = [.nsfCertifiedForSport, .informedSport, .koelnerListe]
 
@@ -246,8 +247,8 @@ enum SupplementCertificationLinks {
     static func searchPage(_ body: CertificationBody) -> URL {
         switch body {
         case .nsfCertifiedForSport: return URL(string: "https://www.nsfsport.com/certified-products/")!
-        case .informedSport: return URL(string: "https://sport.wetestyoutrust.com/")!
-        case .koelnerListe: return URL(string: "https://www.koelnerliste.com/en/")!
+        case .informedSport: return URL(string: "https://sport.wetestyoutrust.com/supplement-search")!
+        case .koelnerListe: return URL(string: "https://www.koelnerliste.com/en/product-database")!
         default: return URL(string: "https://www.nsfsport.com/")!
         }
     }
