@@ -56,7 +56,7 @@
 ## 7. Verify
 
 - [x] 7.1 `openspec validate add-supplements --strict`; `node tools/check-localizations.mjs`; `bash tools/lint-design-tokens.sh`. *All three pass locally after wave 6 (2026-09-26).*
-- [ ] 7.2 CI green (`swift test` FoodLogCore, Gamification, AppearanceKit; app + widget build).
+- [x] 7.2 CI green (`swift test` FoodLogCore, Gamification, AppearanceKit; app + widget build). *Ticked 2026-09-26: PR #95 (waves 5–6) CI green on its merge head (fbe6637); #93 (waves 3–4) green too.*
 - [ ] 7.3 On device:
   - enable, add creatine from the catalog, add a custom ZMA, scan a Czech product;
   - tick the morning slot from the notification's "Taken" action on the lock screen;

@@ -4674,19 +4674,7 @@
           }
         }
       }
-    },
-    "Achievements": {
-      "comment": "Layout editor row: the achievements card on Progress.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odznaky"
-          }
-        }
-      }
-    },
+    },
     "Hydration": {
       "comment": "Layout editor row: the hydration card on Progress.",
       "extractionState": "manual",
