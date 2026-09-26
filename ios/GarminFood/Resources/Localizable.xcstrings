@@ -10752,6 +10752,66 @@
           }
         }
       }
+    },
+    "Tap + to log your weight. It's saved on this phone.": {
+      "comment": "Weight screen empty state (standalone mode, no Garmin).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klepnutím na + zapíšete svou hmotnost. Uloží se v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Your weigh-ins, kept on this phone.": {
+      "comment": "Weight screen history footer (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše vážení, uložená v tomto telefonu."
+          }
+        }
+      }
+    },
+    "It's removed from this phone.": {
+      "comment": "Delete confirmation for a weigh-in or drink (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstraní se z tohoto telefonu."
+          }
+        }
+      }
+    },
+    "Tap an amount above to log a drink. It's saved on this phone.": {
+      "comment": "Water screen empty state (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klepnutím na množství výše zapíšete pití. Uloží se v tomto telefonu."
+          }
+        }
+      }
+    },
+    "How much water you're aiming for each day. Stays on this phone.": {
+      "comment": "Water goal editor message (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kolik vody chcete denně vypít. Zůstává jen v tomto telefonu."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

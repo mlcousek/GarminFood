@@ -351,6 +351,14 @@ final class AppEnvironment {
     /// started before the POST landed can't contain it, so the follow-up
     /// read must still happen.
     func refreshGarminHealth(force: Bool = false) async {
+        // add-standalone-mode D7: no Garmin reads in standalone mode; the
+        // loaders render this phone's own entries.
+        if dataMode == .standalone {
+            async let weight: Void = weightLoader.refresh()
+            async let hydration: Void = hydrationLoader.refresh()
+            _ = await (weight, hydration)
+            return
+        }
         guard !isRefreshingGarminHealth else {
             garminHealthRefreshQueued = true
             garminHealthRefreshQueuedForce = garminHealthRefreshQueuedForce || force
@@ -510,6 +518,13 @@ final class AppEnvironment {
     }
 
     func drainAndReconcile() async {
+        // add-standalone-mode D7/D10: nothing is ever delivered in
+        // standalone mode -- no outbox drain, no reconciliation, no Garmin
+        // call. The day is re-read from the local log instead.
+        if dataMode == .standalone {
+            await dayLog.rebuild()
+            return
+        }
         guard !isDraining else { return }
         isDraining = true
         defer { isDraining = false }

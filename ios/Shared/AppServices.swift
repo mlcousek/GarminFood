@@ -171,10 +171,13 @@ final class AppServices {
         )
         self.weightStore = weightStore
         self.weightOutbox = weightOutbox
-        self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox)
+        // add-standalone-mode D7: weight and water are delivered to Garmin
+        // only while the effective mode is Garmin-connected (read per call).
+        let deliversToGarmin: @Sendable () -> Bool = { dataMode() == .garminConnected }
+        self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox, deliversToGarmin: deliversToGarmin)
         self.hydrationStore = hydrationStore
         self.hydrationOutbox = hydrationOutbox
-        self.hydrationLogCoordinator = HydrationLogCoordinator(store: hydrationStore, outbox: hydrationOutbox)
+        self.hydrationLogCoordinator = HydrationLogCoordinator(store: hydrationStore, outbox: hydrationOutbox, deliversToGarmin: deliversToGarmin)
         self.garminHealthCache = garminHealthCache
         self.garminHealthSync = GarminHealthSync(cache: garminHealthCache, reader: client)
         self.offlineIndex = offlineIndex

@@ -12,6 +12,10 @@
 // drinks logged IN THIS APP. The goal is Garmin's `goalInML` unless
 // overridden in Settings (D5). The Garmin read itself is
 // `AppEnvironment.refreshGarminHealth(force:)`.
+//
+// add-standalone-mode D7 (task 4.4): in standalone mode the total is the
+// sum of this phone's drinks and the goal the override or 2000 ml
+// (`WeightAndWaterOverview.standalone*`); no row has a sync state.
 
 import Foundation
 import Observation
@@ -42,14 +46,20 @@ final class HydrationLoader {
 
     /// Garmin's total + undelivered local drinks and corrections (D4).
     var todayTotalML: Double {
-        WeightAndWaterOverview.waterTotalML(snapshot: snapshot, outboxEntries: outboxEntries, on: Date())
+        if preferences.isStandalone {
+            return WeightAndWaterOverview.standaloneWaterTotalML(entries: entries, on: Date())
+        }
+        return WeightAndWaterOverview.waterTotalML(snapshot: snapshot, outboxEntries: outboxEntries, on: Date())
     }
 
     var todayEntries: [HydrationEntry] { HydrationHistory.entries(for: entries, on: Date()) }
 
     /// Override, else Garmin's goal, else 2000 ml (D5).
     var goal: EffectiveWaterGoal {
-        WeightAndWaterOverview.waterGoal(snapshot: snapshot, source: preferences.waterGoalSource, on: NutritionDate.string(from: Date()))
+        if preferences.isStandalone {
+            return WeightAndWaterOverview.standaloneWaterGoal(overrideML: preferences.waterGoalOverrideML)
+        }
+        return WeightAndWaterOverview.waterGoal(snapshot: snapshot, source: preferences.waterGoalSource, on: NutritionDate.string(from: Date()))
     }
 
     var goalML: Double { goal.milliliters }
@@ -62,12 +72,13 @@ final class HydrationLoader {
     /// `true` once Garmin's total for today has been read at least once --
     /// lets the screen say the total includes water logged elsewhere.
     var hasGarminTotalToday: Bool {
-        snapshot.hydrationDays[NutritionDate.string(from: Date())] != nil
+        !preferences.isStandalone && snapshot.hydrationDays[NutritionDate.string(from: Date())] != nil
     }
 
     /// Same "no news defaults to synced" reasoning as before: a missing
     /// outbox entry means it was delivered.
     func outboxState(for entry: HydrationEntry) -> OutboxEntryState? {
+        guard !preferences.isStandalone else { return nil }
         guard let outboxEntryId = entry.outboxEntryId else { return nil }
         return outboxEntries.first { $0.id == outboxEntryId }?.state
     }

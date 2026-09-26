@@ -97,3 +97,53 @@ public enum WeightAndWaterOverview {
         )
     }
 }
+
+// MARK: - Standalone mode (add-standalone-mode D7, task 4.4)
+//
+// No Garmin: every row and total comes from this phone's own stores. The
+// cached Garmin reads and the outboxes are ignored on purpose -- after a
+// switch from Garmin mode they may still hold old values, and standalone
+// never shows a "not in Garmin yet" badge.
+
+extension WeightAndWaterOverview {
+    /// Local weigh-ins only, newest first, every row `.synced` (no badge).
+    public static func standaloneWeightRows(localEntries: [WeightEntry], calendar: Calendar = .current) -> [WeighInDisplayEntry] {
+        WeightHistoryMerge.merge(
+            garminWeighIns: [],
+            garminDayFetchedAt: [:],
+            localEntries: localEntries,
+            outboxEntries: [],
+            calendar: calendar
+        )
+    }
+
+    /// The weight goal from the local overrides only; the start defaults
+    /// to the FIRST local weigh-in (design D6). `nil` without a target.
+    public static func standaloneWeightGoal(
+        targetOverrideKg: Double?,
+        startOverrideKg: Double?,
+        localEntries: [WeightEntry]
+    ) -> EffectiveWeightGoal? {
+        guard let targetOverrideKg else { return nil }
+        let firstKg = localEntries.min { $0.loggedAt < $1.loggedAt }?.weightKg
+        return GoalResolution.weight(
+            targetSource: .override(targetOverrideKg),
+            startOverrideKg: startOverrideKg ?? firstKg,
+            garminTargetGrams: nil,
+            garminStartGrams: nil,
+            garminRateGramsPerWeek: nil,
+            garminChangeType: nil
+        )
+    }
+
+    /// The water total for the day containing `date`: the sum of this
+    /// phone's drinks (no Garmin total, no outbox).
+    public static func standaloneWaterTotalML(entries: [HydrationEntry], on date: Date, calendar: Calendar = .current) -> Double {
+        HydrationHistory.total(for: entries, on: date, calendar: calendar)
+    }
+
+    /// The water goal: the local override, else 2000 ml.
+    public static func standaloneWaterGoal(overrideML: Double?) -> EffectiveWaterGoal {
+        GoalResolution.water(source: overrideML.map { GoalSource.override($0) } ?? .garmin, garminGoalML: nil)
+    }
+}

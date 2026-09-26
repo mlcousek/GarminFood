@@ -15,6 +15,11 @@
 // fills the cache is `AppEnvironment.refreshGarminHealth(force:)`, which
 // then calls `refresh()` and sets `lastGarminRefreshFailed` for the quiet
 // "couldn't refresh" caption.
+//
+// add-standalone-mode D7 (task 4.4): in standalone mode the rows are the
+// local weigh-ins only and the goal comes from the local overrides (start =
+// the first weigh-in) -- `WeightAndWaterOverview.standalone*`. The Garmin
+// cache and the outbox are ignored, so no "not in Garmin yet" badge shows.
 
 import Foundation
 import Observation
@@ -32,6 +37,8 @@ final class WeightLoader {
     /// The merged Garmin + local history, newest first.
     private(set) var rows: [WeighInDisplayEntry] = []
     private(set) var snapshot = GarminHealthSnapshot()
+    /// This phone's own weigh-ins (standalone mode's whole history).
+    private(set) var localEntries: [WeightEntry] = []
     /// Whether the last Garmin read for weight failed (not auth -- that has
     /// its own banner). Rows still render from the cache.
     var lastGarminRefreshFailed = false
@@ -49,7 +56,14 @@ final class WeightLoader {
     /// Override else Garmin's plan (D5); `nil` hides the goal bar. Reads
     /// `preferences`, so a Settings change re-renders the cards at once.
     var goal: EffectiveWeightGoal? {
-        WeightAndWaterOverview.weightGoal(
+        if preferences.isStandalone {
+            return WeightAndWaterOverview.standaloneWeightGoal(
+                targetOverrideKg: preferences.weightGoalOverrideKg,
+                startOverrideKg: preferences.weightGoalStartKg,
+                localEntries: localEntries
+            )
+        }
+        return WeightAndWaterOverview.weightGoal(
             snapshot: snapshot,
             targetSource: preferences.weightGoalSource,
             startOverrideKg: preferences.weightGoalStartKg
@@ -76,6 +90,11 @@ final class WeightLoader {
         async let loadedSnapshot = cache.current()
         let (entries, outboxEntries, cached) = await (loadedEntries, loadedOutbox, loadedSnapshot)
         snapshot = cached
+        localEntries = entries
+        if preferences.isStandalone {
+            rows = WeightAndWaterOverview.standaloneWeightRows(localEntries: entries)
+            return
+        }
         rows = WeightHistoryMerge.merge(
             garminWeighIns: cached.allWeighIns,
             garminDayFetchedAt: cached.weighInDayFetchTimes,
