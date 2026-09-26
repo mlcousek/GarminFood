@@ -231,7 +231,7 @@ final class FeatureHost {
                 dayNotes: sources.dayNotes,
                 mode: preferences.effectiveDataMode
             )
-            return SupplementSignalsBuilder.build(
+            let raw = SupplementSignalsBuilder.build(
                 isEnabled: preferences.supplementsEnabled,
                 plan: plan,
                 records: records,
@@ -240,6 +240,10 @@ final class FeatureHost {
                 today: today,
                 calendar: calendar
             )
+            // D10: days the feature was off read as neutral (streak frozen
+            // in place); `nil` when its state can't be read this run.
+            guard let supplementsFeature = feature(SupplementsFeature.self) else { return raw }
+            return await supplementsFeature.prepare(raw)
         } catch {
             DiagnosticsLog.log(.warning, category: "features", "supplements: couldn't read the supplement stores: \(error.localizedDescription)")
             return nil

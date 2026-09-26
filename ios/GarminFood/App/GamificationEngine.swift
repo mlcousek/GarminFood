@@ -51,6 +51,12 @@ final class GamificationEngine {
     /// the supplements feature, the shared freeze planner and the
     /// supplement challenges.
     private(set) var supplementSignals: SupplementSignals?
+    /// add-supplements D9: the supplement streak (stack-complete days,
+    /// neutral days skipped, the shared freeze pool applied), shown on the
+    /// Supplements screen. `.zero` without a digest.
+    private(set) var supplementStreak: SupplementStreak.Status = .zero
+    /// The supplement days covered by a freeze (from the shared pool).
+    private var supplementFrozenDays: Set<String> = []
 
     /// Every day-keyed calculation uses the date entries are logged FOR
     /// (local midnight, the same date sent to Garmin), so streaks, XP bonuses
@@ -557,16 +563,34 @@ final class GamificationEngine {
     /// pre-freeze one. While the freeze file can't be read (device locked)
     /// the last known frozen days are kept rather than dropped, so a
     /// protected streak never flickers to a reset.
+    ///
+    /// add-supplements D9: the same pool also protects the supplement streak
+    /// (an active `supplementSignals` goes into the planner); its frozen
+    /// days are written into the digest before anything reads it.
     private func applyStreakFreezes(events: [UsageEvent], now: Date) async {
+        defer { updateSupplementStreak() }
         guard let featureHost, let boss = featureHost.feature(WeeklyBossFeature.self) else { return }
         let calendar = Calendar.current
         let loggedDays = StreakEngine.loggedDays(events: events, boundaryHour: boundaryHour, calendar: calendar)
         let today = NutritionDayBoundary.nutritionDay(for: now, boundaryHour: boundaryHour, calendar: calendar)
         let grants = await featureHost.freezeGrants()
-        let run = await boss.applyStreakFreezes(loggedDays: loggedDays, grants: grants, today: today, calendar: calendar)
+        let run = await boss.applyStreakFreezes(
+            loggedDays: loggedDays,
+            grants: grants,
+            today: today,
+            calendar: calendar,
+            supplements: supplementSignals
+        )
         guard run.isReadable else { return }
         frozenDays = run.frozenDays
+        supplementFrozenDays = run.supplementFrozenDays
         freezeBalance = run.balance
         pendingMoments.append(contentsOf: run.moments.map { GamificationMoment.feature($0) })
+    }
+
+    /// The supplement digest's frozen days and the streak shown for it.
+    private func updateSupplementStreak() {
+        supplementSignals?.frozenDays = supplementFrozenDays
+        supplementStreak = supplementSignals.map { SupplementStreak.status($0) } ?? .zero
     }
 }

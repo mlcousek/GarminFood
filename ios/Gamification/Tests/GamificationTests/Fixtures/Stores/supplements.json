@@ -1,0 +1,24 @@
+{
+  "archivedCreatineDays" : 41,
+  "archivedCreatineGrams" : 205.5,
+  "archivedThrough" : "2025-10-02",
+  "collected" : {
+    "magnesium" : "2025-09-30",
+    "vitaminD" : "2025-10-01",
+    "zinc" : "2026-09-20"
+  },
+  "inactiveSince" : "2026-09-24",
+  "longestStreak" : 23,
+  "pausedRanges" : [
+    {
+      "from" : "2026-08-01",
+      "through" : "2026-08-14"
+    },
+    {
+      "from" : "2026-09-01"
+    }
+  ],
+  "reachedMilestones" : [
+    "creatine-100g"
+  ]
+}

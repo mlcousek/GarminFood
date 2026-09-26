@@ -11,6 +11,11 @@
 // A consumption is never removed (no refund on a later backfill, D5) --
 // the list only grows, by at most a couple of entries a month.
 //
+// add-supplements D9: the pool is SHARED by the food and the supplement
+// streak. A consumption now says which streak it froze (`streak`, absent =
+// food, so every older file reads unchanged), and a day can be frozen once
+// per streak. `FreezeBalance` counts every consumption, whichever streak.
+//
 // One instance per process, owned by `WeeklyBossFeature` (which declares
 // the freeze badges and reads this list to unlock them); the app's
 // `GamificationEngine` reaches it through `WeeklyBossFeature.streakFreezes`
@@ -36,12 +41,29 @@ public actor StreakFreezeStore {
         public var consumedOn: String?
         /// The streak length the freeze kept alive (for `freeze.saved-100`).
         public var protectedLength: Int?
+        /// add-supplements D9: which streak the freeze covered
+        /// (`FreezeStreakKind` raw value). `nil` -- every file written
+        /// before supplements -- is the food streak.
+        public var streak: String?
 
-        public init(frozenDay: String, consumedOn: String?, protectedLength: Int?) {
+        public init(frozenDay: String, consumedOn: String?, protectedLength: Int?, streak: String? = nil) {
             self.frozenDay = frozenDay
             self.consumedOn = consumedOn
             self.protectedLength = protectedLength
+            self.streak = streak
         }
+
+        /// The streak this consumption froze; `nil` for a kind this build
+        /// doesn't know (a newer app's), which then freezes nothing here
+        /// but still counts against the shared pool.
+        public var streakKind: FreezeStreakKind? {
+            guard let streak else { return .food }
+            return FreezeStreakKind(rawValue: streak)
+        }
+
+        /// One freeze per missed day PER STREAK (spec): the identity
+        /// `record` de-duplicates on.
+        var identity: String { "\(frozenDay)|\(streak ?? FreezeStreakKind.food.rawValue)" }
     }
 
     struct Snapshot: Codable, Equatable {
@@ -97,13 +119,13 @@ public actor StreakFreezeStore {
         return snapshot.consumptions ?? []
     }
 
-    /// The `yyyy-MM-dd` days covered by a freeze.
+    /// The `yyyy-MM-dd` days covered by a freeze of the FOOD streak.
     public func frozenDayKeys() -> Set<String> {
-        Set(consumptions().map(\.frozenDay))
+        Set(consumptions().filter { $0.streakKind == .food }.map(\.frozenDay))
     }
 
-    /// Appends new consumptions (a day already frozen is ignored) and
-    /// persists. Throws -- leaving memory unchanged -- when the file could
+    /// Appends new consumptions (a day already frozen for the same streak
+    /// is ignored) and persists. Throws -- leaving memory unchanged -- when the file could
     /// not be written, so the next run re-plans the same freeze.
     ///
     /// Returns only the consumptions actually added: two overlapping planner
@@ -114,10 +136,10 @@ public actor StreakFreezeStore {
     public func record(_ new: [Consumption]) throws -> [Consumption] {
         loadIfNeeded()
         var all = snapshot.consumptions ?? []
-        var known = Set(all.map(\.frozenDay))
+        var known = Set(all.map(\.identity))
         var added: [Consumption] = []
-        for consumption in new where !known.contains(consumption.frozenDay) {
-            known.insert(consumption.frozenDay)
+        for consumption in new where !known.contains(consumption.identity) {
+            known.insert(consumption.identity)
             all.append(consumption)
             added.append(consumption)
         }
@@ -132,6 +154,12 @@ public actor StreakFreezeStore {
         }
         return added
     }
+}
+
+/// add-supplements D9: the streaks sharing one freeze pool.
+public enum FreezeStreakKind: String, Sendable, Equatable, CaseIterable {
+    case food
+    case supplements
 }
 
 /// `yyyy-MM-dd` <-> nutrition-day midnight, in a given calendar, for the

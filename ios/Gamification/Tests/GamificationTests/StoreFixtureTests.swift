@@ -70,6 +70,8 @@ final class StoreFixtureTests: XCTestCase {
         "sport.json",
         "boss.json",
         "streak-freezes.json",
+        "streak-freezes.v2.json",
+        "supplements.json",
     ]
 
     /// Literal `"<name>.json"` strings in Sources/Gamification that are NOT a
@@ -570,6 +572,60 @@ final class StoreFixtureTests: XCTestCase {
             ]
         )
         XCTAssertEqual(frozen, ["2026-09-09", "2026-09-21", "2026-08-30"])
+    }
+
+    // MARK: - streak-freezes.v2.json (add-supplements 6.2: `streak` per consumption)
+
+    func testStreakFreezesV2FixtureDecodesThroughTheRealStore() async throws {
+        let url = try copyFixture("streak-freezes.v2.json")
+        let store = StreakFreezeStore(fileURL: url)
+
+        let (consumptions, isReadable) = await store.load()
+        let foodDays = await store.frozenDayKeys()
+
+        assertNotQuarantined(url)
+        XCTAssertTrue(isReadable)
+        XCTAssertEqual(consumptions.count, 4)
+        XCTAssertEqual(consumptions[0], StreakFreezeStore.Consumption(frozenDay: "2026-09-09", consumedOn: "2026-09-10", protectedLength: 104))
+        XCTAssertEqual(consumptions[0].streakKind, .food, "no `streak` = the food streak")
+        XCTAssertEqual(consumptions[1].streakKind, .supplements)
+        XCTAssertEqual(consumptions[1].protectedLength, 12)
+        // The same day frozen once per streak.
+        XCTAssertEqual(consumptions[2].frozenDay, consumptions[1].frozenDay)
+        XCTAssertEqual(consumptions[2].streakKind, .food)
+        // A newer build's streak kind: kept, freezes nothing here.
+        XCTAssertNil(consumptions[3].streakKind)
+        XCTAssertEqual(consumptions[3].streak, "somethingNewer")
+
+        XCTAssertEqual(foodDays, ["2026-09-09", "2026-09-21"])
+        XCTAssertEqual(StreakFreezePlanner.supplementFrozenDays(from: consumptions), ["2026-09-21"])
+        // Every consumption counts against the shared pool.
+        XCTAssertEqual(FreezeBalance.compute(grants: [], consumptions: consumptions).used, 4)
+    }
+
+    // MARK: - supplements.json (SupplementsState, FeatureStateFile)
+
+    func testSupplementsFixtureDecodesThroughTheRealStore() async throws {
+        let url = try copyFixture("supplements.json")
+        let store = SupplementsStore(directory: url.deletingLastPathComponent())
+
+        let (state, isReadable) = await store.load()
+
+        assertNotQuarantined(url)
+        XCTAssertTrue(isReadable)
+        XCTAssertEqual(state.inactiveSince, "2026-09-24")
+        XCTAssertEqual(state.pausedRanges, [
+            SupplementPausedRange(from: "2026-08-01", through: "2026-08-14"),
+            SupplementPausedRange(from: "2026-09-01", through: nil),
+        ])
+        XCTAssertEqual(state.archivedThrough, "2025-10-02")
+        XCTAssertEqual(state.archivedCreatineGrams, 205.5)
+        XCTAssertEqual(state.archivedCreatineDays, 41)
+        XCTAssertEqual(state.collected, ["magnesium": "2025-09-30", "vitaminD": "2025-10-01", "zinc": "2026-09-20"])
+        XCTAssertEqual(state.reachedMilestones, ["creatine-100g"])
+        XCTAssertEqual(state.longestStreak, 23)
+        // A range missing its end never matches a day.
+        XCTAssertFalse(SupplementPausedRange(from: "2026-09-01", through: nil).contains("2026-09-02"))
     }
 
     // MARK: - Coverage of the fixture set itself

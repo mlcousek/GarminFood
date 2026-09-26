@@ -492,3 +492,11 @@
 "Protein" = "Bílkoviny";
 "Carbs" = "Sacharidy";
 "Fat" = "Tuky";
+
+/* add-supplements 6.2: the shared streak-freeze pool also protects the supplement streak. */
+
+/* Moment title: a streak freeze was used automatically for the supplement streak. */
+"Supplement streak frozen" = "Série doplňků zamrazena";
+
+/* Moment message: which missed supplement day a freeze covered and the supplement streak it saved. First value is a weekday name, second a number of days (always 3 or more). */
+"A freeze covered %@ — your %lld-day supplement streak lives on." = "Zamrazení zachránilo %@ – tvoje série doplňků %lld dní žije dál.";
