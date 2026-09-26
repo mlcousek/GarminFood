@@ -201,7 +201,12 @@ struct SupplementProductEditorView: View {
     private func ingredientsSection(_ product: Binding<SupplementProduct>) -> some View {
         Section {
             ForEach(product.wrappedValue.ingredients.indices, id: \.self) { index in
+                // Rows are addressed by index and keep their own text state,
+                // so they are rebuilt whenever the list changes length --
+                // otherwise deleting a row leaves the next one showing the
+                // deleted row's amount.
                 IngredientRowEditor(row: product.ingredients[index])
+                    .id("\(index)-\(product.wrappedValue.ingredients.count)")
             }
             .onDelete { offsets in
                 product.wrappedValue.ingredients.remove(atOffsets: offsets)

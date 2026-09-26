@@ -317,21 +317,55 @@ final class NotificationScheduler {
 
     private var isSyncingSupplements = false
 
+    /// The newest supplement arguments not yet applied -- same coalescing
+    /// as `pendingSync`: a tick arriving while a foreground pass runs must
+    /// not be dropped, or the ticked slot's reminder would still fire.
+    private var pendingSupplementSync: SupplementSyncRequest?
+
+    private struct SupplementSyncRequest {
+        let slots: [PlannedSupplementReminder]
+        let restock: [PlannedSupplementReminder]
+        let isEnabled: Bool
+        let now: Date
+    }
+
     /// Applies the planned supplement reminders. Returns the products whose
     /// restock reminder was scheduled now (the caller marks their pack as
-    /// reminded).
+    /// reminded). A call made while a pass runs returns `[]` at once; the
+    /// running pass re-runs with its arguments and reports those restocks
+    /// to its own caller.
     func syncSupplementReminders(
         slots: [PlannedSupplementReminder],
         restock: [PlannedSupplementReminder],
         isEnabled: Bool,
         now: Date = Date()
     ) async -> [UUID] {
-        // A pass already running plans from state at most a moment older;
-        // the next trigger (every tick and foreground) catches up.
+        pendingSupplementSync = SupplementSyncRequest(slots: slots, restock: restock, isEnabled: isEnabled, now: now)
         guard !isSyncingSupplements else { return [] }
         isSyncingSupplements = true
         defer { isSyncingSupplements = false }
 
+        var scheduled: [UUID] = []
+        while let request = pendingSupplementSync {
+            pendingSupplementSync = nil
+            scheduled += await performSupplementSync(
+                slots: request.slots,
+                restock: request.restock,
+                isEnabled: request.isEnabled,
+                now: request.now
+            )
+        }
+        return scheduled
+    }
+
+    /// One supplement replan pass; only ever run by
+    /// `syncSupplementReminders`'s loop.
+    private func performSupplementSync(
+        slots: [PlannedSupplementReminder],
+        restock: [PlannedSupplementReminder],
+        isEnabled: Bool,
+        now: Date
+    ) async -> [UUID] {
         registerSupplementCategory()
         let pending = await pendingTexts()
 
