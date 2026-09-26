@@ -155,6 +155,9 @@ struct SettingsView: View {
             // redesign-fasting-schedule 2.1 (FastingSettingsSection.swift).
             FastingSettingsSection()
 
+            // add-supplements D10 (SupplementsSettingsSection.swift).
+            SupplementsSettingsSection()
+
             // add-offline-czech-food-index 3.5 (OfflineIndexSettingsSection.swift).
             OfflineIndexSettingsSection()
 

@@ -44,7 +44,7 @@ public enum LayoutPreset: String, CaseIterable, Sendable {
         case .athlete:
             let order: [TodayCardID] = [
                 .daySwitcher, .summary, .progressStrip, .weightWater, .meals,
-                .fasting, .logAgain, .logMeal, .banners, .dayNote, .signature,
+                .supplements, .fasting, .logAgain, .logMeal, .banners, .dayNote, .signature,
             ]
             return ScreenLayout(placements: order.map { (id: TodayCardID) -> CardPlacement in
                 let variant: String?

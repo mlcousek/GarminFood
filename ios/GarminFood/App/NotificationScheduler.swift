@@ -300,4 +300,129 @@ final class NotificationScheduler {
             }
         }
     }
+
+    // MARK: - Supplement reminders (add-supplements D5)
+
+    /// Slot reminders: dated one-shot requests (`slot.<day>.<slotKey>`) for
+    /// today and tomorrow, re-planned and diffed like `sync(...)`, so a
+    /// ticked slot's reminder is removed. Their own prefix keeps the other
+    /// cycles' stale-cleanup away from them.
+    private static let supplementSlotPrefix = "supplementSlot."
+
+    /// Restock reminders are sent at most once per pack, so they are
+    /// add-only: once scheduled the pack is marked reminded, drops out of
+    /// the plan, and must NOT then be diffed away before it fires. They're
+    /// removed only when the feature is turned off.
+    private static let supplementRestockPrefix = "supplementRestock."
+
+    private var isSyncingSupplements = false
+
+    /// Applies the planned supplement reminders. Returns the products whose
+    /// restock reminder was scheduled now (the caller marks their pack as
+    /// reminded).
+    func syncSupplementReminders(
+        slots: [PlannedSupplementReminder],
+        restock: [PlannedSupplementReminder],
+        isEnabled: Bool,
+        now: Date = Date()
+    ) async -> [UUID] {
+        // A pass already running plans from state at most a moment older;
+        // the next trigger (every tick and foreground) catches up.
+        guard !isSyncingSupplements else { return [] }
+        isSyncingSupplements = true
+        defer { isSyncingSupplements = false }
+
+        registerSupplementCategory()
+        let pending = await pendingTexts()
+
+        if !isEnabled {
+            let ours = pending.keys.filter { $0.hasPrefix(Self.supplementSlotPrefix) || $0.hasPrefix(Self.supplementRestockPrefix) }
+            if !ours.isEmpty { center.removePendingNotificationRequests(withIdentifiers: Array(ours)) }
+            return []
+        }
+
+        let status = await center.notificationSettings().authorizationStatus
+        guard status == .authorized || status == .provisional else { return [] }
+
+        // Slots: replan and diff.
+        var plannedSlots: [String: PlannedSupplementReminder] = [:]
+        for item in slots {
+            plannedSlots[Self.supplementSlotPrefix + item.id] = item
+        }
+        let diff = NotificationPlanning.diff(
+            planned: plannedSlots.mapValues(\.text),
+            pending: pending,
+            ownedPrefix: Self.supplementSlotPrefix
+        )
+        if !diff.toRemove.isEmpty {
+            center.removePendingNotificationRequests(withIdentifiers: diff.toRemove)
+        }
+        for identifier in diff.toAdd {
+            guard let item = plannedSlots[identifier],
+                  let fireDate = Self.fireDate(day: item.day, hour: item.hour, minute: item.minute),
+                  fireDate > now
+            else { continue }
+            let content = UNMutableNotificationContent()
+            content.title = item.title
+            content.body = item.body
+            content.sound = .default
+            content.categoryIdentifier = NotificationPlanning.supplementSlotCategory
+            content.userInfo = item.userInfo
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(fireDate.timeIntervalSince(now), 1), repeats: false)
+            await add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger))
+        }
+
+        // Restock: add-only, once per pack.
+        var scheduled: [UUID] = []
+        for item in restock {
+            guard case .restock(let productId) = item.kind else { continue }
+            let identifier = Self.supplementRestockPrefix + item.id
+            guard pending[identifier] == nil else { continue }
+            let content = UNMutableNotificationContent()
+            content.title = item.title
+            content.body = item.body
+            content.sound = .default
+            // Its time today, or in a minute when that has passed.
+            let fireDate = Self.fireDate(day: item.day, hour: item.hour, minute: item.minute) ?? now
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(fireDate.timeIntervalSince(now), 60), repeats: false)
+            if await add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)) {
+                scheduled.append(productId)
+            }
+        }
+        return scheduled
+    }
+
+    /// The slot reminder's category, with its "Taken" action: ticks the
+    /// slot in the background, without opening the app (design D5).
+    private func registerSupplementCategory() {
+        let taken = UNNotificationAction(
+            identifier: NotificationPlanning.supplementTakenAction,
+            title: String(localized: "Taken", comment: "Button on a supplement reminder: ticks every item of the slot."),
+            options: []
+        )
+        let category = UNNotificationCategory(
+            identifier: NotificationPlanning.supplementSlotCategory,
+            actions: [taken],
+            intentIdentifiers: [],
+            options: []
+        )
+        center.setNotificationCategories([category])
+    }
+
+    @discardableResult
+    private func add(_ request: UNNotificationRequest) async -> Bool {
+        do {
+            try await center.add(request)
+            return true
+        } catch {
+            DiagnosticsLog.log(.warning, category: "NotificationScheduler", "couldn't schedule \(request.identifier): \(error)")
+            return false
+        }
+    }
+
+    /// `hour:minute` on the calendar day `day` (`yyyy-MM-dd`).
+    private static func fireDate(day: String, hour: Int, minute: Int) -> Date? {
+        guard let noon = SupplementDay.date(day) else { return nil }
+        return Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: noon)
+    }
 }

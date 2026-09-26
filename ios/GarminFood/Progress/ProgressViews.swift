@@ -147,7 +147,38 @@ struct ProgressHomeView: View {
                 GoalHistoryList(statuses: Array(engine.goalHistory.prefix(14)))
                     .card()
             }
+        case .supplements:
+            // add-supplements D11: the entry row, only while the feature
+            // is on with a product.
+            if environment.supplements.isAvailable {
+                NavigationLink {
+                    SupplementsView()
+                } label: {
+                    SupplementsProgressRow(status: environment.supplements.status(on: environment.supplements.today))
+                }
+                .buttonStyle(.plain)
+            }
         }
+    }
+}
+
+/// Progress: today's supplement status, opening the Supplements screen.
+private struct SupplementsProgressRow: View {
+    let status: SupplementDayStatus
+
+    var body: some View {
+        HStack {
+            Label("Supplements", systemImage: "pills")
+                .font(.headline)
+            Spacer()
+            SupplementStatusBadge(status: status)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .card()
+        .accessibilityElement(children: .combine)
+        .accessibilityHint(Text("Opens your supplements"))
     }
 }
 

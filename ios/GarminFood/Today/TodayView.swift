@@ -53,6 +53,7 @@ struct TodayView: View {
     /// rows and "Copy from…" -- see EntryEditing.swift.
     @State private var entryEditor = EntryEditor()
     @State private var showFasting = false
+    @State private var showSupplements = false
     @State private var isPresentingAddHydration = false
     @State private var hydrationActionError: String?
     @State private var isEditingLayout = false
@@ -111,6 +112,9 @@ struct TodayView: View {
         .entryEditing(entryEditor)
         .navigationDestination(isPresented: $showFasting) {
             FastingHistoryView()
+        }
+        .navigationDestination(isPresented: $showSupplements) {
+            SupplementsView()
         }
         .sheet(isPresented: $isPresentingAddHydration) {
             NavigationStack {
@@ -194,6 +198,13 @@ struct TodayView: View {
             return dayLog.isToday && !mealPresets.isEmpty
                 ? .available
                 : .empty(String(localized: "Shows on today's date when you have saved meals", comment: "Layout editor: when the Log a meal shelf appears on Today."))
+        case .supplements:
+            // add-supplements D4: on, with at least one product.
+            let base = TodayCardID.baseAvailability(card, preferences: environment.preferences)
+            guard base.isAvailable else { return base }
+            return environment.supplements.plan.products.isEmpty
+                ? .empty(String(localized: "Shows once you add a supplement", comment: "Layout editor: when the Supplements card appears on Today."))
+                : .available
         default:
             return TodayCardID.baseAvailability(card, preferences: environment.preferences)
         }
@@ -248,6 +259,11 @@ struct TodayView: View {
                         isCollapsed: variant == MealsVariant.collapsed.rawValue
                     )
                 }
+            }
+
+        case .supplements:
+            SupplementsTodayCard(variant: variant.flatMap(SupplementsVariant.init(rawValue:)) ?? .slot) {
+                showSupplements = true
             }
 
         case .logAgain:

@@ -24,18 +24,22 @@ final class LayoutResolverTests: XCTestCase {
     /// `TodayView`'s pre-change body, top to bottom: DaySwitcher,
     /// DaySummaryCard, ProgressStrip, FastingHomeSection, TodaySlotHost,
     /// the meal cards, Log again, Log a meal, Weight & Water, DayNoteCard,
-    /// AppSignatureView.
+    /// AppSignatureView. add-supplements D4 adds "supplements" right after
+    /// the meals; the app shows it only while the feature is on with a
+    /// product (`TodayCardID.baseAvailability`), so with the feature off the
+    /// rendered order is exactly the one before.
     func testGoldenTodayDefault() {
         let rows = LayoutResolver.resolve(stored: nil, specs: today)
         XCTAssertEqual(ids(rows), [
             "daySwitcher", "summary", "progressStrip", "fasting", "banners",
-            "meals", "logAgain", "logMeal", "weightWater", "dayNote", "signature",
+            "meals", "supplements", "logAgain", "logMeal", "weightWater", "dayNote", "signature",
         ])
         XCTAssertTrue(rows.allSatisfy(\.isVisible))
         let variants = Dictionary(uniqueKeysWithValues: rows.map { ($0.id, $0.variant) })
         XCTAssertEqual(variants["summary"], "ring")
         XCTAssertEqual(variants["meals"], "expanded")
         XCTAssertEqual(variants["weightWater"], "both")
+        XCTAssertEqual(variants["supplements"], "slot")
         XCTAssertEqual(variants["logAgain"], .some(nil))
     }
 
@@ -54,7 +58,7 @@ final class LayoutResolverTests: XCTestCase {
         XCTAssertEqual(ids(rows), [
             "streak", "level",
             "boss", "bingo", "seasonal", "journeys", "records", "collections", "sportBody", "secrets",
-            "challenges", "achievements", "weight", "hydration", "trends", "goalHistory",
+            "challenges", "achievements", "weight", "hydration", "trends", "goalHistory", "supplements",
         ])
         XCTAssertTrue(rows.allSatisfy(\.isVisible))
     }
@@ -106,8 +110,9 @@ final class LayoutResolverTests: XCTestCase {
         ]).placements
         placements.insert(CardPlacement(id: "futureCard", isVisible: false, variant: "shiny"), at: 2)
         var config = LayoutConfig(today: ScreenLayout(placements: placements))
-        // Move Weight & Water above the meals, hide the day note.
-        config.edit(.today) { stored, specs in LayoutResolver.move(in: stored, specs: specs, fromOffsets: [8], toOffset: 5) }
+        // Move Weight & Water (index 9 once "supplements" is merged in
+        // after the meals) above the meals, hide the day note.
+        config.edit(.today) { stored, specs in LayoutResolver.move(in: stored, specs: specs, fromOffsets: [9], toOffset: 5) }
         config.edit(.today) { stored, specs in LayoutResolver.setVisible(false, for: "dayNote", in: stored, specs: specs) }
 
         let reloaded = LayoutConfig.load(from: try config.encoded())
@@ -144,8 +149,10 @@ final class LayoutResolverTests: XCTestCase {
         let stored = layout(["goalHistory"])
         let order = ids(LayoutResolver.resolve(stored: stored, specs: LayoutCatalog.progress))
         XCTAssertEqual(order.first, "streak")
-        XCTAssertEqual(order.last, "goalHistory")
-        XCTAssertEqual(Array(order.dropLast()), ids(LayoutResolver.resolve(stored: nil, specs: LayoutCatalog.progress)).filter { $0 != "goalHistory" })
+        // "supplements" does have a present predecessor (goalHistory), so
+        // it follows it; every other new card has none and goes first.
+        XCTAssertEqual(Array(order.suffix(2)), ["goalHistory", "supplements"])
+        XCTAssertEqual(Array(order.dropLast(2)), ids(LayoutResolver.resolve(stored: nil, specs: LayoutCatalog.progress)).filter { !["goalHistory", "supplements"].contains($0) })
     }
 
     func testNewCardUsesDefaultVisibility() {
@@ -196,23 +203,24 @@ final class LayoutResolverTests: XCTestCase {
     // MARK: Editing
 
     func testMoveMatchesListOnMove() {
-        // Move weightWater (index 8) above meals (index 5).
-        let result = LayoutResolver.move(in: nil, specs: today, fromOffsets: [8], toOffset: 5)
+        // Move weightWater (index 9) above meals (index 5).
+        let result = LayoutResolver.move(in: nil, specs: today, fromOffsets: [9], toOffset: 5)
         XCTAssertEqual(ids(LayoutResolver.resolve(stored: result, specs: today)), [
             "daySwitcher", "summary", "progressStrip", "fasting", "banners",
-            "weightWater", "meals", "logAgain", "logMeal", "dayNote", "signature",
+            "weightWater", "meals", "supplements", "logAgain", "logMeal", "dayNote", "signature",
         ])
-        // Moving down: summary (1) to just before logMeal (offset 7).
-        let down = LayoutResolver.move(in: nil, specs: today, fromOffsets: [1], toOffset: 7)
+        // Moving down: summary (1) to just before logMeal (offset 8).
+        let down = LayoutResolver.move(in: nil, specs: today, fromOffsets: [1], toOffset: 8)
         XCTAssertEqual(ids(LayoutResolver.resolve(stored: down, specs: today)), [
-            "daySwitcher", "progressStrip", "fasting", "banners", "meals",
+            "daySwitcher", "progressStrip", "fasting", "banners", "meals", "supplements",
             "logAgain", "summary", "logMeal", "weightWater", "dayNote", "signature",
         ])
     }
 
     func testMovePastAPinnedCardIsUndoneByThePin() {
         // Dropping a card above the day switcher still leaves the switcher first.
-        let result = LayoutResolver.move(in: nil, specs: today, fromOffsets: [9], toOffset: 0)
+        // dayNote is index 10.
+        let result = LayoutResolver.move(in: nil, specs: today, fromOffsets: [10], toOffset: 0)
         let order = ids(LayoutResolver.resolve(stored: result, specs: today))
         XCTAssertEqual(order.first, "daySwitcher")
         XCTAssertEqual(order[1], "dayNote")
@@ -261,7 +269,7 @@ final class LayoutResolverTests: XCTestCase {
     /// Spec: Weight & Water dragged above the meals survives a relaunch.
     func testMovedLayoutSurvivesStorage() throws {
         var config = LayoutConfig.default
-        config.edit(.today) { stored, specs in LayoutResolver.move(in: stored, specs: specs, fromOffsets: [8], toOffset: 5) }
+        config.edit(.today) { stored, specs in LayoutResolver.move(in: stored, specs: specs, fromOffsets: [9], toOffset: 5) }
         let reloaded = LayoutConfig.load(from: try config.encoded()).config
         let order = reloaded.resolved(.today).map(\.id)
         XCTAssertLessThan(order.firstIndex(of: "weightWater")!, order.firstIndex(of: "meals")!)
