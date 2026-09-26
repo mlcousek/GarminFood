@@ -93,7 +93,13 @@ public enum UndeliveredFoodConversion {
             } catch {
                 // In flight, delivered or gone meanwhile: Garmin has (or is
                 // getting) it, so the local copy would be a duplicate.
-                _ = try? await localLog.delete(id: local.id, day: local.day)
+                do {
+                    _ = try await localLog.delete(id: local.id, day: local.day)
+                } catch {
+                    // Never silent (CLAUDE.md): the entry now exists in both
+                    // places; say so, so it can be deleted by hand.
+                    DiagnosticsLog.log(.error, category: "DataMode", "Couldn't remove the local copy of \(entry.id) on \(local.day) after Garmin kept it; it may show twice: \(error.localizedDescription)")
+                }
                 left += 1
             }
         }

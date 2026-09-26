@@ -175,11 +175,17 @@ final class DataSafetyController {
     func readImport(_ url: URL) async -> ImportedBackup? {
         let didAccess = url.startAccessingSecurityScopedResource()
         defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+        isWorking = true
+        defer { isWorking = false }
         do {
-            let data = try Data(contentsOf: url)
-            let container = try BackupContainer.decode(data)
-            try BackupCompatibility.check(container.manifest)
-            return ImportedBackup(container: container, preview: BackupPreview.make(container: container))
+            // Off the main actor: an export is a few MB of base64 JSON.
+            let checked = try await Task.detached(priority: .userInitiated) { () throws -> CheckedImport in
+                let data = try Data(contentsOf: url)
+                let container = try BackupContainer.decode(data)
+                try BackupCompatibility.check(container.manifest)
+                return CheckedImport(container: container, preview: BackupPreview.make(container: container))
+            }.value
+            return ImportedBackup(container: checked.container, preview: checked.preview)
         } catch {
             fail(error, action: "Import")
             return nil
@@ -234,6 +240,12 @@ private struct VaultState: Sendable {
     let status: BackupStatus
     let snapshots: [BackupSnapshot]
     let pendingRestore: BackupManifest?
+}
+
+/// A decoded, compatible import (built off the main thread).
+private struct CheckedImport: Sendable {
+    let container: BackupContainer
+    let preview: BackupPreview
 }
 
 /// The encoded export file, built (and encoded) off the main thread.

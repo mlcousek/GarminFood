@@ -352,6 +352,9 @@ final class AppEnvironment {
     func dayDidChange() async {
         await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)
         lastForegroundDay = Date()
+        // add-supplements: the checklist's "today" moves too, or the Today
+        // card would keep ticking yesterday until the next foreground.
+        await supplements.reload()
         await gamificationEngine.refresh()
         await syncNotifications()
     }
