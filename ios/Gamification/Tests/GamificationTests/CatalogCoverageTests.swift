@@ -37,8 +37,13 @@ final class CatalogCoverageTests: XCTestCase {
         let text = catalogText(key, bundle)
         XCTAssertNotEqual(text, missing, "no Czech text for \(key) in cs.lproj/Catalog.strings", file: file, line: line)
         XCTAssertFalse(text.trimmingCharacters(in: .whitespaces).isEmpty, "empty Czech text for \(key)", file: file, line: line)
-        XCTAssertFalse(text.contains("%"), "Catalog text is final, it takes no format arguments: \(key)", file: file, line: line)
+        // A literal percent sign is fine ("Odemkni 25 % …"): CatalogL10n
+        // never formats catalog text. A format specifier is not.
+        XCTAssertNil(text.range(of: Self.formatSpecifier, options: .regularExpression), "Catalog text is final, it takes no format arguments: \(key)", file: file, line: line)
     }
+
+    /// `%@`, `%d`, `%lld`, `%1$@`, `%.1f`, … (no space flag, so Czech "25 % sacharidů" is not a match).
+    private static let formatSpecifier = #"%(\d+\$)?[-+#0]*\d*(\.\d+)?(hh|h|ll|l|q|z|t|j)?[@dDiuUxXoOfFeEgGaAcCsSp]"#
 
     /// Classic challenge families are in the Catalog table; the signal
     /// challenges (ChallengeTemplates+Signals.swift) use English-source keys.
