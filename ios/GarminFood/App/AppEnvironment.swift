@@ -1058,6 +1058,23 @@ final class AppEnvironment {
         return result
     }
 
+    /// add-standalone-mode 5.5: "Copy my last 90 days from Garmin" into the
+    /// phone's food log. Read-only toward Garmin (the confirmed day-log
+    /// read route, GarminHistoryImport.swift); an explicit user action, so
+    /// it runs even though standalone mode otherwise makes no Garmin calls.
+    func copyGarminHistory(progress: @escaping @Sendable (Int, Int) async -> Void) async throws -> GarminHistoryImport.Result {
+        let result = try await GarminHistoryImport.run(
+            reader: garminClient,
+            store: AppServices.shared.localFoodLog,
+            today: NutritionDate.string(from: Date()),
+            progress: progress
+        )
+        DiagnosticsLog.log(.info, category: "DataMode", "Copied \(result.entriesCopied) entries from Garmin (\(result.daysRead) days read, \(result.alreadyOnPhone) already here, \(result.failedDays) days failed).")
+        await dayLog.refresh()
+        await gamificationEngine.refreshGoalStatus()
+        return result
+    }
+
     /// "Deliver first": one drain now; the caller re-checks what's left.
     func deliverBeforeSwitching() async {
         await drainAndReconcile()

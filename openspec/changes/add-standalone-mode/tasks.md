@@ -17,7 +17,7 @@ owner may override** — a later answer becomes its own small follow-up.
 - [x] 0.4 Goal calculator: 1200 kcal floor for everyone or sex-specific; protein g/kg defaults; day targets only or per-meal too. — *Defaulted, owner may override:* one 1200 kcal floor for everyone (plus never below BMR); protein 1.6 g/kg when losing, 1.4 g/kg otherwise; day targets only (no per-meal split in the UI; `mealSplit` stays in the stored shape for later).
 - [x] 0.5 Display name for her install ("GarminFood" or a neutral name like "GF"); language is Czech via add-localization. — *Defaulted, owner may override:* keep "GarminFood" (no second bundle display name); the Profile header shows her own local display name in standalone mode.
 - [x] 0.6 AltStore or SideStore for her phone. — *Defaulted, owner may override:* the install guide documents both, recommending SideStore (no weekly PC dependence), AltStore as the fallback the owner already runs.
-- [x] 0.7 Build "Copy my last 90 days from Garmin" now or later. — *Defaulted, owner may override:* later (task 5.5 skipped).
+- [x] 0.7 Build "Copy my last 90 days from Garmin" now or later. — *Owner, 2026-09-26: now (task 5.5).*
 
 ## 1. Wave 1 — Seams, zero behaviour change (M)
 
@@ -62,7 +62,7 @@ owner may override** — a later answer becomes its own small follow-up.
 - [x] 5.2 Hide Garmin-only surfaces in standalone (banners, sync queue row, Garmin account section → "Data" section, Garmin nutrition plan, "Use Garmin's goal", "Default meal from Garmin's schedule", backing picker, "Active today", Garmin profile → local display name).
 - [x] 5.3 Foreground/background in standalone skip every Garmin call; `BackgroundRefresh` not scheduled. Test the planning function if extracted.
 - [x] 5.4 Switching (Settings → Data): standalone → Garmin after successful sign-in (local log kept, backing-less custom foods flagged); Garmin → standalone refused during a drain, undelivered entries "Deliver first" / "Keep on this phone" (converted to local entries via `FoodCacheStore`). Tests for the conversion.
-- [ ] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only. — *Skipped: 0.7 defaulted to "later".*
+- [x] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only. *Built 2026-09-26 at the owner's request (0.7 changed to "now"): `GarminHistoryImport` (FoodLogCore, tested) + Settings → Data button in standalone mode; idempotent ids from Garmin's `logId`; stops loudly on sign-in, rate limit or 5 failed days in a row.*
 - [x] 5.6 Mode-neutral `NSCameraUsageDescription` (en + cs via InfoPlist catalog).
 - [ ] 5.7 On-device: fresh install → choose "Just on this phone" in Czech → log a day with zero Garmin calls; the owner's phone skips onboarding.
 

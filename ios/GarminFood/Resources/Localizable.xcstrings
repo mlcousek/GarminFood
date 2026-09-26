@@ -16182,6 +16182,390 @@
           }
         }
       }
+    },
+    "Copy my last 90 days from Garmin…": {
+      "comment": "Settings → Data (standalone): copy the food logged in Garmin Connect over the last 90 days to this phone.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírovat posledních 90 dní z Garminu…"
+          }
+        }
+      }
+    },
+    "Copy your last 90 days from Garmin?": {
+      "comment": "Settings → Data: confirmation title for the 90-day copy.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkopírovat posledních 90 dní z Garminu?"
+          }
+        }
+      }
+    },
+    "Your food from Garmin Connect for the last 90 days is added to the food log on this phone. Garmin is only read, never changed, and running it again doesn't add anything twice. You need to be signed in to Garmin.": {
+      "comment": "Settings → Data: what the 90-day copy does.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo z Garmin Connect za posledních 90 dní se přidá do deníku v tomto telefonu. Z Garminu se jen čte, nic se v něm nemění, a opakované spuštění nic nezdvojí. Je potřeba přihlášení ke Garminu."
+          }
+        }
+      }
+    },
+    "Copying day %lld of %lld…": {
+      "comment": "Settings → Data: progress of copying the last 90 days from Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopíruji den %1$lld z %2$lld…"
+          }
+        }
+      }
+    },
+    "Not signed in to Garmin, so nothing was copied.": {
+      "comment": "Settings → Data: the sign-in for the 90-day copy was cancelled.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení ke Garminu chybí, takže se nic nezkopírovalo."
+          }
+        }
+      }
+    },
+    "Garmin asked you to sign in again. %lld entries were copied before that; run it again after signing in to copy the rest.": {
+      "comment": "Settings → Data: the 90-day copy stopped on a sign-in problem. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin chce znovu přihlásit. Předtím se zkopíroval %lld záznam; po přihlášení to spusť znovu a zbytek se doplní."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin chce znovu přihlásit. Předtím se zkopírovaly %lld záznamy; po přihlášení to spusť znovu a zbytek se doplní."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin chce znovu přihlásit. Předtím se zkopírovalo %lld záznamu; po přihlášení to spusť znovu a zbytek se doplní."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin chce znovu přihlásit. Předtím se zkopírovalo %lld záznamů; po přihlášení to spusť znovu a zbytek se doplní."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin asked you to sign in again. %lld entry was copied before that; run it again after signing in to copy the rest."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin asked you to sign in again. %lld entries were copied before that; run it again after signing in to copy the rest."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Garmin asked to slow down. %lld entries were copied; try again later to copy the rest.": {
+      "comment": "Settings → Data: the 90-day copy stopped on a rate limit. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin žádá o zpomalení. Zkopíroval se %lld záznam; zbytek doplníš, když to později spustíš znovu."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin žádá o zpomalení. Zkopírovaly se %lld záznamy; zbytek doplníš, když to později spustíš znovu."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin žádá o zpomalení. Zkopírovalo se %lld záznamu; zbytek doplníš, když to později spustíš znovu."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin žádá o zpomalení. Zkopírovalo se %lld záznamů; zbytek doplníš, když to později spustíš znovu."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin asked to slow down. %lld entry was copied; try again later to copy the rest."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Garmin asked to slow down. %lld entries were copied; try again later to copy the rest."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Couldn't reach Garmin's food log. %lld entries were copied; try again later.": {
+      "comment": "Settings → Data: the 90-day copy stopped after several days in a row failed. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Deník v Garminu není dostupný. Zkopíroval se %lld záznam; zkus to později."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Deník v Garminu není dostupný. Zkopírovaly se %lld záznamy; zkus to později."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Deník v Garminu není dostupný. Zkopírovalo se %lld záznamu; zkus to později."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Deník v Garminu není dostupný. Zkopírovalo se %lld záznamů; zkus to později."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Couldn't reach Garmin's food log. %lld entry was copied; try again later."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Couldn't reach Garmin's food log. %lld entries were copied; try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Copied %lld entries from Garmin.": {
+      "comment": "Settings → Data: result of copying the last 90 days from Garmin. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Z Garminu se zkopíroval %lld záznam."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Z Garminu se zkopírovaly %lld záznamy."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Z Garminu se zkopírovalo %lld záznamu."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Z Garminu se zkopírovalo %lld záznamů."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Copied %lld entry from Garmin."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Copied %lld entries from Garmin."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld were already on this phone.": {
+      "comment": "Settings → Data: entries (záznam, masculine) skipped because an earlier copy added them. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld už v telefonu byl."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld už v telefonu byly."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld už v telefonu bylo."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld už v telefonu bylo."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld was already on this phone."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld were already on this phone."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld days couldn't be read; run it again to retry them.": {
+      "comment": "Settings → Data: days the copy couldn't read. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld den se nepodařilo načíst; spusť to znovu a zkusí se znovu."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dny se nepodařilo načíst; spusť to znovu a zkusí se znovu."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dne se nepodařilo načíst; spusť to znovu a zkusí se znovu."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dní se nepodařilo načíst; spusť to znovu a zkusí se znovu."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day couldn't be read; run it again to retry it."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days couldn't be read; run it again to retry them."
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "version": "1.0"
