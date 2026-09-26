@@ -17,6 +17,10 @@
 // symbols hidden until unlocked); limited-edition (seasonal) badges get a
 // "Limited edition" group; everything else stays grouped by category.
 //
+// add-supplements 6.4: a "Supplements" group (category `.supplements`)
+// with the supplement streak above its badges; while supplements are off
+// only earned supplement badges are listed (FeatureHost.visibleBadgeCatalog).
+//
 // add-secret-achievements D4: `AchievementsView(focus: .secrets)` (from the
 // Progress tab's SecretsSlotView) scrolls to the Secret group once on
 // appear; plain `AchievementsView()` is unchanged.
@@ -68,6 +72,9 @@ struct AchievementsView: View {
                     let items = regular.filter { $0.category == category }
                     if !items.isEmpty {
                         Section(title(for: category)) {
+                            if category == .supplements {
+                                supplementStreakRow(engine.supplementStreak)
+                            }
                             badgeGrid(items, unlocked: unlocked)
                         }
                     }
@@ -123,6 +130,22 @@ struct AchievementsView: View {
             }
         }
         .padding(.vertical, Theme.Spacing.xs)
+    }
+
+    /// add-supplements 6.4: the supplement streak above its badges.
+    private func supplementStreakRow(_ streak: SupplementStreak.Status) -> some View {
+        HStack {
+            Label {
+                Text("Supplement streak")
+            } icon: {
+                Image(systemName: "flame.fill")
+                    .foregroundStyle(streak.length > 0 ? Theme.ember : Color.secondary)
+            }
+            Spacer()
+            Text("\(streak.length) days")
+                .font(.headline.monospacedDigit())
+        }
+        .accessibilityElement(children: .combine)
     }
 
     private func title(for category: AchievementCategory) -> String {

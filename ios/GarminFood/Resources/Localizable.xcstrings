@@ -16098,6 +16098,102 @@
           }
         }
       }
+    },
+    "Supplement streak": {
+      "comment": "Supplements screen and Achievements: the supplement streak (consecutive days every planned supplement was taken).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série doplňků"
+          }
+        }
+      }
+    },
+    "Streak and badges": {
+      "comment": "Supplements screen: section header for the supplement streak, badges, vitamin alphabet and creatine journey.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série a odznaky"
+          }
+        }
+      }
+    },
+    "Next: %@": {
+      "comment": "Creatine journey: the next milestone. The value is an amount like '500 g' or '1 kg'.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další: %@"
+          }
+        }
+      }
+    },
+    "Every milestone reached": {
+      "comment": "Creatine journey: all milestones are behind.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny milníky splněny"
+          }
+        }
+      }
+    },
+    "%@, earned": {
+      "comment": "VoiceOver: a supplement badge already earned. The value is the badge name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, získáno"
+          }
+        }
+      }
+    },
+    "%@, not earned yet. %@": {
+      "comment": "VoiceOver: a supplement badge not earned yet. First value is the badge name, second how to earn it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, zatím nezískáno. %@"
+          }
+        }
+      }
+    },
+    "%@, collected": {
+      "comment": "VoiceOver: a vitamin or mineral already in the vitamin alphabet collection.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, sebráno"
+          }
+        }
+      }
+    },
+    "%@, not yet": {
+      "comment": "VoiceOver: a vitamin or mineral not yet in the vitamin alphabet collection.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, zatím ne"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
