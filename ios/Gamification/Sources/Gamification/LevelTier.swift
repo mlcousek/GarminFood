@@ -47,27 +47,39 @@ public enum LevelTiers {
     /// Contiguous, gap-free, covering exactly 1...200 (`LevelCurve.maxLevel`)
     /// -- verified by `LevelTierTests`.
     public static let all: [LevelTier] = [
-        LevelTier(title: "Newcomer", flavor: "Everyone starts somewhere.", levelRange: 1...5),
-        LevelTier(title: "Rookie", flavor: "The habit is forming.", levelRange: 6...10),
-        LevelTier(title: "Apprentice", flavor: "You know your way around now.", levelRange: 11...15),
-        LevelTier(title: "Regular", flavor: "This is just what you do now.", levelRange: 16...20),
-        LevelTier(title: "Steady Hand", flavor: "Consistency is becoming your thing.", levelRange: 21...27),
-        LevelTier(title: "Dedicated", flavor: "Missing a day feels wrong now.", levelRange: 28...35),
-        LevelTier(title: "Committed", flavor: "Months in, still showing up.", levelRange: 36...44),
-        LevelTier(title: "Seasoned", flavor: "You've seen every kind of day.", levelRange: 45...54),
-        LevelTier(title: "Veteran", flavor: "A full year, easy.", levelRange: 55...65),
-        LevelTier(title: "Expert", flavor: "You could teach this.", levelRange: 66...77),
-        LevelTier(title: "Elite", flavor: "Top of the leaderboard, if there were one.", levelRange: 78...90),
-        LevelTier(title: "Master", flavor: "Multi-year discipline.", levelRange: 91...104),
-        LevelTier(title: "Grandmaster", flavor: "Genuinely rare territory.", levelRange: 105...119),
-        LevelTier(title: "Champion", flavor: "Years of unbroken effort.", levelRange: 120...135),
-        LevelTier(title: "Luminary", flavor: "An inspiration, if anyone was watching.", levelRange: 136...152),
-        LevelTier(title: "Mythic", flavor: "The stuff of legend.", levelRange: 153...170),
-        LevelTier(title: "Immortal", flavor: "Time itself is starting to notice.", levelRange: 171...185),
-        LevelTier(title: "Transcendent", flavor: "Beyond the curve's original design.", levelRange: 186...195),
-        LevelTier(title: "Ascendant", flavor: "One step from the summit.", levelRange: 196...199),
-        LevelTier(title: "Legend", flavor: "You reached the ceiling. Actually reached it.", levelRange: 200...200)
+        localized("Newcomer", "Everyone starts somewhere.", 1...5),
+        localized("Rookie", "The habit is forming.", 6...10),
+        localized("Apprentice", "You know your way around now.", 11...15),
+        localized("Regular", "This is just what you do now.", 16...20),
+        localized("Steady Hand", "Consistency is becoming your thing.", 21...27),
+        localized("Dedicated", "Missing a day feels wrong now.", 28...35),
+        localized("Committed", "Months in, still showing up.", 36...44),
+        localized("Seasoned", "You've seen every kind of day.", 45...54),
+        localized("Veteran", "A full year, easy.", 55...65),
+        localized("Expert", "You could teach this.", 66...77),
+        localized("Elite", "Top of the leaderboard, if there were one.", 78...90),
+        localized("Master", "Multi-year discipline.", 91...104),
+        localized("Grandmaster", "Genuinely rare territory.", 105...119),
+        localized("Champion", "Years of unbroken effort.", 120...135),
+        localized("Luminary", "An inspiration, if anyone was watching.", 136...152),
+        localized("Mythic", "The stuff of legend.", 153...170),
+        localized("Immortal", "Time itself is starting to notice.", 171...185),
+        localized("Transcendent", "Beyond the curve's original design.", 186...195),
+        localized("Ascendant", "One step from the summit.", 196...199),
+        localized("Legend", "You reached the ceiling. Actually reached it.", 200...200)
     ]
+
+    /// add-localization 4.1: a tier's Czech title/flavor live in
+    /// cs.lproj/Catalog.strings keyed by its first level ("tier.21.title"),
+    /// English stays here -- see CatalogL10n.swift.
+    private static func localized(_ title: String, _ flavor: String, _ levelRange: ClosedRange<Int>) -> LevelTier {
+        let key = "tier.\(levelRange.lowerBound)"
+        return LevelTier(
+            title: CatalogL10n.text("\(key).title", english: title),
+            flavor: CatalogL10n.text("\(key).flavor", english: flavor),
+            levelRange: levelRange
+        )
+    }
 
     /// Falls back to the last tier for any level past `LevelCurve.maxLevel`
     /// (should not happen, since level is always clamped there, but keeps

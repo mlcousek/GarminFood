@@ -427,10 +427,17 @@ struct MacroBar: View {
         return "\(consumed) / \(goal.wholeNumberText) \(unit)"
     }
 
+    /// VoiceOver reads the unit spelled out and agreeing with the number
+    /// ("42 gramů z 120 gramů"; `SpokenUnits`, add-localization 6.4). Every
+    /// caller passes grams; any other unit keeps its symbol.
     private var accessibilityText: String {
-        let consumed = progress.consumed.wholeNumberText
-        guard let goal = progress.goal else { return "\(consumed) \(unit)" }
-        return "\(consumed) of \(goal.wholeNumberText) \(unit)"
+        let consumed = spoken(progress.consumed)
+        guard let goal = progress.goal else { return consumed }
+        return String(localized: "\(consumed) of \(spoken(goal))", comment: "VoiceOver value of a macro bar: amount eaten, then the goal, both with the unit spelled out (\"42 grams of 120 grams\").")
+    }
+
+    private func spoken(_ value: Double) -> String {
+        unit == "g" ? SpokenUnits.grams(value) : "\(value.wholeNumberText) \(unit)"
     }
 }
 

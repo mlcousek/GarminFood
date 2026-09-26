@@ -115,8 +115,8 @@ public enum DailyChallengeCatalog {
             tier.variants.enumerated().map { index, title in
                 DailyChallengeTemplate(
                     id: "daily-log-\(tier.count)-\(index)",
-                    title: title,
-                    subtitle: "Log at least \(tier.count) entr\(tier.count == 1 ? "y" : "ies") today.",
+                    title: CatalogL10n.title("daily-log-\(tier.count)-\(index)", title),
+                    subtitle: CatalogL10n.subtitle("daily-log-\(tier.count)-\(index)", CatalogL10n.englishCount(tier.count, one: "Log at least 1 entry today.", other: "Log at least \(tier.count) entries today.")),
                     kind: .logAtLeast(count: tier.count)
                 )
             }
@@ -134,8 +134,8 @@ public enum DailyChallengeCatalog {
             tier.variants.enumerated().map { index, title in
                 DailyChallengeTemplate(
                     id: "daily-distinct-\(tier.count)-\(index)",
-                    title: title,
-                    subtitle: "Log \(tier.count) different foods today.",
+                    title: CatalogL10n.title("daily-distinct-\(tier.count)-\(index)", title),
+                    subtitle: CatalogL10n.subtitle("daily-distinct-\(tier.count)-\(index)", "Log \(tier.count) different foods today."),
                     kind: .logDistinctFoods(count: tier.count)
                 )
             }
@@ -153,8 +153,8 @@ public enum DailyChallengeCatalog {
             (variantsByBucket[bucket] ?? []).enumerated().map { index, title in
                 DailyChallengeTemplate(
                     id: "daily-meal-\(bucket.rawValue)-\(index)",
-                    title: title,
-                    subtitle: "Log something during \(bucketDisplayName(bucket).lowercased()) hours today.",
+                    title: CatalogL10n.title("daily-meal-\(bucket.rawValue)-\(index)", title),
+                    subtitle: CatalogL10n.subtitle("daily-meal-\(bucket.rawValue)-\(index)", "Log something during \(bucketDisplayName(bucket).lowercased()) hours today."),
                     kind: .logInMealSlot(bucket: bucket)
                 )
             }
@@ -172,8 +172,8 @@ public enum DailyChallengeCatalog {
             (variantsByBucket[bucket] ?? []).enumerated().map { index, title in
                 DailyChallengeTemplate(
                     id: "daily-avoid-\(bucket.rawValue)-\(index)",
-                    title: title,
-                    subtitle: "Log at least one thing today, but nothing during \(bucketDisplayName(bucket).lowercased()) hours.",
+                    title: CatalogL10n.title("daily-avoid-\(bucket.rawValue)-\(index)", title),
+                    subtitle: CatalogL10n.subtitle("daily-avoid-\(bucket.rawValue)-\(index)", "Log at least one thing today, but nothing during \(bucketDisplayName(bucket).lowercased()) hours."),
                     kind: .avoidMealSlot(bucket: bucket)
                 )
             }
@@ -185,8 +185,8 @@ public enum DailyChallengeCatalog {
         return titles.enumerated().map { index, title in
             DailyChallengeTemplate(
                 id: "daily-calorie-goal-\(index)",
-                title: title,
-                subtitle: "Hit your calorie goal today.",
+                title: CatalogL10n.title("daily-calorie-goal-\(index)", title),
+                subtitle: CatalogL10n.subtitle("daily-calorie-goal-\(index)", "Hit your calorie goal today."),
                 kind: .hitCalorieGoal
             )
         }
@@ -199,8 +199,8 @@ public enum DailyChallengeCatalog {
             variantSuffixes.enumerated().map { index, suffix in
                 DailyChallengeTemplate(
                     id: "daily-macro-\(macro.rawValue)-\(index)",
-                    title: "\(macroDisplayName(macro)) \(suffix)",
-                    subtitle: "Hit your \(macro.rawValue) goal today.",
+                    title: CatalogL10n.title("daily-macro-\(macro.rawValue)-\(index)", "\(macroDisplayName(macro)) \(suffix)"),
+                    subtitle: CatalogL10n.subtitle("daily-macro-\(macro.rawValue)-\(index)", "Hit your \(macro.rawValue) goal today."),
                     kind: .hitMacroGoal(macro: macro)
                 )
             }
@@ -212,8 +212,8 @@ public enum DailyChallengeCatalog {
         return titles.enumerated().map { index, title in
             DailyChallengeTemplate(
                 id: "daily-all-goals-\(index)",
-                title: title,
-                subtitle: "Hit calories, protein, carbs AND fat today.",
+                title: CatalogL10n.title("daily-all-goals-\(index)", title),
+                subtitle: CatalogL10n.subtitle("daily-all-goals-\(index)", "Hit calories, protein, carbs AND fat today."),
                 kind: .hitAllGoals
             )
         }
@@ -224,8 +224,8 @@ public enum DailyChallengeCatalog {
         return titles.enumerated().map { index, title in
             DailyChallengeTemplate(
                 id: "daily-new-food-\(index)",
-                title: title,
-                subtitle: "Log a food you haven't logged before.",
+                title: CatalogL10n.title("daily-new-food-\(index)", title),
+                subtitle: CatalogL10n.subtitle("daily-new-food-\(index)", "Log a food you haven't logged before."),
                 kind: .tryNewFood
             )
         }
@@ -236,8 +236,8 @@ public enum DailyChallengeCatalog {
         return titles.enumerated().map { index, title in
             DailyChallengeTemplate(
                 id: "daily-full-course-\(index)",
-                title: title,
-                subtitle: "Log breakfast, lunch, snack AND dinner today.",
+                title: CatalogL10n.title("daily-full-course-\(index)", title),
+                subtitle: CatalogL10n.subtitle("daily-full-course-\(index)", "Log breakfast, lunch, snack AND dinner today."),
                 kind: .logAllFourSlots
             )
         }
@@ -253,8 +253,8 @@ public enum DailyChallengeCatalog {
             tier.variants.enumerated().map { index, title in
                 DailyChallengeTemplate(
                     id: "daily-early-\(tier.hour)-\(index)",
-                    title: title,
-                    subtitle: "Log something before \(tier.hour):00 today.",
+                    title: CatalogL10n.title("daily-early-\(tier.hour)-\(index)", title),
+                    subtitle: CatalogL10n.subtitle("daily-early-\(tier.hour)-\(index)", "Log something before \(tier.hour):00 today."),
                     kind: .earlyLog(beforeHour: tier.hour)
                 )
             }
@@ -271,8 +271,8 @@ public enum DailyChallengeCatalog {
             tier.variants.enumerated().map { index, title in
                 DailyChallengeTemplate(
                     id: "daily-late-\(tier.hour)-\(index)",
-                    title: title,
-                    subtitle: "Log something at or after \(tier.hour):00 today.",
+                    title: CatalogL10n.title("daily-late-\(tier.hour)-\(index)", title),
+                    subtitle: CatalogL10n.subtitle("daily-late-\(tier.hour)-\(index)", "Log something at or after \(tier.hour):00 today."),
                     kind: .lateLog(afterHour: tier.hour)
                 )
             }

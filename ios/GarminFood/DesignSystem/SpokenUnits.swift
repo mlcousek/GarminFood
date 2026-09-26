@@ -50,6 +50,16 @@ enum SpokenUnits {
         return String(localized: "\(NumberDisplay.whole(value)) kilocalories", comment: "VoiceOver: an energy amount, e.g. 290 (Czech: 290 kilokalorií).")
     }
 
+    /// "120 grams" / "120 gramů", "1 gram" -- macro amounts (protein, carbs,
+    /// fat) are shown rounded to whole grams, and read that way (the
+    /// Trends charts' VoiceOver summaries).
+    static func grams(_ value: Double) -> String {
+        if let whole = wholeCount(value.rounded()) {
+            return String(localized: "\(whole) grams", comment: "VoiceOver: a macro amount in whole grams. Plural.")
+        }
+        return String(localized: "\(NumberDisplay.whole(value)) grams", comment: "VoiceOver: a macro amount too large for a whole-number count (practically never).")
+    }
+
     /// `value` as an `Int` when it is a whole number that fits one; `nil`
     /// for a decimal, a non-finite or an absurdly large value (`Int(_:)`
     /// would trap on the last two).

@@ -143,7 +143,7 @@ struct ProgressHomeView: View {
             .buttonStyle(.plain)
         case .goalHistory:
             VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                SectionHeader(title: "Goals, last 14 days")
+                SectionHeader(title: String(localized: "Goals, last 14 days", comment: "Progress tab section header."))
                 GoalHistoryList(statuses: Array(engine.goalHistory.prefix(14)))
                     .card()
             }
@@ -154,7 +154,7 @@ struct ProgressHomeView: View {
 // MARK: - Summary cards
 
 private struct CardHeader: View {
-    let title: String
+    let title: LocalizedStringKey
     let systemImage: String
 
     var body: some View {
@@ -184,17 +184,16 @@ private struct StreakSummaryCard: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             CardHeader(title: "Streak", systemImage: "flame.fill")
             HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
-                Text("\(summary.currentLength)")
-                    .font(.system(.largeTitle, design: .rounded).weight(.bold).monospacedDigit())
-                Text(summary.currentLength == 1 ? "day" : "days")
-                    .font(.streakLabel)
-                    .foregroundStyle(.secondary)
+                // One plural string ("7 days" / "7 dní"), not a number plus a
+                // `== 1 ?` unit word: the Czech noun has three forms.
+                Text("\(summary.currentLength) days")
+                    .font(.system(.title, design: .rounded).weight(.bold).monospacedDigit())
                 FreezeChip(available: freezes.available)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 0) {
-                    Text("Best \(summary.longestLength)")
+                    Text("Best \(summary.longestLength)", comment: "Streak card: the longest streak ever, in days.")
                         .font(.subheadline.weight(.semibold))
-                    Text(status.hasLoggedToday ? "Today counted" : (status.isAtRiskToday ? "Log today to keep it" : "Log today to start"))
+                    Text(statusText)
                         .font(.caption)
                         .foregroundStyle(status.isAtRiskToday ? Theme.ember : Color.secondary)
                 }
@@ -203,9 +202,14 @@ private struct StreakSummaryCard: View {
         }
         .card()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Streak \(summary.currentLength) days, best \(summary.longestLength)")
+        .accessibilityLabel(Text("Streak \(summary.currentLength) days, best \(summary.longestLength)", comment: "VoiceOver: the streak card. Current streak, then the longest one, both in days."))
         .accessibilityValue(FreezeChip.accessibilityText(available: freezes.available))
-        .accessibilityHint("Opens streak history")
+        .accessibilityHint(Text("Opens streak history"))
+    }
+
+    private var statusText: LocalizedStringKey {
+        if status.hasLoggedToday { return "Today counted" }
+        return status.isAtRiskToday ? "Log today to keep it" : "Log today to start"
     }
 }
 
@@ -227,22 +231,22 @@ private struct LevelSummaryCard: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Text("\(progress.totalXP) XP")
+                Text("\(progress.totalXP) XP", comment: "Total XP earned.")
                     .font(.macroValue)
                     .foregroundStyle(.secondary)
             }
             ProgressView(value: progress.fractionToNextLevel)
                 .tint(Theme.accent)
             Text(progress.xpNeededForNextLevel > 0
-                 ? "\(progress.xpNeededForNextLevel - progress.xpIntoCurrentLevel) XP to level \(progress.level + 1)"
-                 : "Max level reached")
+                 ? String(localized: "\(progress.xpNeededForNextLevel - progress.xpIntoCurrentLevel) XP to level \(progress.level + 1)", comment: "Level card: XP still needed, then the next level number.")
+                 : String(localized: "Max level reached"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .card()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Level \(progress.level), \(tier.title), \(tier.rarity.displayName) tier, \(progress.totalXP) XP")
-        .accessibilityHint("Opens level details")
+        .accessibilityLabel(Text("Level \(progress.level), \(tier.title), \(tier.rarity.displayName) tier, \(progress.totalXP) XP", comment: "VoiceOver: the level card. Level number, tier name, tier grade (an adjective, Czech: agrees with \"stupeň\"), total XP."))
+        .accessibilityHint(Text("Opens level details"))
     }
 }
 
@@ -278,14 +282,14 @@ private struct ChallengeSummaryCard: View {
                     .foregroundStyle(.secondary)
             }
             if completedCount > 0 {
-                Text("\(completedCount) completed so far")
+                Text("\(completedCount) completed so far", comment: "Challenge card: how many challenges were ever completed.")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Theme.success)
             }
         }
         .card()
         .accessibilityElement(children: .combine)
-        .accessibilityHint("Opens challenges")
+        .accessibilityHint(Text("Opens challenges"))
     }
 }
 
@@ -299,7 +303,7 @@ private struct AchievementsSummaryCard: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("\(unlockedCount)")
                     .font(.system(.title, design: .rounded).weight(.bold))
-                Text("/ \(totalCount) unlocked")
+                Text("/ \(totalCount) unlocked", comment: "Achievements card, after the big unlocked count: the total number of badges.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -308,8 +312,8 @@ private struct AchievementsSummaryCard: View {
         }
         .card()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(unlockedCount) of \(totalCount) achievements unlocked")
-        .accessibilityHint("Opens achievements")
+        .accessibilityLabel(Text("\(unlockedCount) of \(totalCount) achievements unlocked", comment: "VoiceOver: the achievements card."))
+        .accessibilityHint(Text("Opens achievements"))
     }
 }
 
@@ -350,7 +354,7 @@ private struct WeightSummaryCard: View {
         }
         .card()
         .accessibilityElement(children: .combine)
-        .accessibilityHint("Opens weight tracking")
+        .accessibilityHint(Text("Opens weight tracking"))
     }
 }
 
@@ -368,14 +372,14 @@ private struct HydrationSummaryCard: View {
             HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
                 Text(todayTotalML.formattedML)
                     .font(.system(.largeTitle, design: .rounded).weight(.bold).monospacedDigit())
-                Text("ml today")
+                Text("ml today", comment: "Water card: unit label after today's total.")
                     .font(.streakLabel)
                     .foregroundStyle(.secondary)
             }
         }
         .card()
         .accessibilityElement(children: .combine)
-        .accessibilityHint("Opens hydration tracking")
+        .accessibilityHint(Text("Opens hydration tracking"))
     }
 }
 
@@ -395,20 +399,16 @@ private struct TrendsSummaryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             CardHeader(title: "Trends", systemImage: "chart.line.uptrend.xyaxis")
-            HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
-                Text("\(hydrationStreak)")
-                    .font(.system(.largeTitle, design: .rounded).weight(.bold).monospacedDigit())
-                Text("day water streak")
-                    .font(.streakLabel)
-                    .foregroundStyle(.secondary)
-            }
+            // One plural string, same reason as the streak card.
+            Text("\(hydrationStreak)-day water streak", comment: "Trends card: consecutive days the water goal was met. Plural.")
+                .font(.system(.title3, design: .rounded).weight(.bold).monospacedDigit())
             Text("Macro and hydration history over time.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .card()
         .accessibilityElement(children: .combine)
-        .accessibilityHint("Opens trends and insights")
+        .accessibilityHint(Text("Opens trends and insights"))
     }
 }
 
@@ -494,13 +494,13 @@ struct StreakDot: View {
 
     private var label: String {
         switch mark {
-        case .logged: return "Logged"
-        case .grace: return "Missed, forgiven"
+        case .logged: return String(localized: "Logged", comment: "Streak day: something was logged.")
+        case .grace: return String(localized: "Missed, forgiven", comment: "Streak day: missed, but forgiven by the grace rule.")
         case .frozen: return String(localized: "Missed, streak frozen")
-        case .missed: return "Missed"
-        case .pending: return "Today, nothing logged yet"
-        case .future: return "Upcoming"
-        case .beforeHistory: return "Before your first log"
+        case .missed: return String(localized: "Missed")
+        case .pending: return String(localized: "Today, nothing logged yet", comment: "Streak day: today, still open.")
+        case .future: return String(localized: "Upcoming")
+        case .beforeHistory: return String(localized: "Before your first log", comment: "Streak day: before the first entry ever.")
         }
     }
 }
@@ -519,15 +519,15 @@ struct StreakDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
                 HStack(spacing: Theme.Spacing.sm) {
-                    StatTile(value: "\(summary.currentLength)", label: "Current streak", systemImage: "flame.fill", tint: Theme.ember)
-                    StatTile(value: "\(summary.longestLength)", label: "Longest streak", systemImage: "trophy.fill")
-                    StatTile(value: "\(summary.loggedDayCount)", label: "Days logged", systemImage: "calendar")
+                    StatTile(value: "\(summary.currentLength)", label: String(localized: "Current streak"), systemImage: "flame.fill", tint: Theme.ember)
+                    StatTile(value: "\(summary.longestLength)", label: String(localized: "Longest streak"), systemImage: "trophy.fill")
+                    StatTile(value: "\(summary.loggedDayCount)", label: String(localized: "Days logged"), systemImage: "calendar")
                 }
 
                 freezeBank(freezes)
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                    SectionHeader(title: "Last 6 weeks")
+                    SectionHeader(title: String(localized: "Last 6 weeks", comment: "Streak screen: the calendar grid's header."))
                     LazyVGrid(columns: columns, spacing: Theme.Spacing.sm) {
                         ForEach(Array(weekdaySymbols.enumerated()), id: \.offset) { item in
                             Text(item.element)
@@ -548,7 +548,7 @@ struct StreakDetailView: View {
                 }
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                    SectionHeader(title: "How streaks work")
+                    SectionHeader(title: String(localized: "How streaks work"))
                     Text("Log at least one food on a day to count it. One missed day in any 7 is forgiven, shown with a shield. A second miss in the same 7 days starts the streak over.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -557,7 +557,7 @@ struct StreakDetailView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     if status.isAtRiskToday {
-                        Label("Log something today to keep your \(status.length)-day streak.", systemImage: "exclamationmark.circle")
+                        Label(String(localized: "Log something today to keep your \(status.length)-day streak.", comment: "Streak screen warning; %lld = the streak length in days. Plural."), systemImage: "exclamationmark.circle")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Theme.ember)
                             .padding(.top, Theme.Spacing.xs)
@@ -585,7 +585,7 @@ struct StreakDetailView: View {
         HStack(spacing: Theme.Spacing.md) {
             legendItem(.logged, "Logged")
             legendItem(.grace, "Forgiven")
-            legendItem(.frozen, String(localized: "Frozen"))
+            legendItem(.frozen, "Frozen")
             legendItem(.missed, "Missed")
         }
         .font(.caption)
@@ -628,7 +628,7 @@ struct StreakDetailView: View {
         return String(localized: "Bank full: the freeze earned on \(day) was not added (you can hold \(FreezeBalance.cap)).")
     }
 
-    private func legendItem(_ mark: StreakHistory.Mark, _ title: String) -> some View {
+    private func legendItem(_ mark: StreakHistory.Mark, _ title: LocalizedStringKey) -> some View {
         HStack(spacing: Theme.Spacing.xs) {
             StreakDot(mark: mark, isToday: false, size: 14)
             Text(title)
@@ -691,8 +691,8 @@ struct LevelDetailView: View {
                     }
                     .frame(width: ringSize, height: ringSize)
                     .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("Level \(progress.level), \(tier.title), \(tier.rarity.displayName) tier")
-                    .accessibilityValue("\(Int((progress.fractionToNextLevel * 100).rounded())) percent to the next level")
+                    .accessibilityLabel(Text("Level \(progress.level), \(tier.title), \(tier.rarity.displayName) tier", comment: "VoiceOver: the level ring. Level number, tier name, tier grade (adjective; Czech agrees with \"stupeň\")."))
+                    .accessibilityValue(Text("\(Int((progress.fractionToNextLevel * 100).rounded())) percent to the next level", comment: "VoiceOver: progress through the current level, in percent."))
 
                     VStack(spacing: 2) {
                         Text(tier.title)
@@ -702,10 +702,10 @@ struct LevelDetailView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    Text("\(progress.totalXP) XP total")
+                    Text("\(progress.totalXP) XP total", comment: "Level screen: all XP ever earned.")
                         .font(.headline)
                     if progress.xpNeededForNextLevel > 0 {
-                        Text("\(progress.xpIntoCurrentLevel) of \(progress.xpNeededForNextLevel) XP into this level")
+                        Text("\(progress.xpIntoCurrentLevel) of \(progress.xpNeededForNextLevel) XP into this level", comment: "Level screen: XP earned inside the current level, out of what it takes.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -719,7 +719,7 @@ struct LevelDetailView: View {
                     HStack {
                         Label("Level \(upcoming.level)", systemImage: "lock.fill")
                         Spacer()
-                        Text("at \(upcoming.totalXP) XP")
+                        Text("at \(upcoming.totalXP) XP", comment: "Level screen, upcoming levels: the total XP a level is reached at.")
                             .font(.body.monospacedDigit())
                             .foregroundStyle(.secondary)
                     }
@@ -741,7 +741,7 @@ struct LevelDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func awardRow(_ title: String, _ xp: Int, _ symbol: String) -> some View {
+    private func awardRow(_ title: LocalizedStringKey, _ xp: Int, _ symbol: String) -> some View {
         HStack {
             Label(title, systemImage: symbol)
             Spacer()
@@ -803,7 +803,9 @@ struct ChallengesView: View {
                             Spacer()
                         }
                         .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("\(display.template.title), \(display.template.subtitle), \(display.isComplete ? "completed" : "not yet completed")")
+                        .accessibilityLabel(display.isComplete
+                            ? String(localized: "\(display.template.title), \(display.template.subtitle), completed", comment: "VoiceOver: a daily challenge row. Title, description, done.")
+                            : String(localized: "\(display.template.title), \(display.template.subtitle), not yet completed", comment: "VoiceOver: a daily challenge row. Title, description, still open."))
                     }
                 }
             }
@@ -880,10 +882,10 @@ struct ChallengesView: View {
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
-                        Text("\(template.windowDays)d")
+                        Text("\(template.windowDays)d", comment: "Challenge list: the time window, abbreviated days (\"7d\"). Czech: \"7 d\".")
                             .font(.caption.monospacedDigit())
                             .foregroundStyle(.tertiary)
-                            .accessibilityLabel("\(template.windowDays) days")
+                            .accessibilityLabel(Text("\(template.windowDays) days"))
                     }
                     .accessibilityElement(children: .combine)
                 }
@@ -950,10 +952,10 @@ struct GoalHistoryList: View {
 
     private func shortName(_ macro: GoalMacro) -> String {
         switch macro {
-        case .calories: return "kcal"
-        case .protein: return "P"
-        case .carbs: return "C"
-        case .fat: return "F"
+        case .calories: return String(localized: "goal.short.calories", defaultValue: "kcal", comment: "Goals history column header for calories, max ~4 characters.")
+        case .protein: return String(localized: "goal.short.protein", defaultValue: "P", comment: "Goals history column header: one-letter abbreviation of Protein (Czech: B, bílkoviny).")
+        case .carbs: return String(localized: "goal.short.carbs", defaultValue: "C", comment: "Goals history column header: one-letter abbreviation of Carbs (Czech: S, sacharidy).")
+        case .fat: return String(localized: "goal.short.fat", defaultValue: "F", comment: "Goals history column header: one-letter abbreviation of Fat (Czech: T, tuky).")
         }
     }
 
@@ -963,8 +965,11 @@ struct GoalHistoryList: View {
     }
 
     private func accessibility(_ status: DailyGoalStatus) -> String {
-        let met = GoalMacro.allCases.filter { status.met($0) }.map(\.rawValue)
+        let met = GoalMacro.allCases.filter { status.met($0) }.map(\.displayName)
         let label = dayLabel(status.date)
-        return met.isEmpty ? "\(label): no goals met" : "\(label): met \(met.joined(separator: ", "))"
+        if met.isEmpty {
+            return String(localized: "\(label): no goals met", comment: "VoiceOver: a Goals history row with no goal met. %@ = the day.")
+        }
+        return String(localized: "\(label): met \(met.formatted(.list(type: .and)))", comment: "VoiceOver: a Goals history row. First %@ = the day, second = the goals met (\"Calories and Protein\").")
     }
 }

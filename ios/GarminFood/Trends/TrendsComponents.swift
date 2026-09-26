@@ -41,6 +41,9 @@ struct MacroLineChartView: View {
     /// range are drawn.
     var noteMarkers: [DayNoteChartMarker] = []
     var onSelectNote: ((DayNote) -> Void)?
+    /// How VoiceOver reads one value of this chart, unit spelled out and
+    /// agreeing with the number (`SpokenUnits`, add-localization 6.4).
+    var spokenValue: (Double) -> String = { SpokenUnits.grams($0) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -86,7 +89,7 @@ struct MacroLineChartView: View {
             .dayNoteMarkerTaps(visibleNoteMarkers, onSelect: onSelectNote)
             .frame(height: 140)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(title) trend")
+            .accessibilityLabel(Text("\(title) trend", comment: "VoiceOver label of a Trends chart; %@ = the macro name (Calories, Protein...)."))
             .accessibilityValue(accessibilitySummary)
             .dayNoteMarkerAccessibilityActions(visibleNoteMarkers, onSelect: onSelectNote)
         }
@@ -99,9 +102,9 @@ struct MacroLineChartView: View {
     private var accessibilitySummary: String {
         let values = days.compactMap(actual)
         guard let first = values.first, let last = values.last else {
-            return "No \(title.lowercased()) logged in this range"
+            return String(localized: "Nothing logged in this range", comment: "VoiceOver value of a Trends chart with no data.")
         }
-        return "From \(first.wholeNumberText) to \(last.wholeNumberText) \(unit) over \(values.count) days logged"
+        return String(localized: "From \(spokenValue(first)) to \(spokenValue(last)) over \(values.count) days logged", comment: "VoiceOver value of a Trends chart. %@ = first and last value with the unit spelled out, %lld = days with data.")
     }
 }
 
@@ -156,7 +159,7 @@ struct HydrationTrendChartView: View {
         .dayNoteMarkerTaps(visibleNoteMarkers, centeredOnDay: true, onSelect: onSelectNote)
         .frame(height: 140)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Water trend")
+        .accessibilityLabel(Text("Water trend", comment: "VoiceOver label of the Trends water chart."))
         .accessibilityValue(accessibilitySummary)
         .dayNoteMarkerAccessibilityActions(visibleNoteMarkers, onSelect: onSelectNote)
     }
@@ -166,9 +169,9 @@ struct HydrationTrendChartView: View {
     }
 
     private var accessibilitySummary: String {
-        guard let first = points.first, let last = points.last else { return "No data" }
+        guard let first = points.first, let last = points.last else { return String(localized: "No data") }
         let metCount = points.filter { $0.totalML >= goalML && goalML > 0 }.count
-        return "From \(first.totalML.wholeNumberText) to \(last.totalML.wholeNumberText) milliliters over \(points.count) days, goal met on \(metCount) of them"
+        return String(localized: "From \(SpokenUnits.milliliters(first.totalML)) to \(SpokenUnits.milliliters(last.totalML)) over \(points.count) days, goal met on \(metCount) of them", comment: "VoiceOver value of the Trends water chart. %@ = first/last day total spelled out, then days shown and days the goal was met.")
     }
 }
 

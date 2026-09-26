@@ -66,7 +66,7 @@ struct GoalCalculatorView: View {
                 HStack {
                     Text("Height")
                     Spacer()
-                    TextField("165", text: $heightText)
+                    TextField(text: $heightText, prompt: Text(verbatim: "165")) { Text("Height") }
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: 90)
@@ -75,7 +75,7 @@ struct GoalCalculatorView: View {
                 HStack {
                     Text("Weight")
                     Spacer()
-                    TextField("60", text: $weightText)
+                    TextField(text: $weightText, prompt: Text(verbatim: "60")) { Text("Weight") }
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: 90)

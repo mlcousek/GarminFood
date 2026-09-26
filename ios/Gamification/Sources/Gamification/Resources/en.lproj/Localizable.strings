@@ -490,3 +490,9 @@
 "You earned a streak freeze." = "You earned a streak freeze.";
 "Streak frozen" = "Streak frozen";
 "A freeze covered %@ — your %lld-day streak lives on." = "A freeze covered %@ — your %lld-day streak lives on.";
+
+/* add-localization 4.1: nutrition goal names (GoalMacro.displayName). */
+"Calories" = "Calories";
+"Protein" = "Protein";
+"Carbs" = "Carbs";
+"Fat" = "Fat";

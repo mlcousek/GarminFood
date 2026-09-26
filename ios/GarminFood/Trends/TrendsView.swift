@@ -74,7 +74,7 @@ struct TrendsView: View {
         }
 
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-            SectionHeader(title: "Macros, last 30 days")
+            SectionHeader(title: String(localized: "Macros, last 30 days", comment: "Trends section header."))
 
             if loader.isLoading && loader.days.isEmpty {
                 ProgressView()
@@ -96,10 +96,10 @@ struct TrendsView: View {
                 .card()
             } else {
                 VStack(spacing: Theme.Spacing.md) {
-                    MacroLineChartView(title: "Calories", unit: "kcal", tint: Theme.accent, days: loader.days, actual: { $0.calories }, goal: { $0.calorieGoal }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
-                    MacroLineChartView(title: "Protein", unit: "g", tint: Theme.protein, days: loader.days, actual: { $0.proteinG }, goal: { $0.proteinGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
-                    MacroLineChartView(title: "Carbs", unit: "g", tint: Theme.carbs, days: loader.days, actual: { $0.carbsG }, goal: { $0.carbsGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
-                    MacroLineChartView(title: "Fat", unit: "g", tint: Theme.fat, days: loader.days, actual: { $0.fatG }, goal: { $0.fatGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
+                    MacroLineChartView(title: String(localized: "Calories"), unit: "kcal", tint: Theme.accent, days: loader.days, actual: { $0.calories }, goal: { $0.calorieGoal }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 }, spokenValue: { SpokenUnits.kilocalories($0) })
+                    MacroLineChartView(title: String(localized: "Protein"), unit: "g", tint: Theme.protein, days: loader.days, actual: { $0.proteinG }, goal: { $0.proteinGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
+                    MacroLineChartView(title: String(localized: "Carbs"), unit: "g", tint: Theme.carbs, days: loader.days, actual: { $0.carbsG }, goal: { $0.carbsGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
+                    MacroLineChartView(title: String(localized: "Fat"), unit: "g", tint: Theme.fat, days: loader.days, actual: { $0.fatG }, goal: { $0.fatGoalG }, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
                 }
                 .card()
             }
@@ -114,10 +114,10 @@ struct TrendsView: View {
         let streak = HydrationHistory.streak(for: entries, goalML: hydrationGoalML)
 
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-            SectionHeader(title: "Water, last \(hydrationDaysBack) days")
+            SectionHeader(title: String(localized: "Water, last \(hydrationDaysBack) days", comment: "Trends section header; %lld = days shown (21). Plural."))
             HStack(spacing: Theme.Spacing.sm) {
-                StatTile(value: "\(streak)", label: "Day streak", systemImage: "flame.fill", tint: Theme.carbs)
-                StatTile(value: hydrationGoalML.formattedML, label: "ml goal", systemImage: "target", tint: Theme.water)
+                StatTile(value: "\(streak)", label: String(localized: "Day streak", comment: "Trends stat tile label under the water-goal streak length (the number is the tile value)."), systemImage: "flame.fill", tint: Theme.carbs)
+                StatTile(value: hydrationGoalML.formattedML, label: String(localized: "ml goal", comment: "Trends stat tile label under the daily water goal in ml."), systemImage: "target", tint: Theme.water)
             }
             HydrationTrendChartView(points: points, goalML: hydrationGoalML, noteMarkers: noteMarkers, onSelectNote: { revealedNote = $0 })
                 .card()
