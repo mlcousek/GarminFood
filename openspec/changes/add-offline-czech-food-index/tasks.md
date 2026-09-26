@@ -11,7 +11,7 @@
   - Builds the index and writes the manifest.
   - Uploads both to the rolling `food-index` release (`gh release upload --clobber`).
   - Release notes carry the ODbL attribution.
-- [ ] 2.3 Run the workflow once and record count, size and duration.
+- [x] 2.3 Run the workflow once and record count, size and duration. *Run 35946067256 (`workflow_dispatch`, 2026-09-24 02:09:46–02:10:58 UTC, about 72 s): **8104** products, `czech-food-index-v1.json.gz` **294 928 bytes** (gzipped JSON), published to the `food-index` release.*
 
 ## 3. App (FoodLogCore + app)
 
@@ -30,7 +30,7 @@
 
 ## 4. Verify
 
-- [ ] 4.1 CI green.
+- [x] 4.1 CI green. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.2 On device:
   - The index downloads on Wi-Fi.
   - Search works in airplane mode.

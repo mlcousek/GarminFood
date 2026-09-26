@@ -20,5 +20,5 @@
 
 ## 4. Verification
 
-- [ ] 4.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain -- push this branch and let `.github/workflows/build.yml` confirm all three packages and the app target still build and the new/existing tests pass.
+- [x] 4.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain -- push this branch and let `.github/workflows/build.yml` confirm all three packages and the app target still build and the new/existing tests pass. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.2 **CARRIED, needs a real device.** Nothing user-visible should change on a healthy install: sideload, confirm existing custom foods / presets / favorites / XP / achievements / pending sync queue all still load exactly as before (i.e. every store's existing on-disk data still decodes with its preserved decoder), and that Settings → Diagnostics shows no new `could not decode` lines.

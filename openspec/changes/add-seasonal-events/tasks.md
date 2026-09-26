@@ -25,5 +25,5 @@
 ## 5. Verify
 
 - [x] 5.1 `openspec validate add-seasonal-events --strict` passes.
-- [ ] 5.2 CI green (`swift test` FoodLogCore + Gamification; app + widget build).
+- [x] 5.2 CI green (`swift test` FoodLogCore + Gamification; app + widget build). *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 5.3 On-device check: with the device date inside a window (or the next real window — mushroom season is active on 2026-09-24), the Today banner appears; logging "Houbová polévka" advances the quest; Settings → Diagnostics shows no errors.

@@ -25,5 +25,5 @@ of them as custom actions on both screens (EntryEditing.swift).
 
 ## 4. Verify
 
-- [ ] 4.1 CI green.
+- [x] 4.1 CI green. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.2 On device: edit an amount and check it in Connect; move a meal; duplicate; copy yesterday's breakfast.

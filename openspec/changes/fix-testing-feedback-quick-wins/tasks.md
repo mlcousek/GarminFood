@@ -21,7 +21,7 @@
 
 ## 4. Verify
 
-- [ ] 4.1 CI is green: `swift test` for GarminKit/FoodLogCore, plus xcodebuild.
+- [x] 4.1 CI is green: `swift test` for GarminKit/FoodLogCore, plus xcodebuild. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.2 On device:
   - A Quick pick added as an ingredient is added, not logged.
   - An OFF product can be added as an ingredient.

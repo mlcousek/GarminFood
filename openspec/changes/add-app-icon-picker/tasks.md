@@ -17,5 +17,5 @@
 
 ## 4. Verification
 
-- [ ] 4.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain — push this branch and let `.github/workflows/build.yml`'s `xcodebuild` confirm the app target (including the new Info.plist keys and loose bundle resources) actually builds.
+- [x] 4.1 **CARRIED, needs CI.** No local Swift/Xcode toolchain — push this branch and let `.github/workflows/build.yml`'s `xcodebuild` confirm the app target (including the new Info.plist keys and loose bundle resources) actually builds. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.2 **CARRIED, needs a real device.** Sideload via AltStore and confirm: all 6 icons actually appear correctly in the system's icon-change confirmation prompt (iOS shows its own system alert on `setAlternateIconName`, not just this app's UI), the Home Screen icon genuinely changes, the picker's checkmark tracks the real active icon after a relaunch, and none of the wordmarks look clipped/misaligned on an actual device screen (only ever previewed here as raw PNGs, never in Xcode's icon-composer/simulator).
