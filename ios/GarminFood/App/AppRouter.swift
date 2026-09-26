@@ -3,7 +3,8 @@
 // Where external entry points land (app-navigation spec): the selected tab,
 // and a request for the Today tab to open the catalog. The shell applies
 // widget links and Control requests here, so they work whichever screen was
-// showing.
+// showing. The tab at launch is the user's start tab (Settings ->
+// Appearance -> Layout); those entry points still take priority over it.
 
 import Foundation
 import Observation
@@ -18,7 +19,19 @@ final class AppRouter {
         case profile
     }
 
-    var selectedTab: Tab = .today
+    var selectedTab: Tab
+
+    /// `startTab` is the user's "Start on" choice (add-themes-and-layout
+    /// task 4.3, `LayoutConfig.resolvedStartTab`), read once at launch. It
+    /// only sets the initial selection: a widget link or Control route
+    /// arriving after launch (`handle(url:)`, `applyPendingRoute()`) still
+    /// switches to the tab it needs.
+    init(startTab: StartTab = .default) {
+        switch startTab {
+        case .today: selectedTab = .today
+        case .progress: selectedTab = .progress
+        }
+    }
 
     /// Set when the barcode Control fired. The Today tab pushes the catalog,
     /// and the catalog consumes `AppNavigationBridge`'s route and opens the

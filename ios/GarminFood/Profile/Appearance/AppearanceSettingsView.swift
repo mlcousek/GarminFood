@@ -8,8 +8,8 @@
 //   3. app icon grid + "Match app icon to theme"
 //   4. customization: custom accent, card style, corners, density, number
 //      font, gradient header, macro colors
-//   5. layout: Today opens LayoutEditorSheet (wave 3); Log Food and
-//      Progress are "Coming soon" until wave 4
+//   5. layout: Today, Log Food and Progress each open LayoutEditorSheet
+//      (waves 3-4), plus the start tab picker (task 4.3)
 //   6. share / import a theme code (wave 5, ThemeShareSection)
 //   7. reset
 // Every change writes through ThemeStore / LayoutStore immediately and
@@ -26,7 +26,8 @@ import AppearanceKit
 struct AppearanceSettingsView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var confirmsReset = false
-    @State private var isEditingTodayLayout = false
+    /// The screen whose layout editor is open, if any.
+    @State private var editingLayoutScreen: LayoutScreen?
 
     private var store: ThemeStore { environment.themeStore }
     private var layoutStore: LayoutStore { environment.layoutStore }
@@ -84,12 +85,15 @@ struct AppearanceSettingsView: View {
         } message: {
             Text("Your theme, style and screen layouts go back to their defaults.")
         }
-        .sheet(isPresented: $isEditingTodayLayout) {
-            // Only what Settings can know: fasting on/off. Log again / Log a
-            // meal depend on Today's loaded shelves, so they read as
-            // available here.
-            LayoutEditorSheet(screen: .today) { id in
-                TodayCardID(rawValue: id).map { TodayCardID.baseAvailability($0, preferences: environment.preferences) } ?? .available
+        .sheet(isPresented: isEditingLayout) {
+            if let screen = editingLayoutScreen {
+                // Only what Settings can know: fasting on/off. Log again / Log
+                // a meal depend on Today's loaded shelves, and the Log Food
+                // shelves on the catalog's, so they read as available here.
+                LayoutEditorSheet(screen: screen) { id in
+                    guard screen == .today, let card = TodayCardID(rawValue: id) else { return .available }
+                    return TodayCardID.baseAvailability(card, preferences: environment.preferences)
+                }
             }
         }
         .onDisappear {
@@ -100,37 +104,71 @@ struct AppearanceSettingsView: View {
 
     // MARK: Layout (design.md D9)
 
+    @ViewBuilder
     private var layoutSection: some View {
         Section {
-            Button {
-                isEditingTodayLayout = true
-            } label: {
-                HStack {
-                    Label("Today", systemImage: "fork.knife")
-                        .foregroundStyle(Color.primary)
-                    Spacer()
-                    Text(layoutStore.currentTodayPreset?.displayName ?? String(localized: "Custom"))
-                        .foregroundStyle(.secondary)
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                        .accessibilityHidden(true)
-                }
-            }
-            .accessibilityHint("Opens the layout editor")
-
-            HStack {
-                Label("Log Food & Progress", systemImage: "rectangle.3.group")
-                Spacer()
-                Text("Coming soon")
-            }
-            .foregroundStyle(.secondary)
-            .accessibilityElement(children: .combine)
+            layoutRow(.today, systemImage: "fork.knife", value: layoutStore.currentTodayPreset?.displayName ?? String(localized: "Custom"))
+            layoutRow(.logFood, systemImage: "magnifyingglass", value: layoutSummary(.logFood))
+            layoutRow(.progress, systemImage: "chart.bar", value: layoutSummary(.progress))
         } header: {
             Text("Layout")
         } footer: {
             Text("Reorder, hide and restyle the cards. You can also open this from the menu on Today.")
         }
+
+        // Task 4.3: honored at launch; a widget or link still opens where
+        // it points (AppRouter).
+        Section {
+            Picker("Start on", selection: startTabBinding) {
+                Text("Today").tag(StartTab.today)
+                Text("Progress").tag(StartTab.progress)
+            }
+        } header: {
+            Text("Start tab")
+        } footer: {
+            Text("Applies the next time the app opens. Widgets and links still open where they point.")
+        }
+    }
+
+    private func layoutRow(_ screen: LayoutScreen, systemImage: String, value: String) -> some View {
+        Button {
+            editingLayoutScreen = screen
+        } label: {
+            HStack {
+                Label(screen.title, systemImage: systemImage)
+                    .foregroundStyle(Color.primary)
+                Spacer()
+                Text(value)
+                    .foregroundStyle(.secondary)
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .accessibilityHint("Opens the layout editor")
+    }
+
+    /// "Default" or "Custom" for the screens without presets.
+    private func layoutSummary(_ screen: LayoutScreen) -> String {
+        layoutStore.config.isDefaultLayout(screen)
+            ? String(localized: "Default", comment: "Settings -> Appearance -> Layout: a screen whose layout was never changed.")
+            : String(localized: "Custom")
+    }
+
+    private var isEditingLayout: Binding<Bool> {
+        Binding(
+            get: { editingLayoutScreen != nil },
+            set: { if !$0 { editingLayoutScreen = nil } }
+        )
+    }
+
+    private var startTabBinding: Binding<StartTab> {
+        let layoutStore = self.layoutStore
+        return Binding(
+            get: { layoutStore.config.resolvedStartTab },
+            set: { layoutStore.setStartTab($0) }
+        )
     }
 
     // MARK: Appearance (R7)

@@ -12,6 +12,11 @@
 // replaces the old local-only `deleteHydration` -- removing a drink that
 // already reached Garmin now queues a negative correction, so Garmin's day
 // total (now the source of truth, `HydrationDayTotal`) drops too.
+//
+// add-standalone-mode D7 (task 4.4): `deliversToGarmin`, read on every call.
+// When false (standalone mode) a drink is committed to `HydrationStore`
+// only -- no outbox entry -- and removing one deletes the local record with
+// no negative correction. Garmin mode (the default) is unchanged.
 
 import Foundation
 import GarminKit
@@ -19,10 +24,12 @@ import GarminKit
 public struct HydrationLogCoordinator: Sendable {
     private let store: HydrationStore
     private let outbox: HydrationOutbox
+    private let deliversToGarmin: @Sendable () -> Bool
 
-    public init(store: HydrationStore, outbox: HydrationOutbox) {
+    public init(store: HydrationStore, outbox: HydrationOutbox, deliversToGarmin: @escaping @Sendable () -> Bool = { true }) {
         self.store = store
         self.outbox = outbox
+        self.deliversToGarmin = deliversToGarmin
     }
 
     /// Commits a drink locally and enqueues it for delivery, in that order
@@ -35,6 +42,10 @@ public struct HydrationLogCoordinator: Sendable {
         loggedAt: Date = Date(),
         now: Date = Date()
     ) async throws -> HydrationEntry {
+        guard deliversToGarmin() else {
+            // Standalone: the local store IS the record; nothing to send.
+            return try await store.upsert(HydrationEntry(valueInML: valueInML, loggedAt: loggedAt, createdAt: now))
+        }
         let outboxEntry = try await outbox.logHydration(valueInML: valueInML, loggedAt: loggedAt)
         let entry = HydrationEntry(
             valueInML: valueInML,
@@ -71,6 +82,11 @@ public struct HydrationLogCoordinator: Sendable {
     /// from the list while Garmin keeps counting it.
     @discardableResult
     public func removeHydration(_ entry: HydrationEntry) async throws -> HydrationRemoval {
+        guard deliversToGarmin() else {
+            // Standalone: the local record only, no negative correction.
+            try await store.delete(id: entry.id)
+            return .cancelledBeforeDelivery
+        }
         if let outboxEntryId = entry.outboxEntryId {
             do {
                 // "Is it delivered / in flight?" and "cancel it" happen in

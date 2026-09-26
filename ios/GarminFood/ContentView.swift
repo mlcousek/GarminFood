@@ -45,6 +45,16 @@ struct ContentView: View {
         // inputs for the theme (replaces `.tint(Theme.accent)`).
         .themed(environment.themeStore)
         .overlay { MomentOverlay() }
+        // add-standalone-mode 5.1: a fresh install chooses Garmin or
+        // "just on this phone" first. Never shown on an existing install.
+        .fullScreenCover(isPresented: Binding(
+            get: { environment.needsOnboarding },
+            set: { _ in }
+        )) {
+            OnboardingView()
+                .themed(environment.themeStore)
+                .environment(environment)
+        }
         // A shared theme's link (AppRouter.handle(url:)): preview first,
         // Apply or Cancel -- never applied silently (design D11).
         .sheet(item: $router.pendingThemeImport) { request in

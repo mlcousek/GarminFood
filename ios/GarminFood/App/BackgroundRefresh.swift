@@ -42,6 +42,22 @@ enum BackgroundRefresh {
     @MainActor
     static func run() async {
         let services = AppServices.shared
+        let allowsGarmin = GarminSyncPlan.for(AppServices.currentDataMode()).allows(.backgroundDelivery)
+        if allowsGarmin {
+            await deliver(services)
+        }
+        // add-offline-czech-food-index D3: the at-most-daily index check,
+        // piggybacking on whatever background time iOS grants. Throttled
+        // and Wi-Fi-gated by the store itself; a no-op most of the time.
+        let allowsCellular = UserDefaults.standard.bool(forKey: AppPreferences.Key.offlineIndexAllowsCellular)
+        _ = await services.offlineIndexStore.checkForUpdate(allowsCellular: allowsCellular)
+    }
+
+    /// The Garmin half of `run()`. Skipped in standalone mode
+    /// (add-standalone-mode 5.3): nothing is delivered and nothing is
+    /// scheduled again.
+    @MainActor
+    private static func deliver(_ services: AppServices) async {
         let result = await services.outbox.drain(using: services.garminClient)
         if !result.delivered.isEmpty {
             _ = await services.reconciliation.reconcile(delivered: result.delivered, using: services.garminClient)
@@ -65,10 +81,5 @@ enum BackgroundRefresh {
         if foodWaiting || weightWaiting || hydrationWaiting {
             schedule()
         }
-        // add-offline-czech-food-index D3: the at-most-daily index check,
-        // piggybacking on whatever background time iOS grants. Throttled
-        // and Wi-Fi-gated by the store itself; a no-op most of the time.
-        let allowsCellular = UserDefaults.standard.bool(forKey: AppPreferences.Key.offlineIndexAllowsCellular)
-        _ = await services.offlineIndexStore.checkForUpdate(allowsCellular: allowsCellular)
     }
 }
