@@ -227,8 +227,8 @@ public enum AchievementCatalog {
             let n = thresholds[i]
             return AchievementDefinition(
                 id: "achv-streak-\(n)",
-                title: titles[i],
-                subtitle: "Reach a \(n)-day streak.",
+                title: CatalogL10n.title("achv-streak-\(n)", titles[i]),
+                subtitle: CatalogL10n.subtitle("achv-streak-\(n)", "Reach a \(n)-day streak."),
                 category: .streak,
                 badgeSymbol: "flame.fill",
                 condition: .streakAtLeast(days: n)
@@ -243,8 +243,8 @@ public enum AchievementCatalog {
             let n = thresholds[i]
             return AchievementDefinition(
                 id: "achv-level-\(n)",
-                title: titles[i],
-                subtitle: "Reach level \(n).",
+                title: CatalogL10n.title("achv-level-\(n)", titles[i]),
+                subtitle: CatalogL10n.subtitle("achv-level-\(n)", "Reach level \(n)."),
                 category: .level,
                 badgeSymbol: "star.fill",
                 condition: .levelAtLeast(level: n)
@@ -259,8 +259,8 @@ public enum AchievementCatalog {
             let n = thresholds[i]
             return AchievementDefinition(
                 id: "achv-logs-\(n)",
-                title: titles[i],
-                subtitle: "Log \(n) entries in total.",
+                title: CatalogL10n.title("achv-logs-\(n)", titles[i]),
+                subtitle: CatalogL10n.subtitle("achv-logs-\(n)", "Log \(n) entries in total."),
                 category: .volume,
                 badgeSymbol: "fork.knife",
                 condition: .totalLogsAtLeast(count: n)
@@ -275,8 +275,8 @@ public enum AchievementCatalog {
             let n = thresholds[i]
             return AchievementDefinition(
                 id: "achv-foods-\(n)",
-                title: titles[i],
-                subtitle: "Log \(n) different foods.",
+                title: CatalogL10n.title("achv-foods-\(n)", titles[i]),
+                subtitle: CatalogL10n.subtitle("achv-foods-\(n)", "Log \(n) different foods."),
                 category: .variety,
                 badgeSymbol: "leaf.fill",
                 condition: .distinctFoodsAtLeast(count: n)
@@ -291,8 +291,8 @@ public enum AchievementCatalog {
             let n = thresholds[i]
             return AchievementDefinition(
                 id: "achv-challenges-\(n)",
-                title: titles[i],
-                subtitle: "Complete \(n) challenges.",
+                title: CatalogL10n.title("achv-challenges-\(n)", titles[i]),
+                subtitle: CatalogL10n.subtitle("achv-challenges-\(n)", "Complete \(n) challenges."),
                 category: .challenges,
                 badgeSymbol: "target",
                 condition: .challengesCompletedAtLeast(count: n)
@@ -300,8 +300,8 @@ public enum AchievementCatalog {
         }
         result.append(AchievementDefinition(
             id: "achv-challenges-all",
-            title: "The Completionist's Challenge",
-            subtitle: "Complete every challenge in the catalog.",
+            title: CatalogL10n.title("achv-challenges-all", "The Completionist's Challenge"),
+            subtitle: CatalogL10n.subtitle("achv-challenges-all", "Complete every challenge in the catalog."),
             category: .challenges,
             badgeSymbol: "target",
             condition: .allChallengesCompleted
@@ -316,8 +316,8 @@ public enum AchievementCatalog {
             let n = thresholds[i]
             return AchievementDefinition(
                 id: "achv-daily-\(n)",
-                title: titles[i],
-                subtitle: "Complete \(n) daily challenges in total.",
+                title: CatalogL10n.title("achv-daily-\(n)", titles[i]),
+                subtitle: CatalogL10n.subtitle("achv-daily-\(n)", "Complete \(n) daily challenges in total."),
                 category: .dailyChallenges,
                 badgeSymbol: "checkmark.circle.fill",
                 condition: .dailyChallengesCompletedAtLeast(count: n)
@@ -333,8 +333,8 @@ public enum AchievementCatalog {
                 let n = thresholds[i]
                 return AchievementDefinition(
                     id: "achv-goal-\(macro.rawValue)-\(n)",
-                    title: "\(macroDisplayName(macro)) \(suffixes[i])",
-                    subtitle: "Hit your \(macro.rawValue) goal on \(n) days, total.",
+                    title: CatalogL10n.title("achv-goal-\(macro.rawValue)-\(n)", "\(macroDisplayName(macro)) \(suffixes[i])"),
+                    subtitle: CatalogL10n.subtitle("achv-goal-\(macro.rawValue)-\(n)", "Hit your \(macro.rawValue) goal on \(n) days, total."),
                     category: .goalHitting,
                     badgeSymbol: "checkmark.seal.fill",
                     condition: .goalHitDaysAtLeast(macro: macro, count: n)
@@ -350,8 +350,8 @@ public enum AchievementCatalog {
             let n = thresholds[i]
             return AchievementDefinition(
                 id: "achv-extreme-\(n)",
-                title: titles[i],
-                subtitle: "Log \(n)+ kcal in a single day. Every feast deserves a badge.",
+                title: CatalogL10n.title("achv-extreme-\(n)", titles[i]),
+                subtitle: CatalogL10n.subtitle("achv-extreme-\(n)", "Log \(n)+ kcal in a single day. Every feast deserves a badge."),
                 category: .extreme,
                 badgeSymbol: "bolt.fill",
                 condition: .singleDayCaloriesAtLeast(calories: Double(n))
@@ -382,10 +382,10 @@ public enum AchievementCatalog {
                    describe: { "\($0) marathons' worth of energy burned (very roughly)" }),
             Anchor(idSlug: "elephant", kcalPerUnit: 150_000, multiples: [1, 5, 20, 50],
                    titles: ["Fed an Elephant for a Day", "Fed an Elephant for Five Days", "Fed an Elephant for Three Weeks", "Fed an Elephant for 50 Days"],
-                   describe: { $0 == 1 ? "one elephant's daily food intake (roughly!)" : "\($0) days of an elephant's food intake (roughly!)" }),
+                   describe: { CatalogL10n.englishCount($0, one: "one elephant's daily food intake (roughly!)", other: "\($0) days of an elephant's food intake (roughly!)") }),
             Anchor(idSlug: "whale", kcalPerUnit: 1_500_000, multiples: [1, 3, 10, 30],
                    titles: ["Out-Ate a Blue Whale (For a Day)", "Out-Ate a Blue Whale for 3 Days", "Out-Ate a Blue Whale for 10 Days", "Out-Ate a Blue Whale for a Month"],
-                   describe: { $0 == 1 ? "a blue whale's daily food intake (extremely roughly!)" : "\($0) days of a blue whale's food intake (extremely roughly!)" })
+                   describe: { CatalogL10n.englishCount($0, one: "a blue whale's daily food intake (extremely roughly!)", other: "\($0) days of a blue whale's food intake (extremely roughly!)") })
         ]
         return anchors.flatMap { anchor -> [AchievementDefinition] in
             anchor.multiples.indices.map { i in
@@ -393,8 +393,8 @@ public enum AchievementCatalog {
                 let totalKcal = anchor.kcalPerUnit * Double(multiple)
                 return AchievementDefinition(
                     id: "achv-funny-\(anchor.idSlug)-\(multiple)",
-                    title: anchor.titles[i],
-                    subtitle: "You've logged about \(anchor.describe(multiple)) in total calories.",
+                    title: CatalogL10n.title("achv-funny-\(anchor.idSlug)-\(multiple)", anchor.titles[i]),
+                    subtitle: CatalogL10n.subtitle("achv-funny-\(anchor.idSlug)-\(multiple)", "You've logged about \(anchor.describe(multiple)) in total calories."),
                     category: .funnyFacts,
                     badgeSymbol: "party.popper.fill",
                     condition: .totalCaloriesAtLeast(calories: totalKcal)
@@ -404,19 +404,19 @@ public enum AchievementCatalog {
     }()
 
     private static let calendarFamily: [AchievementDefinition] = [
-        AchievementDefinition(id: "achv-perfect-month", title: "Perfect Month", subtitle: "Log every single day of a full calendar month.", category: .calendar, badgeSymbol: "calendar", condition: .perfectCalendarMonth),
-        AchievementDefinition(id: "achv-leap-day", title: "Leap Day Logger", subtitle: "Log something on February 29th -- only possible once every four years.", category: .calendar, badgeSymbol: "calendar", condition: .loggedOnLeapDay),
-        AchievementDefinition(id: "achv-new-year", title: "New Year, New Log", subtitle: "Log something on New Year's Day.", category: .calendar, badgeSymbol: "calendar", condition: .loggedOnNewYearsDay),
-        AchievementDefinition(id: "achv-midnight", title: "Midnight Snack Club", subtitle: "Log something at exactly midnight.", category: .calendar, badgeSymbol: "moon.stars.fill", condition: .loggedAtMidnight),
-        AchievementDefinition(id: "achv-anniversary-1", title: "One Year In", subtitle: "You've been using this app for a full year.", category: .calendar, badgeSymbol: "gift.fill", condition: .anniversaryYears(years: 1)),
-        AchievementDefinition(id: "achv-anniversary-2", title: "Two Years Strong", subtitle: "Two full years of logging.", category: .calendar, badgeSymbol: "gift.fill", condition: .anniversaryYears(years: 2)),
-        AchievementDefinition(id: "achv-anniversary-3", title: "Three-Year Veteran", subtitle: "Three full years -- exactly what you set out to do.", category: .calendar, badgeSymbol: "gift.fill", condition: .anniversaryYears(years: 3))
+        AchievementDefinition(id: "achv-perfect-month", title: CatalogL10n.title("achv-perfect-month", "Perfect Month"), subtitle: CatalogL10n.subtitle("achv-perfect-month", "Log every single day of a full calendar month."), category: .calendar, badgeSymbol: "calendar", condition: .perfectCalendarMonth),
+        AchievementDefinition(id: "achv-leap-day", title: CatalogL10n.title("achv-leap-day", "Leap Day Logger"), subtitle: CatalogL10n.subtitle("achv-leap-day", "Log something on February 29th -- only possible once every four years."), category: .calendar, badgeSymbol: "calendar", condition: .loggedOnLeapDay),
+        AchievementDefinition(id: "achv-new-year", title: CatalogL10n.title("achv-new-year", "New Year, New Log"), subtitle: CatalogL10n.subtitle("achv-new-year", "Log something on New Year's Day."), category: .calendar, badgeSymbol: "calendar", condition: .loggedOnNewYearsDay),
+        AchievementDefinition(id: "achv-midnight", title: CatalogL10n.title("achv-midnight", "Midnight Snack Club"), subtitle: CatalogL10n.subtitle("achv-midnight", "Log something at exactly midnight."), category: .calendar, badgeSymbol: "moon.stars.fill", condition: .loggedAtMidnight),
+        AchievementDefinition(id: "achv-anniversary-1", title: CatalogL10n.title("achv-anniversary-1", "One Year In"), subtitle: CatalogL10n.subtitle("achv-anniversary-1", "You've been using this app for a full year."), category: .calendar, badgeSymbol: "gift.fill", condition: .anniversaryYears(years: 1)),
+        AchievementDefinition(id: "achv-anniversary-2", title: CatalogL10n.title("achv-anniversary-2", "Two Years Strong"), subtitle: CatalogL10n.subtitle("achv-anniversary-2", "Two full years of logging."), category: .calendar, badgeSymbol: "gift.fill", condition: .anniversaryYears(years: 2)),
+        AchievementDefinition(id: "achv-anniversary-3", title: CatalogL10n.title("achv-anniversary-3", "Three-Year Veteran"), subtitle: CatalogL10n.subtitle("achv-anniversary-3", "Three full years -- exactly what you set out to do."), category: .calendar, badgeSymbol: "gift.fill", condition: .anniversaryYears(years: 3))
     ]
 
     private static let metaFamily: [AchievementDefinition] = [
-        AchievementDefinition(id: "achv-meta-25", title: "Quarter Collector", subtitle: "Unlock 25% of all other achievements.", category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 0.25), isMeta: true),
-        AchievementDefinition(id: "achv-meta-50", title: "Halfway There", subtitle: "Unlock 50% of all other achievements.", category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 0.5), isMeta: true),
-        AchievementDefinition(id: "achv-meta-75", title: "Almost Everything", subtitle: "Unlock 75% of all other achievements.", category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 0.75), isMeta: true),
-        AchievementDefinition(id: "achv-meta-100", title: "Completionist", subtitle: "Unlock every other achievement in the catalog.", category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 1.0), isMeta: true)
+        AchievementDefinition(id: "achv-meta-25", title: CatalogL10n.title("achv-meta-25", "Quarter Collector"), subtitle: CatalogL10n.subtitle("achv-meta-25", "Unlock 25% of all other achievements."), category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 0.25), isMeta: true),
+        AchievementDefinition(id: "achv-meta-50", title: CatalogL10n.title("achv-meta-50", "Halfway There"), subtitle: CatalogL10n.subtitle("achv-meta-50", "Unlock 50% of all other achievements."), category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 0.5), isMeta: true),
+        AchievementDefinition(id: "achv-meta-75", title: CatalogL10n.title("achv-meta-75", "Almost Everything"), subtitle: CatalogL10n.subtitle("achv-meta-75", "Unlock 75% of all other achievements."), category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 0.75), isMeta: true),
+        AchievementDefinition(id: "achv-meta-100", title: CatalogL10n.title("achv-meta-100", "Completionist"), subtitle: CatalogL10n.subtitle("achv-meta-100", "Unlock every other achievement in the catalog."), category: .meta, badgeSymbol: "crown.fill", condition: .unlockedFractionOfOthers(fraction: 1.0), isMeta: true)
     ]
 }

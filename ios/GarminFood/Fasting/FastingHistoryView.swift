@@ -176,7 +176,7 @@ struct FastingDayRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(day.day.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated)))
                     .font(.subheadline.weight(.semibold))
-                Text("\(FastingFormat.clock(day.window.start)) – \(FastingFormat.clock(day.window.end))")
+                Text(verbatim: "\(FastingFormat.clock(day.window.start)) – \(FastingFormat.clock(day.window.end))")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -192,11 +192,11 @@ struct FastingDayRow: View {
 
     private var statusText: String {
         switch day.result {
-        case .kept: return "Kept"
-        case .broken(let at): return "Broken at \(FastingFormat.clock(at))"
-        case .inProgress: return "In progress"
-        case .upcoming: return "Upcoming"
-        case .notTracked: return "Not tracked"
+        case .kept: return String(localized: "Kept", comment: "Fasting history row: the fast was kept that day.")
+        case .broken(let at): return String(localized: "Broken at \(FastingFormat.clock(at))", comment: "Fasting history row: the fast was broken; %@ = clock time of the first food logged inside the window.")
+        case .inProgress: return String(localized: "In progress", comment: "Fasting history row: today's window is still running.")
+        case .upcoming: return String(localized: "Upcoming", comment: "Fasting history row / streak dot: a day or window that hasn't started yet.")
+        case .notTracked: return String(localized: "Not tracked", comment: "Fasting history row: no data to judge that day (fasting off or history trimmed).")
         }
     }
 

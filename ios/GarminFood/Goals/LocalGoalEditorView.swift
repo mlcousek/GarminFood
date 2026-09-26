@@ -127,7 +127,7 @@ struct LocalGoalEditorView: View {
         HStack {
             Text(title)
             Spacer()
-            TextField("—", text: text)
+            TextField(text: text, prompt: Text(verbatim: "—")) { Text(title) }
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 100)

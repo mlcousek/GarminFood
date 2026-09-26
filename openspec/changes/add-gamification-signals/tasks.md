@@ -63,5 +63,5 @@
 ## 8. Verify
 
 - [x] 8.1 `openspec validate add-gamification-signals --strict` passes.
-- [ ] 8.2 CI green: `swift test` for GarminKit, FoodLogCore, Gamification; app + widget `xcodebuild`.
+- [x] 8.2 CI green: `swift test` for GarminKit, FoodLogCore, Gamification; app + widget `xcodebuild`. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 8.3 On-device check (AltStore build): existing streak/level/achievements unchanged after upgrade; Progress tab renders with empty slots; after a refresh, Settings → Diagnostics shows no `signals` errors and a run logged on the watch appears in the cached activities (verify via a debug line in Diagnostics).

@@ -52,7 +52,7 @@ with Czech plural forms (one, few, many, other) for counts.
 ## 5. Hand-off and verification
 
 - [x] 5.1 Tell the supplements agent to add fixtures and catalog entries for its stores, following `docs/data-compatibility.md`. **Done here instead:** the supplement stores' fixtures (`supplement-plan.json`, `supplement-limits.json`, `SupplementIntake-2026-09.json`) and catalog entries are in this PR.
-- [ ] 5.2 CI green on the PR.
+- [x] 5.2 CI green on the PR. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 5.3 On device, owner:
   - (a) update the app over AltStore: all data is still there;
   - (b) the next day, Settings → Data lists an automatic snapshot;

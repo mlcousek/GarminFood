@@ -25,6 +25,6 @@
 
 ## 3. Verify
 
-- [ ] 3.1 CI green.
+- [x] 3.1 CI green. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 3.2 On device: check the shelf order, that the breakfast and dinner shelves differ, that Recent updates after logging, and that preset cards work.
   - "Usual for <meal>" starts empty after the upgrade. Events logged before this build have no meal type, so it appears once a meal has 3 new logs.

@@ -17,5 +17,5 @@
 ## 4. Verify
 
 - [x] 4.1 `openspec validate add-secret-achievements --strict` passes.
-- [ ] 4.2 CI green (`swift test` Gamification; app + widget build).
+- [x] 4.2 CI green (`swift test` Gamification; app + widget build). *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 4.3 On-device check: Achievements shows "??? × 15"; logging 5 coffees in a day reveals Barista Mode with the reveal moment once.

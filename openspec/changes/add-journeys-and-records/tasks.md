@@ -26,5 +26,5 @@
 ## 5. Verify
 
 - [x] 5.1 `openspec validate add-journeys-and-records --strict` passes.
-- [ ] 5.2 CI green (`swift test` Gamification; app + widget build).
+- [x] 5.2 CI green (`swift test` Gamification; app + widget build). *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 5.3 On-device check: after first launch, journeys show plausible totals from recent history with one summary moment and records show values with no PR moments; a high-protein day later triggers exactly one PR moment.

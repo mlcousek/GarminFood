@@ -46,8 +46,8 @@ jobs:
     # missing Czech string or a "%d" where Swift generates "%lld" fails
     # nothing else -- it just shows English on the phone. This job turns
     # those into a red check. Plain Node on Linux: seconds, no macOS minutes.
-    # `--scan` only REPORTS untranslated SwiftUI literals (the backlog); it
-    # never fails the job.
+    # `--scan` fails on any SwiftUI literal without a catalog key (blocking
+    # since add-localization task 6.6, when the backlog reached 0).
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -78,17 +78,13 @@ jobs:
           xcodebuild -version
           swift --version
 
-      - name: Compile String Catalogs with xcstringstool (non-blocking)
+      - name: Compile String Catalogs with xcstringstool
         # add-localization design.md D9.2: proves each hand-written
         # .xcstrings compiles with Apple's own tool, and prints the Czech
-        # output. NON-BLOCKING until one green run confirms the CLI flags
-        # (xcstringstool's usage isn't publicly documented; `--help` is
-        # printed first so a failure is diagnosable from the log) -- then
-        # drop `continue-on-error` (tasks.md 1.9).
-        continue-on-error: true
+        # output. Blocking since the CLI flags were confirmed green on main
+        # (tasks.md 1.9: `compile <file> --output-directory <dir>`).
         run: |
           set -e
-          xcrun xcstringstool compile --help || true
           for f in GarminFood/Resources/Localizable.xcstrings GarminFoodWidget/Resources/Localizable.xcstrings; do
             out="build/xcstrings/${f%%/*}"
             mkdir -p "$out"
@@ -230,3 +226,12 @@ jobs:
           path: ios/build/l10n-export
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Compare the export with the catalogs
+        # add-localization task 6.6: every key the compiler extracted into
+        # the app/widget catalogs must have a Czech translation -- catches a
+        # hand-typed key whose specifier differs from what Swift generates
+        # (that string would silently show English on the phone). Blocking.
+        # Last, after both artifacts are uploaded, so a failure withholds neither.
+        working-directory: .
+        run: node tools/check-localizations.mjs --xliff "ios/build/l10n-export/cs.xcloc/Localized Contents/cs.xliff"

@@ -88,7 +88,7 @@ struct FastingHomeCard: View {
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(verbatim: "\(title). \(detail)"))
-            .accessibilityHint(showsChevron ? "Opens your fasting history" : "")
+            .accessibilityHint(showsChevron ? Text("Opens your fasting history") : Text(verbatim: ""))
         }
     }
 

@@ -29,5 +29,5 @@
 
 ## 5. Verify
 
-- [ ] 5.1 CI green, including the golden suite.
+- [x] 5.1 CI green, including the golden suite. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 5.2 On device: rohlíky, tvaroh měkký, typos, own custom food, offline typing, fast typing (no error flash).

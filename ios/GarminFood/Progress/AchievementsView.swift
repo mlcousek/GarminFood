@@ -127,17 +127,17 @@ struct AchievementsView: View {
 
     private func title(for category: AchievementCategory) -> String {
         switch category {
-        case .streak: return "Streaks"
-        case .level: return "Levels"
-        case .volume: return "Logging Volume"
-        case .variety: return "Variety"
-        case .challenges: return "Challenges"
-        case .dailyChallenges: return "Daily Challenges"
-        case .goalHitting: return "Goal Hitting"
-        case .extreme: return "Extreme Days"
-        case .funnyFacts: return "Fun Facts"
-        case .calendar: return "Calendar"
-        case .meta: return "Completionist"
+        case .streak: return String(localized: "Streaks", comment: "Achievements group header.")
+        case .level: return String(localized: "Levels", comment: "Achievements group header.")
+        case .volume: return String(localized: "Logging Volume", comment: "Achievements group header: badges for the number of entries logged.")
+        case .variety: return String(localized: "Variety", comment: "Achievements group header: badges for different foods.")
+        case .challenges: return String(localized: "Challenges")
+        case .dailyChallenges: return String(localized: "Daily Challenges", comment: "Achievements group header.")
+        case .goalHitting: return String(localized: "Goal Hitting", comment: "Achievements group header: badges for days a nutrition goal was met.")
+        case .extreme: return String(localized: "Extreme Days", comment: "Achievements group header: badges for very high-calorie days.")
+        case .funnyFacts: return String(localized: "Fun Facts", comment: "Achievements group header: playful lifetime-calorie comparisons.")
+        case .calendar: return String(localized: "Calendar", comment: "Achievements group header: date-based badges.")
+        case .meta: return String(localized: "Completionist", comment: "Achievements group header: badges for unlocking other badges.")
         }
     }
 }
@@ -155,16 +155,16 @@ private struct AchievementsHeroCard: View {
         VStack(spacing: Theme.Spacing.sm) {
             ProgressRing(fraction: fraction, lineWidth: 12) {
                 VStack(spacing: 0) {
-                    Text("\(percent)%")
+                    Text(fraction.formatted(.percent.precision(.fractionLength(0))))
                         .font(.system(.title, design: .rounded).weight(.bold))
                         .minimumScaleFactor(0.6)
-                    Text("\(unlockedCount)/\(totalCount)")
+                    Text(verbatim: "\(unlockedCount)/\(totalCount)")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
             }
             .frame(width: 120, height: 120)
-            Text("achievements unlocked")
+            Text("achievements unlocked", comment: "Under the achievements completion ring (percent and count above it).")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -173,7 +173,7 @@ private struct AchievementsHeroCard: View {
         .card()
         .padding(.horizontal, Theme.Spacing.md)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(unlockedCount) of \(totalCount) achievements unlocked, \(percent) percent")
+        .accessibilityLabel(Text("\(unlockedCount) of \(totalCount) achievements unlocked, \(percent) percent", comment: "VoiceOver: the achievements completion ring."))
     }
 }
 
@@ -208,7 +208,7 @@ private struct AchievementBadgeView: View {
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint("Opens achievement details")
+        .accessibilityHint(Text("Opens achievement details"))
     }
 
     private var accessibilityLabel: String {
@@ -216,9 +216,10 @@ private struct AchievementBadgeView: View {
             return String(localized: "Secret achievement, locked", comment: "Accessibility label of a locked secret achievement tile (title hidden).")
         }
         if let unlockedDate {
-            return "\(definition.title), \(definition.rarity.displayName) achievement, unlocked \(unlockedDate.formatted(date: .abbreviated, time: .omitted))"
+            let date = unlockedDate.formatted(date: .abbreviated, time: .omitted)
+            return String(localized: "\(definition.title), \(definition.rarity.displayName) achievement, unlocked \(date)", comment: "VoiceOver: an unlocked badge tile. Title, rarity (adjective; Czech agrees with \"odznak\"), unlock date.")
         } else {
-            return "\(definition.title), locked, \(definition.rarity.displayName) achievement. \(definition.subtitle)"
+            return String(localized: "\(definition.title), locked, \(definition.rarity.displayName) achievement. \(definition.subtitle)", comment: "VoiceOver: a locked badge tile. Title, rarity (adjective; Czech agrees with \"odznak\"), how to earn it.")
         }
     }
 }
@@ -260,7 +261,7 @@ private struct AchievementDetailSheet: View {
                         .foregroundStyle(.secondary)
 
                     if let unlockedDate {
-                        Label("Unlocked \(unlockedDate.formatted(date: .abbreviated, time: .omitted))", systemImage: "checkmark.circle.fill")
+                        Label(String(localized: "Unlocked \(unlockedDate.formatted(date: .abbreviated, time: .omitted))", comment: "Badge detail: the unlock date."), systemImage: "checkmark.circle.fill")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Theme.success)
                     } else {

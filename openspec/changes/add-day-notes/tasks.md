@@ -11,5 +11,5 @@
 
 ## 3. Verify
 
-- [ ] 3.1 CI green.
+- [x] 3.1 CI green. *Ticked 2026-09-26: merged to `main`, whose `Build iOS app` CI (package tests + app/widget build) is green (run on 0de2d46).*
 - [ ] 3.2 On device: write a note on a past day, reopen it, and check the Trends marker.
