@@ -217,6 +217,22 @@ public struct BackupVault: Sendable {
         return true
     }
 
+    /// The job the app runs when a scene becomes active (design D3): an
+    /// automatic snapshot when `isAutomaticSnapshotDue`, otherwise nothing.
+    /// `preferences` is an autoclosure so the UserDefaults domain is only
+    /// read when a snapshot is actually taken. Returns `nil` when nothing
+    /// was written (not due, or an empty data set).
+    @discardableResult
+    public func writeAutomaticSnapshotIfDue(
+        preferences: @autoclosure () -> [String: PreferenceValue],
+        appVersion: String?,
+        now: Date,
+        calendar: Calendar = .current
+    ) throws -> BackupSnapshotResult? {
+        guard isAutomaticSnapshotDue(now: now, calendar: calendar) else { return nil }
+        return try writeSnapshot(kind: .automatic, preferences: preferences(), appVersion: appVersion, now: now, calendar: calendar)
+    }
+
     /// Copies every included data file plus `preferences` into a new
     /// snapshot, written to a temp directory and renamed into place, then
     /// prunes old ones. A daily or manual snapshot replaces the same day's

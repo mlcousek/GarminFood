@@ -11,6 +11,13 @@ import BackgroundTasks
 
 @main
 struct GarminFoodApp: App {
+    init() {
+        // add-data-safety D4: a restore staged from Settings → Data is
+        // applied here, before `ContentView` (and so `AppServices.shared`)
+        // loads any store. Must stay the first thing the app does.
+        DataSafetyLaunch.applyPendingRestoreIfNeeded()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()

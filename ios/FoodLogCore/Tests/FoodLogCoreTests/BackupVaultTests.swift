@@ -152,6 +152,25 @@ final class BackupVaultTests: XCTestCase {
         XCTAssertTrue(vault.isAutomaticSnapshotDue(now: noon.addingTimeInterval(day), calendar: calendar))
     }
 
+    func testAutomaticSnapshotIfDueWritesOncePerDayAndReadsPreferencesOnlyWhenDue() throws {
+        try seedDataDirectory()
+        var preferenceReads = 0
+        func currentPreferences() -> [String: PreferenceValue] {
+            preferenceReads += 1
+            return preferences
+        }
+
+        let first = try vault.writeAutomaticSnapshotIfDue(preferences: currentPreferences(), appVersion: nil, now: noon, calendar: calendar)
+        XCTAssertEqual(first?.snapshot.manifest.kind, .automatic)
+        let second = try vault.writeAutomaticSnapshotIfDue(preferences: currentPreferences(), appVersion: nil, now: noon.addingTimeInterval(5 * 60 * 60), calendar: calendar)
+        XCTAssertNil(second, "the second foreground on the same day writes nothing")
+        XCTAssertEqual(preferenceReads, 1)
+        XCTAssertEqual(vault.listSnapshots().map(\.id), ["2026-09-20"])
+
+        XCTAssertNotNil(try vault.writeAutomaticSnapshotIfDue(preferences: currentPreferences(), appVersion: nil, now: noon.addingTimeInterval(day), calendar: calendar))
+        XCTAssertEqual(vault.listSnapshots().map(\.id), ["2026-09-21", "2026-09-20"])
+    }
+
     func testEmptyAttemptIsNotRetriedWithinTheRetryInterval() throws {
         XCTAssertNil(try vault.writeSnapshot(kind: .automatic, preferences: [:], appVersion: nil, now: noon, calendar: calendar))
         XCTAssertFalse(vault.isAutomaticSnapshotDue(now: noon.addingTimeInterval(60), calendar: calendar))

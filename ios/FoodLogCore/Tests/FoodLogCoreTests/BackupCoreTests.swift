@@ -248,4 +248,21 @@ final class BackupCoreTests: XCTestCase {
         XCTAssertFalse(BackupReminderPolicy.shouldShow(lastExportAt: nil, dismissedAt: now.addingTimeInterval(-2 * day), now: now))
         XCTAssertTrue(BackupReminderPolicy.shouldShow(lastExportAt: nil, dismissedAt: now.addingTimeInterval(-15 * day), now: now))
     }
+
+    func testDaysSinceCountsCalendarDaysAndNeverGoesNegative() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Europe/Prague")!
+        // 2026-09-20 23:30 and 2026-09-21 00:30 Prague: one calendar day apart.
+        let lateEvening = Date(timeIntervalSince1970: 1_789_939_800)
+        let justAfterMidnight = lateEvening.addingTimeInterval(60 * 60)
+        XCTAssertEqual(BackupReminderPolicy.daysSince(lateEvening, now: lateEvening, calendar: calendar), 0)
+        XCTAssertEqual(BackupReminderPolicy.daysSince(lateEvening, now: justAfterMidnight, calendar: calendar), 1)
+        XCTAssertEqual(BackupReminderPolicy.daysSince(lateEvening, now: lateEvening.addingTimeInterval(10 * 24 * 60 * 60), calendar: calendar), 10)
+        XCTAssertEqual(BackupReminderPolicy.daysSince(justAfterMidnight, now: lateEvening, calendar: calendar), 0)
+    }
+
+    func testReminderBookkeepingKeysNeverTravelWithABackup() {
+        XCTAssertFalse(BackupExclusions.includesPreference(key: BackupReminderPolicy.lastExportAtKey))
+        XCTAssertFalse(BackupExclusions.includesPreference(key: BackupReminderPolicy.dismissedAtKey))
+    }
 }

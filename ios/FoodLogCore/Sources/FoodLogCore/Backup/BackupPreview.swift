@@ -79,6 +79,20 @@ public struct BackupPreview: Equatable, Sendable {
 public enum BackupReminderPolicy {
     public static let interval: TimeInterval = 14 * 24 * 60 * 60
 
+    /// UserDefaults keys for the reminder's bookkeeping. `dataSafety.*` is
+    /// excluded from backups (BackupExclusions), so restoring an old backup
+    /// never rewinds when the last export happened.
+    public static let lastExportAtKey = "dataSafety.lastExportAt"
+    public static let dismissedAtKey = "dataSafety.reminderDismissedAt"
+
+    /// Whole calendar days from `date` to `now` (0 = today), for "Today" /
+    /// "N days ago" on the Data screen. Never negative, so a clock set back
+    /// reads as "Today" rather than "-1 days ago".
+    public static func daysSince(_ date: Date, now: Date, calendar: Calendar = .current) -> Int {
+        let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: date), to: calendar.startOfDay(for: now)).day ?? 0
+        return max(0, days)
+    }
+
     public static func shouldShow(lastExportAt: Date?, dismissedAt: Date?, now: Date, interval: TimeInterval = BackupReminderPolicy.interval) -> Bool {
         if let lastExportAt, now.timeIntervalSince(lastExportAt) < interval { return false }
         if let dismissedAt, now.timeIntervalSince(dismissedAt) < interval { return false }
