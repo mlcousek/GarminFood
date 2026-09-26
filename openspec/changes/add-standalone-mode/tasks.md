@@ -63,7 +63,7 @@ owner may override** — a later answer becomes its own small follow-up.
 - [x] 5.3 Foreground/background in standalone skip every Garmin call; `BackgroundRefresh` not scheduled. Test the planning function if extracted.
 - [x] 5.4 Switching (Settings → Data): standalone → Garmin after successful sign-in (local log kept, backing-less custom foods flagged); Garmin → standalone refused during a drain, undelivered entries "Deliver first" / "Keep on this phone" (converted to local entries via `FoodCacheStore`). Tests for the conversion.
 - [ ] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only. — *Skipped: 0.7 defaulted to "later".*
-- [ ] 5.6 Mode-neutral `NSCameraUsageDescription` (en + cs via InfoPlist catalog).
+- [x] 5.6 Mode-neutral `NSCameraUsageDescription` (en + cs via InfoPlist catalog).
 - [ ] 5.7 On-device: fresh install → choose "Just on this phone" in Czech → log a day with zero Garmin calls; the owner's phone skips onboarding.
 
 ## 6. Wave 6 — Backup and restore (M) — required before the fiancée relies on the app
