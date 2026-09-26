@@ -11,10 +11,15 @@
 // and "How streaks work" explains freezes. The freeze data comes from
 // `GamificationEngine.freezeBalance` / `.streakSummary` (already frozen-
 // aware); nothing here computes a freeze.
+//
+// add-themes-and-layout (design.md D8, wave 4): `ProgressHomeView`'s cards
+// follow the user's layout (LayoutStore, `.progress`), with each
+// gamification slot view as its own card instead of one ProgressSlotHost.
 
 import SwiftUI
 import Gamification
 import FoodLogCore
+import AppearanceKit
 
 // MARK: - Progress home
 
@@ -27,68 +32,15 @@ struct ProgressHomeView: View {
 
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Density.stackSpacing) {
-                NavigationLink {
-                    StreakDetailView()
-                } label: {
-                    StreakSummaryCard(summary: engine.streakSummary, status: engine.streakStatus, freezes: engine.freezeBalance)
-                }
-                .buttonStyle(.plain)
-
-                NavigationLink {
-                    LevelDetailView()
-                } label: {
-                    LevelSummaryCard(progress: engine.levelProgress)
-                }
-                .buttonStyle(.plain)
-
-                ProgressSlotHost() // add-gamification-signals D12: feature cards
-
-                NavigationLink {
-                    ChallengesView()
-                } label: {
-                    ChallengeSummaryCard(
-                        template: engine.activeChallengeTemplate,
-                        progress: engine.challengeProgress,
-                        windowEnd: engine.challengeWindowEnd,
-                        completedCount: engine.completedChallenges.count
-                    )
-                }
-                .buttonStyle(.plain)
-
-                NavigationLink {
-                    AchievementsView()
-                } label: {
-                    AchievementsSummaryCard(unlockedCount: engine.unlockedAchievements.count, totalCount: engine.achievementCatalog.count)
-                }
-                .buttonStyle(.plain)
-
-                NavigationLink {
-                    WeightView()
-                } label: {
-                    WeightSummaryCard(latest: environment.weightLoader.latest, previous: environment.weightLoader.previous)
-                }
-                .buttonStyle(.plain)
-
-                NavigationLink {
-                    HydrationView()
-                } label: {
-                    HydrationSummaryCard(todayTotalML: environment.hydrationLoader.todayTotalML)
-                }
-                .buttonStyle(.plain)
-
-                NavigationLink {
-                    TrendsView()
-                } label: {
-                    TrendsSummaryCard(
-                        hydrationStreak: HydrationHistory.streak(for: environment.hydrationLoader.entries, goalML: environment.hydrationLoader.goalML)
-                    )
-                }
-                .buttonStyle(.plain)
-
-                VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                    SectionHeader(title: "Goals, last 14 days")
-                    GoalHistoryList(statuses: Array(engine.goalHistory.prefix(14)))
-                        .card()
+                // add-themes-and-layout (design.md D8, wave 4): the user's
+                // order from LayoutStore, one arm per card. Each gamification
+                // slot (add-gamification-signals D12) is its own entry, so
+                // Bingo can be hidden while Boss stays; the slots still
+                // decide their own content (an empty slot renders nothing).
+                // With nothing stored the order is the former fixed stack
+                // (LayoutResolverTests golden).
+                ForEach(renderedCards, id: \.self) { card in
+                    progressCard(card)
                 }
             }
             .padding(Theme.Spacing.md)
@@ -98,6 +50,103 @@ struct ProgressHomeView: View {
         .refreshable {
             await engine.refresh()
             await environment.refreshGarminHealth()
+        }
+    }
+
+    /// The cards the user left visible, in their order. There's no
+    /// availability rule on Progress: every card (and each slot, which
+    /// decides its own content) always has a place.
+    private var renderedCards: [ProgressCardID] {
+        environment.layoutStore.resolved(.progress).compactMap { placement in
+            placement.isVisible ? ProgressCardID(rawValue: placement.id) : nil
+        }
+    }
+
+    /// One Progress card (the arms are the former fixed stack's entries,
+    /// unchanged; the slot views are referenced individually instead of
+    /// through `ProgressSlotHost`).
+    @ViewBuilder
+    private func progressCard(_ card: ProgressCardID) -> some View {
+        let engine = environment.gamificationEngine
+        switch card {
+        case .streak:
+            NavigationLink {
+                StreakDetailView()
+            } label: {
+                StreakSummaryCard(summary: engine.streakSummary, status: engine.streakStatus, freezes: engine.freezeBalance)
+            }
+            .buttonStyle(.plain)
+        case .level:
+            NavigationLink {
+                LevelDetailView()
+            } label: {
+                LevelSummaryCard(progress: engine.levelProgress)
+            }
+            .buttonStyle(.plain)
+        case .boss:
+            BossSlotView()
+        case .bingo:
+            BingoSlotView()
+        case .seasonal:
+            SeasonalSlotView()
+        case .journeys:
+            JourneysSlotView()
+        case .records:
+            RecordsSlotView()
+        case .collections:
+            CollectionsSlotView()
+        case .sportBody:
+            SportBodySlotView()
+        case .secrets:
+            SecretsSlotView()
+        case .challenges:
+            NavigationLink {
+                ChallengesView()
+            } label: {
+                ChallengeSummaryCard(
+                    template: engine.activeChallengeTemplate,
+                    progress: engine.challengeProgress,
+                    windowEnd: engine.challengeWindowEnd,
+                    completedCount: engine.completedChallenges.count
+                )
+            }
+            .buttonStyle(.plain)
+        case .achievements:
+            NavigationLink {
+                AchievementsView()
+            } label: {
+                AchievementsSummaryCard(unlockedCount: engine.unlockedAchievements.count, totalCount: engine.achievementCatalog.count)
+            }
+            .buttonStyle(.plain)
+        case .weight:
+            NavigationLink {
+                WeightView()
+            } label: {
+                WeightSummaryCard(latest: environment.weightLoader.latest, previous: environment.weightLoader.previous)
+            }
+            .buttonStyle(.plain)
+        case .hydration:
+            NavigationLink {
+                HydrationView()
+            } label: {
+                HydrationSummaryCard(todayTotalML: environment.hydrationLoader.todayTotalML)
+            }
+            .buttonStyle(.plain)
+        case .trends:
+            NavigationLink {
+                TrendsView()
+            } label: {
+                TrendsSummaryCard(
+                    hydrationStreak: HydrationHistory.streak(for: environment.hydrationLoader.entries, goalML: environment.hydrationLoader.goalML)
+                )
+            }
+            .buttonStyle(.plain)
+        case .goalHistory:
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                SectionHeader(title: "Goals, last 14 days")
+                GoalHistoryList(statuses: Array(engine.goalHistory.prefix(14)))
+                    .card()
+            }
         }
     }
 }

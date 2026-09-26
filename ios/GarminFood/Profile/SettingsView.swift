@@ -4,6 +4,11 @@
 // nutrition plan shown read-only (changed in Garmin Connect, never here, per
 // the spec's own words), the sync queue, preferences that persist, and
 // About.
+//
+// add-standalone-mode 5.2: in standalone mode every Garmin-only row is
+// hidden -- the Garmin account section, Garmin's read-only plan (replaced
+// by the local editable one), the sync queue and "Default meal from
+// Garmin's schedule" -- and About no longer says it syncs to Garmin.
 
 import SwiftUI
 import UIKit
@@ -51,8 +56,10 @@ struct SettingsView: View {
 
     var body: some View {
         @Bindable var preferences = environment.preferences
+        let isStandalone = environment.dataMode == .standalone
 
         Form {
+            if !isStandalone {
             Section("Garmin account") {
                 HStack {
                     Text("Status")
@@ -70,29 +77,27 @@ struct SettingsView: View {
                     }
                 }
             }
+            }
 
-            Section {
-                nutritionRow(String(localized: "Calorie goal"), value: calorieGoalText)
-                nutritionRow(String(localized: "Carbs"), value: macroText(environment.profile.settings?.macroGoals?.carbs))
-                nutritionRow(String(localized: "Protein"), value: macroText(environment.profile.settings?.macroGoals?.protein))
-                nutritionRow(String(localized: "Fat"), value: macroText(environment.profile.settings?.macroGoals?.fat))
-                ForEach(environment.dayLog.latestWindows.sorted { $0.mealType.rawValue < $1.mealType.rawValue }, id: \.mealType) { window in
-                    nutritionRow(window.mealType.displayName, value: window.displayText)
-                }
-            } header: {
-                Text("Nutrition plan")
-            } footer: {
-                if environment.profile.settingsFailed {
-                    Text("Couldn't load from Garmin.")
-                } else {
-                    Text("Set in Garmin Connect. GarminFood only displays it.")
-                }
+            // add-standalone-mode 5.4: where the food log lives, and the
+            // mode switch. Replaces the Garmin account section in
+            // standalone mode. Belongs in Settings -> Data once
+            // add-data-safety's DataSettingsView lands (PR #87).
+            DataModeSection()
+
+            // add-standalone-mode 4.3: standalone's plan is the local,
+            // editable goal; Garmin mode keeps Garmin's read-only plan.
+            if isStandalone {
+                LocalNutritionPlanSection()
+            } else {
+                garminNutritionPlan
             }
 
             // sync-weight-hydration-with-garmin 3.5 (GoalsSettingsSection.swift).
             GoalsSettingsSection()
 
             Section {
+                if !isStandalone {
                 NavigationLink {
                     SyncQueueView()
                 } label: {
@@ -108,6 +113,7 @@ struct SettingsView: View {
                                 .background(Theme.warning, in: Capsule())
                         }
                     }
+                }
                 }
                 NavigationLink {
                     NotificationSettingsView()
@@ -132,7 +138,9 @@ struct SettingsView: View {
             Section("Preferences") {
                 Toggle("Haptic feedback", isOn: $preferences.hapticsEnabled)
                 Toggle("Celebration animations", isOn: $preferences.celebrationsEnabled)
-                Toggle("Default meal from Garmin's schedule", isOn: $preferences.useGarminMealWindows)
+                if !isStandalone {
+                    Toggle("Default meal from Garmin's schedule", isOn: $preferences.useGarminMealWindows)
+                }
                 Toggle("Search Czech foods only", isOn: $preferences.czechOnlySearch)
             }
             .onChange(of: preferences.hapticsEnabled) {
@@ -163,7 +171,11 @@ struct SettingsView: View {
             } header: {
                 Text("About")
             } footer: {
-                Text("GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                if isStandalone {
+                    Text("GarminFood logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                } else {
+                    Text("GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                }
             }
         }
         .navigationTitle("Settings")
@@ -181,6 +193,27 @@ struct SettingsView: View {
             }
         } message: {
             Text("Entries waiting to sync stay queued and send once you sign in again.")
+        }
+    }
+
+    /// Garmin's nutrition plan, read-only (Garmin mode only).
+    private var garminNutritionPlan: some View {
+        Section {
+            nutritionRow(String(localized: "Calorie goal"), value: calorieGoalText)
+            nutritionRow(String(localized: "Carbs"), value: macroText(environment.profile.settings?.macroGoals?.carbs))
+            nutritionRow(String(localized: "Protein"), value: macroText(environment.profile.settings?.macroGoals?.protein))
+            nutritionRow(String(localized: "Fat"), value: macroText(environment.profile.settings?.macroGoals?.fat))
+            ForEach(environment.dayLog.latestWindows.sorted { $0.mealType.rawValue < $1.mealType.rawValue }, id: \.mealType) { window in
+                nutritionRow(window.mealType.displayName, value: window.displayText)
+            }
+        } header: {
+            Text("Nutrition plan")
+        } footer: {
+            if environment.profile.settingsFailed {
+                Text("Couldn't load from Garmin.")
+            } else {
+                Text("Set in Garmin Connect. GarminFood only displays it.")
+            }
         }
     }
 

@@ -18,6 +18,9 @@
 // Reads `environment.weightLoader` rather than talking to any store
 // directly -- keeps this file, like every other screen in `GarminFood/`,
 // thin: no domain logic here beyond simple view-state.
+//
+// add-standalone-mode 4.4: in standalone mode the texts say the weigh-ins
+// stay on this phone, and nothing mentions Garmin.
 
 import SwiftUI
 import FoodLogCore
@@ -34,6 +37,7 @@ struct WeightView: View {
     var body: some View {
         let loader = environment.weightLoader
         let rows = loader.rows
+        let isStandalone = environment.dataMode == .standalone
 
         List {
             Section {
@@ -41,7 +45,8 @@ struct WeightView: View {
                     latest: loader.latest,
                     previous: loader.previous,
                     progress: loader.progress,
-                    refreshFailed: loader.lastGarminRefreshFailed
+                    refreshFailed: loader.lastGarminRefreshFailed,
+                    isStandalone: isStandalone
                 )
             }
 
@@ -58,7 +63,9 @@ struct WeightView: View {
                     EmptyStateView(
                         systemImage: "scalemass",
                         title: "No weigh-ins yet",
-                        message: "Tap + to log your weight. It's saved on this phone right away and synced to Garmin in the background. Weigh-ins from a Garmin scale or Garmin Connect show up here too."
+                        message: isStandalone
+                            ? "Tap + to log your weight. It's saved on this phone."
+                            : "Tap + to log your weight. It's saved on this phone right away and synced to Garmin in the background. Weigh-ins from a Garmin scale or Garmin Connect show up here too."
                     )
                 } else {
                     ForEach(rows) { row in
@@ -73,7 +80,11 @@ struct WeightView: View {
                 Text("History")
             } footer: {
                 if !rows.isEmpty {
-                    Text("Your Garmin weigh-ins, plus any logged here that haven't synced yet. Deleting one here deletes it in Garmin too.")
+                    if isStandalone {
+                        Text("Your weigh-ins, kept on this phone.")
+                    } else {
+                        Text("Your Garmin weigh-ins, plus any logged here that haven't synced yet. Deleting one here deletes it in Garmin too.")
+                    }
                 }
             }
         }
@@ -134,6 +145,9 @@ struct WeightView: View {
     }
 
     private func deleteMessage(for row: WeighInDisplayEntry) -> String {
+        if environment.dataMode == .standalone {
+            return String(localized: "It's removed from this phone.")
+        }
         if row.isFromGarmin {
             return String(localized: "Deletes it from Garmin Connect too. If you're offline, it's deleted there once you're back online.")
         }

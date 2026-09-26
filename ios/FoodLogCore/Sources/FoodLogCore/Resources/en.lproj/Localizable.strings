@@ -515,3 +515,11 @@
 
 /* Supplement restock reminder body when nothing is left. */
 "It has run out. Time to restock." = "It has run out. Time to restock.";
+
+/* ---- add-standalone-mode waves 4-7 ---- */
+
+/* Error when saving a nutrition goal on the phone (standalone mode) with an invalid number. */
+"Enter a calorie target above zero." = "Enter a calorie target above zero.";
+
+/* Name of a food entry kept on the phone whose food details are unknown (switching from Garmin to standalone mode). */
+"Unknown food" = "Unknown food";

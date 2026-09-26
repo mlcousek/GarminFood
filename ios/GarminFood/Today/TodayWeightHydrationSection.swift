@@ -48,13 +48,14 @@ struct TodayWeightCard: View {
     let previous: WeighInDisplayEntry?
     var progress: WeightGoalProgress? = nil
     var refreshFailed: Bool = false
+    var isStandalone: Bool = false
 
     var body: some View {
         NavigationLink {
             WeightView()
         } label: {
             HStack {
-                WeightHeroCard(latest: latest, previous: previous, progress: progress, refreshFailed: refreshFailed)
+                WeightHeroCard(latest: latest, previous: previous, progress: progress, refreshFailed: refreshFailed, isStandalone: isStandalone)
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)

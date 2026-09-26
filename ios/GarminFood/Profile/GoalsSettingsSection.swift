@@ -11,6 +11,11 @@
 // Its own Section view, embedded in SettingsView with one line, like
 // FastingSettingsSection. Reads the effective values from the loaders so
 // what's shown here is exactly what the cards use.
+//
+// add-standalone-mode 5.2 / D6: in standalone mode there is no Garmin goal,
+// so the "Use Garmin's goal" toggles are hidden and the goals are simply
+// yours: water (default 2000 ml) and an optional weight target whose start
+// defaults to your first weigh-in (`standaloneSection`).
 
 import SwiftUI
 import FoodLogCore
@@ -20,11 +25,62 @@ struct GoalsSettingsSection: View {
     @Environment(AppEnvironment.self) private var environment
 
     var body: some View {
+        if environment.dataMode == .standalone {
+            standaloneSection
+        } else {
+            garminSection
+        }
+    }
+
+    /// Standalone mode: your own goals only, no Garmin wording.
+    private var standaloneSection: some View {
         let preferences = environment.preferences
         let water = environment.hydrationLoader
         let weight = environment.weightLoader
 
-        Section {
+        return Section {
+            Stepper(value: Binding(
+                get: { preferences.waterGoalOverrideML ?? water.goalML },
+                set: { preferences.waterGoalOverrideML = $0 }
+            ), in: 500...6000, step: 100) {
+                Text("Water goal: \((preferences.waterGoalOverrideML ?? water.goalML).wholeNumberText) ml")
+            }
+
+            if preferences.weightGoalOverrideKg == nil {
+                Button(String(localized: "Set a weight goal")) {
+                    preferences.weightGoalOverrideKg = weight.latest?.weightKg.roundedToHalf ?? 70
+                }
+            } else {
+                Stepper(value: Binding(
+                    get: { preferences.weightGoalOverrideKg ?? 70 },
+                    set: { preferences.weightGoalOverrideKg = $0 }
+                ), in: 30...250, step: 0.5) {
+                    Text("Target: \((preferences.weightGoalOverrideKg ?? 70).formattedKg) kg")
+                }
+                Stepper(value: Binding(
+                    get: { preferences.weightGoalStartKg ?? weight.goal?.startKg ?? weight.latest?.weightKg.roundedToHalf ?? 80 },
+                    set: { preferences.weightGoalStartKg = $0 }
+                ), in: 30...250, step: 0.5) {
+                    Text("Starting weight: \((preferences.weightGoalStartKg ?? weight.goal?.startKg ?? weight.latest?.weightKg.roundedToHalf ?? 80).formattedKg) kg")
+                }
+                Button(String(localized: "Remove weight goal"), role: .destructive) {
+                    preferences.weightGoalOverrideKg = nil
+                    preferences.weightGoalStartKg = nil
+                }
+            }
+        } header: {
+            Text("Goals")
+        } footer: {
+            Text("Your goals stay on this phone.")
+        }
+    }
+
+    private var garminSection: some View {
+        let preferences = environment.preferences
+        let water = environment.hydrationLoader
+        let weight = environment.weightLoader
+
+        return Section {
             // Water
             HStack {
                 Text("Water goal")

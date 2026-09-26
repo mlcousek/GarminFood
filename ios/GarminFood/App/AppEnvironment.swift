@@ -16,6 +16,7 @@ import Observation
 import GarminKit
 import FoodLogCore
 import Gamification
+import AppearanceKit
 
 @MainActor
 @Observable
@@ -60,6 +61,11 @@ final class AppEnvironment {
     let offlineIndex: OfflineFoodIndexHolder
     let offlineIndexLoader: OfflineIndexLoader
     let logEntryCoordinator: ModeRoutingFoodLogging
+    /// add-standalone-mode D6: standalone mode's goal history
+    /// (`AppServices.localGoalStore`) and the goal in effect today, for
+    /// Settings' editable Nutrition plan. Unused in Garmin mode.
+    let localGoalStore: LocalGoalStore
+    private(set) var currentLocalGoal: LocalNutritionGoals?
     /// add-weight-tracking: mirrors `outbox`/`logEntryCoordinator` above,
     /// plus a loader (`weightLoader`) since, unlike the food dashboard,
     /// there's no existing `dayLog`-shaped object weight can piggyback on.
@@ -112,6 +118,12 @@ final class AppEnvironment {
     /// `true` while a drain is in flight, purely for a subtle "syncing"
     /// indicator. Never gates a user action.
     private(set) var isDraining = false
+
+    /// add-standalone-mode D10 (task 5.1): a fresh install (no mode stored,
+    /// no Garmin token, no local history -- `DataModeMigration`) waiting for
+    /// the user to choose a mode. Set only by `classifyDataModeIfNeeded`;
+    /// an existing install (the owner's phone) never sees onboarding.
+    private(set) var needsOnboarding = false
 
     /// Why a queued entry did not reach Garmin, when that is not an auth
     /// problem (auth has its own loud banner, per design.md D7). Garmin's
@@ -178,6 +190,7 @@ final class AppEnvironment {
         self.offlineIndex = services.offlineIndex
         self.offlineIndexLoader = OfflineIndexLoader(store: services.offlineIndexStore, preferences: preferences)
         self.logEntryCoordinator = services.logEntryCoordinator
+        self.localGoalStore = services.localGoalStore
         self.weightOutbox = services.weightOutbox
         self.weightLogCoordinator = services.weightLogCoordinator
         self.weightLoader = WeightLoader(store: services.weightStore, outbox: services.weightOutbox, cache: services.garminHealthCache, preferences: preferences)
@@ -219,11 +232,14 @@ final class AppEnvironment {
         )
         self.preferences = preferences
         self.themeStore = ThemeStore()
-        self.layoutStore = LayoutStore()
+        let layoutStore = LayoutStore()
+        self.layoutStore = layoutStore
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
-        self.router = AppRouter()
+        // add-themes-and-layout 4.3: open on the user's start tab; links and
+        // widget routes arriving after launch still override it.
+        self.router = AppRouter(startTab: layoutStore.config.resolvedStartTab)
         self.supplementPlanStore = services.supplementPlanStore
         self.supplementIntakeStore = services.supplementIntakeStore
         self.supplementLimitsStore = services.supplementLimitsStore
@@ -241,25 +257,54 @@ final class AppEnvironment {
         Task { await offlineIndexLoader.loadAndCheckIfDue() }
         await classifyDataModeIfNeeded()
         await migrateLegacyFastingIfNeeded()
-        await authState.refresh()
+        // add-standalone-mode 5.3: which Garmin work this foreground may do
+        // (`GarminSyncPlan`): all of it in Garmin mode, exactly as before;
+        // none in standalone mode, nor while a fresh install is still in
+        // onboarding (no mode chosen yet).
+        let plan = currentSyncPlan
+        if plan.allows(.authRefresh) {
+            await authState.refresh()
+        }
         await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)
         lastForegroundDay = Date()
-        await drainAndReconcile()
+        if plan.allows(.drainAndReconcile) {
+            await drainAndReconcile()
+        }
+        await reloadLocalGoal()
         // After the drain, so anything just delivered is already in the
         // numbers shown. The rest are independent reads.
         async let day: Void = dayLog.refresh()
         async let gamification: Void = gamificationEngine.refresh()
         async let goals: Void = gamificationEngine.refreshGoalStatus()
-        async let garminProfile: Void = profile.refresh()
+        async let garminProfile: Void = refreshProfile(if: plan)
         // Weight + water: Garmin is the source of truth
         // (sync-weight-hydration-with-garmin); this reads Garmin into the
-        // cache and then reloads both loaders from it.
+        // cache and then reloads both loaders from it. In standalone mode it
+        // only reloads the loaders from this phone's stores.
         async let weightAndWater: Void = refreshGarminHealth()
-        async let signalReads: Void = refreshGamificationSignals()
+        async let signalReads: Void = refreshGamificationSignals(if: plan)
         _ = await (day, gamification, goals, garminProfile, weightAndWater, signalReads)
         await syncNotifications()
         // Low priority and never awaited by anything the user sees.
-        Task(priority: .background) { await self.backfillUsageMealsIfNeeded() }
+        if plan.allows(.usageMealBackfill) {
+            Task(priority: .background) { await self.backfillUsageMealsIfNeeded() }
+        }
+    }
+
+    private func refreshProfile(if plan: GarminSyncPlan) async {
+        guard plan.allows(.profileRefresh) else { return }
+        await profile.refresh()
+    }
+
+    private func refreshGamificationSignals(if plan: GarminSyncPlan) async {
+        guard plan.allows(.gamificationSignalReads) else { return }
+        await refreshGamificationSignals()
+    }
+
+    /// The Garmin work allowed right now (add-standalone-mode 5.3). A fresh
+    /// install still choosing its mode in onboarding does no Garmin work.
+    var currentSyncPlan: GarminSyncPlan {
+        needsOnboarding ? GarminSyncPlan.for(.standalone) : GarminSyncPlan.for(dataMode)
     }
 
     /// The calendar day changed while the app stayed open (midnight, or a
@@ -345,6 +390,14 @@ final class AppEnvironment {
     /// started before the POST landed can't contain it, so the follow-up
     /// read must still happen.
     func refreshGarminHealth(force: Bool = false) async {
+        // add-standalone-mode D7: no Garmin reads in standalone mode; the
+        // loaders render this phone's own entries.
+        if !currentSyncPlan.allows(.healthRefresh) {
+            async let weight: Void = weightLoader.refresh()
+            async let hydration: Void = hydrationLoader.refresh()
+            _ = await (weight, hydration)
+            return
+        }
         guard !isRefreshingGarminHealth else {
             garminHealthRefreshQueued = true
             garminHealthRefreshQueuedForce = garminHealthRefreshQueuedForce || force
@@ -504,6 +557,13 @@ final class AppEnvironment {
     }
 
     func drainAndReconcile() async {
+        // add-standalone-mode D7/D10: nothing is ever delivered in
+        // standalone mode -- no outbox drain, no reconciliation, no Garmin
+        // call. The day is re-read from the local log instead.
+        if !currentSyncPlan.allows(.drainAndReconcile) {
+            await dayLog.rebuild()
+            return
+        }
         guard !isDraining else { return }
         isDraining = true
         defer { isDraining = false }
@@ -718,6 +778,13 @@ final class AppEnvironment {
     // MARK: - Lifecycle
 
     func didEnterBackground() {
+        // add-standalone-mode 5.3: nothing to deliver in standalone mode, so
+        // no background refresh is ever scheduled (and a stale one from
+        // Garmin mode is cancelled).
+        guard currentSyncPlan.allows(.backgroundDelivery) else {
+            BackgroundRefresh.cancel()
+            return
+        }
         if undeliveredCount > 0 {
             BackgroundRefresh.schedule()
         } else {
@@ -851,7 +918,10 @@ final class AppEnvironment {
     /// next foreground rather than guessing "no token". Nothing reads the
     /// mode to change behaviour in wave 1.
     func classifyDataModeIfNeeded() async {
-        guard preferences.dataMode == nil else { return }
+        guard preferences.dataMode == nil else {
+            needsOnboarding = false
+            return
+        }
         let hasGarminToken: Bool
         do {
             hasGarminToken = try await TokenProvider.shared.loadOAuth1Token() != nil
@@ -872,9 +942,116 @@ final class AppEnvironment {
             storedMode: nil,
             hasGarminToken: hasGarminToken,
             hasLocalHistory: hasLocalHistory
-        ) else { return }
+        ) else {
+            // A fresh install: onboarding asks (task 5.1).
+            needsOnboarding = true
+            return
+        }
         preferences.dataMode = decided
         DiagnosticsLog.log(.info, category: "DataMode", "Classified as \(decided.rawValue) (token: \(hasGarminToken), local history: \(hasLocalHistory)).")
+    }
+
+    // MARK: - Onboarding (add-standalone-mode D10, task 5.1)
+
+    /// Onboarding's mode choice. Stored at once, so an app killed during
+    /// the remaining steps doesn't ask again; onboarding stays up until
+    /// `finishOnboarding()`.
+    func chooseDataMode(_ mode: DataMode) {
+        preferences.dataMode = mode
+        DiagnosticsLog.log(.info, category: "DataMode", "Onboarding chose \(mode.rawValue).")
+    }
+
+    /// Closes onboarding and runs the first real foreground for the chosen
+    /// mode (in Garmin mode that is today's auth refresh and drain).
+    func finishOnboarding() {
+        guard needsOnboarding else { return }
+        if preferences.dataMode == nil {
+            // Closed without a choice (can't happen from the UI): today's
+            // behaviour, Garmin-connected.
+            preferences.dataMode = .garminConnected
+        }
+        needsOnboarding = false
+        Task { await self.refreshOnForeground() }
+    }
+
+    // MARK: - Switching modes (add-standalone-mode D10, task 5.4)
+
+    enum ModeSwitchError: Error, Equatable {
+        /// A drain is sending entries right now; the mode is unchanged.
+        case syncInProgress
+    }
+
+    /// Food entries Garmin hasn't accepted yet (what "Keep on this phone"
+    /// or "Deliver first" is about). Garmin mode only.
+    var undeliveredFoodEntryCount: Int {
+        UndeliveredFoodConversion.undelivered(undeliveredEntries).count
+    }
+
+    /// Garmin -> standalone. Refused while a drain is in flight. With
+    /// `keepUndelivered`, every undelivered food entry becomes a local
+    /// entry and leaves the outbox first (`UndeliveredFoodConversion`).
+    /// The Garmin token is kept, so switching back is instant.
+    @discardableResult
+    func switchToStandalone(keepUndelivered: Bool) async throws -> UndeliveredFoodConversion.Result? {
+        guard !isDraining else { throw ModeSwitchError.syncInProgress }
+        var result: UndeliveredFoodConversion.Result?
+        if keepUndelivered {
+            let services = AppServices.shared
+            result = try await UndeliveredFoodConversion.keepOnPhone(outbox: outbox, localLog: services.localFoodLog, foodCache: foodCache)
+            DiagnosticsLog.log(.info, category: "DataMode", "Kept \(result?.kept ?? 0) undelivered entries on this phone, \(result?.leftInGarmin ?? 0) left for Garmin.")
+        }
+        preferences.dataMode = .standalone
+        DiagnosticsLog.log(.info, category: "DataMode", "Switched to standalone.")
+        await refreshQueueState()
+        BackgroundRefresh.cancel()
+        await refreshOnForeground()
+        return result
+    }
+
+    /// "Deliver first": one drain now; the caller re-checks what's left.
+    func deliverBeforeSwitching() async {
+        await drainAndReconcile()
+    }
+
+    /// Standalone -> Garmin, only once signed in (spec: "complete only after
+    /// a successful sign-in"). Re-checks the kept token first, so a phone
+    /// that was signed in before switches at once. Returns whether it
+    /// switched; `false` means the caller shows the sign-in sheet and calls
+    /// this again when it closes. The local food log stays on the phone.
+    @discardableResult
+    func switchToGarminIfSignedIn() async -> Bool {
+        await authState.refresh()
+        guard authState.state == .authenticated else { return false }
+        preferences.dataMode = .garminConnected
+        // The hidden testing toggle would keep the effective mode standalone.
+        preferences.forceStandaloneMode = false
+        DiagnosticsLog.log(.info, category: "DataMode", "Switched to Garmin-connected.")
+        await refreshOnForeground()
+        return true
+    }
+
+    // MARK: - Local goals (add-standalone-mode D6, task 4.3)
+
+    /// Re-reads the goal in effect today (a file read, no network).
+    func reloadLocalGoal(now: Date = Date()) async {
+        currentLocalGoal = await localGoalStore.goal(on: NutritionDate.string(from: now))
+    }
+
+    /// Saves new targets as a goal starting TODAY (earlier days keep theirs),
+    /// then re-reads the day so the ring and goal status follow at once.
+    /// Local writes only.
+    func saveLocalGoal(calories: Double, proteinG: Double?, carbsG: Double?, fatG: Double?, now: Date = Date()) async throws {
+        let goal = LocalNutritionGoals(
+            effectiveFrom: NutritionDate.string(from: now),
+            calories: calories,
+            proteinG: proteinG,
+            carbsG: carbsG,
+            fatG: fatG
+        )
+        try await localGoalStore.save(goal)
+        await reloadLocalGoal(now: now)
+        await dayLog.rebuild()
+        await gamificationEngine.refreshGoalStatus(for: dayLog.selectedDate)
     }
 
     // MARK: - Private

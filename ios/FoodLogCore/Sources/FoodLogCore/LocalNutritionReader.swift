@@ -29,11 +29,12 @@
 // A day is always answered with a log (never `nil`), because the local log
 // IS the system of record: an empty day really is empty, not "not loaded".
 //
-// Goals: PLACEHOLDER until wave 4 (task 4.1, `LocalGoalStore`). The reader
-// asks `goalsForDay`, which defaults to `noGoalsYet` (no targets), so a
-// standalone day shows consumed-only rings and records no goal status --
-// what Garmin mode does for an account without goals (design D11). Wave 4
-// passes the goal-store lookup here; nothing else changes.
+// Goals: the reader asks `goalsForDay`. The app passes the goal history of
+// `LocalGoalStore` (task 4.1, `init(store:goalStore:)` in
+// LocalGoalStore.swift); a day before any goal -- or when the user skipped
+// goal setup -- gets none, so it shows consumed-only rings and records no
+// goal status, what Garmin mode does for an account without goals (design
+// D11). `noGoalsYet` stays as the default for tests.
 //
 // `mealsForDate` answers the four default meals without windows, so meal
 // defaulting falls back to the clock (`MealTypeDefaulting`).
