@@ -68,6 +68,7 @@ final class StoreFixtureTests: XCTestCase {
         "fasting-sessions.json",
         "day-notes.json",
         "weight-entries.json",
+        "local-goals.json",
         "hydration-entries.json",
         "garmin-health-cache.json",
         "day-log-digests.json",
@@ -470,6 +471,33 @@ final class StoreFixtureTests: XCTestCase {
         XCTAssertEqual(all[2].text, "Grilovačka u Petra\nhodně piva")
         XCTAssertEqual(all[2].tags, [])
         XCTAssertEqual(all[2].updatedAt, iso("2026-09-21T22:40:00Z"))
+    }
+
+    // MARK: - local-goals.json (LocalGoalStore: [LocalNutritionGoals], plain JSONDecoder)
+
+    func testLocalGoalsFixtureDecodesThroughTheRealStore() async throws {
+        let copy = try copyFixture("local-goals.json")
+
+        // Oldest first, whatever order the file holds them in.
+        let history = await LocalGoalStore(fileURL: copy.file).all()
+
+        assertNotQuarantined(copy)
+        XCTAssertEqual(history.map(\.effectiveFrom), ["2026-09-01", "2026-09-15"])
+        guard history.count == 2 else { return }
+
+        // Calories only: every macro and the meal split are optional.
+        XCTAssertEqual(history[0].calories, 1800)
+        XCTAssertNil(history[0].proteinG)
+        XCTAssertNil(history[0].carbsG)
+        XCTAssertNil(history[0].fatG)
+        XCTAssertNil(history[0].mealSplit)
+
+        // Full entry, plus a key this build doesn't know (ignored).
+        XCTAssertEqual(history[1].calories, 1950)
+        XCTAssertEqual(history[1].proteinG, 120)
+        XCTAssertEqual(history[1].carbsG, 210)
+        XCTAssertEqual(history[1].fatG, 65)
+        XCTAssertEqual(history[1].mealSplit?["breakfast"], 0.3)
     }
 
     // MARK: - weight-entries.json (WeightStore: [WeightEntry], .iso8601)

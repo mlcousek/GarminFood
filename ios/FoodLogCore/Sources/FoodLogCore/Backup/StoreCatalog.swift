@@ -106,6 +106,8 @@ public enum StoreCatalog {
         StoreCatalogEntry(id: "foodlog.day-notes", location: .file("FoodLogCore/day-notes.json"), schemaVersion: 1, area: .dayNotes),
         StoreCatalogEntry(id: "foodlog.weight-entries", location: .file("FoodLogCore/weight-entries.json"), schemaVersion: 1, area: .weight),
         StoreCatalogEntry(id: "foodlog.hydration-entries", location: .file("FoodLogCore/hydration-entries.json"), schemaVersion: 1, area: .hydration),
+        // add-standalone-mode 4.1 (#90): standalone mode's goal history.
+        StoreCatalogEntry(id: "foodlog.local-goals", location: .file("FoodLogCore/local-goals.json"), schemaVersion: 1, area: .other),
         StoreCatalogEntry(id: "foodlog.day-log-digests", location: .file("FoodLogCore/day-log-digests.json"), schemaVersion: 1, area: .history),
         StoreCatalogEntry(id: "foodlog.activity-cache", location: .file("FoodLogCore/activity-cache.json"), schemaVersion: 1, area: .history),
         StoreCatalogEntry(id: "foodlog.food-provenance", location: .file("FoodLogCore/food-provenance.json"), schemaVersion: 1, area: .history),

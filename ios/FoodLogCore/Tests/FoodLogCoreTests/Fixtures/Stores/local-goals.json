@@ -1,0 +1,19 @@
+[
+  {
+    "calories" : 1950,
+    "carbsG" : 210,
+    "effectiveFrom" : "2026-09-15",
+    "fatG" : 65,
+    "mealSplit" : {
+      "breakfast" : 0.3,
+      "dinner" : 0.35,
+      "lunch" : 0.35
+    },
+    "proteinG" : 120,
+    "source" : "calculator"
+  },
+  {
+    "calories" : 1800,
+    "effectiveFrom" : "2026-09-01"
+  }
+]
