@@ -139,7 +139,7 @@ final class LayoutConfigTests: XCTestCase {
         let rows = config.resolved(.today)
         XCTAssertEqual(rows.filter(\.isVisible).map(\.id), ["daySwitcher", "summary", "meals", "logAgain", "signature"])
         XCTAssertEqual(rows.filter { !$0.isVisible }.map(\.id),
-                       ["progressStrip", "fasting", "banners", "logMeal", "weightWater", "dayNote"])
+                       ["progressStrip", "fasting", "banners", "supplements", "logMeal", "weightWater", "dayNote"])
         XCTAssertEqual(rows.first { $0.id == "summary" }?.variant, SummaryVariant.compact.rawValue)
         XCTAssertEqual(rows.first { $0.id == "meals" }?.variant, MealsVariant.collapsed.rawValue)
         XCTAssertEqual(config.appliedPreset, "minimal")
@@ -153,7 +153,7 @@ final class LayoutConfigTests: XCTestCase {
         let rows = config.resolved(.today)
         XCTAssertEqual(rows.map(\.id), [
             "daySwitcher", "summary", "progressStrip", "weightWater", "meals",
-            "fasting", "logAgain", "logMeal", "banners", "dayNote", "signature",
+            "supplements", "fasting", "logAgain", "logMeal", "banners", "dayNote", "signature",
         ])
         XCTAssertTrue(rows.allSatisfy(\.isVisible))
         XCTAssertEqual(rows.first { $0.id == "summary" }?.variant, SummaryVariant.ring.rawValue)

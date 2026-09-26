@@ -101,6 +101,9 @@ final class AppEnvironment {
     let supplementPlanStore: SupplementPlanStore
     let supplementIntakeStore: SupplementIntakeStore
     let supplementLimitsStore: SupplementLimitsStore
+    /// add-supplements wave 3: the state every supplement surface shares
+    /// (screen, Today card, Progress row), so a tick shows everywhere.
+    let supplements: SupplementsController
     /// The day shown on the Today tab, meal by meal.
     let dayLog: DayLogLoader
     let preferences: AppPreferences
@@ -243,9 +246,28 @@ final class AppEnvironment {
         self.supplementPlanStore = services.supplementPlanStore
         self.supplementIntakeStore = services.supplementIntakeStore
         self.supplementLimitsStore = services.supplementLimitsStore
+        self.supplements = SupplementsController(
+            planStore: services.supplementPlanStore,
+            intakeStore: services.supplementIntakeStore,
+            limitsStore: services.supplementLimitsStore,
+            activityCache: services.activityCacheStore,
+            dayNotes: services.dayNoteStore,
+            preferences: preferences
+        )
 
         services.logObserver = donations
         Haptics.isEnabled = preferences.hapticsEnabled
+        // A tick or a plan change re-plans the supplement reminders (a done
+        // slot's reminder is removed).
+        supplements.onDataChanged = { [weak self] in
+            await self?.syncSupplementReminders()
+        }
+        // A slot ticked from its reminder's "Taken" button while the app
+        // runs: show it, and drop that slot's other pending reminder.
+        SupplementNotificationHandler.shared.onTaken = { [weak self] in
+            await self?.supplements.reload()
+            await self?.syncSupplementReminders()
+        }
     }
 
     /// Launch and every return to the foreground.
@@ -283,7 +305,9 @@ final class AppEnvironment {
         // only reloads the loaders from this phone's stores.
         async let weightAndWater: Void = refreshGarminHealth()
         async let signalReads: Void = refreshGamificationSignals(if: plan)
-        _ = await (day, gamification, goals, garminProfile, weightAndWater, signalReads)
+        // add-supplements: local only (no Garmin), in every mode.
+        async let supplementsReload: Void = supplements.reload()
+        _ = await (day, gamification, goals, garminProfile, weightAndWater, signalReads, supplementsReload)
         await syncNotifications()
         // Low priority and never awaited by anything the user sees.
         if plan.allows(.usageMealBackfill) {
@@ -863,6 +887,22 @@ final class AppEnvironment {
             endsSoon: notificationPreferences.preferences.fastingReminder,
             startsSoon: notificationPreferences.preferences.fastingStartReminder
         )
+        await syncSupplementReminders()
+    }
+
+    /// add-supplements D5: slot reminders (re-planned and diffed, skipped
+    /// once the slot is ticked) and restock reminders (sent once per pack).
+    /// With the feature off both lists are empty, which removes every
+    /// pending supplement reminder.
+    func syncSupplementReminders() async {
+        let added = await NotificationScheduler.shared.syncSupplementReminders(
+            slots: supplements.plannedSlotReminders(),
+            restock: supplements.plannedRestockReminders(),
+            isEnabled: preferences.supplementsEnabled
+        )
+        for productId in added {
+            await supplements.markRestockReminded(productId)
+        }
     }
 
     // MARK: - Fasting (redesign-fasting-schedule)

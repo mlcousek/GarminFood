@@ -43,6 +43,10 @@ public enum TodayCardID: String, CaseIterable, Codable, Sendable {
     /// boss), above the meals as add-gamification-signals D12 places it.
     case banners
     case meals
+    /// add-supplements D4: the supplement checklist, right after the meals.
+    /// Only available while the feature is on with at least one product, so
+    /// Today looks exactly as before for anyone who never enables it.
+    case supplements
     case logAgain
     case logMeal
     case weightWater
@@ -79,6 +83,10 @@ public enum ProgressCardID: String, CaseIterable, Codable, Sendable {
     case hydration
     case trends
     case goalHistory
+    /// add-supplements D11: the entry row to the Supplements screen, last so
+    /// the existing order is unchanged; it renders nothing while the
+    /// feature is off.
+    case supplements
 }
 
 // MARK: - Variants
@@ -99,6 +107,15 @@ public enum MealsVariant: String, CaseIterable, Sendable {
     case expanded
     /// Header and macro bars only; tapping opens the meal's detail.
     case collapsed
+}
+
+/// Today's supplements card (add-supplements D4).
+public enum SupplementsVariant: String, CaseIterable, Sendable {
+    /// The current slot's checklist with "Take all" (collapses to "Stack
+    /// done").
+    case slot
+    /// All of today's slots as compact pills.
+    case day
 }
 
 /// Today's Weight & Water section.
@@ -179,6 +196,11 @@ public enum LayoutCatalog {
             id: TodayCardID.meals.rawValue,
             variants: MealsVariant.allCases.map(\.rawValue),
             defaultVariant: MealsVariant.expanded.rawValue
+        ),
+        CardSpec(
+            id: TodayCardID.supplements.rawValue,
+            variants: SupplementsVariant.allCases.map(\.rawValue),
+            defaultVariant: SupplementsVariant.slot.rawValue
         ),
         CardSpec(id: TodayCardID.logAgain.rawValue),
         CardSpec(id: TodayCardID.logMeal.rawValue),

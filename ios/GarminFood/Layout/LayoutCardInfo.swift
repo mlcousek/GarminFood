@@ -59,6 +59,11 @@ extension TodayCardID {
             return preferences.activeFastingSchedule == nil
                 ? .unavailable(String(localized: "Turn on fasting in Settings", comment: "Layout editor: why the Fasting card isn't shown."))
                 : .available
+        case .supplements:
+            // add-supplements D4. TodayView adds "at least one product".
+            return preferences.supplementsEnabled
+                ? .available
+                : .unavailable(String(localized: "Turn on supplements in Settings", comment: "Layout editor: why the Supplements card isn't shown."))
         default:
             return .available
         }
@@ -116,6 +121,12 @@ enum LayoutCardInfo {
             case .collapsed: return String(localized: "Collapsed", comment: "Layout editor: meal cards showing only header and macro bars.")
             }
         }
+        if let supplements = SupplementsVariant(rawValue: variant) {
+            switch supplements {
+            case .slot: return String(localized: "Current slot", comment: "Layout editor: Supplements card variant showing the slot due now with its checklist.")
+            case .day: return String(localized: "Whole day", comment: "Layout editor: Supplements card variant showing all of today's slots as pills.")
+            }
+        }
         if let weightWater = WeightWaterVariant(rawValue: variant) {
             switch weightWater {
             case .both: return String(localized: "Both", comment: "Layout editor: Weight & Water shows both cards.")
@@ -136,6 +147,7 @@ extension TodayCardID {
         case .fasting: return String(localized: "Fasting")
         case .banners: return String(localized: "Event banners", comment: "Layout editor row: seasonal event and weekly boss banners on Today.")
         case .meals: return String(localized: "Meals")
+        case .supplements: return String(localized: "Supplements")
         case .logAgain: return String(localized: "Log again")
         case .logMeal: return String(localized: "Log a meal")
         case .weightWater: return String(localized: "Weight & Water")
@@ -152,6 +164,7 @@ extension TodayCardID {
         case .fasting: return "moon.stars"
         case .banners: return "flag"
         case .meals: return "fork.knife"
+        case .supplements: return "pills"
         case .logAgain: return "arrow.counterclockwise"
         case .logMeal: return "takeoutbag.and.cup.and.straw"
         case .weightWater: return "scalemass"
@@ -204,6 +217,7 @@ extension ProgressCardID {
         case .hydration: return String(localized: "Hydration")
         case .trends: return String(localized: "Trends")
         case .goalHistory: return String(localized: "Goals, last 14 days")
+        case .supplements: return String(localized: "Supplements")
         }
     }
 
@@ -225,6 +239,7 @@ extension ProgressCardID {
         case .hydration: return "drop"
         case .trends: return "chart.xyaxis.line"
         case .goalHistory: return "checklist"
+        case .supplements: return "pills"
         }
     }
 }

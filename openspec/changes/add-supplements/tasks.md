@@ -25,19 +25,19 @@
 
 ## 3. Wave 3 — Screens
 
-- [ ] 3.1 Settings row "Supplements" / "Doplňky stravy" + first-enable onboarding (pick from catalog → slots and reminders).
-- [ ] 3.2 Supplements screen: Today checklist (tick, Take all, extra dose), past-day editing via date picker and adherence calendar (any day up to 365 days back), My stack, product editor (catalog / custom / ingredients / pack and price / certifications), schedule editor (slots, patterns, cycles).
-- [ ] 3.3 Totals and limits view with warnings; limit editor with default and source shown, and reset.
-- [ ] 3.4 Insights: adherence calendar and per-product 7/30-day %, stock overview, cost.
-- [ ] 3.5 Evidence card view and label score breakdown; "Verify certification" links and the manual certified badge.
-- [ ] 3.6 Today card `TodayCardID.supplements` with `slot` and `day` variants; availability = enabled and ≥ 1 product; extend the golden-order test (unchanged when disabled). Entry row on Progress.
-- [ ] 3.7 All strings en + cs (Czech plurals for doses: kapsle/kapslí), `SpokenUnits` for VoiceOver, locale decimals, Dynamic Type, Reduce Motion, theme tokens only. Glossary additions (design D12).
+- [x] 3.1 Settings row "Supplements" / "Doplňky stravy" + first-enable onboarding (pick from catalog → slots and reminders).
+- [x] 3.2 Supplements screen: Today checklist (tick, Take all, extra dose), past-day editing via date picker and adherence calendar (any day up to 365 days back), My stack, product editor (catalog / custom / ingredients / pack and price / certifications), schedule editor (slots, patterns, cycles).
+- [x] 3.3 Totals and limits view with warnings; limit editor with default and source shown, and reset.
+- [x] 3.4 Insights: adherence calendar and per-product 7/30-day %, stock overview, cost.
+- [x] 3.5 Evidence card view and label score breakdown; "Verify certification" links and the manual certified badge. *Links go only to each certifier's public search page (no query URLs) until 5.4 records their terms.*
+- [x] 3.6 Today card `TodayCardID.supplements` with `slot` and `day` variants; availability = enabled and ≥ 1 product; extend the golden-order test (unchanged when disabled). Entry row on Progress.
+- [x] 3.7 All strings en + cs (Czech plurals for doses: kapsle/kapslí), `SpokenUnits` for VoiceOver, locale decimals, Dynamic Type, Reduce Motion, theme tokens only. Glossary additions (design D12).
 
 ## 4. Wave 4 — Reminders
 
-- [ ] 4.1 `NotificationPlanning`: `.supplementSlot` (skipped once the slot is done) and `.supplementRestock` kinds, en + cs texts. Tests through the pure planner and the title/body diff.
-- [ ] 4.2 Notification category with a "Taken" action; the delegate writes the slot's intake records in the background (idempotent); on a store error, open the app on the slot and log to `DiagnosticsLog`.
-- [ ] 4.3 Disabling the feature removes pending supplement reminders (scheduler diff). Test through the planner.
+- [x] 4.1 `NotificationPlanning`: `.supplementSlot` (skipped once the slot is done) and `.supplementRestock` kinds, en + cs texts. Tests through the pure planner and the title/body diff.
+- [x] 4.2 Notification category with a "Taken" action; the delegate writes the slot's intake records in the background (idempotent); on a store error, open the app on the slot and log to `DiagnosticsLog`. *On a store error it logs to DiagnosticsLog and posts a follow-up notification asking to open the app (a background action can't bring the app forward itself). Restock reminders are add-only (once per pack), so the diff can't cancel one before it fires.*
+- [x] 4.3 Disabling the feature removes pending supplement reminders (scheduler diff). Test through the planner.
 
 ## 5. Wave 5 — Barcode prefill
 

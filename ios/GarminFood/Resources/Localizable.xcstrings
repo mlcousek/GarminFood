@@ -11592,6 +11592,1830 @@
           }
         }
       }
+    },
+    "Taken": {
+      "comment": "Supplements: an item or slot was taken; also the reminder's action button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vzato"
+          }
+        }
+      }
+    },
+    "Not taken": {
+      "comment": "Supplements: an item or day not taken yet (VoiceOver value, day status).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nevzato"
+          }
+        }
+      }
+    },
+    "Take all": {
+      "comment": "Supplements: tick every item of the slot.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vzít vše"
+          }
+        }
+      }
+    },
+    "Takes everything in this slot": {
+      "comment": "VoiceOver hint on a Today supplements pill.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odškrtne vše v tomto čase"
+          }
+        }
+      }
+    },
+    "Log": {
+      "comment": "Extra dose sheet: confirm button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat"
+          }
+        }
+      }
+    },
+    "Supplement": {
+      "comment": "Extra dose sheet: product picker label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doplněk"
+          }
+        }
+      }
+    },
+    "Extra dose": {
+      "comment": "Extra dose sheet: title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávka navíc"
+          }
+        }
+      }
+    },
+    "Extra doses": {
+      "comment": "Supplements screen: section header for off-plan doses.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávky navíc"
+          }
+        }
+      }
+    },
+    "Log an extra dose": {
+      "comment": "Supplements screen: button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat dávku navíc"
+          }
+        }
+      }
+    },
+    "You can still log it. This is information, not medical advice.": {
+      "comment": "Extra dose sheet: under the over-limit notice.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat ji můžeš i tak. Je to informace, ne lékařská rada."
+          }
+        }
+      }
+    },
+    "Removed product": {
+      "comment": "Supplements: a tick whose product was deleted.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstraněný doplněk"
+          }
+        }
+      }
+    },
+    "Supplements": {
+      "comment": "Supplements feature name (Settings row, screen title, Today card, layout editor).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doplňky stravy"
+          }
+        }
+      }
+    },
+    "Open supplements": {
+      "comment": "Settings: opens the Supplements screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevřít doplňky"
+          }
+        }
+      }
+    },
+    "Opens your supplements": {
+      "comment": "VoiceOver hint on the Today card and Progress row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře tvoje doplňky"
+          }
+        }
+      }
+    },
+    "Nothing planned today.": {
+      "comment": "Today supplements card: nothing due today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na dnešek nic naplánovaného."
+          }
+        }
+      }
+    },
+    "Nothing planned for this day.": {
+      "comment": "Supplements screen: the selected day has no planned items.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na tento den nic naplánovaného."
+          }
+        }
+      }
+    },
+    "Stack done": {
+      "comment": "Supplements: every planned item of the day was taken.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vše vzato"
+          }
+        }
+      }
+    },
+    "Partly done": {
+      "comment": "Supplements: some planned items of the day were taken.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zčásti"
+          }
+        }
+      }
+    },
+    "Nothing planned": {
+      "comment": "Supplements: no item was planned that day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic naplánováno"
+          }
+        }
+      }
+    },
+    "Over your limits": {
+      "comment": "Supplements screen: section header for limit warnings.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nad tvými limity"
+          }
+        }
+      }
+    },
+    "Ticks on past days count for your streak and history. After 7 days they no longer earn XP.": {
+      "comment": "Supplements screen: footer when a past day is selected (design D14).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odškrtnutí u minulých dnů se počítá do série i historie. Po 7 dnech už ale nepřidá XP."
+          }
+        }
+      }
+    },
+    "Add your first supplement": {
+      "comment": "Supplements screen: empty state button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidej první doplněk"
+          }
+        }
+      }
+    },
+    "%@ today, above your limit of %@.": {
+      "comment": "Supplements warning: a day's total over the upper limit. First %@ = the total, second = the limit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ dnes, nad tvým limitem %2$@."
+          }
+        }
+      }
+    },
+    "%@ in one dose, above %@ per dose.": {
+      "comment": "Supplements warning: a single dose over the per-dose limit (caffeine).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ v jedné dávce, nad limitem %2$@ na dávku."
+          }
+        }
+      }
+    },
+    "Yesterday": {
+      "comment": "A day title: yesterday.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Včera"
+          }
+        }
+      }
+    },
+    "My stack": {
+      "comment": "Supplements: the products currently planned.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moje doplňky"
+          }
+        }
+      }
+    },
+    "Nothing in your stack yet.": {
+      "comment": "My stack: empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím tu nejsou žádné doplňky."
+          }
+        }
+      }
+    },
+    "Not taking now": {
+      "comment": "My stack: products no longer planned.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teď neužívám"
+          }
+        }
+      }
+    },
+    "Their history stays. Open one to plan it again.": {
+      "comment": "My stack: footer under products no longer planned.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jejich historie zůstává. Otevři některý a naplánuj ho znovu."
+          }
+        }
+      }
+    },
+    "Stop taking": {
+      "comment": "My stack: swipe action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přestat brát"
+          }
+        }
+      }
+    },
+    "Add from the catalog": {
+      "comment": "My stack: add a built-in product.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat z katalogu"
+          }
+        }
+      }
+    },
+    "Add your own": {
+      "comment": "My stack: add a custom product.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat vlastní"
+          }
+        }
+      }
+    },
+    "Catalog": {
+      "comment": "Supplements: built-in product list title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katalog"
+          }
+        }
+      }
+    },
+    "Delete this supplement and its history?": {
+      "comment": "Confirming deleting a supplement product.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat tento doplněk i s historií?"
+          }
+        }
+      }
+    },
+    "Ticks you already logged stay in your history, but they'll show as a removed product.": {
+      "comment": "Confirming deleting a supplement product.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Už zapsaná odškrtnutí v historii zůstanou, ale ukážou se jako odstraněný doplněk."
+          }
+        }
+      }
+    },
+    "Edit supplement": {
+      "comment": "Supplement editor title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit doplněk"
+          }
+        }
+      }
+    },
+    "New supplement": {
+      "comment": "Supplement editor title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nový doplněk"
+          }
+        }
+      }
+    },
+    "Planned": {
+      "comment": "Supplement editor: whether the product is in the plan from today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naplánováno"
+          }
+        }
+      }
+    },
+    "Turn off to stop taking it from today. Past days keep their plan.": {
+      "comment": "Supplement editor: the Planned toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vypni, pokud ho od dneška přestáváš brát. Minulé dny si plán nechají."
+          }
+        }
+      }
+    },
+    "Label": {
+      "comment": "Supplement editor: section header for the product label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etiketa"
+          }
+        }
+      }
+    },
+    "Brand": {
+      "comment": "Supplement editor field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Značka"
+          }
+        }
+      }
+    },
+    "Form": {
+      "comment": "Supplement editor field: capsule, tablet... Also the magnesium salt.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forma"
+          }
+        }
+      }
+    },
+    "Serving (e.g. 2 capsules)": {
+      "comment": "Supplement editor field placeholder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávka (např. 2 kapsle)"
+          }
+        }
+      }
+    },
+    "Capsule": {
+      "comment": "Supplement form.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapsle"
+          }
+        }
+      }
+    },
+    "Tablet": {
+      "comment": "Supplement form.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tableta"
+          }
+        }
+      }
+    },
+    "Powder": {
+      "comment": "Supplement form.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prášek"
+          }
+        }
+      }
+    },
+    "Liquid": {
+      "comment": "Supplement form.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekutina"
+          }
+        }
+      }
+    },
+    "Gummy": {
+      "comment": "Supplement form: a gummy.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Želé bonbon"
+          }
+        }
+      }
+    },
+    "Per serving": {
+      "comment": "Supplement editor: section header for ingredient amounts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V jedné dávce"
+          }
+        }
+      }
+    },
+    "Copy the amounts from your label. They drive the totals, limits and label score.": {
+      "comment": "Supplement editor: footer under the ingredient rows.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opiš množství z etikety. Počítají se z nich součty, limity i hodnocení etikety."
+          }
+        }
+      }
+    },
+    "Ingredient": {
+      "comment": "Supplement editor: ingredient picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Složka"
+          }
+        }
+      }
+    },
+    "Unit": {
+      "comment": "Supplement editor: unit picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jednotka"
+          }
+        }
+      }
+    },
+    "Not stated": {
+      "comment": "Supplement editor: magnesium form not stated on the label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neuvedeno"
+          }
+        }
+      }
+    },
+    "Pack and stock": {
+      "comment": "Supplement editor: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balení a zásoba"
+          }
+        }
+      }
+    },
+    "Servings per pack": {
+      "comment": "Supplement editor field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávek v balení"
+          }
+        }
+      }
+    },
+    "Price per pack": {
+      "comment": "Supplement editor field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena za balení"
+          }
+        }
+      }
+    },
+    "Servings left now": {
+      "comment": "Supplement editor field: current stock.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávek teď zbývá"
+          }
+        }
+      }
+    },
+    "With stock set, GarminFood counts it down as you tick and reminds you a week before it runs out.": {
+      "comment": "Supplement editor: footer under pack and stock.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S nastavenou zásobou ji GarminFood při odškrtávání odečítá a týden předem připomene, že dochází."
+          }
+        }
+      }
+    },
+    "Certification you checked": {
+      "comment": "Supplement editor: section header for manual certification badges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Certifikace ověřená tebou"
+          }
+        }
+      }
+    },
+    "Certification is per batch. Tick one only after finding your product on the certifier's own site (Evidence › Verify certification).": {
+      "comment": "Supplement editor: footer under the manual certification toggles.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Certifikace platí pro konkrétní šarži. Zaškrtni ji, až svůj produkt najdeš přímo na webu certifikátora (Důkazy › Ověřit certifikaci)."
+          }
+        }
+      }
+    },
+    "Notes": {
+      "comment": "Supplement editor field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poznámky"
+          }
+        }
+      }
+    },
+    "Days": {
+      "comment": "Supplement schedule: which days picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dny"
+          }
+        }
+      }
+    },
+    "Servings each time": {
+      "comment": "Supplement schedule: servings per slot.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávek pokaždé"
+          }
+        }
+      }
+    },
+    "Loading servings": {
+      "comment": "Supplement schedule: servings during the loading phase.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávek v nasycovací fázi"
+          }
+        }
+      }
+    },
+    "Then, servings each time": {
+      "comment": "Supplement schedule: maintenance servings after loading.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potom dávek pokaždé"
+          }
+        }
+      }
+    },
+    "Every day": {
+      "comment": "Supplement schedule pattern.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každý den"
+          }
+        }
+      }
+    },
+    "Every few days": {
+      "comment": "Supplement schedule pattern: every N days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jednou za pár dní"
+          }
+        }
+      }
+    },
+    "On chosen weekdays": {
+      "comment": "Supplement schedule pattern.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ve vybrané dny v týdnu"
+          }
+        }
+      }
+    },
+    "On training days": {
+      "comment": "Supplement schedule pattern.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V tréninkové dny"
+          }
+        }
+      }
+    },
+    "Loading, then maintenance": {
+      "comment": "Supplement schedule pattern: a loading phase then a maintenance dose.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasycení, pak udržování"
+          }
+        }
+      }
+    },
+    "On/off cycle": {
+      "comment": "Supplement schedule pattern: on and off phases that repeat.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cyklus brát/pauza"
+          }
+        }
+      }
+    },
+    "Every %lld days": {
+      "comment": "Supplement schedule: taken every N days. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Každý %lld. den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Každé %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Každých %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Každých %lld dní"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Every %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Every %lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Loading for %lld days": {
+      "comment": "Supplement schedule: length of the loading phase. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Nasycení %lld den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Nasycení %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Nasycení %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Nasycení %lld dní"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Loading for %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Loading for %lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld days on": {
+      "comment": "Supplement schedule: on-phase length of an on/off cycle. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Brát %lld den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Brát %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Brát %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Brát %lld dní"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day on"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days on"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld days off": {
+      "comment": "Supplement schedule: off-phase length of an on/off cycle. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Pauza %lld den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Pauza %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Pauza %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Pauza %lld dní"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day off"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days off"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Days with an activity in Garmin, or a day note tagged race.": {
+      "comment": "Supplement schedule footer: what counts as a training day in Garmin mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dny s aktivitou v Garminu nebo s poznámkou označenou jako závod."
+          }
+        }
+      }
+    },
+    "Without Garmin, a training day is a day note tagged race.": {
+      "comment": "Supplement schedule footer: what counts as a training day in standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez Garminu je tréninkový den ten s poznámkou označenou jako závod."
+          }
+        }
+      }
+    },
+    "Counts from the day you save it. Changes apply from today; past days keep their plan.": {
+      "comment": "Supplement schedule footer for patterns anchored to a start day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počítá se ode dne uložení. Změny platí od dneška, minulé dny si plán nechají."
+          }
+        }
+      }
+    },
+    "Totals and limits": {
+      "comment": "Supplements: totals and limits screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Součty a limity"
+          }
+        }
+      }
+    },
+    "Nothing taken on this day yet.": {
+      "comment": "Totals: empty day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento den zatím nic vzato."
+          }
+        }
+      }
+    },
+    "Some amounts use a unit that can't be added up here (for example IU for something other than vitamin D), so they're left out.": {
+      "comment": "Totals footer: ingredients whose units couldn't be converted.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některá množství mají jednotku, kterou tu nejde sečíst (třeba IU u něčeho jiného než vitaminu D), a tak jsou vynechaná."
+          }
+        }
+      }
+    },
+    "Your limits": {
+      "comment": "Totals: section header for per-ingredient limits.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje limity"
+          }
+        }
+      }
+    },
+    "Limit %@": {
+      "comment": "Totals row: the upper limit in use. %@ = amount with unit.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limit %@"
+          }
+        }
+      }
+    },
+    "Your own limit": {
+      "comment": "VoiceOver: the limit was set by the user.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvůj vlastní limit"
+          }
+        }
+      }
+    },
+    "Daily target": {
+      "comment": "Limit editor field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denní cíl"
+          }
+        }
+      }
+    },
+    "Upper limit": {
+      "comment": "Limit editor field and evidence card section.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horní limit"
+          }
+        }
+      }
+    },
+    "Endurance athletes often use more sodium or magnesium. Discuss your own limits with a professional.": {
+      "comment": "Limit editor footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytrvalostní sportovci často potřebují víc sodíku nebo hořčíku. Vlastní limity konzultuj s odborníkem."
+          }
+        }
+      }
+    },
+    "Default and source": {
+      "comment": "Limit editor: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výchozí hodnota a zdroj"
+          }
+        }
+      }
+    },
+    "US figure": {
+      "comment": "Limit shown where the EU sets none, labelled as US.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnota v USA"
+          }
+        }
+      }
+    },
+    "Insights": {
+      "comment": "Supplements: insights screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehledy"
+          }
+        }
+      }
+    },
+    "Last 5 weeks": {
+      "comment": "Supplement insights: calendar header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posledních 5 týdnů"
+          }
+        }
+      }
+    },
+    "Tap a day to open it.": {
+      "comment": "Supplement insights: under the adherence calendar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klepnutím den otevřeš."
+          }
+        }
+      }
+    },
+    "Taken as planned": {
+      "comment": "Supplement insights: adherence section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vzato podle plánu"
+          }
+        }
+      }
+    },
+    "Whole stack": {
+      "comment": "Supplement insights: adherence of all products.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny doplňky"
+          }
+        }
+      }
+    },
+    "7 days: %@": {
+      "comment": "Supplement adherence over the last 7 days. %@ = a percentage or a dash.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 dní: %@"
+          }
+        }
+      }
+    },
+    "30 days: %@": {
+      "comment": "Supplement adherence over the last 30 days. %@ = a percentage or a dash.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 dní: %@"
+          }
+        }
+      }
+    },
+    "Stock and cost": {
+      "comment": "Supplement insights: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásoba a cena"
+          }
+        }
+      }
+    },
+    "Set a pack's size, price and what's left in My stack.": {
+      "comment": "Supplement insights: under stock and cost.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velikost balení, cenu a zbývající zásobu nastavíš v Mých doplňcích."
+          }
+        }
+      }
+    },
+    "Servings left: %@": {
+      "comment": "Supplement stock: servings remaining. %@ = a number (may be fractional, so no plural).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbývá dávek: %@"
+          }
+        }
+      }
+    },
+    "Stock not set": {
+      "comment": "Supplement insights: no stock set for the product.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zásoba nenastavena"
+          }
+        }
+      }
+    },
+    "%@ a day · %@ a month": {
+      "comment": "Supplement cost at the planned rate: per day, then per 30 days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ denně · %2$@ měsíčně"
+          }
+        }
+      }
+    },
+    "Evidence": {
+      "comment": "Supplements: evidence cards screen, and the evidence-strength row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Důkazy"
+          }
+        }
+      }
+    },
+    "Label score": {
+      "comment": "Evidence screen: section header and label score screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnocení etikety"
+          }
+        }
+      }
+    },
+    "Dose and timing": {
+      "comment": "Evidence card: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávka a načasování"
+          }
+        }
+      }
+    },
+    "Single dose": {
+      "comment": "Evidence card: per-dose limit (caffeine).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jednorázová dávka"
+          }
+        }
+      }
+    },
+    "Upper limit (adults)": {
+      "comment": "Evidence card: an EFSA/SCF tolerable upper intake level.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horní limit (dospělí)"
+          }
+        }
+      }
+    },
+    "Safe level (not a formal limit)": {
+      "comment": "Evidence card: a safe level that is not a formal UL (iron, caffeine).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezpečná úroveň (není to formální limit)"
+          }
+        }
+      }
+    },
+    "Sources": {
+      "comment": "Evidence card: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdroje"
+          }
+        }
+      }
+    },
+    "A check of the label, not a test of the product: are the amounts stated, is the dose in the range studies use, and does it leave room under your limits?": {
+      "comment": "Label score: what the number means.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrola etikety, ne test produktu: jsou uvedená množství, je dávka v rozmezí, které používají studie, a zbývá rezerva pod tvými limity?"
+          }
+        }
+      }
+    },
+    "Label transparency": {
+      "comment": "Label score part (40 points).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Průhlednost etikety"
+          }
+        }
+      }
+    },
+    "Dose against the evidence": {
+      "comment": "Label score part (40 points).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dávka podle výzkumu"
+          }
+        }
+      }
+    },
+    "Room under your limits": {
+      "comment": "Label score part (20 points).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rezerva pod limity"
+          }
+        }
+      }
+    },
+    "Verify certification": {
+      "comment": "Label score: section header for links to certifiers.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ověřit certifikaci"
+          }
+        }
+      }
+    },
+    "Opens the certifier's own search page. Certification is per batch, so look up your product there, then tick it in the product's settings.": {
+      "comment": "Label score: footer under the certification links.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře vyhledávání přímo na webu certifikátora. Certifikace platí pro šarži, takže si tam svůj produkt najdi a pak ho zaškrtni v nastavení doplňku."
+          }
+        }
+      }
+    },
+    "You checked it": {
+      "comment": "Label score: the user ticked this certification.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ověřeno tebou"
+          }
+        }
+      }
+    },
+    "No ingredients entered yet.": {
+      "comment": "Label score finding.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nejsou zadané žádné složky."
+          }
+        }
+      }
+    },
+    "Every ingredient has an amount.": {
+      "comment": "Label score finding.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každá složka má uvedené množství."
+          }
+        }
+      }
+    },
+    "%@: no amount on the label.": {
+      "comment": "Label score finding. %@ = ingredient.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: na etiketě chybí množství."
+          }
+        }
+      }
+    },
+    "%@: the form isn't stated.": {
+      "comment": "Label score finding (e.g. which magnesium salt). %@ = ingredient.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: forma není uvedená."
+          }
+        }
+      }
+    },
+    "Proprietary blend %@: amounts hidden.": {
+      "comment": "Label score finding. %@ = blend name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastní směs %@: množství neuvedena."
+          }
+        }
+      }
+    },
+    "%@: in the range studies use.": {
+      "comment": "Label score finding. %@ = ingredient.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: v rozmezí, které používají studie."
+          }
+        }
+      }
+    },
+    "%@: below the range studies use.": {
+      "comment": "Label score finding. %@ = ingredient.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: pod rozmezím, které používají studie."
+          }
+        }
+      }
+    },
+    "%@: above the range studies use.": {
+      "comment": "Label score finding. %@ = ingredient.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: nad rozmezím, které používají studie."
+          }
+        }
+      }
+    },
+    "%@: no reference range to compare with.": {
+      "comment": "Label score finding. %@ = ingredient.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: není s čím porovnat."
+          }
+        }
+      }
+    },
+    "Your planned dose stays under your limits.": {
+      "comment": "Label score finding.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plánovaná dávka zůstává pod tvými limity."
+          }
+        }
+      }
+    },
+    "%@: your planned total goes over your limit.": {
+      "comment": "Label score finding. %@ = ingredient.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: plánovaný součet překračuje tvůj limit."
+          }
+        }
+      }
+    },
+    "Reminder times": {
+      "comment": "Supplements: reminder times screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Časy připomínek"
+          }
+        }
+      }
+    },
+    "A reminder comes only if that slot isn't ticked yet, and its Taken button ticks it without opening the app.": {
+      "comment": "Supplement reminder times: footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomínka přijde, jen když ještě nemáš odškrtnuto, a tlačítkem Vzato to odškrtneš bez otevření aplikace."
+          }
+        }
+      }
+    },
+    "Track your supplement stack: a daily checklist, reminders, totals against upper limits, and stock. Stays on this phone. Turning it off keeps your data.": {
+      "comment": "Settings: explainer under the Supplements toggle.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleduj své doplňky stravy: denní seznam, připomínky, součty proti horním limitům a zásobu. Zůstává jen v telefonu. Vypnutím o data nepřijdeš."
+          }
+        }
+      }
+    },
+    "What do you take?": {
+      "comment": "Supplements onboarding: header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Co bereš?"
+          }
+        }
+      }
+    },
+    "You can change amounts and times, or add your own products, later in My stack.": {
+      "comment": "Supplements onboarding: under the catalog list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Množství a časy můžeš později změnit, nebo přidat vlastní v Mých doplňcích."
+          }
+        }
+      }
+    },
+    "Next": {
+      "comment": "Onboarding: next step button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další"
+          }
+        }
+      }
+    },
+    "Couldn't tick your supplements": {
+      "comment": "Notification after the Taken action failed (e.g. phone locked).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doplňky se nepodařilo odškrtnout"
+          }
+        }
+      }
+    },
+    "Open GarminFood to tick them.": {
+      "comment": "Notification after the Taken action failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevři GarminFood a odškrtni je tam."
+          }
+        }
+      }
+    },
+    "Turn on supplements in Settings": {
+      "comment": "Layout editor: why the Supplements card isn't shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapni doplňky stravy v Nastavení"
+          }
+        }
+      }
+    },
+    "Current slot": {
+      "comment": "Layout editor: Supplements card variant showing the slot due now with its checklist.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuální čas"
+          }
+        }
+      }
+    },
+    "Whole day": {
+      "comment": "Layout editor: Supplements card variant showing all of today's slots as pills.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celý den"
+          }
+        }
+      }
+    },
+    "Shows once you add a supplement": {
+      "comment": "Layout editor: when the Supplements card appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukáže se, až přidáš doplněk"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

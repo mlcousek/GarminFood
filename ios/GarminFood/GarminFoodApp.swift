@@ -8,9 +8,17 @@
 
 import SwiftUI
 import BackgroundTasks
+import UserNotifications
 
 @main
 struct GarminFoodApp: App {
+    init() {
+        // add-supplements D5: handles a supplement reminder's "Taken" button,
+        // even when that action launched the app in the background -- so it
+        // is set here, before launch finishes.
+        UNUserNotificationCenter.current().delegate = SupplementNotificationHandler.shared
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
