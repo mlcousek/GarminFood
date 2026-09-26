@@ -144,8 +144,26 @@ public enum XPBudget {
         ),
 
         // --- optional sources (design D4) ---
-        // add-supplements adds its line here (optional: true).
+        // add-supplements D9: supplementStackComplete (6) on 85% of days;
+        // creatine-journey milestones (journeyMilestone, 40) -- 5 in three
+        // years; 10 badges. ~5.6 XP/day before the multiplier. Every grant
+        // it makes is scaled by `optionalMultiplier` (the badge bonus too,
+        // in the app's FeatureHost), so this line never moves the curve.
+        XPBudgetLine(
+            source: SupplementsFeature.id,
+            expectedDailyXP: Double(XPAward.supplementStackComplete) * 0.85
+                + Double(XPAward.journeyMilestone) * 5 / threeYears
+                + badgeXP(10),
+            optional: true
+        ),
     ]
+
+    /// Whether `source` is an optional source (design D4): its grants --
+    /// and the host's badge bonus for its badges -- go through
+    /// `optionalGrantXP`.
+    public static func isOptional(source: String) -> Bool {
+        lines.contains { $0.source == source && $0.optional }
+    }
 
     // MARK: - Sums
 

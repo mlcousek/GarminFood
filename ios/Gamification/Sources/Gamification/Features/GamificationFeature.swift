@@ -17,7 +17,7 @@
 // Display text inside `FeatureMoment`/`FeatureSummary` is produced by the
 // feature itself (already localized); nothing here persists it.
 //
-// Depends on: FoodLogCore (SignalsSnapshot), StreakEngine.Status,
+// Depends on: FoodLogCore (SignalsSnapshot, SupplementSignals), StreakEngine.Status,
 // AchievementDefinition.
 // Depended on by: GamificationFeatureRegistry, RewardLedger, the app's
 // FeatureHost/MomentOverlay, every wave-2 feature.
@@ -46,6 +46,11 @@ public struct FeatureContext: Sendable {
     public let unlockedBadgeIds: Set<String>
     /// `true` when called right after a log confirm (keep work minimal).
     public let isConfirmPath: Bool
+    /// add-supplements D9: the supplement digest, built by the host from
+    /// the supplement stores (FoodLogCore `SupplementSignalsBuilder`) with
+    /// the shared freeze planner's frozen days filled in. `nil` when the
+    /// stores couldn't be read; only the `supplements` feature reads it.
+    public let supplements: SupplementSignals?
 
     public init(
         snapshot: SignalsSnapshot,
@@ -54,7 +59,8 @@ public struct FeatureContext: Sendable {
         streak: StreakEngine.Status,
         level: Int,
         unlockedBadgeIds: Set<String>,
-        isConfirmPath: Bool
+        isConfirmPath: Bool,
+        supplements: SupplementSignals? = nil
     ) {
         self.snapshot = snapshot
         self.now = now
@@ -63,6 +69,7 @@ public struct FeatureContext: Sendable {
         self.level = level
         self.unlockedBadgeIds = unlockedBadgeIds
         self.isConfirmPath = isConfirmPath
+        self.supplements = supplements
     }
 }
 

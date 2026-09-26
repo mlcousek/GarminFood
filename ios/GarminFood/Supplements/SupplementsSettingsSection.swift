@@ -33,6 +33,9 @@ struct SupplementsSettingsSection: View {
                             isOnboarding = true
                         }
                         await environment.syncNotifications()
+                        // Supplement challenges, streak and badges follow
+                        // the switch (add-supplements D9/D10).
+                        await environment.gamificationEngine.refresh()
                     }
                 }
             )) {

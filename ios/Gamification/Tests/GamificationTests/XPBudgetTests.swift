@@ -137,7 +137,7 @@ final class XPBudgetTests: XCTestCase {
         let lines = linesWithOptional(10)
         XCTAssertEqual(XPBudget.optionalMultiplier(enabledOptionalSources: [], lines: lines), 1)
         XCTAssertEqual(XPBudget.optionalMultiplier(enabledOptionalSources: ["unknown"], lines: lines), 1)
-        // Nothing optional in the shipped table yet: grants pass through.
+        // A source that isn't in the shipped table is never scaled.
         XCTAssertEqual(XPBudget.optionalGrantXP(10, enabledOptionalSources: ["test-optional"]), 10)
     }
 

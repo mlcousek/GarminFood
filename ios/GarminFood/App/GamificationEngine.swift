@@ -46,6 +46,11 @@ final class GamificationEngine {
     private let dayLogDigestStore: DayLogDigestStore?
     /// The day signals of the last refresh/confirm (local data only).
     private(set) var signals: SignalsSnapshot?
+    /// add-supplements D9: the supplement digest of the last refresh (local
+    /// supplement stores only; `nil` when they couldn't be read). Read by
+    /// the supplements feature, the shared freeze planner and the
+    /// supplement challenges.
+    private(set) var supplementSignals: SupplementSignals?
 
     /// Every day-keyed calculation uses the date entries are logged FOR
     /// (local midnight, the same date sent to Garmin), so streaks, XP bonuses
@@ -146,6 +151,7 @@ final class GamificationEngine {
         lastKnownEvents = events
         lastKnownGoalStatuses = goalStatuses
         signals = await featureHost?.buildSnapshot(goalStatuses: goalStatuses, now: now)
+        supplementSignals = await featureHost?.buildSupplementSignals(now: now)
 
         await applyStreakFreezes(events: events, now: now)
         streakStatus = StreakEngine.status(events: events, frozenDays: frozenDays, now: now, boundaryHour: boundaryHour)
@@ -521,6 +527,7 @@ final class GamificationEngine {
         guard let featureHost, let signals else { return }
         let outcome = await featureHost.run(
             snapshot: signals,
+            supplements: supplementSignals,
             streak: streakStatus,
             level: levelProgress.level,
             isConfirmPath: isConfirmPath,
