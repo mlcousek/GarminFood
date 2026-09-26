@@ -16,6 +16,7 @@ import Observation
 import GarminKit
 import FoodLogCore
 import Gamification
+import AppearanceKit
 
 @MainActor
 @Observable
@@ -225,11 +226,14 @@ final class AppEnvironment {
         )
         self.preferences = preferences
         self.themeStore = ThemeStore()
-        self.layoutStore = LayoutStore()
+        let layoutStore = LayoutStore()
+        self.layoutStore = layoutStore
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
-        self.router = AppRouter()
+        // add-themes-and-layout 4.3: open on the user's start tab; links and
+        // widget routes arriving after launch still override it.
+        self.router = AppRouter(startTab: layoutStore.config.resolvedStartTab)
         self.supplementPlanStore = services.supplementPlanStore
         self.supplementIntakeStore = services.supplementIntakeStore
         self.supplementLimitsStore = services.supplementLimitsStore
