@@ -10224,6 +10224,18 @@
           }
         }
       }
+    },
+    "Entries logged now stay on this phone only; XP, streak and usage still count them.": {
+      "comment": "Subtitle under the hidden \"Force standalone mode (testing)\" toggle in the Diagnostics menu: warns that entries logged while it is on are not sent to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy zapsané teď zůstanou jen v tomto telefonu; XP, série a používání je ale stále započítají."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

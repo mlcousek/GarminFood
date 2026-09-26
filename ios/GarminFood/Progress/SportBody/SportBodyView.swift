@@ -50,7 +50,10 @@ struct SportBodyView: View {
         }
         .background(Theme.groupedBackground)
         .navigationTitle("Sport & Body")
-        .task(id: featureHost?.summaries[SportAndBodyFeature.id]) {
+        // Keyed on completed passes, not the hub summary: the summary only
+        // holds this month's counts, so a new weigh-in or fast wouldn't
+        // refresh the weight/fasting card while the screen is open.
+        .task(id: featureHost?.completedRuns) {
             await reload()
         }
     }
