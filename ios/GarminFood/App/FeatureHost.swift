@@ -28,6 +28,13 @@
 // Depends on: Gamification (seam, registry, ledger, badges), FoodLogCore
 // (stores, DaySignalsBuilder), GarminKit (DiagnosticsLog), AppPreferences,
 // GamificationSignalsSync (cached first name).
+//
+// add-standalone-mode 7.1 (D11): in standalone mode the snapshot is built
+// from `SignalsInput.standalone` -- no activities, active kcal or Garmin
+// water/weigh-ins even if their caches still hold Garmin-era data, weigh-ins
+// from this phone -- so nothing needing activities is ever offered, and
+// `visibleBadgeCatalog` hides Garmin-only badges not yet earned
+// (`StandaloneAvailability`).
 // Depended on by: GamificationEngine; Progress/Today slot views (via
 // `feature(_:)` and `summaries`).
 
@@ -51,6 +58,8 @@ final class FeatureHost {
         let garminHealthCache: GarminHealthCacheStore
         let dayNotes: DayNoteStore
         let preferences: AppPreferences
+        /// This phone's weigh-ins (standalone mode's weight signal).
+        let weight: WeightStore
     }
 
     struct Outcome {
@@ -89,6 +98,15 @@ final class FeatureHost {
 
     /// A registered feature by concrete type, for a slot's detail screen
     /// (`featureHost.feature(WeeklyBingoFeature.self)`).
+    /// add-standalone-mode 7.1: the effective data mode is standalone.
+    var isStandalone: Bool { sources.preferences.isStandalone }
+
+    /// The badges the Achievements screen lists (Garmin-only ones not yet
+    /// earned are hidden in standalone mode).
+    func visibleBadgeCatalog(unlockedIds: Set<String>) -> [AchievementDefinition] {
+        StandaloneAvailability.visibleBadges(badgeCatalog, isStandalone: isStandalone, unlockedIds: unlockedIds)
+    }
+
     func feature<T: GamificationFeature>(_ type: T.Type) -> T? {
         for feature in features {
             if let match = feature as? T { return match }
@@ -143,11 +161,20 @@ final class FeatureHost {
         // override, else Garmin's cached nutrition-settings plan -- the same
         // resolution the Weight screen uses (`WeightLoader.goal`). Sport &
         // body milestones read it (add-sport-and-body-achievements).
-        let weightGoal = WeightAndWaterOverview.weightGoal(
-            snapshot: health,
-            targetSource: preferences.weightGoalSource,
-            startOverrideKg: preferences.weightGoalStartKg
-        ).map { WeightGoalSignal(startKg: $0.startKg, targetKg: $0.targetKg) }
+        let standalone = preferences.isStandalone
+        let localWeighIns = standalone ? await sources.weight.all() : []
+        let effectiveGoal = standalone
+            ? WeightAndWaterOverview.standaloneWeightGoal(
+                targetOverrideKg: preferences.weightGoalOverrideKg,
+                startOverrideKg: preferences.weightGoalStartKg,
+                localEntries: localWeighIns
+            )
+            : WeightAndWaterOverview.weightGoal(
+                snapshot: health,
+                targetSource: preferences.weightGoalSource,
+                startOverrideKg: preferences.weightGoalStartKg
+            )
+        let weightGoal = effectiveGoal.map { WeightGoalSignal(startKg: $0.startKg, targetKg: $0.targetKg) }
 
         let input = SignalsInput(
             events: events,
@@ -164,7 +191,8 @@ final class FeatureHost {
             goalStatusByDay: goalStatusByDay,
             profile: ProfileSignals(firstName: GamificationSignalsSync.cachedFirstName(), weightGoal: weightGoal)
         )
-        return DaySignalsBuilder.build(input: input, today: now, calendar: calendar)
+        let effectiveInput = standalone ? input.standalone(localWeighIns: localWeighIns, calendar: calendar) : input
+        return DaySignalsBuilder.build(input: effectiveInput, today: now, calendar: calendar)
     }
 
     // MARK: - Running features
