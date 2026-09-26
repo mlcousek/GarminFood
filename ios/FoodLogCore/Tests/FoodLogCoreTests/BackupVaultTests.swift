@@ -330,6 +330,45 @@ final class BackupVaultTests: XCTestCase {
         XCTAssertFalse(vault.listSnapshots().contains { $0.manifest.kind == .safety }, "refused before the safety snapshot")
     }
 
+    func testFailedApplyRollsBackToTheSafetySnapshot() throws {
+        try seedDataDirectory()
+        let (exported, _) = try vault.makeExportContainer(preferences: [:], appVersion: nil, now: noon)
+        // A file sorted last, so earlier files are already copied in when
+        // the copy fails partway.
+        let poisonPath = "Gamification/zzz-unreadable.json"
+        let container = BackupContainer(
+            manifest: exported.manifest,
+            files: exported.files.map { file in
+                file.path == "FoodLogCore/custom-foods.json"
+                    ? BackupContainer.File(path: file.path, contents: Data(#"[{"id":"from-backup"}]"#.utf8))
+                    : file
+            } + [BackupContainer.File(path: poisonPath, contents: Data("[]".utf8))],
+            preferences: [:]
+        )
+        try vault.stageRestore(container: container)
+        try write(#"[{"id":"current"}]"#, "FoodLogCore/custom-foods.json")
+        try write(#"[{"note":"current"}]"#, "FoodLogCore/day-notes.json")
+
+        // Make the staged copy of the last file unreadable so copying it fails.
+        let staged = vault.pendingRestoreDirectory.appendingPathComponent("data/\(poisonPath)")
+        try FileManager.default.setAttributes([.posixPermissions: 0o000], ofItemAtPath: staged.path)
+        defer { try? FileManager.default.setAttributes([.posixPermissions: 0o644], ofItemAtPath: staged.path) }
+        if FileManager.default.isReadableFile(atPath: staged.path) {
+            throw XCTSkip("running with privileges that ignore file permissions")
+        }
+
+        XCTAssertThrowsError(try vault.applyPendingRestore(currentPreferences: [:], appVersion: nil, now: noon.addingTimeInterval(day), calendar: calendar))
+
+        XCTAssertEqual(read("FoodLogCore/custom-foods.json"), #"[{"id":"current"}]"#, "the safety snapshot's files are put back")
+        XCTAssertEqual(read("FoodLogCore/day-notes.json"), #"[{"note":"current"}]"#)
+        XCTAssertEqual(read("Gamification/xp-ledger.json"), #"{"totalXP":1200}"#)
+        XCTAssertFalse(exists(poisonPath))
+        XCTAssertEqual(read("GarminKit/outbox-app.json"), #"[{"id":"queued"}]"#)
+        XCTAssertNil(vault.pendingRestore())
+        XCTAssertEqual(vault.status().lastRestore?.succeeded, false)
+        XCTAssertTrue(vault.listSnapshots().contains { $0.manifest.kind == .safety })
+    }
+
     func testStagingSkipsExcludedPathsFromACraftedFile() throws {
         try seedDataDirectory()
         let manifest = BackupManifest(kind: .export, createdAt: noon, appVersion: nil, files: [])
