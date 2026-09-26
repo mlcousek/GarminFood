@@ -16,6 +16,9 @@
 //
 // Reads `environment.hydrationLoader` rather than talking to any store
 // directly -- same reasoning as WeightView.swift's own header.
+//
+// add-standalone-mode 4.4: in standalone mode the total is this phone's
+// drinks, "Use Garmin's goal" is hidden and no text mentions Garmin.
 
 import SwiftUI
 import FoodLogCore
@@ -34,6 +37,7 @@ struct HydrationView: View {
     var body: some View {
         let loader = environment.hydrationLoader
         let entries = loader.entries
+        let isStandalone = environment.dataMode == .standalone
 
         List {
             Section {
@@ -60,7 +64,9 @@ struct HydrationView: View {
                     EmptyStateView(
                         systemImage: "drop",
                         title: "No water logged in this app yet",
-                        message: "Tap an amount above to log a drink. It's saved on this phone right away and synced to Garmin in the background."
+                        message: isStandalone
+                            ? "Tap an amount above to log a drink. It's saved on this phone."
+                            : "Tap an amount above to log a drink. It's saved on this phone right away and synced to Garmin in the background."
                     )
                 } else {
                     ForEach(entries) { entry in
@@ -75,7 +81,7 @@ struct HydrationView: View {
             } header: {
                 Text("Logged in this app")
             } footer: {
-                if !entries.isEmpty {
+                if !entries.isEmpty, !isStandalone {
                     Text("Synced to your Garmin account automatically. Removing a drink lowers Garmin's total too.")
                 }
             }
@@ -92,7 +98,7 @@ struct HydrationView: View {
                     } label: {
                         Label("Edit goal", systemImage: "target")
                     }
-                    if environment.preferences.waterGoalOverrideML != nil {
+                    if environment.preferences.waterGoalOverrideML != nil, !isStandalone {
                         Button {
                             environment.preferences.waterGoalOverrideML = nil
                         } label: {
@@ -133,7 +139,9 @@ struct HydrationView: View {
                 }
             }
         } message: {
-            Text("How much water you're aiming for each day. Stays on this phone; Garmin's own goal is unchanged.")
+            Text(environment.dataMode == .standalone
+                 ? "How much water you're aiming for each day. Stays on this phone."
+                 : "How much water you're aiming for each day. Stays on this phone; Garmin's own goal is unchanged.")
         }
         .confirmationDialog(
             "Remove this drink?",
@@ -164,6 +172,9 @@ struct HydrationView: View {
     }
 
     private func removeMessage(for entry: HydrationEntry) -> String {
+        if environment.dataMode == .standalone {
+            return String(localized: "It's removed from this phone.")
+        }
         switch environment.hydrationLoader.outboxState(for: entry) {
         case .pending?, .failed?:
             return String(localized: "It hasn't reached Garmin yet, so it simply won't be sent.")

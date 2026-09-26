@@ -163,8 +163,8 @@ public enum LayoutCatalog {
     ///
     /// - The day switcher is navigation: pinned to the top, never hidden.
     /// - The "GF by Jirka" signature is pinned to the bottom and can't be
-    ///   hidden -- owner decision 0.6 is still open, so this keeps today's
-    ///   behavior; answering it is a one-word change (`hideable`).
+    ///   hidden -- owner decision 0.6 was defaulted to today's behavior
+    ///   (tasks.md); overriding it is a one-word change (`hideable`).
     public static let today: [CardSpec] = [
         CardSpec(id: TodayCardID.daySwitcher.rawValue, pin: .top, hideable: false),
         CardSpec(
@@ -286,7 +286,8 @@ public struct LayoutConfig: Hashable, Sendable {
     public var today: ScreenLayout?
     public var logFood: ScreenLayout?
     public var progress: ScreenLayout?
-    /// The tab the app opens on (wave 4). `nil` = Today.
+    /// The tab the app opens on (wave 4; read through `resolvedStartTab`,
+    /// StartTab.swift). `nil` = Today.
     public var startTab: String?
     /// The Today preset last applied (`LayoutPreset` raw value), cleared by
     /// any later Today edit so the editor shows "Custom" (D9).

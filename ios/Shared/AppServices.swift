@@ -54,6 +54,9 @@ final class AppServices {
     /// add-standalone-mode D2: the local system of record for standalone
     /// mode (month-sharded JSON). Nothing touches it in Garmin mode.
     let localFoodLog: LocalFoodLogStore
+    /// add-standalone-mode D6 (task 4.1): standalone mode's calorie and
+    /// macro targets, a history by start day. Garmin mode never reads it.
+    let localGoalStore: LocalGoalStore
     /// add-standalone-mode D3: every nutrition read, routed like
     /// `logEntryCoordinator` -- the very same `garminClient` in Garmin mode.
     let nutritionReader: ModeRoutingNutritionReader
@@ -158,19 +161,23 @@ final class AppServices {
             local: LocalLogEntryCoordinator(store: localFoodLog, usageHistory: usageHistory, servingDefaults: servingDefaults, foodCache: foodCache),
             mode: dataMode
         )
-        // Goals: none yet in standalone -- LocalNutritionReader's documented
-        // placeholder until wave 4's LocalGoalStore is passed here.
+        // Standalone goals come from the local goal history (task 4.1).
+        let localGoalStore = LocalGoalStore()
+        self.localGoalStore = localGoalStore
         self.nutritionReader = ModeRoutingNutritionReader(
             garmin: client,
-            local: LocalNutritionReader(store: localFoodLog),
+            local: LocalNutritionReader(store: localFoodLog, goalStore: localGoalStore),
             mode: dataMode
         )
         self.weightStore = weightStore
         self.weightOutbox = weightOutbox
-        self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox)
+        // add-standalone-mode D7: weight and water are delivered to Garmin
+        // only while the effective mode is Garmin-connected (read per call).
+        let deliversToGarmin: @Sendable () -> Bool = { dataMode() == .garminConnected }
+        self.weightLogCoordinator = WeightLogCoordinator(store: weightStore, outbox: weightOutbox, deliversToGarmin: deliversToGarmin)
         self.hydrationStore = hydrationStore
         self.hydrationOutbox = hydrationOutbox
-        self.hydrationLogCoordinator = HydrationLogCoordinator(store: hydrationStore, outbox: hydrationOutbox)
+        self.hydrationLogCoordinator = HydrationLogCoordinator(store: hydrationStore, outbox: hydrationOutbox, deliversToGarmin: deliversToGarmin)
         self.garminHealthCache = garminHealthCache
         self.garminHealthSync = GarminHealthSync(cache: garminHealthCache, reader: client)
         self.offlineIndex = offlineIndex

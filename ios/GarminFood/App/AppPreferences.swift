@@ -41,6 +41,9 @@ final class AppPreferences {
         static let forceStandaloneMode = DataMode.forceStandaloneStorageKey
         // add-supplements: the optional supplements feature. Off by default.
         static let supplementsEnabled = "preferences.supplements.enabled"
+        // add-standalone-mode 5.2: the name Profile shows in standalone mode
+        // (there is no Garmin profile to read it from).
+        static let localDisplayName = "profile.localDisplayName"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -64,6 +67,7 @@ final class AppPreferences {
     private var storedDataMode: DataMode?
     private var storedForceStandaloneMode: Bool
     private var storedSupplementsEnabled: Bool
+    private var storedLocalDisplayName: String?
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -92,6 +96,7 @@ final class AppPreferences {
         storedForceStandaloneMode = defaults.object(forKey: Key.forceStandaloneMode) as? Bool ?? false
         // Off: nothing about supplements shows until the user turns it on.
         storedSupplementsEnabled = defaults.object(forKey: Key.supplementsEnabled) as? Bool ?? false
+        storedLocalDisplayName = defaults.string(forKey: Key.localDisplayName)
     }
 
     /// add-standalone-mode D1: the install's system of record, or `nil`
@@ -301,6 +306,22 @@ final class AppPreferences {
         set {
             storedSupplementsEnabled = newValue
             defaults.set(newValue, forKey: Key.supplementsEnabled)
+        }
+    }
+
+    /// add-standalone-mode 5.2: the user's own display name for Profile in
+    /// standalone mode. Blank = none (Profile shows "GarminFood").
+    var localDisplayName: String? {
+        get { storedLocalDisplayName }
+        set {
+            let trimmed = newValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let value = (trimmed?.isEmpty ?? true) ? nil : trimmed
+            storedLocalDisplayName = value
+            if let value {
+                defaults.set(value, forKey: Key.localDisplayName)
+            } else {
+                defaults.removeObject(forKey: Key.localDisplayName)
+            }
         }
     }
 

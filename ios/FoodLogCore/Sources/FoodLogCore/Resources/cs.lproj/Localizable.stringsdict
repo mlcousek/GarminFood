@@ -111,5 +111,26 @@
 			<string>%lld dávek</string>
 		</dict>
 	</dict>
+	<!-- Supplement restock reminder body (Supplements/SupplementReminderPlanning.swift). -->
+	<key>About %lld days left. Time to restock.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>Zbývá asi %#@days@. Je čas doplnit zásobu.</string>
+		<key>days</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld den</string>
+			<key>few</key>
+			<string>%lld dny</string>
+			<key>many</key>
+			<string>%lld dne</string>
+			<key>other</key>
+			<string>%lld dní</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

@@ -11,7 +11,7 @@
 // (fasting preferences, loaded shelves); the kit's resolver never needs it.
 //
 // Depended on by: LayoutEditorSheet, TodayView (its `availability(_:)`),
-// the Appearance page's Layout section.
+// the Appearance page's Layout section (Today, Log Food and Progress rows).
 
 import SwiftUI
 import AppearanceKit
@@ -83,10 +83,10 @@ enum LayoutCardInfo {
         switch screen {
         case .today:
             return TodayCardID(rawValue: id)?.title ?? id
-        case .logFood, .progress:
-            // Wave 4 gives these screens an editor; until then nothing
-            // lists their cards.
-            return id
+        case .logFood:
+            return LogFoodShelfID(rawValue: id)?.title ?? id
+        case .progress:
+            return ProgressCardID(rawValue: id)?.title ?? id
         }
     }
 
@@ -94,8 +94,10 @@ enum LayoutCardInfo {
         switch screen {
         case .today:
             return TodayCardID(rawValue: id)?.systemImage ?? "square"
-        case .logFood, .progress:
-            return "square"
+        case .logFood:
+            return LogFoodShelfID(rawValue: id)?.systemImage ?? "square"
+        case .progress:
+            return ProgressCardID(rawValue: id)?.systemImage ?? "square"
         }
     }
 
@@ -155,6 +157,74 @@ extension TodayCardID {
         case .weightWater: return "scalemass"
         case .dayNote: return "note.text"
         case .signature: return "signature"
+        }
+    }
+}
+
+extension LogFoodShelfID {
+    var title: String {
+        switch self {
+        case .quickPick: return String(localized: "Quick pick")
+        case .favorites: return String(localized: "Favorites")
+        case .usual: return String(localized: "Usual for this meal", comment: "Layout editor row: the Log Food shelf of foods usually logged for the current meal.")
+        case .meals: return String(localized: "Meals")
+        case .recent: return String(localized: "Recent")
+        case .customFoods: return String(localized: "Your custom foods")
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .quickPick: return "bolt"
+        case .favorites: return "star"
+        case .usual: return "clock.arrow.circlepath"
+        case .meals: return "square.stack.3d.up"
+        case .recent: return "clock"
+        case .customFoods: return "square.and.pencil"
+        }
+    }
+}
+
+extension ProgressCardID {
+    var title: String {
+        switch self {
+        case .streak: return String(localized: "Streak")
+        case .level: return String(localized: "Level")
+        case .boss: return String(localized: "Weekly boss", comment: "Layout editor row: the weekly boss card on Progress.")
+        case .bingo: return String(localized: "Weekly bingo", comment: "Layout editor row: the weekly bingo card on Progress.")
+        case .seasonal: return String(localized: "Seasonal event", comment: "Layout editor row: the seasonal event card on Progress.")
+        case .journeys: return String(localized: "Journeys", comment: "Layout editor row: the journeys card on Progress.")
+        case .records: return String(localized: "Records", comment: "Layout editor row: the personal records card on Progress.")
+        case .collections: return String(localized: "Collections", comment: "Layout editor row: the collections card on Progress.")
+        case .sportBody: return String(localized: "Sport & Body", comment: "Layout editor row: the sport and body card on Progress.")
+        case .secrets: return String(localized: "Secrets", comment: "Layout editor row: the secret achievements card on Progress.")
+        case .challenges: return String(localized: "Challenges")
+        case .achievements: return String(localized: "Achievements")
+        case .weight: return String(localized: "Weight")
+        case .hydration: return String(localized: "Hydration")
+        case .trends: return String(localized: "Trends")
+        case .goalHistory: return String(localized: "Goals, last 14 days")
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .streak: return "flame"
+        case .level: return "star.circle"
+        case .boss: return "shield"
+        case .bingo: return "square.grid.3x3"
+        case .seasonal: return "leaf"
+        case .journeys: return "map"
+        case .records: return "trophy"
+        case .collections: return "square.grid.2x2"
+        case .sportBody: return "figure.run"
+        case .secrets: return "questionmark.circle"
+        case .challenges: return "target"
+        case .achievements: return "rosette"
+        case .weight: return "scalemass"
+        case .hydration: return "drop"
+        case .trends: return "chart.xyaxis.line"
+        case .goalHistory: return "checklist"
         }
     }
 }

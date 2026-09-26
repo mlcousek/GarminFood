@@ -7,13 +7,17 @@ Relative size per wave: S / M / L.
 
 ## 0. Owner decisions (before wave 2)
 
-- [ ] 0.1 Her data leaving the phone: manual export only, or also a shared-folder backup? (design Open Question 1)
-- [ ] 0.2 Manual activity entry: yes/no (default: no; separate change if yes).
-- [ ] 0.3 Backup: JSON + CSV and replace-only restore acceptable?
-- [ ] 0.4 Goal calculator: 1200 kcal floor for everyone or sex-specific; protein g/kg defaults; day targets only or per-meal too.
-- [ ] 0.5 Display name for her install ("GarminFood" or a neutral name like "GF"); language is Czech via add-localization.
-- [ ] 0.6 AltStore or SideStore for her phone.
-- [ ] 0.7 Build "Copy my last 90 days from Garmin" now or later.
+No owner answer arrived before waves 4–7 were built (2026-09-25), so each
+question below takes the design's proposed default. Each is **defaulted,
+owner may override** — a later answer becomes its own small follow-up.
+
+- [x] 0.1 Her data leaving the phone: manual export only, or also a shared-folder backup? (design Open Question 1) — *Defaulted, owner may override:* manual export only (Settings → Data, moved to `add-data-safety`); no automatic shared-folder backup.
+- [x] 0.2 Manual activity entry: yes/no (default: no; separate change if yes). — *Defaulted, owner may override:* no; standalone has no activity data and no eat-back (owner's 2026-09-23 decision).
+- [x] 0.3 Backup: JSON + CSV and replace-only restore acceptable? — *Defaulted, owner may override:* yes, JSON + CSV and replace-only restore (built in `add-data-safety`).
+- [x] 0.4 Goal calculator: 1200 kcal floor for everyone or sex-specific; protein g/kg defaults; day targets only or per-meal too. — *Defaulted, owner may override:* one 1200 kcal floor for everyone (plus never below BMR); protein 1.6 g/kg when losing, 1.4 g/kg otherwise; day targets only (no per-meal split in the UI; `mealSplit` stays in the stored shape for later).
+- [x] 0.5 Display name for her install ("GarminFood" or a neutral name like "GF"); language is Czech via add-localization. — *Defaulted, owner may override:* keep "GarminFood" (no second bundle display name); the Profile header shows her own local display name in standalone mode.
+- [x] 0.6 AltStore or SideStore for her phone. — *Defaulted, owner may override:* the install guide documents both, recommending SideStore (no weekly PC dependence), AltStore as the fallback the owner already runs.
+- [x] 0.7 Build "Copy my last 90 days from Garmin" now or later. — *Defaulted, owner may override:* later (task 5.5 skipped).
 
 ## 1. Wave 1 — Seams, zero behaviour change (M)
 
@@ -46,20 +50,20 @@ Relative size per wave: S / M / L.
 
 ## 4. Wave 4 — Local goals, weight and water (M)
 
-- [ ] 4.1 `LocalGoalStore` (history by `effectiveFrom`). Tests: goal in effect per day, editing keeps history.
-- [ ] 4.2 `GoalCalculator` (Mifflin-St Jeor × activity ± pace; floors 1200 kcal / BMR; pace cap 0.75 kg/wk and 1 % body weight; macros). Tests with reference people and floors.
-- [ ] 4.3 Settings "Nutrition plan" becomes the editable local goal with "Recalculate" in standalone; disclaimer text; Czech strings.
-- [ ] 4.4 `WeightLogCoordinator`/`HydrationLogCoordinator` `deliversToGarmin` flag from `DataMode`; skip `refreshGarminHealth` and the weight/water drains in standalone; hide "not in Garmin yet" badges; local water total. Tests.
+- [x] 4.1 `LocalGoalStore` (history by `effectiveFrom`). Tests: goal in effect per day, editing keeps history.
+- [x] 4.2 `GoalCalculator` (Mifflin-St Jeor × activity ± pace; floors 1200 kcal / BMR; pace cap 0.75 kg/wk and 1 % body weight; macros). Tests with reference people and floors.
+- [x] 4.3 Settings "Nutrition plan" becomes the editable local goal with "Recalculate" in standalone; disclaimer text; Czech strings.
+- [x] 4.4 `WeightLogCoordinator`/`HydrationLogCoordinator` `deliversToGarmin` flag from `DataMode`; skip `refreshGarminHealth` and the weight/water drains in standalone; hide "not in Garmin yet" badges; local water total. Tests.
 - [ ] 4.5 On-device: set goals with the calculator, edit them, log weight and water; Today ring and water card correct.
 
 ## 5. Wave 5 — Onboarding, hidden surfaces, switching (L)
 
-- [ ] 5.1 `Onboarding/` flow (welcome → mode choice → standalone goal setup (skippable) → backup explainer); shown only when the mode is unset. Czech strings.
-- [ ] 5.2 Hide Garmin-only surfaces in standalone (banners, sync queue row, Garmin account section → "Data" section, Garmin nutrition plan, "Use Garmin's goal", "Default meal from Garmin's schedule", backing picker, "Active today", Garmin profile → local display name).
-- [ ] 5.3 Foreground/background in standalone skip every Garmin call; `BackgroundRefresh` not scheduled. Test the planning function if extracted.
-- [ ] 5.4 Switching (Settings → Data): standalone → Garmin after successful sign-in (local log kept, backing-less custom foods flagged); Garmin → standalone refused during a drain, undelivered entries "Deliver first" / "Keep on this phone" (converted to local entries via `FoodCacheStore`). Tests for the conversion.
-- [ ] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only.
-- [ ] 5.6 Mode-neutral `NSCameraUsageDescription` (en + cs via InfoPlist catalog).
+- [x] 5.1 `Onboarding/` flow (welcome → mode choice → standalone goal setup (skippable) → backup explainer); shown only when the mode is unset. Czech strings.
+- [x] 5.2 Hide Garmin-only surfaces in standalone (banners, sync queue row, Garmin account section → "Data" section, Garmin nutrition plan, "Use Garmin's goal", "Default meal from Garmin's schedule", backing picker, "Active today", Garmin profile → local display name).
+- [x] 5.3 Foreground/background in standalone skip every Garmin call; `BackgroundRefresh` not scheduled. Test the planning function if extracted.
+- [x] 5.4 Switching (Settings → Data): standalone → Garmin after successful sign-in (local log kept, backing-less custom foods flagged); Garmin → standalone refused during a drain, undelivered entries "Deliver first" / "Keep on this phone" (converted to local entries via `FoodCacheStore`). Tests for the conversion.
+- [ ] 5.5 Optional (per 0.7): "Copy my last 90 days from Garmin" via the confirmed read route, read-only. — *Skipped: 0.7 defaulted to "later".*
+- [x] 5.6 Mode-neutral `NSCameraUsageDescription` (en + cs via InfoPlist catalog).
 - [ ] 5.7 On-device: fresh install → choose "Just on this phone" in Czech → log a day with zero Garmin calls; the owner's phone skips onboarding.
 
 ## 6. Wave 6 — Backup and restore (M) — required before the fiancée relies on the app

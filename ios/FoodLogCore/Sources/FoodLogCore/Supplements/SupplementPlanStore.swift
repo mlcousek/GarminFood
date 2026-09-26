@@ -95,6 +95,16 @@ public actor SupplementPlanStore {
         try mutateProduct(productId) { $0.restockRemindedFor = $0.stockSetOn }
     }
 
+    /// Sets (or, with `nil`, turns off) the reminder time of `slot`
+    /// (`SupplementPlan.setReminderMinute`, wave 3). No write when
+    /// unchanged.
+    public func setReminderMinute(_ minute: Int?, for slot: TimeSlot) throws {
+        var next = try loadedForWrite()
+        next.setReminderMinute(minute, for: slot)
+        guard next != current else { return }
+        try save(next)
+    }
+
     // MARK: Files
 
     private func mutateProduct(_ productId: UUID, _ change: (inout SupplementProduct) -> Void) throws {
