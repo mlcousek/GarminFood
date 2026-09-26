@@ -213,6 +213,12 @@ final class GamificationEngine {
     /// design.md D4); nothing else here reads it.
     func handleLogConfirmed(now: Date = Date(), calories: Double? = nil) async {
         let events = await usageHistory.all() // already includes the entry that was just confirmed
+        // add-supplements D9: the supplement digest is rebuilt on refresh
+        // (and after every tick); only a day change since then needs a new
+        // one here, so yesterday's in-progress day isn't read as a miss.
+        if supplementSignals?.today != NutritionDate.string(from: now) {
+            supplementSignals = await featureHost?.buildSupplementSignals(now: now)
+        }
         // Freezes first (design D6), so "before" and "after" walk the same
         // frozen days -- a freeze consumed right now must not read as the
         // log having extended the streak by 20 days.

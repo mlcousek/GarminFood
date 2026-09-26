@@ -55,7 +55,7 @@
 
 ## 7. Verify
 
-- [ ] 7.1 `openspec validate add-supplements --strict`; `node tools/check-localizations.mjs`; `bash tools/lint-design-tokens.sh`.
+- [x] 7.1 `openspec validate add-supplements --strict`; `node tools/check-localizations.mjs`; `bash tools/lint-design-tokens.sh`. *All three pass locally after wave 6 (2026-09-26).*
 - [ ] 7.2 CI green (`swift test` FoodLogCore, Gamification, AppearanceKit; app + widget build).
 - [ ] 7.3 On device:
   - enable, add creatine from the catalog, add a custom ZMA, scan a Czech product;
