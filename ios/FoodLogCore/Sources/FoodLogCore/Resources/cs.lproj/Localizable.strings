@@ -471,6 +471,47 @@
 /* Error when writing supplement data on the phone fails. %@ is the system's reason. */
 "Couldn't save your supplements on this phone: %@" = "Doplňky stravy se v telefonu nepodařilo uložit: %@";
 
+/* ---- Supplements: slots and reminders (Supplements/SupplementTexts.swift, SupplementReminderPlanning.swift) ---- */
+
+/* Supplement time slot name. */
+"Morning" = "Ráno";
+
+/* Supplement time slot name: taken together with breakfast. */
+"With breakfast" = "Se snídaní";
+
+/* Supplement time slot name: before a training session. */
+"Pre-workout" = "Před tréninkem";
+
+/* Supplement time slot name. */
+"Evening" = "Večer";
+
+/* Supplement slot reminder title. */
+"Morning supplements" = "Ranní doplňky";
+
+/* Supplement slot reminder title. */
+"Supplements with breakfast" = "Doplňky ke snídani";
+
+/* Supplement slot reminder title. */
+"Pre-workout supplements" = "Doplňky před tréninkem";
+
+/* Supplement slot reminder title. */
+"Evening supplements" = "Večerní doplňky";
+
+/* Supplement reminder title for a slot the user named. %@ is that name. */
+"Supplements: %@" = "Doplňky: %@";
+
+/* Supplement slot reminder body when no product name is known. */
+"Time for your supplements." = "Čas na doplňky stravy.";
+
+/* Supplement slot reminder body. %@ is a comma-separated list of product names. */
+"Take: %@" = "Vezmi si: %@";
+
+/* Supplement restock reminder title. %@ is the product name. */
+"Running low: %@" = "Dochází: %@";
+
+/* Supplement restock reminder body when nothing is left. */
+"It has run out. Time to restock." = "Došlo. Je čas doplnit zásobu.";
+
 /* ---- add-standalone-mode waves 4-7 ---- */
 
 /* Error when saving a nutrition goal on the phone (standalone mode) with an invalid number. */

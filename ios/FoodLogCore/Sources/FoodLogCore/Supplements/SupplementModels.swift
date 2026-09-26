@@ -656,18 +656,25 @@ public struct PlanItem: Codable, Sendable, Equatable {
 public struct SupplementPlan: Codable, Sendable, Equatable {
     public var products: [SupplementProduct]
     public var items: [PlanItem]
+    /// Per-slot reminder times the user set (onboarding / schedule editor,
+    /// wave 3); a slot without an entry uses
+    /// `SupplementSlotTimes.defaultReminderMinute(for:)`. Optional so plan
+    /// files written before it still decode.
+    public var slotReminders: [SlotReminder]?
 
-    public init(products: [SupplementProduct] = [], items: [PlanItem] = []) {
+    public init(products: [SupplementProduct] = [], items: [PlanItem] = [], slotReminders: [SlotReminder]? = nil) {
         self.products = products
         self.items = items
+        self.slotReminders = slotReminders
     }
 
-    private enum CodingKeys: String, CodingKey { case products, items }
+    private enum CodingKeys: String, CodingKey { case products, items, slotReminders }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         products = try container.decodeIfPresent([SupplementProduct].self, forKey: .products) ?? []
         items = try container.decodeIfPresent([PlanItem].self, forKey: .items) ?? []
+        slotReminders = try container.decodeIfPresent([SlotReminder].self, forKey: .slotReminders)
     }
 
     public func product(id: UUID) -> SupplementProduct? {

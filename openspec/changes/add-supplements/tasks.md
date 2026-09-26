@@ -1,8 +1,8 @@
 ## 0. Before starting
 
-- [ ] 0.1 `rebalance-xp-economy` merged (supplement XP is priced through its optional-source multiplier).
-- [ ] 0.2 `add-weekly-boss-and-streak-freezes` merged (freeze pool); themes wave 3 merged (Today card registry, #78).
-- [ ] 0.3 Confirm the design's open questions with the owner: default slot reminder times; sodium shown as mg with salt as secondary.
+- [x] 0.1 `rebalance-xp-economy` merged (supplement XP is priced through its optional-source multiplier).
+- [x] 0.2 `add-weekly-boss-and-streak-freezes` merged (freeze pool); themes wave 3 merged (Today card registry, #78).
+- [x] 0.3 Confirm the design's open questions with the owner: default slot reminder times; sodium shown as mg with salt as secondary. **Defaulted, owner may override:** morning 08:00, evening 21:00, with-breakfast and pre-workout no reminder (manual, settable per slot); sodium in mg with salt (Na × 2.5) shown as secondary.
 
 ## 1. Wave 1 — Pure core (FoodLogCore, no UI)
 
