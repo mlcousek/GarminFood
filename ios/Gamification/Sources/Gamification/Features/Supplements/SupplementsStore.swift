@@ -11,9 +11,11 @@
 //     neutral (`SupplementPause.apply`), so they neither extend nor break
 //     the supplement streak, and the freeze planner never spends a freeze
 //     on them;
-//   - the archive (6.3): the digest only covers 365 days, so days about to
-//     leave it are folded into running totals (creatine grams and days) for
-//     the lifetime badges and the creatine journey;
+//   - creatine per day (6.3): the digest only covers 365 days, so every
+//     day with creatine is kept here (day -> grams, a few kB after years)
+//     for the lifetime badges and the creatine journey. Days inside the
+//     digest are overwritten from it on every run (edits and backfills
+//     count); older days stay as they were;
 //   - the vitamin-alphabet collection (ingredient id -> first day taken;
 //     it only grows), the journey milestones already reached (each
 //     announced once) and the longest supplement streak seen.
@@ -50,12 +52,8 @@ public struct SupplementsState: Codable, Sendable, Equatable {
     public var inactiveSince: String?
     /// Closed pauses, oldest first.
     public var pausedRanges: [SupplementPausedRange]?
-    /// Days on or before this one are folded into the archive totals.
-    public var archivedThrough: String?
-    /// Creatine grams taken on archived days.
-    public var archivedCreatineGrams: Double?
-    /// Archived days with creatine taken.
-    public var archivedCreatineDays: Int?
+    /// Creatine grams per day (days with creatine only).
+    public var creatineByDay: [String: Double]?
     /// Vitamin alphabet: ingredient id -> first day it was taken.
     public var collected: [String: String]?
     /// Creatine-journey milestone ids already reached.
@@ -66,18 +64,14 @@ public struct SupplementsState: Codable, Sendable, Equatable {
     public init(
         inactiveSince: String? = nil,
         pausedRanges: [SupplementPausedRange]? = nil,
-        archivedThrough: String? = nil,
-        archivedCreatineGrams: Double? = nil,
-        archivedCreatineDays: Int? = nil,
+        creatineByDay: [String: Double]? = nil,
         collected: [String: String]? = nil,
         reachedMilestones: [String]? = nil,
         longestStreak: Int? = nil
     ) {
         self.inactiveSince = inactiveSince
         self.pausedRanges = pausedRanges
-        self.archivedThrough = archivedThrough
-        self.archivedCreatineGrams = archivedCreatineGrams
-        self.archivedCreatineDays = archivedCreatineDays
+        self.creatineByDay = creatineByDay
         self.collected = collected
         self.reachedMilestones = reachedMilestones
         self.longestStreak = longestStreak

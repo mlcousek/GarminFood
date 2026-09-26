@@ -110,8 +110,11 @@ final class FeatureHost {
 
     /// The badges the Achievements screen lists (Garmin-only ones not yet
     /// earned are hidden in standalone mode).
+    /// add-supplements D9: while supplements are off, their badges show
+    /// only once earned.
     func visibleBadgeCatalog(unlockedIds: Set<String>) -> [AchievementDefinition] {
-        StandaloneAvailability.visibleBadges(badgeCatalog, isStandalone: isStandalone, unlockedIds: unlockedIds)
+        let visible = StandaloneAvailability.visibleBadges(badgeCatalog, isStandalone: isStandalone, unlockedIds: unlockedIds)
+        return SupplementsCatalog.visibleBadges(visible, isEnabled: sources.preferences.supplementsEnabled, unlockedIds: unlockedIds)
     }
 
     /// A registered feature by concrete type, for a slot's detail screen

@@ -137,6 +137,7 @@ struct AchievementsView: View {
         case .extreme: return String(localized: "Extreme Days", comment: "Achievements group header: badges for very high-calorie days.")
         case .funnyFacts: return String(localized: "Fun Facts", comment: "Achievements group header: playful lifetime-calorie comparisons.")
         case .calendar: return String(localized: "Calendar", comment: "Achievements group header: date-based badges.")
+        case .supplements: return String(localized: "Supplements")
         case .meta: return String(localized: "Completionist", comment: "Achievements group header: badges for unlocking other badges.")
         }
     }

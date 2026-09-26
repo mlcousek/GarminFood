@@ -10,7 +10,7 @@
 //
 // Badge id namespaces: `achv-*` (core), `bingo.*`, `event.*`,
 // `collection.*`, `journey.*`, `record.*`, `secret.*`, `sport.*`, `boss.*`,
-// `freeze.*`.
+// `freeze.*`, `supplements.*` (add-supplements, optional).
 //
 // Depends on: AchievementCatalog, GamificationFeatureRegistry.
 // Depended on by: the app's AchievementsView / summary card / FeatureHost.

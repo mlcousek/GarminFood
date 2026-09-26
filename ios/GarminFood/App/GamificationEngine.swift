@@ -320,6 +320,7 @@ final class GamificationEngine {
             goalStatuses: goalStatuses,
             now: now,
             signals: signals,
+            supplements: supplementSignals,
             frozenDays: frozenDays,
             boundaryHour: boundaryHour
         )
@@ -339,6 +340,7 @@ final class GamificationEngine {
             goalStatuses: goalStatuses,
             now: now,
             signals: signals,
+            supplements: supplementSignals,
             frozenDays: frozenDays,
             boundaryHour: boundaryHour
         )
@@ -384,6 +386,7 @@ final class GamificationEngine {
                     goalStatuses: goalStatuses,
                     now: now,
                     signals: signals,
+                    supplements: supplementSignals,
                     frozenDays: frozenDays,
                     boundaryHour: boundaryHour
                 )
@@ -522,9 +525,10 @@ final class GamificationEngine {
     // MARK: - Gamification features (add-gamification-signals D7)
 
     /// Rotation weights with this refresh's signals (no signals = templates
-    /// needing water/macros/activities are not offered).
+    /// needing water/macros/activities are not offered). add-supplements D9:
+    /// supplement templates only while the supplement digest is active.
     private var rotationPolicy: ChallengeRotationPolicy {
-        ChallengeRotationPolicy(signals: signals)
+        ChallengeRotationPolicy(signals: signals, supplements: supplementSignals)
     }
 
     /// Runs every registered feature via `FeatureHost` and applies its

@@ -18,6 +18,9 @@
 // templates with a static weight > 0 (`allChallengesProgress`), otherwise
 // the trim would make it impossible.
 //
+// add-supplements D9: the supplement templates have static weight 0 and
+// are offered (weight 3) only while the supplement digest is active.
+//
 // Depends on: ChallengeCatalog (ladder families, hand-authored ids),
 // ChallengeKind.dataRequirement, DataRequirement, FoodLogCore (DaySignals).
 // Depended on by: ChallengeRotation.pickNext, ChallengeStore, the app's
@@ -30,6 +33,9 @@ public struct ChallengeRotationPolicy: Sendable {
     public static let handAuthoredWeight = 2
     public static let signalWeight = 3
     public static let ladderWeight = 1
+    /// add-supplements D9: a supplement template while supplements are
+    /// active (its STATIC weight is 0, see `staticWeight`).
+    public static let supplementWeight = 3
     /// How far back a template's data requirement is looked for.
     public static let requirementLookbackDays = 14
 
@@ -56,23 +62,31 @@ public struct ChallengeRotationPolicy: Sendable {
 
     /// The last `requirementLookbackDays` days that had data.
     public let recentDays: [DaySignals]
+    /// add-supplements D9: the supplement digest; supplement templates are
+    /// offered only while it is active (feature on, at least one product).
+    public let supplements: SupplementSignals?
 
     /// `recentDays` empty = no signal data known: templates with a data
     /// requirement are not offered.
-    public init(recentDays: [DaySignals] = []) {
+    public init(recentDays: [DaySignals] = [], supplements: SupplementSignals? = nil) {
         self.recentDays = recentDays
+        self.supplements = supplements
     }
 
-    public init(signals: SignalsSnapshot?) {
+    public init(signals: SignalsSnapshot?, supplements: SupplementSignals? = nil) {
         if let signals {
             self.recentDays = signals.days(signals.recentDayKeys(Self.requirementLookbackDays))
         } else {
             self.recentDays = []
         }
+        self.supplements = supplements
     }
 
-    /// The weight ignoring data availability.
+    /// The weight ignoring data availability. Supplement templates: 0 --
+    /// an optional feature is outside the static rotation ("complete every
+    /// challenge", the mean reward); `weight(for:)` offers them.
     public static func staticWeight(for template: ChallengeTemplate) -> Int {
+        if case .supplementDays = template.kind { return 0 }
         if template.kind.isSignalBased { return signalWeight }
         if handAuthoredIds.contains(template.id) { return handAuthoredWeight }
         if ladderAllowlist.contains(template.id) { return ladderWeight }
@@ -84,6 +98,10 @@ public struct ChallengeRotationPolicy: Sendable {
 
     /// The weight for this pick: 0 when the template's data is missing.
     public func weight(for template: ChallengeTemplate) -> Int {
+        if case .supplementDays(let rule, _) = template.kind {
+            guard let supplements, rule.isOffered(by: supplements, lookbackDays: Self.requirementLookbackDays) else { return 0 }
+            return Self.supplementWeight
+        }
         let base = Self.staticWeight(for: template)
         guard base > 0 else { return 0 }
         return template.kind.dataRequirement.isSatisfied(byAnyOf: recentDays) ? base : 0

@@ -618,9 +618,7 @@ final class StoreFixtureTests: XCTestCase {
             SupplementPausedRange(from: "2026-08-01", through: "2026-08-14"),
             SupplementPausedRange(from: "2026-09-01", through: nil),
         ])
-        XCTAssertEqual(state.archivedThrough, "2025-10-02")
-        XCTAssertEqual(state.archivedCreatineGrams, 205.5)
-        XCTAssertEqual(state.archivedCreatineDays, 41)
+        XCTAssertEqual(state.creatineByDay, ["2025-10-01": 5, "2025-10-02": 3.5, "2026-09-20": 5])
         XCTAssertEqual(state.collected, ["magnesium": "2025-09-30", "vitaminD": "2025-10-01", "zinc": "2026-09-20"])
         XCTAssertEqual(state.reachedMilestones, ["creatine-100g"])
         XCTAssertEqual(state.longestStreak, 23)

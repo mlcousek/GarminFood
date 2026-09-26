@@ -504,3 +504,83 @@
 
 /* Moment message: which missed supplement day a freeze covered and the supplement streak it saved. First value is a weekday name, second a number of days (always 3 or more). */
 "A freeze covered %@ — your %lld-day supplement streak lives on." = "A freeze covered %@ — your %lld-day supplement streak lives on.";
+
+/* add-supplements 6.3: supplement badges, the vitamin alphabet, the creatine journey and the hub card. */
+
+/* Badge title: the first day every planned supplement was taken. */
+"First Stack" = "First Stack";
+
+/* Badge description: how to earn First Stack. */
+"Take every supplement planned for a day." = "Take every supplement planned for a day.";
+
+/* Badge title: a 7-day supplement streak. */
+"Stack Week" = "Stack Week";
+
+/* Badge description. */
+"Reach a 7-day supplement streak." = "Reach a 7-day supplement streak.";
+
+/* Badge title: a 30-day supplement streak. */
+"Full Stack Month" = "Full Stack Month";
+
+/* Badge description. */
+"Reach a 30-day supplement streak." = "Reach a 30-day supplement streak.";
+
+/* Badge title: creatine taken on 30 days. */
+"Creatine 30" = "Creatine 30";
+
+/* Badge description. */
+"Take creatine on 30 days." = "Take creatine on 30 days.";
+
+/* Badge title: creatine taken on 100 days. */
+"Creatine 100" = "Creatine 100";
+
+/* Badge description. */
+"Take creatine on 100 days." = "Take creatine on 100 days.";
+
+/* Badge title: vitamin D through the dark months. */
+"Sunshine" = "Sunshine";
+
+/* Badge description: 60 days within one October-March season. */
+"Take vitamin D on 60 days between October and March." = "Take vitamin D on 60 days between October and March.";
+
+/* Badge title: omega-3 every day for a month. */
+"Omega Month" = "Omega Month";
+
+/* Badge description. */
+"Take omega-3 on 30 days in a row." = "Take omega-3 on 30 days in a row.";
+
+/* Badge title: supplements restocked before they ran out. */
+"Never Ran Out" = "Never Ran Out";
+
+/* Badge description. */
+"Restock a supplement before it runs out, 3 times." = "Restock a supplement before it runs out, 3 times.";
+
+/* Badge title: 5 different vitamins and minerals taken (the vitamin alphabet collection). */
+"Alphabet 5" = "Alphabet 5";
+
+/* Badge description. */
+"Take 5 different vitamins and minerals." = "Take 5 different vitamins and minerals.";
+
+/* Badge title: 10 different vitamins and minerals taken (the vitamin alphabet collection). */
+"Alphabet 10" = "Alphabet 10";
+
+/* Badge description. */
+"Take 10 different vitamins and minerals." = "Take 10 different vitamins and minerals.";
+
+/* Collection name: the distinct vitamins and minerals taken. */
+"Vitamin alphabet" = "Vitamin alphabet";
+
+/* Journey name: cumulative creatine grams taken. */
+"Creatine journey" = "Creatine journey";
+
+/* Moment title: a creatine-journey milestone (cumulative grams) was reached. */
+"Creatine milestone!" = "Creatine milestone!";
+
+/* Moment message: the cumulative creatine amount just reached. The value is an amount with its unit, e.g. '500 g' or '1 kg'. */
+"%@ of creatine taken so far." = "%@ of creatine taken so far.";
+
+/* Hub card title of the supplements feature. */
+"Supplements" = "Supplements";
+
+/* Supplements hub card: the current supplement streak. The value is a number of days. */
+"Supplement streak: %lld" = "Supplement streak: %lld";

@@ -500,3 +500,83 @@
 
 /* Moment message: which missed supplement day a freeze covered and the supplement streak it saved. First value is a weekday name, second a number of days (always 3 or more). */
 "A freeze covered %@ — your %lld-day supplement streak lives on." = "Zamrazení zachránilo %@ – tvoje série doplňků %lld dní žije dál.";
+
+/* add-supplements 6.3: supplement badges, the vitamin alphabet, the creatine journey and the hub card. */
+
+/* Badge title: the first day every planned supplement was taken. */
+"First Stack" = "První den se vším";
+
+/* Badge description: how to earn First Stack. */
+"Take every supplement planned for a day." = "Vezmi si všechny doplňky naplánované na jeden den.";
+
+/* Badge title: a 7-day supplement streak. */
+"Stack Week" = "Týden bez vynechání";
+
+/* Badge description. */
+"Reach a 7-day supplement streak." = "Dosáhni série doplňků dlouhé 7 dní.";
+
+/* Badge title: a 30-day supplement streak. */
+"Full Stack Month" = "Měsíc bez vynechání";
+
+/* Badge description. */
+"Reach a 30-day supplement streak." = "Dosáhni série doplňků dlouhé 30 dní.";
+
+/* Badge title: creatine taken on 30 days. */
+"Creatine 30" = "Kreatin 30";
+
+/* Badge description. */
+"Take creatine on 30 days." = "Vezmi si kreatin ve 30 dnech.";
+
+/* Badge title: creatine taken on 100 days. */
+"Creatine 100" = "Kreatin 100";
+
+/* Badge description. */
+"Take creatine on 100 days." = "Vezmi si kreatin ve 100 dnech.";
+
+/* Badge title: vitamin D through the dark months. */
+"Sunshine" = "Sluníčko";
+
+/* Badge description: 60 days within one October-March season. */
+"Take vitamin D on 60 days between October and March." = "Vezmi si vitamin D v 60 dnech mezi říjnem a březnem.";
+
+/* Badge title: omega-3 every day for a month. */
+"Omega Month" = "Omega měsíc";
+
+/* Badge description. */
+"Take omega-3 on 30 days in a row." = "Ber omega-3 30 dní po sobě.";
+
+/* Badge title: supplements restocked before they ran out. */
+"Never Ran Out" = "Nikdy nedošlo";
+
+/* Badge description. */
+"Restock a supplement before it runs out, 3 times." = "Třikrát doplň zásobu dřív, než dojde.";
+
+/* Badge title: 5 different vitamins and minerals taken (the vitamin alphabet collection). */
+"Alphabet 5" = "Abeceda 5";
+
+/* Badge description. */
+"Take 5 different vitamins and minerals." = "Vezmi si 5 různých vitaminů a minerálů.";
+
+/* Badge title: 10 different vitamins and minerals taken (the vitamin alphabet collection). */
+"Alphabet 10" = "Abeceda 10";
+
+/* Badge description. */
+"Take 10 different vitamins and minerals." = "Vezmi si 10 různých vitaminů a minerálů.";
+
+/* Collection name: the distinct vitamins and minerals taken. */
+"Vitamin alphabet" = "Vitaminová abeceda";
+
+/* Journey name: cumulative creatine grams taken. */
+"Creatine journey" = "Kreatinová cesta";
+
+/* Moment title: a creatine-journey milestone (cumulative grams) was reached. */
+"Creatine milestone!" = "Kreatinový milník!";
+
+/* Moment message: the cumulative creatine amount just reached. The value is an amount with its unit, e.g. '500 g' or '1 kg'. */
+"%@ of creatine taken so far." = "Celkem už %@ kreatinu.";
+
+/* Hub card title of the supplements feature. */
+"Supplements" = "Doplňky stravy";
+
+/* Supplements hub card: the current supplement streak. The value is a number of days. */
+"Supplement streak: %lld" = "Série doplňků: %lld";
