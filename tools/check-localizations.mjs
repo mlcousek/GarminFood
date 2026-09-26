@@ -439,7 +439,8 @@ for (const pkg of PACKAGES) {
 // in-flight changes); they are reported, not failed. Remove an entry once
 // its file is clean (the checker says so).
 const PLURAL_TERNARY_BASELINE = new Set([
-  'ios/GarminFood/Progress/ProgressViews.swift',
+  // Empty since Wave 4 (add-localization 4.1): every file is clean, so any
+  // new plural ternary fails the job.
 ]);
 {
   const TERNARY = /[!=]=\s*1\s*\?/;

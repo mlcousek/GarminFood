@@ -150,7 +150,7 @@ extension View {
         accessibilityActions {
             if let onSelect {
                 ForEach(markers) { marker in
-                    Button("Show note: \(marker.accessibilityLabel)") {
+                    Button(String(localized: "Show note: \(marker.accessibilityLabel)", comment: "VoiceOver action on a Trends chart: open a day note. %@ = its tags and date.")) {
                         onSelect(marker.note)
                     }
                 }

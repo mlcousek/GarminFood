@@ -1,6 +1,30 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ grams": {
+      "comment": "VoiceOver: a macro amount too large for a whole-number count (practically never).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ gramů"
+          }
+        }
+      }
+    },
+    "%@ trend": {
+      "comment": "VoiceOver label of a Trends chart; %@ = the macro name (Calories, Protein...).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trend: %@"
+          }
+        }
+      }
+    },
     "%@ · %@": {
       "comment": "Food name · serving label.",
       "extractionState": "manual",
@@ -289,6 +313,18 @@
         }
       }
     },
+    "%@, %@ achievement, unlocked %@": {
+      "comment": "VoiceOver: an unlocked badge tile. Title, rarity (adjective; Czech agrees with \"odznak\"), unlock date.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@ odznak, odemčeno %3$@"
+          }
+        }
+      }
+    },
     "%@, %@ times %@": {
       "comment": "VoiceOver label of a quick-pick card. %1$@ = food name, %2$@ = usual quantity (e.g. 2), %3$@ = serving (e.g. 100 g).",
       "extractionState": "manual",
@@ -325,6 +361,18 @@
         }
       }
     },
+    "%@, %@, completed": {
+      "comment": "VoiceOver: a daily challenge row. Title, description, done.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, splněno"
+          }
+        }
+      }
+    },
     "%@, %@, next milestone": {
       "comment": "Accessibility: journey milestone name, its amount, the next one.",
       "extractionState": "manual",
@@ -345,6 +393,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@, %@, zatím nedosaženo"
+          }
+        }
+      }
+    },
+    "%@, %@, not yet completed": {
+      "comment": "VoiceOver: a daily challenge row. Title, description, still open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, zatím nesplněno"
           }
         }
       }
@@ -385,6 +445,18 @@
         }
       }
     },
+    "%@, locked, %@ achievement. %@": {
+      "comment": "VoiceOver: a locked badge tile. Title, rarity (adjective; Czech agrees with \"odznak\"), how to earn it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, zamčeno, %2$@ odznak. %3$@"
+          }
+        }
+      }
+    },
     "%@: %@ filled": {
       "comment": "Endless water goal. First %@ = pool name, second %@ = percentage like \"0.14 %\".",
       "extractionState": "manual",
@@ -393,6 +465,78 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@: naplněno %@"
+          }
+        }
+      }
+    },
+    "%@: met %@": {
+      "comment": "VoiceOver: a Goals history row. First %@ = the day, second = the goals met (\"Calories and Protein\").",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: splněno – %2$@"
+          }
+        }
+      }
+    },
+    "%@: no goals met": {
+      "comment": "VoiceOver: a Goals history row with no goal met. %@ = the day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: žádný cíl nesplněn"
+          }
+        }
+      }
+    },
+    "%lld XP": {
+      "comment": "Total XP earned.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld XP"
+          }
+        }
+      }
+    },
+    "%lld XP to level %lld": {
+      "comment": "Level card: XP still needed, then the next level number.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld XP do úrovně %2$lld"
+          }
+        }
+      }
+    },
+    "%lld XP total": {
+      "comment": "Level screen: all XP ever earned.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celkem %lld XP"
+          }
+        }
+      }
+    },
+    "%lld completed so far": {
+      "comment": "Challenge card: how many challenges were ever completed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím splněno: %lld"
           }
         }
       }
@@ -444,6 +588,60 @@
                 "stringUnit": {
                   "state": "translated",
                   "value": "%lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld days in a row. That's a habit now.": {
+      "comment": "Celebration text under a streak milestone. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day in a row. That's a habit now."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days in a row. That's a habit now."
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld den v řadě. To už je návyk."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dny v řadě. To už je návyk."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dne v řadě. To už je návyk."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dní v řadě. To už je návyk."
                 }
               }
             }
@@ -567,6 +765,60 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld g bílkovin do 60 min"
+          }
+        }
+      }
+    },
+    "%lld grams": {
+      "comment": "VoiceOver: a macro amount in whole grams. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld gram"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld grams"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld gram"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld gramy"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld gramu"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld gramů"
+                }
+              }
+            }
           }
         }
       }
@@ -889,6 +1141,42 @@
         }
       }
     },
+    "%lld of %lld XP into this level": {
+      "comment": "Level screen: XP earned inside the current level, out of what it takes.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld z %2$lld XP v této úrovni"
+          }
+        }
+      }
+    },
+    "%lld of %lld achievements unlocked": {
+      "comment": "VoiceOver: the achievements card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odemčeno %1$lld z %2$lld odznaků"
+          }
+        }
+      }
+    },
+    "%lld of %lld achievements unlocked, %lld percent": {
+      "comment": "VoiceOver: the achievements completion ring.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odemčeno %1$lld z %2$lld odznaků, %3$lld %%"
+          }
+        }
+      }
+    },
     "%lld of %lld secrets found": {
       "comment": "Progress tab secrets card (and its VoiceOver label): secret achievements found / total. Only counts, never titles.",
       "extractionState": "manual",
@@ -897,6 +1185,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nalezeno %lld z %lld tajných odznaků"
+          }
+        }
+      }
+    },
+    "%lld percent to the next level": {
+      "comment": "VoiceOver: progress through the current level, in percent.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% do další úrovně"
           }
         }
       }
@@ -1009,6 +1309,150 @@
         }
       }
     },
+    "%lld-day streak": {
+      "comment": "Celebration title: a streak milestone (a multiple of 7 days). Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld-day streak"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld-day streak"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série %lld den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Série %lld dní"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld-day water streak": {
+      "comment": "Trends card: consecutive days the water goal was met. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld-day water streak"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld-day water streak"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Cíl vody %lld den v řadě"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Cíl vody %lld dny v řadě"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Cíl vody %lld dne v řadě"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Cíl vody %lld dní v řadě"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lldd": {
+      "comment": "Challenge list: the time window, abbreviated days (\"7d\"). Czech: \"7 d\".",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld d"
+          }
+        }
+      }
+    },
+    "+%lld XP": {
+      "comment": "XP reward of an action or challenge.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld XP"
+          }
+        }
+      }
+    },
+    "/ %lld unlocked": {
+      "comment": "Achievements card, after the big unlocked count: the total number of badges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ %lld odemčeno"
+          }
+        }
+      }
+    },
     "A daily nudge to check today's challenges.": {
       "comment": "Reminders screen footer under the challenges reminder.",
       "extractionState": "manual",
@@ -1077,6 +1521,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Barva zvýraznění"
+          }
+        }
+      }
+    },
+    "Achievement": {
+      "comment": "Badge detail sheet title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odznak"
+          }
+        }
+      }
+    },
+    "Achievements": {
+      "comment": "Progress card header and Achievements screen title (badges).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odznaky"
           }
         }
       }
@@ -1387,6 +1855,18 @@
         }
       }
     },
+    "All challenges": {
+      "comment": "Challenges screen section: the whole catalog.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny výzvy"
+          }
+        }
+      }
+    },
     "All fasting badges earned": {
       "comment": "Sport & body screen: every fasting badge unlocked.",
       "extractionState": "manual",
@@ -1443,6 +1923,1146 @@
           "stringUnit": {
             "state": "translated",
             "value": "Už je aktuální."
+          }
+        }
+      }
+    },
+    "Before your first log": {
+      "comment": "Streak day: before the first entry ever.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Před tvým prvním zápisem"
+          }
+        }
+      }
+    },
+    "Best %lld": {
+      "comment": "Streak card: the longest streak ever, in days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejlepší %lld"
+          }
+        }
+      }
+    },
+    "Broken at %@": {
+      "comment": "Fasting history row: the fast was broken; %@ = clock time of the first food logged inside the window.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přerušeno v %@"
+          }
+        }
+      }
+    },
+    "Calendar": {
+      "comment": "Achievements group header: date-based badges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalendář"
+          }
+        }
+      }
+    },
+    "Challenge": {
+      "comment": "Progress card header: the active challenge.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výzva"
+          }
+        }
+      }
+    },
+    "Challenge done. +%lld XP.": {
+      "comment": "Celebration text: a challenge was completed; %lld = XP awarded.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výzva splněna. +%lld XP."
+          }
+        }
+      }
+    },
+    "Challenges": {
+      "comment": "Challenges screen title; Achievements group header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výzvy"
+          }
+        }
+      }
+    },
+    "Coming up": {
+      "comment": "Level screen section: the next few levels.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další úrovně"
+          }
+        }
+      }
+    },
+    "Complete a challenge": {
+      "comment": "Level screen, how to earn XP: an action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splň výzvu"
+          }
+        }
+      }
+    },
+    "Completed": {
+      "comment": "Challenges screen section: completed challenges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněné"
+          }
+        }
+      }
+    },
+    "Completed challenges will show up here.": {
+      "comment": "Challenges screen, Completed section, empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tady se objeví splněné výzvy."
+          }
+        }
+      }
+    },
+    "Completionist": {
+      "comment": "Achievements group header: badges for unlocking other badges.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sběratel"
+          }
+        }
+      }
+    },
+    "Daily Challenges": {
+      "comment": "Achievements group header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denní výzvy"
+          }
+        }
+      }
+    },
+    "Daily fasting window": {
+      "comment": "Settings > Fasting: the on/off switch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denní okno půstu"
+          }
+        }
+      }
+    },
+    "Day streak": {
+      "comment": "Trends stat tile label under the water-goal streak length (the number is the tile value).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série dní"
+          }
+        }
+      }
+    },
+    "Each day": {
+      "comment": "Settings > Fasting: row label before the fast/eating split ('16 h fast · 8 h eating').",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každý den"
+          }
+        }
+      }
+    },
+    "Extend your streak": {
+      "comment": "Level screen, how to earn XP: an action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prodluž sérii"
+          }
+        }
+      }
+    },
+    "Extreme Days": {
+      "comment": "Achievements group header: badges for very high-calorie days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extrémní dny"
+          }
+        }
+      }
+    },
+    "Fast from": {
+      "comment": "Settings > Fasting: clock time the daily fast starts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst od"
+          }
+        }
+      }
+    },
+    "Fast until": {
+      "comment": "Settings > Fasting: clock time the daily fast ends.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst do"
+          }
+        }
+      }
+    },
+    "Fasting is off": {
+      "comment": "Fasting history empty state title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst je vypnutý"
+          }
+        }
+      }
+    },
+    "Fasting schedule": {
+      "comment": "Fasting history: link to the schedule settings; also that screen's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozvrh půstu"
+          }
+        }
+      }
+    },
+    "Forgiven": {
+      "comment": "Streak legend: a missed day forgiven by the grace rule.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odpuštěno"
+          }
+        }
+      }
+    },
+    "From %@ to %@ over %lld days logged": {
+      "comment": "VoiceOver value of a Trends chart. %@ = first and last value with the unit spelled out, %lld = days with data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "První zapsaný den %1$@, poslední %2$@. Zapsané dny: %3$lld."
+          }
+        }
+      }
+    },
+    "From %@ to %@ over %lld days, goal met on %lld of them": {
+      "comment": "VoiceOver value of the Trends water chart. %@ = first/last day total spelled out, then days shown and days the goal was met.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "První den %1$@, poslední %2$@. Cíl splněn: %4$lld z %3$lld."
+          }
+        }
+      }
+    },
+    "Fun Facts": {
+      "comment": "Achievements group header: playful lifetime-calorie comparisons.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zajímavosti"
+          }
+        }
+      }
+    },
+    "Goal Hitting": {
+      "comment": "Achievements group header: badges for days a nutrition goal was met.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plnění cílů"
+          }
+        }
+      }
+    },
+    "Goal results appear here once days are loaded from Garmin.": {
+      "comment": "Goals history, empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výsledky cílů se tu objeví, až se dny načtou z Garminu."
+          }
+        }
+      }
+    },
+    "Goals, last 14 days": {
+      "comment": "Progress tab section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíle, posledních 14 dní"
+          }
+        }
+      }
+    },
+    "Hit a nutrition goal": {
+      "comment": "Level screen, how to earn XP: an action.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splň nutriční cíl"
+          }
+        }
+      }
+    },
+    "How streaks work": {
+      "comment": "Streak screen section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jak série funguje"
+          }
+        }
+      }
+    },
+    "How to earn XP": {
+      "comment": "Level screen section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jak získat XP"
+          }
+        }
+      }
+    },
+    "Judged from the times foods were logged in GarminFood (and in Garmin Connect, for days you've opened here). A fast is broken by the first food logged inside it.": {
+      "comment": "Fasting history footnote.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posuzuje se podle časů, kdy bylo jídlo zapsáno v GarminFood (a v Garmin Connect u dnů, které už tu máš otevřené). Půst přeruší první jídlo zapsané uvnitř okna."
+          }
+        }
+      }
+    },
+    "Keep going": {
+      "comment": "Button on the celebration card that dismisses it.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat"
+          }
+        }
+      }
+    },
+    "Kept": {
+      "comment": "Fasting history row: the fast was kept that day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodrženo"
+          }
+        }
+      }
+    },
+    "Last 6 weeks": {
+      "comment": "Streak screen: the calendar grid's header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posledních 6 týdnů"
+          }
+        }
+      }
+    },
+    "Level %lld, %@, %@ tier": {
+      "comment": "VoiceOver: the level ring. Level number, tier name, tier grade (adjective; Czech agrees with \"stupeň\").",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úroveň %1$lld, %2$@, %3$@ stupeň"
+          }
+        }
+      }
+    },
+    "Level %lld, %@, %@ tier, %lld XP": {
+      "comment": "VoiceOver: the level card. Level number, tier name, tier grade (an adjective; Czech agrees with \"stupeň\"), total XP.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úroveň %1$lld, %2$@, %3$@ stupeň, %4$lld XP"
+          }
+        }
+      }
+    },
+    "Levels": {
+      "comment": "Achievements group header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úrovně"
+          }
+        }
+      }
+    },
+    "Locked -- keep going": {
+      "comment": "Badge detail of a locked badge.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zamčeno – pokračuj dál"
+          }
+        }
+      }
+    },
+    "Log a food to get your first challenge.": {
+      "comment": "Challenge card / Challenges screen before any challenge exists.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš jídlo a dostaneš první výzvu."
+          }
+        }
+      }
+    },
+    "Log at least one food on a day to count it. One missed day in any 7 is forgiven, shown with a shield. A second miss in the same 7 days starts the streak over.": {
+      "comment": "Streak screen explanation of the grace rule.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den se počítá, když v něm zapíšeš aspoň jedno jídlo. Jeden vynechaný den v každých 7 dnech se odpouští a ukáže se se štítem. Druhé vynechání během stejných 7 dní sérii vynuluje."
+          }
+        }
+      }
+    },
+    "Log something today to keep your %lld-day streak.": {
+      "comment": "Streak screen warning; %lld = the streak length in days. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Log something today to keep your %lld-day streak."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Log something today to keep your %lld-day streak."
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zapiš dnes něco, ať udržíš sérii dlouhou %lld den."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zapiš dnes něco, ať udržíš sérii dlouhou %lld dny."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zapiš dnes něco, ať udržíš sérii dlouhou %lld dne."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zapiš dnes něco, ať udržíš sérii dlouhou %lld dní."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Log today to keep it": {
+      "comment": "Streak card: the streak ends unless something is logged today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš dnes, ať ji udržíš"
+          }
+        }
+      }
+    },
+    "Log today to start": {
+      "comment": "Streak card: no streak yet; logging today starts one.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš dnes a začni"
+          }
+        }
+      }
+    },
+    "Log your weight to start tracking it here.": {
+      "comment": "Weight card before any weigh-in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapiš svou váhu a začni ji tu sledovat."
+          }
+        }
+      }
+    },
+    "Logged": {
+      "comment": "Streak day / legend: something was logged.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsáno"
+          }
+        }
+      }
+    },
+    "Logging Volume": {
+      "comment": "Achievements group header: badges for the number of entries logged.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počet zápisů"
+          }
+        }
+      }
+    },
+    "Logging food inside the window shows a gentle note but never blocks.": {
+      "comment": "Settings > Fasting footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsání jídla uvnitř okna ukáže jen jemné upozornění, nikdy ho nezablokuje."
+          }
+        }
+      }
+    },
+    "Macro and hydration history over time.": {
+      "comment": "Trends card description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vývoj makroživin a pitného režimu v čase."
+          }
+        }
+      }
+    },
+    "Macros, last 30 days": {
+      "comment": "Trends section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Makroživiny, posledních 30 dní"
+          }
+        }
+      }
+    },
+    "Max level reached": {
+      "comment": "Level card at the top level.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejvyšší úroveň dosažena"
+          }
+        }
+      }
+    },
+    "Missed, forgiven": {
+      "comment": "Streak day: missed, but forgiven by the grace rule.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vynecháno, odpuštěno"
+          }
+        }
+      }
+    },
+    "New achievement unlocked.": {
+      "comment": "Celebration text under a newly unlocked badge's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nový odznak odemčen."
+          }
+        }
+      }
+    },
+    "No note text for this day, just tags.": {
+      "comment": "Day-note sheet on Trends when the note has tags but no text.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "K tomuhle dni není žádný text, jen štítky."
+          }
+        }
+      }
+    },
+    "Not tracked": {
+      "comment": "Fasting history row: no data to judge that day (fasting off or history trimmed).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nesledováno"
+          }
+        }
+      }
+    },
+    "Nothing logged in this range": {
+      "comment": "VoiceOver value of a Trends chart with no data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V tomto období nic zapsáno"
+          }
+        }
+      }
+    },
+    "One challenge is active at a time. A new one starts when it's completed or its time runs out.": {
+      "comment": "Challenges screen footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivní je vždy jedna výzva. Nová začne, když ji splníš nebo když jí vyprší čas."
+          }
+        }
+      }
+    },
+    "Opens achievement details": {
+      "comment": "VoiceOver hint of a badge tile.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře podrobnosti odznaku"
+          }
+        }
+      }
+    },
+    "Opens achievements": {
+      "comment": "VoiceOver hint of the achievements card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře odznaky"
+          }
+        }
+      }
+    },
+    "Opens challenges": {
+      "comment": "VoiceOver hint of the challenge card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře výzvy"
+          }
+        }
+      }
+    },
+    "Opens hydration tracking": {
+      "comment": "VoiceOver hint of the water card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře sledování pitného režimu"
+          }
+        }
+      }
+    },
+    "Opens level details": {
+      "comment": "VoiceOver hint of the level card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře podrobnosti úrovně"
+          }
+        }
+      }
+    },
+    "Opens streak history": {
+      "comment": "VoiceOver hint of the streak card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře historii série"
+          }
+        }
+      }
+    },
+    "Opens trends and insights": {
+      "comment": "VoiceOver hint of the Trends card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře trendy a přehledy"
+          }
+        }
+      }
+    },
+    "Opens your fasting history": {
+      "comment": "VoiceOver hint of the Today fasting card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře historii půstu"
+          }
+        }
+      }
+    },
+    "Pick two different times": {
+      "comment": "Settings > Fasting: shown when start and end are the same time.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyber dva různé časy"
+          }
+        }
+      }
+    },
+    "Runs overnight, from %@ until %@ the next day. Logging food inside it shows a gentle note but never blocks.": {
+      "comment": "Settings > Fasting footer for a window crossing midnight. %@ = clock times (start, end).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Běží přes noc, od %1$@ do %2$@ dalšího dne. Zapsání jídla uvnitř okna ukáže jen jemné upozornění, nikdy ho nezablokuje."
+          }
+        }
+      }
+    },
+    "Set a fasting window that repeats every day. The home screen shows where you are in it.": {
+      "comment": "Settings > Fasting footer while fasting is off.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastav si okno půstu, které se opakuje každý den. Na úvodní obrazovce uvidíš, kde v něm právě jsi."
+          }
+        }
+      }
+    },
+    "Show note: %@": {
+      "comment": "VoiceOver action on a Trends chart: open a day note. %@ = its tags and date.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit poznámku: %@"
+          }
+        }
+      }
+    },
+    "Start and end can't be the same time.": {
+      "comment": "Settings > Fasting footer: the chosen start and end are equal.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Začátek a konec nemůžou být ve stejný čas."
+          }
+        }
+      }
+    },
+    "Streak": {
+      "comment": "Progress card header and Streak screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série"
+          }
+        }
+      }
+    },
+    "Streak %lld days, best %lld": {
+      "comment": "VoiceOver: the streak card. Current streak, then the longest one, both in days.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuální série %1$lld, nejlepší %2$lld"
+          }
+        }
+      }
+    },
+    "Streak and goal bonuses are awarded at most once a day. Each level takes a little more XP than the last.": {
+      "comment": "Level screen footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonusy za sérii a cíle dostaneš nejvýš jednou denně. Každá úroveň potřebuje o trochu víc XP než ta předchozí."
+          }
+        }
+      }
+    },
+    "Streaks": {
+      "comment": "Achievements group header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série"
+          }
+        }
+      }
+    },
+    "Today counted": {
+      "comment": "Streak card: today already counts toward the streak.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnešek se počítá"
+          }
+        }
+      }
+    },
+    "Today's challenge done. +%lld XP.": {
+      "comment": "Celebration text: a daily challenge was completed; %lld = XP awarded.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnešní výzva splněna. +%lld XP."
+          }
+        }
+      }
+    },
+    "Today's daily challenges will show up here.": {
+      "comment": "Challenges screen, Today section, empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tady se objeví dnešní denní výzvy."
+          }
+        }
+      }
+    },
+    "Today, nothing logged yet": {
+      "comment": "Streak day: today, still open.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnes, zatím nic zapsáno"
+          }
+        }
+      }
+    },
+    "Trends": {
+      "comment": "Trends screen title and Progress card header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trendy"
+          }
+        }
+      }
+    },
+    "Turn on a daily fasting window to see which days you kept.": {
+      "comment": "Fasting history empty state message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapni si denní okno půstu a uvidíš, které dny se ti ho podařilo dodržet."
+          }
+        }
+      }
+    },
+    "Unlocked %@": {
+      "comment": "Badge detail: the unlock date.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odemčeno %@"
+          }
+        }
+      }
+    },
+    "Upcoming": {
+      "comment": "Fasting history row / streak dot: a day or window that hasn't started yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nadcházející"
+          }
+        }
+      }
+    },
+    "Variety": {
+      "comment": "Achievements group header: badges for different foods.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pestrost"
+          }
+        }
+      }
+    },
+    "Water trend": {
+      "comment": "VoiceOver label of the Trends water chart.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trend vody"
+          }
+        }
+      }
+    },
+    "Water, last %lld days": {
+      "comment": "Trends section header; %lld = days shown (21). Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Water, last %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Water, last %lld days"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Voda, poslední %lld den"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Voda, poslední %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Voda, posledních %lld dne"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Voda, posledních %lld dní"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "You're fasting until %@ — log anyway?": {
+      "comment": "Note on the confirm screen while fasting; %@ = clock time the fast ends. Never blocks logging.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Máš půst do %@ – přesto zapsat?"
+          }
+        }
+      }
+    },
+    "achievements unlocked": {
+      "comment": "Under the achievements completion ring (percent and count above it).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "odemčených odznaků"
           }
         }
       }
@@ -1719,6 +3339,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Snídaně"
+          }
+        }
+      }
+    },
+    "at %lld XP": {
+      "comment": "Level screen, upcoming levels: the total XP a level is reached at.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "při %lld XP"
           }
         }
       }
@@ -4735,6 +6367,78 @@
         }
       }
     },
+    "goal.short.calories": {
+      "comment": "Goals history column header for calories, max ~4 characters.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kcal"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kcal"
+          }
+        }
+      }
+    },
+    "goal.short.carbs": {
+      "comment": "Goals history column header: one-letter abbreviation of Carbs (Czech: S, sacharidy).",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S"
+          }
+        }
+      }
+    },
+    "goal.short.fat": {
+      "comment": "Goals history column header: one-letter abbreviation of Fat (Czech: T, tuky).",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "T"
+          }
+        }
+      }
+    },
+    "goal.short.protein": {
+      "comment": "Goals history column header: one-letter abbreviation of Protein (Czech: B, bílkoviny).",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "B"
+          }
+        }
+      }
+    },
     "kcal": {
       "comment": "Unit under the calorie number in Today's ring.",
       "extractionState": "manual",
@@ -6039,6 +7743,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bez zásahu"
+          }
+        }
+      }
+    },
+    "ml goal": {
+      "comment": "Trends stat tile label under the daily water goal in ml.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl v ml"
+          }
+        }
+      }
+    },
+    "ml today": {
+      "comment": "Water card: unit label after today's total.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ml dnes"
           }
         }
       }

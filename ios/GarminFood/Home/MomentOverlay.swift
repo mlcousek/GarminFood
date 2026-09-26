@@ -162,8 +162,8 @@ private struct MomentCard: View {
 
     private var title: String {
         switch moment {
-        case .levelUp(let level): return "Level \(level)"
-        case .streakMilestone(let days): return "\(days)-day streak"
+        case .levelUp(let level): return String(localized: "Level \(level)")
+        case .streakMilestone(let days): return String(localized: "\(days)-day streak", comment: "Celebration title: a streak milestone (a multiple of 7 days). Plural.")
         case .challengeCompleted(let name, _): return name
         case .dailyChallengeCompleted(let name, _): return name
         case .achievementUnlocked(let name, _, _): return name
@@ -183,10 +183,10 @@ private struct MomentCard: View {
     private var detail: String {
         switch moment {
         case .levelUp(let level): return LevelTiers.tier(forLevel: level).flavor
-        case .streakMilestone(let days): return "\(days) days in a row. That's a habit now."
-        case .challengeCompleted(_, let xp): return "Challenge done. +\(xp) XP."
-        case .dailyChallengeCompleted(_, let xp): return "Today's challenge done. +\(xp) XP."
-        case .achievementUnlocked: return "New achievement unlocked."
+        case .streakMilestone(let days): return String(localized: "\(days) days in a row. That's a habit now.", comment: "Celebration text under a streak milestone. Plural.")
+        case .challengeCompleted(_, let xp): return String(localized: "Challenge done. +\(xp) XP.", comment: "Celebration text: a challenge was completed; %lld = XP awarded.")
+        case .dailyChallengeCompleted(_, let xp): return String(localized: "Today's challenge done. +\(xp) XP.", comment: "Celebration text: a daily challenge was completed; %lld = XP awarded.")
+        case .achievementUnlocked: return String(localized: "New achievement unlocked.", comment: "Celebration text under a newly unlocked badge's name.")
         case .feature(let feature):
             guard feature.xpAwarded > 0 else { return feature.message }
             return String(localized: "\(feature.message) +\(feature.xpAwarded) XP",

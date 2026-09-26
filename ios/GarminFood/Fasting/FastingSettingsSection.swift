@@ -69,15 +69,17 @@ struct FastingSettingsSection: View {
 
     private func footerText(_ preferences: AppPreferences) -> String {
         guard preferences.fastingEnabled else {
-            return "Set a fasting window that repeats every day. The home screen shows where you are in it."
+            return String(localized: "Set a fasting window that repeats every day. The home screen shows where you are in it.", comment: "Settings > Fasting footer while fasting is off.")
         }
         guard let schedule = preferences.fastingSchedule else {
-            return "Start and end can't be the same time."
+            return String(localized: "Start and end can't be the same time.", comment: "Settings > Fasting footer: the chosen start and end are equal.")
         }
         if schedule.crossesMidnight {
-            return "Runs overnight, from \(FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.startMinute))) until \(FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.endMinute))) the next day. Logging food inside it shows a gentle note but never blocks."
+            let from = FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.startMinute))
+            let until = FastingFormat.clock(FastingFormat.date(minuteOfDay: schedule.endMinute))
+            return String(localized: "Runs overnight, from \(from) until \(until) the next day. Logging food inside it shows a gentle note but never blocks.", comment: "Settings > Fasting footer for a window crossing midnight. %@ = clock times (start, end).")
         }
-        return "Logging food inside the window shows a gentle note but never blocks."
+        return String(localized: "Logging food inside the window shows a gentle note but never blocks.", comment: "Settings > Fasting footer.")
     }
 
     private func timeBinding(read: @escaping () -> Int, write: @escaping (Int) -> Void) -> Binding<Date> {
