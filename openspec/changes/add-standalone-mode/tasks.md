@@ -74,9 +74,9 @@ owner may override** — a later answer becomes its own small follow-up.
 > from 6.1 is a non-goal there, and is left for a later change. 6.4 (the
 > on-device check) still applies to her install.
 
-- [ ] 6.1 `BackupBundle` (schema/version, every local store, non-device preferences; excludes tokens, health cache, outboxes, offline index, diagnostics) + `food-log.csv` writer. Tests: round trip, CSV escaping, no secrets.
-- [ ] 6.2 Settings → Data: "Back up now" (ShareLink), "Restore from backup…" (fileImporter → version check → preview → safety backup → replace → reload). Tests for version refusal and replace.
-- [ ] 6.3 "Last backup: N days ago" + Today reminder card after 14 days (dismiss for 14 days). Czech strings.
+- [x] 6.1 `BackupBundle` (schema/version, every local store, non-device preferences; excludes tokens, health cache, outboxes, offline index, diagnostics) + `food-log.csv` writer. Tests: round trip, CSV escaping, no secrets. *Done in `add-data-safety` (#87, merged): snapshots, Settings → Data export/import with preview, staged restore, 14-day reminder. The CSV export stays a non-goal there.*
+- [x] 6.2 Settings → Data: "Back up now" (ShareLink), "Restore from backup…" (fileImporter → version check → preview → safety backup → replace → reload). Tests for version refusal and replace. *Done in `add-data-safety` (#87, merged): snapshots, Settings → Data export/import with preview, staged restore, 14-day reminder. The CSV export stays a non-goal there.*
+- [x] 6.3 "Last backup: N days ago" + Today reminder card after 14 days (dismiss for 14 days). Czech strings. *Done in `add-data-safety` (#87, merged): snapshots, Settings → Data export/import with preview, staged restore, 14-day reminder. The CSV export stays a non-goal there.*
 - [ ] 6.4 On-device: back up, reinstall, restore — food log, goals, custom foods, weight, water and progress return.
 
 ## 7. Wave 7 — Gamification gating, install guide, her first install (S)
