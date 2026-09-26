@@ -1,0 +1,76 @@
+{
+  "cards" : {
+    "2026-W37" : {
+      "completed" : {
+        "0" : "2026-09-07",
+        "1" : "2026-09-08",
+        "2" : "2026-09-08",
+        "3" : "2026-09-09",
+        "4" : "2026-09-07",
+        "5" : "2026-09-10",
+        "6" : "2026-09-11",
+        "7" : "2026-09-12",
+        "8" : "2026-09-13"
+      },
+      "full" : true,
+      "linesDone" : [
+        "row0",
+        "diag0",
+        "col1",
+        "row1",
+        "col0",
+        "col2",
+        "row2",
+        "diag1"
+      ],
+      "taskIds" : [
+        "e-early-log",
+        "e-fruit",
+        "e-veg-lunch",
+        "e-soup",
+        "free",
+        "e-tea",
+        "e-nuts",
+        "e-egg",
+        "m-fish"
+      ]
+    },
+    "2026-W38" : {
+      "completed" : {
+        "0" : "2026-09-14",
+        "1" : "2026-09-15",
+        "2" : "2026-09-15",
+        "4" : "2026-09-14"
+      },
+      "linesDone" : [
+        "row0"
+      ],
+      "taskIds" : [
+        "e-three-meals",
+        "e-new-food",
+        "e-fermented",
+        "e-fruit",
+        "free",
+        "m-three-fruits",
+        "e-egg",
+        "e-soup",
+        "e-tea"
+      ]
+    },
+    "2026-W39" : {
+      "taskIds" : [
+        "e-nuts",
+        "e-early-log",
+        "m-fish",
+        "e-veg-lunch",
+        "free",
+        "e-new-food",
+        "e-fermented",
+        "e-three-meals",
+        "m-three-fruits"
+      ]
+    }
+  },
+  "fullCards" : 1,
+  "totalLines" : 9
+}

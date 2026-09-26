@@ -1,0 +1,23 @@
+[
+  {
+    "foodId" : "5638212",
+    "servingId" : "5801234",
+    "numberOfUnits" : 1,
+    "timestamp" : "2026-09-15T06:40:00Z"
+  },
+  {
+    "foodId" : "5638212",
+    "servingId" : "5801234",
+    "numberOfUnits" : 1.5,
+    "timestamp" : "2026-09-20T06:45:00Z",
+    "nutritionDay" : "2026-09-20"
+  },
+  {
+    "foodId" : "3F9A1C2E-7B4D-4E8F-9A0B-1C2D3E4F5A61",
+    "servingId" : "custom",
+    "numberOfUnits" : 2,
+    "timestamp" : "2026-09-23T11:05:00Z",
+    "nutritionDay" : "2026-09-22",
+    "mealType" : "LUNCH"
+  }
+]

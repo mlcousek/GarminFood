@@ -1,0 +1,23 @@
+{
+  "backfilledAt" : "2026-08-02T10:12:45Z",
+  "discovered" : {
+    "kysane-zeli" : {
+      "day" : "2026-09-10"
+    },
+    "pad-thai" : {
+
+    },
+    "smazeny-syr" : {
+      "day" : "2026-08-01",
+      "foodName" : "Smažený sýr s hranolky"
+    }
+  },
+  "mysteryCzechBarcodes" : [
+    "8591234567890",
+    "8590000123456"
+  ],
+  "rainbowDayKeys" : [
+    "2026-08-14",
+    "2026-09-03"
+  ]
+}

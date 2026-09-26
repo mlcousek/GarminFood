@@ -1,0 +1,142 @@
+[
+  {
+    "id" : "B1C2D3E4-F5A6-4B7C-8D9E-0F1A2B3C4D01",
+    "name" : "Snídaně ovesná",
+    "ingredients" : [
+      {
+        "id" : "C1D2E3F4-A5B6-4C7D-8E9F-0A1B2C3D4E11",
+        "food" : {
+          "id" : "5638212",
+          "name" : "Oatmeal",
+          "brandName" : "Emco",
+          "source" : "GARMIN",
+          "servings" : [
+            {
+              "id" : "5801234",
+              "unit" : "g",
+              "numberOfUnits" : 50,
+              "calories" : 186,
+              "carbs" : 30.5,
+              "protein" : 6.5,
+              "fat" : 3.5
+            }
+          ],
+          "regionCode" : "CZ",
+          "languageCode" : "cs"
+        },
+        "serving" : {
+          "id" : "5801234",
+          "unit" : "g",
+          "numberOfUnits" : 50,
+          "calories" : 186,
+          "carbs" : 30.5,
+          "protein" : 6.5,
+          "fat" : 3.5
+        },
+        "quantity" : 1.5
+      },
+      {
+        "id" : "C1D2E3F4-A5B6-4C7D-8E9F-0A1B2C3D4E12",
+        "food" : {
+          "id" : "34567",
+          "name" : "Banana",
+          "source" : "FATSECRET",
+          "servings" : [
+            {
+              "id" : "31001",
+              "unit" : "medium",
+              "numberOfUnits" : 1,
+              "calories" : 105,
+              "carbs" : 27,
+              "protein" : 1.3,
+              "fat" : 0.4
+            }
+          ]
+        },
+        "serving" : {
+          "id" : "31001",
+          "unit" : "medium",
+          "numberOfUnits" : 1,
+          "calories" : 105,
+          "carbs" : 27,
+          "protein" : 1.3,
+          "fat" : 0.4
+        },
+        "quantity" : 1
+      }
+    ],
+    "createdAt" : "2026-09-12T06:30:00Z",
+    "garminCustomMealId" : 123456,
+    "garminSyncedAt" : "2026-09-12T06:31:10Z"
+  },
+  {
+    "id" : "B1C2D3E4-F5A6-4B7C-8D9E-0F1A2B3C4D02",
+    "name" : "Knedlíky s kefírem",
+    "ingredients" : [
+      {
+        "id" : "C1D2E3F4-A5B6-4C7D-8E9F-0A1B2C3D4E21",
+        "food" : {
+          "id" : "3F9A1C2E-7B4D-4E8F-9A0B-1C2D3E4F5A61",
+          "name" : "Babiččiny knedlíky",
+          "source" : "CUSTOM",
+          "servings" : [
+            {
+              "id" : "custom",
+              "unit" : "kus",
+              "numberOfUnits" : 1
+            }
+          ]
+        },
+        "serving" : {
+          "id" : "custom",
+          "unit" : "kus",
+          "numberOfUnits" : 1
+        },
+        "quantity" : 4,
+        "customFoodDraft" : {
+          "id" : "3F9A1C2E-7B4D-4E8F-9A0B-1C2D3E4F5A61",
+          "name" : "Babiččiny knedlíky",
+          "servingUnit" : "kus",
+          "numberOfUnits" : 1,
+          "createdAt" : "2026-09-10T17:20:00Z",
+          "backingFoodId" : "4471203",
+          "backingFoodName" : "Bread Dumpling",
+          "backingServingId" : "4629981",
+          "backingQuantityMultiplier" : 0.5
+        }
+      },
+      {
+        "id" : "C1D2E3F4-A5B6-4C7D-8E9F-0A1B2C3D4E22",
+        "food" : {
+          "id" : "8594001234567",
+          "name" : "Kefírové mléko",
+          "brandName" : "Olma",
+          "source" : "OPENFOODFACTS",
+          "servings" : [
+            {
+              "id" : "100g",
+              "unit" : "g",
+              "numberOfUnits" : 100,
+              "calories" : 50,
+              "carbs" : 4.1,
+              "protein" : 3.2,
+              "fat" : 2.2
+            }
+          ]
+        },
+        "serving" : {
+          "id" : "100g",
+          "unit" : "g",
+          "numberOfUnits" : 100,
+          "calories" : 50,
+          "carbs" : 4.1,
+          "protein" : 3.2,
+          "fat" : 2.2
+        },
+        "quantity" : 2.5
+      }
+    ],
+    "note" : "Neděle",
+    "createdAt" : "2026-09-21T10:00:00Z"
+  }
+]

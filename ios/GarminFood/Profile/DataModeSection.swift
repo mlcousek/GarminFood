@@ -4,9 +4,8 @@
 // explicit, confirmed switch between Garmin-connected and standalone
 // ("on this phone only") mode (add-standalone-mode D10, task 5.4).
 //
-// A self-contained Section so it can move into the Data screen that
-// `add-data-safety` builds (DataSettingsView, PR #87) with one line; until
-// that lands it sits in SettingsView where the Garmin account section is.
+// A self-contained Section, the first one on the Data screen that
+// `add-data-safety` builds (DataSettingsView).
 //
 // - Garmin -> standalone: refused while a drain is running ("Finishing
 //   sync, try again in a moment"). With undelivered food entries the user
@@ -20,7 +19,7 @@
 // Thin: the switching lives in AppEnvironment (`switchToStandalone`,
 // `deliverBeforeSwitching`, `switchToGarminIfSignedIn`).
 //
-// Depends on: AppEnvironment, GarminSignInSheet. Depended on by: SettingsView.
+// Depends on: AppEnvironment, GarminSignInSheet. Depended on by: DataSettingsView.
 
 import SwiftUI
 import FoodLogCore

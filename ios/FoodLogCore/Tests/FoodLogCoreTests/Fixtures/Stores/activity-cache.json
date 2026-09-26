@@ -1,0 +1,35 @@
+[
+  {
+    "day" : "2026-09-20",
+    "activeKcal" : 812,
+    "activities" : [
+      {
+        "id" : "20412345678",
+        "typeKey" : "running",
+        "day" : "2026-09-20",
+        "start" : "2026-09-20T05:10:00Z",
+        "durationS" : 5421.3,
+        "calories" : 1104,
+        "distanceM" : 21097.5
+      },
+      {
+        "id" : "20412399999",
+        "typeKey" : "walking",
+        "day" : "2026-09-20",
+        "start" : "2026-09-20T16:00:00Z",
+        "durationS" : 1800
+      }
+    ],
+    "fetchedAt" : "2026-09-20T19:45:00Z"
+  },
+  {
+    "day" : "2026-09-21",
+    "activities" : [],
+    "fetchedAt" : "2026-09-21T20:00:00Z"
+  },
+  {
+    "day" : "2026-09-22",
+    "activeKcal" : 145.5,
+    "fetchedAt" : "2026-09-22T08:00:00Z"
+  }
+]

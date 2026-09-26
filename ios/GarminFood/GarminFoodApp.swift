@@ -13,9 +13,14 @@ import UserNotifications
 @main
 struct GarminFoodApp: App {
     init() {
+        // add-data-safety D4: a restore staged from Settings → Data is
+        // applied here, before `ContentView` (and so `AppServices.shared`)
+        // loads any store. Must stay the first thing the app does.
+        DataSafetyLaunch.applyPendingRestoreIfNeeded()
         // add-supplements D5: handles a supplement reminder's "Taken" button,
         // even when that action launched the app in the background -- so it
-        // is set here, before launch finishes.
+        // is set here, before launch finishes. (Touches no store until an
+        // action arrives, so it doesn't break the rule above.)
         UNUserNotificationCenter.current().delegate = SupplementNotificationHandler.shared
     }
 

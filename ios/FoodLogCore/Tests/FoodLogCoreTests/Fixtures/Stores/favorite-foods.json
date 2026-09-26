@@ -1,0 +1,44 @@
+[
+  {
+    "food" : {
+      "id" : "5638212",
+      "name" : "Oatmeal",
+      "brandName" : "Emco",
+      "source" : "GARMIN",
+      "servings" : [
+        {
+          "id" : "5801234",
+          "unit" : "g",
+          "numberOfUnits" : 50,
+          "calories" : 186,
+          "carbs" : 30.5,
+          "protein" : 6.5,
+          "fat" : 3.5
+        }
+      ],
+      "garminIsFavorite" : false,
+      "garminIsRecent" : true,
+      "regionCode" : "CZ",
+      "languageCode" : "cs"
+    },
+    "favoritedAt" : "2026-09-19T07:00:00Z"
+  },
+  {
+    "food" : {
+      "id" : "8594001234567",
+      "name" : "Kefírové mléko",
+      "brandName" : "Olma",
+      "source" : "OPENFOODFACTS",
+      "servings" : [
+        {
+          "id" : "100g",
+          "unit" : "g",
+          "numberOfUnits" : 100,
+          "calories" : 50,
+          "vitaminB2" : 0.18
+        }
+      ]
+    },
+    "favoritedAt" : "2026-09-22T15:30:00Z"
+  }
+]

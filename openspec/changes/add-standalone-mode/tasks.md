@@ -68,8 +68,11 @@ owner may override** — a later answer becomes its own small follow-up.
 
 ## 6. Wave 6 — Backup and restore (M) — required before the fiancée relies on the app
 
-Moved to the `add-data-safety` change (PR #87), which builds Settings → Data
-with backup and restore for both modes. Tracked there, not here.
+> **Moved to `add-data-safety` (2026-09-25).** Tasks 6.1–6.3 are now owned by
+> `openspec/changes/add-data-safety`, generalised to both modes: automatic
+> snapshots, staged restore, and single-file export and import. The CSV export
+> from 6.1 is a non-goal there, and is left for a later change. 6.4 (the
+> on-device check) still applies to her install.
 
 - [ ] 6.1 `BackupBundle` (schema/version, every local store, non-device preferences; excludes tokens, health cache, outboxes, offline index, diagnostics) + `food-log.csv` writer. Tests: round trip, CSV escaping, no secrets.
 - [ ] 6.2 Settings → Data: "Back up now" (ShareLink), "Restore from backup…" (fileImporter → version check → preview → safety backup → replace → reload). Tests for version refusal and replace.
@@ -78,8 +81,8 @@ with backup and restore for both modes. Tracked there, not here.
 
 ## 7. Wave 7 — Gamification gating, install guide, her first install (S)
 
-- [ ] 7.1 Standalone availability: activity/active-kcal challenges, bingo squares, bosses, journeys and records never offered; Garmin-only achievements hidden (not locked). Coordinate with `add-gamification-signals` (`DaySignals` reads totals via `NutritionLogReading`; `hasFoodLog` true for local days). Tests.
-- [ ] 7.2 Adapt whichever of this change and `add-gamification-signals` ships second (design D11).
-- [ ] 7.3 `docs/install-second-phone.md` (her iPhone, her Apple ID, AltStore/SideStore, 7-day re-sign, 3-app limit, 10 App IDs/week, bundle-ID suffixing, no shared data, don't downgrade), in English and Czech.
+- [x] 7.1 Standalone availability: activity/active-kcal challenges, bingo squares, bosses, journeys and records never offered; Garmin-only achievements hidden (not locked). Coordinate with `add-gamification-signals` (`DaySignals` reads totals via `NutritionLogReading`; `hasFoodLog` true for local days). Tests.
+- [x] 7.2 Adapt whichever of this change and `add-gamification-signals` ships second (design D11). *Signals shipped first: `SignalsInput.standalone` strips Garmin-only sources before `DaySignalsBuilder`, and `SignalAvailability.hasFoodLog` aliases `hasGarminLog` (true for a local day log too).*
+- [x] 7.3 `docs/install-second-phone.md` (her iPhone, her Apple ID, AltStore/SideStore, 7-day re-sign, 3-app limit, 10 App IDs/week, bundle-ID suffixing, no shared data, don't downgrade), in English and Czech.
 - [ ] 7.4 CI green on every wave PR.
 - [ ] 7.5 Her first install on her iPhone: onboarding in Czech, standalone, a first logged day, a backup; record the bundle-ID behaviour and any surprises.

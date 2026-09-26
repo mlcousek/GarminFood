@@ -1,0 +1,64 @@
+[
+  {
+    "id": "0B7E5C1A-3F2D-4A8B-9C6E-1D2F3A4B5C01",
+    "date": "2026-09-20",
+    "mealType": "BREAKFAST",
+    "foodId": "5638212",
+    "servingId": "5801234",
+    "numberOfUnits": 1.5,
+    "state": "pending",
+    "attemptCount": 0,
+    "createdAt": 811584900.5,
+    "nextAttemptAt": 811584900.5
+  },
+  {
+    "id": "0B7E5C1A-3F2D-4A8B-9C6E-1D2F3A4B5C02",
+    "date": "2026-09-20",
+    "mealType": "LUNCH",
+    "foodId": "3f9a2c7e4b1d4e6f8a0b2c4d6e8f0a1b",
+    "servingId": "9d8c7b6a5f4e4d3c2b1a0f9e8d7c6b5a",
+    "numberOfUnits": 2,
+    "source": "GARMIN",
+    "regionCode": "CZ",
+    "languageCode": "cs",
+    "state": "sent",
+    "attemptCount": 1,
+    "createdAt": 811598550.25,
+    "nextAttemptAt": 811598551.75
+  },
+  {
+    "id": "0B7E5C1A-3F2D-4A8B-9C6E-1D2F3A4B5C03",
+    "date": "2026-09-19",
+    "mealType": "DINNER",
+    "foodId": "4412907",
+    "servingId": "4520016",
+    "numberOfUnits": 0.75,
+    "source": "FATSECRET",
+    "regionCode": "CZ",
+    "languageCode": "cs",
+    "replaces": {
+      "date": "2026-09-19",
+      "logId": "c0ffee0123456789abcdef0123456789"
+    },
+    "state": "createdAwaitingDelete",
+    "attemptCount": 5,
+    "lastError": "old entry not removed yet: httpError(statusCode: 403, body: nil)",
+    "createdAt": 811539600,
+    "nextAttemptAt": 811539607.75,
+    "parkedAt": 811539700
+  },
+  {
+    "id": "0B7E5C1A-3F2D-4A8B-9C6E-1D2F3A4B5C04",
+    "date": "2026-09-20",
+    "mealType": "SNACKS",
+    "foodId": "5638212",
+    "servingId": "5801234",
+    "numberOfUnits": 1,
+    "duplicateOf": "deadbeef0123456789abcdef01234567",
+    "state": "failed",
+    "attemptCount": 5,
+    "lastError": "httpError(statusCode: 500, body: nil)",
+    "createdAt": 811591200,
+    "nextAttemptAt": 811591203.5
+  }
+]

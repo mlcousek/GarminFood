@@ -215,7 +215,8 @@ final class AppEnvironment {
             hydration: services.hydrationStore,
             garminHealthCache: services.garminHealthCache,
             dayNotes: services.dayNoteStore,
-            preferences: preferences
+            preferences: preferences,
+            weight: services.weightStore
         ))
         self.gamificationEngine = GamificationEngine(
             usageHistory: services.usageHistory,
