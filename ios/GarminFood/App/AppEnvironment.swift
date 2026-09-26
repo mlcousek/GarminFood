@@ -974,6 +974,62 @@ final class AppEnvironment {
         Task { await self.refreshOnForeground() }
     }
 
+    // MARK: - Switching modes (add-standalone-mode D10, task 5.4)
+
+    enum ModeSwitchError: Error, Equatable {
+        /// A drain is sending entries right now; the mode is unchanged.
+        case syncInProgress
+    }
+
+    /// Food entries Garmin hasn't accepted yet (what "Keep on this phone"
+    /// or "Deliver first" is about). Garmin mode only.
+    var undeliveredFoodEntryCount: Int {
+        UndeliveredFoodConversion.undelivered(undeliveredEntries).count
+    }
+
+    /// Garmin -> standalone. Refused while a drain is in flight. With
+    /// `keepUndelivered`, every undelivered food entry becomes a local
+    /// entry and leaves the outbox first (`UndeliveredFoodConversion`).
+    /// The Garmin token is kept, so switching back is instant.
+    @discardableResult
+    func switchToStandalone(keepUndelivered: Bool) async throws -> UndeliveredFoodConversion.Result? {
+        guard !isDraining else { throw ModeSwitchError.syncInProgress }
+        var result: UndeliveredFoodConversion.Result?
+        if keepUndelivered {
+            let services = AppServices.shared
+            result = try await UndeliveredFoodConversion.keepOnPhone(outbox: outbox, localLog: services.localFoodLog, foodCache: foodCache)
+            DiagnosticsLog.log(.info, category: "DataMode", "Kept \(result?.kept ?? 0) undelivered entries on this phone, \(result?.leftInGarmin ?? 0) left for Garmin.")
+        }
+        preferences.dataMode = .standalone
+        DiagnosticsLog.log(.info, category: "DataMode", "Switched to standalone.")
+        await refreshQueueState()
+        BackgroundRefresh.cancel()
+        await refreshOnForeground()
+        return result
+    }
+
+    /// "Deliver first": one drain now; the caller re-checks what's left.
+    func deliverBeforeSwitching() async {
+        await drainAndReconcile()
+    }
+
+    /// Standalone -> Garmin, only once signed in (spec: "complete only after
+    /// a successful sign-in"). Re-checks the kept token first, so a phone
+    /// that was signed in before switches at once. Returns whether it
+    /// switched; `false` means the caller shows the sign-in sheet and calls
+    /// this again when it closes. The local food log stays on the phone.
+    @discardableResult
+    func switchToGarminIfSignedIn() async -> Bool {
+        await authState.refresh()
+        guard authState.state == .authenticated else { return false }
+        preferences.dataMode = .garminConnected
+        // The hidden testing toggle would keep the effective mode standalone.
+        preferences.forceStandaloneMode = false
+        DiagnosticsLog.log(.info, category: "DataMode", "Switched to Garmin-connected.")
+        await refreshOnForeground()
+        return true
+    }
+
     // MARK: - Local goals (add-standalone-mode D6, task 4.3)
 
     /// Re-reads the goal in effect today (a file read, no network).

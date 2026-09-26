@@ -11256,6 +11256,342 @@
           }
         }
       }
+    },
+    "On this phone only": {
+      "comment": "Settings, Data: where the food log is stored (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen v tomto telefonu"
+          }
+        }
+      }
+    },
+    "Garmin Connect": {
+      "comment": "Settings, Data: where the food log is stored (Garmin mode). Product name, keep as is.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect"
+          }
+        }
+      }
+    },
+    "Connect Garmin instead…": {
+      "comment": "Settings, Data (standalone mode): starts the switch to Garmin-connected mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Místo toho připojit Garmin…"
+          }
+        }
+      }
+    },
+    "Keep food on this phone only…": {
+      "comment": "Settings, Data (Garmin mode): starts the switch to standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uchovávat jídlo jen v tomto telefonu…"
+          }
+        }
+      }
+    },
+    "Finishing sync, try again in a moment.": {
+      "comment": "Settings, Data: mode switch refused while entries are being sent to Garmin.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dokončuje se synchronizace, zkuste to za chvíli."
+          }
+        }
+      }
+    },
+    "The testing switch in Diagnostics is on, so this phone runs on its own anyway.": {
+      "comment": "Settings, Data: the developer 'force standalone' toggle is on.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V Diagnostice je zapnutý testovací přepínač, takže telefon stejně běží samostatně."
+          }
+        }
+      }
+    },
+    "Data": {
+      "comment": "Settings: section header for where data is stored, switching mode and backups.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data"
+          }
+        }
+      }
+    },
+    "Your food, goals, weight and water are stored only on this phone. Nothing is sent to Garmin.": {
+      "comment": "Settings, Data footer (standalone mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo, cíle, hmotnost a pitný režim jsou uložené jen v tomto telefonu. Nic se neposílá do Garminu."
+          }
+        }
+      }
+    },
+    "Your food goes to Garmin Connect. Switching keeps everything on this phone instead.": {
+      "comment": "Settings, Data footer (Garmin mode).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jídlo se ukládá do Garmin Connect. Po přepnutí zůstane vše jen v tomto telefonu."
+          }
+        }
+      }
+    },
+    "Keep your food on this phone only?": {
+      "comment": "Confirmation title: switch from Garmin to standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uchovávat jídlo jen v tomto telefonu?"
+          }
+        }
+      }
+    },
+    "Deliver first": {
+      "comment": "Mode switch: send undelivered entries to Garmin before switching.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdřív odeslat"
+          }
+        }
+      }
+    },
+    "Keep on this phone": {
+      "comment": "Mode switch: convert undelivered Garmin entries into entries kept on the phone.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponechat v telefonu"
+          }
+        }
+      }
+    },
+    "Switch": {
+      "comment": "Mode switch: confirm button.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přepnout"
+          }
+        }
+      }
+    },
+    "Connect Garmin?": {
+      "comment": "Confirmation title: switch from standalone to Garmin mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojit Garmin?"
+          }
+        }
+      }
+    },
+    "Sign in and switch": {
+      "comment": "Mode switch: sign in to Garmin, then switch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se a přepnout"
+          }
+        }
+      }
+    },
+    "After you sign in, new food goes to Garmin Connect. The food log on this phone stays here and isn't uploaded; you'll see it again if you switch back. Weight and water logged here stay on this phone too.": {
+      "comment": "Confirmation text: switch from standalone to Garmin mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po přihlášení se nové jídlo ukládá do Garmin Connect. Jídelníček v tomto telefonu tu zůstane a nenahraje se; uvidíte ho znovu, když přepnete zpět. Hmotnost a pití zapsané tady také zůstanou v telefonu."
+          }
+        }
+      }
+    },
+    "New food, weight and water stay on this phone and nothing is sent to Garmin. Your Garmin history isn't copied. You stay signed in, so switching back is quick.": {
+      "comment": "Confirmation text: switch from Garmin to standalone mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nové jídlo, hmotnost a pití zůstanou v tomto telefonu a nic se neposílá do Garminu. Historie z Garminu se nekopíruje. Zůstanete přihlášeni, takže přepnutí zpět je rychlé."
+          }
+        }
+      }
+    },
+    "%lld food entries haven't reached Garmin yet. Deliver them first, or keep them on this phone.": {
+      "comment": "Mode switch: count of undelivered food entries. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznam jídla ještě nedorazil do Garminu. Nejdřív ho odešlete, nebo ho ponechte v telefonu."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamy jídla ještě nedorazily do Garminu. Nejdřív je odešlete, nebo je ponechte v telefonu."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamu jídla ještě nedorazilo do Garminu. Nejdřív je odešlete, nebo je ponechte v telefonu."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamů jídla ještě nedorazilo do Garminu. Nejdřív je odešlete, nebo je ponechte v telefonu."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld food entry hasn't reached Garmin yet. Deliver it first, or keep it on this phone."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld food entries haven't reached Garmin yet. Deliver them first, or keep them on this phone."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Some entries still haven't reached Garmin. You can keep them on this phone instead.": {
+      "comment": "Mode switch: 'Deliver first' didn't deliver everything.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Některé záznamy ještě nedorazily do Garminu. Můžete je místo toho ponechat v telefonu."
+          }
+        }
+      }
+    },
+    "%lld entries were already on their way to Garmin and stay there.": {
+      "comment": "Mode switch: entries that could not be taken back. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznam už byl na cestě do Garminu a zůstane tam."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamy už byly na cestě do Garminu a zůstanou tam."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamu už bylo na cestě do Garminu a zůstane tam."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld záznamů už bylo na cestě do Garminu a zůstane tam."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entry was already on its way to Garmin and stays there."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld entries were already on their way to Garmin and stay there."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Not signed in, so nothing changed. Your food stays on this phone.": {
+      "comment": "Mode switch to Garmin cancelled: the sign-in didn't complete.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepřihlásili jste se, takže se nic nezměnilo. Jídlo zůstává v tomto telefonu."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

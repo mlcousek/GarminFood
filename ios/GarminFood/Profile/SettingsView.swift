@@ -79,6 +79,12 @@ struct SettingsView: View {
             }
             }
 
+            // add-standalone-mode 5.4: where the food log lives, and the
+            // mode switch. Replaces the Garmin account section in
+            // standalone mode. Belongs in Settings -> Data once
+            // add-data-safety's DataSettingsView lands (PR #87).
+            DataModeSection()
+
             // add-standalone-mode 4.3: standalone's plan is the local,
             // editable goal; Garmin mode keeps Garmin's read-only plan.
             if isStandalone {

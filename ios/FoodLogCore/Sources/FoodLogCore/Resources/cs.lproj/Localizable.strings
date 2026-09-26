@@ -475,3 +475,6 @@
 
 /* Error when saving a nutrition goal on the phone (standalone mode) with an invalid number. */
 "Enter a calorie target above zero." = "Zadejte kalorický cíl větší než nula.";
+
+/* Name of a food entry kept on the phone whose food details are unknown (switching from Garmin to standalone mode). */
+"Unknown food" = "Neznámá potravina";
