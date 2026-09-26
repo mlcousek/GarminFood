@@ -323,6 +323,9 @@ public struct SupplementProduct: Codable, Sendable, Equatable, Identifiable {
     /// The `stockSetOn` a restock reminder was already sent for -- at most
     /// one per pack (design D5).
     public var restockRemindedFor: String?
+    /// Refills recorded while the previous pack still had servings left
+    /// (the "Never ran out" badge, D9).
+    public var refillsBeforeEmpty: Int?
 
     public init(
         id: UUID = UUID(),
