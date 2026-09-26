@@ -66,12 +66,14 @@ struct ContentView: View {
         .task {
             AppIconSwitcher.resetRemovedAlternateIfNeeded()
             environment.router.applyPendingRoute()
+            DataSafetyLaunch.snapshotIfDue() // add-data-safety D3, detached
             await environment.refreshOnForeground()
         }
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active:
                 environment.router.applyPendingRoute()
+                DataSafetyLaunch.snapshotIfDue() // add-data-safety D3, detached
                 Task { await environment.refreshOnForeground() }
             case .background:
                 environment.didEnterBackground()

@@ -42,16 +42,16 @@ with Czech plural forms (one, few, many, other) for counts.
 
 ## 4. App (D3, D4, D5, D6)
 
-- [ ] 4.1 `GarminFoodApp.init`: `DataSafetyLaunch.applyPendingRestoreIfNeeded()` (synchronous, before any store), which applies the preferences through `PreferencesBackup.restoredDomain`. Also a daily snapshot on the active scene phase, detached at background priority.
-- [ ] 4.2 `DataSafetyController` and `DataSettingsView` (Settings → Data):
+- [x] 4.1 `GarminFoodApp.init`: `DataSafetyLaunch.applyPendingRestoreIfNeeded()` (synchronous, before any store), which applies the preferences through `PreferencesBackup.restoredDomain`. Also a daily snapshot on the active scene phase, detached at background priority.
+- [x] 4.2 `DataSafetyController` and `DataSettingsView` (Settings → Data). `DataModeSection` (add-standalone-mode 5.4) moved in as the first section; Settings keeps a single "Data" row:
   - status, snapshot list with restore, "Back up now", export through `fileExporter`, import through `fileImporter` with a preview sheet;
   - the pending-restore state and cancel, the last restore result, and the note about undelivered entries.
-- [ ] 4.3 `BackupReminderBanner` in `TodaySlotHost` (more than 14 days since the last export, or never; "Not now" dismisses it for 14 days) and the "Data" row in Settings.
-- [ ] 4.4 English and Czech strings in `Localizable.xcstrings` with plurals. `node tools/check-localizations.mjs` and `bash tools/lint-design-tokens.sh` pass.
+- [x] 4.3 `BackupReminderBanner` in `TodaySlotHost` (more than 14 days since the last export, or never; "Not now" dismisses it for 14 days) and the "Data" row in Settings.
+- [x] 4.4 English and Czech strings in `Localizable.xcstrings` with plurals. `node tools/check-localizations.mjs` and `bash tools/lint-design-tokens.sh` pass.
 
 ## 5. Hand-off and verification
 
-- [ ] 5.1 Tell the supplements agent to add fixtures and catalog entries for its stores, following `docs/data-compatibility.md`.
+- [x] 5.1 Tell the supplements agent to add fixtures and catalog entries for its stores, following `docs/data-compatibility.md`. **Done here instead:** the supplement stores' fixtures (`supplement-plan.json`, `supplement-limits.json`, `SupplementIntake-2026-09.json`) and catalog entries are in this PR.
 - [ ] 5.2 CI green on the PR.
 - [ ] 5.3 On device, owner:
   - (a) update the app over AltStore: all data is still there;
