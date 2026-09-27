@@ -1,0 +1,49 @@
+{
+  "mealDate": "2026-01-03",
+  "dayStartTime": "04:00:00",
+  "dayEndTime": "17:00:00",
+  "dailyViewType": "FIXTURE",
+  "dailyNutritionGoals": { "calories": 2000, "adjustedCalories": 2200, "carbs": 250, "adjustedCarbs": 275, "fat": 60, "adjustedFat": 66, "protein": 100, "adjustedProtein": 110 },
+  "dailyNutritionContent": { "calories": 450, "carbs": 50, "fat": 15, "protein": 30, "caloriesPercentage": 22 },
+  "mealDetails": [
+    {
+      "meal": { "mealId": 1001, "mealIndex": 0, "mealName": "BREAKFAST", "displayOrder": 0, "startTime": "04:00:00", "endTime": "10:00:00", "editable": true, "translated": true },
+      "mealNutritionContent": { "calories": 300, "carbs": 30, "fat": 10, "protein": 20 },
+      "loggedFoods": [
+        {
+          "id": "900001",
+          "logId": "aaaa0000000000000000000000000001",
+          "logTimestamp": "2026-01-03T07:30:00.000",
+          "logSource": "GCW",
+          "logCategory": "REGULAR_LOG",
+          "servingQty": 1.5,
+          "foodMetaData": { "foodId": "900001", "foodName": "Example food A", "brandName": "Example brand", "foodType": "GENERIC", "source": "FATSECRET", "regionCode": "CZ", "languageCode": "en" },
+          "nutritionContent": { "servingId": "800001", "servingUnit": "g", "numberOfUnits": 100, "calories": 300, "carbs": 30, "protein": 20, "fat": 10 },
+          "isFavorite": false,
+          "mealId": 1001,
+          "type": "FOOD"
+        }
+      ]
+    },
+    {
+      "meal": { "mealId": 1002, "mealIndex": 1, "mealName": "LUNCH", "displayOrder": 1, "startTime": "10:00:00", "endTime": "15:00:00" },
+      "mealNutritionContent": { "calories": 150, "carbs": 20, "fat": 5, "protein": 10 },
+      "loggedFoods": [
+        {
+          "logId": "aaaa0000000000000000000000000002",
+          "logTimestamp": "2026-01-03T12:00:00.000",
+          "logSource": "GCM",
+          "servingQty": 1,
+          "foodMetaData": { "foodId": "900002", "foodName": "Example food B", "source": "GARMIN" },
+          "nutritionContent": { "servingId": "800002", "servingUnit": "piece", "numberOfUnits": 1, "calories": 150, "carbs": 20, "protein": 10, "fat": 5 }
+        }
+      ]
+    },
+    {
+      "meal": { "mealId": 1003, "mealName": "DINNER" },
+      "mealNutritionContent": {},
+      "loggedFoods": []
+    }
+  ],
+  "loggedFoodsWithServingSizes": []
+}

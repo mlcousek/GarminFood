@@ -1,0 +1,25 @@
+{
+  "dailyWeightSummaries": [
+    {
+      "summaryDate": "2026-01-03",
+      "numOfWeightEntries": 2,
+      "minWeight": 70000,
+      "maxWeight": 70500,
+      "latestWeight": { "samplePk": 3002, "calendarDate": "2026-01-03", "weight": 70000, "sourceType": "MANUAL", "timestampGMT": 1767423600000 },
+      "allWeightMetrics": [
+        { "samplePk": 3002, "date": 1767427200000, "calendarDate": "2026-01-03", "weight": 70000, "bmi": null, "bodyFat": null, "sourceType": "MANUAL", "timestampGMT": 1767423600000, "weightDelta": -500.0000000000057 },
+        { "samplePk": 3001, "date": 1767420000000, "calendarDate": "2026-01-03", "weight": 70500, "bmi": null, "bodyFat": null, "sourceType": "MANUAL", "timestampGMT": 1767416400000, "weightDelta": 0 }
+      ]
+    },
+    {
+      "summaryDate": "2026-01-01",
+      "numOfWeightEntries": 1,
+      "allWeightMetrics": [
+        { "samplePk": 3000, "calendarDate": "2026-01-01", "weight": 71234, "sourceType": "MANUAL", "timestampGMT": 1767250800000 }
+      ]
+    }
+  ],
+  "totalAverage": { "from": 1767225600000, "until": 1767484799999, "weight": 70578.0, "bmi": null, "bodyFat": null },
+  "previousDateWeight": { "samplePk": 2999, "calendarDate": "2025-12-30", "weight": 71500, "sourceType": "MANUAL", "timestampGMT": 1767078000000 },
+  "nextDateWeight": null
+}

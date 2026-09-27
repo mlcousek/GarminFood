@@ -1,0 +1,25 @@
+{
+  "code": "00000000000017",
+  "product": {
+    "code": "00000000000017",
+    "product_name": "Example product",
+    "product_name_cs": "Ukázkový výrobek",
+    "generic_name": "",
+    "brands": "Example brand",
+    "lang": "cs",
+    "quantity": "250 g",
+    "serving_size": "250.0g",
+    "serving_quantity": 250,
+    "nutriments": {
+      "energy-kcal_100g": 67,
+      "carbohydrates_100g": 4,
+      "proteins_100g": 12,
+      "fat_100g": 0.5,
+      "saturated-fat_100g": 0.200000002980232,
+      "sugars_100g": "4",
+      "fiber_100g": ""
+    }
+  },
+  "status": 1,
+  "status_verbose": "product found"
+}

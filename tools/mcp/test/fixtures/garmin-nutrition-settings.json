@@ -1,0 +1,18 @@
+{
+  "weightChangeType": "LOSS",
+  "targetDate": "2026-06-01",
+  "weightChangeRate": 250,
+  "activeDailyCalories": null,
+  "userDefinedActiveCalories": null,
+  "calorieGoal": 2000,
+  "macroGoals": { "carbs": 250, "fat": 60, "protein": 100 },
+  "autoCalorieAdjustment": true,
+  "regionCode": "CZ",
+  "languageCode": "en",
+  "dailyTimelineStartTime": "04:00:00",
+  "dailyTimelineEndTime": "17:00:00",
+  "startingWeight": 80000,
+  "targetWeightGoal": 75000,
+  "effectiveDate": "2026-01-01",
+  "nutritionStatus": "ACTIVE"
+}
