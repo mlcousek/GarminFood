@@ -32,7 +32,7 @@ final class WaterDayTotalsTests: XCTestCase {
 
     /// A real cache store holding Garmin's totals for the given days, read
     /// back the way `HydrationLoader.refresh()` does.
-    private func snapshot(garminML: [Int: Double]) async throws -> GarminHealthSnapshot {
+    private func makeSnapshot(garminML: [Int: Double]) async throws -> GarminHealthSnapshot {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("water-day-totals-\(UUID().uuidString).json")
         let store = GarminHealthCacheStore(fileURL: url)
         for (offset, ml) in garminML {
@@ -51,7 +51,7 @@ final class WaterDayTotalsTests: XCTestCase {
 
     func testGarminModeUsesGarminsTotalForPastDaysToo() async throws {
         // Yesterday: 500 ml in this app, 2 500 ml in Garmin (watch + app).
-        let snapshot = try await snapshot(garminML: [-1: 2500])
+        let snapshot = try await makeSnapshot(garminML: [-1: 2500])
         let totals = WaterDayTotals(
             isStandalone: false,
             snapshot: snapshot,
@@ -64,7 +64,7 @@ final class WaterDayTotalsTests: XCTestCase {
     }
 
     func testTodayMatchesWhatTodayShows() async throws {
-        let snapshot = try await snapshot(garminML: [0: 1200])
+        let snapshot = try await makeSnapshot(garminML: [0: 1200])
         let pending = HydrationOutboxEntry(valueInML: 300, loggedAt: today, state: .pending)
         let totals = WaterDayTotals(isStandalone: false, snapshot: snapshot, outboxEntries: [pending], localEntries: [], calendar: calendar)
 
@@ -75,7 +75,7 @@ final class WaterDayTotalsTests: XCTestCase {
     }
 
     func testGarminModeDayNeverReadFallsBackToTheAppsOwnDrinks() async throws {
-        let snapshot = try await snapshot(garminML: [:])
+        let snapshot = try await makeSnapshot(garminML: [:])
         let totals = WaterDayTotals(
             isStandalone: false,
             snapshot: snapshot,
@@ -88,7 +88,7 @@ final class WaterDayTotalsTests: XCTestCase {
     }
 
     func testStandaloneIgnoresGarminAndSumsThisPhonesDrinks() async throws {
-        let snapshot = try await snapshot(garminML: [-1: 2500])
+        let snapshot = try await makeSnapshot(garminML: [-1: 2500])
         let totals = WaterDayTotals(
             isStandalone: true,
             snapshot: snapshot,
@@ -103,14 +103,14 @@ final class WaterDayTotalsTests: XCTestCase {
     func testStreakCountsGarminWaterAndTreatsTodayAsInProgress() async throws {
         // Only Garmin (the watch) knows yesterday and two days ago met the
         // goal; this app logged nothing then. Today is short so far.
-        let snapshot = try await snapshot(garminML: [0: 800, -1: 2100, -2: 2000, -3: 900])
+        let snapshot = try await makeSnapshot(garminML: [0: 800, -1: 2100, -2: 2000, -3: 900])
         let totals = WaterDayTotals(isStandalone: false, snapshot: snapshot, outboxEntries: [], localEntries: [], calendar: calendar)
 
         XCTAssertEqual(totals.streak(goalML: 2000, today: today), 2, "yesterday + two days ago; today in progress")
     }
 
     func testStreakIncludesTodayOnceItsGoalIsMet() async throws {
-        let snapshot = try await snapshot(garminML: [0: 2000, -1: 2100, -2: 500])
+        let snapshot = try await makeSnapshot(garminML: [0: 2000, -1: 2100, -2: 500])
         let totals = WaterDayTotals(isStandalone: false, snapshot: snapshot, outboxEntries: [], localEntries: [], calendar: calendar)
 
         XCTAssertEqual(totals.streak(goalML: 2000, today: today), 2)
