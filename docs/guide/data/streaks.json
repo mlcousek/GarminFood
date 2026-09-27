@@ -1,0 +1,18 @@
+{
+ "source": "hand-read (constants parsed)",
+ "files": [
+  "ios/Gamification/Sources/Gamification/StreakEngine.swift",
+  "ios/Gamification/Sources/Gamification/StreakFreeze/StreakFreezePlanner.swift",
+  "ios/Gamification/Sources/Gamification/StreakFreeze/FreezeBalance.swift",
+  "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementStreak.swift",
+  "ios/Gamification/Sources/Gamification/NutritionDayBoundary.swift"
+ ],
+ "constants": {
+  "graceWindowDays": 7,
+  "freezeCap": 2,
+  "freezeMinimumProtectedLength": 3,
+  "freezeLookbackDays": 7,
+  "loggedDateBoundaryHour": 0,
+  "legacyDefaultBoundaryHour": 4
+ }
+}

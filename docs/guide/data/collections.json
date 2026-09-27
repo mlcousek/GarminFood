@@ -1,0 +1,1614 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/Gamification/Sources/Gamification/Features/Collections/FoodCollectionCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+  "ios/Gamification/Sources/Gamification/Resources/en.lproj/Collections.strings",
+  "ios/Gamification/Sources/Gamification/Resources/cs.lproj/Collections.strings",
+  "ios/FoodLogCore/Sources/FoodLogCore/Signals/FoodTagRules+Collections.swift"
+ ],
+ "discoveryXP": 5,
+ "veproKnedloZeloId": "vepro-knedlo-zelo",
+ "collections": [
+  {
+   "id": "czech-classics",
+   "symbol": "fork.knife",
+   "badgePercents": [
+    25,
+    50,
+    100
+   ],
+   "title": {
+    "en": "Czech Classics",
+    "cs": "České klasiky"
+   },
+   "subtitle": {
+    "en": "Dishes every Czech grandma knows",
+    "cs": "Jídla, která zná každá babička"
+   },
+   "entries": [
+    {
+     "id": "svickova",
+     "emoji": "🍖",
+     "tag": "dishSvickova",
+     "name": {
+      "en": "Svíčková",
+      "cs": "Svíčková"
+     },
+     "hint": {
+      "en": "Cream sauce, cranberries, a lemon slice — Sunday lunch at babička’s",
+      "cs": "Smetanová omáčka, brusinky a plátek citronu — nedělní oběd u babičky"
+     }
+    },
+    {
+     "id": "gulas",
+     "emoji": "🥘",
+     "tag": "dishGulas",
+     "name": {
+      "en": "Guláš",
+      "cs": "Guláš"
+     },
+     "hint": {
+      "en": "Paprika, onions and beef simmered for hours — best with bread",
+      "cs": "Paprika, cibule a hovězí dušené celé hodiny — nejlíp s chlebem"
+     }
+    },
+    {
+     "id": "rizek",
+     "emoji": "🍗",
+     "tag": "dishRizek",
+     "name": {
+      "en": "Řízek",
+      "cs": "Řízek"
+     },
+     "hint": {
+      "en": "Flattened, breaded, fried — and bigger than the plate",
+      "cs": "Naklepaný, obalený, osmažený — a větší než talíř"
+     }
+    },
+    {
+     "id": "smazeny-syr",
+     "emoji": "🧀",
+     "tag": "dishSmazenySyr",
+     "name": {
+      "en": "Smažený sýr",
+      "cs": "Smažený sýr"
+     },
+     "hint": {
+      "en": "Cheese in breadcrumbs, fried golden, with tartar sauce and chips",
+      "cs": "Sýr v trojobalu, dozlatova, s tatarkou a hranolkami"
+     }
+    },
+    {
+     "id": "knedliky",
+     "emoji": "🍞",
+     "tag": "dishKnedliky",
+     "name": {
+      "en": "Knedlíky",
+      "cs": "Knedlíky"
+     },
+     "hint": {
+      "en": "Sliced with a thread, made to soak up every drop of sauce",
+      "cs": "Krájí se nití a vysaje každou kapku omáčky"
+     }
+    },
+    {
+     "id": "bramboraky",
+     "emoji": "🥔",
+     "tag": "dishBramboraky",
+     "name": {
+      "en": "Bramboráky",
+      "cs": "Bramboráky"
+     },
+     "hint": {
+      "en": "Grated potatoes, garlic and marjoram, fried crisp in a pan",
+      "cs": "Strouhané brambory, česnek a majoránka, osmažené dokřupava"
+     }
+    },
+    {
+     "id": "koprovka",
+     "emoji": "🌿",
+     "tag": "dishKoprovka",
+     "name": {
+      "en": "Koprovka",
+      "cs": "Koprovka"
+     },
+     "hint": {
+      "en": "A creamy sauce that smells like a herb garden, with an egg",
+      "cs": "Smetanová omáčka, co voní jako bylinková zahrádka, k ní vejce"
+     }
+    },
+    {
+     "id": "kulajda",
+     "emoji": "🍄",
+     "tag": "dishKulajda",
+     "name": {
+      "en": "Kulajda",
+      "cs": "Kulajda"
+     },
+     "hint": {
+      "en": "Creamy soup with mushrooms, dill, potatoes and a poached egg",
+      "cs": "Krémová polévka s houbami, koprem, bramborami a zastřeným vejcem"
+     }
+    },
+    {
+     "id": "trdelnik",
+     "emoji": "🍩",
+     "tag": "dishTrdelnik",
+     "name": {
+      "en": "Trdelník",
+      "cs": "Trdelník"
+     },
+     "hint": {
+      "en": "Dough wound round a stick and rolled in sugar — tourists queue for it",
+      "cs": "Těsto namotané na tyči a obalené v cukru — turisti na něj stojí frontu"
+     }
+    },
+    {
+     "id": "buchty",
+     "emoji": "🥐",
+     "tag": "dishBuchty",
+     "name": {
+      "en": "Buchty",
+      "cs": "Buchty"
+     },
+     "hint": {
+      "en": "Soft yeast buns filled with jam, poppy seeds or quark",
+      "cs": "Nadýchané kynuté pečivo plněné povidly, mákem nebo tvarohem"
+     }
+    },
+    {
+     "id": "vepro-knedlo-zelo",
+     "emoji": "🐷",
+     "tag": "dishVeproKnedloZelo",
+     "name": {
+      "en": "Vepřo-knedlo-zelo",
+      "cs": "Vepřo-knedlo-zelo"
+     },
+     "hint": {
+      "en": "Roast pork, dumplings and cabbage — the Czech holy trinity",
+      "cs": "Pečené vepřové, knedlík a zelí — česká svatá trojice"
+     }
+    },
+    {
+     "id": "tatarak",
+     "emoji": "🥩",
+     "tag": "dishTatarak",
+     "name": {
+      "en": "Tatarák",
+      "cs": "Tatarák"
+     },
+     "hint": {
+      "en": "Raw beef mixed at the table, on garlic-rubbed toast",
+      "cs": "Syrové hovězí míchané u stolu, na topinkách potřených česnekem"
+     }
+    },
+    {
+     "id": "utopenci",
+     "emoji": "🌭",
+     "tag": "dishUtopenci",
+     "name": {
+      "en": "Utopenci",
+      "cs": "Utopenci"
+     },
+     "hint": {
+      "en": "Sausages that ‘drowned’ in a jar of vinegar and onion",
+      "cs": "Buřty, co se „utopily“ ve sklenici s octem a cibulí"
+     }
+    },
+    {
+     "id": "nakladany-hermelin",
+     "emoji": "🫙",
+     "tag": "dishNakladanyHermelin",
+     "name": {
+      "en": "Nakládaný hermelín",
+      "cs": "Nakládaný hermelín"
+     },
+     "hint": {
+      "en": "A soft cheese that spent a week in oil with chilli and garlic",
+      "cs": "Měkký sýr, který strávil týden v oleji s feferonkou a česnekem"
+     }
+    },
+    {
+     "id": "cesnecka",
+     "emoji": "🧄",
+     "tag": "dishCesnecka",
+     "name": {
+      "en": "Česnečka",
+      "cs": "Česnečka"
+     },
+     "hint": {
+      "en": "A soup that fights off colds and vampires alike",
+      "cs": "Polévka, co zažene nachlazení i upíry"
+     }
+    },
+    {
+     "id": "rajska",
+     "emoji": "🍅",
+     "tag": "dishRajska",
+     "name": {
+      "en": "Rajská omáčka",
+      "cs": "Rajská omáčka"
+     },
+     "hint": {
+      "en": "Sweet-and-sour red sauce over beef — school canteen memories",
+      "cs": "Sladkokyselá červená omáčka s hovězím — vzpomínka na školní jídelnu"
+     }
+    },
+    {
+     "id": "ovocne-knedliky",
+     "emoji": "🍑",
+     "tag": "dishOvocneKnedliky",
+     "name": {
+      "en": "Ovocné knedlíky",
+      "cs": "Ovocné knedlíky"
+     },
+     "hint": {
+      "en": "Dumplings with a fruity heart, topped with quark, sugar and butter",
+      "cs": "Knedlíky s ovocným srdcem, posypané tvarohem, cukrem a máslem"
+     }
+    },
+    {
+     "id": "palacinky",
+     "emoji": "🥞",
+     "tag": "dishPalacinky",
+     "name": {
+      "en": "Palačinky",
+      "cs": "Palačinky"
+     },
+     "hint": {
+      "en": "Thin, rolled up and filled with jam",
+      "cs": "Tenké, zarolované a plněné marmeládou"
+     }
+    },
+    {
+     "id": "chlebicek",
+     "emoji": "🥪",
+     "tag": "dishChlebicek",
+     "name": {
+      "en": "Chlebíček",
+      "cs": "Chlebíček"
+     },
+     "hint": {
+      "en": "An open sandwich dressed for a party: ham, egg, potato salad",
+      "cs": "Oslavový kousek veky: šunka, vajíčko, bramborový salát"
+     }
+    },
+    {
+     "id": "bramboracka",
+     "emoji": "🍲",
+     "tag": "dishBramboracka",
+     "name": {
+      "en": "Bramboračka",
+      "cs": "Bramboračka"
+     },
+     "hint": {
+      "en": "Potato soup with mushrooms and marjoram, sometimes served in bread",
+      "cs": "Polévka z brambor s houbami a majoránkou, klidně i v chlebu"
+     }
+    },
+    {
+     "id": "segedin",
+     "emoji": "🥣",
+     "tag": "dishSegedin",
+     "name": {
+      "en": "Segedínský guláš",
+      "cs": "Segedínský guláš"
+     },
+     "hint": {
+      "en": "A pork stew where sauerkraut meets cream",
+      "cs": "Vepřový guláš, kde se kysané zelí potká se smetanou"
+     }
+    },
+    {
+     "id": "spanelsky-ptacek",
+     "emoji": "🐦",
+     "tag": "dishSpanelskyPtacek",
+     "name": {
+      "en": "Španělský ptáček",
+      "cs": "Španělský ptáček"
+     },
+     "hint": {
+      "en": "Not a bird, not from Spain: rolled beef with sausage and egg",
+      "cs": "Není to pták ani Španěl: hovězí závitek s párkem a vejcem"
+     }
+    },
+    {
+     "id": "kolac",
+     "emoji": "🥧",
+     "tag": "dishKolac",
+     "name": {
+      "en": "Koláč",
+      "cs": "Koláč"
+     },
+     "hint": {
+      "en": "Round pastry with poppy seeds, quark or plum jam in the middle",
+      "cs": "Kulaté pečivo s mákem, tvarohem nebo povidly uprostřed"
+     }
+    },
+    {
+     "id": "frgal",
+     "emoji": "🍐",
+     "tag": "dishFrgal",
+     "name": {
+      "en": "Frgál",
+      "cs": "Frgál"
+     },
+     "hint": {
+      "en": "A giant Wallachian cake — the classic one is filled with pears",
+      "cs": "Obří valašský koláč — klasika je s hruškami"
+     }
+    }
+   ]
+  },
+  {
+   "id": "world",
+   "symbol": "globe.europe.africa.fill",
+   "badgePercents": [
+    25,
+    50,
+    100
+   ],
+   "title": {
+    "en": "Around the World",
+    "cs": "Kolem světa"
+   },
+   "subtitle": {
+    "en": "Dishes from far away",
+    "cs": "Jídla z dalekých krajů"
+   },
+   "entries": [
+    {
+     "id": "sushi",
+     "emoji": "🍣",
+     "tag": "dishSushi",
+     "name": {
+      "en": "Sushi",
+      "cs": "Sushi"
+     },
+     "hint": {
+      "en": "Rice, raw fish and seaweed — eaten with chopsticks",
+      "cs": "Rýže, syrová ryba a mořská řasa — jí se hůlkami"
+     }
+    },
+    {
+     "id": "ramen",
+     "emoji": "🍜",
+     "tag": "dishRamen",
+     "name": {
+      "en": "Ramen",
+      "cs": "Ramen"
+     },
+     "hint": {
+      "en": "A deep bowl of noodle soup that Japan slurps loudly",
+      "cs": "Hluboká miska nudlové polévky, kterou Japonci hlasitě srkají"
+     }
+    },
+    {
+     "id": "curry",
+     "emoji": "🍛",
+     "tag": "dishCurry",
+     "name": {
+      "en": "Curry",
+      "cs": "Kari"
+     },
+     "hint": {
+      "en": "A spicy sauce from India, yellow from turmeric",
+      "cs": "Pikantní omáčka z Indie, žlutá od kurkumy"
+     }
+    },
+    {
+     "id": "tikka-masala",
+     "emoji": "🌶️",
+     "tag": "dishTikkaMasala",
+     "name": {
+      "en": "Tikka masala",
+      "cs": "Tikka masala"
+     },
+     "hint": {
+      "en": "Grilled chicken in a creamy tomato sauce — Britain’s favourite",
+      "cs": "Grilované kuře v krémové rajčatové omáčce — oblíbenec Britů"
+     }
+    },
+    {
+     "id": "tacos",
+     "emoji": "🌮",
+     "tag": "dishTacos",
+     "name": {
+      "en": "Tacos",
+      "cs": "Tacos"
+     },
+     "hint": {
+      "en": "Folded corn tortillas, the stars of Taco Tuesday",
+      "cs": "Přeložené kukuřičné tortilly, hvězdy mexické kuchyně"
+     }
+    },
+    {
+     "id": "burrito",
+     "emoji": "🌯",
+     "tag": "dishBurrito",
+     "name": {
+      "en": "Burrito",
+      "cs": "Burrito"
+     },
+     "hint": {
+      "en": "A tortilla wrapped tight around rice, beans and meat",
+      "cs": "Tortilla pevně zabalená kolem rýže, fazolí a masa"
+     }
+    },
+    {
+     "id": "pho",
+     "emoji": "🥢",
+     "tag": "dishPho",
+     "name": {
+      "en": "Phở",
+      "cs": "Phở"
+     },
+     "hint": {
+      "en": "Vietnam’s fragrant noodle soup with fresh herbs",
+      "cs": "Voňavá vietnamská nudlová polévka s čerstvými bylinkami"
+     }
+    },
+    {
+     "id": "pad-thai",
+     "emoji": "🥜",
+     "tag": "dishPadThai",
+     "name": {
+      "en": "Pad thai",
+      "cs": "Pad thai"
+     },
+     "hint": {
+      "en": "Stir-fried rice noodles with peanuts and lime",
+      "cs": "Restované rýžové nudle s arašídy a limetkou"
+     }
+    },
+    {
+     "id": "pizza",
+     "emoji": "🍕",
+     "tag": "dishPizza",
+     "name": {
+      "en": "Pizza",
+      "cs": "Pizza"
+     },
+     "hint": {
+      "en": "A round from Naples — tomato, mozzarella, basil",
+      "cs": "Kulatá z Neapole — rajčata, mozzarella, bazalka"
+     }
+    },
+    {
+     "id": "lasagne",
+     "emoji": "🍝",
+     "tag": "dishLasagne",
+     "name": {
+      "en": "Lasagne",
+      "cs": "Lasagne"
+     },
+     "hint": {
+      "en": "Layers of pasta, ragù and béchamel, baked in a dish",
+      "cs": "Vrstvy těstovin, ragú a bešamelu zapečené v pekáči"
+     }
+    },
+    {
+     "id": "risotto",
+     "emoji": "🍚",
+     "tag": "dishRisotto",
+     "name": {
+      "en": "Risotto",
+      "cs": "Rizoto"
+     },
+     "hint": {
+      "en": "Italian rice stirred slowly with broth until creamy",
+      "cs": "Italská rýže pomalu míchaná s vývarem, dokud není krémová"
+     }
+    },
+    {
+     "id": "gyros",
+     "emoji": "🫓",
+     "tag": "dishGyros",
+     "name": {
+      "en": "Gyros",
+      "cs": "Gyros"
+     },
+     "hint": {
+      "en": "Meat carved from a spinning spit and wrapped in pita",
+      "cs": "Maso krájené z otáčejícího se rožně a zabalené v pitě"
+     }
+    },
+    {
+     "id": "souvlaki",
+     "emoji": "🍢",
+     "tag": "dishSouvlaki",
+     "name": {
+      "en": "Souvlaki",
+      "cs": "Souvlaki"
+     },
+     "hint": {
+      "en": "Greek grilled meat on a skewer",
+      "cs": "Řecké grilované maso na špízu"
+     }
+    },
+    {
+     "id": "falafel",
+     "emoji": "🧆",
+     "tag": "dishFalafel",
+     "name": {
+      "en": "Falafel",
+      "cs": "Falafel"
+     },
+     "hint": {
+      "en": "Fried chickpea balls, crunchy outside, green inside",
+      "cs": "Smažené kuličky z cizrny, venku křupavé, uvnitř zelené"
+     }
+    },
+    {
+     "id": "hummus",
+     "emoji": "🫘",
+     "tag": "dishHummus",
+     "name": {
+      "en": "Hummus",
+      "cs": "Hummus"
+     },
+     "hint": {
+      "en": "Chickpeas blended smooth with tahini and lemon",
+      "cs": "Cizrna rozmixovaná dohladka s tahini a citronem"
+     }
+    },
+    {
+     "id": "kebab",
+     "emoji": "🥙",
+     "tag": "dishKebab",
+     "name": {
+      "en": "Kebab",
+      "cs": "Kebab"
+     },
+     "hint": {
+      "en": "The classic late-night snack from the stand on the corner",
+      "cs": "Klasika po půlnoci ze stánku na rohu"
+     }
+    },
+    {
+     "id": "paella",
+     "emoji": "🥘",
+     "tag": "dishPaella",
+     "name": {
+      "en": "Paella",
+      "cs": "Paella"
+     },
+     "hint": {
+      "en": "Saffron rice from Valencia, cooked in a wide pan",
+      "cs": "Šafránová rýže z Valencie vařená ve velké pánvi"
+     }
+    },
+    {
+     "id": "bibimbap",
+     "emoji": "🍳",
+     "tag": "dishBibimbap",
+     "name": {
+      "en": "Bibimbap",
+      "cs": "Bibimbap"
+     },
+     "hint": {
+      "en": "A Korean bowl of rice and vegetables — mix it all up",
+      "cs": "Korejská miska rýže a zeleniny — všechno pořádně promíchej"
+     }
+    },
+    {
+     "id": "dim-sum",
+     "emoji": "🥟",
+     "tag": "dishDimSum",
+     "name": {
+      "en": "Dim sum",
+      "cs": "Dim sum"
+     },
+     "hint": {
+      "en": "Little steamed parcels from a bamboo basket",
+      "cs": "Malé balíčky z páry v bambusovém košíku"
+     }
+    },
+    {
+     "id": "croissant",
+     "emoji": "🥐",
+     "tag": "dishCroissant",
+     "name": {
+      "en": "Croissant",
+      "cs": "Croissant"
+     },
+     "hint": {
+      "en": "A buttery French crescent with a hundred flaky layers",
+      "cs": "Máslový francouzský rohlíček se stovkou křehkých vrstev"
+     }
+    },
+    {
+     "id": "pierogi",
+     "emoji": "🥟",
+     "tag": "dishPierogi",
+     "name": {
+      "en": "Pierogi",
+      "cs": "Pierogi"
+     },
+     "hint": {
+      "en": "Polish half-moons filled with potato and cheese",
+      "cs": "Polské půlměsíčky plněné bramborami a sýrem"
+     }
+    },
+    {
+     "id": "borscht",
+     "emoji": "🥣",
+     "tag": "dishBorscht",
+     "name": {
+      "en": "Borscht",
+      "cs": "Boršč"
+     },
+     "hint": {
+      "en": "A bright red beetroot soup from the East",
+      "cs": "Zářivě červená polévka z červené řepy z východu"
+     }
+    }
+   ]
+  },
+  {
+   "id": "fermented",
+   "symbol": "hourglass",
+   "badgePercents": [
+    25,
+    50,
+    100
+   ],
+   "title": {
+    "en": "Fermented Friends",
+    "cs": "Kvašení kamarádi"
+   },
+   "subtitle": {
+    "en": "Tangy, alive and good for your gut",
+    "cs": "Kyselé, živé a dobré pro tvoje střeva"
+   },
+   "entries": [
+    {
+     "id": "kefir",
+     "emoji": "🥛",
+     "tag": "dishKefir",
+     "name": {
+      "en": "Kefir",
+      "cs": "Kefír"
+     },
+     "hint": {
+      "en": "A tangy fermented milk drink from the Caucasus",
+      "cs": "Nakyslý kvašený mléčný nápoj z Kavkazu"
+     }
+    },
+    {
+     "id": "kysane-zeli",
+     "emoji": "🥬",
+     "tag": "dishKysaneZeli",
+     "name": {
+      "en": "Kysané zelí",
+      "cs": "Kysané zelí"
+     },
+     "hint": {
+      "en": "Shredded cabbage left to sour in a crock",
+      "cs": "Nakrouhané zelí, které zkysne v kameninovém sudu"
+     }
+    },
+    {
+     "id": "kimchi",
+     "emoji": "🌶️",
+     "tag": "dishKimchi",
+     "name": {
+      "en": "Kimchi",
+      "cs": "Kimchi"
+     },
+     "hint": {
+      "en": "Korea’s spicy answer to kysané zelí",
+      "cs": "Korejská pálivá odpověď na kysané zelí"
+     }
+    },
+    {
+     "id": "jogurt",
+     "emoji": "🥄",
+     "tag": "dishJogurt",
+     "name": {
+      "en": "Yoghurt",
+      "cs": "Jogurt"
+     },
+     "hint": {
+      "en": "Milk that friendly bacteria made thick and tangy",
+      "cs": "Mléko, které hodné bakterie zahustily a okyselily"
+     }
+    },
+    {
+     "id": "kombucha",
+     "emoji": "🫖",
+     "tag": "dishKombucha",
+     "name": {
+      "en": "Kombucha",
+      "cs": "Kombucha"
+     },
+     "hint": {
+      "en": "Fizzy fermented tea grown from a jelly-like ‘mushroom’",
+      "cs": "Perlivý kvašený čaj z rosolovité „houby“"
+     }
+    },
+    {
+     "id": "miso",
+     "emoji": "🥣",
+     "tag": "dishMiso",
+     "name": {
+      "en": "Miso",
+      "cs": "Miso"
+     },
+     "hint": {
+      "en": "Salty Japanese soybean paste, the secret of a famous soup",
+      "cs": "Slaná japonská sójová pasta, tajemství slavné polévky"
+     }
+    },
+    {
+     "id": "tempeh",
+     "emoji": "🫘",
+     "tag": "dishTempeh",
+     "name": {
+      "en": "Tempeh",
+      "cs": "Tempeh"
+     },
+     "hint": {
+      "en": "Soybeans fermented into a nutty cake from Indonesia",
+      "cs": "Sója zkvašená na oříškový blok z Indonésie"
+     }
+    },
+    {
+     "id": "zakys",
+     "emoji": "🥛",
+     "tag": "dishZakys",
+     "name": {
+      "en": "Zákys",
+      "cs": "Zákys"
+     },
+     "hint": {
+      "en": "An old-school sour milk drink from the dairy shelf",
+      "cs": "Kyselý mléčný nápoj z regálu, klasika z dětství"
+     }
+    },
+    {
+     "id": "tvaruzky",
+     "emoji": "🧀",
+     "tag": "dishTvaruzky",
+     "name": {
+      "en": "Olomoucké tvarůžky",
+      "cs": "Olomoucké tvarůžky"
+     },
+     "hint": {
+      "en": "A ripened cheese you smell before you see it",
+      "cs": "Zrající sýr, který ucítíš dřív, než ho uvidíš"
+     }
+    },
+    {
+     "id": "kvasaky",
+     "emoji": "🥒",
+     "tag": "dishKvasaky",
+     "name": {
+      "en": "Kvašáky",
+      "cs": "Kvašáky"
+     },
+     "hint": {
+      "en": "Cucumbers soured in brine with dill — summer in a jar",
+      "cs": "Okurky kvašené v láku s koprem — léto ve sklenici"
+     }
+    },
+    {
+     "id": "kvaskovy-chleb",
+     "emoji": "🍞",
+     "tag": "dishKvaskovyChleb",
+     "name": {
+      "en": "Sourdough bread",
+      "cs": "Kváskový chléb"
+     },
+     "hint": {
+      "en": "Bread raised by a starter you have to feed",
+      "cs": "Chléb, co kyne díky kvásku, který musíš krmit"
+     }
+    }
+   ]
+  },
+  {
+   "id": "rainbow",
+   "symbol": "paintpalette.fill",
+   "badgePercents": [
+    50,
+    100
+   ],
+   "title": {
+    "en": "Rainbow",
+    "cs": "Duha"
+   },
+   "subtitle": {
+    "en": "Eat every colour of fruit and veg",
+    "cs": "Sněz všechny barvy ovoce a zeleniny"
+   },
+   "entries": [
+    {
+     "id": "rainbow-red",
+     "emoji": "🍓",
+     "tag": "colourRed",
+     "name": {
+      "en": "Red",
+      "cs": "Červená"
+     },
+     "hint": {
+      "en": "The colour of ripe strawberries and tomatoes",
+      "cs": "Barva zralých jahod a rajčat"
+     }
+    },
+    {
+     "id": "rainbow-orange",
+     "emoji": "🥕",
+     "tag": "colourOrange",
+     "name": {
+      "en": "Orange",
+      "cs": "Oranžová"
+     },
+     "hint": {
+      "en": "The colour of carrots and pumpkins",
+      "cs": "Barva mrkve a dýně"
+     }
+    },
+    {
+     "id": "rainbow-yellow",
+     "emoji": "🍌",
+     "tag": "colourYellow",
+     "name": {
+      "en": "Yellow",
+      "cs": "Žlutá"
+     },
+     "hint": {
+      "en": "The colour of bananas and lemons",
+      "cs": "Barva banánů a citronů"
+     }
+    },
+    {
+     "id": "rainbow-green",
+     "emoji": "🥦",
+     "tag": "colourGreen",
+     "name": {
+      "en": "Green",
+      "cs": "Zelená"
+     },
+     "hint": {
+      "en": "The colour of broccoli and spinach",
+      "cs": "Barva brokolice a špenátu"
+     }
+    },
+    {
+     "id": "rainbow-purple",
+     "emoji": "🍆",
+     "tag": "colourPurple",
+     "name": {
+      "en": "Purple",
+      "cs": "Fialová"
+     },
+     "hint": {
+      "en": "The colour of aubergines and blueberries",
+      "cs": "Barva lilku a borůvek"
+     }
+    },
+    {
+     "id": "rainbow-white",
+     "emoji": "🧄",
+     "tag": "colourWhite",
+     "name": {
+      "en": "White",
+      "cs": "Bílá"
+     },
+     "hint": {
+      "en": "The colour of cauliflower, onions and garlic",
+      "cs": "Barva květáku, cibule a česneku"
+     }
+    }
+   ]
+  },
+  {
+   "id": "czech-brands",
+   "symbol": "cart.fill",
+   "badgePercents": [
+    25,
+    50,
+    100
+   ],
+   "title": {
+    "en": "Czech Brands",
+    "cs": "České značky"
+   },
+   "subtitle": {
+    "en": "Products from Czech makers",
+    "cs": "Výrobky od českých výrobců"
+   },
+   "entries": [
+    {
+     "id": "brand-madeta",
+     "emoji": "🧈",
+     "tag": "brandMadeta",
+     "name": {
+      "en": "Madeta",
+      "cs": "Madeta"
+     },
+     "hint": {
+      "en": "A South Bohemian dairy behind many butters and cheeses",
+      "cs": "Jihočeská mlékárna, co stojí za spoustou másel a sýrů"
+     }
+    },
+    {
+     "id": "brand-kunin",
+     "emoji": "🥛",
+     "tag": "brandKunin",
+     "name": {
+      "en": "Kunín",
+      "cs": "Kunín"
+     },
+     "hint": {
+      "en": "A dairy named after a village near Nový Jičín",
+      "cs": "Mlékárna pojmenovaná po vesnici u Nového Jičína"
+     }
+    },
+    {
+     "id": "brand-tatra",
+     "emoji": "🥛",
+     "tag": "brandTatra",
+     "name": {
+      "en": "Tatra",
+      "cs": "Tatra"
+     },
+     "hint": {
+      "en": "Named after mountains, it makes condensed milk and cream",
+      "cs": "Jmenuje se po horách a dělá zahuštěné mléko a smetanu"
+     }
+    },
+    {
+     "id": "brand-olma",
+     "emoji": "🥛",
+     "tag": "brandOlma",
+     "name": {
+      "en": "Olma",
+      "cs": "Olma"
+     },
+     "hint": {
+      "en": "An Olomouc dairy known for its yoghurts",
+      "cs": "Olomoucká mlékárna známá svými jogurty"
+     }
+    },
+    {
+     "id": "brand-hollandia",
+     "emoji": "🥛",
+     "tag": "brandHollandia",
+     "name": {
+      "en": "Hollandia",
+      "cs": "Hollandia"
+     },
+     "hint": {
+      "en": "Sounds Dutch, but its yoghurts come from the Karlovy Vary region",
+      "cs": "Zní holandsky, ale jogurty jsou z Karlovarska"
+     }
+    },
+    {
+     "id": "brand-pilos",
+     "emoji": "🧀",
+     "tag": "brandPilos",
+     "name": {
+      "en": "Pilos",
+      "cs": "Pilos"
+     },
+     "hint": {
+      "en": "A discounter’s own dairy label",
+      "cs": "Vlastní mléčná značka jednoho diskontu"
+     }
+    },
+    {
+     "id": "brand-albert-quality",
+     "emoji": "🛒",
+     "tag": "brandAlbertQuality",
+     "name": {
+      "en": "Albert Quality",
+      "cs": "Albert Quality"
+     },
+     "hint": {
+      "en": "A supermarket’s own label that promises quality in its name",
+      "cs": "Vlastní značka supermarketu, co má kvalitu přímo v názvu"
+     }
+    },
+    {
+     "id": "brand-penam",
+     "emoji": "🍞",
+     "tag": "brandPenam",
+     "name": {
+      "en": "Penam",
+      "cs": "Penam"
+     },
+     "hint": {
+      "en": "A big Czech bakery behind a lot of sliced bread",
+      "cs": "Velká česká pekárna, co peče spoustu krájeného chleba"
+     }
+    },
+    {
+     "id": "brand-opavia",
+     "emoji": "🍪",
+     "tag": "brandOpavia",
+     "name": {
+      "en": "Opavia",
+      "cs": "Opavia"
+     },
+     "hint": {
+      "en": "The home of Tatranky and Zlaté oplatky",
+      "cs": "Domov Tatranek a Zlatých oplatek"
+     }
+    },
+    {
+     "id": "brand-orion",
+     "emoji": "🍫",
+     "tag": "brandOrion",
+     "name": {
+      "en": "Orion",
+      "cs": "Orion"
+     },
+     "hint": {
+      "en": "A star of the chocolate shelf: think Studentská pečeť",
+      "cs": "Hvězda čokoládového regálu — vzpomeň si na Studentskou pečeť"
+     }
+    },
+    {
+     "id": "brand-kofola",
+     "emoji": "🥤",
+     "tag": "brandKofola",
+     "name": {
+      "en": "Kofola",
+      "cs": "Kofola"
+     },
+     "hint": {
+      "en": "A dark herbal cola born in 1960",
+      "cs": "Tmavá bylinná limonáda, narozená v roce 1960"
+     }
+    },
+    {
+     "id": "brand-mattoni",
+     "emoji": "💧",
+     "tag": "brandMattoni",
+     "name": {
+      "en": "Mattoni",
+      "cs": "Mattoni"
+     },
+     "hint": {
+      "en": "Sparkling water from the Karlovy Vary spa region",
+      "cs": "Perlivá voda z karlovarských lázní"
+     }
+    },
+    {
+     "id": "brand-relax",
+     "emoji": "🧃",
+     "tag": "brandRelax",
+     "name": {
+      "en": "Relax",
+      "cs": "Relax"
+     },
+     "hint": {
+      "en": "Juices with a name like your day off",
+      "cs": "Džusy se jménem jako tvůj volný den"
+     }
+    },
+    {
+     "id": "brand-hame",
+     "emoji": "🥫",
+     "tag": "brandHame",
+     "name": {
+      "en": "Hamé",
+      "cs": "Hamé"
+     },
+     "hint": {
+      "en": "Pâté in a tin — a camping classic from Moravia",
+      "cs": "Paštika v konzervě — klasika na chatu z Moravy"
+     }
+    },
+    {
+     "id": "brand-vitana",
+     "emoji": "🍲",
+     "tag": "brandVitana",
+     "name": {
+      "en": "Vitana",
+      "cs": "Vitana"
+     },
+     "hint": {
+      "en": "Soups and stock cubes from a packet, known since childhood",
+      "cs": "Polévky a bujóny ze sáčku, znáš je od dětství"
+     }
+    },
+    {
+     "id": "brand-jihlavanka",
+     "emoji": "☕️",
+     "tag": "brandJihlavanka",
+     "name": {
+      "en": "Jihlavanka",
+      "cs": "Jihlavanka"
+     },
+     "hint": {
+      "en": "Coffee from the Vysočina highlands",
+      "cs": "Káva z Vysočiny"
+     }
+    },
+    {
+     "id": "brand-kostelecke-uzeniny",
+     "emoji": "🥓",
+     "tag": "brandKosteleckeUzeniny",
+     "name": {
+      "en": "Kostelecké uzeniny",
+      "cs": "Kostelecké uzeniny"
+     },
+     "hint": {
+      "en": "Hams and sausages from Kostelec near Jihlava",
+      "cs": "Šunky a klobásy z Kostelce u Jihlavy"
+     }
+    },
+    {
+     "id": "brand-chocenska-mlekarna",
+     "emoji": "🥛",
+     "tag": "brandChocenskaMlekarna",
+     "name": {
+      "en": "Choceňská mlékárna",
+      "cs": "Choceňská mlékárna"
+     },
+     "hint": {
+      "en": "An East Bohemian dairy known for its yoghurts",
+      "cs": "Východočeská mlékárna známá svými jogurty"
+     }
+    },
+    {
+     "id": "brand-pribinacek",
+     "emoji": "🍮",
+     "tag": "brandPribinacek",
+     "name": {
+      "en": "Pribináček",
+      "cs": "Pribináček"
+     },
+     "hint": {
+      "en": "A little cup of sweet quark dessert every kid knows",
+      "cs": "Kelímek sladkého tvarohového dezertu, co zná každé dítě"
+     }
+    },
+    {
+     "id": "brand-emco",
+     "emoji": "🥣",
+     "tag": "brandEmco",
+     "name": {
+      "en": "Emco",
+      "cs": "Emco"
+     },
+     "hint": {
+      "en": "Muesli and oat bars for a crunchy breakfast",
+      "cs": "Müsli a ovesné tyčinky ke křupavé snídani"
+     }
+    },
+    {
+     "id": "brand-bonavita",
+     "emoji": "🌾",
+     "tag": "brandBonavita",
+     "name": {
+      "en": "Bonavita",
+      "cs": "Bonavita"
+     },
+     "hint": {
+      "en": "Crunchy cereals and crispbreads for lighter snacking",
+      "cs": "Křupavé cereálie a plátky na lehčí mlsání"
+     }
+    },
+    {
+     "id": "brand-semix",
+     "emoji": "🌰",
+     "tag": "brandSemix",
+     "name": {
+      "en": "Semix",
+      "cs": "Semix"
+     },
+     "hint": {
+      "en": "Flakes, seeds and baking mixes for your pantry",
+      "cs": "Vločky, semínka a směsi na pečení do tvé spíže"
+     }
+    }
+   ]
+  }
+ ],
+ "badges": [
+  {
+   "id": "collection.czech-classics.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "fork.knife",
+   "rarity": "common",
+   "title": {
+    "en": "Czech Classics: Taster",
+    "cs": "České klasiky: Ochutnávač"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of the Czech Classics.",
+    "cs": "Objev čtvrtinu českých klasik."
+   },
+   "rule": "25% of “Czech Classics” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.czech-classics.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "fork.knife",
+   "rarity": "rare",
+   "title": {
+    "en": "Czech Classics: Regular",
+    "cs": "České klasiky: Štamgast"
+   },
+   "subtitle": {
+    "en": "Discover half of the Czech Classics.",
+    "cs": "Objev polovinu českých klasik."
+   },
+   "rule": "50% of “Czech Classics” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.czech-classics.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "fork.knife",
+   "rarity": "epic",
+   "title": {
+    "en": "Czech Classics: Babička’s Pride",
+    "cs": "České klasiky: Babiččina pýcha"
+   },
+   "subtitle": {
+    "en": "Discover every Czech Classic.",
+    "cs": "Objev všechny české klasiky."
+   },
+   "rule": "100% of “Czech Classics” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.world.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Around the World: Tourist",
+    "cs": "Kolem světa: Turista"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of Around the World.",
+    "cs": "Objev čtvrtinu jídel ze sbírky Kolem světa."
+   },
+   "rule": "25% of “Around the World” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.world.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Around the World: Traveller",
+    "cs": "Kolem světa: Cestovatel"
+   },
+   "subtitle": {
+    "en": "Discover half of Around the World.",
+    "cs": "Objev polovinu jídel ze sbírky Kolem světa."
+   },
+   "rule": "50% of “Around the World” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.world.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Around the World: Globetrotter",
+    "cs": "Kolem světa: Světoběžník"
+   },
+   "subtitle": {
+    "en": "Discover every dish of Around the World.",
+    "cs": "Objev všechna jídla ze sbírky Kolem světa."
+   },
+   "rule": "100% of “Around the World” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.fermented.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "hourglass",
+   "rarity": "common",
+   "title": {
+    "en": "Fermented Friends: Curious",
+    "cs": "Kvašení kamarádi: Zvědavec"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of the Fermented Friends.",
+    "cs": "Objev čtvrtinu kvašených kamarádů."
+   },
+   "rule": "25% of “Fermented Friends” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.fermented.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "hourglass",
+   "rarity": "rare",
+   "title": {
+    "en": "Fermented Friends: Brewer",
+    "cs": "Kvašení kamarádi: Kvasič"
+   },
+   "subtitle": {
+    "en": "Discover half of the Fermented Friends.",
+    "cs": "Objev polovinu kvašených kamarádů."
+   },
+   "rule": "50% of “Fermented Friends” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.fermented.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "hourglass",
+   "rarity": "epic",
+   "title": {
+    "en": "Fermented Friends: Culture Club",
+    "cs": "Kvašení kamarádi: Mistr kultur"
+   },
+   "subtitle": {
+    "en": "Discover every Fermented Friend.",
+    "cs": "Objev všechny kvašené kamarády."
+   },
+   "rule": "100% of “Fermented Friends” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.rainbow.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "paintpalette.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Rainbow: Half Spectrum",
+    "cs": "Duha: Půl spektra"
+   },
+   "subtitle": {
+    "en": "Discover three of the six rainbow colours.",
+    "cs": "Objev tři ze šesti barev duhy."
+   },
+   "rule": "50% of “Rainbow” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.rainbow.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "paintpalette.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Rainbow: Full Spectrum",
+    "cs": "Duha: Celé spektrum"
+   },
+   "subtitle": {
+    "en": "Discover all six rainbow colours.",
+    "cs": "Objev všech šest barev duhy."
+   },
+   "rule": "100% of “Rainbow” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.czech-brands.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Czech Brands: Shopper",
+    "cs": "České značky: Nakupující"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of the Czech Brands.",
+    "cs": "Objev čtvrtinu českých značek."
+   },
+   "rule": "25% of “Czech Brands” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.czech-brands.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Czech Brands: Patriot",
+    "cs": "České značky: Patriot"
+   },
+   "subtitle": {
+    "en": "Discover half of the Czech Brands.",
+    "cs": "Objev polovinu českých značek."
+   },
+   "rule": "50% of “Czech Brands” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.czech-brands.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Czech Brands: Supermarket Legend",
+    "cs": "České značky: Legenda supermarketu"
+   },
+   "subtitle": {
+    "en": "Discover every Czech Brand.",
+    "cs": "Objev všechny české značky."
+   },
+   "rule": "100% of “Czech Brands” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.rainbow-day",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "rainbow",
+   "rarity": "rare",
+   "title": {
+    "en": "Rainbow Day",
+    "cs": "Duhový den"
+   },
+   "subtitle": {
+    "en": "Eat all six colours in one day.",
+    "cs": "Sněz všech šest barev za jeden den."
+   },
+   "rule": "1 rainbow day(s)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.rainbow-day-10",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "rainbow",
+   "rarity": "epic",
+   "title": {
+    "en": "Ten Rainbow Days",
+    "cs": "Deset duhových dnů"
+   },
+   "subtitle": {
+    "en": "Eat all six colours in one day, ten times.",
+    "cs": "Sněz všech šest barev za jeden den, a to desetkrát."
+   },
+   "rule": "10 rainbow day(s)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.brand-explorer-10",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.badge.plus",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Brand Explorer 10",
+    "cs": "Průzkumník značek 10"
+   },
+   "subtitle": {
+    "en": "Try products from 10 different Czech brands.",
+    "cs": "Vyzkoušej výrobky od 10 různých českých značek."
+   },
+   "rule": "10 distinct Czech brands",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.brand-explorer-25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.badge.plus",
+   "rarity": "rare",
+   "title": {
+    "en": "Brand Explorer 25",
+    "cs": "Průzkumník značek 25"
+   },
+   "subtitle": {
+    "en": "Try products from 25 different Czech brands.",
+    "cs": "Vyzkoušej výrobky od 25 různých českých značek."
+   },
+   "rule": "25 distinct Czech brands",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.brand-explorer-50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.badge.plus",
+   "rarity": "epic",
+   "title": {
+    "en": "Brand Explorer 50",
+    "cs": "Průzkumník značek 50"
+   },
+   "subtitle": {
+    "en": "Try products from 50 different Czech brands.",
+    "cs": "Vyzkoušej výrobky od 50 různých českých značek."
+   },
+   "rule": "50 distinct Czech brands",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.pokedex-50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "books.vertical.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Collector",
+    "cs": "Sběratel"
+   },
+   "subtitle": {
+    "en": "Discover half of all collection entries.",
+    "cs": "Objev polovinu všech položek ve sbírkách."
+   },
+   "rule": "50% of all collection entries discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  },
+  {
+   "id": "collection.pokedex-100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "crown.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Complete Album",
+    "cs": "Kompletní album"
+   },
+   "subtitle": {
+    "en": "Discover every collection entry.",
+    "cs": "Objev všechny položky ve sbírkách."
+   },
+   "rule": "100% of all collection entries discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift"
+  }
+ ]
+}

@@ -1,0 +1,449 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/Boss/BossPicker.swift",
+  "ios/Gamification/Sources/Gamification/Features/Boss/BossFight.swift",
+  "ios/Gamification/Sources/Gamification/Features/Boss/WeeklyBossFeature.swift"
+ ],
+ "rules": {
+  "minimumConsideredDays": 14,
+  "newUserLoggedDays": 7,
+  "analysisWindowDays": 28,
+  "target": "clamp(ceil(adherence × 7) + 2, 3, 7)",
+  "defeatXP": [
+   {
+    "target": 3,
+    "xp": 150
+   },
+   {
+    "target": 4,
+    "xp": 175
+   },
+   {
+    "target": 5,
+    "xp": 200
+   },
+   {
+    "target": 6,
+    "xp": 225
+   },
+   {
+    "target": 7,
+    "xp": 250
+   }
+  ],
+  "defeatFreeze": true
+ },
+ "bosses": [
+  {
+   "id": "breakfast-goblin",
+   "kind": "breakfastGoblin",
+   "name": {
+    "en": "Breakfast Goblin",
+    "cs": "Snídaňový skřet"
+   },
+   "flavour": {
+    "en": "Steals the first meal of the day.",
+    "cs": "Krade první jídlo dne."
+   },
+   "goal": {
+    "en": "Log breakfast",
+    "cs": "Zapiš snídani"
+   },
+   "symbol": "sunrise.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".mealLogged(.breakfast)",
+   "adherenceLine": {
+    "en": "Breakfast: {percent} of logged days",
+    "cs": "Snídaně: {percent} dní se záznamem"
+   },
+   "consideredDays": "days with at least one entry",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "desert-dragon",
+   "kind": "desertDragon",
+   "name": {
+    "en": "Desert Dragon",
+    "cs": "Pouštní drak"
+   },
+   "flavour": {
+    "en": "Dries you out, one skipped sip at a time.",
+    "cs": "Vysušuje tě doušek po vynechaném doušku."
+   },
+   "goal": {
+    "en": "Reach your water goal",
+    "cs": "Splň cíl pitného režimu"
+   },
+   "symbol": "drop.fill",
+   "requirement": [
+    "water"
+   ],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".waterGoalMet",
+   "adherenceLine": {
+    "en": "Water goal: {percent} of days with water data",
+    "cs": "Cíl vody: {percent} dní s údaji o vodě"
+   },
+   "consideredDays": "days with water data and a water goal > 0",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "beige-beast",
+   "kind": "beigeBeast",
+   "name": {
+    "en": "The Beige Beast",
+    "cs": "Béžová bestie"
+   },
+   "flavour": {
+    "en": "Feeds on plates without a single green thing.",
+    "cs": "Živí se talíři bez kousku zeleně."
+   },
+   "goal": {
+    "en": "Eat vegetables twice",
+    "cs": "Dej si dvakrát zeleninu"
+   },
+   "symbol": "leaf.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".tagCountAtLeast(.vegetable, 2)",
+   "adherenceLine": {
+    "en": "Two vegetables: {percent} of logged days",
+    "cs": "Zelenina dvakrát: {percent} dní se záznamem"
+   },
+   "consideredDays": "days with at least one entry",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "protein-poltergeist",
+   "kind": "proteinPoltergeist",
+   "name": {
+    "en": "Protein Poltergeist",
+    "cs": "Proteinový poltergeist"
+   },
+   "flavour": {
+    "en": "Makes your protein vanish without a trace.",
+    "cs": "Nechává tvé bílkoviny zmizet beze stopy."
+   },
+   "goal": {
+    "en": "Hit your protein goal",
+    "cs": "Splň cíl bílkovin"
+   },
+   "symbol": "bolt.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".goalMet(.protein)",
+   "adherenceLine": {
+    "en": "Protein goal: {percent} of days",
+    "cs": "Cíl bílkovin: {percent} dní"
+   },
+   "consideredDays": "days with a cached goal status",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "calorie-kraken",
+   "kind": "calorieKraken",
+   "name": {
+    "en": "Calorie Kraken",
+    "cs": "Kalorický kraken"
+   },
+   "flavour": {
+    "en": "Drags your calorie target out to sea.",
+    "cs": "Stahuje tvůj kalorický cíl do hlubin."
+   },
+   "goal": {
+    "en": "Hit your calorie goal",
+    "cs": "Splň kalorický cíl"
+   },
+   "symbol": "water.waves",
+   "requirement": [],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".goalMet(.calories)",
+   "adherenceLine": {
+    "en": "Calorie goal: {percent} of days",
+    "cs": "Kalorický cíl: {percent} dní"
+   },
+   "consideredDays": "days with a cached goal status",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "midnight-muncher",
+   "kind": "midnightMuncher",
+   "name": {
+    "en": "Midnight Muncher",
+    "cs": "Půlnoční mlsoun"
+   },
+   "flavour": {
+    "en": "Lurks by the fridge after dark.",
+    "cs": "Po setmění číhá u lednice."
+   },
+   "goal": {
+    "en": "Eat nothing after 21:00",
+    "cs": "Po 21:00 už nic nejez"
+   },
+   "symbol": "moon.stars.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": true,
+   "goodDay": ".lastLogBefore(hour: 21, minute: 0)",
+   "adherenceLine": {
+    "en": "Nothing after 21:00: {percent} of logged days",
+    "cs": "Nic po 21:00: {percent} dní se záznamem"
+   },
+   "consideredDays": "days with at least one entry",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "soda-lich",
+   "kind": "sodaLich",
+   "name": {
+    "en": "Soda Lich",
+    "cs": "Limonádový lich"
+   },
+   "flavour": {
+    "en": "Grows stronger with every sweet fizzy drink.",
+    "cs": "S každou sladkou limonádou sílí."
+   },
+   "goal": {
+    "en": "Skip sugary drinks",
+    "cs": "Vynech slazené nápoje"
+   },
+   "symbol": "takeoutbag.and.cup.and.straw.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": true,
+   "goodDay": ".noTag(.sugaryDrink, minEntries: 2)",
+   "adherenceLine": {
+    "en": "No sugary drink: {percent} of logged days",
+    "cs": "Bez slazeného pití: {percent} dní se záznamem"
+   },
+   "consideredDays": "days with at least 2 entries",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "fibre-phantom",
+   "kind": "fibrePhantom",
+   "name": {
+    "en": "Fibre Phantom",
+    "cs": "Vlákninový fantom"
+   },
+   "flavour": {
+    "en": "Haunts every meal without fibre.",
+    "cs": "Straší v každém jídle bez vlákniny."
+   },
+   "goal": {
+    "en": "Eat 25 g of fibre",
+    "cs": "Sněz 25 g vlákniny"
+   },
+   "symbol": "circle.hexagongrid.fill",
+   "requirement": [
+    "macros"
+   ],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".macroAtLeast(.fiber, grams: 25)",
+   "adherenceLine": {
+    "en": "25 g fibre: {percent} of days with nutrients",
+    "cs": "25 g vlákniny: {percent} dní s nutričními údaji"
+   },
+   "consideredDays": "days with entries and a known fibre total",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "scurvy-pirate",
+   "kind": "scurvyPirate",
+   "name": {
+    "en": "Scurvy Pirate",
+    "cs": "Kurdějový pirát"
+   },
+   "flavour": {
+    "en": "Sails off with all your fruit.",
+    "cs": "Odplouvá s veškerým tvým ovocem."
+   },
+   "goal": {
+    "en": "Eat a piece of fruit",
+    "cs": "Sněz kus ovoce"
+   },
+   "symbol": "sailboat.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".hasTag(.fruit)",
+   "adherenceLine": {
+    "en": "Fruit: {percent} of logged days",
+    "cs": "Ovoce: {percent} dní se záznamem"
+   },
+   "consideredDays": "days with at least one entry",
+   "consideredSource": "hand-read",
+   "standalone": true
+  },
+  {
+   "id": "forgetful-ghost",
+   "kind": "forgetfulGhost",
+   "name": {
+    "en": "Forgetful Ghost",
+    "cs": "Zapomnětlivý duch"
+   },
+   "flavour": {
+    "en": "Makes whole days vanish from your log.",
+    "cs": "Nechává z tvého záznamu mizet celé dny."
+   },
+   "goal": {
+    "en": "Log any food",
+    "cs": "Zapiš cokoli"
+   },
+   "symbol": "eye.slash.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".distinctFoodsAtLeast(1)",
+   "adherenceLine": {
+    "en": "Logged: {percent} of the last 28 days",
+    "cs": "Zapsáno: {percent} z posledních 28 dní"
+   },
+   "consideredDays": "every day (unlogged days count as misses)",
+   "consideredSource": "hand-read",
+   "standalone": true
+  }
+ ],
+ "badges": [
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 216,
+   "id": "boss.first",
+   "title": {
+    "en": "Boss Slayer",
+    "cs": "Přemožitel bossů"
+   },
+   "subtitle": {
+    "en": "Defeat your first weekly boss.",
+    "cs": "Poraz svého prvního týdenního bosse."
+   },
+   "symbol": "shield.lefthalf.filled",
+   "category": "challenges",
+   "rarity": "common"
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 217,
+   "id": "boss.10",
+   "title": {
+    "en": "Monster Hunter",
+    "cs": "Lovec příšer"
+   },
+   "subtitle": {
+    "en": "Defeat 10 weekly bosses.",
+    "cs": "Poraz 10 týdenních bossů."
+   },
+   "symbol": "scope",
+   "category": "challenges",
+   "rarity": "rare"
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 218,
+   "id": "boss.25",
+   "title": {
+    "en": "Legend of the Realm",
+    "cs": "Legenda říše"
+   },
+   "subtitle": {
+    "en": "Defeat 25 weekly bosses.",
+    "cs": "Poraz 25 týdenních bossů."
+   },
+   "symbol": "crown.fill",
+   "category": "challenges",
+   "rarity": "epic"
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 219,
+   "id": "boss.perfect",
+   "title": {
+    "en": "Flawless Victory",
+    "cs": "Dokonalé vítězství"
+   },
+   "subtitle": {
+    "en": "Defeat a boss with a 7-day target.",
+    "cs": "Poraz bosse s cílem na všech 7 dní."
+   },
+   "symbol": "star.circle.fill",
+   "category": "challenges",
+   "rarity": "rare"
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 220,
+   "id": "boss.bestiary",
+   "title": {
+    "en": "Bestiary Complete",
+    "cs": "Kompletní bestiář"
+   },
+   "subtitle": {
+    "en": "Defeat every kind of boss at least once.",
+    "cs": "Poraz každý druh bosse aspoň jednou."
+   },
+   "symbol": "books.vertical.fill",
+   "category": "challenges",
+   "rarity": "legendary"
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 221,
+   "id": "freeze.first",
+   "title": {
+    "en": "Cool Head",
+    "cs": "Chladná hlava"
+   },
+   "subtitle": {
+    "en": "Let a streak freeze save your streak.",
+    "cs": "Nech zamrazení zachránit tvou sérii."
+   },
+   "symbol": "snowflake",
+   "category": "streak",
+   "rarity": "common"
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 222,
+   "id": "freeze.saved-100",
+   "title": {
+    "en": "Ice Age",
+    "cs": "Doba ledová"
+   },
+   "subtitle": {
+    "en": "Let a freeze save a streak of 100 days or more.",
+    "cs": "Nech zamrazení zachránit sérii o 100 a více dnech."
+   },
+   "symbol": "snowflake.circle.fill",
+   "category": "streak",
+   "rarity": "epic"
+  }
+ ]
+}

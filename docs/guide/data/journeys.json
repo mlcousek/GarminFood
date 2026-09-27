@@ -1,0 +1,839 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/Journeys/JourneysFeature.swift"
+ ],
+ "constants": {
+  "metresPerGramOfProtein": 0.5,
+  "fallbackWeightKg": 70,
+  "podoliPoolLitres": 2100000,
+  "milestoneXP": 40
+ },
+ "journeys": [
+  {
+   "kind": "protein",
+   "name": {
+    "en": "Protein climb",
+    "cs": "Výstup"
+   },
+   "symbol": "mountain.2.fill",
+   "unit": "metres",
+   "stages": [
+    {
+     "name": {
+      "en": "Summits",
+      "cs": "Vrcholy"
+     },
+     "start": 0,
+     "length": 8849,
+     "milestones": [
+      {
+       "id": "petrin",
+       "name": {
+        "en": "Petřín",
+        "cs": "Petřín"
+       },
+       "value": 327,
+       "badgeId": null,
+       "threshold": 327
+      },
+      {
+       "id": "lysa-hora",
+       "name": {
+        "en": "Lysá hora",
+        "cs": "Lysá hora"
+       },
+       "value": 1323,
+       "badgeId": null,
+       "threshold": 1323
+      },
+      {
+       "id": "snezka",
+       "name": {
+        "en": "Sněžka",
+        "cs": "Sněžka"
+       },
+       "value": 1603,
+       "badgeId": null,
+       "threshold": 1603
+      },
+      {
+       "id": "gerlach",
+       "name": {
+        "en": "Gerlachovský štít",
+        "cs": "Gerlachovský štít"
+       },
+       "value": 2655,
+       "badgeId": null,
+       "threshold": 2655
+      },
+      {
+       "id": "grossglockner",
+       "name": {
+        "en": "Grossglockner",
+        "cs": "Grossglockner"
+       },
+       "value": 3798,
+       "badgeId": null,
+       "threshold": 3798
+      },
+      {
+       "id": "mont-blanc",
+       "name": {
+        "en": "Mont Blanc",
+        "cs": "Mont Blanc"
+       },
+       "value": 4808,
+       "badgeId": null,
+       "threshold": 4808
+      },
+      {
+       "id": "kilimanjaro",
+       "name": {
+        "en": "Kilimanjaro",
+        "cs": "Kilimandžáro"
+       },
+       "value": 5895,
+       "badgeId": null,
+       "threshold": 5895
+      },
+      {
+       "id": "aconcagua",
+       "name": {
+        "en": "Aconcagua",
+        "cs": "Aconcagua"
+       },
+       "value": 6961,
+       "badgeId": null,
+       "threshold": 6961
+      },
+      {
+       "id": "everest",
+       "name": {
+        "en": "Everest",
+        "cs": "Everest"
+       },
+       "value": 8849,
+       "badgeId": "journey.everest",
+       "threshold": 8849
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Seven Summits",
+      "cs": "Koruna planety"
+     },
+     "start": 8849,
+     "length": 43313,
+     "milestones": [
+      {
+       "id": "seven-everest",
+       "name": {
+        "en": "Everest",
+        "cs": "Everest"
+       },
+       "value": 8849,
+       "badgeId": null,
+       "threshold": 17698
+      },
+      {
+       "id": "seven-aconcagua",
+       "name": {
+        "en": "Aconcagua",
+        "cs": "Aconcagua"
+       },
+       "value": 15810,
+       "badgeId": null,
+       "threshold": 24659
+      },
+      {
+       "id": "seven-denali",
+       "name": {
+        "en": "Denali",
+        "cs": "Denali"
+       },
+       "value": 22000,
+       "badgeId": null,
+       "threshold": 30849
+      },
+      {
+       "id": "seven-kilimanjaro",
+       "name": {
+        "en": "Kilimanjaro",
+        "cs": "Kilimandžáro"
+       },
+       "value": 27895,
+       "badgeId": null,
+       "threshold": 36744
+      },
+      {
+       "id": "seven-elbrus",
+       "name": {
+        "en": "Elbrus",
+        "cs": "Elbrus"
+       },
+       "value": 33537,
+       "badgeId": null,
+       "threshold": 42386
+      },
+      {
+       "id": "seven-vinson",
+       "name": {
+        "en": "Vinson",
+        "cs": "Vinson"
+       },
+       "value": 38429,
+       "badgeId": null,
+       "threshold": 47278
+      },
+      {
+       "id": "seven-puncak-jaya",
+       "name": {
+        "en": "Puncak Jaya",
+        "cs": "Puncak Jaya"
+       },
+       "value": 43313,
+       "badgeId": "journey.seven-summits",
+       "threshold": 52162
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "To space",
+      "cs": "Do vesmíru"
+     },
+     "start": 52162,
+     "length": 100000,
+     "milestones": [
+      {
+       "id": "karman",
+       "name": {
+        "en": "Kármán line",
+        "cs": "Kármánova hranice"
+       },
+       "value": 100000,
+       "badgeId": "journey.karman",
+       "threshold": 152162
+      }
+     ]
+    }
+   ],
+   "endless": null,
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true,
+   "conversionLine": {
+    "en": "1 g of protein = 0.5 m of climbing. A playful unit, not physiology.",
+    "cs": "1 g bílkovin = 0,5 m výstupu. Hravá jednotka, ne fyziologie."
+   }
+  },
+  {
+   "kind": "water",
+   "name": {
+    "en": "Vodník",
+    "cs": "Vodník"
+   },
+   "symbol": "drop.fill",
+   "unit": "litres",
+   "stages": [
+    {
+     "name": {
+      "en": "Filling up",
+      "cs": "Plníme"
+     },
+     "start": 0,
+     "length": 2500,
+     "milestones": [
+      {
+       "id": "bucket",
+       "name": {
+        "en": "Bucket",
+        "cs": "Kbelík"
+       },
+       "value": 10,
+       "badgeId": null,
+       "threshold": 10
+      },
+      {
+       "id": "beer-keg",
+       "name": {
+        "en": "Beer keg",
+        "cs": "Sud piva"
+       },
+       "value": 50,
+       "badgeId": null,
+       "threshold": 50
+      },
+      {
+       "id": "bathtub",
+       "name": {
+        "en": "Bathtub",
+        "cs": "Vana"
+       },
+       "value": 150,
+       "badgeId": "journey.bathtub",
+       "threshold": 150
+      },
+      {
+       "id": "rain-barrel",
+       "name": {
+        "en": "Rain barrel",
+        "cs": "Sud na dešťovku"
+       },
+       "value": 300,
+       "badgeId": null,
+       "threshold": 300
+      },
+      {
+       "id": "hot-tub",
+       "name": {
+        "en": "Hot tub",
+        "cs": "Vířivka"
+       },
+       "value": 1000,
+       "badgeId": "journey.hot-tub",
+       "threshold": 1000
+      },
+      {
+       "id": "fire-engine",
+       "name": {
+        "en": "Fire-engine tank",
+        "cs": "Hasičská cisterna"
+       },
+       "value": 2500,
+       "badgeId": "journey.fire-engine",
+       "threshold": 2500
+      }
+     ]
+    }
+   ],
+   "endless": {
+    "name": {
+     "en": "Podolí 50 m pool",
+     "cs": "50m bazén v Podolí"
+    },
+    "capacity": 2100000
+   },
+   "requirement": [
+    "water"
+   ],
+   "standalone": true,
+   "conversionLine": {
+    "en": "Every litre you drink counts. Pool size is an estimate.",
+    "cs": "Počítá se každý vypitý litr. Objem bazénu je odhad."
+   }
+  },
+  {
+   "kind": "road",
+   "name": {
+    "en": "Road trip",
+    "cs": "Na cestě"
+   },
+   "symbol": "car.fill",
+   "unit": "kilometres",
+   "stages": [
+    {
+     "name": {
+      "en": "Praha to Lisbon",
+      "cs": "Z Prahy do Lisabonu"
+     },
+     "start": 0,
+     "length": 4495,
+     "milestones": [
+      {
+       "id": "brno",
+       "name": {
+        "en": "Brno",
+        "cs": "Brno"
+       },
+       "value": 205,
+       "badgeId": null,
+       "threshold": 205
+      },
+      {
+       "id": "vienna",
+       "name": {
+        "en": "Vienna",
+        "cs": "Vídeň"
+       },
+       "value": 350,
+       "badgeId": "journey.vienna",
+       "threshold": 350
+      },
+      {
+       "id": "bratislava",
+       "name": {
+        "en": "Bratislava",
+        "cs": "Bratislava"
+       },
+       "value": 430,
+       "badgeId": null,
+       "threshold": 430
+      },
+      {
+       "id": "budapest",
+       "name": {
+        "en": "Budapest",
+        "cs": "Budapešť"
+       },
+       "value": 630,
+       "badgeId": null,
+       "threshold": 630
+      },
+      {
+       "id": "zagreb",
+       "name": {
+        "en": "Zagreb",
+        "cs": "Záhřeb"
+       },
+       "value": 975,
+       "badgeId": null,
+       "threshold": 975
+      },
+      {
+       "id": "ljubljana",
+       "name": {
+        "en": "Ljubljana",
+        "cs": "Lublaň"
+       },
+       "value": 1115,
+       "badgeId": null,
+       "threshold": 1115
+      },
+      {
+       "id": "venice",
+       "name": {
+        "en": "Venice",
+        "cs": "Benátky"
+       },
+       "value": 1350,
+       "badgeId": null,
+       "threshold": 1350
+      },
+      {
+       "id": "florence",
+       "name": {
+        "en": "Florence",
+        "cs": "Florencie"
+       },
+       "value": 1610,
+       "badgeId": null,
+       "threshold": 1610
+      },
+      {
+       "id": "rome",
+       "name": {
+        "en": "Rome",
+        "cs": "Řím"
+       },
+       "value": 1890,
+       "badgeId": "journey.rome",
+       "threshold": 1890
+      },
+      {
+       "id": "nice",
+       "name": {
+        "en": "Nice",
+        "cs": "Nice"
+       },
+       "value": 2590,
+       "badgeId": null,
+       "threshold": 2590
+      },
+      {
+       "id": "barcelona",
+       "name": {
+        "en": "Barcelona",
+        "cs": "Barcelona"
+       },
+       "value": 3250,
+       "badgeId": null,
+       "threshold": 3250
+      },
+      {
+       "id": "madrid",
+       "name": {
+        "en": "Madrid",
+        "cs": "Madrid"
+       },
+       "value": 3870,
+       "badgeId": null,
+       "threshold": 3870
+      },
+      {
+       "id": "lisbon",
+       "name": {
+        "en": "Lisbon",
+        "cs": "Lisabon"
+       },
+       "value": 4495,
+       "badgeId": "journey.lisbon",
+       "threshold": 4495
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "The way home",
+      "cs": "Cesta domů"
+     },
+     "start": 4495,
+     "length": 2800,
+     "milestones": [
+      {
+       "id": "paris",
+       "name": {
+        "en": "Paris",
+        "cs": "Paříž"
+       },
+       "value": 1750,
+       "badgeId": null,
+       "threshold": 6245
+      },
+      {
+       "id": "home",
+       "name": {
+        "en": "Praha",
+        "cs": "Praha"
+       },
+       "value": 2800,
+       "badgeId": "journey.home-again",
+       "threshold": 7295
+      }
+     ]
+    }
+   ],
+   "endless": null,
+   "requirement": [
+    "activities"
+   ],
+   "standalone": false,
+   "conversionLine": {
+    "en": "Active kcal ÷ your weight in kg = km (about 1 kcal per kg per km; 70 kg if no weigh-in).",
+    "cs": "Aktivní kcal ÷ tvoje váha v kg = km (zhruba 1 kcal na kg a km; bez vážení 70 kg)."
+   }
+  },
+  {
+   "kind": "passport",
+   "name": {
+    "en": "Food passport",
+    "cs": "Jídelní pas"
+   },
+   "symbol": "book.closed.fill",
+   "unit": "stamps",
+   "stages": [
+    {
+     "name": {
+      "en": "Stamps",
+      "cs": "Razítka"
+     },
+     "start": 0,
+     "length": 500,
+     "milestones": [
+      {
+       "id": "stamps-10",
+       "name": {
+        "en": "10 stamps",
+        "cs": "10 razítek"
+       },
+       "value": 10,
+       "badgeId": null,
+       "threshold": 10
+      },
+      {
+       "id": "stamps-25",
+       "name": {
+        "en": "25 stamps",
+        "cs": "25 razítek"
+       },
+       "value": 25,
+       "badgeId": null,
+       "threshold": 25
+      },
+      {
+       "id": "stamps-50",
+       "name": {
+        "en": "50 stamps",
+        "cs": "50 razítek"
+       },
+       "value": 50,
+       "badgeId": null,
+       "threshold": 50
+      },
+      {
+       "id": "stamps-100",
+       "name": {
+        "en": "100 stamps",
+        "cs": "100 razítek"
+       },
+       "value": 100,
+       "badgeId": "journey.passport-100",
+       "threshold": 100
+      },
+      {
+       "id": "stamps-250",
+       "name": {
+        "en": "250 stamps",
+        "cs": "250 razítek"
+       },
+       "value": 250,
+       "badgeId": null,
+       "threshold": 250
+      },
+      {
+       "id": "stamps-500",
+       "name": {
+        "en": "500 stamps",
+        "cs": "500 razítek"
+       },
+       "value": 500,
+       "badgeId": "journey.passport-500",
+       "threshold": 500
+      }
+     ]
+    }
+   ],
+   "endless": null,
+   "requirement": [],
+   "standalone": true,
+   "conversionLine": {
+    "en": "One stamp for every different food you have ever logged.",
+    "cs": "Jedno razítko za každé různé jídlo v tvém deníku."
+   }
+  }
+ ],
+ "badges": [
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 199,
+   "id": "journey.everest",
+   "title": {
+    "en": "Top of the World",
+    "cs": "Na střeše světa"
+   },
+   "subtitle": {
+    "en": "Climb Everest on protein.",
+    "cs": "Vylez na Everest na bílkovinách."
+   },
+   "symbol": "mountain.2.fill",
+   "rarity": "rare",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 211,
+   "id": "journey.seven-summits",
+   "title": {
+    "en": "Seven Summits",
+    "cs": "Koruna planety"
+   },
+   "subtitle": {
+    "en": "Climb all Seven Summits on protein.",
+    "cs": "Pokoř celou Korunu planety na bílkovinách."
+   },
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "epic",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 217,
+   "id": "journey.karman",
+   "title": {
+    "en": "Protein Astronaut",
+    "cs": "Proteinový astronaut"
+   },
+   "subtitle": {
+    "en": "Climb to the Kármán line, 100 km up.",
+    "cs": "Vystoupej až na Kármánovu hranici, 100 km nahoru."
+   },
+   "symbol": "sparkles",
+   "rarity": "legendary",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 238,
+   "id": "journey.bathtub",
+   "title": {
+    "en": "Bath Time",
+    "cs": "Čas na koupel"
+   },
+   "subtitle": {
+    "en": "Drink a whole bathtub of water.",
+    "cs": "Vypij celou vanu vody."
+   },
+   "symbol": "bathtub.fill",
+   "rarity": "uncommon",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 240,
+   "id": "journey.hot-tub",
+   "title": {
+    "en": "Hot Tub Party",
+    "cs": "Vířivková párty"
+   },
+   "subtitle": {
+    "en": "Drink a whole hot tub of water.",
+    "cs": "Vypij celou vířivku vody."
+   },
+   "symbol": "drop.circle.fill",
+   "rarity": "rare",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 241,
+   "id": "journey.fire-engine",
+   "title": {
+    "en": "Fire Brigade",
+    "cs": "Hasičský sbor"
+   },
+   "subtitle": {
+    "en": "Drink a fire engine's whole tank.",
+    "cs": "Vypij celou hasičskou cisternu."
+   },
+   "symbol": "flame.fill",
+   "rarity": "epic",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 265,
+   "id": "journey.vienna",
+   "title": {
+    "en": "Off to Vienna",
+    "cs": "Hurá do Vídně"
+   },
+   "subtitle": {
+    "en": "Walk off active kcal all the way to Vienna.",
+    "cs": "Vychoď aktivní kcal až do Vídně."
+   },
+   "symbol": "car.fill",
+   "rarity": "uncommon",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 272,
+   "id": "journey.rome",
+   "title": {
+    "en": "All Roads Lead to Rome",
+    "cs": "Všechny cesty vedou do Říma"
+   },
+   "subtitle": {
+    "en": "Reach Rome on the road trip.",
+    "cs": "Dojeď na cestě až do Říma."
+   },
+   "symbol": "building.columns.fill",
+   "rarity": "rare",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 276,
+   "id": "journey.lisbon",
+   "title": {
+    "en": "Atlantic Coast",
+    "cs": "Atlantské pobřeží"
+   },
+   "subtitle": {
+    "en": "Reach Lisbon on the road trip.",
+    "cs": "Dojeď na cestě až do Lisabonu."
+   },
+   "symbol": "water.waves",
+   "rarity": "epic",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 283,
+   "id": "journey.home-again",
+   "title": {
+    "en": "Home Again",
+    "cs": "Zase doma"
+   },
+   "subtitle": {
+    "en": "Make it all the way back home to Praha.",
+    "cs": "Dojeď celou cestu zpátky domů do Prahy."
+   },
+   "symbol": "house.fill",
+   "rarity": "legendary",
+   "category": "volume"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 311,
+   "id": "journey.passport-100",
+   "title": {
+    "en": "Seasoned Traveller",
+    "cs": "Ostřílený cestovatel"
+   },
+   "subtitle": {
+    "en": "Collect 100 food passport stamps.",
+    "cs": "Nasbírej 100 razítek do jídelního pasu."
+   },
+   "symbol": "book.closed.fill",
+   "rarity": "epic",
+   "category": "variety"
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 313,
+   "id": "journey.passport-500",
+   "title": {
+    "en": "Citizen of the World",
+    "cs": "Občan světa"
+   },
+   "subtitle": {
+    "en": "Collect 500 food passport stamps.",
+    "cs": "Nasbírej 500 razítek do jídelního pasu."
+   },
+   "symbol": "globe",
+   "rarity": "legendary",
+   "category": "variety"
+  }
+ ]
+}

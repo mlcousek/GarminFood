@@ -1,0 +1,1498 @@
+{
+ "source": "mirrored",
+ "files": [
+  "ios/Gamification/Sources/Gamification/LevelCurve.swift",
+  "ios/Gamification/Sources/Gamification/LevelTier.swift",
+  "ios/Gamification/Sources/Gamification/XPBudget.swift",
+  "ios/Gamification/Sources/Gamification/XPStore.swift",
+  "ios/Gamification/Sources/Gamification/Features/XPAward+Features.swift"
+ ],
+ "curve": {
+  "baseXPForFirstLevelUp": 100,
+  "growthFactor": 1.05358,
+  "pastGrowthFactors": [
+   1.045,
+   1.0505
+  ],
+  "curveVersion": 3,
+  "maxLevel": 200,
+  "formula": "xpRequired(afterLevel L) = max(1, round(100 × growthFactor^(L−1))); level = the highest L whose cumulative threshold ≤ total XP; the displayed level is never below the highest level ever reached (peakLevel).",
+  "table": [
+   {
+    "level": 1,
+    "threshold": 0,
+    "band": 100
+   },
+   {
+    "level": 2,
+    "threshold": 100,
+    "band": 105
+   },
+   {
+    "level": 3,
+    "threshold": 205,
+    "band": 111
+   },
+   {
+    "level": 4,
+    "threshold": 316,
+    "band": 117
+   },
+   {
+    "level": 5,
+    "threshold": 433,
+    "band": 123
+   },
+   {
+    "level": 6,
+    "threshold": 556,
+    "band": 130
+   },
+   {
+    "level": 7,
+    "threshold": 686,
+    "band": 137
+   },
+   {
+    "level": 8,
+    "threshold": 823,
+    "band": 144
+   },
+   {
+    "level": 9,
+    "threshold": 967,
+    "band": 152
+   },
+   {
+    "level": 10,
+    "threshold": 1119,
+    "band": 160
+   },
+   {
+    "level": 11,
+    "threshold": 1279,
+    "band": 169
+   },
+   {
+    "level": 12,
+    "threshold": 1448,
+    "band": 178
+   },
+   {
+    "level": 13,
+    "threshold": 1626,
+    "band": 187
+   },
+   {
+    "level": 14,
+    "threshold": 1813,
+    "band": 197
+   },
+   {
+    "level": 15,
+    "threshold": 2010,
+    "band": 208
+   },
+   {
+    "level": 16,
+    "threshold": 2218,
+    "band": 219
+   },
+   {
+    "level": 17,
+    "threshold": 2437,
+    "band": 231
+   },
+   {
+    "level": 18,
+    "threshold": 2668,
+    "band": 243
+   },
+   {
+    "level": 19,
+    "threshold": 2911,
+    "band": 256
+   },
+   {
+    "level": 20,
+    "threshold": 3167,
+    "band": 270
+   },
+   {
+    "level": 21,
+    "threshold": 3437,
+    "band": 284
+   },
+   {
+    "level": 22,
+    "threshold": 3721,
+    "band": 299
+   },
+   {
+    "level": 23,
+    "threshold": 4020,
+    "band": 315
+   },
+   {
+    "level": 24,
+    "threshold": 4335,
+    "band": 332
+   },
+   {
+    "level": 25,
+    "threshold": 4667,
+    "band": 350
+   },
+   {
+    "level": 26,
+    "threshold": 5017,
+    "band": 369
+   },
+   {
+    "level": 27,
+    "threshold": 5386,
+    "band": 388
+   },
+   {
+    "level": 28,
+    "threshold": 5774,
+    "band": 409
+   },
+   {
+    "level": 29,
+    "threshold": 6183,
+    "band": 431
+   },
+   {
+    "level": 30,
+    "threshold": 6614,
+    "band": 454
+   },
+   {
+    "level": 31,
+    "threshold": 7068,
+    "band": 479
+   },
+   {
+    "level": 32,
+    "threshold": 7547,
+    "band": 504
+   },
+   {
+    "level": 33,
+    "threshold": 8051,
+    "band": 531
+   },
+   {
+    "level": 34,
+    "threshold": 8582,
+    "band": 560
+   },
+   {
+    "level": 35,
+    "threshold": 9142,
+    "band": 590
+   },
+   {
+    "level": 36,
+    "threshold": 9732,
+    "band": 621
+   },
+   {
+    "level": 37,
+    "threshold": 10353,
+    "band": 655
+   },
+   {
+    "level": 38,
+    "threshold": 11008,
+    "band": 690
+   },
+   {
+    "level": 39,
+    "threshold": 11698,
+    "band": 727
+   },
+   {
+    "level": 40,
+    "threshold": 12425,
+    "band": 766
+   },
+   {
+    "level": 41,
+    "threshold": 13191,
+    "band": 807
+   },
+   {
+    "level": 42,
+    "threshold": 13998,
+    "band": 850
+   },
+   {
+    "level": 43,
+    "threshold": 14848,
+    "band": 895
+   },
+   {
+    "level": 44,
+    "threshold": 15743,
+    "band": 943
+   },
+   {
+    "level": 45,
+    "threshold": 16686,
+    "band": 994
+   },
+   {
+    "level": 46,
+    "threshold": 17680,
+    "band": 1047
+   },
+   {
+    "level": 47,
+    "threshold": 18727,
+    "band": 1103
+   },
+   {
+    "level": 48,
+    "threshold": 19830,
+    "band": 1162
+   },
+   {
+    "level": 49,
+    "threshold": 20992,
+    "band": 1225
+   },
+   {
+    "level": 50,
+    "threshold": 22217,
+    "band": 1290
+   },
+   {
+    "level": 51,
+    "threshold": 23507,
+    "band": 1359
+   },
+   {
+    "level": 52,
+    "threshold": 24866,
+    "band": 1432
+   },
+   {
+    "level": 53,
+    "threshold": 26298,
+    "band": 1509
+   },
+   {
+    "level": 54,
+    "threshold": 27807,
+    "band": 1590
+   },
+   {
+    "level": 55,
+    "threshold": 29397,
+    "band": 1675
+   },
+   {
+    "level": 56,
+    "threshold": 31072,
+    "band": 1765
+   },
+   {
+    "level": 57,
+    "threshold": 32837,
+    "band": 1859
+   },
+   {
+    "level": 58,
+    "threshold": 34696,
+    "band": 1959
+   },
+   {
+    "level": 59,
+    "threshold": 36655,
+    "band": 2064
+   },
+   {
+    "level": 60,
+    "threshold": 38719,
+    "band": 2175
+   },
+   {
+    "level": 61,
+    "threshold": 40894,
+    "band": 2291
+   },
+   {
+    "level": 62,
+    "threshold": 43185,
+    "band": 2414
+   },
+   {
+    "level": 63,
+    "threshold": 45599,
+    "band": 2543
+   },
+   {
+    "level": 64,
+    "threshold": 48142,
+    "band": 2679
+   },
+   {
+    "level": 65,
+    "threshold": 50821,
+    "band": 2823
+   },
+   {
+    "level": 66,
+    "threshold": 53644,
+    "band": 2974
+   },
+   {
+    "level": 67,
+    "threshold": 56618,
+    "band": 3134
+   },
+   {
+    "level": 68,
+    "threshold": 59752,
+    "band": 3302
+   },
+   {
+    "level": 69,
+    "threshold": 63054,
+    "band": 3478
+   },
+   {
+    "level": 70,
+    "threshold": 66532,
+    "band": 3665
+   },
+   {
+    "level": 71,
+    "threshold": 70197,
+    "band": 3861
+   },
+   {
+    "level": 72,
+    "threshold": 74058,
+    "band": 4068
+   },
+   {
+    "level": 73,
+    "threshold": 78126,
+    "band": 4286
+   },
+   {
+    "level": 74,
+    "threshold": 82412,
+    "band": 4516
+   },
+   {
+    "level": 75,
+    "threshold": 86928,
+    "band": 4758
+   },
+   {
+    "level": 76,
+    "threshold": 91686,
+    "band": 5013
+   },
+   {
+    "level": 77,
+    "threshold": 96699,
+    "band": 5281
+   },
+   {
+    "level": 78,
+    "threshold": 101980,
+    "band": 5564
+   },
+   {
+    "level": 79,
+    "threshold": 107544,
+    "band": 5862
+   },
+   {
+    "level": 80,
+    "threshold": 113406,
+    "band": 6176
+   },
+   {
+    "level": 81,
+    "threshold": 119582,
+    "band": 6507
+   },
+   {
+    "level": 82,
+    "threshold": 126089,
+    "band": 6856
+   },
+   {
+    "level": 83,
+    "threshold": 132945,
+    "band": 7223
+   },
+   {
+    "level": 84,
+    "threshold": 140168,
+    "band": 7610
+   },
+   {
+    "level": 85,
+    "threshold": 147778,
+    "band": 8018
+   },
+   {
+    "level": 86,
+    "threshold": 155796,
+    "band": 8448
+   },
+   {
+    "level": 87,
+    "threshold": 164244,
+    "band": 8900
+   },
+   {
+    "level": 88,
+    "threshold": 173144,
+    "band": 9377
+   },
+   {
+    "level": 89,
+    "threshold": 182521,
+    "band": 9880
+   },
+   {
+    "level": 90,
+    "threshold": 192401,
+    "band": 10409
+   },
+   {
+    "level": 91,
+    "threshold": 202810,
+    "band": 10967
+   },
+   {
+    "level": 92,
+    "threshold": 213777,
+    "band": 11554
+   },
+   {
+    "level": 93,
+    "threshold": 225331,
+    "band": 12173
+   },
+   {
+    "level": 94,
+    "threshold": 237504,
+    "band": 12826
+   },
+   {
+    "level": 95,
+    "threshold": 250330,
+    "band": 13513
+   },
+   {
+    "level": 96,
+    "threshold": 263843,
+    "band": 14237
+   },
+   {
+    "level": 97,
+    "threshold": 278080,
+    "band": 15000
+   },
+   {
+    "level": 98,
+    "threshold": 293080,
+    "band": 15803
+   },
+   {
+    "level": 99,
+    "threshold": 308883,
+    "band": 16650
+   },
+   {
+    "level": 100,
+    "threshold": 325533,
+    "band": 17542
+   },
+   {
+    "level": 101,
+    "threshold": 343075,
+    "band": 18482
+   },
+   {
+    "level": 102,
+    "threshold": 361557,
+    "band": 19472
+   },
+   {
+    "level": 103,
+    "threshold": 381029,
+    "band": 20516
+   },
+   {
+    "level": 104,
+    "threshold": 401545,
+    "band": 21615
+   },
+   {
+    "level": 105,
+    "threshold": 423160,
+    "band": 22773
+   },
+   {
+    "level": 106,
+    "threshold": 445933,
+    "band": 23993
+   },
+   {
+    "level": 107,
+    "threshold": 469926,
+    "band": 25279
+   },
+   {
+    "level": 108,
+    "threshold": 495205,
+    "band": 26633
+   },
+   {
+    "level": 109,
+    "threshold": 521838,
+    "band": 28060
+   },
+   {
+    "level": 110,
+    "threshold": 549898,
+    "band": 29564
+   },
+   {
+    "level": 111,
+    "threshold": 579462,
+    "band": 31148
+   },
+   {
+    "level": 112,
+    "threshold": 610610,
+    "band": 32817
+   },
+   {
+    "level": 113,
+    "threshold": 643427,
+    "band": 34575
+   },
+   {
+    "level": 114,
+    "threshold": 678002,
+    "band": 36428
+   },
+   {
+    "level": 115,
+    "threshold": 714430,
+    "band": 38379
+   },
+   {
+    "level": 116,
+    "threshold": 752809,
+    "band": 40436
+   },
+   {
+    "level": 117,
+    "threshold": 793245,
+    "band": 42602
+   },
+   {
+    "level": 118,
+    "threshold": 835847,
+    "band": 44885
+   },
+   {
+    "level": 119,
+    "threshold": 880732,
+    "band": 47290
+   },
+   {
+    "level": 120,
+    "threshold": 928022,
+    "band": 49824
+   },
+   {
+    "level": 121,
+    "threshold": 977846,
+    "band": 52493
+   },
+   {
+    "level": 122,
+    "threshold": 1030339,
+    "band": 55306
+   },
+   {
+    "level": 123,
+    "threshold": 1085645,
+    "band": 58269
+   },
+   {
+    "level": 124,
+    "threshold": 1143914,
+    "band": 61391
+   },
+   {
+    "level": 125,
+    "threshold": 1205305,
+    "band": 64680
+   },
+   {
+    "level": 126,
+    "threshold": 1269985,
+    "band": 68146
+   },
+   {
+    "level": 127,
+    "threshold": 1338131,
+    "band": 71797
+   },
+   {
+    "level": 128,
+    "threshold": 1409928,
+    "band": 75644
+   },
+   {
+    "level": 129,
+    "threshold": 1485572,
+    "band": 79697
+   },
+   {
+    "level": 130,
+    "threshold": 1565269,
+    "band": 83967
+   },
+   {
+    "level": 131,
+    "threshold": 1649236,
+    "band": 88466
+   },
+   {
+    "level": 132,
+    "threshold": 1737702,
+    "band": 93206
+   },
+   {
+    "level": 133,
+    "threshold": 1830908,
+    "band": 98200
+   },
+   {
+    "level": 134,
+    "threshold": 1929108,
+    "band": 103462
+   },
+   {
+    "level": 135,
+    "threshold": 2032570,
+    "band": 109005
+   },
+   {
+    "level": 136,
+    "threshold": 2141575,
+    "band": 114846
+   },
+   {
+    "level": 137,
+    "threshold": 2256421,
+    "band": 120999
+   },
+   {
+    "level": 138,
+    "threshold": 2377420,
+    "band": 127482
+   },
+   {
+    "level": 139,
+    "threshold": 2504902,
+    "band": 134313
+   },
+   {
+    "level": 140,
+    "threshold": 2639215,
+    "band": 141509
+   },
+   {
+    "level": 141,
+    "threshold": 2780724,
+    "band": 149091
+   },
+   {
+    "level": 142,
+    "threshold": 2929815,
+    "band": 157080
+   },
+   {
+    "level": 143,
+    "threshold": 3086895,
+    "band": 165496
+   },
+   {
+    "level": 144,
+    "threshold": 3252391,
+    "band": 174363
+   },
+   {
+    "level": 145,
+    "threshold": 3426754,
+    "band": 183706
+   },
+   {
+    "level": 146,
+    "threshold": 3610460,
+    "band": 193549
+   },
+   {
+    "level": 147,
+    "threshold": 3804009,
+    "band": 203919
+   },
+   {
+    "level": 148,
+    "threshold": 4007928,
+    "band": 214845
+   },
+   {
+    "level": 149,
+    "threshold": 4222773,
+    "band": 226356
+   },
+   {
+    "level": 150,
+    "threshold": 4449129,
+    "band": 238485
+   },
+   {
+    "level": 151,
+    "threshold": 4687614,
+    "band": 251263
+   },
+   {
+    "level": 152,
+    "threshold": 4938877,
+    "band": 264725
+   },
+   {
+    "level": 153,
+    "threshold": 5203602,
+    "band": 278909
+   },
+   {
+    "level": 154,
+    "threshold": 5482511,
+    "band": 293853
+   },
+   {
+    "level": 155,
+    "threshold": 5776364,
+    "band": 309598
+   },
+   {
+    "level": 156,
+    "threshold": 6085962,
+    "band": 326186
+   },
+   {
+    "level": 157,
+    "threshold": 6412148,
+    "band": 343663
+   },
+   {
+    "level": 158,
+    "threshold": 6755811,
+    "band": 362076
+   },
+   {
+    "level": 159,
+    "threshold": 7117887,
+    "band": 381477
+   },
+   {
+    "level": 160,
+    "threshold": 7499364,
+    "band": 401916
+   },
+   {
+    "level": 161,
+    "threshold": 7901280,
+    "band": 423451
+   },
+   {
+    "level": 162,
+    "threshold": 8324731,
+    "band": 446139
+   },
+   {
+    "level": 163,
+    "threshold": 8770870,
+    "band": 470043
+   },
+   {
+    "level": 164,
+    "threshold": 9240913,
+    "band": 495228
+   },
+   {
+    "level": 165,
+    "threshold": 9736141,
+    "band": 521763
+   },
+   {
+    "level": 166,
+    "threshold": 10257904,
+    "band": 549719
+   },
+   {
+    "level": 167,
+    "threshold": 10807623,
+    "band": 579173
+   },
+   {
+    "level": 168,
+    "threshold": 11386796,
+    "band": 610205
+   },
+   {
+    "level": 169,
+    "threshold": 11997001,
+    "band": 642899
+   },
+   {
+    "level": 170,
+    "threshold": 12639900,
+    "band": 677346
+   },
+   {
+    "level": 171,
+    "threshold": 13317246,
+    "band": 713638
+   },
+   {
+    "level": 172,
+    "threshold": 14030884,
+    "band": 751875
+   },
+   {
+    "level": 173,
+    "threshold": 14782759,
+    "band": 792160
+   },
+   {
+    "level": 174,
+    "threshold": 15574919,
+    "band": 834604
+   },
+   {
+    "level": 175,
+    "threshold": 16409523,
+    "band": 879322
+   },
+   {
+    "level": 176,
+    "threshold": 17288845,
+    "band": 926436
+   },
+   {
+    "level": 177,
+    "threshold": 18215281,
+    "band": 976075
+   },
+   {
+    "level": 178,
+    "threshold": 19191356,
+    "band": 1028373
+   },
+   {
+    "level": 179,
+    "threshold": 20219729,
+    "band": 1083473
+   },
+   {
+    "level": 180,
+    "threshold": 21303202,
+    "band": 1141526
+   },
+   {
+    "level": 181,
+    "threshold": 22444728,
+    "band": 1202689
+   },
+   {
+    "level": 182,
+    "threshold": 23647417,
+    "band": 1267129
+   },
+   {
+    "level": 183,
+    "threshold": 24914546,
+    "band": 1335021
+   },
+   {
+    "level": 184,
+    "threshold": 26249567,
+    "band": 1406552
+   },
+   {
+    "level": 185,
+    "threshold": 27656119,
+    "band": 1481915
+   },
+   {
+    "level": 186,
+    "threshold": 29138034,
+    "band": 1561316
+   },
+   {
+    "level": 187,
+    "threshold": 30699350,
+    "band": 1644971
+   },
+   {
+    "level": 188,
+    "threshold": 32344321,
+    "band": 1733109
+   },
+   {
+    "level": 189,
+    "threshold": 34077430,
+    "band": 1825969
+   },
+   {
+    "level": 190,
+    "threshold": 35903399,
+    "band": 1923804
+   },
+   {
+    "level": 191,
+    "threshold": 37827203,
+    "band": 2026882
+   },
+   {
+    "level": 192,
+    "threshold": 39854085,
+    "band": 2135482
+   },
+   {
+    "level": 193,
+    "threshold": 41989567,
+    "band": 2249901
+   },
+   {
+    "level": 194,
+    "threshold": 44239468,
+    "band": 2370451
+   },
+   {
+    "level": 195,
+    "threshold": 46609919,
+    "band": 2497460
+   },
+   {
+    "level": 196,
+    "threshold": 49107379,
+    "band": 2631273
+   },
+   {
+    "level": 197,
+    "threshold": 51738652,
+    "band": 2772257
+   },
+   {
+    "level": 198,
+    "threshold": 54510909,
+    "band": 2920795
+   },
+   {
+    "level": 199,
+    "threshold": 57431704,
+    "band": 3077291
+   },
+   {
+    "level": 200,
+    "threshold": 60508995,
+    "band": 0
+   }
+  ]
+ },
+ "tiers": [
+  {
+   "from": 1,
+   "to": 5,
+   "rarity": "common",
+   "symbol": "star.fill",
+   "title": {
+    "en": "Newcomer",
+    "cs": "Nováček"
+   },
+   "flavor": {
+    "en": "Everyone starts somewhere.",
+    "cs": "Každý někde začíná."
+   },
+   "xpAtStart": 0
+  },
+  {
+   "from": 6,
+   "to": 10,
+   "rarity": "common",
+   "symbol": "star.fill",
+   "title": {
+    "en": "Rookie",
+    "cs": "Začátečník"
+   },
+   "flavor": {
+    "en": "The habit is forming.",
+    "cs": "Zvyk se rodí."
+   },
+   "xpAtStart": 556
+  },
+  {
+   "from": 11,
+   "to": 15,
+   "rarity": "uncommon",
+   "symbol": "sparkles",
+   "title": {
+    "en": "Apprentice",
+    "cs": "Učeň"
+   },
+   "flavor": {
+    "en": "You know your way around now.",
+    "cs": "Už se tu vyznáš."
+   },
+   "xpAtStart": 1279
+  },
+  {
+   "from": 16,
+   "to": 20,
+   "rarity": "uncommon",
+   "symbol": "sparkles",
+   "title": {
+    "en": "Regular",
+    "cs": "Štamgast"
+   },
+   "flavor": {
+    "en": "This is just what you do now.",
+    "cs": "Teď už to prostě děláš."
+   },
+   "xpAtStart": 2218
+  },
+  {
+   "from": 21,
+   "to": 27,
+   "rarity": "uncommon",
+   "symbol": "sparkles",
+   "title": {
+    "en": "Steady Hand",
+    "cs": "Pevná ruka"
+   },
+   "flavor": {
+    "en": "Consistency is becoming your thing.",
+    "cs": "Pravidelnost se stává tvou silnou stránkou."
+   },
+   "xpAtStart": 3437
+  },
+  {
+   "from": 28,
+   "to": 35,
+   "rarity": "uncommon",
+   "symbol": "sparkles",
+   "title": {
+    "en": "Dedicated",
+    "cs": "Oddaný"
+   },
+   "flavor": {
+    "en": "Missing a day feels wrong now.",
+    "cs": "Vynechat den ti už připadá divné."
+   },
+   "xpAtStart": 5774
+  },
+  {
+   "from": 36,
+   "to": 44,
+   "rarity": "rare",
+   "symbol": "shield.fill",
+   "title": {
+    "en": "Committed",
+    "cs": "Vytrvalý"
+   },
+   "flavor": {
+    "en": "Months in, still showing up.",
+    "cs": "Měsíce za tebou a pořád tu jsi."
+   },
+   "xpAtStart": 9732
+  },
+  {
+   "from": 45,
+   "to": 54,
+   "rarity": "rare",
+   "symbol": "shield.fill",
+   "title": {
+    "en": "Seasoned",
+    "cs": "Ostřílený"
+   },
+   "flavor": {
+    "en": "You've seen every kind of day.",
+    "cs": "Už znáš všechny druhy dnů."
+   },
+   "xpAtStart": 16686
+  },
+  {
+   "from": 55,
+   "to": 65,
+   "rarity": "rare",
+   "symbol": "shield.fill",
+   "title": {
+    "en": "Veteran",
+    "cs": "Veterán"
+   },
+   "flavor": {
+    "en": "A full year, easy.",
+    "cs": "Celý rok, v pohodě."
+   },
+   "xpAtStart": 29397
+  },
+  {
+   "from": 66,
+   "to": 77,
+   "rarity": "rare",
+   "symbol": "shield.fill",
+   "title": {
+    "en": "Expert",
+    "cs": "Expert"
+   },
+   "flavor": {
+    "en": "You could teach this.",
+    "cs": "Tohle už zvládáš učit i ostatní."
+   },
+   "xpAtStart": 53644
+  },
+  {
+   "from": 78,
+   "to": 90,
+   "rarity": "epic",
+   "symbol": "flame.fill",
+   "title": {
+    "en": "Elite",
+    "cs": "Elita"
+   },
+   "flavor": {
+    "en": "Top of the leaderboard, if there were one.",
+    "cs": "Vrchol žebříčku, kdyby nějaký byl."
+   },
+   "xpAtStart": 101980
+  },
+  {
+   "from": 91,
+   "to": 104,
+   "rarity": "epic",
+   "symbol": "flame.fill",
+   "title": {
+    "en": "Master",
+    "cs": "Mistr"
+   },
+   "flavor": {
+    "en": "Multi-year discipline.",
+    "cs": "Disciplína na roky."
+   },
+   "xpAtStart": 202810
+  },
+  {
+   "from": 105,
+   "to": 119,
+   "rarity": "epic",
+   "symbol": "flame.fill",
+   "title": {
+    "en": "Grandmaster",
+    "cs": "Velmistr"
+   },
+   "flavor": {
+    "en": "Genuinely rare territory.",
+    "cs": "Opravdu vzácné území."
+   },
+   "xpAtStart": 423160
+  },
+  {
+   "from": 120,
+   "to": 135,
+   "rarity": "epic",
+   "symbol": "flame.fill",
+   "title": {
+    "en": "Champion",
+    "cs": "Šampion"
+   },
+   "flavor": {
+    "en": "Years of unbroken effort.",
+    "cs": "Roky nepřerušeného úsilí."
+   },
+   "xpAtStart": 928022
+  },
+  {
+   "from": 136,
+   "to": 152,
+   "rarity": "epic",
+   "symbol": "flame.fill",
+   "title": {
+    "en": "Luminary",
+    "cs": "Světlonoš"
+   },
+   "flavor": {
+    "en": "An inspiration, if anyone was watching.",
+    "cs": "Inspirace pro ostatní, kdyby se někdo díval."
+   },
+   "xpAtStart": 2141575
+  },
+  {
+   "from": 153,
+   "to": 170,
+   "rarity": "legendary",
+   "symbol": "crown.fill",
+   "title": {
+    "en": "Mythic",
+    "cs": "Mýtický"
+   },
+   "flavor": {
+    "en": "The stuff of legend.",
+    "cs": "Látka pro legendy."
+   },
+   "xpAtStart": 5203602
+  },
+  {
+   "from": 171,
+   "to": 185,
+   "rarity": "legendary",
+   "symbol": "crown.fill",
+   "title": {
+    "en": "Immortal",
+    "cs": "Nesmrtelný"
+   },
+   "flavor": {
+    "en": "Time itself is starting to notice.",
+    "cs": "Všímá si tě už i samotný čas."
+   },
+   "xpAtStart": 13317246
+  },
+  {
+   "from": 186,
+   "to": 195,
+   "rarity": "legendary",
+   "symbol": "crown.fill",
+   "title": {
+    "en": "Transcendent",
+    "cs": "Transcendentní"
+   },
+   "flavor": {
+    "en": "Beyond the curve's original design.",
+    "cs": "Za hranicí původně navržené křivky."
+   },
+   "xpAtStart": 29138034
+  },
+  {
+   "from": 196,
+   "to": 199,
+   "rarity": "legendary",
+   "symbol": "crown.fill",
+   "title": {
+    "en": "Ascendant",
+    "cs": "Na vzestupu"
+   },
+   "flavor": {
+    "en": "One step from the summit.",
+    "cs": "Krok od vrcholu."
+   },
+   "xpAtStart": 49107379
+  },
+  {
+   "from": 200,
+   "to": 200,
+   "rarity": "legendary",
+   "symbol": "crown.fill",
+   "title": {
+    "en": "Legend",
+    "cs": "Legenda"
+   },
+   "flavor": {
+    "en": "You reached the ceiling. Actually reached it.",
+    "cs": "Strop je dosažen. Opravdu."
+   },
+   "xpAtStart": 60508995
+  }
+ ],
+ "xpAwards": {
+  "flatPerLog": 10,
+  "streakExtensionBonus": 20,
+  "goalHitBonus": 25,
+  "challengeCompletionBonus": 50,
+  "dailyChallengeBonus": 15,
+  "achievementBonus": 30,
+  "bingoLine": 25,
+  "bingoFullCard": 150,
+  "seasonalEventCompleted": 50,
+  "collectionDiscovery": 5,
+  "journeyMilestone": 40,
+  "personalRecord": 20,
+  "secretUnlocked": 50,
+  "sportBadge": 0,
+  "bossDefeatedBase": 150,
+  "bossDefeatedPerTargetDay": 25,
+  "supplementStackComplete": 6,
+  "creativeChallengeRange": [
+   60,
+   160
+  ]
+ },
+ "budget": {
+  "targetLevel": 84,
+  "targetDays": 1095,
+  "assumedMeanChallengeReward": 85,
+  "lines": [
+   {
+    "source": "log",
+    "what": "flatPerLog (10) × 3.5 entries a day",
+    "xp": 35
+   },
+   {
+    "source": "streak",
+    "what": "streakExtensionBonus (20) every active day",
+    "xp": 20
+   },
+   {
+    "source": "goal",
+    "what": "goalHitBonus (25) on 60% of days",
+    "xp": 15
+   },
+   {
+    "source": "dailyChallenge",
+    "what": "dailyChallengeBonus (15) × 2 a day × 60% completed",
+    "xp": 18
+   },
+   {
+    "source": "challenge",
+    "what": "one completion every 9 days at the assumed mean reward (85)",
+    "xp": 9.444
+   },
+   {
+    "source": "achievement",
+    "what": "achievementBonus (30) × 15 core badges a year",
+    "xp": 1.233
+   },
+   {
+    "source": "bingo",
+    "what": "line (25) × 1.5/week + full card (150) every 8 weeks + 6 badges over 3 years",
+    "xp": 8.2
+   },
+   {
+    "source": "seasonal",
+    "what": "event (50) × 6/year + bonus quest (25) × 3/year + 10 badges",
+    "xp": 1.301
+   },
+   {
+    "source": "collections",
+    "what": "discovery (5) every two weeks + 6 badges",
+    "xp": 0.522
+   },
+   {
+    "source": "journeys",
+    "what": "milestone (40) × 40 in 3 years + 8 badges",
+    "xp": 1.68
+   },
+   {
+    "source": "records",
+    "what": "PR (20) × 3 a month + 3 badges",
+    "xp": 2.055
+   },
+   {
+    "source": "secrets",
+    "what": "(secretUnlocked 50 + badge 30) × 12 in 3 years",
+    "xp": 0.877
+   },
+   {
+    "source": "sportBody",
+    "what": "(sportBadge 0 + badge 30) × 10 in 3 years",
+    "xp": 0.274
+   },
+   {
+    "source": "boss",
+    "what": "defeat XP at target 5 (200) every other week + 6 badges",
+    "xp": 14.45
+   },
+   {
+    "source": "supplements",
+    "optional": true,
+    "what": "stack complete (6) on 85% of days + 5 creatine milestones (40) + 10 badges — before the optional multiplier",
+    "xp": 5.557
+   }
+  ],
+  "coreDailyXP": 128.036,
+  "solvedGrowthFactor": 1.053583,
+  "optionalPaceAllowance": 0.005,
+  "optionalMultiplierWithSupplements": 0.1152,
+  "supplementStackGrantAfterMultiplier": 1,
+  "supplementBadgeBonusAfterMultiplier": 3,
+  "supplementMilestoneAfterMultiplier": 5,
+  "daysToReach": [
+   {
+    "level": 5,
+    "days": 3
+   },
+   {
+    "level": 10,
+    "days": 9
+   },
+   {
+    "level": 20,
+    "days": 25
+   },
+   {
+    "level": 30,
+    "days": 52
+   },
+   {
+    "level": 50,
+    "days": 174
+   },
+   {
+    "level": 84,
+    "days": 1095
+   },
+   {
+    "level": 100,
+    "days": 2543
+   },
+   {
+    "level": 150,
+    "days": 34749
+   },
+   {
+    "level": 200,
+    "days": 472593
+   }
+  ]
+ },
+ "bossDefeatXP": [
+  {
+   "target": 3,
+   "xp": 150
+  },
+  {
+   "target": 4,
+   "xp": 175
+  },
+  {
+   "target": 5,
+   "xp": 200
+  },
+  {
+   "target": 6,
+   "xp": 225
+  },
+  {
+   "target": 7,
+   "xp": 250
+  }
+ ]
+}

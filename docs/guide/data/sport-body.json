@@ -1,0 +1,146 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/SportBody/SportRules.swift",
+  "ios/Gamification/Sources/Gamification/Features/SportBody/BodyRules.swift"
+ ],
+ "rules": {
+  "fuelMinimumCarbGrams": 30,
+  "fuelWindowEarliestMinutes": 180,
+  "fuelWindowLatestMinutes": 30,
+  "recoveryWindowMinutes": 60,
+  "recoveryProteinGrams": 20,
+  "earnedMinimumActiveKcal": 400,
+  "earnedMinimumEntries": 3,
+  "earnedFloorFraction": 0.8,
+  "earnedActiveAllowance": 0.5,
+  "gelGuruMinimumMinutes": 90,
+  "gelGuruMinimumEntries": 3,
+  "longHaulMinimumMinutes": 180,
+  "directionThresholdKg": 0.5,
+  "firstKiloKg": 1,
+  "halfwayFraction": 0.5,
+  "targetToleranceKg": 0.2,
+  "steadyToleranceKg": 1,
+  "steadyDays": 30,
+  "steadyMinimumWeighIns": 8,
+  "minimumMinutes": 20,
+  "minimumWalkMinutes": 45,
+  "enduranceKeywords": [
+   "running",
+   "cycling",
+   "biking",
+   "hiking",
+   "swimming",
+   "skiing",
+   "rowing"
+  ],
+  "runKeys": [
+   "ultra_run",
+   "virtual_run",
+   "obstacle_run"
+  ],
+  "rideKeys": [
+   "virtual_ride",
+   "cyclocross"
+  ],
+  "strengthKeys": [
+   "strength_training"
+  ]
+ },
+ "badges": [
+  {
+   "id": "sport.fuel-1",
+   "threshold": 1
+  },
+  {
+   "id": "sport.fuel-10",
+   "threshold": 10
+  },
+  {
+   "id": "sport.fuel-50",
+   "threshold": 50
+  },
+  {
+   "id": "sport.recovery-1",
+   "threshold": 1
+  },
+  {
+   "id": "sport.recovery-10",
+   "threshold": 10
+  },
+  {
+   "id": "sport.recovery-50",
+   "threshold": 50
+  },
+  {
+   "id": "sport.earned-5",
+   "threshold": 5
+  },
+  {
+   "id": "sport.earned-25",
+   "threshold": 25
+  },
+  {
+   "id": "sport.earned-100",
+   "threshold": 100
+  },
+  {
+   "id": "sport.double-day",
+   "threshold": null
+  },
+  {
+   "id": "sport.gel-guru",
+   "threshold": null
+  },
+  {
+   "id": "sport.long-haul",
+   "threshold": null
+  },
+  {
+   "id": "sport.race-day-1",
+   "threshold": 1
+  },
+  {
+   "id": "sport.race-day-5",
+   "threshold": 5
+  },
+  {
+   "id": "sport.carb-loader",
+   "threshold": null
+  },
+  {
+   "id": "body.first-kilo",
+   "threshold": null
+  },
+  {
+   "id": "body.halfway",
+   "threshold": null
+  },
+  {
+   "id": "body.target",
+   "threshold": null
+  },
+  {
+   "id": "body.steady-30",
+   "threshold": null
+  },
+  {
+   "id": "body.fast-3",
+   "threshold": 3
+  },
+  {
+   "id": "body.fast-7",
+   "threshold": 7
+  },
+  {
+   "id": "body.fast-14",
+   "threshold": 14
+  },
+  {
+   "id": "body.fast-30",
+   "threshold": 30
+  }
+ ]
+}
