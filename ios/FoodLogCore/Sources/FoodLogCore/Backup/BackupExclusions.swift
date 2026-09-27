@@ -54,6 +54,15 @@ public enum BackupExclusions {
         "dataSafety.", "developer.", "Apple", "NS", "com.apple.", "WebKit"
     ]
 
+    /// Review note 23: the marker GarminKit's store quarantine puts in a
+    /// file it moved aside (`<name>.unreadable-<stamp>.json`,
+    /// `PersistedJSON.quarantineDestination`). Such a file is a diagnostic
+    /// of a past decode failure, not data: no store reads it, so backing it
+    /// up would only restore it as a stray file (and list it under "Other
+    /// files" in the import preview). Excluded files are also left alone by
+    /// a restore, so the phone keeps its own quarantined copies.
+    static let quarantineMarker = ".unreadable-"
+
     /// UserDefaults keys that never travel (review note 22): the data mode
     /// belongs to the phone, not the data. Restoring the owner's
     /// Garmin-mode backup onto a standalone phone (or the reverse) must keep
@@ -71,6 +80,7 @@ public enum BackupExclusions {
         guard relativePath.lowercased().hasSuffix(".json") else { return false }
         let components = relativePath.split(separator: "/").map(String.init)
         if components.first == backupsDirectoryName { return false }
+        if let fileName = components.last, fileName.lowercased().contains(quarantineMarker) { return false }
         if excludedFiles.contains(relativePath) { return false }
         if excludedDirectories.contains(where: { relativePath.hasPrefix($0 + "/") }) { return false }
         for component in components {

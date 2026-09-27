@@ -31,6 +31,9 @@ final class BackupCoreTests: XCTestCase {
         XCTAssertTrue(BackupExclusions.includesFile(relativePath: "Gamification/features/secrets/state.json"))
         // A store nobody registered (e.g. supplements) is backed up anyway.
         XCTAssertTrue(BackupExclusions.includesFile(relativePath: "FoodLogCore/Supplements/supplement-log.json"))
+        // Only the quarantine's `.unreadable-` marker excludes a file, not
+        // the word on its own.
+        XCTAssertTrue(BackupExclusions.includesFile(relativePath: "Gamification/zzz-unreadable.json"))
     }
 
     func testExcludesDeviceStateCredentialsAndBackups() {
@@ -50,7 +53,11 @@ final class BackupCoreTests: XCTestCase {
             "Auth/credentials.json",
             "Auth/password.json",
             "FoodLogCore/custom-foods.txt",
-            "../FoodLogCore/custom-foods.json"
+            "../FoodLogCore/custom-foods.json",
+            // Review note 23: files the store quarantine moved aside.
+            "FoodLogCore/custom-foods.unreadable-20260920-101500.json",
+            "FoodLogCore/FoodLog/2026-09.unreadable-20260920-101500-1a2b3c4d.json",
+            "Gamification/xp-ledger.UNREADABLE-20260920-101500.json"
         ]
         for path in excluded {
             XCTAssertFalse(BackupExclusions.includesFile(relativePath: path), path)
