@@ -1,0 +1,21 @@
+// tsconfig.json -- compiles the GarminFood MCP server (src/) and its tests
+// (test/) to dist/ with plain `tsc`. Node 22.12 on this PC only strips
+// TypeScript types behind a flag, so a build step is the dependable choice
+// (add-mcp-server design D5). Entry point after a build: dist/src/index.js.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": ".",
+    "outDir": "dist",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

@@ -1,0 +1,4 @@
+# tools/mcp/.gitignore -- build output and installed packages are never
+# committed; `npm ci && npm run build` recreates both (see README.md).
+dist/
+node_modules/
