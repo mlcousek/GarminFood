@@ -1,7 +1,7 @@
 ## 0. Before starting
 
-- [ ] 0.1 Owner answers design Q1–Q8 (bridge folder path, default `via` for food, what to do with the existing generic `garmin` MCP server, one approved delete probe, trust boundary, Shortcuts automation, standalone scope, late-adopt XP). Record the answers in design.md.
-- [ ] 0.2 Confirm iCloud for Windows is installed on the PC and syncing iCloud Drive; note the local path it uses.
+- [x] 0.1 Owner answers design Q1–Q8 (bridge folder path, default `via` for food, what to do with the existing generic `garmin` MCP server, one approved delete probe, trust boundary, Shortcuts automation, standalone scope, late-adopt XP). Record the answers in design.md. *Done 2026-09-27 (design "Owner answers"): food/weight/water go through the phone; the existing `garmin` MCP stays.*
+- [x] 0.2 Confirm iCloud for Windows is installed on the PC and syncing iCloud Drive; note the local path it uses. *`C:\Users\jmlcousek\iCloudDrive\GarminFood Bridge`, created 2026-09-27.*
 
 ## 1. Wave 1 — Spike: does the bridge folder work on this account? (device check, gates everything app-side)
 
@@ -48,7 +48,7 @@
 - [ ] 5.4 On device, one command at a time, then read the result back from the PC: add a supplement product, set its schedule, tick it for yesterday, create a preset from a Garmin day, add a day note, set a local goal, start and end a fast. Record each result status and any mismatch.
 - [ ] 5.5 Conflict check on device: edit a supplement product on the phone after the PC read the snapshot, then send an update from the PC → result `conflict` with the current value.
 
-## 6. Wave 6 — Garmin-direct food writes + adopt receipts
+## 6. Wave 6 — Garmin-direct food writes + adopt receipts (DEFERRED by owner answer Q2: food goes through the phone; only the bridge variants in 6.2 and weight/water via the bridge stay in scope)
 
 - [ ] 6.1 `food.log` / `food.logAgain` / `food.copyMeal` / `preset.log` with `via: "garmin"`: `mealsForDate` → `createFoodLogEntry` (confirmed 2026-09-16) → read back `logId` → `food.adopt` command. Stops at first failure and reports which items made it. Tests against the fake HTTP layer.
 - [ ] 6.2 `via: "bridge"` variants of the same tools and of `food.editEntry`/`food.deleteEntry` (app `replace`/`deleteCommitted`). Refuse `via: "garmin"` when the snapshot says standalone.
