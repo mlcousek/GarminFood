@@ -54,6 +54,16 @@ public enum BackupExclusions {
         "dataSafety.", "developer.", "Apple", "NS", "com.apple.", "WebKit"
     ]
 
+    /// UserDefaults keys that never travel (review note 22): the data mode
+    /// belongs to the phone, not the data. Restoring the owner's
+    /// Garmin-mode backup onto a standalone phone (or the reverse) must keep
+    /// the phone's current mode; switching stays an explicit Settings
+    /// action. The testing toggle's key is also covered by `developer.`.
+    static let excludedPreferenceKeys: Set<String> = [
+        DataMode.storageKey,
+        DataMode.forceStandaloneStorageKey
+    ]
+
     /// Whether a file at `relativePath` (relative to Application Support,
     /// `/`-separated) belongs in a snapshot or export.
     public static func includesFile(relativePath: String) -> Bool {
@@ -73,6 +83,7 @@ public enum BackupExclusions {
     /// Whether a UserDefaults key belongs in a backup.
     public static func includesPreference(key: String) -> Bool {
         if key.isEmpty { return false }
+        if excludedPreferenceKeys.contains(key) { return false }
         if excludedPreferencePrefixes.contains(where: { key.hasPrefix($0) }) { return false }
         let lowered = key.lowercased()
         // `outbox` isn't a preference concern; only the credential words.

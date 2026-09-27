@@ -261,6 +261,41 @@ final class BackupCoreTests: XCTestCase {
         XCTAssertEqual(BackupReminderPolicy.daysSince(justAfterMidnight, now: lateEvening, calendar: calendar), 0)
     }
 
+    /// Review note 22: a restore keeps the phone's current data mode (and
+    /// testing toggle) -- a Garmin-mode backup restored onto a standalone
+    /// phone, or the reverse, must not switch it.
+    func testDataModeNeverTravelsWithABackup() {
+        XCTAssertFalse(BackupExclusions.includesPreference(key: DataMode.storageKey))
+        XCTAssertFalse(BackupExclusions.includesPreference(key: DataMode.forceStandaloneStorageKey))
+
+        let captured = PreferencesBackup.capture(domain: [
+            DataMode.storageKey: DataMode.garminConnected.rawValue,
+            "preferences.haptics": true
+        ])
+        XCTAssertNil(captured[DataMode.storageKey])
+
+        // The owner's Garmin-mode backup (as an older build wrote it, with
+        // the mode inside) restored onto a standalone phone.
+        let restored = PreferencesBackup.restoredDomain(
+            current: [DataMode.storageKey: DataMode.standalone.rawValue, "preferences.haptics": false],
+            backup: [
+                DataMode.storageKey: .string(DataMode.garminConnected.rawValue),
+                DataMode.forceStandaloneStorageKey: .bool(true),
+                "preferences.haptics": .bool(true)
+            ]
+        )
+        XCTAssertEqual(restored[DataMode.storageKey] as? String, DataMode.standalone.rawValue, "the phone keeps its mode")
+        XCTAssertNil(restored[DataMode.forceStandaloneStorageKey], "the testing toggle isn't switched on by a backup")
+        XCTAssertEqual(restored["preferences.haptics"] as? Bool, true, "ordinary preferences still restore")
+
+        // And the reverse: a standalone backup onto the owner's phone.
+        let reverse = PreferencesBackup.restoredDomain(
+            current: [DataMode.storageKey: DataMode.garminConnected.rawValue],
+            backup: [DataMode.storageKey: .string(DataMode.standalone.rawValue)]
+        )
+        XCTAssertEqual(reverse[DataMode.storageKey] as? String, DataMode.garminConnected.rawValue)
+    }
+
     func testReminderBookkeepingKeysNeverTravelWithABackup() {
         XCTAssertFalse(BackupExclusions.includesPreference(key: BackupReminderPolicy.lastExportAtKey))
         XCTAssertFalse(BackupExclusions.includesPreference(key: BackupReminderPolicy.dismissedAtKey))
