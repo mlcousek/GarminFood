@@ -1,0 +1,60 @@
+# Build and test the GarminFood MCP server (tools/mcp/, add-mcp-server).
+#
+# Why this exists: the MCP server is plain Node + TypeScript, so unlike the
+# iOS app it needs no macOS runner -- ubuntu is enough and takes seconds.
+# It runs only when something the server depends on changes: its own code,
+# the Garmin auth module it reuses, the route registry that gates every
+# Garmin call (a registry edit can remove or add a tool, and the drift test
+# checks the registry still classifies routes as design D7 says), and the
+# bridge protocol it will share with the app (wave 3+).
+#
+# The tests never reach the live Garmin API (fake HTTP layer, shape-only
+# fixtures), so no secret is needed and none is configured.
+
+name: MCP server
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "tools/mcp/**"
+      - "tools/lib/garmin-auth.mjs"
+      - "docs/garmin-routes.json"
+      - "docs/bridge-protocol/**"
+      - ".github/workflows/mcp.yml"
+  pull_request:
+    paths:
+      - "tools/mcp/**"
+      - "tools/lib/garmin-auth.mjs"
+      - "docs/garmin-routes.json"
+      - "docs/bridge-protocol/**"
+      - ".github/workflows/mcp.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: tools/mcp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/mcp/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
