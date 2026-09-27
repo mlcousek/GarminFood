@@ -113,7 +113,7 @@ struct MacroLineChartView: View {
 /// One day's water total, for the Trends screen's hydration bar chart --
 /// deliberately a separate small type from `HydrationEntry` (an individual
 /// drink): this is already a day-total, pre-computed via
-/// `HydrationHistory.total(for:on:calendar:)`, the same pure helper
+/// `WaterDayTotals.total(on:)`, the same resolution
 /// `HydrationLoader.todayTotalML` uses for "today" specifically.
 struct HydrationTrendPoint: Identifiable {
     let date: Date
