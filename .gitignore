@@ -17,3 +17,6 @@ ios/DerivedData/
 .env.*
 *token*.json
 *credentials*.json
+
+# OpenSpec CLI leaves its archive lock behind on Windows
+openspec/changes/archive/.openspec-archive.lock
