@@ -1,0 +1,25 @@
+{
+  "$schema": "Test fixture for the MCP server tests: a trimmed copy of the shape of docs/garmin-routes.json. Paths match the real registry; dates and notes are placeholders.",
+  "lastFullSweep": "2026-01-01",
+  "auth": [
+    { "operation": "exchangeOAuth1ForOAuth2", "method": "POST", "path": "/oauth-service/oauth/exchange/user/2.0", "lastVerified": "2026-01-01", "observedStatus": 200, "notes": "fixture" }
+  ],
+  "read": [
+    { "operation": "foodSearch", "method": "GET", "path": "/nutrition-service/food/search?searchExpression={term}&start={start}&limit={limit}&regionCode={region}", "lastVerified": "2026-01-02", "observedStatus": 200, "notes": "fixture" },
+    { "operation": "foodSearchByBarcode", "method": "GET", "path": "/nutrition-service/food/search/barCode?barCode={ean}", "lastVerified": "2026-01-02", "observedStatus": 404, "notes": "fixture: not working" },
+    { "operation": "dailyFoodLog", "method": "GET", "path": "/nutrition-service/food/logs/{date}", "lastVerified": "2026-01-03", "observedStatus": 200, "notes": "fixture" },
+    { "operation": "recentFoods", "method": "GET", "path": "/nutrition-service/food/recent/{asOfDate}", "lastVerified": "2026-01-03", "observedStatus": 200, "notes": "fixture" },
+    { "operation": "nutritionSettings", "method": "GET", "path": "/nutrition-service/settings/{date}", "lastVerified": "2026-01-04", "observedStatus": 200, "notes": "fixture" },
+    { "operation": "calorieSummaryDaily", "method": "GET", "path": "/nutrition-service/calorie/summary/daily?startDate={date}&endDate={date}", "lastVerified": "2026-01-03", "observedStatus": 200, "notes": "fixture" },
+    { "operation": "getWeighIns", "method": "GET", "path": "/weight-service/weight/range/{startdate}/{enddate}?includeAll=true", "lastVerified": "2026-01-04", "observedStatus": 200, "notes": "fixture" },
+    { "operation": "hydrationDaily", "method": "GET", "path": "/usersummary-service/usersummary/hydration/daily/{date}", "lastVerified": "2026-01-04", "observedStatus": 200, "notes": "fixture" }
+  ],
+  "write": [
+    { "operation": "createFoodLogEntry", "method": "PUT", "path": "/nutrition-service/food/logs", "lastVerified": "2026-01-05", "observedStatus": 200, "notes": "fixture" },
+    { "operation": "addWeighIn", "method": "POST", "path": "/weight-service/user-weight", "lastVerified": "2026-01-05", "observedStatus": 204, "notes": "fixture" },
+    { "operation": "addHydration", "method": "PUT", "path": "/usersummary-service/usersummary/hydration/log", "lastVerified": "2026-01-05", "observedStatus": "exercised on a real device, owner reports entries arriving in Garmin", "notes": "fixture" },
+    { "operation": "deleteFoodLogEntries", "method": "DELETE", "path": "/nutrition-service/food/logs/{date}", "lastVerified": "2026-01-05", "observedStatus": "modelled on a live-tested client, not yet exercised by this project", "notes": "fixture" },
+    { "operation": "createCustomFood", "method": "PUT", "path": "/nutrition-service/customFood", "lastVerified": "2026-01-05", "observedStatus": "exercised on a real device, real 400 observed under the old shape; corrected shape not yet retried on-device", "notes": "fixture" },
+    { "operation": "quickAddFoodLogEntry", "method": "PUT", "path": "/nutrition-service/food/logs/quickAdd", "lastVerified": "2026-01-05", "observedStatus": "documented, not exercised", "notes": "fixture" }
+  ]
+}

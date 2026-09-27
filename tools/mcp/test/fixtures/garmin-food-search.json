@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "type": "FOOD",
+      "foodMetaData": { "foodId": "900001", "foodName": "Example food A", "brandName": "Example brand", "foodType": "BRAND", "source": "FATSECRET", "regionCode": "CZ", "languageCode": "en" },
+      "nutritionContents": [
+        { "servingId": "800001", "servingUnit": "g", "numberOfUnits": 100, "calories": 200, "carbs": 20, "protein": 10, "fat": 8, "fiber": 2, "sugar": 5, "unitHasServing": true },
+        { "servingId": "800003", "servingUnit": "cup", "numberOfUnits": 1, "calories": 400, "carbs": 40, "protein": 20, "fat": 16 }
+      ],
+      "isFavorite": false,
+      "isRecent": false
+    },
+    {
+      "type": "FOOD",
+      "foodMetaData": { "foodId": 900002, "foodName": "Example food B", "source": "GARMIN" },
+      "nutritionContents": [{ "servingId": 800002, "servingUnit": "piece", "numberOfUnits": "1", "calories": "150", "carbs": "", "protein": 10, "fat": 5 }]
+    }
+  ],
+  "moreDataAvailable": true
+}

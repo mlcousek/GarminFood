@@ -1,0 +1,10 @@
+{
+  "$comment": "GUESSED shape: the recentFoods response has not been recorded field by field (docs/garmin-routes.json). This fixture only exercises food_recent's tolerant reading: the first array-valued property is the list, and search-result-like items are normalised.",
+  "foods": [
+    {
+      "foodMetaData": { "foodId": "900001", "foodName": "Example food A", "source": "FATSECRET" },
+      "nutritionContents": [{ "servingId": "800001", "servingUnit": "g", "numberOfUnits": 100, "calories": 200, "carbs": 20, "protein": 10, "fat": 8 }]
+    },
+    { "somethingElse": "passed through as sent" }
+  ]
+}

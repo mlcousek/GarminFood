@@ -1,0 +1,20 @@
+{
+  "startDate": "2026-01-01",
+  "endDate": "2026-01-03",
+  "caloriesBurned": 0,
+  "mealNutritionContents": [],
+  "dailyNutritionContents": [
+    {
+      "mealDate": "2026-01-01",
+      "nutritionContent": { "calories": 1800, "carbs": 200, "fat": 60, "protein": 90, "otherCalories": 0, "caloriesPercentage": 90 },
+      "nutritionGoals": { "calories": 2000, "adjustedCalories": 2100, "carbs": 250, "adjustedCarbs": 260, "fat": 60, "adjustedFat": 63, "protein": 100, "adjustedProtein": 105 }
+    },
+    { "mealDate": "2026-01-02" },
+    {
+      "mealDate": "2026-01-03",
+      "nutritionContent": { "calories": 2200, "carbs": 240, "fat": 70, "protein": 110 },
+      "nutritionGoals": { "calories": 2000, "adjustedCalories": 2000 }
+    }
+  ],
+  "averageNutritionContents": {}
+}
