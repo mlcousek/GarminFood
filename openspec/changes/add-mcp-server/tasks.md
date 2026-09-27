@@ -14,7 +14,7 @@
 ## 2. Wave 2 — MCP server skeleton + Garmin-direct reads (PC only, no device needed)
 
 - [x] 2.1 `tools/mcp/` package: `package.json` (`@modelcontextprotocol/sdk`, `zod`, `ajv`, `typescript`), `tsconfig.json`, `src/index.ts` (stdio server, logs to stderr only), `.gitignore` for `dist/` and `node_modules/`. Header comment in each file explaining why it exists, matching the repo's Swift header convention.
-- [ ] 2.2 `src/garmin/registry.ts`: load `docs/garmin-routes.json`, look operations up by name, classify each write as confirmed / modelled / unconfirmed (design D7). Tests with a fixture registry, including "missing operation disables its tool".
+- [x] 2.2 `src/garmin/registry.ts`: load `docs/garmin-routes.json`, look operations up by name, classify each write as confirmed / modelled / unconfirmed (design D7). Tests with a fixture registry, including "missing operation disables its tool".
 - [ ] 2.3 `src/garmin/client.ts`: wraps `tools/lib/garmin-auth.mjs`; 401/403/missing token → typed auth error with the loud message; 429 → honour `Retry-After` and stop. Tests against a fake HTTP layer (no live calls in tests).
 - [ ] 2.4 Read tools: `server.status`, `food.search`, `food.getDay`, `food.getRange`, `food.recent`, `weight.list`, `water.get`, `goals.get` (Garmin half), `food.lookupBarcode` (Open Food Facts product route already documented in `docs/openfoodfacts-product-route.md`). Each description names its route and `lastVerified`. Tests with recorded-shape fixtures (field names only, no personal values).
 - [ ] 2.5 Manual check from the PC (read-only): run the server under Claude Desktop, ask for today's food log and this week's weight. Record that the answers match the Garmin Connect app.
