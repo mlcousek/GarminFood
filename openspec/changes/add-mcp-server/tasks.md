@@ -5,7 +5,7 @@
 
 ## 1. Wave 1 — Spike: does the bridge folder work on this account? (device check, gates everything app-side)
 
-- [ ] 1.1 Throwaway spike build (behind a hidden Settings → Diagnostics button, removed in 3.x): pick a folder with `.fileImporter(allowedContentTypes: [.folder])`, save the bookmark, write `spike.txt` with the time, list the folder's files.
+- [x] 1.1 Throwaway spike build (behind a hidden Settings → Diagnostics button, removed in 3.x): pick a folder with `.fileImporter(allowedContentTypes: [.folder])`, save the bookmark, write `spike.txt` with the time, list the folder's files.
 - [ ] 1.2 On device: pick `iCloud Drive/GarminFood Bridge`; confirm `spike.txt` appears on the PC. Record the time it took.
 - [ ] 1.3 Put a file in the folder on the PC; relaunch the app; confirm the listing shows it and it can be read (with `NSFileCoordinator` + `startDownloadingUbiquitousItem`). Record whether it first appeared as a not-downloaded placeholder.
 - [ ] 1.4 Force-quit and relaunch: bookmark resolves without the picker. Then wait for (or trigger) an AltStore re-sign in place and check again. Record whether the bookmark was stale.
