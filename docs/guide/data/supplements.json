@@ -1,0 +1,1508 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/FoodLogCore/Sources/FoodLogCore/Supplements/SupplementCatalog.swift",
+  "ios/FoodLogCore/Sources/FoodLogCore/Supplements/EvidenceCatalog.swift",
+  "ios/FoodLogCore/Sources/FoodLogCore/Supplements/LabelScore.swift",
+  "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsFeature.swift",
+  "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementStreak.swift"
+ ],
+ "disclaimer": {
+  "en": "Information only, not medical advice. Talk to a doctor or pharmacist before starting a supplement, especially during pregnancy, when taking medication or with a health condition.",
+  "cs": "Jen pro informaci, nejde o lékařskou radu. Než začneš doplněk stravy užívat, poraď se s lékařem nebo lékárníkem – zvlášť v těhotenství, při užívání léků nebo při zdravotních potížích."
+ },
+ "noEUUpperLimitText": {
+  "en": "No EU upper limit set",
+  "cs": "V EU není stanoven horní přípustný limit"
+ },
+ "vitaminDIUPerMicrogram": 40,
+ "products": [
+  {
+   "id": "creatineMonohydrate",
+   "name": {
+    "en": "Creatine monohydrate",
+    "cs": "Kreatin monohydrát"
+   },
+   "form": "powder",
+   "serving": {
+    "en": "5 g scoop",
+    "cs": "odměrka 5 g"
+   },
+   "ingredients": [
+    {
+     "ingredient": "creatine",
+     "amount": 5,
+     "unit": "g",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "morning"
+  },
+  {
+   "id": "magnesiumCitrate",
+   "name": {
+    "en": "Magnesium citrate",
+    "cs": "Citrát hořečnatý"
+   },
+   "form": "capsule",
+   "serving": {
+    "en": "2 capsules",
+    "cs": "2 kapsle"
+   },
+   "ingredients": [
+    {
+     "ingredient": "magnesium",
+     "amount": 200,
+     "unit": "mg",
+     "form": "citrate"
+    }
+   ],
+   "suggestedSlot": "evening"
+  },
+  {
+   "id": "magnesiumBisglycinate",
+   "name": {
+    "en": "Magnesium bisglycinate",
+    "cs": "Bisglycinát hořečnatý"
+   },
+   "form": "capsule",
+   "serving": {
+    "en": "2 capsules",
+    "cs": "2 kapsle"
+   },
+   "ingredients": [
+    {
+     "ingredient": "magnesium",
+     "amount": 200,
+     "unit": "mg",
+     "form": "bisglycinate"
+    }
+   ],
+   "suggestedSlot": "evening"
+  },
+  {
+   "id": "magnesiumOxide",
+   "name": {
+    "en": "Magnesium oxide",
+    "cs": "Oxid hořečnatý"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "magnesium",
+     "amount": 200,
+     "unit": "mg",
+     "form": "oxide"
+    }
+   ],
+   "suggestedSlot": "evening"
+  },
+  {
+   "id": "vitaminD3",
+   "name": {
+    "en": "Vitamin D3",
+    "cs": "Vitamín D3"
+   },
+   "form": "capsule",
+   "serving": {
+    "en": "1 capsules",
+    "cs": "1 kapsle"
+   },
+   "ingredients": [
+    {
+     "ingredient": "vitaminD",
+     "amount": 1000,
+     "unit": "IU",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "withBreakfast"
+  },
+  {
+   "id": "vitaminD3K2",
+   "name": {
+    "en": "Vitamin D3 + K2",
+    "cs": "Vitamín D3 + K2"
+   },
+   "form": "capsule",
+   "serving": {
+    "en": "1 capsules",
+    "cs": "1 kapsle"
+   },
+   "ingredients": [
+    {
+     "ingredient": "vitaminD",
+     "amount": 1000,
+     "unit": "IU",
+     "form": null
+    },
+    {
+     "ingredient": "vitaminK2",
+     "amount": 75,
+     "unit": "µg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "withBreakfast"
+  },
+  {
+   "id": "vitaminC",
+   "name": {
+    "en": "Vitamin C",
+    "cs": "Vitamín C"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "vitaminC",
+     "amount": 500,
+     "unit": "mg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "morning"
+  },
+  {
+   "id": "zinc",
+   "name": {
+    "en": "Zinc",
+    "cs": "Zinek"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "zinc",
+     "amount": 15,
+     "unit": "mg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "evening"
+  },
+  {
+   "id": "omega3Fish",
+   "name": {
+    "en": "Omega-3 fish oil",
+    "cs": "Omega-3 rybí olej"
+   },
+   "form": "capsule",
+   "serving": {
+    "en": "2 capsules",
+    "cs": "2 kapsle"
+   },
+   "ingredients": [
+    {
+     "ingredient": "omega3EPA_DHA",
+     "amount": 600,
+     "unit": "mg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "withBreakfast"
+  },
+  {
+   "id": "omega3Algae",
+   "name": {
+    "en": "Omega-3 algae oil",
+    "cs": "Omega-3 z řas"
+   },
+   "form": "capsule",
+   "serving": {
+    "en": "2 capsules",
+    "cs": "2 kapsle"
+   },
+   "ingredients": [
+    {
+     "ingredient": "omega3EPA_DHA",
+     "amount": 500,
+     "unit": "mg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "withBreakfast"
+  },
+  {
+   "id": "vitaminB12",
+   "name": {
+    "en": "Vitamin B12",
+    "cs": "Vitamín B12"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "vitaminB12",
+     "amount": 250,
+     "unit": "µg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "morning"
+  },
+  {
+   "id": "iron",
+   "name": {
+    "en": "Iron",
+    "cs": "Železo"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "iron",
+     "amount": 14,
+     "unit": "mg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "morning"
+  },
+  {
+   "id": "selenium",
+   "name": {
+    "en": "Selenium",
+    "cs": "Selen"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "selenium",
+     "amount": 100,
+     "unit": "µg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "morning"
+  },
+  {
+   "id": "electrolytes",
+   "name": {
+    "en": "Electrolytes",
+    "cs": "Elektrolyty"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "sodium",
+     "amount": 500,
+     "unit": "mg",
+     "form": null
+    },
+    {
+     "ingredient": "potassium",
+     "amount": 150,
+     "unit": "mg",
+     "form": null
+    },
+    {
+     "ingredient": "magnesium",
+     "amount": 50,
+     "unit": "mg",
+     "form": "citrate"
+    }
+   ],
+   "suggestedSlot": "preWorkout"
+  },
+  {
+   "id": "caffeine",
+   "name": {
+    "en": "Caffeine",
+    "cs": "Kofein"
+   },
+   "form": "tablet",
+   "serving": {
+    "en": "1 tablets",
+    "cs": "1 tableta"
+   },
+   "ingredients": [
+    {
+     "ingredient": "caffeine",
+     "amount": 100,
+     "unit": "mg",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "preWorkout"
+  },
+  {
+   "id": "betaAlanine",
+   "name": {
+    "en": "Beta-alanine",
+    "cs": "Beta-alanin"
+   },
+   "form": "capsule",
+   "serving": {
+    "en": "2 capsules",
+    "cs": "2 kapsle"
+   },
+   "ingredients": [
+    {
+     "ingredient": "betaAlanine",
+     "amount": 3.2,
+     "unit": "g",
+     "form": null
+    }
+   ],
+   "suggestedSlot": "morning"
+  }
+ ],
+ "evidence": [
+  {
+   "ingredient": "creatine",
+   "name": {
+    "en": "Creatine",
+    "cs": "Kreatin"
+   },
+   "unit": "g",
+   "strength": "strong",
+   "strengthTitle": {
+    "en": "Strong evidence",
+    "cs": "Silné důkazy"
+   },
+   "effectiveRange": [
+    3,
+    5
+   ],
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": 3,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA AFC Panel (2004): Creatine monohydrate for use in foods for particular nutritional uses",
+     "url": "https://doi.org/10.2903/j.efsa.2004.36"
+    }
+   },
+   "limitNote": {
+    "en": "No EU upper limit set. EFSA (2004) considers 3 g a day unlikely to pose a risk; studies commonly use 3–5 g.",
+    "cs": "V EU není stanoven horní přípustný limit. Podle EFSA (2004) 3 g denně pravděpodobně nepředstavují riziko; studie běžně používají 3–5 g."
+   },
+   "sources": [
+    {
+     "title": "EFSA AFC Panel (2004): Creatine monohydrate for use in foods for particular nutritional uses",
+     "url": "https://doi.org/10.2903/j.efsa.2004.36"
+    },
+    {
+     "title": "ISSN position stand (2017): creatine supplementation in exercise, sport and medicine",
+     "url": "https://doi.org/10.1186/s12970-017-0173-z"
+    }
+   ],
+   "purpose": {
+    "en": "Supports repeated short, hard efforts and strength training. One of the best-studied sports supplements.",
+    "cs": "Podporuje opakované krátké a intenzivní úsilí i silový trénink. Patří k nejlépe prozkoumaným sportovním doplňkům."
+   },
+   "dose": {
+    "en": "3–5 g a day. Optional loading: about 0.3 g per kg of body weight a day for 5–7 days.",
+    "cs": "3–5 g denně. Volitelná nasycovací fáze: asi 0,3 g na kg tělesné hmotnosti denně po 5–7 dní."
+   },
+   "timing": {
+    "en": "Any time of day; taking it every day matters more than when. With a meal is fine.",
+    "cs": "Kdykoli během dne – důležitější než načasování je brát ho každý den. Klidně s jídlem."
+   }
+  },
+  {
+   "ingredient": "magnesium",
+   "name": {
+    "en": "Magnesium",
+    "cs": "Hořčík"
+   },
+   "unit": "mg",
+   "strength": "limited",
+   "strengthTitle": {
+    "en": "Limited evidence",
+    "cs": "Omezené důkazy"
+   },
+   "effectiveRange": [
+    100,
+    250
+   ],
+   "limit": {
+    "kind": "upperLimit",
+    "value": 250,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": true,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": {
+    "en": "Counts magnesium from supplements only (readily dissociable salts and oxide); magnesium in food is not included.",
+    "cs": "Počítá jen hořčík z doplňků (snadno disociující soli a oxid); hořčík z běžné stravy se nezapočítává."
+   },
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Magnesium fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Helps muscle and nerve function and energy metabolism. Mainly worth it when your diet falls short.",
+    "cs": "Pomáhá funkci svalů a nervů a energetickému metabolismu. Smysl má hlavně tehdy, když ho strava nepokryje."
+   },
+   "dose": {
+    "en": "Typically 100–250 mg a day from supplements. Citrate and bisglycinate are absorbed well, oxide less so.",
+    "cs": "Obvykle 100–250 mg denně z doplňků. Citrát a bisglycinát se vstřebávají dobře, oxid hůře."
+   },
+   "timing": {
+    "en": "Often taken in the evening. Large single doses can loosen the stool; splitting them helps.",
+    "cs": "Často se bere večer. Velké jednorázové dávky mohou změkčit stolici – pomáhá je rozdělit."
+   }
+  },
+  {
+   "ingredient": "vitaminD",
+   "name": {
+    "en": "Vitamin D",
+    "cs": "Vitamín D"
+   },
+   "unit": "µg",
+   "strength": "moderate",
+   "strengthTitle": {
+    "en": "Moderate evidence",
+    "cs": "Středně silné důkazy"
+   },
+   "effectiveRange": [
+    10,
+    50
+   ],
+   "limit": {
+    "kind": "upperLimit",
+    "value": 100,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Vitamin D fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Supports bones, muscles and the immune system. Matters most in autumn and winter, when the sun in Central Europe is too low.",
+    "cs": "Podporuje kosti, svaly a imunitu. Nejvíc záleží na podzim a v zimě, kdy je slunce ve střední Evropě příliš nízko."
+   },
+   "dose": {
+    "en": "Commonly 10–50 µg (400–2000 IU) a day. A blood test shows what you actually need.",
+    "cs": "Běžně 10–50 µg (400–2000 IU) denně. Kolik opravdu potřebuješ, ukáže krevní test."
+   },
+   "timing": {
+    "en": "With a meal that contains some fat, which helps absorption.",
+    "cs": "S jídlem, které obsahuje trochu tuku – to pomáhá vstřebávání."
+   }
+  },
+  {
+   "ingredient": "vitaminC",
+   "name": {
+    "en": "Vitamin C",
+    "cs": "Vitamín C"
+   },
+   "unit": "mg",
+   "strength": "limited",
+   "strengthTitle": {
+    "en": "Limited evidence",
+    "cs": "Omezené důkazy"
+   },
+   "effectiveRange": [
+    100,
+    1000
+   ],
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": 2000,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": {
+    "en": "No EU upper limit set. The US figure is 2000 mg a day.",
+    "cs": "V EU není stanoven horní přípustný limit. Údaj USA je 2000 mg denně."
+   },
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Vitamin C fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "An antioxidant needed for collagen and the immune system. A varied diet with fruit and vegetables usually covers it.",
+    "cs": "Antioxidant potřebný pro kolagen a imunitu. Pestrá strava s ovocem a zeleninou ho obvykle pokryje."
+   },
+   "dose": {
+    "en": "Typically 100–1000 mg a day; most of any excess is excreted.",
+    "cs": "Obvykle 100–1000 mg denně; nadbytek se většinou vyloučí."
+   },
+   "timing": {
+    "en": "Any time. With a meal it helps you absorb iron from plant foods.",
+    "cs": "Kdykoli. S jídlem pomáhá vstřebávat železo z rostlinné stravy."
+   }
+  },
+  {
+   "ingredient": "zinc",
+   "name": {
+    "en": "Zinc",
+    "cs": "Zinek"
+   },
+   "unit": "mg",
+   "strength": "limited",
+   "strengthTitle": {
+    "en": "Limited evidence",
+    "cs": "Omezené důkazy"
+   },
+   "effectiveRange": [
+    5,
+    25
+   ],
+   "limit": {
+    "kind": "upperLimit",
+    "value": 25,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Zinc fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Needed by the immune system, the skin and many enzymes. Endurance athletes and people who eat little meat may run low.",
+    "cs": "Potřebuje ho imunita, pokožka i řada enzymů. Vytrvalcům a lidem, kteří jedí málo masa, může chybět."
+   },
+   "dose": {
+    "en": "Typically 5–25 mg a day from supplements.",
+    "cs": "Obvykle 5–25 mg denně z doplňků."
+   },
+   "timing": {
+    "en": "Apart from iron and calcium supplements, which compete for absorption. With food if it upsets your stomach.",
+    "cs": "Odděleně od železa a vápníku z doplňků, které mu konkurují při vstřebávání. S jídlem, pokud ti dělá potíže se žaludkem."
+   }
+  },
+  {
+   "ingredient": "omega3EPA_DHA",
+   "name": {
+    "en": "Omega-3 (EPA + DHA)",
+    "cs": "Omega-3 (EPA + DHA)"
+   },
+   "unit": "mg",
+   "strength": "moderate",
+   "strengthTitle": {
+    "en": "Moderate evidence",
+    "cs": "Středně silné důkazy"
+   },
+   "effectiveRange": [
+    250,
+    2000
+   ],
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": 5000,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA NDA Panel (2012): Tolerable upper intake level of EPA, DHA and DPA",
+     "url": "https://doi.org/10.2903/j.efsa.2012.2815"
+    }
+   },
+   "limitNote": {
+    "en": "No EU upper limit set. EFSA (2012): up to 5 g a day from supplements raises no safety concern.",
+    "cs": "V EU není stanoven horní přípustný limit. EFSA (2012): do 5 g denně z doplňků nevzbuzuje obavy o bezpečnost."
+   },
+   "sources": [
+    {
+     "title": "EFSA NDA Panel (2012): Tolerable upper intake level of EPA, DHA and DPA",
+     "url": "https://doi.org/10.2903/j.efsa.2012.2815"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Omega-3 fatty acids fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/Omega3FattyAcids-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Fatty acids from fish or algae that support the heart and brain. Useful if you rarely eat oily fish.",
+    "cs": "Mastné kyseliny z ryb nebo řas, které podporují srdce a mozek. Hodí se, pokud jen málokdy jíš tučné ryby."
+   },
+   "dose": {
+    "en": "Commonly 250–2000 mg of EPA and DHA combined a day. Count EPA + DHA, not the total amount of oil.",
+    "cs": "Běžně 250–2000 mg EPA a DHA dohromady denně. Počítej EPA + DHA, ne celkové množství oleje."
+   },
+   "timing": {
+    "en": "With a meal that contains fat.",
+    "cs": "S jídlem, které obsahuje tuk."
+   }
+  },
+  {
+   "ingredient": "vitaminB12",
+   "name": {
+    "en": "Vitamin B12",
+    "cs": "Vitamín B12"
+   },
+   "unit": "µg",
+   "strength": "strong",
+   "strengthTitle": {
+    "en": "Strong evidence",
+    "cs": "Silné důkazy"
+   },
+   "effectiveRange": [
+    4,
+    1000
+   ],
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Vitamin B12 fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Needed for blood formation and the nervous system. Essential for vegans, because plant foods don't provide it.",
+    "cs": "Potřebný pro tvorbu krve a nervovou soustavu. Pro vegany nezbytný, protože rostlinná strava ho neobsahuje."
+   },
+   "dose": {
+    "en": "Typically 4–1000 µg a day; only a small share of a large dose is absorbed.",
+    "cs": "Obvykle 4–1000 µg denně; z velké dávky se vstřebá jen malá část."
+   },
+   "timing": {
+    "en": "Any time of day.",
+    "cs": "Kdykoli během dne."
+   }
+  },
+  {
+   "ingredient": "iron",
+   "name": {
+    "en": "Iron",
+    "cs": "Železo"
+   },
+   "unit": "mg",
+   "strength": "strong",
+   "strengthTitle": {
+    "en": "Strong evidence",
+    "cs": "Silné důkazy"
+   },
+   "effectiveRange": null,
+   "limit": {
+    "kind": "safeLevel",
+    "value": 40,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": {
+    "en": "EFSA's safe level of intake, not a formal upper limit.",
+    "cs": "Bezpečná úroveň příjmu podle EFSA, ne formální horní přípustný limit."
+   },
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Iron fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Carries oxygen in the blood. Take it only when a blood test shows low iron: too much is harmful.",
+    "cs": "Přenáší kyslík v krvi. Ber ho jen tehdy, když krevní test ukáže nedostatek – nadbytek škodí."
+   },
+   "dose": {
+    "en": "As advised after a blood test.",
+    "cs": "Podle doporučení po krevním testu."
+   },
+   "timing": {
+    "en": "Apart from coffee, tea, calcium and zinc. Vitamin C helps absorption.",
+    "cs": "Odděleně od kávy, čaje, vápníku a zinku. Vitamín C vstřebávání pomáhá."
+   }
+  },
+  {
+   "ingredient": "selenium",
+   "name": {
+    "en": "Selenium",
+    "cs": "Selen"
+   },
+   "unit": "µg",
+   "strength": "limited",
+   "strengthTitle": {
+    "en": "Limited evidence",
+    "cs": "Omezené důkazy"
+   },
+   "effectiveRange": [
+    50,
+    200
+   ],
+   "limit": {
+    "kind": "upperLimit",
+    "value": 255,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Selenium fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/Selenium-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Part of antioxidant enzymes and needed by the thyroid. Central European soils contain little of it.",
+    "cs": "Součást antioxidačních enzymů, potřebuje ho štítná žláza. Půdy ve střední Evropě ho obsahují málo."
+   },
+   "dose": {
+    "en": "Typically 50–200 µg a day. The gap between enough and too much is small.",
+    "cs": "Obvykle 50–200 µg denně. Rozdíl mezi dostatkem a nadbytkem je malý."
+   },
+   "timing": {
+    "en": "Any time, with food.",
+    "cs": "Kdykoli, s jídlem."
+   }
+  },
+  {
+   "ingredient": "vitaminB6",
+   "name": {
+    "en": "Vitamin B6",
+    "cs": "Vitamín B6"
+   },
+   "unit": "mg",
+   "strength": "limited",
+   "strengthTitle": {
+    "en": "Limited evidence",
+    "cs": "Omezené důkazy"
+   },
+   "effectiveRange": [
+    1,
+    10
+   ],
+   "limit": {
+    "kind": "upperLimit",
+    "value": 12,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Vitamin B6 fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Supports protein metabolism and the nervous system. A normal diet rarely falls short.",
+    "cs": "Podporuje metabolismus bílkovin a nervovou soustavu. Při běžné stravě chybí jen zřídka."
+   },
+   "dose": {
+    "en": "Typically 1–10 mg a day; high doses over a long time can harm the nerves.",
+    "cs": "Obvykle 1–10 mg denně; dlouhodobě vysoké dávky mohou poškodit nervy."
+   },
+   "timing": {
+    "en": "Any time of day.",
+    "cs": "Kdykoli během dne."
+   }
+  },
+  {
+   "ingredient": "caffeine",
+   "name": {
+    "en": "Caffeine",
+    "cs": "Kofein"
+   },
+   "unit": "mg",
+   "strength": "strong",
+   "strengthTitle": {
+    "en": "Strong evidence",
+    "cs": "Silné důkazy"
+   },
+   "effectiveRange": [
+    100,
+    400
+   ],
+   "limit": {
+    "kind": "safeLevel",
+    "value": 400,
+    "singleDose": 200,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA NDA Panel (2015): Scientific opinion on the safety of caffeine",
+     "url": "https://doi.org/10.2903/j.efsa.2015.4102"
+    }
+   },
+   "limitNote": {
+    "en": "EFSA (2015): up to 400 mg a day, and up to 200 mg at once, raises no safety concern for healthy adults. Coffee counts too, but only what you log here is added up.",
+    "cs": "EFSA (2015): do 400 mg denně a do 200 mg najednou nevzbuzuje u zdravých dospělých obavy o bezpečnost. Počítá se i káva, sčítá se ale jen to, co zapíšeš tady."
+   },
+   "sources": [
+    {
+     "title": "EFSA NDA Panel (2015): Scientific opinion on the safety of caffeine",
+     "url": "https://doi.org/10.2903/j.efsa.2015.4102"
+    },
+    {
+     "title": "ISSN position stand (2021): caffeine and exercise performance",
+     "url": "https://doi.org/10.1186/s12970-020-00383-4"
+    }
+   ],
+   "purpose": {
+    "en": "Improves alertness and both endurance and strength performance for many people.",
+    "cs": "U mnoha lidí zlepšuje bdělost i vytrvalostní a silový výkon."
+   },
+   "dose": {
+    "en": "About 3–6 mg per kg of body weight before exercise (roughly 100–400 mg); smaller doses help too.",
+    "cs": "Asi 3–6 mg na kg tělesné hmotnosti před výkonem (zhruba 100–400 mg); pomáhají i menší dávky."
+   },
+   "timing": {
+    "en": "30–60 minutes before exercise. Skip the late afternoon and evening if it disturbs your sleep.",
+    "cs": "30–60 minut před výkonem. Pozdnímu odpoledni a večeru se vyhni, pokud ti kazí spánek."
+   }
+  },
+  {
+   "ingredient": "betaAlanine",
+   "name": {
+    "en": "Beta-alanine",
+    "cs": "Beta-alanin"
+   },
+   "unit": "g",
+   "strength": "moderate",
+   "strengthTitle": {
+    "en": "Moderate evidence",
+    "cs": "Středně silné důkazy"
+   },
+   "effectiveRange": [
+    3.2,
+    6.4
+   ],
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "ISSN position stand (2015): beta-alanine",
+     "url": "https://doi.org/10.1186/s12970-015-0090-y"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "ISSN position stand (2015): beta-alanine",
+     "url": "https://doi.org/10.1186/s12970-015-0090-y"
+    }
+   ],
+   "purpose": {
+    "en": "Buffers acid in the muscles and can help in hard efforts of about 1–4 minutes.",
+    "cs": "Tlumí překyselení svalů a může pomoci při tvrdém úsilí trvajícím asi 1–4 minuty."
+   },
+   "dose": {
+    "en": "3.2–6.4 g a day in split doses, for at least 2–4 weeks.",
+    "cs": "3,2–6,4 g denně v rozdělených dávkách, alespoň 2–4 týdny."
+   },
+   "timing": {
+    "en": "Split into smaller doses with meals to limit the harmless tingling it can cause.",
+    "cs": "Rozděl ho do menších dávek k jídlu – omezíš tak neškodné mravenčení, které může způsobit."
+   }
+  },
+  {
+   "ingredient": "sodium",
+   "name": {
+    "en": "Sodium",
+    "cs": "Sodík"
+   },
+   "unit": "mg",
+   "strength": "moderate",
+   "strengthTitle": {
+    "en": "Moderate evidence",
+    "cs": "Středně silné důkazy"
+   },
+   "effectiveRange": null,
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   ],
+   "purpose": {
+    "en": "The main electrolyte lost in sweat. Replacing it matters in long or hot sessions.",
+    "cs": "Hlavní elektrolyt, který ztrácíš potem. Doplňovat ho má smysl při dlouhém nebo horkém tréninku."
+   },
+   "dose": {
+    "en": "Depends on your sweat losses; often 300–1000 mg per hour of long exercise.",
+    "cs": "Záleží na tom, kolik vypotíš; často 300–1000 mg za hodinu dlouhého výkonu."
+   },
+   "timing": {
+    "en": "During and after long or hot sessions, with fluids.",
+    "cs": "Během dlouhého nebo horkého tréninku a po něm, spolu s tekutinami."
+   }
+  },
+  {
+   "ingredient": "potassium",
+   "name": {
+    "en": "Potassium",
+    "cs": "Draslík"
+   },
+   "unit": "mg",
+   "strength": "limited",
+   "strengthTitle": {
+    "en": "Limited evidence",
+    "cs": "Omezené důkazy"
+   },
+   "effectiveRange": null,
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Potassium fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/Potassium-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "An electrolyte for muscle and nerve function. Fruit, vegetables and potatoes are the main sources.",
+    "cs": "Elektrolyt pro funkci svalů a nervů. Hlavními zdroji jsou ovoce, zelenina a brambory."
+   },
+   "dose": {
+    "en": "Small amounts in electrolyte drinks; large doses from supplements only on medical advice.",
+    "cs": "Malá množství v iontových nápojích; velké dávky z doplňků jen po poradě s lékařem."
+   },
+   "timing": {
+    "en": "With fluids, during or after exercise.",
+    "cs": "S tekutinami, během výkonu nebo po něm."
+   }
+  },
+  {
+   "ingredient": "vitaminK2",
+   "name": {
+    "en": "Vitamin K2",
+    "cs": "Vitamín K2"
+   },
+   "unit": "µg",
+   "strength": "limited",
+   "strengthTitle": {
+    "en": "Limited evidence",
+    "cs": "Omezené důkazy"
+   },
+   "effectiveRange": [
+    45,
+    200
+   ],
+   "limit": {
+    "kind": "noEUUpperLimit",
+    "value": null,
+    "singleDose": null,
+    "usFigure": null,
+    "noConcernLevel": null,
+    "supplementalOnly": false,
+    "source": {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    }
+   },
+   "limitNote": null,
+   "sources": [
+    {
+     "title": "EFSA – Overview on Tolerable Upper Intake Levels (summary tables v11, August 2025)",
+     "url": "https://www.efsa.europa.eu/sites/default/files/assets/UL_Summary_tables.pdf"
+    },
+    {
+     "title": "NIH Office of Dietary Supplements – Vitamin K fact sheet",
+     "url": "https://ods.od.nih.gov/factsheets/VitaminK-HealthProfessional/"
+    }
+   ],
+   "purpose": {
+    "en": "Supports blood clotting and bone health; often combined with vitamin D. If you take blood thinners, ask your doctor first.",
+    "cs": "Podporuje srážení krve a zdraví kostí; často se kombinuje s vitamínem D. Pokud bereš léky na ředění krve, poraď se nejdřív s lékařem."
+   },
+   "dose": {
+    "en": "Typically 45–200 µg a day.",
+    "cs": "Obvykle 45–200 µg denně."
+   },
+   "timing": {
+    "en": "With a meal that contains fat.",
+    "cs": "S jídlem, které obsahuje tuk."
+   }
+  }
+ ],
+ "labelScore": {
+  "source": "parsed constants + hand-read rules (LabelScore.swift header)",
+  "parts": [
+   {
+    "part": "transparency",
+    "max": 40,
+    "rule": "40 × (ingredient rows with an amount ÷ rows), −15 per proprietary blend, −5 per magnesium row without a form; clamped to 0…40. No rows: 0."
+   },
+   {
+    "part": "dose",
+    "max": 40,
+    "rule": "40 × mean(per-ingredient score): 1 inside the evidence card’s effective range, 0.5 below or above it; ingredients without a range are not scored; nothing scorable → 20 (half)."
+   },
+   {
+    "part": "headroom",
+    "max": 20,
+    "rule": "20 when the day’s total at the planned dose (plus the rest of the stack) stays under every upper limit, 0 when any of the product’s ingredients would be over."
+   }
+  ]
+ },
+ "gamification": {
+  "thresholds": {
+   "stackWeekDays": 7,
+   "fullStackMonthDays": 30,
+   "creatineDayThresholds": [
+    30,
+    100
+   ],
+   "sunshineDays": 60,
+   "omegaRunDays": 30,
+   "neverRanOutRefills": 3,
+   "alphabetThresholds": [
+    5,
+    10
+   ]
+  },
+  "alphabet": [
+   {
+    "ingredient": "vitaminD",
+    "name": {
+     "en": "Vitamin D",
+     "cs": "Vitamín D"
+    }
+   },
+   {
+    "ingredient": "vitaminC",
+    "name": {
+     "en": "Vitamin C",
+     "cs": "Vitamín C"
+    }
+   },
+   {
+    "ingredient": "vitaminB6",
+    "name": {
+     "en": "Vitamin B6",
+     "cs": "Vitamín B6"
+    }
+   },
+   {
+    "ingredient": "vitaminB12",
+    "name": {
+     "en": "Vitamin B12",
+     "cs": "Vitamín B12"
+    }
+   },
+   {
+    "ingredient": "vitaminK2",
+    "name": {
+     "en": "Vitamin K2",
+     "cs": "Vitamín K2"
+    }
+   },
+   {
+    "ingredient": "magnesium",
+    "name": {
+     "en": "Magnesium",
+     "cs": "Hořčík"
+    }
+   },
+   {
+    "ingredient": "zinc",
+    "name": {
+     "en": "Zinc",
+     "cs": "Zinek"
+    }
+   },
+   {
+    "ingredient": "iron",
+    "name": {
+     "en": "Iron",
+     "cs": "Železo"
+    }
+   },
+   {
+    "ingredient": "selenium",
+    "name": {
+     "en": "Selenium",
+     "cs": "Selen"
+    }
+   },
+   {
+    "ingredient": "potassium",
+    "name": {
+     "en": "Potassium",
+     "cs": "Draslík"
+    }
+   },
+   {
+    "ingredient": "sodium",
+    "name": {
+     "en": "Sodium",
+     "cs": "Sodík"
+    }
+   }
+  ],
+  "creatineJourney": [
+   {
+    "id": "creatine-100g",
+    "grams": 100
+   },
+   {
+    "id": "creatine-500g",
+    "grams": 500
+   },
+   {
+    "id": "creatine-1kg",
+    "grams": 1000
+   },
+   {
+    "id": "creatine-2500g",
+    "grams": 2500
+   },
+   {
+    "id": "creatine-5kg",
+    "grams": 5000
+   }
+  ],
+  "collectionName": {
+   "en": "Vitamin alphabet",
+   "cs": "Vitaminová abeceda"
+  },
+  "journeyName": {
+   "en": "Creatine journey",
+   "cs": "Kreatinová cesta"
+  },
+  "stackCompleteXPBeforeMultiplier": 6
+ },
+ "badges": [
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 41,
+   "id": "supplements.first-stack",
+   "title": {
+    "en": "First Stack",
+    "cs": "První den se vším"
+   },
+   "subtitle": {
+    "en": "Take every supplement planned for a day.",
+    "cs": "Vezmi si všechny doplňky naplánované na jeden den."
+   },
+   "symbol": "pills.fill",
+   "rarity": "common",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 42,
+   "id": "supplements.stack-week",
+   "title": {
+    "en": "Stack Week",
+    "cs": "Týden bez vynechání"
+   },
+   "subtitle": {
+    "en": "Reach a 7-day supplement streak.",
+    "cs": "Dosáhni série doplňků dlouhé 7 dní."
+   },
+   "symbol": "calendar.badge.checkmark",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 43,
+   "id": "supplements.full-stack-month",
+   "title": {
+    "en": "Full Stack Month",
+    "cs": "Měsíc bez vynechání"
+   },
+   "subtitle": {
+    "en": "Reach a 30-day supplement streak.",
+    "cs": "Dosáhni série doplňků dlouhé 30 dní."
+   },
+   "symbol": "crown.fill",
+   "rarity": "epic",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 44,
+   "id": "supplements.creatine-30",
+   "title": {
+    "en": "Creatine 30",
+    "cs": "Kreatin 30"
+   },
+   "subtitle": {
+    "en": "Take creatine on 30 days.",
+    "cs": "Vezmi si kreatin ve 30 dnech."
+   },
+   "symbol": "bolt.fill",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 45,
+   "id": "supplements.creatine-100",
+   "title": {
+    "en": "Creatine 100",
+    "cs": "Kreatin 100"
+   },
+   "subtitle": {
+    "en": "Take creatine on 100 days.",
+    "cs": "Vezmi si kreatin ve 100 dnech."
+   },
+   "symbol": "bolt.circle.fill",
+   "rarity": "rare",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 46,
+   "id": "supplements.sunshine",
+   "title": {
+    "en": "Sunshine",
+    "cs": "Sluníčko"
+   },
+   "subtitle": {
+    "en": "Take vitamin D on 60 days between October and March.",
+    "cs": "Vezmi si vitamin D v 60 dnech mezi říjnem a březnem."
+   },
+   "symbol": "sun.max.fill",
+   "rarity": "rare",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 47,
+   "id": "supplements.omega-month",
+   "title": {
+    "en": "Omega Month",
+    "cs": "Omega měsíc"
+   },
+   "subtitle": {
+    "en": "Take omega-3 on 30 days in a row.",
+    "cs": "Ber omega-3 30 dní po sobě."
+   },
+   "symbol": "fish.fill",
+   "rarity": "rare",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 48,
+   "id": "supplements.never-ran-out",
+   "title": {
+    "en": "Never Ran Out",
+    "cs": "Nikdy nedošlo"
+   },
+   "subtitle": {
+    "en": "Restock a supplement before it runs out, 3 times.",
+    "cs": "Třikrát doplň zásobu dřív, než dojde."
+   },
+   "symbol": "shippingbox.fill",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 49,
+   "id": "supplements.alphabet-5",
+   "title": {
+    "en": "Alphabet 5",
+    "cs": "Abeceda 5"
+   },
+   "subtitle": {
+    "en": "Take 5 different vitamins and minerals.",
+    "cs": "Vezmi si 5 různých vitaminů a minerálů."
+   },
+   "symbol": "textformat.abc",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 50,
+   "id": "supplements.alphabet-10",
+   "title": {
+    "en": "Alphabet 10",
+    "cs": "Abeceda 10"
+   },
+   "subtitle": {
+    "en": "Take 10 different vitamins and minerals.",
+    "cs": "Vezmi si 10 různých vitaminů a minerálů."
+   },
+   "symbol": "character.book.closed.fill",
+   "rarity": "epic",
+   "category": "supplements",
+   "optional": true
+  }
+ ]
+}

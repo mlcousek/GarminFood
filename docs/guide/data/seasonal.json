@@ -1,0 +1,3559 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalCalendar.swift",
+  "ios/Gamification/Sources/Gamification/Features/Seasonal/CzechNameDays.swift",
+  "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventsFeature.swift"
+ ],
+ "constants": {
+  "bonusQuestXP": 25,
+  "teaserDays": 3,
+  "eventCompletedXP": 50
+ },
+ "events": [
+  {
+   "id": "masopust",
+   "title": {
+    "en": "Masopust",
+    "cs": "Masopust"
+   },
+   "subtitle": {
+    "en": "Carnival feast before Lent: doughnuts and pig-slaughter treats.",
+    "cs": "Masopustní hodování: koblihy a zabíjačkové dobroty."
+   },
+   "symbol": "theatermasks.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "easterOffset": -52
+    },
+    "end": {
+     "easterOffset": -47
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-02-12",
+     "end": "2026-02-17"
+    },
+    {
+     "year": 2027,
+     "start": "2027-02-04",
+     "end": "2027-02-09"
+    },
+    {
+     "year": 2028,
+     "start": "2028-02-24",
+     "end": "2028-02-29"
+    }
+   ],
+   "quests": [
+    {
+     "id": "treat",
+     "title": {
+      "en": "A Masopust treat (koblihy, jitrnice, tlačenka…)",
+      "cs": "Masopustní dobrota (koblihy, jitrnice, tlačenka…)"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonMasopust], days: 1)",
+     "bonus": false
+    }
+   ],
+   "badgeId": "event.masopust",
+   "badgeRarity": "uncommon",
+   "teaser": {
+    "en": "Masks on, doughnuts ready.",
+    "cs": "Masky na sebe, koblihy na talíř."
+   }
+  },
+  {
+   "id": "easter",
+   "title": {
+    "en": "Easter",
+    "cs": "Velikonoce"
+   },
+   "subtitle": {
+    "en": "Eggs, ham and something green for Maundy Thursday.",
+    "cs": "Vejce, šunka a něco zeleného na Zelený čtvrtek."
+   },
+   "symbol": "hare.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "easterOffset": -3
+    },
+    "end": {
+     "easterOffset": 1
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-04-02",
+     "end": "2026-04-06"
+    },
+    {
+     "year": 2027,
+     "start": "2027-03-25",
+     "end": "2027-03-29"
+    },
+    {
+     "year": 2028,
+     "start": "2028-04-13",
+     "end": "2028-04-17"
+    }
+   ],
+   "quests": [
+    {
+     "id": "eggs-and-ham",
+     "title": {
+      "en": "Eggs and ham",
+      "cs": "Vejce a šunka"
+     },
+     "rule": ".allOfTags([[.egg], [.seasonHam]])",
+     "bonus": false
+    },
+    {
+     "id": "green-thursday",
+     "title": {
+      "en": "Something green on Maundy Thursday",
+      "cs": "Něco zeleného na Zelený čtvrtek"
+     },
+     "rule": ".tagOnDate(anyOf: [.seasonGreenThursday, .colourGreen], on: .easterOffset(-3))",
+     "bonus": true
+    },
+    {
+     "id": "mazanec",
+     "title": {
+      "en": "Mazanec or an Easter lamb cake",
+      "cs": "Mazanec nebo beránek"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonMazanec], days: 1)",
+     "bonus": true
+    }
+   ],
+   "badgeId": "event.easter",
+   "badgeRarity": "rare",
+   "teaser": {
+    "en": "Time to find the eggs and the ham.",
+    "cs": "Čas najít vajíčka a šunku."
+   }
+  },
+  {
+   "id": "name-day",
+   "title": {
+    "en": "Name Day",
+    "cs": "Svátek"
+   },
+   "subtitle": {
+    "en": "It's your svátek! Log something to celebrate.",
+    "cs": "Máš svátek! Zapiš něco na oslavu."
+   },
+   "symbol": "gift.fill",
+   "windowRule": {
+    "kind": "ownerNameDay"
+   },
+   "windows": null,
+   "quests": [
+    {
+     "id": "log",
+     "title": {
+      "en": "Log anything on your name day",
+      "cs": "Zapiš cokoli v den svého svátku"
+     },
+     "rule": ".anyEntry(days: 1)",
+     "bonus": false
+    },
+    {
+     "id": "sweet",
+     "title": {
+      "en": "Something sweet to celebrate",
+      "cs": "Něco sladkého na oslavu"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonCake, .sweets], days: 1)",
+     "bonus": true
+    }
+   ],
+   "badgeId": "event.name-day",
+   "badgeRarity": "uncommon",
+   "teaser": {
+    "en": "Your name day is coming. Cake?",
+    "cs": "Blíží se tvůj svátek. Dort?"
+   }
+  },
+  {
+   "id": "strawberries",
+   "title": {
+    "en": "Strawberry Season",
+    "cs": "Jahodová sezóna"
+   },
+   "subtitle": {
+    "en": "June means Czech strawberries. Eat them while they last.",
+    "cs": "Červen jsou české jahody. Jez je, dokud jsou."
+   },
+   "symbol": "leaf.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 6,
+     "day": 1
+    },
+    "end": {
+     "month": 6,
+     "day": 30
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-06-01",
+     "end": "2026-06-30"
+    },
+    {
+     "year": 2027,
+     "start": "2027-06-01",
+     "end": "2027-06-30"
+    },
+    {
+     "year": 2028,
+     "start": "2028-06-01",
+     "end": "2028-06-30"
+    }
+   ],
+   "quests": [
+    {
+     "id": "five-days",
+     "title": {
+      "en": "Strawberries on 5 days",
+      "cs": "Jahody v 5 dnech"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonStrawberry], days: 5)",
+     "bonus": false
+    }
+   ],
+   "badgeId": "event.strawberries",
+   "badgeRarity": "uncommon",
+   "teaser": {
+    "en": "The first strawberries are almost here.",
+    "cs": "První jahody jsou skoro tady."
+   }
+  },
+  {
+   "id": "grill",
+   "title": {
+    "en": "Grill Season",
+    "cs": "Grilovací sezóna"
+   },
+   "subtitle": {
+    "en": "Klobása, špekáček or a steak: fire up the grill.",
+    "cs": "Klobása, špekáček nebo steak: rozpal gril."
+   },
+   "symbol": "flame.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 6,
+     "day": 21
+    },
+    "end": {
+     "month": 8,
+     "day": 31
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-06-21",
+     "end": "2026-08-31"
+    },
+    {
+     "year": 2027,
+     "start": "2027-06-21",
+     "end": "2027-08-31"
+    },
+    {
+     "year": 2028,
+     "start": "2028-06-21",
+     "end": "2028-08-31"
+    }
+   ],
+   "quests": [
+    {
+     "id": "four-days",
+     "title": {
+      "en": "Something from the grill on 4 days",
+      "cs": "Něco z grilu ve 4 dnech"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonGrill], days: 4)",
+     "bonus": false
+    }
+   ],
+   "badgeId": "event.grill",
+   "badgeRarity": "rare",
+   "teaser": {
+    "en": "Summer is coming. Charcoal ready?",
+    "cs": "Léto se blíží. Máš uhlí?"
+   }
+  },
+  {
+   "id": "mushrooms",
+   "title": {
+    "en": "Mushroom Season",
+    "cs": "Houbařská sezóna"
+   },
+   "subtitle": {
+    "en": "Into the woods: hříbky, smaženice, kulajda.",
+    "cs": "Hurá do lesa: hříbky, smaženice, kulajda."
+   },
+   "symbol": "tree.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 9,
+     "day": 1
+    },
+    "end": {
+     "month": 10,
+     "day": 31
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-09-01",
+     "end": "2026-10-31"
+    },
+    {
+     "year": 2027,
+     "start": "2027-09-01",
+     "end": "2027-10-31"
+    },
+    {
+     "year": 2028,
+     "start": "2028-09-01",
+     "end": "2028-10-31"
+    }
+   ],
+   "quests": [
+    {
+     "id": "three-days",
+     "title": {
+      "en": "Mushrooms on 3 days",
+      "cs": "Houby ve 3 dnech"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonMushroom], days: 3)",
+     "bonus": false
+    }
+   ],
+   "badgeId": "event.mushrooms",
+   "badgeRarity": "uncommon",
+   "teaser": {
+    "en": "Grab a basket, the mushrooms are coming.",
+    "cs": "Vezmi košík, houby rostou."
+   }
+  },
+  {
+   "id": "st-martin",
+   "title": {
+    "en": "St. Martin's Day",
+    "cs": "Svatý Martin"
+   },
+   "subtitle": {
+    "en": "Martin rides in on a white horse, and the goose goes in the oven.",
+    "cs": "Martin přijíždí na bílém koni a husa jde do trouby."
+   },
+   "symbol": "bird.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 11,
+     "day": 8
+    },
+    "end": {
+     "month": 11,
+     "day": 16
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-11-08",
+     "end": "2026-11-16"
+    },
+    {
+     "year": 2027,
+     "start": "2027-11-08",
+     "end": "2027-11-16"
+    },
+    {
+     "year": 2028,
+     "start": "2028-11-08",
+     "end": "2028-11-16"
+    }
+   ],
+   "quests": [
+    {
+     "id": "goose",
+     "title": {
+      "en": "Goose",
+      "cs": "Husa"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonGoose], days: 1)",
+     "bonus": false
+    },
+    {
+     "id": "goose-on-the-day",
+     "title": {
+      "en": "Goose on 11 November itself",
+      "cs": "Husa přímo 11. listopadu"
+     },
+     "rule": ".tagOnDate(anyOf: [.seasonGoose], on: md(11, 11))",
+     "bonus": true
+    },
+    {
+     "id": "rohlicek",
+     "title": {
+      "en": "A St. Martin's croissant",
+      "cs": "Svatomartinský rohlíček"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonMartinRohlicek], days: 1)",
+     "bonus": true
+    }
+   ],
+   "badgeId": "event.st-martin",
+   "badgeRarity": "uncommon",
+   "teaser": {
+    "en": "St. Martin is coming. Goose incoming.",
+    "cs": "Svatý Martin se blíží. Husa na obzoru."
+   }
+  },
+  {
+   "id": "mikulas",
+   "title": {
+    "en": "St. Nicholas",
+    "cs": "Mikuláš"
+   },
+   "subtitle": {
+    "en": "Mikuláš fills the stocking: a mandarin and nuts or chocolate.",
+    "cs": "Mikuláš nadělil: mandarinku a oříšky nebo čokoládu."
+   },
+   "symbol": "star.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 12,
+     "day": 5
+    },
+    "end": {
+     "month": 12,
+     "day": 6
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-12-05",
+     "end": "2026-12-06"
+    },
+    {
+     "year": 2027,
+     "start": "2027-12-05",
+     "end": "2027-12-06"
+    },
+    {
+     "year": 2028,
+     "start": "2028-12-05",
+     "end": "2028-12-06"
+    }
+   ],
+   "quests": [
+    {
+     "id": "stocking",
+     "title": {
+      "en": "A mandarin and nuts or chocolate",
+      "cs": "Mandarinka a oříšky nebo čokoláda"
+     },
+     "rule": ".allOfTags([[.seasonCitrus], [.nuts, .seasonChocolate]])",
+     "bonus": false
+    }
+   ],
+   "badgeId": "event.mikulas",
+   "badgeRarity": "common",
+   "teaser": {
+    "en": "Were you good this year? Mikuláš is coming.",
+    "cs": "Byl jsi letos hodný? Mikuláš se blíží."
+   }
+  },
+  {
+   "id": "cukrovi",
+   "title": {
+    "en": "Advent Cookies",
+    "cs": "Adventní cukroví"
+   },
+   "subtitle": {
+    "en": "Vanilkové rohlíčky, linecké, vosí hnízda: the tins are full.",
+    "cs": "Vanilkové rohlíčky, linecké, vosí hnízda: plechovky jsou plné."
+   },
+   "symbol": "snowflake",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 12,
+     "day": 1
+    },
+    "end": {
+     "month": 12,
+     "day": 23
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-12-01",
+     "end": "2026-12-23"
+    },
+    {
+     "year": 2027,
+     "start": "2027-12-01",
+     "end": "2027-12-23"
+    },
+    {
+     "year": 2028,
+     "start": "2028-12-01",
+     "end": "2028-12-23"
+    }
+   ],
+   "quests": [
+    {
+     "id": "three-days",
+     "title": {
+      "en": "Christmas cookies on 3 days",
+      "cs": "Cukroví ve 3 dnech"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonCukrovi], days: 3)",
+     "bonus": false
+    }
+   ],
+   "badgeId": "event.cukrovi",
+   "badgeRarity": "uncommon",
+   "teaser": {
+    "en": "Advent is near. Time to bake.",
+    "cs": "Advent se blíží. Čas péct."
+   }
+  },
+  {
+   "id": "stedry-den",
+   "title": {
+    "en": "Christmas Eve",
+    "cs": "Štědrý den"
+   },
+   "subtitle": {
+    "en": "Potato salad with carp or řízek: both traditions count.",
+    "cs": "Bramborový salát s kaprem nebo řízkem: platí obě tradice."
+   },
+   "symbol": "fish.fill",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 12,
+     "day": 24
+    },
+    "end": {
+     "month": 12,
+     "day": 24
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-12-24",
+     "end": "2026-12-24"
+    },
+    {
+     "year": 2027,
+     "start": "2027-12-24",
+     "end": "2027-12-24"
+    },
+    {
+     "year": 2028,
+     "start": "2028-12-24",
+     "end": "2028-12-24"
+    }
+   ],
+   "quests": [
+    {
+     "id": "dinner",
+     "title": {
+      "en": "Potato salad with carp, fish or schnitzel",
+      "cs": "Bramborový salát s kaprem, rybou nebo řízkem"
+     },
+     "rule": ".allOfTags([[.seasonPotatoSalad], [.seasonCarp, .fish, .seasonRizek]])",
+     "bonus": false
+    },
+    {
+     "id": "fish-soup",
+     "title": {
+      "en": "Fish soup",
+      "cs": "Rybí polévka"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonFishSoup], days: 1)",
+     "bonus": true
+    },
+    {
+     "id": "vanocka",
+     "title": {
+      "en": "Vánočka",
+      "cs": "Vánočka"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonVanocka], days: 1)",
+     "bonus": true
+    }
+   ],
+   "badgeId": "event.stedry-den",
+   "badgeRarity": "rare",
+   "teaser": {
+    "en": "Christmas Eve is coming. Carp or řízek?",
+    "cs": "Štědrý den se blíží. Kapr, nebo řízek?"
+   }
+  },
+  {
+   "id": "silvestr",
+   "title": {
+    "en": "New Year's Eve",
+    "cs": "Silvestr"
+   },
+   "subtitle": {
+    "en": "Chlebíčky and canapés until midnight.",
+    "cs": "Chlebíčky a jednohubky až do půlnoci."
+   },
+   "symbol": "sparkles",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 12,
+     "day": 31
+    },
+    "end": {
+     "month": 12,
+     "day": 31
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-12-31",
+     "end": "2026-12-31"
+    },
+    {
+     "year": 2027,
+     "start": "2027-12-31",
+     "end": "2027-12-31"
+    },
+    {
+     "year": 2028,
+     "start": "2028-12-31",
+     "end": "2028-12-31"
+    }
+   ],
+   "quests": [
+    {
+     "id": "chlebicek",
+     "title": {
+      "en": "A chlebíček",
+      "cs": "Chlebíček"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonChlebicek], days: 1)",
+     "bonus": false
+    },
+    {
+     "id": "jednohubky",
+     "title": {
+      "en": "Canapés",
+      "cs": "Jednohubky"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonJednohubky], days: 1)",
+     "bonus": true
+    }
+   ],
+   "badgeId": "event.silvestr",
+   "badgeRarity": "common",
+   "teaser": {
+    "en": "The party is coming. Chlebíčky first.",
+    "cs": "Večírek se blíží. Nejdřív chlebíčky."
+   }
+  },
+  {
+   "id": "novy-rok",
+   "title": {
+    "en": "New Year's Day",
+    "cs": "Nový rok"
+   },
+   "subtitle": {
+    "en": "Lentils on New Year's Day bring money all year.",
+    "cs": "Čočka na Nový rok přináší peníze celý rok."
+   },
+   "symbol": "calendar",
+   "windowRule": {
+    "kind": "fixed",
+    "start": {
+     "month": 1,
+     "day": 1
+    },
+    "end": {
+     "month": 1,
+     "day": 1
+    }
+   },
+   "windows": [
+    {
+     "year": 2026,
+     "start": "2026-01-01",
+     "end": "2026-01-01"
+    },
+    {
+     "year": 2027,
+     "start": "2027-01-01",
+     "end": "2027-01-01"
+    },
+    {
+     "year": 2028,
+     "start": "2028-01-01",
+     "end": "2028-01-01"
+    }
+   ],
+   "quests": [
+    {
+     "id": "lentils",
+     "title": {
+      "en": "Lentils for luck",
+      "cs": "Čočka pro štěstí"
+     },
+     "rule": ".tagOnDays(anyOf: [.seasonLentils], days: 1)",
+     "bonus": false
+    }
+   ],
+   "badgeId": "event.novy-rok",
+   "badgeRarity": "common",
+   "teaser": {
+    "en": "A new year is coming. Lentils for luck?",
+    "cs": "Nový rok se blíží. Čočka pro štěstí?"
+   }
+  }
+ ],
+ "badges": [
+  {
+   "id": "event.masopust",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "theatermasks.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Masopust",
+    "cs": "Masopust"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Masopust in its season.",
+    "cs": "Limitovaná edice: splň událost Masopust v její sezóně."
+   },
+   "limitedEdition": "masopust",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.easter",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "hare.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Easter",
+    "cs": "Velikonoce"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Easter in its season.",
+    "cs": "Limitovaná edice: splň událost Velikonoce v její sezóně."
+   },
+   "limitedEdition": "easter",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.name-day",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "gift.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Name Day",
+    "cs": "Svátek"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Name Day in its season.",
+    "cs": "Limitovaná edice: splň událost Svátek v její sezóně."
+   },
+   "limitedEdition": "name-day",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.strawberries",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "leaf.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Strawberry Season",
+    "cs": "Jahodová sezóna"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Strawberry Season in its season.",
+    "cs": "Limitovaná edice: splň událost Jahodová sezóna v její sezóně."
+   },
+   "limitedEdition": "strawberries",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.grill",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "flame.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Grill Season",
+    "cs": "Grilovací sezóna"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Grill Season in its season.",
+    "cs": "Limitovaná edice: splň událost Grilovací sezóna v její sezóně."
+   },
+   "limitedEdition": "grill",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.mushrooms",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "tree.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Mushroom Season",
+    "cs": "Houbařská sezóna"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Mushroom Season in its season.",
+    "cs": "Limitovaná edice: splň událost Houbařská sezóna v její sezóně."
+   },
+   "limitedEdition": "mushrooms",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.st-martin",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "bird.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "St. Martin's Day",
+    "cs": "Svatý Martin"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete St. Martin's Day in its season.",
+    "cs": "Limitovaná edice: splň událost Svatý Martin v její sezóně."
+   },
+   "limitedEdition": "st-martin",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.mikulas",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "star.fill",
+   "rarity": "common",
+   "title": {
+    "en": "St. Nicholas",
+    "cs": "Mikuláš"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete St. Nicholas in its season.",
+    "cs": "Limitovaná edice: splň událost Mikuláš v její sezóně."
+   },
+   "limitedEdition": "mikulas",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.cukrovi",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "snowflake",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Advent Cookies",
+    "cs": "Adventní cukroví"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Advent Cookies in its season.",
+    "cs": "Limitovaná edice: splň událost Adventní cukroví v její sezóně."
+   },
+   "limitedEdition": "cukrovi",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.stedry-den",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "fish.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Christmas Eve",
+    "cs": "Štědrý den"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Christmas Eve in its season.",
+    "cs": "Limitovaná edice: splň událost Štědrý den v její sezóně."
+   },
+   "limitedEdition": "stedry-den",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.silvestr",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "sparkles",
+   "rarity": "common",
+   "title": {
+    "en": "New Year's Eve",
+    "cs": "Silvestr"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete New Year's Eve in its season.",
+    "cs": "Limitovaná edice: splň událost Silvestr v její sezóně."
+   },
+   "limitedEdition": "silvestr",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.novy-rok",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "calendar",
+   "rarity": "common",
+   "title": {
+    "en": "New Year's Day",
+    "cs": "Nový rok"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete New Year's Day in its season.",
+    "cs": "Limitovaná edice: splň událost Nový rok v její sezóně."
+   },
+   "limitedEdition": "novy-rok",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.collector-4",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "calendar.badge.checkmark",
+   "rarity": "rare",
+   "title": {
+    "en": "Seasonal Regular",
+    "cs": "Sezónní štamgast"
+   },
+   "subtitle": {
+    "en": "Complete 4 different seasonal events.",
+    "cs": "Splň 4 různé sezónní události."
+   },
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.collector-8",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "books.vertical.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Keeper of Traditions",
+    "cs": "Strážce tradic"
+   },
+   "subtitle": {
+    "en": "Complete 8 different seasonal events.",
+    "cs": "Splň 8 různých sezónních událostí."
+   },
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  },
+  {
+   "id": "event.full-year",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "crown.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "A Full Czech Year",
+    "cs": "Celý český rok"
+   },
+   "subtitle": {
+    "en": "Complete every seasonal event of one calendar year.",
+    "cs": "Splň všechny sezónní události jednoho kalendářního roku."
+   },
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift"
+  }
+ ],
+ "nameDays": [
+  {
+   "month": 1,
+   "day": 2,
+   "names": [
+    "Karina"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 3,
+   "names": [
+    "Radmila"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 4,
+   "names": [
+    "Diana"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 5,
+   "names": [
+    "Dalimil"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 6,
+   "names": [
+    "Kašpar",
+    "Melichar",
+    "Baltazar"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 7,
+   "names": [
+    "Vilma"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 8,
+   "names": [
+    "Čestmír"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 9,
+   "names": [
+    "Vladan"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 10,
+   "names": [
+    "Břetislav"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 11,
+   "names": [
+    "Bohdana"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 12,
+   "names": [
+    "Pravoslav"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 13,
+   "names": [
+    "Edita"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 14,
+   "names": [
+    "Radovan"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 15,
+   "names": [
+    "Alice"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 16,
+   "names": [
+    "Ctirad"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 17,
+   "names": [
+    "Drahoslav"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 18,
+   "names": [
+    "Vladislav"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 19,
+   "names": [
+    "Doubravka"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 20,
+   "names": [
+    "Ilona"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 21,
+   "names": [
+    "Běla"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 22,
+   "names": [
+    "Slavomír"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 23,
+   "names": [
+    "Zdeněk"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 24,
+   "names": [
+    "Milena"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 25,
+   "names": [
+    "Miloš"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 26,
+   "names": [
+    "Zora"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 27,
+   "names": [
+    "Ingrid"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 28,
+   "names": [
+    "Otýlie"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 29,
+   "names": [
+    "Zdislava"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 30,
+   "names": [
+    "Robin"
+   ]
+  },
+  {
+   "month": 1,
+   "day": 31,
+   "names": [
+    "Marika"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 1,
+   "names": [
+    "Hynek"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 2,
+   "names": [
+    "Nela"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 3,
+   "names": [
+    "Blažej"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 4,
+   "names": [
+    "Jarmila"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 5,
+   "names": [
+    "Dobromila"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 6,
+   "names": [
+    "Vanda"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 7,
+   "names": [
+    "Veronika"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 8,
+   "names": [
+    "Milada"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 9,
+   "names": [
+    "Apolena"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 10,
+   "names": [
+    "Mojmír"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 11,
+   "names": [
+    "Božena"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 12,
+   "names": [
+    "Slavěna"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 13,
+   "names": [
+    "Věnceslav"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 14,
+   "names": [
+    "Valentýn"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 15,
+   "names": [
+    "Jiřina"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 16,
+   "names": [
+    "Ljuba"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 17,
+   "names": [
+    "Miloslava"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 18,
+   "names": [
+    "Gizela"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 19,
+   "names": [
+    "Patrik"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 20,
+   "names": [
+    "Oldřich"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 21,
+   "names": [
+    "Lenka"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 22,
+   "names": [
+    "Petr"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 23,
+   "names": [
+    "Svatopluk"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 24,
+   "names": [
+    "Matěj"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 25,
+   "names": [
+    "Liliana"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 26,
+   "names": [
+    "Dorota"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 27,
+   "names": [
+    "Alexandr"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 28,
+   "names": [
+    "Lumír"
+   ]
+  },
+  {
+   "month": 2,
+   "day": 29,
+   "names": [
+    "Horymír"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 1,
+   "names": [
+    "Bedřich"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 2,
+   "names": [
+    "Anežka"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 3,
+   "names": [
+    "Kamil"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 4,
+   "names": [
+    "Stela"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 5,
+   "names": [
+    "Kazimír"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 6,
+   "names": [
+    "Miroslav"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 7,
+   "names": [
+    "Tomáš"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 8,
+   "names": [
+    "Gabriela"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 9,
+   "names": [
+    "Františka"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 10,
+   "names": [
+    "Viktorie"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 11,
+   "names": [
+    "Anděla"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 12,
+   "names": [
+    "Řehoř"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 13,
+   "names": [
+    "Růžena"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 14,
+   "names": [
+    "Rút",
+    "Matylda"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 15,
+   "names": [
+    "Ida"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 16,
+   "names": [
+    "Elena",
+    "Herbert"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 17,
+   "names": [
+    "Vlastimil"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 18,
+   "names": [
+    "Eduard"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 19,
+   "names": [
+    "Josef"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 20,
+   "names": [
+    "Světlana"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 21,
+   "names": [
+    "Radek"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 22,
+   "names": [
+    "Leona"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 23,
+   "names": [
+    "Ivona"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 24,
+   "names": [
+    "Gabriel"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 25,
+   "names": [
+    "Marián"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 26,
+   "names": [
+    "Emanuel"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 27,
+   "names": [
+    "Dita"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 28,
+   "names": [
+    "Soňa"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 29,
+   "names": [
+    "Taťána"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 30,
+   "names": [
+    "Arnošt"
+   ]
+  },
+  {
+   "month": 3,
+   "day": 31,
+   "names": [
+    "Kvido"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 1,
+   "names": [
+    "Hugo"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 2,
+   "names": [
+    "Erika"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 3,
+   "names": [
+    "Richard"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 4,
+   "names": [
+    "Ivana"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 5,
+   "names": [
+    "Miroslava"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 6,
+   "names": [
+    "Vendula"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 7,
+   "names": [
+    "Heřman",
+    "Hermína"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 8,
+   "names": [
+    "Ema"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 9,
+   "names": [
+    "Dušan"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 10,
+   "names": [
+    "Darja"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 11,
+   "names": [
+    "Izabela"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 12,
+   "names": [
+    "Julius"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 13,
+   "names": [
+    "Aleš"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 14,
+   "names": [
+    "Vincenc"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 15,
+   "names": [
+    "Anastázie"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 16,
+   "names": [
+    "Irena"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 17,
+   "names": [
+    "Rudolf"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 18,
+   "names": [
+    "Valérie"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 19,
+   "names": [
+    "Rostislav"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 20,
+   "names": [
+    "Marcela"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 21,
+   "names": [
+    "Alexandra"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 22,
+   "names": [
+    "Evženie"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 23,
+   "names": [
+    "Vojtěch"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 24,
+   "names": [
+    "Jiří"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 25,
+   "names": [
+    "Marek"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 26,
+   "names": [
+    "Oto"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 27,
+   "names": [
+    "Jaroslav"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 28,
+   "names": [
+    "Vlastislav"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 29,
+   "names": [
+    "Robert"
+   ]
+  },
+  {
+   "month": 4,
+   "day": 30,
+   "names": [
+    "Blahoslav"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 2,
+   "names": [
+    "Zikmund"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 3,
+   "names": [
+    "Alexej"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 4,
+   "names": [
+    "Květoslav"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 5,
+   "names": [
+    "Klaudie"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 6,
+   "names": [
+    "Radoslav"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 7,
+   "names": [
+    "Stanislav"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 9,
+   "names": [
+    "Ctibor"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 10,
+   "names": [
+    "Blažena"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 11,
+   "names": [
+    "Svatava"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 12,
+   "names": [
+    "Pankrác"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 13,
+   "names": [
+    "Servác"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 14,
+   "names": [
+    "Bonifác"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 15,
+   "names": [
+    "Žofie"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 16,
+   "names": [
+    "Přemysl"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 17,
+   "names": [
+    "Aneta"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 18,
+   "names": [
+    "Nataša"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 19,
+   "names": [
+    "Ivo"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 20,
+   "names": [
+    "Zbyšek"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 21,
+   "names": [
+    "Monika"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 22,
+   "names": [
+    "Emil"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 23,
+   "names": [
+    "Vladimír"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 24,
+   "names": [
+    "Jana"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 25,
+   "names": [
+    "Viola"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 26,
+   "names": [
+    "Filip"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 27,
+   "names": [
+    "Valdemar"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 28,
+   "names": [
+    "Vilém"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 29,
+   "names": [
+    "Maxmilián"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 30,
+   "names": [
+    "Ferdinand"
+   ]
+  },
+  {
+   "month": 5,
+   "day": 31,
+   "names": [
+    "Kamila"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 1,
+   "names": [
+    "Laura"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 2,
+   "names": [
+    "Jarmil"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 3,
+   "names": [
+    "Tamara"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 4,
+   "names": [
+    "Dalibor"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 5,
+   "names": [
+    "Dobroslav"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 6,
+   "names": [
+    "Norbert"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 7,
+   "names": [
+    "Iveta",
+    "Slavoj"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 8,
+   "names": [
+    "Medard"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 9,
+   "names": [
+    "Stanislava"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 10,
+   "names": [
+    "Gita"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 11,
+   "names": [
+    "Bruno"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 12,
+   "names": [
+    "Antonie"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 13,
+   "names": [
+    "Antonín"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 14,
+   "names": [
+    "Roland"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 15,
+   "names": [
+    "Vít"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 16,
+   "names": [
+    "Zbyněk"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 17,
+   "names": [
+    "Adolf"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 18,
+   "names": [
+    "Milan"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 19,
+   "names": [
+    "Leoš"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 20,
+   "names": [
+    "Květa"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 21,
+   "names": [
+    "Alois"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 22,
+   "names": [
+    "Pavla"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 23,
+   "names": [
+    "Zdeňka"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 24,
+   "names": [
+    "Jan"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 25,
+   "names": [
+    "Ivan"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 26,
+   "names": [
+    "Adriana"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 27,
+   "names": [
+    "Ladislav"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 28,
+   "names": [
+    "Lubomír"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 29,
+   "names": [
+    "Petr",
+    "Pavel"
+   ]
+  },
+  {
+   "month": 6,
+   "day": 30,
+   "names": [
+    "Šárka"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 1,
+   "names": [
+    "Jaroslava"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 2,
+   "names": [
+    "Patricie"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 3,
+   "names": [
+    "Radomír"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 4,
+   "names": [
+    "Prokop"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 5,
+   "names": [
+    "Cyril",
+    "Metoděj"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 7,
+   "names": [
+    "Bohuslava"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 8,
+   "names": [
+    "Nora"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 9,
+   "names": [
+    "Drahoslava"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 10,
+   "names": [
+    "Libuše",
+    "Amálie"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 11,
+   "names": [
+    "Olga"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 12,
+   "names": [
+    "Bořek"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 13,
+   "names": [
+    "Markéta"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 14,
+   "names": [
+    "Karolína"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 15,
+   "names": [
+    "Jindřich"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 16,
+   "names": [
+    "Luboš"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 17,
+   "names": [
+    "Martina"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 18,
+   "names": [
+    "Drahomíra"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 19,
+   "names": [
+    "Čeněk"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 20,
+   "names": [
+    "Ilja"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 21,
+   "names": [
+    "Vítězslav"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 22,
+   "names": [
+    "Magdaléna"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 23,
+   "names": [
+    "Libor"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 24,
+   "names": [
+    "Kristýna"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 25,
+   "names": [
+    "Jakub"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 26,
+   "names": [
+    "Anna"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 27,
+   "names": [
+    "Věroslav"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 28,
+   "names": [
+    "Viktor"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 29,
+   "names": [
+    "Marta"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 30,
+   "names": [
+    "Bořivoj"
+   ]
+  },
+  {
+   "month": 7,
+   "day": 31,
+   "names": [
+    "Ignác"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 1,
+   "names": [
+    "Oskar"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 2,
+   "names": [
+    "Gustav"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 3,
+   "names": [
+    "Miluše"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 4,
+   "names": [
+    "Dominik"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 5,
+   "names": [
+    "Kristián"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 6,
+   "names": [
+    "Oldřiška"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 7,
+   "names": [
+    "Lada"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 8,
+   "names": [
+    "Soběslav"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 9,
+   "names": [
+    "Roman"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 10,
+   "names": [
+    "Vavřinec"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 11,
+   "names": [
+    "Zuzana"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 12,
+   "names": [
+    "Klára"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 13,
+   "names": [
+    "Alena"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 14,
+   "names": [
+    "Alan"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 15,
+   "names": [
+    "Hana"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 16,
+   "names": [
+    "Jáchym"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 17,
+   "names": [
+    "Petra"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 18,
+   "names": [
+    "Helena"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 19,
+   "names": [
+    "Ludvík"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 20,
+   "names": [
+    "Bernard"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 21,
+   "names": [
+    "Johana"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 22,
+   "names": [
+    "Bohuslav"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 23,
+   "names": [
+    "Sandra"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 24,
+   "names": [
+    "Bartoloměj"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 25,
+   "names": [
+    "Radim"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 26,
+   "names": [
+    "Luděk"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 27,
+   "names": [
+    "Otakar"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 28,
+   "names": [
+    "Augustýn"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 29,
+   "names": [
+    "Evelína"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 30,
+   "names": [
+    "Vladěna"
+   ]
+  },
+  {
+   "month": 8,
+   "day": 31,
+   "names": [
+    "Pavlína"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 1,
+   "names": [
+    "Linda",
+    "Samuel"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 2,
+   "names": [
+    "Adéla"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 3,
+   "names": [
+    "Bronislav"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 4,
+   "names": [
+    "Jindřiška"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 5,
+   "names": [
+    "Boris"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 6,
+   "names": [
+    "Boleslav"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 7,
+   "names": [
+    "Regína"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 8,
+   "names": [
+    "Mariana"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 9,
+   "names": [
+    "Daniela"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 10,
+   "names": [
+    "Irma"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 11,
+   "names": [
+    "Denisa"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 12,
+   "names": [
+    "Marie"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 13,
+   "names": [
+    "Lubor"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 14,
+   "names": [
+    "Radka"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 15,
+   "names": [
+    "Jolana"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 16,
+   "names": [
+    "Ludmila"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 17,
+   "names": [
+    "Naděžda"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 18,
+   "names": [
+    "Kryštof"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 19,
+   "names": [
+    "Zita"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 20,
+   "names": [
+    "Oleg"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 21,
+   "names": [
+    "Matouš"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 22,
+   "names": [
+    "Darina"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 23,
+   "names": [
+    "Berta"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 24,
+   "names": [
+    "Jaromír"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 25,
+   "names": [
+    "Zlata"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 26,
+   "names": [
+    "Andrea"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 27,
+   "names": [
+    "Jonáš"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 28,
+   "names": [
+    "Václav"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 29,
+   "names": [
+    "Michal"
+   ]
+  },
+  {
+   "month": 9,
+   "day": 30,
+   "names": [
+    "Jeroným"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 1,
+   "names": [
+    "Igor"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 2,
+   "names": [
+    "Olívie",
+    "Oliver"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 3,
+   "names": [
+    "Bohumil"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 4,
+   "names": [
+    "František"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 5,
+   "names": [
+    "Eliška"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 6,
+   "names": [
+    "Hanuš"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 7,
+   "names": [
+    "Justýna"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 8,
+   "names": [
+    "Věra"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 9,
+   "names": [
+    "Štefan",
+    "Sára"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 10,
+   "names": [
+    "Marina"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 11,
+   "names": [
+    "Andrej"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 12,
+   "names": [
+    "Marcel"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 13,
+   "names": [
+    "Renáta"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 14,
+   "names": [
+    "Agáta"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 15,
+   "names": [
+    "Tereza"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 16,
+   "names": [
+    "Havel"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 17,
+   "names": [
+    "Hedvika"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 18,
+   "names": [
+    "Lukáš"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 19,
+   "names": [
+    "Michaela"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 20,
+   "names": [
+    "Vendelín"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 21,
+   "names": [
+    "Brigita"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 22,
+   "names": [
+    "Sabina"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 23,
+   "names": [
+    "Teodor"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 24,
+   "names": [
+    "Nina"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 25,
+   "names": [
+    "Beáta"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 26,
+   "names": [
+    "Erik"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 27,
+   "names": [
+    "Šarlota",
+    "Zoe"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 29,
+   "names": [
+    "Silvie"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 30,
+   "names": [
+    "Tadeáš"
+   ]
+  },
+  {
+   "month": 10,
+   "day": 31,
+   "names": [
+    "Štěpánka"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 1,
+   "names": [
+    "Felix"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 3,
+   "names": [
+    "Hubert"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 4,
+   "names": [
+    "Karel"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 5,
+   "names": [
+    "Miriam"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 6,
+   "names": [
+    "Liběna"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 7,
+   "names": [
+    "Saskie"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 8,
+   "names": [
+    "Bohumír"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 9,
+   "names": [
+    "Bohdan"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 10,
+   "names": [
+    "Evžen"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 11,
+   "names": [
+    "Martin"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 12,
+   "names": [
+    "Benedikt"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 13,
+   "names": [
+    "Tibor"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 14,
+   "names": [
+    "Sáva"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 15,
+   "names": [
+    "Leopold"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 16,
+   "names": [
+    "Otmar"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 17,
+   "names": [
+    "Mahulena"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 18,
+   "names": [
+    "Romana"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 19,
+   "names": [
+    "Alžběta"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 20,
+   "names": [
+    "Nikola"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 21,
+   "names": [
+    "Albert"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 22,
+   "names": [
+    "Cecílie"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 23,
+   "names": [
+    "Klement"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 24,
+   "names": [
+    "Emílie"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 25,
+   "names": [
+    "Kateřina"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 26,
+   "names": [
+    "Artur"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 27,
+   "names": [
+    "Xenie"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 28,
+   "names": [
+    "René"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 29,
+   "names": [
+    "Zina"
+   ]
+  },
+  {
+   "month": 11,
+   "day": 30,
+   "names": [
+    "Ondřej"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 1,
+   "names": [
+    "Iva"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 2,
+   "names": [
+    "Blanka"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 3,
+   "names": [
+    "Svatoslav"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 4,
+   "names": [
+    "Barbora"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 5,
+   "names": [
+    "Jitka"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 6,
+   "names": [
+    "Mikuláš"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 7,
+   "names": [
+    "Ambrož",
+    "Benjamín"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 8,
+   "names": [
+    "Květoslava"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 9,
+   "names": [
+    "Vratislav"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 10,
+   "names": [
+    "Julie"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 11,
+   "names": [
+    "Dana"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 12,
+   "names": [
+    "Simona"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 13,
+   "names": [
+    "Lucie"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 14,
+   "names": [
+    "Lýdie"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 15,
+   "names": [
+    "Radana",
+    "Radan"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 16,
+   "names": [
+    "Albína"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 17,
+   "names": [
+    "Daniel"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 18,
+   "names": [
+    "Miloslav"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 19,
+   "names": [
+    "Ester"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 20,
+   "names": [
+    "Dagmar"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 21,
+   "names": [
+    "Natálie"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 22,
+   "names": [
+    "Šimon"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 23,
+   "names": [
+    "Vlasta"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 24,
+   "names": [
+    "Adam",
+    "Eva"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 26,
+   "names": [
+    "Štěpán"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 27,
+   "names": [
+    "Žaneta"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 28,
+   "names": [
+    "Bohumila"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 29,
+   "names": [
+    "Judita"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 30,
+   "names": [
+    "David"
+   ]
+  },
+  {
+   "month": 12,
+   "day": 31,
+   "names": [
+    "Silvestr"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,218 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/Records/RecordsEvaluator.swift"
+ ],
+ "constants": {
+  "warmUpDays": 7,
+  "maxFastGapHours": 48,
+  "onTargetTolerance": 0.1,
+  "onTargetMinEntries": 3,
+  "fullHouseMinRecords": 6,
+  "historyLimit": 10,
+  "prXP": 20
+ },
+ "records": [
+  {
+   "id": "protein-day",
+   "name": {
+    "en": "Most protein in a day",
+    "cs": "Nejvíc bílkovin za den"
+   },
+   "symbol": "fork.knife",
+   "unit": "grams",
+   "direction": "higher",
+   "timing": "live",
+   "minImprovement": 1,
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true
+  },
+  {
+   "id": "fruit-veg-day",
+   "name": {
+    "en": "Most fruit & veg in a day",
+    "cs": "Nejvíc ovoce a zeleniny za den"
+   },
+   "symbol": "carrot.fill",
+   "unit": "count",
+   "direction": "higher",
+   "timing": "live",
+   "minImprovement": 1,
+   "requirement": [],
+   "standalone": true
+  },
+  {
+   "id": "distinct-foods-day",
+   "name": {
+    "en": "Most different foods in a day",
+    "cs": "Nejvíc různých jídel za den"
+   },
+   "symbol": "square.grid.3x3.fill",
+   "unit": "count",
+   "direction": "higher",
+   "timing": "live",
+   "minImprovement": 1,
+   "requirement": [],
+   "standalone": true
+  },
+  {
+   "id": "water-day",
+   "name": {
+    "en": "Most water in a day",
+    "cs": "Nejvíc vody za den"
+   },
+   "symbol": "drop.fill",
+   "unit": "millilitres",
+   "direction": "higher",
+   "timing": "live",
+   "minImprovement": 50,
+   "requirement": [
+    "water"
+   ],
+   "standalone": true
+  },
+  {
+   "id": "active-kcal-day",
+   "name": {
+    "en": "Biggest active day",
+    "cs": "Nejaktivnější den"
+   },
+   "symbol": "flame.fill",
+   "unit": "kilocalories",
+   "direction": "higher",
+   "timing": "live",
+   "minImprovement": 1,
+   "requirement": [
+    "activities"
+   ],
+   "standalone": false
+  },
+  {
+   "id": "water-streak",
+   "name": {
+    "en": "Longest water-goal streak",
+    "cs": "Nejdelší série splněného cíle vody"
+   },
+   "symbol": "drop.circle.fill",
+   "unit": "days",
+   "direction": "higher",
+   "timing": "live",
+   "minImprovement": 1,
+   "requirement": [
+    "water"
+   ],
+   "standalone": true
+  },
+  {
+   "id": "longest-fast",
+   "name": {
+    "en": "Longest fast",
+    "cs": "Nejdelší půst"
+   },
+   "symbol": "moon.stars.fill",
+   "unit": "hours",
+   "direction": "higher",
+   "timing": "closedDay",
+   "minImprovement": "1 minute",
+   "requirement": [],
+   "standalone": true
+  },
+  {
+   "id": "low-sugar-on-target",
+   "name": {
+    "en": "Lowest sugar on an on-target day",
+    "cs": "Nejméně cukru ve dni v cíli"
+   },
+   "symbol": "cube.fill",
+   "unit": "grams",
+   "direction": "lower",
+   "timing": "closedDay",
+   "minImprovement": 0.1,
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true
+  }
+ ],
+ "badges": [
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 223,
+   "id": "record.first-pr",
+   "title": {
+    "en": "First PR",
+    "cs": "První rekord"
+   },
+   "subtitle": {
+    "en": "Set your first personal record.",
+    "cs": "Překonej svůj první osobní rekord."
+   },
+   "symbol": "trophy",
+   "rarity": "common",
+   "category": "extreme"
+  },
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 225,
+   "id": "record.pr-10",
+   "title": {
+    "en": "Record Breaker",
+    "cs": "Lamač rekordů"
+   },
+   "subtitle": {
+    "en": "Set 10 personal records.",
+    "cs": "Překonej 10 osobních rekordů."
+   },
+   "symbol": "trophy.fill",
+   "rarity": "uncommon",
+   "category": "extreme"
+  },
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 227,
+   "id": "record.pr-50",
+   "title": {
+    "en": "Record Machine",
+    "cs": "Stroj na rekordy"
+   },
+   "subtitle": {
+    "en": "Set 50 personal records.",
+    "cs": "Překonej 50 osobních rekordů."
+   },
+   "symbol": "trophy.circle.fill",
+   "rarity": "epic",
+   "category": "extreme"
+  },
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 92,
+   "id": "record.full-house",
+   "title": {
+    "en": "Full House",
+    "cs": "Plný dům"
+   },
+   "subtitle": {
+    "en": "Set a PR in every record you track.",
+    "cs": "Překonej každý rekord, který sleduješ."
+   },
+   "symbol": "rosette",
+   "rarity": "rare",
+   "category": "extreme"
+  }
+ ]
+}

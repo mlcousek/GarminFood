@@ -1,0 +1,938 @@
+{
+ "source": "parsed",
+ "files": [
+  "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+  "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoCardGenerator.swift",
+  "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoEvaluator.swift",
+  "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/WeeklyBingoFeature.swift"
+ ],
+ "card": {
+  "size": 9,
+  "centreIndex": 4,
+  "freeId": "free",
+  "eligibilityWindowDays": 14,
+  "quota": [
+   {
+    "difficulty": "hard",
+    "count": 2
+   },
+   {
+    "difficulty": "medium",
+    "count": 3
+   },
+   {
+    "difficulty": "easy",
+    "count": 3
+   }
+  ],
+  "maxLayoutAttempts": 16,
+  "lines": [
+   {
+    "kind": "row",
+    "number": 1,
+    "indices": [
+     0,
+     1,
+     2
+    ]
+   },
+   {
+    "kind": "row",
+    "number": 2,
+    "indices": [
+     3,
+     4,
+     5
+    ]
+   },
+   {
+    "kind": "row",
+    "number": 3,
+    "indices": [
+     6,
+     7,
+     8
+    ]
+   },
+   {
+    "kind": "column",
+    "number": 1,
+    "indices": [
+     0,
+     3,
+     6
+    ]
+   },
+   {
+    "kind": "column",
+    "number": 2,
+    "indices": [
+     1,
+     4,
+     7
+    ]
+   },
+   {
+    "kind": "column",
+    "number": 3,
+    "indices": [
+     2,
+     5,
+     8
+    ]
+   },
+   {
+    "kind": "diagonal",
+    "number": 1,
+    "indices": [
+     0,
+     4,
+     8
+    ]
+   },
+   {
+    "kind": "diagonal",
+    "number": 2,
+    "indices": [
+     2,
+     4,
+     6
+    ]
+   }
+  ],
+  "lineXP": 25,
+  "fullCardXP": 150,
+  "fullCardFreeze": true
+ },
+ "tasks": [
+  {
+   "id": "e-early-log",
+   "difficulty": "easy",
+   "family": "time",
+   "symbol": "sunrise.fill",
+   "title": {
+    "en": "Rise & Log",
+    "cs": "Ranní ptáče"
+   },
+   "detail": {
+    "en": "Log your first food before 9:00.",
+    "cs": "Zapiš první jídlo před 9:00."
+   },
+   "scope": ".day(.firstLogBefore(hour: 9, minute: 0))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 47
+  },
+  {
+   "id": "e-fruit",
+   "difficulty": "easy",
+   "family": "fruit",
+   "symbol": "leaf.fill",
+   "title": {
+    "en": "An Apple a Day",
+    "cs": "Jablko denně"
+   },
+   "detail": {
+    "en": "Log any fruit.",
+    "cs": "Zapiš jakékoli ovoce."
+   },
+   "scope": ".day(.hasTag(.fruit))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 55
+  },
+  {
+   "id": "e-veg-lunch",
+   "difficulty": "easy",
+   "family": "vegmeal",
+   "symbol": "carrot.fill",
+   "title": {
+    "en": "Green Lunch",
+    "cs": "Zelený oběd"
+   },
+   "detail": {
+    "en": "Have a vegetable with lunch.",
+    "cs": "Dej si k obědu zeleninu."
+   },
+   "scope": ".day(.tagInMeal(.vegetable, .lunch))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 63
+  },
+  {
+   "id": "e-three-meals",
+   "difficulty": "easy",
+   "family": "meals",
+   "symbol": "fork.knife",
+   "title": {
+    "en": "Square Meals",
+    "cs": "Tři chody dne"
+   },
+   "detail": {
+    "en": "Log breakfast, lunch and dinner on the same day.",
+    "cs": "Zapiš snídani, oběd i večeři v jeden den."
+   },
+   "scope": ".day(.all([.mealLogged(.breakfast), .mealLogged(.lunch), .mealLogged(.dinner)]))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 71
+  },
+  {
+   "id": "e-new-food",
+   "difficulty": "easy",
+   "family": "novelty",
+   "symbol": "sparkles",
+   "title": {
+    "en": "Something New",
+    "cs": "Něco nového"
+   },
+   "detail": {
+    "en": "Log a food you have never logged before.",
+    "cs": "Zapiš jídlo, které jsi ještě nikdy nezapsal(a)."
+   },
+   "scope": ".day(.newFood)",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 79
+  },
+  {
+   "id": "e-soup",
+   "difficulty": "easy",
+   "family": "soup",
+   "symbol": "takeoutbag.and.cup.and.straw.fill",
+   "title": {
+    "en": "Polévka Day",
+    "cs": "Den polévky"
+   },
+   "detail": {
+    "en": "Have a soup.",
+    "cs": "Dej si polévku."
+   },
+   "scope": ".day(.hasTag(.soup))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 87
+  },
+  {
+   "id": "e-tea",
+   "difficulty": "easy",
+   "family": "drinks",
+   "symbol": "mug.fill",
+   "title": {
+    "en": "Tea Break",
+    "cs": "Čajová pauza"
+   },
+   "detail": {
+    "en": "Log a tea.",
+    "cs": "Zapiš si čaj."
+   },
+   "scope": ".day(.hasTag(.tea))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 95
+  },
+  {
+   "id": "e-fermented",
+   "difficulty": "easy",
+   "family": "fermented",
+   "symbol": "testtube.2",
+   "title": {
+    "en": "Friendly Bacteria",
+    "cs": "Přátelské bakterie"
+   },
+   "detail": {
+    "en": "Have a fermented food, like yogurt, kefir or sauerkraut.",
+    "cs": "Dej si něco fermentovaného, třeba jogurt, kefír nebo kysané zelí."
+   },
+   "scope": ".day(.hasTag(.fermented))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 103
+  },
+  {
+   "id": "e-nuts",
+   "difficulty": "easy",
+   "family": "nuts",
+   "symbol": "circle.grid.2x2.fill",
+   "title": {
+    "en": "Go Nuts",
+    "cs": "Oříškové šílenství"
+   },
+   "detail": {
+    "en": "Have some nuts.",
+    "cs": "Dej si ořechy."
+   },
+   "scope": ".day(.hasTag(.nuts))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 111
+  },
+  {
+   "id": "e-egg",
+   "difficulty": "easy",
+   "family": "egg",
+   "symbol": "oval.portrait.fill",
+   "title": {
+    "en": "Egg Day",
+    "cs": "Vajíčkový den"
+   },
+   "detail": {
+    "en": "Have eggs.",
+    "cs": "Dej si vajíčka."
+   },
+   "scope": ".day(.hasTag(.egg))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 119
+  },
+  {
+   "id": "m-fish",
+   "difficulty": "medium",
+   "family": "fish",
+   "symbol": "fish.fill",
+   "title": {
+    "en": "Something Fishy",
+    "cs": "Něco rybího"
+   },
+   "detail": {
+    "en": "Have fish or seafood.",
+    "cs": "Dej si rybu nebo mořské plody."
+   },
+   "scope": ".day(.any([.hasTag(.fish), .hasTag(.seafood)]))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 130
+  },
+  {
+   "id": "m-three-fruits",
+   "difficulty": "medium",
+   "family": "fruit",
+   "symbol": "basket.fill",
+   "title": {
+    "en": "Fruit Salad",
+    "cs": "Ovocný salát"
+   },
+   "detail": {
+    "en": "Log fruit 3 times in one day.",
+    "cs": "Zapiš ovoce 3× za jeden den."
+   },
+   "scope": ".day(.tagCountAtLeast(.fruit, 3))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 138
+  },
+  {
+   "id": "m-water-goal",
+   "difficulty": "medium",
+   "family": "water",
+   "symbol": "drop.fill",
+   "title": {
+    "en": "Hydrated",
+    "cs": "Zavodněno"
+   },
+   "detail": {
+    "en": "Reach your water goal.",
+    "cs": "Splň svůj cíl pitného režimu."
+   },
+   "scope": ".day(.waterGoalMet)",
+   "requirement": [
+    "water"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 146
+  },
+  {
+   "id": "m-czech-brand",
+   "difficulty": "medium",
+   "family": "brands",
+   "symbol": "flag.fill",
+   "title": {
+    "en": "Local Hero",
+    "cs": "Místní hrdina"
+   },
+   "detail": {
+    "en": "Log a Czech brand you have never logged before.",
+    "cs": "Zapiš českou značku, kterou jsi ještě nezapsal(a)."
+   },
+   "scope": ".day(.newCzechBrand)",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 154
+  },
+  {
+   "id": "m-no-soda",
+   "difficulty": "medium",
+   "family": "drinks",
+   "symbol": "nosign",
+   "title": {
+    "en": "Soda-Free Day",
+    "cs": "Den bez limonád"
+   },
+   "detail": {
+    "en": "Log at least 3 entries in a day and no sugary drink.",
+    "cs": "Zapiš za den aspoň 3 položky a žádný slazený nápoj."
+   },
+   "scope": ".day(.noTag(.sugaryDrink, minEntries: 3))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": true,
+   "line": 162
+  },
+  {
+   "id": "m-protein-2",
+   "difficulty": "medium",
+   "family": "goal",
+   "symbol": "bolt.fill",
+   "title": {
+    "en": "Protein Double",
+    "cs": "Proteinový double"
+   },
+   "detail": {
+    "en": "Reach your protein goal on 2 days this week.",
+    "cs": "Splň cíl bílkovin ve 2 dnech tohoto týdne."
+   },
+   "scope": ".week(.daysSatisfying(.goalMet(.protein), atLeast: 2))",
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 171
+  },
+  {
+   "id": "m-veg-breakfast",
+   "difficulty": "medium",
+   "family": "vegmeal",
+   "symbol": "sun.horizon.fill",
+   "title": {
+    "en": "Veggie Sunrise",
+    "cs": "Zeleninové ráno"
+   },
+   "detail": {
+    "en": "Have a vegetable with breakfast.",
+    "cs": "Dej si ke snídani zeleninu."
+   },
+   "scope": ".day(.tagInMeal(.vegetable, .breakfast))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 179
+  },
+  {
+   "id": "m-legume",
+   "difficulty": "medium",
+   "family": "legume",
+   "symbol": "circle.hexagongrid.fill",
+   "title": {
+    "en": "Pulse Day",
+    "cs": "Luštěninový den"
+   },
+   "detail": {
+    "en": "Have legumes: beans, lentils, peas or chickpeas.",
+    "cs": "Dej si luštěniny: fazole, čočku, hrách nebo cizrnu."
+   },
+   "scope": ".day(.hasTag(.legume))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 187
+  },
+  {
+   "id": "m-colours-4",
+   "difficulty": "medium",
+   "family": "colours",
+   "symbol": "paintpalette.fill",
+   "title": {
+    "en": "Painted Plate",
+    "cs": "Malovaný talíř"
+   },
+   "detail": {
+    "en": "Eat 4 different food colours in one day.",
+    "cs": "Sněz za jeden den jídlo 4 různých barev."
+   },
+   "scope": ".day(.distinctTagsAtLeast(prefix: FoodTag.colourPrefix, 4))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 195
+  },
+  {
+   "id": "m-cuisine",
+   "difficulty": "medium",
+   "family": "cuisine",
+   "symbol": "globe.europe.africa.fill",
+   "title": {
+    "en": "Passport Stamp",
+    "cs": "Razítko do pasu"
+   },
+   "detail": {
+    "en": "Have a dish from any cuisine other than Czech.",
+    "cs": "Dej si jídlo z jiné než české kuchyně."
+   },
+   "scope": ".day(.any(nonCzechCuisines.map { DayPredicate.hasTag($0) }))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 203
+  },
+  {
+   "id": "m-early-dinner",
+   "difficulty": "medium",
+   "family": "time",
+   "symbol": "moon.fill",
+   "title": {
+    "en": "Early Dinner",
+    "cs": "Brzká večeře"
+   },
+   "detail": {
+    "en": "Log dinner and finish logging before 19:30.",
+    "cs": "Zapiš večeři a dozapisuj do 19:30."
+   },
+   "scope": ".day(.all([.mealLogged(.dinner), .lastLogBefore(hour: 19, minute: 30)]))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": true,
+   "line": 211
+  },
+  {
+   "id": "m-whole-grain",
+   "difficulty": "medium",
+   "family": "grain",
+   "symbol": "laurel.leading",
+   "title": {
+    "en": "Whole Grain",
+    "cs": "Celozrnné"
+   },
+   "detail": {
+    "en": "Have a whole-grain food.",
+    "cs": "Dej si něco celozrnného."
+   },
+   "scope": ".day(.hasTag(.wholeGrain))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 220
+  },
+  {
+   "id": "m-refuel",
+   "difficulty": "medium",
+   "family": "sport",
+   "symbol": "figure.run",
+   "title": {
+    "en": "Refuel",
+    "cs": "Doplň palivo"
+   },
+   "detail": {
+    "en": "Log at least 20 g of protein within 60 minutes after an activity.",
+    "cs": "Zapiš aspoň 20 g bílkovin do 60 minut po aktivitě."
+   },
+   "scope": ".day(.proteinAfterActivity(grams: 20, withinMinutes: 60))",
+   "requirement": [
+    "activities",
+    "macros"
+   ],
+   "standalone": false,
+   "judgesCompletedDaysOnly": false,
+   "line": 228
+  },
+  {
+   "id": "m-calories-2",
+   "difficulty": "medium",
+   "family": "goal",
+   "symbol": "target",
+   "title": {
+    "en": "On Target Twice",
+    "cs": "Dvakrát na cíl"
+   },
+   "detail": {
+    "en": "Reach your calorie goal on 2 days this week.",
+    "cs": "Splň kalorický cíl ve 2 dnech tohoto týdne."
+   },
+   "scope": ".week(.daysSatisfying(.goalMet(.calories), atLeast: 2))",
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": true,
+   "line": 236
+  },
+  {
+   "id": "h-fish-2",
+   "difficulty": "hard",
+   "family": "fish",
+   "symbol": "fish.circle.fill",
+   "title": {
+    "en": "Fish Twice",
+    "cs": "Ryba dvakrát"
+   },
+   "detail": {
+    "en": "Have fish or seafood on 2 days this week.",
+    "cs": "Dej si rybu nebo mořské plody ve 2 dnech tohoto týdne."
+   },
+   "scope": ".week(.daysSatisfying(.any([.hasTag(.fish), .hasTag(.seafood)]), atLeast: 2))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 248
+  },
+  {
+   "id": "h-protein-3",
+   "difficulty": "hard",
+   "family": "goal",
+   "symbol": "bolt.circle.fill",
+   "title": {
+    "en": "Protein Hat-Trick",
+    "cs": "Proteinový hattrick"
+   },
+   "detail": {
+    "en": "Reach your protein goal on 3 days this week.",
+    "cs": "Splň cíl bílkovin ve 3 dnech tohoto týdne."
+   },
+   "scope": ".week(.daysSatisfying(.goalMet(.protein), atLeast: 3))",
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 256
+  },
+  {
+   "id": "h-water-4",
+   "difficulty": "hard",
+   "family": "water",
+   "symbol": "drop.circle.fill",
+   "title": {
+    "en": "Water Works",
+    "cs": "Vodní dílo"
+   },
+   "detail": {
+    "en": "Reach your water goal on 4 days this week.",
+    "cs": "Splň cíl pitného režimu ve 4 dnech tohoto týdne."
+   },
+   "scope": ".week(.daysSatisfying(.waterGoalMet, atLeast: 4))",
+   "requirement": [
+    "water"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 264
+  },
+  {
+   "id": "h-ten-foods",
+   "difficulty": "hard",
+   "family": "novelty",
+   "symbol": "square.grid.3x3.fill",
+   "title": {
+    "en": "Variety Show",
+    "cs": "Pestrá show"
+   },
+   "detail": {
+    "en": "Log 10 different foods in one day.",
+    "cs": "Zapiš 10 různých jídel za jeden den."
+   },
+   "scope": ".day(.distinctFoodsAtLeast(10))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 272
+  },
+  {
+   "id": "h-meatless",
+   "difficulty": "hard",
+   "family": "meat",
+   "symbol": "leaf.circle.fill",
+   "title": {
+    "en": "Meat-Free Day",
+    "cs": "Den bez masa"
+   },
+   "detail": {
+    "en": "Log at least 3 entries in a day with no meat, poultry or fish.",
+    "cs": "Zapiš za den aspoň 3 položky bez masa, drůbeže a ryb."
+   },
+   "scope": ".day(.all([\n                .noTag(.meat, minEntries: 3),\n                .noTag(.redMeat, minEntries: 3),\n                .noTag(.poultry, minEntries: 3),\n                .noTag(.fish, minEntries: 3),\n                .noTag(.seafood, minEntries: 3),\n            ]))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": true,
+   "line": 280
+  },
+  {
+   "id": "h-fibre-30",
+   "difficulty": "hard",
+   "family": "macros",
+   "symbol": "chart.bar.fill",
+   "title": {
+    "en": "Fibre Day",
+    "cs": "Den vlákniny"
+   },
+   "detail": {
+    "en": "Eat at least 30 g of fibre in one day.",
+    "cs": "Sněz za jeden den aspoň 30 g vlákniny."
+   },
+   "scope": ".day(.macroAtLeast(.fiber, grams: 30))",
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 295
+  },
+  {
+   "id": "h-sugar-low",
+   "difficulty": "hard",
+   "family": "macros",
+   "symbol": "cube.fill",
+   "title": {
+    "en": "Sugar Low",
+    "cs": "Málo cukru"
+   },
+   "detail": {
+    "en": "Keep sugar at 25 g or less on a day with at least 3 entries.",
+    "cs": "Udrž cukr na 25 g nebo méně v den s aspoň 3 položkami."
+   },
+   "scope": ".day(.macroAtMost(.sugar, grams: 25, minEntries: 3))",
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": true,
+   "line": 303
+  },
+  {
+   "id": "h-five-a-day",
+   "difficulty": "hard",
+   "family": "fruit",
+   "symbol": "hand.raised.fill",
+   "title": {
+    "en": "Five a Day",
+    "cs": "Pět denně"
+   },
+   "detail": {
+    "en": "Log fruit or vegetables 5 times in one day.",
+    "cs": "Zapiš ovoce nebo zeleninu 5× za jeden den."
+   },
+   "scope": ".day(.anyTagCountAtLeast([.fruit, .vegetable], 5))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 312
+  },
+  {
+   "id": "h-rainbow",
+   "difficulty": "hard",
+   "family": "colours",
+   "symbol": "rainbow",
+   "title": {
+    "en": "Full Rainbow",
+    "cs": "Celá duha"
+   },
+   "detail": {
+    "en": "Eat all 6 food colours across this week.",
+    "cs": "Sněz během tohoto týdne jídlo všech 6 barev."
+   },
+   "scope": ".week(.distinctTagsAcrossWeek(prefix: FoodTag.colourPrefix, atLeast: 6))",
+   "requirement": [],
+   "standalone": true,
+   "judgesCompletedDaysOnly": false,
+   "line": 320
+  },
+  {
+   "id": "h-earned-it",
+   "difficulty": "hard",
+   "family": "sport",
+   "symbol": "medal.fill",
+   "title": {
+    "en": "Earned the Meal",
+    "cs": "Zasloužené jídlo"
+   },
+   "detail": {
+    "en": "Do an activity of at least 30 minutes and reach your calorie goal the same day.",
+    "cs": "Dej si aspoň 30minutovou aktivitu a splň ten den kalorický cíl."
+   },
+   "scope": ".day(.all([.hasActivity(minMinutes: 30), .goalMet(.calories)]))",
+   "requirement": [
+    "activities",
+    "macros"
+   ],
+   "standalone": false,
+   "judgesCompletedDaysOnly": true,
+   "line": 328
+  },
+  {
+   "id": "h-clean-sweep",
+   "difficulty": "hard",
+   "family": "goal",
+   "symbol": "checkmark.seal.fill",
+   "title": {
+    "en": "Clean Sweep",
+    "cs": "Čistý stůl"
+   },
+   "detail": {
+    "en": "Reach all four goals (calories, protein, carbs, fat) in one day.",
+    "cs": "Splň za jeden den všechny čtyři cíle (kalorie, bílkoviny, sacharidy, tuky)."
+   },
+   "scope": ".day(.all([.goalMet(.calories), .goalMet(.protein), .goalMet(.carbs), .goalMet(.fat)]))",
+   "requirement": [
+    "macros"
+   ],
+   "standalone": true,
+   "judgesCompletedDaysOnly": true,
+   "line": 337
+  }
+ ],
+ "badges": [
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 350,
+   "id": "bingo.first-line",
+   "title": {
+    "en": "Bingo!",
+    "cs": "Bingo!"
+   },
+   "subtitle": {
+    "en": "Complete your first bingo line.",
+    "cs": "Dokonči svou první bingo řadu."
+   },
+   "symbol": "line.diagonal",
+   "rarity": "common",
+   "category": "challenges",
+   "rule": "totalLines ≥ 1"
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 351,
+   "id": "bingo.four-corners",
+   "title": {
+    "en": "Four Corners",
+    "cs": "Čtyři rohy"
+   },
+   "subtitle": {
+    "en": "Complete all four corner squares of one card.",
+    "cs": "Splň všechna čtyři rohová pole jedné karty."
+   },
+   "symbol": "square.dashed",
+   "rarity": "uncommon",
+   "category": "challenges",
+   "rule": null
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 352,
+   "id": "bingo.x-marks",
+   "title": {
+    "en": "X Marks the Spot",
+    "cs": "Tady je X"
+   },
+   "subtitle": {
+    "en": "Complete both diagonals of one card.",
+    "cs": "Dokonči obě úhlopříčky jedné karty."
+   },
+   "symbol": "xmark",
+   "rarity": "uncommon",
+   "category": "challenges",
+   "rule": null
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 353,
+   "id": "bingo.lines-50",
+   "title": {
+    "en": "Line Dancer",
+    "cs": "Řadový tanečník"
+   },
+   "subtitle": {
+    "en": "Complete 50 bingo lines in total.",
+    "cs": "Dokonči celkem 50 bingo řad."
+   },
+   "symbol": "figure.dance",
+   "rarity": "rare",
+   "category": "challenges",
+   "rule": "totalLines ≥ 50"
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 354,
+   "id": "bingo.blackout-1",
+   "title": {
+    "en": "Blackout",
+    "cs": "Plná karta"
+   },
+   "subtitle": {
+    "en": "Complete a whole bingo card.",
+    "cs": "Splň celou bingo kartu."
+   },
+   "symbol": "square.grid.3x3.fill",
+   "rarity": "rare",
+   "category": "challenges",
+   "rule": "fullCards ≥ 1"
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 355,
+   "id": "bingo.blackout-4",
+   "title": {
+    "en": "Card Shark",
+    "cs": "Karetní žralok"
+   },
+   "subtitle": {
+    "en": "Complete 4 whole bingo cards.",
+    "cs": "Splň 4 celé bingo karty."
+   },
+   "symbol": "suit.spade.fill",
+   "rarity": "epic",
+   "category": "challenges",
+   "rule": "fullCards ≥ 4"
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 356,
+   "id": "bingo.blackout-12",
+   "title": {
+    "en": "Bingo Hall Legend",
+    "cs": "Legenda bingo sálu"
+   },
+   "subtitle": {
+    "en": "Complete 12 whole bingo cards.",
+    "cs": "Splň 12 celých bingo karet."
+   },
+   "symbol": "crown.fill",
+   "rarity": "legendary",
+   "category": "challenges",
+   "rule": "fullCards ≥ 12"
+  }
+ ]
+}

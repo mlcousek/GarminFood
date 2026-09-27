@@ -1,0 +1,5873 @@
+{
+ "source": "mirrored (core families) + parsed (feature catalogs)",
+ "counts": {
+  "core": 122,
+  "bingo": 7,
+  "boss": 7,
+  "journeys": 12,
+  "records": 4,
+  "collections": 21,
+  "seasonal": 15,
+  "secrets": 16,
+  "sportBody": 23,
+  "supplements": 10
+ },
+ "total": 237,
+ "rarities": [
+  {
+   "id": "common",
+   "name": {
+    "en": "Common",
+    "cs": "Běžný"
+   },
+   "colors": {
+    "top": "#b3b8c2",
+    "bottom": "#787d87"
+   }
+  },
+  {
+   "id": "uncommon",
+   "name": {
+    "en": "Uncommon",
+    "cs": "Neobvyklý"
+   },
+   "colors": {
+    "top": "#6bb58a",
+    "bottom": "#307d59"
+   }
+  },
+  {
+   "id": "rare",
+   "name": {
+    "en": "Rare",
+    "cs": "Vzácný"
+   },
+   "colors": {
+    "top": "#669ef0",
+    "bottom": "#2e61bf"
+   }
+  },
+  {
+   "id": "epic",
+   "name": {
+    "en": "Epic",
+    "cs": "Epický"
+   },
+   "colors": {
+    "top": "#a875ed",
+    "bottom": "#703dba"
+   }
+  },
+  {
+   "id": "legendary",
+   "name": {
+    "en": "Legendary",
+    "cs": "Legendární"
+   },
+   "colors": {
+    "top": "#fccc4d",
+    "bottom": "#eb8026"
+   }
+  }
+ ],
+ "categories": {
+  "streak": {
+   "en": "Streaks",
+   "cs": "Série"
+  },
+  "level": {
+   "en": "Levels",
+   "cs": "Úrovně"
+  },
+  "volume": {
+   "en": "Logging Volume",
+   "cs": "Počet zápisů"
+  },
+  "variety": {
+   "en": "Variety",
+   "cs": "Pestrost"
+  },
+  "challenges": {
+   "en": "Challenges",
+   "cs": "Výzvy"
+  },
+  "dailyChallenges": {
+   "en": "Daily Challenges",
+   "cs": "Denní výzvy"
+  },
+  "goalHitting": {
+   "en": "Goal Hitting",
+   "cs": "Plnění cílů"
+  },
+  "extreme": {
+   "en": "Extreme Days",
+   "cs": "Extrémní dny"
+  },
+  "funnyFacts": {
+   "en": "Fun Facts",
+   "cs": "Zajímavosti"
+  },
+  "calendar": {
+   "en": "Calendar",
+   "cs": "Kalendář"
+  },
+  "supplements": {
+   "en": "Supplements",
+   "cs": "Doplňky stravy"
+  },
+  "meta": {
+   "en": "Completionist",
+   "cs": "Sběratel"
+  }
+ },
+ "badges": [
+  {
+   "id": "achv-streak-1",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "common",
+   "title": {
+    "en": "First Flame",
+    "cs": "První plamínek"
+   },
+   "subtitle": {
+    "en": "Reach a 1-day streak.",
+    "cs": "Dosáhni série dlouhé 1 den."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 1
+   },
+   "rule": "Longest streak ever ≥ 1 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-3",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Three in a Row",
+    "cs": "Tři v řadě"
+   },
+   "subtitle": {
+    "en": "Reach a 3-day streak.",
+    "cs": "Dosáhni série dlouhé 3 dny."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 3
+   },
+   "rule": "Longest streak ever ≥ 3 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-7",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "common",
+   "title": {
+    "en": "One Week Strong",
+    "cs": "Silný týden"
+   },
+   "subtitle": {
+    "en": "Reach a 7-day streak.",
+    "cs": "Dosáhni série dlouhé 7 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 7
+   },
+   "rule": "Longest streak ever ≥ 7 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-14",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Two-Week Warrior",
+    "cs": "Dvoutýdenní bojovník"
+   },
+   "subtitle": {
+    "en": "Reach a 14-day streak.",
+    "cs": "Dosáhni série dlouhé 14 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 14
+   },
+   "rule": "Longest streak ever ≥ 14 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-21",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Three Weeks Running",
+    "cs": "Tři týdny v kuse"
+   },
+   "subtitle": {
+    "en": "Reach a 21-day streak.",
+    "cs": "Dosáhni série dlouhé 21 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 21
+   },
+   "rule": "Longest streak ever ≥ 21 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-30",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "One Month Milestone",
+    "cs": "Měsíční milník"
+   },
+   "subtitle": {
+    "en": "Reach a 30-day streak.",
+    "cs": "Dosáhni série dlouhé 30 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 30
+   },
+   "rule": "Longest streak ever ≥ 30 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-45",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Six Weeks In",
+    "cs": "Šest týdnů za sebou"
+   },
+   "subtitle": {
+    "en": "Reach a 45-day streak.",
+    "cs": "Dosáhni série dlouhé 45 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 45
+   },
+   "rule": "Longest streak ever ≥ 45 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-60",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Two-Month Titan",
+    "cs": "Dvouměsíční titán"
+   },
+   "subtitle": {
+    "en": "Reach a 60-day streak.",
+    "cs": "Dosáhni série dlouhé 60 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 60
+   },
+   "rule": "Longest streak ever ≥ 60 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-90",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Quarter-Year Flame",
+    "cs": "Čtvrtletní plamen"
+   },
+   "subtitle": {
+    "en": "Reach a 90-day streak.",
+    "cs": "Dosáhni série dlouhé 90 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 90
+   },
+   "rule": "Longest streak ever ≥ 90 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-120",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Four-Month Fire",
+    "cs": "Čtyřměsíční oheň"
+   },
+   "subtitle": {
+    "en": "Reach a 120-day streak.",
+    "cs": "Dosáhni série dlouhé 120 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 120
+   },
+   "rule": "Longest streak ever ≥ 120 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-180",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Half-Year Hero",
+    "cs": "Hrdina půlroku"
+   },
+   "subtitle": {
+    "en": "Reach a 180-day streak.",
+    "cs": "Dosáhni série dlouhé 180 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 180
+   },
+   "rule": "Longest streak ever ≥ 180 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-270",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Nine Months Strong",
+    "cs": "Devět silných měsíců"
+   },
+   "subtitle": {
+    "en": "Reach a 270-day streak.",
+    "cs": "Dosáhni série dlouhé 270 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 270
+   },
+   "rule": "Longest streak ever ≥ 270 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-365",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "One Full Year",
+    "cs": "Celý rok"
+   },
+   "subtitle": {
+    "en": "Reach a 365-day streak.",
+    "cs": "Dosáhni série dlouhé 365 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 365
+   },
+   "rule": "Longest streak ever ≥ 365 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-500",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "500-Day Legend",
+    "cs": "Legenda 500 dní"
+   },
+   "subtitle": {
+    "en": "Reach a 500-day streak.",
+    "cs": "Dosáhni série dlouhé 500 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 500
+   },
+   "rule": "Longest streak ever ≥ 500 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-730",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Two-Year Inferno",
+    "cs": "Dvouleté inferno"
+   },
+   "subtitle": {
+    "en": "Reach a 730-day streak.",
+    "cs": "Dosáhni série dlouhé 730 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 730
+   },
+   "rule": "Longest streak ever ≥ 730 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-streak-1000",
+   "feature": "core",
+   "category": "streak",
+   "symbol": "flame.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "The Thousand-Day Flame",
+    "cs": "Plamen tisíce dní"
+   },
+   "subtitle": {
+    "en": "Reach a 1000-day streak.",
+    "cs": "Dosáhni série dlouhé 1 000 dní."
+   },
+   "condition": {
+    "kind": "streakAtLeast",
+    "value": 1000
+   },
+   "rule": "Longest streak ever ≥ 1000 days",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-5",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Off the Ground",
+    "cs": "Vzlet"
+   },
+   "subtitle": {
+    "en": "Reach level 5.",
+    "cs": "Dosáhni úrovně 5."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 5
+   },
+   "rule": "Level ≥ 5",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-10",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Double Digits",
+    "cs": "Dvojciferné číslo"
+   },
+   "subtitle": {
+    "en": "Reach level 10.",
+    "cs": "Dosáhni úrovně 10."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 10
+   },
+   "rule": "Level ≥ 10",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-20",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Twenty Strong",
+    "cs": "Silná dvacítka"
+   },
+   "subtitle": {
+    "en": "Reach level 20.",
+    "cs": "Dosáhni úrovně 20."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 20
+   },
+   "rule": "Level ≥ 20",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-30",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Level Thirty",
+    "cs": "Úroveň třicet"
+   },
+   "subtitle": {
+    "en": "Reach level 30.",
+    "cs": "Dosáhni úrovně 30."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 30
+   },
+   "rule": "Level ≥ 30",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-50",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Half-Century",
+    "cs": "Půlstoletí"
+   },
+   "subtitle": {
+    "en": "Reach level 50.",
+    "cs": "Dosáhni úrovně 50."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 50
+   },
+   "rule": "Level ≥ 50",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-75",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Level Seventy-Five",
+    "cs": "Úroveň sedmdesát pět"
+   },
+   "subtitle": {
+    "en": "Reach level 75.",
+    "cs": "Dosáhni úrovně 75."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 75
+   },
+   "rule": "Level ≥ 75",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-100",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Century Club",
+    "cs": "Klub stovky"
+   },
+   "subtitle": {
+    "en": "Reach level 100.",
+    "cs": "Dosáhni úrovně 100."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 100
+   },
+   "rule": "Level ≥ 100",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-125",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Level 125",
+    "cs": "Úroveň 125"
+   },
+   "subtitle": {
+    "en": "Reach level 125.",
+    "cs": "Dosáhni úrovně 125."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 125
+   },
+   "rule": "Level ≥ 125",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-150",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Level 150",
+    "cs": "Úroveň 150"
+   },
+   "subtitle": {
+    "en": "Reach level 150.",
+    "cs": "Dosáhni úrovně 150."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 150
+   },
+   "rule": "Level ≥ 150",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-175",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Level 175",
+    "cs": "Úroveň 175"
+   },
+   "subtitle": {
+    "en": "Reach level 175.",
+    "cs": "Dosáhni úrovně 175."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 175
+   },
+   "rule": "Level ≥ 175",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-level-200",
+   "feature": "core",
+   "category": "level",
+   "symbol": "star.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Max Level",
+    "cs": "Maximální úroveň"
+   },
+   "subtitle": {
+    "en": "Reach level 200.",
+    "cs": "Dosáhni úrovně 200."
+   },
+   "condition": {
+    "kind": "levelAtLeast",
+    "value": 200
+   },
+   "rule": "Level ≥ 200",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-1",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "common",
+   "title": {
+    "en": "First Bite",
+    "cs": "První sousto"
+   },
+   "subtitle": {
+    "en": "Log 1 entries in total.",
+    "cs": "Zapiš celkem 1 záznam."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 1
+   },
+   "rule": "Lifetime log entries ≥ 1",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-10",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "common",
+   "title": {
+    "en": "Ten Logged",
+    "cs": "Deset zápisů"
+   },
+   "subtitle": {
+    "en": "Log 10 entries in total.",
+    "cs": "Zapiš celkem 10 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 10
+   },
+   "rule": "Lifetime log entries ≥ 10",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-50",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Fifty Strong",
+    "cs": "Silná padesátka"
+   },
+   "subtitle": {
+    "en": "Log 50 entries in total.",
+    "cs": "Zapiš celkem 50 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 50
+   },
+   "rule": "Lifetime log entries ≥ 50",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-100",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Century of Logs",
+    "cs": "Stovka zápisů"
+   },
+   "subtitle": {
+    "en": "Log 100 entries in total.",
+    "cs": "Zapiš celkem 100 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 100
+   },
+   "rule": "Lifetime log entries ≥ 100",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-250",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "rare",
+   "title": {
+    "en": "Quarter-K Club",
+    "cs": "Klub 250"
+   },
+   "subtitle": {
+    "en": "Log 250 entries in total.",
+    "cs": "Zapiš celkem 250 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 250
+   },
+   "rule": "Lifetime log entries ≥ 250",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-500",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "rare",
+   "title": {
+    "en": "Five Hundred Logged",
+    "cs": "Pět set zápisů"
+   },
+   "subtitle": {
+    "en": "Log 500 entries in total.",
+    "cs": "Zapiš celkem 500 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 500
+   },
+   "rule": "Lifetime log entries ≥ 500",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-1000",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "epic",
+   "title": {
+    "en": "One Thousand Logged",
+    "cs": "Tisíc zápisů"
+   },
+   "subtitle": {
+    "en": "Log 1000 entries in total.",
+    "cs": "Zapiš celkem 1 000 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 1000
+   },
+   "rule": "Lifetime log entries ≥ 1,000",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-2500",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "epic",
+   "title": {
+    "en": "2,500 Logged",
+    "cs": "2 500 zápisů"
+   },
+   "subtitle": {
+    "en": "Log 2500 entries in total.",
+    "cs": "Zapiš celkem 2 500 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 2500
+   },
+   "rule": "Lifetime log entries ≥ 2,500",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-5000",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "legendary",
+   "title": {
+    "en": "Five Thousand Logged",
+    "cs": "Pět tisíc zápisů"
+   },
+   "subtitle": {
+    "en": "Log 5000 entries in total.",
+    "cs": "Zapiš celkem 5 000 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 5000
+   },
+   "rule": "Lifetime log entries ≥ 5,000",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-10000",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "legendary",
+   "title": {
+    "en": "Ten Thousand Logged",
+    "cs": "Deset tisíc zápisů"
+   },
+   "subtitle": {
+    "en": "Log 10000 entries in total.",
+    "cs": "Zapiš celkem 10 000 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 10000
+   },
+   "rule": "Lifetime log entries ≥ 10,000",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-logs-100000",
+   "feature": "core",
+   "category": "volume",
+   "symbol": "fork.knife",
+   "rarity": "legendary",
+   "title": {
+    "en": "The Immortal Logger",
+    "cs": "Nesmrtelný zapisovatel"
+   },
+   "subtitle": {
+    "en": "Log 100000 entries in total.",
+    "cs": "Zapiš celkem 100 000 záznamů."
+   },
+   "condition": {
+    "kind": "totalLogsAtLeast",
+    "value": 100000
+   },
+   "rule": "Lifetime log entries ≥ 100,000",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-5",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Getting Curious",
+    "cs": "Zvědavec"
+   },
+   "subtitle": {
+    "en": "Log 5 different foods.",
+    "cs": "Zapiš 5 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 5
+   },
+   "rule": "≥ 5 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-10",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Ten Different Foods",
+    "cs": "Deset různých jídel"
+   },
+   "subtitle": {
+    "en": "Log 10 different foods.",
+    "cs": "Zapiš 10 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 10
+   },
+   "rule": "≥ 10 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-25",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Quarter-Century Palate",
+    "cs": "Pestrý jazýček"
+   },
+   "subtitle": {
+    "en": "Log 25 different foods.",
+    "cs": "Zapiš 25 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 25
+   },
+   "rule": "≥ 25 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-50",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Fifty Flavors",
+    "cs": "Padesát chutí"
+   },
+   "subtitle": {
+    "en": "Log 50 different foods.",
+    "cs": "Zapiš 50 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 50
+   },
+   "rule": "≥ 50 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-100",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Century of Foods",
+    "cs": "Stovka jídel"
+   },
+   "subtitle": {
+    "en": "Log 100 different foods.",
+    "cs": "Zapiš 100 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 100
+   },
+   "rule": "≥ 100 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-200",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Foodie",
+    "cs": "Gurmán"
+   },
+   "subtitle": {
+    "en": "Log 200 different foods.",
+    "cs": "Zapiš 200 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 200
+   },
+   "rule": "≥ 200 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-500",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Connoisseur",
+    "cs": "Znalec"
+   },
+   "subtitle": {
+    "en": "Log 500 different foods.",
+    "cs": "Zapiš 500 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 500
+   },
+   "rule": "≥ 500 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-foods-1000",
+   "feature": "core",
+   "category": "variety",
+   "symbol": "leaf.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "The Encyclopedia",
+    "cs": "Encyklopedie"
+   },
+   "subtitle": {
+    "en": "Log 1000 different foods.",
+    "cs": "Zapiš 1 000 různých jídel."
+   },
+   "condition": {
+    "kind": "distinctFoodsAtLeast",
+    "value": 1000
+   },
+   "rule": "≥ 1000 distinct foods in the retained usage history",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-challenges-1",
+   "feature": "core",
+   "category": "challenges",
+   "symbol": "target",
+   "rarity": "common",
+   "title": {
+    "en": "First Challenge",
+    "cs": "První výzva"
+   },
+   "subtitle": {
+    "en": "Complete 1 challenges.",
+    "cs": "Splň 1 výzvu."
+   },
+   "condition": {
+    "kind": "challengesCompletedAtLeast",
+    "value": 1
+   },
+   "rule": "≥ 1 long-running challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-challenges-5",
+   "feature": "core",
+   "category": "challenges",
+   "symbol": "target",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Five Down",
+    "cs": "Pět hotových"
+   },
+   "subtitle": {
+    "en": "Complete 5 challenges.",
+    "cs": "Splň 5 výzev."
+   },
+   "condition": {
+    "kind": "challengesCompletedAtLeast",
+    "value": 5
+   },
+   "rule": "≥ 5 long-running challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-challenges-10",
+   "feature": "core",
+   "category": "challenges",
+   "symbol": "target",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Ten Completed",
+    "cs": "Deset splněných"
+   },
+   "subtitle": {
+    "en": "Complete 10 challenges.",
+    "cs": "Splň 10 výzev."
+   },
+   "condition": {
+    "kind": "challengesCompletedAtLeast",
+    "value": 10
+   },
+   "rule": "≥ 10 long-running challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-challenges-25",
+   "feature": "core",
+   "category": "challenges",
+   "symbol": "target",
+   "rarity": "rare",
+   "title": {
+    "en": "Quarter-Century of Challenges",
+    "cs": "Čtvrtstoletí výzev"
+   },
+   "subtitle": {
+    "en": "Complete 25 challenges.",
+    "cs": "Splň 25 výzev."
+   },
+   "condition": {
+    "kind": "challengesCompletedAtLeast",
+    "value": 25
+   },
+   "rule": "≥ 25 long-running challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-challenges-50",
+   "feature": "core",
+   "category": "challenges",
+   "symbol": "target",
+   "rarity": "epic",
+   "title": {
+    "en": "Fifty Challenges Beaten",
+    "cs": "Padesát pokořených výzev"
+   },
+   "subtitle": {
+    "en": "Complete 50 challenges.",
+    "cs": "Splň 50 výzev."
+   },
+   "condition": {
+    "kind": "challengesCompletedAtLeast",
+    "value": 50
+   },
+   "rule": "≥ 50 long-running challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-challenges-100",
+   "feature": "core",
+   "category": "challenges",
+   "symbol": "target",
+   "rarity": "legendary",
+   "title": {
+    "en": "Century of Challenges",
+    "cs": "Století výzev"
+   },
+   "subtitle": {
+    "en": "Complete 100 challenges.",
+    "cs": "Splň 100 výzev."
+   },
+   "condition": {
+    "kind": "challengesCompletedAtLeast",
+    "value": 100
+   },
+   "rule": "≥ 100 long-running challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-challenges-all",
+   "feature": "core",
+   "category": "challenges",
+   "symbol": "target",
+   "rarity": "legendary",
+   "title": {
+    "en": "The Completionist's Challenge",
+    "cs": "Výzva pro sběratele"
+   },
+   "subtitle": {
+    "en": "Complete every challenge in the catalog.",
+    "cs": "Splň každou výzvu z katalogu."
+   },
+   "condition": {
+    "kind": "allChallengesCompleted"
+   },
+   "rule": "Every challenge in the rotation completed at least once (weight-0 ladder tiers and supplement templates excluded; activity templates excluded in standalone mode)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-daily-1",
+   "feature": "core",
+   "category": "dailyChallenges",
+   "symbol": "checkmark.circle.fill",
+   "rarity": "common",
+   "title": {
+    "en": "First Daily Win",
+    "cs": "První denní výhra"
+   },
+   "subtitle": {
+    "en": "Complete 1 daily challenges in total.",
+    "cs": "Splň celkem 1 denní výzvu."
+   },
+   "condition": {
+    "kind": "dailyChallengesCompletedAtLeast",
+    "value": 1
+   },
+   "rule": "≥ 1 daily challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-daily-10",
+   "feature": "core",
+   "category": "dailyChallenges",
+   "symbol": "checkmark.circle.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Ten Daily Wins",
+    "cs": "Deset denních výher"
+   },
+   "subtitle": {
+    "en": "Complete 10 daily challenges in total.",
+    "cs": "Splň celkem 10 denních výzev."
+   },
+   "condition": {
+    "kind": "dailyChallengesCompletedAtLeast",
+    "value": 10
+   },
+   "rule": "≥ 10 daily challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-daily-50",
+   "feature": "core",
+   "category": "dailyChallenges",
+   "symbol": "checkmark.circle.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Fifty Daily Wins",
+    "cs": "Padesát denních výher"
+   },
+   "subtitle": {
+    "en": "Complete 50 daily challenges in total.",
+    "cs": "Splň celkem 50 denních výzev."
+   },
+   "condition": {
+    "kind": "dailyChallengesCompletedAtLeast",
+    "value": 50
+   },
+   "rule": "≥ 50 daily challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-daily-100",
+   "feature": "core",
+   "category": "dailyChallenges",
+   "symbol": "checkmark.circle.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Century of Daily Wins",
+    "cs": "Stovka denních výher"
+   },
+   "subtitle": {
+    "en": "Complete 100 daily challenges in total.",
+    "cs": "Splň celkem 100 denních výzev."
+   },
+   "condition": {
+    "kind": "dailyChallengesCompletedAtLeast",
+    "value": 100
+   },
+   "rule": "≥ 100 daily challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-daily-250",
+   "feature": "core",
+   "category": "dailyChallenges",
+   "symbol": "checkmark.circle.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "250 Daily Wins",
+    "cs": "250 denních výher"
+   },
+   "subtitle": {
+    "en": "Complete 250 daily challenges in total.",
+    "cs": "Splň celkem 250 denních výzev."
+   },
+   "condition": {
+    "kind": "dailyChallengesCompletedAtLeast",
+    "value": 250
+   },
+   "rule": "≥ 250 daily challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-daily-500",
+   "feature": "core",
+   "category": "dailyChallenges",
+   "symbol": "checkmark.circle.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "500 Daily Wins",
+    "cs": "500 denních výher"
+   },
+   "subtitle": {
+    "en": "Complete 500 daily challenges in total.",
+    "cs": "Splň celkem 500 denních výzev."
+   },
+   "condition": {
+    "kind": "dailyChallengesCompletedAtLeast",
+    "value": 500
+   },
+   "rule": "≥ 500 daily challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-daily-1000",
+   "feature": "core",
+   "category": "dailyChallenges",
+   "symbol": "checkmark.circle.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "1,000 Daily Wins",
+    "cs": "1 000 denních výher"
+   },
+   "subtitle": {
+    "en": "Complete 1000 daily challenges in total.",
+    "cs": "Splň celkem 1 000 denních výzev."
+   },
+   "condition": {
+    "kind": "dailyChallengesCompletedAtLeast",
+    "value": 1000
+   },
+   "rule": "≥ 1000 daily challenges completed",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-calories-10",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Calorie Getting Started",
+    "cs": "Kalorie: začátky"
+   },
+   "subtitle": {
+    "en": "Hit your calories goal on 10 days, total.",
+    "cs": "Splň kalorický cíl celkem v 10 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "calories",
+    "value": 10
+   },
+   "rule": "calories goal met on ≥ 10 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-calories-50",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Calorie Building Habits",
+    "cs": "Kalorie: budování návyku"
+   },
+   "subtitle": {
+    "en": "Hit your calories goal on 50 days, total.",
+    "cs": "Splň kalorický cíl celkem v 50 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "calories",
+    "value": 50
+   },
+   "rule": "calories goal met on ≥ 50 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-calories-100",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Calorie Century Club",
+    "cs": "Kalorie: klub stovky"
+   },
+   "subtitle": {
+    "en": "Hit your calories goal on 100 days, total.",
+    "cs": "Splň kalorický cíl celkem ve 100 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "calories",
+    "value": 100
+   },
+   "rule": "calories goal met on ≥ 100 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-calories-365",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Calorie One Full Year",
+    "cs": "Kalorie: celý rok"
+   },
+   "subtitle": {
+    "en": "Hit your calories goal on 365 days, total.",
+    "cs": "Splň kalorický cíl celkem ve 365 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "calories",
+    "value": 365
+   },
+   "rule": "calories goal met on ≥ 365 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-calories-730",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Calorie Two Full Years",
+    "cs": "Kalorie: celé dva roky"
+   },
+   "subtitle": {
+    "en": "Hit your calories goal on 730 days, total.",
+    "cs": "Splň kalorický cíl celkem v 730 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "calories",
+    "value": 730
+   },
+   "rule": "calories goal met on ≥ 730 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-protein-10",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Protein Getting Started",
+    "cs": "Bílkoviny: začátky"
+   },
+   "subtitle": {
+    "en": "Hit your protein goal on 10 days, total.",
+    "cs": "Splň cíl bílkovin celkem v 10 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "protein",
+    "value": 10
+   },
+   "rule": "protein goal met on ≥ 10 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-protein-50",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Protein Building Habits",
+    "cs": "Bílkoviny: budování návyku"
+   },
+   "subtitle": {
+    "en": "Hit your protein goal on 50 days, total.",
+    "cs": "Splň cíl bílkovin celkem v 50 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "protein",
+    "value": 50
+   },
+   "rule": "protein goal met on ≥ 50 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-protein-100",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Protein Century Club",
+    "cs": "Bílkoviny: klub stovky"
+   },
+   "subtitle": {
+    "en": "Hit your protein goal on 100 days, total.",
+    "cs": "Splň cíl bílkovin celkem ve 100 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "protein",
+    "value": 100
+   },
+   "rule": "protein goal met on ≥ 100 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-protein-365",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Protein One Full Year",
+    "cs": "Bílkoviny: celý rok"
+   },
+   "subtitle": {
+    "en": "Hit your protein goal on 365 days, total.",
+    "cs": "Splň cíl bílkovin celkem ve 365 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "protein",
+    "value": 365
+   },
+   "rule": "protein goal met on ≥ 365 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-protein-730",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Protein Two Full Years",
+    "cs": "Bílkoviny: celé dva roky"
+   },
+   "subtitle": {
+    "en": "Hit your protein goal on 730 days, total.",
+    "cs": "Splň cíl bílkovin celkem v 730 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "protein",
+    "value": 730
+   },
+   "rule": "protein goal met on ≥ 730 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-carbs-10",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Carb Getting Started",
+    "cs": "Sacharidy: začátky"
+   },
+   "subtitle": {
+    "en": "Hit your carbs goal on 10 days, total.",
+    "cs": "Splň cíl sacharidů celkem v 10 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "carbs",
+    "value": 10
+   },
+   "rule": "carbs goal met on ≥ 10 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-carbs-50",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Carb Building Habits",
+    "cs": "Sacharidy: budování návyku"
+   },
+   "subtitle": {
+    "en": "Hit your carbs goal on 50 days, total.",
+    "cs": "Splň cíl sacharidů celkem v 50 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "carbs",
+    "value": 50
+   },
+   "rule": "carbs goal met on ≥ 50 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-carbs-100",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Carb Century Club",
+    "cs": "Sacharidy: klub stovky"
+   },
+   "subtitle": {
+    "en": "Hit your carbs goal on 100 days, total.",
+    "cs": "Splň cíl sacharidů celkem ve 100 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "carbs",
+    "value": 100
+   },
+   "rule": "carbs goal met on ≥ 100 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-carbs-365",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Carb One Full Year",
+    "cs": "Sacharidy: celý rok"
+   },
+   "subtitle": {
+    "en": "Hit your carbs goal on 365 days, total.",
+    "cs": "Splň cíl sacharidů celkem ve 365 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "carbs",
+    "value": 365
+   },
+   "rule": "carbs goal met on ≥ 365 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-carbs-730",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Carb Two Full Years",
+    "cs": "Sacharidy: celé dva roky"
+   },
+   "subtitle": {
+    "en": "Hit your carbs goal on 730 days, total.",
+    "cs": "Splň cíl sacharidů celkem v 730 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "carbs",
+    "value": 730
+   },
+   "rule": "carbs goal met on ≥ 730 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-fat-10",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Fat Getting Started",
+    "cs": "Tuky: začátky"
+   },
+   "subtitle": {
+    "en": "Hit your fat goal on 10 days, total.",
+    "cs": "Splň cíl tuků celkem v 10 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "fat",
+    "value": 10
+   },
+   "rule": "fat goal met on ≥ 10 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-fat-50",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Fat Building Habits",
+    "cs": "Tuky: budování návyku"
+   },
+   "subtitle": {
+    "en": "Hit your fat goal on 50 days, total.",
+    "cs": "Splň cíl tuků celkem v 50 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "fat",
+    "value": 50
+   },
+   "rule": "fat goal met on ≥ 50 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-fat-100",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Fat Century Club",
+    "cs": "Tuky: klub stovky"
+   },
+   "subtitle": {
+    "en": "Hit your fat goal on 100 days, total.",
+    "cs": "Splň cíl tuků celkem ve 100 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "fat",
+    "value": 100
+   },
+   "rule": "fat goal met on ≥ 100 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-fat-365",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Fat One Full Year",
+    "cs": "Tuky: celý rok"
+   },
+   "subtitle": {
+    "en": "Hit your fat goal on 365 days, total.",
+    "cs": "Splň cíl tuků celkem ve 365 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "fat",
+    "value": 365
+   },
+   "rule": "fat goal met on ≥ 365 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-goal-fat-730",
+   "feature": "core",
+   "category": "goalHitting",
+   "symbol": "checkmark.seal.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Fat Two Full Years",
+    "cs": "Tuky: celé dva roky"
+   },
+   "subtitle": {
+    "en": "Hit your fat goal on 730 days, total.",
+    "cs": "Splň cíl tuků celkem v 730 dnech."
+   },
+   "condition": {
+    "kind": "goalHitDaysAtLeast",
+    "macro": "fat",
+    "value": 730
+   },
+   "rule": "fat goal met on ≥ 730 days (total, not consecutive)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-extreme-3000",
+   "feature": "core",
+   "category": "extreme",
+   "symbol": "bolt.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Big Appetite",
+    "cs": "Velký hlad"
+   },
+   "subtitle": {
+    "en": "Log 3000+ kcal in a single day. Every feast deserves a badge.",
+    "cs": "Zapiš za jeden den 3 000+ kcal. Každá hostina si zaslouží odznak."
+   },
+   "condition": {
+    "kind": "singleDayCaloriesAtLeast",
+    "value": 3000
+   },
+   "rule": "One nutrition day with ≥ 3,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-extreme-4000",
+   "feature": "core",
+   "category": "extreme",
+   "symbol": "bolt.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Feast Mode",
+    "cs": "Režim hostiny"
+   },
+   "subtitle": {
+    "en": "Log 4000+ kcal in a single day. Every feast deserves a badge.",
+    "cs": "Zapiš za jeden den 4 000+ kcal. Každá hostina si zaslouží odznak."
+   },
+   "condition": {
+    "kind": "singleDayCaloriesAtLeast",
+    "value": 4000
+   },
+   "rule": "One nutrition day with ≥ 4,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-extreme-5000",
+   "feature": "core",
+   "category": "extreme",
+   "symbol": "bolt.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Thanksgiving Tier",
+    "cs": "Úroveň Díkůvzdání"
+   },
+   "subtitle": {
+    "en": "Log 5000+ kcal in a single day. Every feast deserves a badge.",
+    "cs": "Zapiš za jeden den 5 000+ kcal. Každá hostina si zaslouží odznak."
+   },
+   "condition": {
+    "kind": "singleDayCaloriesAtLeast",
+    "value": 5000
+   },
+   "rule": "One nutrition day with ≥ 5,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-extreme-6000",
+   "feature": "core",
+   "category": "extreme",
+   "symbol": "bolt.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Holiday Feast",
+    "cs": "Sváteční hostina"
+   },
+   "subtitle": {
+    "en": "Log 6000+ kcal in a single day. Every feast deserves a badge.",
+    "cs": "Zapiš za jeden den 6 000+ kcal. Každá hostina si zaslouží odznak."
+   },
+   "condition": {
+    "kind": "singleDayCaloriesAtLeast",
+    "value": 6000
+   },
+   "rule": "One nutrition day with ≥ 6,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-extreme-7000",
+   "feature": "core",
+   "category": "extreme",
+   "symbol": "bolt.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Legendary Feast",
+    "cs": "Legendární hody"
+   },
+   "subtitle": {
+    "en": "Log 7000+ kcal in a single day. Every feast deserves a badge.",
+    "cs": "Zapiš za jeden den 7 000+ kcal. Každá hostina si zaslouží odznak."
+   },
+   "condition": {
+    "kind": "singleDayCaloriesAtLeast",
+    "value": 7000
+   },
+   "rule": "One nutrition day with ≥ 7,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-extreme-8000",
+   "feature": "core",
+   "category": "extreme",
+   "symbol": "bolt.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Feast of Legends",
+    "cs": "Hostina legend"
+   },
+   "subtitle": {
+    "en": "Log 8000+ kcal in a single day. Every feast deserves a badge.",
+    "cs": "Zapiš za jeden den 8 000+ kcal. Každá hostina si zaslouží odznak."
+   },
+   "condition": {
+    "kind": "singleDayCaloriesAtLeast",
+    "value": 8000
+   },
+   "rule": "One nutrition day with ≥ 8,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-extreme-10000",
+   "feature": "core",
+   "category": "extreme",
+   "symbol": "bolt.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "The Ultimate Feast",
+    "cs": "Hostina všech hostin"
+   },
+   "subtitle": {
+    "en": "Log 10000+ kcal in a single day. Every feast deserves a badge.",
+    "cs": "Zapiš za jeden den 10 000+ kcal. Každá hostina si zaslouží odznak."
+   },
+   "condition": {
+    "kind": "singleDayCaloriesAtLeast",
+    "value": 10000
+   },
+   "rule": "One nutrition day with ≥ 10,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-banana-50",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "common",
+   "title": {
+    "en": "50 Bananas Worth",
+    "cs": "Jako 50 banánů"
+   },
+   "subtitle": {
+    "en": "You've logged about 50 bananas (very roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 50 banánům (hodně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 5250
+   },
+   "rule": "Lifetime calories ≥ 5,250 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "50 × 105 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-banana-200",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "common",
+   "title": {
+    "en": "200 Bananas Worth",
+    "cs": "Jako 200 banánů"
+   },
+   "subtitle": {
+    "en": "You've logged about 200 bananas (very roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 200 banánům (hodně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 21000
+   },
+   "rule": "Lifetime calories ≥ 21,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "200 × 105 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-banana-1000",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "1,000 Bananas Worth",
+    "cs": "Jako 1 000 banánů"
+   },
+   "subtitle": {
+    "en": "You've logged about 1000 bananas (very roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 1 000 banánům (hodně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 105000
+   },
+   "rule": "Lifetime calories ≥ 105,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "1000 × 105 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-banana-5000",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "5,000 Bananas Worth",
+    "cs": "Jako 5 000 banánů"
+   },
+   "subtitle": {
+    "en": "You've logged about 5000 bananas (very roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 5 000 banánům (hodně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 525000
+   },
+   "rule": "Lifetime calories ≥ 525,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "5000 × 105 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-bigmac-10",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "common",
+   "title": {
+    "en": "10 Burgers Worth",
+    "cs": "Jako 10 burgerů"
+   },
+   "subtitle": {
+    "en": "You've logged about 10 fast-food burgers (give or take) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 10 burgerům z fast foodu (plus minus)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 5500
+   },
+   "rule": "Lifetime calories ≥ 5,500 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "10 × 550 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-bigmac-50",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "common",
+   "title": {
+    "en": "50 Burgers Worth",
+    "cs": "Jako 50 burgerů"
+   },
+   "subtitle": {
+    "en": "You've logged about 50 fast-food burgers (give or take) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 50 burgerům z fast foodu (plus minus)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 27500
+   },
+   "rule": "Lifetime calories ≥ 27,500 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "50 × 550 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-bigmac-200",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "200 Burgers Worth",
+    "cs": "Jako 200 burgerů"
+   },
+   "subtitle": {
+    "en": "You've logged about 200 fast-food burgers (give or take) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 200 burgerům z fast foodu (plus minus)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 110000
+   },
+   "rule": "Lifetime calories ≥ 110,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "200 × 550 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-bigmac-1000",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "1,000 Burgers Worth",
+    "cs": "Jako 1 000 burgerů"
+   },
+   "subtitle": {
+    "en": "You've logged about 1000 fast-food burgers (give or take) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 1 000 burgerům z fast foodu (plus minus)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 550000
+   },
+   "rule": "Lifetime calories ≥ 550,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "1000 × 550 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-pizza-3",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "common",
+   "title": {
+    "en": "3 Pizzas Worth",
+    "cs": "Jako 3 pizzy"
+   },
+   "subtitle": {
+    "en": "You've logged about 3 whole pizzas (roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 3 celým pizzám (přibližně)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 6000
+   },
+   "rule": "Lifetime calories ≥ 6,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "3 × 2,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-pizza-10",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "common",
+   "title": {
+    "en": "10 Pizzas Worth",
+    "cs": "Jako 10 pizz"
+   },
+   "subtitle": {
+    "en": "You've logged about 10 whole pizzas (roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 10 celým pizzám (přibližně)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 20000
+   },
+   "rule": "Lifetime calories ≥ 20,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "10 × 2,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-pizza-50",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "50 Pizzas Worth",
+    "cs": "Jako 50 pizz"
+   },
+   "subtitle": {
+    "en": "You've logged about 50 whole pizzas (roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 50 celým pizzám (přibližně)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 100000
+   },
+   "rule": "Lifetime calories ≥ 100,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "50 × 2,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-pizza-200",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "200 Pizzas Worth",
+    "cs": "Jako 200 pizz"
+   },
+   "subtitle": {
+    "en": "You've logged about 200 whole pizzas (roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 200 celým pizzám (přibližně)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 400000
+   },
+   "rule": "Lifetime calories ≥ 400,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "200 × 2,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-marathon-5",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "common",
+   "title": {
+    "en": "5 Marathons Worth",
+    "cs": "Jako 5 maratonů"
+   },
+   "subtitle": {
+    "en": "You've logged about 5 marathons' worth of energy burned (very roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba energii spálené za 5 maratonů (hodně zhruba)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 13000
+   },
+   "rule": "Lifetime calories ≥ 13,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "5 × 2,600 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-marathon-20",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "20 Marathons Worth",
+    "cs": "Jako 20 maratonů"
+   },
+   "subtitle": {
+    "en": "You've logged about 20 marathons' worth of energy burned (very roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba energii spálené za 20 maratonů (hodně zhruba)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 52000
+   },
+   "rule": "Lifetime calories ≥ 52,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "20 × 2,600 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-marathon-100",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "100 Marathons Worth",
+    "cs": "Jako 100 maratonů"
+   },
+   "subtitle": {
+    "en": "You've logged about 100 marathons' worth of energy burned (very roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba energii spálené za 100 maratonů (hodně zhruba)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 260000
+   },
+   "rule": "Lifetime calories ≥ 260,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "100 × 2,600 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-marathon-500",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "500 Marathons Worth",
+    "cs": "Jako 500 maratonů"
+   },
+   "subtitle": {
+    "en": "You've logged about 500 marathons' worth of energy burned (very roughly) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba energii spálené za 500 maratonů (hodně zhruba)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 1300000
+   },
+   "rule": "Lifetime calories ≥ 1,300,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "500 × 2,600 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-elephant-1",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Fed an Elephant for a Day",
+    "cs": "Slon nasycen na den"
+   },
+   "subtitle": {
+    "en": "You've logged about one elephant's daily food intake (roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba dennímu příjmu jednoho slona (zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 150000
+   },
+   "rule": "Lifetime calories ≥ 150,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "1 × 150,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-elephant-5",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Fed an Elephant for Five Days",
+    "cs": "Slon nasycen na pět dní"
+   },
+   "subtitle": {
+    "en": "You've logged about 5 days of an elephant's food intake (roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 5 dnům sloního jídelníčku (zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 750000
+   },
+   "rule": "Lifetime calories ≥ 750,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "5 × 150,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-elephant-20",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Fed an Elephant for Three Weeks",
+    "cs": "Slon nasycen na tři týdny"
+   },
+   "subtitle": {
+    "en": "You've logged about 20 days of an elephant's food intake (roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 20 dnům sloního jídelníčku (zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 3000000
+   },
+   "rule": "Lifetime calories ≥ 3,000,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "20 × 150,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-elephant-50",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Fed an Elephant for 50 Days",
+    "cs": "Slon nasycen na 50 dní"
+   },
+   "subtitle": {
+    "en": "You've logged about 50 days of an elephant's food intake (roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 50 dnům sloního jídelníčku (zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 7500000
+   },
+   "rule": "Lifetime calories ≥ 7,500,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "50 × 150,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-whale-1",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Out-Ate a Blue Whale (For a Day)",
+    "cs": "Víc než plejtvák (na den)"
+   },
+   "subtitle": {
+    "en": "You've logged about a blue whale's daily food intake (extremely roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba dennímu příjmu plejtváka obrovského (extrémně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 1500000
+   },
+   "rule": "Lifetime calories ≥ 1,500,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "1 × 1,500,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-whale-3",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Out-Ate a Blue Whale for 3 Days",
+    "cs": "Víc než plejtvák na 3 dny"
+   },
+   "subtitle": {
+    "en": "You've logged about 3 days of a blue whale's food intake (extremely roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 3 dnům jídelníčku plejtváka obrovského (extrémně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 4500000
+   },
+   "rule": "Lifetime calories ≥ 4,500,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "3 × 1,500,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-whale-10",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Out-Ate a Blue Whale for 10 Days",
+    "cs": "Víc než plejtvák na 10 dní"
+   },
+   "subtitle": {
+    "en": "You've logged about 10 days of a blue whale's food intake (extremely roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 10 dnům jídelníčku plejtváka obrovského (extrémně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 15000000
+   },
+   "rule": "Lifetime calories ≥ 15,000,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "10 × 1,500,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-funny-whale-30",
+   "feature": "core",
+   "category": "funnyFacts",
+   "symbol": "party.popper.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Out-Ate a Blue Whale for a Month",
+    "cs": "Víc než plejtvák na měsíc"
+   },
+   "subtitle": {
+    "en": "You've logged about 30 days of a blue whale's food intake (extremely roughly!) in total calories.",
+    "cs": "Tvoje zapsané kalorie dohromady odpovídají zhruba 30 dnům jídelníčku plejtváka obrovského (extrémně zhruba!)."
+   },
+   "condition": {
+    "kind": "totalCaloriesAtLeast",
+    "value": 45000000
+   },
+   "rule": "Lifetime calories ≥ 45,000,000 kcal",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "note": "30 × 1,500,000 kcal",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-perfect-month",
+   "feature": "core",
+   "category": "calendar",
+   "symbol": "calendar",
+   "rarity": "rare",
+   "title": {
+    "en": "Perfect Month",
+    "cs": "Dokonalý měsíc"
+   },
+   "subtitle": {
+    "en": "Log every single day of a full calendar month.",
+    "cs": "Zapiš něco každý den celého kalendářního měsíce."
+   },
+   "condition": {
+    "kind": "perfectCalendarMonth"
+   },
+   "rule": "Every day of one full calendar month logged",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-leap-day",
+   "feature": "core",
+   "category": "calendar",
+   "symbol": "calendar",
+   "rarity": "rare",
+   "title": {
+    "en": "Leap Day Logger",
+    "cs": "Přestupný zapisovatel"
+   },
+   "subtitle": {
+    "en": "Log something on February 29th -- only possible once every four years.",
+    "cs": "Zapiš něco 29. února – to jde jen jednou za čtyři roky."
+   },
+   "condition": {
+    "kind": "loggedOnLeapDay"
+   },
+   "rule": "Something logged on 29 February",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-new-year",
+   "feature": "core",
+   "category": "calendar",
+   "symbol": "calendar",
+   "rarity": "rare",
+   "title": {
+    "en": "New Year, New Log",
+    "cs": "Nový rok, nový zápis"
+   },
+   "subtitle": {
+    "en": "Log something on New Year's Day.",
+    "cs": "Zapiš něco na Nový rok."
+   },
+   "condition": {
+    "kind": "loggedOnNewYearsDay"
+   },
+   "rule": "Something logged on 1 January",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-midnight",
+   "feature": "core",
+   "category": "calendar",
+   "symbol": "moon.stars.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Midnight Snack Club",
+    "cs": "Klub půlnočních svačin"
+   },
+   "subtitle": {
+    "en": "Log something at exactly midnight.",
+    "cs": "Zapiš něco přesně o půlnoci."
+   },
+   "condition": {
+    "kind": "loggedAtMidnight"
+   },
+   "rule": "Something logged at exactly midnight",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-anniversary-1",
+   "feature": "core",
+   "category": "calendar",
+   "symbol": "gift.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "One Year In",
+    "cs": "První rok"
+   },
+   "subtitle": {
+    "en": "You've been using this app for a full year.",
+    "cs": "Tuhle aplikaci používáš už celý rok."
+   },
+   "condition": {
+    "kind": "anniversaryYears",
+    "value": 1
+   },
+   "rule": "1 year(s) since the first log",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-anniversary-2",
+   "feature": "core",
+   "category": "calendar",
+   "symbol": "gift.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Two Years Strong",
+    "cs": "Dva silné roky"
+   },
+   "subtitle": {
+    "en": "Two full years of logging.",
+    "cs": "Dva celé roky zapisování."
+   },
+   "condition": {
+    "kind": "anniversaryYears",
+    "value": 2
+   },
+   "rule": "2 year(s) since the first log",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-anniversary-3",
+   "feature": "core",
+   "category": "calendar",
+   "symbol": "gift.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Three-Year Veteran",
+    "cs": "Tříletý veterán"
+   },
+   "subtitle": {
+    "en": "Three full years -- exactly what you set out to do.",
+    "cs": "Tři celé roky – přesně podle plánu."
+   },
+   "condition": {
+    "kind": "anniversaryYears",
+    "value": 3
+   },
+   "rule": "3 year(s) since the first log",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-meta-25",
+   "feature": "core",
+   "category": "meta",
+   "symbol": "crown.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Quarter Collector",
+    "cs": "Sběratel čtvrtiny"
+   },
+   "subtitle": {
+    "en": "Unlock 25% of all other achievements.",
+    "cs": "Odemkni 25 % všech ostatních odznaků."
+   },
+   "condition": {
+    "kind": "unlockedFractionOfOthers",
+    "fraction": 0.25
+   },
+   "rule": "≥ 25% of all other core (non-meta, non-feature) achievements unlocked",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "meta": true,
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-meta-50",
+   "feature": "core",
+   "category": "meta",
+   "symbol": "crown.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Halfway There",
+    "cs": "V půli cesty"
+   },
+   "subtitle": {
+    "en": "Unlock 50% of all other achievements.",
+    "cs": "Odemkni 50 % všech ostatních odznaků."
+   },
+   "condition": {
+    "kind": "unlockedFractionOfOthers",
+    "fraction": 0.5
+   },
+   "rule": "≥ 50% of all other core (non-meta, non-feature) achievements unlocked",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "meta": true,
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-meta-75",
+   "feature": "core",
+   "category": "meta",
+   "symbol": "crown.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Almost Everything",
+    "cs": "Skoro všechno"
+   },
+   "subtitle": {
+    "en": "Unlock 75% of all other achievements.",
+    "cs": "Odemkni 75 % všech ostatních odznaků."
+   },
+   "condition": {
+    "kind": "unlockedFractionOfOthers",
+    "fraction": 0.75
+   },
+   "rule": "≥ 75% of all other core (non-meta, non-feature) achievements unlocked",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "meta": true,
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "achv-meta-100",
+   "feature": "core",
+   "category": "meta",
+   "symbol": "crown.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Completionist",
+    "cs": "Kompletista"
+   },
+   "subtitle": {
+    "en": "Unlock every other achievement in the catalog.",
+    "cs": "Odemkni všechny ostatní odznaky v katalogu."
+   },
+   "condition": {
+    "kind": "unlockedFractionOfOthers",
+    "fraction": 1
+   },
+   "rule": "≥ 100% of all other core (non-meta, non-feature) achievements unlocked",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
+   "meta": true,
+   "featureLabel": "Core",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 350,
+   "id": "bingo.first-line",
+   "title": {
+    "en": "Bingo!",
+    "cs": "Bingo!"
+   },
+   "subtitle": {
+    "en": "Complete your first bingo line.",
+    "cs": "Dokonči svou první bingo řadu."
+   },
+   "symbol": "line.diagonal",
+   "rarity": "common",
+   "category": "challenges",
+   "rule": "totalLines ≥ 1",
+   "featureLabel": "Weekly bingo",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 351,
+   "id": "bingo.four-corners",
+   "title": {
+    "en": "Four Corners",
+    "cs": "Čtyři rohy"
+   },
+   "subtitle": {
+    "en": "Complete all four corner squares of one card.",
+    "cs": "Splň všechna čtyři rohová pole jedné karty."
+   },
+   "symbol": "square.dashed",
+   "rarity": "uncommon",
+   "category": "challenges",
+   "rule": null,
+   "featureLabel": "Weekly bingo",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 352,
+   "id": "bingo.x-marks",
+   "title": {
+    "en": "X Marks the Spot",
+    "cs": "Tady je X"
+   },
+   "subtitle": {
+    "en": "Complete both diagonals of one card.",
+    "cs": "Dokonči obě úhlopříčky jedné karty."
+   },
+   "symbol": "xmark",
+   "rarity": "uncommon",
+   "category": "challenges",
+   "rule": null,
+   "featureLabel": "Weekly bingo",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 353,
+   "id": "bingo.lines-50",
+   "title": {
+    "en": "Line Dancer",
+    "cs": "Řadový tanečník"
+   },
+   "subtitle": {
+    "en": "Complete 50 bingo lines in total.",
+    "cs": "Dokonči celkem 50 bingo řad."
+   },
+   "symbol": "figure.dance",
+   "rarity": "rare",
+   "category": "challenges",
+   "rule": "totalLines ≥ 50",
+   "featureLabel": "Weekly bingo",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 354,
+   "id": "bingo.blackout-1",
+   "title": {
+    "en": "Blackout",
+    "cs": "Plná karta"
+   },
+   "subtitle": {
+    "en": "Complete a whole bingo card.",
+    "cs": "Splň celou bingo kartu."
+   },
+   "symbol": "square.grid.3x3.fill",
+   "rarity": "rare",
+   "category": "challenges",
+   "rule": "fullCards ≥ 1",
+   "featureLabel": "Weekly bingo",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 355,
+   "id": "bingo.blackout-4",
+   "title": {
+    "en": "Card Shark",
+    "cs": "Karetní žralok"
+   },
+   "subtitle": {
+    "en": "Complete 4 whole bingo cards.",
+    "cs": "Splň 4 celé bingo karty."
+   },
+   "symbol": "suit.spade.fill",
+   "rarity": "epic",
+   "category": "challenges",
+   "rule": "fullCards ≥ 4",
+   "featureLabel": "Weekly bingo",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "bingo",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
+   "line": 356,
+   "id": "bingo.blackout-12",
+   "title": {
+    "en": "Bingo Hall Legend",
+    "cs": "Legenda bingo sálu"
+   },
+   "subtitle": {
+    "en": "Complete 12 whole bingo cards.",
+    "cs": "Splň 12 celých bingo karet."
+   },
+   "symbol": "crown.fill",
+   "rarity": "legendary",
+   "category": "challenges",
+   "rule": "fullCards ≥ 12",
+   "featureLabel": "Weekly bingo",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 216,
+   "id": "boss.first",
+   "title": {
+    "en": "Boss Slayer",
+    "cs": "Přemožitel bossů"
+   },
+   "subtitle": {
+    "en": "Defeat your first weekly boss.",
+    "cs": "Poraz svého prvního týdenního bosse."
+   },
+   "symbol": "shield.lefthalf.filled",
+   "category": "challenges",
+   "rarity": "common",
+   "featureLabel": "Weekly boss",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 217,
+   "id": "boss.10",
+   "title": {
+    "en": "Monster Hunter",
+    "cs": "Lovec příšer"
+   },
+   "subtitle": {
+    "en": "Defeat 10 weekly bosses.",
+    "cs": "Poraz 10 týdenních bossů."
+   },
+   "symbol": "scope",
+   "category": "challenges",
+   "rarity": "rare",
+   "featureLabel": "Weekly boss",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 218,
+   "id": "boss.25",
+   "title": {
+    "en": "Legend of the Realm",
+    "cs": "Legenda říše"
+   },
+   "subtitle": {
+    "en": "Defeat 25 weekly bosses.",
+    "cs": "Poraz 25 týdenních bossů."
+   },
+   "symbol": "crown.fill",
+   "category": "challenges",
+   "rarity": "epic",
+   "featureLabel": "Weekly boss",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 219,
+   "id": "boss.perfect",
+   "title": {
+    "en": "Flawless Victory",
+    "cs": "Dokonalé vítězství"
+   },
+   "subtitle": {
+    "en": "Defeat a boss with a 7-day target.",
+    "cs": "Poraz bosse s cílem na všech 7 dní."
+   },
+   "symbol": "star.circle.fill",
+   "category": "challenges",
+   "rarity": "rare",
+   "featureLabel": "Weekly boss",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 220,
+   "id": "boss.bestiary",
+   "title": {
+    "en": "Bestiary Complete",
+    "cs": "Kompletní bestiář"
+   },
+   "subtitle": {
+    "en": "Defeat every kind of boss at least once.",
+    "cs": "Poraz každý druh bosse aspoň jednou."
+   },
+   "symbol": "books.vertical.fill",
+   "category": "challenges",
+   "rarity": "legendary",
+   "featureLabel": "Weekly boss",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 221,
+   "id": "freeze.first",
+   "title": {
+    "en": "Cool Head",
+    "cs": "Chladná hlava"
+   },
+   "subtitle": {
+    "en": "Let a streak freeze save your streak.",
+    "cs": "Nech zamrazení zachránit tvou sérii."
+   },
+   "symbol": "snowflake",
+   "category": "streak",
+   "rarity": "common",
+   "featureLabel": "Weekly boss",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "boss",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
+   "line": 222,
+   "id": "freeze.saved-100",
+   "title": {
+    "en": "Ice Age",
+    "cs": "Doba ledová"
+   },
+   "subtitle": {
+    "en": "Let a freeze save a streak of 100 days or more.",
+    "cs": "Nech zamrazení zachránit sérii o 100 a více dnech."
+   },
+   "symbol": "snowflake.circle.fill",
+   "category": "streak",
+   "rarity": "epic",
+   "featureLabel": "Weekly boss",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 199,
+   "id": "journey.everest",
+   "title": {
+    "en": "Top of the World",
+    "cs": "Na střeše světa"
+   },
+   "subtitle": {
+    "en": "Climb Everest on protein.",
+    "cs": "Vylez na Everest na bílkovinách."
+   },
+   "symbol": "mountain.2.fill",
+   "rarity": "rare",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 211,
+   "id": "journey.seven-summits",
+   "title": {
+    "en": "Seven Summits",
+    "cs": "Koruna planety"
+   },
+   "subtitle": {
+    "en": "Climb all Seven Summits on protein.",
+    "cs": "Pokoř celou Korunu planety na bílkovinách."
+   },
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "epic",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 217,
+   "id": "journey.karman",
+   "title": {
+    "en": "Protein Astronaut",
+    "cs": "Proteinový astronaut"
+   },
+   "subtitle": {
+    "en": "Climb to the Kármán line, 100 km up.",
+    "cs": "Vystoupej až na Kármánovu hranici, 100 km nahoru."
+   },
+   "symbol": "sparkles",
+   "rarity": "legendary",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 238,
+   "id": "journey.bathtub",
+   "title": {
+    "en": "Bath Time",
+    "cs": "Čas na koupel"
+   },
+   "subtitle": {
+    "en": "Drink a whole bathtub of water.",
+    "cs": "Vypij celou vanu vody."
+   },
+   "symbol": "bathtub.fill",
+   "rarity": "uncommon",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 240,
+   "id": "journey.hot-tub",
+   "title": {
+    "en": "Hot Tub Party",
+    "cs": "Vířivková párty"
+   },
+   "subtitle": {
+    "en": "Drink a whole hot tub of water.",
+    "cs": "Vypij celou vířivku vody."
+   },
+   "symbol": "drop.circle.fill",
+   "rarity": "rare",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 241,
+   "id": "journey.fire-engine",
+   "title": {
+    "en": "Fire Brigade",
+    "cs": "Hasičský sbor"
+   },
+   "subtitle": {
+    "en": "Drink a fire engine's whole tank.",
+    "cs": "Vypij celou hasičskou cisternu."
+   },
+   "symbol": "flame.fill",
+   "rarity": "epic",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 265,
+   "id": "journey.vienna",
+   "title": {
+    "en": "Off to Vienna",
+    "cs": "Hurá do Vídně"
+   },
+   "subtitle": {
+    "en": "Walk off active kcal all the way to Vienna.",
+    "cs": "Vychoď aktivní kcal až do Vídně."
+   },
+   "symbol": "car.fill",
+   "rarity": "uncommon",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 272,
+   "id": "journey.rome",
+   "title": {
+    "en": "All Roads Lead to Rome",
+    "cs": "Všechny cesty vedou do Říma"
+   },
+   "subtitle": {
+    "en": "Reach Rome on the road trip.",
+    "cs": "Dojeď na cestě až do Říma."
+   },
+   "symbol": "building.columns.fill",
+   "rarity": "rare",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 276,
+   "id": "journey.lisbon",
+   "title": {
+    "en": "Atlantic Coast",
+    "cs": "Atlantské pobřeží"
+   },
+   "subtitle": {
+    "en": "Reach Lisbon on the road trip.",
+    "cs": "Dojeď na cestě až do Lisabonu."
+   },
+   "symbol": "water.waves",
+   "rarity": "epic",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 283,
+   "id": "journey.home-again",
+   "title": {
+    "en": "Home Again",
+    "cs": "Zase doma"
+   },
+   "subtitle": {
+    "en": "Make it all the way back home to Praha.",
+    "cs": "Dojeď celou cestu zpátky domů do Prahy."
+   },
+   "symbol": "house.fill",
+   "rarity": "legendary",
+   "category": "volume",
+   "featureLabel": "Journeys",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 311,
+   "id": "journey.passport-100",
+   "title": {
+    "en": "Seasoned Traveller",
+    "cs": "Ostřílený cestovatel"
+   },
+   "subtitle": {
+    "en": "Collect 100 food passport stamps.",
+    "cs": "Nasbírej 100 razítek do jídelního pasu."
+   },
+   "symbol": "book.closed.fill",
+   "rarity": "epic",
+   "category": "variety",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "journeys",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
+   "line": 313,
+   "id": "journey.passport-500",
+   "title": {
+    "en": "Citizen of the World",
+    "cs": "Občan světa"
+   },
+   "subtitle": {
+    "en": "Collect 500 food passport stamps.",
+    "cs": "Nasbírej 500 razítek do jídelního pasu."
+   },
+   "symbol": "globe",
+   "rarity": "legendary",
+   "category": "variety",
+   "featureLabel": "Journeys",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 223,
+   "id": "record.first-pr",
+   "title": {
+    "en": "First PR",
+    "cs": "První rekord"
+   },
+   "subtitle": {
+    "en": "Set your first personal record.",
+    "cs": "Překonej svůj první osobní rekord."
+   },
+   "symbol": "trophy",
+   "rarity": "common",
+   "category": "extreme",
+   "featureLabel": "Personal records",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 225,
+   "id": "record.pr-10",
+   "title": {
+    "en": "Record Breaker",
+    "cs": "Lamač rekordů"
+   },
+   "subtitle": {
+    "en": "Set 10 personal records.",
+    "cs": "Překonej 10 osobních rekordů."
+   },
+   "symbol": "trophy.fill",
+   "rarity": "uncommon",
+   "category": "extreme",
+   "featureLabel": "Personal records",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 227,
+   "id": "record.pr-50",
+   "title": {
+    "en": "Record Machine",
+    "cs": "Stroj na rekordy"
+   },
+   "subtitle": {
+    "en": "Set 50 personal records.",
+    "cs": "Překonej 50 osobních rekordů."
+   },
+   "symbol": "trophy.circle.fill",
+   "rarity": "epic",
+   "category": "extreme",
+   "featureLabel": "Personal records",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "records",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Records/PersonalRecordCatalog.swift",
+   "line": 92,
+   "id": "record.full-house",
+   "title": {
+    "en": "Full House",
+    "cs": "Plný dům"
+   },
+   "subtitle": {
+    "en": "Set a PR in every record you track.",
+    "cs": "Překonej každý rekord, který sleduješ."
+   },
+   "symbol": "rosette",
+   "rarity": "rare",
+   "category": "extreme",
+   "featureLabel": "Personal records",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.czech-classics.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "fork.knife",
+   "rarity": "common",
+   "title": {
+    "en": "Czech Classics: Taster",
+    "cs": "České klasiky: Ochutnávač"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of the Czech Classics.",
+    "cs": "Objev čtvrtinu českých klasik."
+   },
+   "rule": "25% of “Czech Classics” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.czech-classics.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "fork.knife",
+   "rarity": "rare",
+   "title": {
+    "en": "Czech Classics: Regular",
+    "cs": "České klasiky: Štamgast"
+   },
+   "subtitle": {
+    "en": "Discover half of the Czech Classics.",
+    "cs": "Objev polovinu českých klasik."
+   },
+   "rule": "50% of “Czech Classics” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.czech-classics.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "fork.knife",
+   "rarity": "epic",
+   "title": {
+    "en": "Czech Classics: Babička’s Pride",
+    "cs": "České klasiky: Babiččina pýcha"
+   },
+   "subtitle": {
+    "en": "Discover every Czech Classic.",
+    "cs": "Objev všechny české klasiky."
+   },
+   "rule": "100% of “Czech Classics” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.world.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Around the World: Tourist",
+    "cs": "Kolem světa: Turista"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of Around the World.",
+    "cs": "Objev čtvrtinu jídel ze sbírky Kolem světa."
+   },
+   "rule": "25% of “Around the World” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.world.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Around the World: Traveller",
+    "cs": "Kolem světa: Cestovatel"
+   },
+   "subtitle": {
+    "en": "Discover half of Around the World.",
+    "cs": "Objev polovinu jídel ze sbírky Kolem světa."
+   },
+   "rule": "50% of “Around the World” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.world.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Around the World: Globetrotter",
+    "cs": "Kolem světa: Světoběžník"
+   },
+   "subtitle": {
+    "en": "Discover every dish of Around the World.",
+    "cs": "Objev všechna jídla ze sbírky Kolem světa."
+   },
+   "rule": "100% of “Around the World” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.fermented.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "hourglass",
+   "rarity": "common",
+   "title": {
+    "en": "Fermented Friends: Curious",
+    "cs": "Kvašení kamarádi: Zvědavec"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of the Fermented Friends.",
+    "cs": "Objev čtvrtinu kvašených kamarádů."
+   },
+   "rule": "25% of “Fermented Friends” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.fermented.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "hourglass",
+   "rarity": "rare",
+   "title": {
+    "en": "Fermented Friends: Brewer",
+    "cs": "Kvašení kamarádi: Kvasič"
+   },
+   "subtitle": {
+    "en": "Discover half of the Fermented Friends.",
+    "cs": "Objev polovinu kvašených kamarádů."
+   },
+   "rule": "50% of “Fermented Friends” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.fermented.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "hourglass",
+   "rarity": "epic",
+   "title": {
+    "en": "Fermented Friends: Culture Club",
+    "cs": "Kvašení kamarádi: Mistr kultur"
+   },
+   "subtitle": {
+    "en": "Discover every Fermented Friend.",
+    "cs": "Objev všechny kvašené kamarády."
+   },
+   "rule": "100% of “Fermented Friends” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.rainbow.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "paintpalette.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Rainbow: Half Spectrum",
+    "cs": "Duha: Půl spektra"
+   },
+   "subtitle": {
+    "en": "Discover three of the six rainbow colours.",
+    "cs": "Objev tři ze šesti barev duhy."
+   },
+   "rule": "50% of “Rainbow” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.rainbow.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "paintpalette.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Rainbow: Full Spectrum",
+    "cs": "Duha: Celé spektrum"
+   },
+   "subtitle": {
+    "en": "Discover all six rainbow colours.",
+    "cs": "Objev všech šest barev duhy."
+   },
+   "rule": "100% of “Rainbow” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.czech-brands.25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Czech Brands: Shopper",
+    "cs": "České značky: Nakupující"
+   },
+   "subtitle": {
+    "en": "Discover a quarter of the Czech Brands.",
+    "cs": "Objev čtvrtinu českých značek."
+   },
+   "rule": "25% of “Czech Brands” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.czech-brands.50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Czech Brands: Patriot",
+    "cs": "České značky: Patriot"
+   },
+   "subtitle": {
+    "en": "Discover half of the Czech Brands.",
+    "cs": "Objev polovinu českých značek."
+   },
+   "rule": "50% of “Czech Brands” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.czech-brands.100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Czech Brands: Supermarket Legend",
+    "cs": "České značky: Legenda supermarketu"
+   },
+   "subtitle": {
+    "en": "Discover every Czech Brand.",
+    "cs": "Objev všechny české značky."
+   },
+   "rule": "100% of “Czech Brands” discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.rainbow-day",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "rainbow",
+   "rarity": "rare",
+   "title": {
+    "en": "Rainbow Day",
+    "cs": "Duhový den"
+   },
+   "subtitle": {
+    "en": "Eat all six colours in one day.",
+    "cs": "Sněz všech šest barev za jeden den."
+   },
+   "rule": "1 rainbow day(s)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.rainbow-day-10",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "rainbow",
+   "rarity": "epic",
+   "title": {
+    "en": "Ten Rainbow Days",
+    "cs": "Deset duhových dnů"
+   },
+   "subtitle": {
+    "en": "Eat all six colours in one day, ten times.",
+    "cs": "Sněz všech šest barev za jeden den, a to desetkrát."
+   },
+   "rule": "10 rainbow day(s)",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.brand-explorer-10",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.badge.plus",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Brand Explorer 10",
+    "cs": "Průzkumník značek 10"
+   },
+   "subtitle": {
+    "en": "Try products from 10 different Czech brands.",
+    "cs": "Vyzkoušej výrobky od 10 různých českých značek."
+   },
+   "rule": "10 distinct Czech brands",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.brand-explorer-25",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.badge.plus",
+   "rarity": "rare",
+   "title": {
+    "en": "Brand Explorer 25",
+    "cs": "Průzkumník značek 25"
+   },
+   "subtitle": {
+    "en": "Try products from 25 different Czech brands.",
+    "cs": "Vyzkoušej výrobky od 25 různých českých značek."
+   },
+   "rule": "25 distinct Czech brands",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.brand-explorer-50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "cart.badge.plus",
+   "rarity": "epic",
+   "title": {
+    "en": "Brand Explorer 50",
+    "cs": "Průzkumník značek 50"
+   },
+   "subtitle": {
+    "en": "Try products from 50 different Czech brands.",
+    "cs": "Vyzkoušej výrobky od 50 různých českých značek."
+   },
+   "rule": "50 distinct Czech brands",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.pokedex-50",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "books.vertical.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Collector",
+    "cs": "Sběratel"
+   },
+   "subtitle": {
+    "en": "Discover half of all collection entries.",
+    "cs": "Objev polovinu všech položek ve sbírkách."
+   },
+   "rule": "50% of all collection entries discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "collection.pokedex-100",
+   "feature": "collections",
+   "category": "variety",
+   "symbol": "crown.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Complete Album",
+    "cs": "Kompletní album"
+   },
+   "subtitle": {
+    "en": "Discover every collection entry.",
+    "cs": "Objev všechny položky ve sbírkách."
+   },
+   "rule": "100% of all collection entries discovered",
+   "secret": false,
+   "source": "mirrored",
+   "file": "ios/Gamification/Sources/Gamification/Features/Collections/CollectionsBadges.swift",
+   "featureLabel": "Food collections",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.masopust",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "theatermasks.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Masopust",
+    "cs": "Masopust"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Masopust in its season.",
+    "cs": "Limitovaná edice: splň událost Masopust v její sezóně."
+   },
+   "limitedEdition": "masopust",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.easter",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "hare.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Easter",
+    "cs": "Velikonoce"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Easter in its season.",
+    "cs": "Limitovaná edice: splň událost Velikonoce v její sezóně."
+   },
+   "limitedEdition": "easter",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.name-day",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "gift.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Name Day",
+    "cs": "Svátek"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Name Day in its season.",
+    "cs": "Limitovaná edice: splň událost Svátek v její sezóně."
+   },
+   "limitedEdition": "name-day",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.strawberries",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "leaf.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Strawberry Season",
+    "cs": "Jahodová sezóna"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Strawberry Season in its season.",
+    "cs": "Limitovaná edice: splň událost Jahodová sezóna v její sezóně."
+   },
+   "limitedEdition": "strawberries",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.grill",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "flame.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Grill Season",
+    "cs": "Grilovací sezóna"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Grill Season in its season.",
+    "cs": "Limitovaná edice: splň událost Grilovací sezóna v její sezóně."
+   },
+   "limitedEdition": "grill",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.mushrooms",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "tree.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Mushroom Season",
+    "cs": "Houbařská sezóna"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Mushroom Season in its season.",
+    "cs": "Limitovaná edice: splň událost Houbařská sezóna v její sezóně."
+   },
+   "limitedEdition": "mushrooms",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.st-martin",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "bird.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "St. Martin's Day",
+    "cs": "Svatý Martin"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete St. Martin's Day in its season.",
+    "cs": "Limitovaná edice: splň událost Svatý Martin v její sezóně."
+   },
+   "limitedEdition": "st-martin",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.mikulas",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "star.fill",
+   "rarity": "common",
+   "title": {
+    "en": "St. Nicholas",
+    "cs": "Mikuláš"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete St. Nicholas in its season.",
+    "cs": "Limitovaná edice: splň událost Mikuláš v její sezóně."
+   },
+   "limitedEdition": "mikulas",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.cukrovi",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "snowflake",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Advent Cookies",
+    "cs": "Adventní cukroví"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Advent Cookies in its season.",
+    "cs": "Limitovaná edice: splň událost Adventní cukroví v její sezóně."
+   },
+   "limitedEdition": "cukrovi",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.stedry-den",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "fish.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Christmas Eve",
+    "cs": "Štědrý den"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete Christmas Eve in its season.",
+    "cs": "Limitovaná edice: splň událost Štědrý den v její sezóně."
+   },
+   "limitedEdition": "stedry-den",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.silvestr",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "sparkles",
+   "rarity": "common",
+   "title": {
+    "en": "New Year's Eve",
+    "cs": "Silvestr"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete New Year's Eve in its season.",
+    "cs": "Limitovaná edice: splň událost Silvestr v její sezóně."
+   },
+   "limitedEdition": "silvestr",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.novy-rok",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "calendar",
+   "rarity": "common",
+   "title": {
+    "en": "New Year's Day",
+    "cs": "Nový rok"
+   },
+   "subtitle": {
+    "en": "Limited edition: complete New Year's Day in its season.",
+    "cs": "Limitovaná edice: splň událost Nový rok v její sezóně."
+   },
+   "limitedEdition": "novy-rok",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.collector-4",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "calendar.badge.checkmark",
+   "rarity": "rare",
+   "title": {
+    "en": "Seasonal Regular",
+    "cs": "Sezónní štamgast"
+   },
+   "subtitle": {
+    "en": "Complete 4 different seasonal events.",
+    "cs": "Splň 4 různé sezónní události."
+   },
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.collector-8",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "books.vertical.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Keeper of Traditions",
+    "cs": "Strážce tradic"
+   },
+   "subtitle": {
+    "en": "Complete 8 different seasonal events.",
+    "cs": "Splň 8 různých sezónních událostí."
+   },
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "event.full-year",
+   "feature": "seasonal",
+   "category": "calendar",
+   "symbol": "crown.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "A Full Czech Year",
+    "cs": "Celý český rok"
+   },
+   "subtitle": {
+    "en": "Complete every seasonal event of one calendar year.",
+    "cs": "Splň všechny sezónní události jednoho kalendářního roku."
+   },
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Seasonal/SeasonalEventCatalog.swift",
+   "featureLabel": "Seasonal events",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.fridge-raid",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "refrigerator.fill",
+   "rarity": "uncommon",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Midnight Fridge Raid",
+    "cs": "Půlnoční nájezd na lednici"
+   },
+   "subtitle": {
+    "en": "Log something between midnight and 4 a.m. for that same day.",
+    "cs": "Zapiš si něco mezi půlnocí a čtvrtou ráno, a to na ten samý den."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.barista",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "cup.and.saucer.fill",
+   "rarity": "uncommon",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Barista Mode",
+    "cs": "Režim baristy"
+   },
+   "subtitle": {
+    "en": "Log 5 coffees in one day.",
+    "cs": "Zapiš si 5 káv za jeden den."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.pizza-friday",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "fork.knife.circle.fill",
+   "rarity": "rare",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Pizza Friday",
+    "cs": "Pizzový pátek"
+   },
+   "subtitle": {
+    "en": "Have pizza on 4 Fridays in a row.",
+    "cs": "Dej si pizzu 4 pátky po sobě."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.bullseye",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "scope",
+   "rarity": "epic",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Bullseye",
+    "cs": "Přesně do černého"
+   },
+   "subtitle": {
+    "en": "End a day of 3+ entries exactly on your calorie goal, to the kcal.",
+    "cs": "Zakonči den s aspoň 3 záznamy přesně na svém kalorickém cíli, na kcal."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.palindrome",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "arrow.left.arrow.right",
+   "rarity": "rare",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Palindrome Day",
+    "cs": "Palindromový den"
+   },
+   "subtitle": {
+    "en": "End a day of 3+ entries on a calorie total that reads the same backwards, like 1221.",
+    "cs": "Zakonči den s aspoň 3 záznamy součtem kalorií, který se čte stejně i pozpátku, třeba 1221."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.groundhog-breakfast",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "arrow.triangle.2.circlepath",
+   "rarity": "epic",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Groundhog Breakfast",
+    "cs": "Na Hromnice o snídani víc"
+   },
+   "subtitle": {
+    "en": "Have the same food for breakfast on 30 of 35 days.",
+    "cs": "Dej si ke snídani stejné jídlo ve 30 z 35 dnů."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.friday-13",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "13.circle.fill",
+   "rarity": "rare",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Friday the 13th",
+    "cs": "Pátek třináctého"
+   },
+   "subtitle": {
+    "en": "Log food on a Friday the 13th.",
+    "cs": "Zapiš si jídlo v pátek třináctého."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.world-tour",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "globe.europe.africa.fill",
+   "rarity": "epic",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "World Tour Week",
+    "cs": "Týden kolem světa"
+   },
+   "subtitle": {
+    "en": "Eat 7 different cuisines in one week.",
+    "cs": "Ochutnej za jeden týden 7 různých kuchyní."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.pi-day",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "chart.pie.fill",
+   "rarity": "rare",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Pi Day",
+    "cs": "Den pí"
+   },
+   "subtitle": {
+    "en": "Have a pie, tart or strudel on 14 March.",
+    "cs": "Dej si 14. března koláč, tartu nebo štrúdl."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.deja-vu",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "repeat",
+   "rarity": "uncommon",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Déjà Vu",
+    "cs": "Déjà vu"
+   },
+   "subtitle": {
+    "en": "Eat exactly the same foods two days in a row, at least 3 different ones.",
+    "cs": "Sněz dva dny po sobě úplně stejná jídla, aspoň 3 různá."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.knedlik-marathon",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "fork.knife",
+   "rarity": "uncommon",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Knedlík Marathon",
+    "cs": "Knedlíkový maraton"
+   },
+   "subtitle": {
+    "en": "Have knedlíky 3 days in a row.",
+    "cs": "Dej si knedlíky 3 dny po sobě."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.gone-fishing",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "fish.fill",
+   "rarity": "uncommon",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Gone Fishing",
+    "cs": "Na rybách"
+   },
+   "subtitle": {
+    "en": "Eat fish 3 days in a row.",
+    "cs": "Jez rybu 3 dny po sobě."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.vodnik",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "drop.fill",
+   "rarity": "rare",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "Vodník's Apprentice",
+    "cs": "Vodníkův učeň"
+   },
+   "subtitle": {
+    "en": "Drink one and a half times your water goal in one day.",
+    "cs": "Vypij za jeden den jedenapůlnásobek svého cíle vody."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.dawn-patrol",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "sunrise.fill",
+   "rarity": "rare",
+   "secret": true,
+   "standalone": false,
+   "title": {
+    "en": "Dawn Patrol",
+    "cs": "Ranní hlídka"
+   },
+   "subtitle": {
+    "en": "Start a workout before 6 a.m. and log food within an hour of finishing it.",
+    "cs": "Začni trénink před šestou ráno a do hodiny po jeho konci si zapiš jídlo."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "secret.answer-42",
+   "feature": "secrets",
+   "category": "funnyFacts",
+   "symbol": "42.circle.fill",
+   "rarity": "rare",
+   "secret": true,
+   "standalone": true,
+   "title": {
+    "en": "The Answer",
+    "cs": "Odpověď"
+   },
+   "subtitle": {
+    "en": "Log exactly 42 entries in one week.",
+    "cs": "Zapiš si za jeden týden přesně 42 záznamů."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "secret.keeper",
+   "feature": "secrets",
+   "category": "meta",
+   "symbol": "key.fill",
+   "rarity": "legendary",
+   "secret": false,
+   "title": {
+    "en": "Secret Keeper",
+    "cs": "Strážce tajemství"
+   },
+   "subtitle": {
+    "en": "Find all 15 secret achievements.",
+    "cs": "Najdi všech 15 tajných odznaků."
+   },
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Secret/SecretCatalog.swift",
+   "featureLabel": "Secrets",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "sport.fuel-1",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "fuelpump.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Fuelled Up",
+    "cs": "Natankováno"
+   },
+   "subtitle": {
+    "en": "Log 30 g+ carbs 30–180 min before a run, ride or hike.",
+    "cs": "Zapiš 30+ g sacharidů 30–180 min před během, jízdou nebo túrou."
+   },
+   "threshold": 1,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.fuel-10",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "wrench.and.screwdriver.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Pit Crew",
+    "cs": "Depo tým"
+   },
+   "subtitle": {
+    "en": "Fuel up 30–180 min before the start of 10 activities.",
+    "cs": "Natankuj 30–180 min před startem 10 aktivit."
+   },
+   "threshold": 10,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.fuel-50",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "speedometer",
+   "rarity": "epic",
+   "title": {
+    "en": "Race Engineer",
+    "cs": "Závodní inženýr"
+   },
+   "subtitle": {
+    "en": "Fuel up 30–180 min before the start of 50 activities.",
+    "cs": "Natankuj 30–180 min před startem 50 aktivit."
+   },
+   "threshold": 50,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.recovery-1",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "timer",
+   "rarity": "common",
+   "title": {
+    "en": "Recovery Window",
+    "cs": "Okno regenerace"
+   },
+   "subtitle": {
+    "en": "Eat 20 g+ protein within 60 min after a run, ride or workout.",
+    "cs": "Sněz 20+ g bílkovin do 60 min po běhu, jízdě nebo tréninku."
+   },
+   "threshold": 1,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.recovery-10",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "stopwatch.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Protein Timer",
+    "cs": "Proteinové stopky"
+   },
+   "subtitle": {
+    "en": "Refuel 20 g+ protein within 60 min after 10 activities.",
+    "cs": "Doplň 20+ g bílkovin do 60 min po skončení 10 aktivit."
+   },
+   "threshold": 10,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.recovery-50",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "heart.circle.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Recovery Pro",
+    "cs": "Mistr regenerace"
+   },
+   "subtitle": {
+    "en": "Refuel 20 g+ protein within 60 min after 50 activities.",
+    "cs": "Doplň 20+ g bílkovin do 60 min po skončení 50 aktivit."
+   },
+   "threshold": 50,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.earned-5",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "flame.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Earned It",
+    "cs": "Zaslouženo"
+   },
+   "subtitle": {
+    "en": "Eat to match your burn on 5 active days (400+ active kcal).",
+    "cs": "Jez podle výdeje v 5 aktivních dnech (400+ aktivních kcal)."
+   },
+   "threshold": 5,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.earned-25",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "scalemass.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Balanced Burner",
+    "cs": "Vyvážený spalovač"
+   },
+   "subtitle": {
+    "en": "Eat to match your burn on 25 active days (400+ active kcal).",
+    "cs": "Jez podle výdeje v 25 aktivních dnech (400+ aktivních kcal)."
+   },
+   "threshold": 25,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.earned-100",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "chart.bar.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Energy Accountant",
+    "cs": "Energetický účetní"
+   },
+   "subtitle": {
+    "en": "Eat to match your burn on 100 active days (400+ active kcal).",
+    "cs": "Jez podle výdeje v 100 aktivních dnech (400+ aktivních kcal)."
+   },
+   "threshold": 100,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.double-day",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "2.circle.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Double Day",
+    "cs": "Dvoufázový den"
+   },
+   "subtitle": {
+    "en": "Two runs or rides in one day, with the protein goal met.",
+    "cs": "Dva běhy nebo jízdy v jednom dni a k tomu splněný cíl bílkovin."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.gel-guru",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "drop.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Gel Guru",
+    "cs": "Gelový guru"
+   },
+   "subtitle": {
+    "en": "Log 3 entries during one endurance activity of 90+ min.",
+    "cs": "Zapiš 3 položky během jedné vytrvalostní aktivity od 90 min."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.long-haul",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "figure.hiking",
+   "rarity": "rare",
+   "title": {
+    "en": "Long Haul",
+    "cs": "Dlouhá trať"
+   },
+   "subtitle": {
+    "en": "Log food during an endurance activity of 3+ hours.",
+    "cs": "Zapiš jídlo během vytrvalostní aktivity od 3 hodin."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.race-day-1",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "flag.checkered",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Race Day Fuel",
+    "cs": "Palivo na závod"
+   },
+   "subtitle": {
+    "en": "Log food on a day tagged Race.",
+    "cs": "Zapiš jídlo v den označený jako Závod."
+   },
+   "threshold": 1,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.race-day-5",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "trophy.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Serial Racer",
+    "cs": "Sériový závodník"
+   },
+   "subtitle": {
+    "en": "Log food on 5 days tagged Race.",
+    "cs": "Zapiš jídlo v 5 dnech označených jako Závod."
+   },
+   "threshold": 5,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "sport.carb-loader",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "fork.knife.circle.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Carb Loader",
+    "cs": "Sacharidové nabití"
+   },
+   "subtitle": {
+    "en": "Meet your carb goal on both days before a race.",
+    "cs": "Splň cíl sacharidů v obou dnech před závodem."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": true,
+   "optional": false
+  },
+  {
+   "id": "body.first-kilo",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "scalemass",
+   "rarity": "common",
+   "title": {
+    "en": "First Kilo",
+    "cs": "První kilo"
+   },
+   "subtitle": {
+    "en": "Weigh in 1 kg from your start weight, toward your goal.",
+    "cs": "Zvaž se o 1 kg od startovní váhy směrem k cíli."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "body.halfway",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "flag.fill",
+   "rarity": "rare",
+   "title": {
+    "en": "Halfway There",
+    "cs": "V půli cesty"
+   },
+   "subtitle": {
+    "en": "Weigh in halfway from your start weight to your target.",
+    "cs": "Zvaž se v půli cesty od startovní k cílové váze."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "body.target",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "target",
+   "rarity": "epic",
+   "title": {
+    "en": "Target Reached",
+    "cs": "Cíl dosažen"
+   },
+   "subtitle": {
+    "en": "Weigh in at your target weight.",
+    "cs": "Zvaž se na cílové váze."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "body.steady-30",
+   "feature": "sportBody",
+   "category": "goalHitting",
+   "symbol": "mountain.2.fill",
+   "rarity": "legendary",
+   "title": {
+    "en": "Steady as Sněžka",
+    "cs": "Pevný jako Sněžka"
+   },
+   "subtitle": {
+    "en": "Stay within 1 kg of your target for 30 days (8+ weigh-ins).",
+    "cs": "Drž se 30 dní do 1 kg od cílové váhy (8+ vážení)."
+   },
+   "threshold": null,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "body.fast-3",
+   "feature": "sportBody",
+   "category": "streak",
+   "symbol": "moon.fill",
+   "rarity": "common",
+   "title": {
+    "en": "Fast Starter",
+    "cs": "Rozjezd půstu"
+   },
+   "subtitle": {
+    "en": "Keep your fasting schedule 3 days in a row.",
+    "cs": "Dodrž půst 3 dny v řadě."
+   },
+   "threshold": 3,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "body.fast-7",
+   "feature": "sportBody",
+   "category": "streak",
+   "symbol": "moon.stars.fill",
+   "rarity": "uncommon",
+   "title": {
+    "en": "Fasting Week",
+    "cs": "Týden půstu"
+   },
+   "subtitle": {
+    "en": "Keep your fasting schedule 7 days in a row.",
+    "cs": "Dodrž půst 7 dní v řadě."
+   },
+   "threshold": 7,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "body.fast-14",
+   "feature": "sportBody",
+   "category": "streak",
+   "symbol": "hourglass",
+   "rarity": "rare",
+   "title": {
+    "en": "Fasting Fortnight",
+    "cs": "Dva týdny půstu"
+   },
+   "subtitle": {
+    "en": "Keep your fasting schedule 14 days in a row.",
+    "cs": "Dodrž půst 14 dní v řadě."
+   },
+   "threshold": 14,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "id": "body.fast-30",
+   "feature": "sportBody",
+   "category": "streak",
+   "symbol": "crown.fill",
+   "rarity": "epic",
+   "title": {
+    "en": "Fasting Master",
+    "cs": "Mistr půstu"
+   },
+   "subtitle": {
+    "en": "Keep your fasting schedule 30 days in a row.",
+    "cs": "Dodrž půst 30 dní v řadě."
+   },
+   "threshold": 30,
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/SportBody/SportBodyCatalog.swift",
+   "featureLabel": "Sport & body",
+   "garminOnly": false,
+   "optional": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 41,
+   "id": "supplements.first-stack",
+   "title": {
+    "en": "First Stack",
+    "cs": "První den se vším"
+   },
+   "subtitle": {
+    "en": "Take every supplement planned for a day.",
+    "cs": "Vezmi si všechny doplňky naplánované na jeden den."
+   },
+   "symbol": "pills.fill",
+   "rarity": "common",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 42,
+   "id": "supplements.stack-week",
+   "title": {
+    "en": "Stack Week",
+    "cs": "Týden bez vynechání"
+   },
+   "subtitle": {
+    "en": "Reach a 7-day supplement streak.",
+    "cs": "Dosáhni série doplňků dlouhé 7 dní."
+   },
+   "symbol": "calendar.badge.checkmark",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 43,
+   "id": "supplements.full-stack-month",
+   "title": {
+    "en": "Full Stack Month",
+    "cs": "Měsíc bez vynechání"
+   },
+   "subtitle": {
+    "en": "Reach a 30-day supplement streak.",
+    "cs": "Dosáhni série doplňků dlouhé 30 dní."
+   },
+   "symbol": "crown.fill",
+   "rarity": "epic",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 44,
+   "id": "supplements.creatine-30",
+   "title": {
+    "en": "Creatine 30",
+    "cs": "Kreatin 30"
+   },
+   "subtitle": {
+    "en": "Take creatine on 30 days.",
+    "cs": "Vezmi si kreatin ve 30 dnech."
+   },
+   "symbol": "bolt.fill",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 45,
+   "id": "supplements.creatine-100",
+   "title": {
+    "en": "Creatine 100",
+    "cs": "Kreatin 100"
+   },
+   "subtitle": {
+    "en": "Take creatine on 100 days.",
+    "cs": "Vezmi si kreatin ve 100 dnech."
+   },
+   "symbol": "bolt.circle.fill",
+   "rarity": "rare",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 46,
+   "id": "supplements.sunshine",
+   "title": {
+    "en": "Sunshine",
+    "cs": "Sluníčko"
+   },
+   "subtitle": {
+    "en": "Take vitamin D on 60 days between October and March.",
+    "cs": "Vezmi si vitamin D v 60 dnech mezi říjnem a březnem."
+   },
+   "symbol": "sun.max.fill",
+   "rarity": "rare",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 47,
+   "id": "supplements.omega-month",
+   "title": {
+    "en": "Omega Month",
+    "cs": "Omega měsíc"
+   },
+   "subtitle": {
+    "en": "Take omega-3 on 30 days in a row.",
+    "cs": "Ber omega-3 30 dní po sobě."
+   },
+   "symbol": "fish.fill",
+   "rarity": "rare",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 48,
+   "id": "supplements.never-ran-out",
+   "title": {
+    "en": "Never Ran Out",
+    "cs": "Nikdy nedošlo"
+   },
+   "subtitle": {
+    "en": "Restock a supplement before it runs out, 3 times.",
+    "cs": "Třikrát doplň zásobu dřív, než dojde."
+   },
+   "symbol": "shippingbox.fill",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 49,
+   "id": "supplements.alphabet-5",
+   "title": {
+    "en": "Alphabet 5",
+    "cs": "Abeceda 5"
+   },
+   "subtitle": {
+    "en": "Take 5 different vitamins and minerals.",
+    "cs": "Vezmi si 5 různých vitaminů a minerálů."
+   },
+   "symbol": "textformat.abc",
+   "rarity": "uncommon",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  },
+  {
+   "feature": "supplements",
+   "secret": false,
+   "source": "parsed",
+   "file": "ios/Gamification/Sources/Gamification/Features/Supplements/SupplementsCatalog.swift",
+   "line": 50,
+   "id": "supplements.alphabet-10",
+   "title": {
+    "en": "Alphabet 10",
+    "cs": "Abeceda 10"
+   },
+   "subtitle": {
+    "en": "Take 10 different vitamins and minerals.",
+    "cs": "Vezmi si 10 různých vitaminů a minerálů."
+   },
+   "symbol": "character.book.closed.fill",
+   "rarity": "epic",
+   "category": "supplements",
+   "optional": true,
+   "featureLabel": "Supplements",
+   "garminOnly": false
+  }
+ ]
+}
