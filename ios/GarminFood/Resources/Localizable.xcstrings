@@ -16566,6 +16566,114 @@
           }
         }
       }
+    },
+    "Choose folder…": {
+      "comment": "Bridge folder spike (add-mcp-server wave 1, testing only): button that opens the system folder picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat složku…"
+          }
+        }
+      }
+    },
+    "Write spike.txt": {
+      "comment": "Bridge folder spike (testing only): button that writes a test file named spike.txt into the picked folder. Keep the file name as is.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapsat spike.txt"
+          }
+        }
+      }
+    },
+    "List folder": {
+      "comment": "Bridge folder spike (testing only): button that lists the files in the picked folder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vypsat složku"
+          }
+        }
+      }
+    },
+    "Reopen from bookmark": {
+      "comment": "Bridge folder spike (testing only): button that reopens the picked folder from the saved bookmark, without the picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znovu otevřít ze záložky"
+          }
+        }
+      }
+    },
+    "Testing only. Pick iCloud Drive › GarminFood Bridge. Every result is also written to the diagnostics log under bridge-spike.": {
+      "comment": "Bridge folder spike (testing only): footer under the buttons. 'iCloud Drive › GarminFood Bridge' is a folder path and 'bridge-spike' a log category; keep both as is.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen pro testování. Vyberte iCloud Drive › GarminFood Bridge. Každý výsledek se zapíše i do diagnostického protokolu pod bridge-spike."
+          }
+        }
+      }
+    },
+    "Folder": {
+      "comment": "Bridge folder spike (testing only): section header above the picked folder's path.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Složka"
+          }
+        }
+      }
+    },
+    "No results yet.": {
+      "comment": "Bridge folder spike (testing only): shown in the Results section before any button was tapped.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné výsledky."
+          }
+        }
+      }
+    },
+    "Bridge folder spike": {
+      "comment": "Bridge folder spike (testing only): screen title. The spike checks that a picked iCloud Drive folder can be used to talk to the PC.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test složky pro propojení s PC"
+          }
+        }
+      }
+    },
+    "Bridge folder spike (testing)": {
+      "comment": "Hidden item in the Diagnostics menu that opens the bridge folder spike screen (add-mcp-server wave 1, testing only).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test složky pro propojení s PC (testování)"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

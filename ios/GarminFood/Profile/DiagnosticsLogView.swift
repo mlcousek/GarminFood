@@ -12,6 +12,11 @@
 // `AppPreferences.forceStandaloneMode`, which since wave 2 routes food-log
 // writes and reads to the local food log (`DataMode.effective`); flipping
 // it re-reads the Today day so the switch shows at once.
+//
+// The same menu also opens `BridgeFolderSpikeView` ("Bridge folder spike
+// (testing)"): the throwaway add-mcp-server wave-1 check that a picked
+// iCloud Drive folder stays readable and writable on this account. Remove
+// the item together with that file in add-mcp-server task 4.1.
 
 import SwiftUI
 import UIKit
@@ -23,6 +28,7 @@ struct DiagnosticsLogView: View {
     @State private var entries: [DiagnosticsEntry] = []
     @State private var isConfirmingClear = false
     @State private var didCopy = false
+    @State private var isShowingBridgeSpike = false
 
     var body: some View {
         @Bindable var preferences = environment.preferences
@@ -77,6 +83,12 @@ struct DiagnosticsLogView: View {
                         Text("Force standalone mode (testing)")
                         Text("Entries logged now stay on this phone only; XP, streak and usage still count them.")
                     }
+                    // THROWAWAY (add-mcp-server task 1.1, removed in 4.1).
+                    Button {
+                        isShowingBridgeSpike = true
+                    } label: {
+                        Label("Bridge folder spike (testing)", systemImage: "folder.badge.gearshape")
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
@@ -89,6 +101,9 @@ struct DiagnosticsLogView: View {
                     entries = []
                 }
             }
+        }
+        .navigationDestination(isPresented: $isShowingBridgeSpike) {
+            BridgeFolderSpikeView()
         }
         .task { await load() }
         .refreshable { await load() }
