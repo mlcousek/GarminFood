@@ -55,17 +55,6 @@ public enum ShortcutLoggingRules {
     public static func waitsForGarminDelivery(in mode: DataMode) -> Bool {
         mode == .garminConnected
     }
-
-    /// The amount Siri logs when the food has no remembered serving/amount:
-    /// Garmin mode keeps today's rule (the serving's own declared quantity);
-    /// standalone logs one serving -- an Open Food Facts "100 g" serving has
-    /// `numberOfUnits == 100`, which as a multiplier would be 10 kg.
-    public static func siriDefaultQuantity(for serving: Serving, in mode: DataMode) -> Double {
-        switch mode {
-        case .garminConnected: return serving.numberOfUnits
-        case .standalone: return 1
-        }
-    }
 }
 
 extension QuickPickLogTarget {

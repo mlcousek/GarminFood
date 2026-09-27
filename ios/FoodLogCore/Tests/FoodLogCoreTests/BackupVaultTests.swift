@@ -402,6 +402,36 @@ final class BackupVaultTests: XCTestCase {
         XCTAssertEqual(read("FoodLogCore/custom-foods.json"), #"[{"id":"imported"}]"#)
     }
 
+    /// Review note 23: a file the store quarantine moved aside is a
+    /// diagnostic, not data -- never exported, never restored from an older
+    /// backup that still holds one, and the phone's own copy survives a
+    /// restore.
+    func testQuarantinedFilesAreNeitherBackedUpNorRestored() throws {
+        try seedDataDirectory()
+        let quarantined = "FoodLogCore/custom-foods.unreadable-20260919-080000.json"
+        try write(#"{"broken":"#, quarantined)
+
+        let (container, _) = try vault.makeExportContainer(preferences: [:], appVersion: nil, now: noon)
+        XCTAssertEqual(Set(container.files.map(\.path)), Self.backedUp)
+        let snapshot = try XCTUnwrap(vault.writeSnapshot(kind: .manual, preferences: [:], appVersion: nil, now: noon, calendar: calendar))
+        XCTAssertFalse(snapshot.snapshot.manifest.files.contains { $0.path == quarantined })
+
+        // An older backup that still carries a quarantined file.
+        let stray = "Gamification/xp-ledger.unreadable-20260901-120000.json"
+        let older = BackupContainer(
+            manifest: container.manifest,
+            files: container.files + [BackupContainer.File(path: stray, contents: Data(#"{"old":true}"#.utf8))],
+            preferences: [:]
+        )
+        let staged = try vault.stageRestore(container: older)
+        XCTAssertFalse(staged.files.contains { $0.path == stray })
+        _ = try vault.applyPendingRestore(currentPreferences: [:], appVersion: nil, now: noon.addingTimeInterval(day), calendar: calendar)
+
+        XCTAssertFalse(exists(stray), "not restored as a stray file")
+        XCTAssertEqual(read(quarantined), #"{"broken":"#, "the phone's own quarantined copy is left alone")
+        XCTAssertEqual(read("FoodLogCore/custom-foods.json"), #"[{"id":"cf1"},{"id":"cf2"}]"#)
+    }
+
     // MARK: - No secrets anywhere
 
     func testNoSecretsInSnapshotExportOrStagedRestore() throws {

@@ -120,11 +120,21 @@ public enum HydrationHistory {
         entries.filter { calendar.isDate($0.loggedAt, inSameDayAs: date) }
     }
 
-    /// Consecutive days, counting back from `today`, whose total (via
-    /// `total(for:on:calendar:)`) meets or exceeds `goalML`. Stops at the
-    /// first day that falls short -- including `today` itself, so a streak
-    /// is 0 until today's own total reaches the goal (today doesn't get a
-    /// free pass the way a still-in-progress day sometimes would).
+    /// Consecutive days whose total (via `total(for:on:calendar:)`, this
+    /// app's drinks only) meets or exceeds `goalML`. Screens use
+    /// `WaterDayTotals.streak` instead, which runs the same rule over the
+    /// total Today shows (Garmin's in Garmin mode, review note 17).
+    public static func streak(for entries: [HydrationEntry], goalML: Double, on today: Date = Date(), calendar: Calendar = .current) -> Int {
+        streak(goalML: goalML, on: today, calendar: calendar) { day in
+            total(for: entries, on: day, calendar: calendar)
+        }
+    }
+
+    /// Consecutive days meeting `goalML`, where `total` gives a day's total.
+    /// An unfinished `today` is IN PROGRESS, like the food streak: counting
+    /// starts from yesterday, and today is added only once its goal is
+    /// already met -- so the streak doesn't read 0 every morning (review
+    /// note 17). A missed yesterday still breaks it.
     ///
     /// Deliberately simple, unlike `Gamification.StreakEngine`'s food
     /// streak: no grace day forgiving one missed day per rolling week. That
@@ -134,15 +144,20 @@ public enum HydrationHistory {
     /// dependency runs the other way). A plain "did every day in a row hit
     /// the goal" count is the right scope for a pure, local hydration
     /// trend stat.
-    public static func streak(for entries: [HydrationEntry], goalML: Double, on today: Date = Date(), calendar: Calendar = .current) -> Int {
+    public static func streak(goalML: Double, on today: Date = Date(), calendar: Calendar = .current, total: (Date) -> Double) -> Int {
         guard goalML > 0 else { return 0 }
-        var count = 0
-        var day = today
-        while total(for: entries, on: day, calendar: calendar) >= goalML {
+        var count = total(today) >= goalML ? 1 : 0
+        guard var day = calendar.date(byAdding: .day, value: -1, to: today) else { return count }
+        // Bounded so a `total` that never falls short can't loop forever.
+        for _ in 0..<maxStreakDays {
+            guard total(day) >= goalML else { break }
             count += 1
             guard let previousDay = calendar.date(byAdding: .day, value: -1, to: day) else { break }
             day = previousDay
         }
         return count
     }
+
+    /// Upper bound on how far back `streak` looks (10 years).
+    static let maxStreakDays = 3_650
 }

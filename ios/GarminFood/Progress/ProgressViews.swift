@@ -137,7 +137,7 @@ struct ProgressHomeView: View {
                 TrendsView()
             } label: {
                 TrendsSummaryCard(
-                    hydrationStreak: HydrationHistory.streak(for: environment.hydrationLoader.entries, goalML: environment.hydrationLoader.goalML)
+                    hydrationStreak: environment.hydrationLoader.streak
                 )
             }
             .buttonStyle(.plain)

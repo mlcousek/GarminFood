@@ -16,6 +16,10 @@
 // add-standalone-mode D7 (task 4.4): in standalone mode the total is the
 // sum of this phone's drinks and the goal the override or 2000 ml
 // (`WeightAndWaterOverview.standalone*`); no row has a sync state.
+//
+// Review note 17: `dayTotals` (FoodLogCore's `WaterDayTotals`) is the one
+// per-day resolution every screen reads -- Trends and the water streak used
+// to sum only this app's drinks while Today showed Garmin's total.
 
 import Foundation
 import Observation
@@ -44,13 +48,23 @@ final class HydrationLoader {
         self.preferences = preferences
     }
 
-    /// Garmin's total + undelivered local drinks and corrections (D4).
-    var todayTotalML: Double {
-        if preferences.isStandalone {
-            return WeightAndWaterOverview.standaloneWaterTotalML(entries: entries, on: Date())
-        }
-        return WeightAndWaterOverview.waterTotalML(snapshot: snapshot, outboxEntries: outboxEntries, on: Date())
+    /// Every day's water total, resolved the same way for every screen
+    /// (review note 17): Today, Progress, Trends' chart and the water streak
+    /// all read it, so they can't disagree about Garmin vs local drinks.
+    var dayTotals: WaterDayTotals {
+        WaterDayTotals(
+            isStandalone: preferences.isStandalone,
+            snapshot: snapshot,
+            outboxEntries: outboxEntries,
+            localEntries: entries
+        )
     }
+
+    /// Garmin's total + undelivered local drinks and corrections (D4).
+    var todayTotalML: Double { dayTotals.total(on: Date()) }
+
+    /// The water-goal streak over `dayTotals`, today in progress.
+    var streak: Int { dayTotals.streak(goalML: goalML) }
 
     var todayEntries: [HydrationEntry] { HydrationHistory.entries(for: entries, on: Date()) }
 

@@ -172,7 +172,7 @@ public enum PreferencesBackup {
     /// The domain after restoring `backup` over `current`: every key a
     /// backup may carry is replaced by the backup's (and removed when the
     /// backup lacks it -- restore replaces, never merges), while excluded
-    /// keys (`dataSafety.*`, developer switches, system keys) keep their
+    /// keys (`dataSafety.*`, the data mode, developer switches, system keys) keep their
     /// current values. Backup keys that are excluded here are ignored too,
     /// so a crafted file cannot set them.
     public static func restoredDomain(current: [String: Any], backup: [String: PreferenceValue]) -> [String: Any] {

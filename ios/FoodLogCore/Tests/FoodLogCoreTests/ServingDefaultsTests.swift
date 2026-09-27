@@ -43,6 +43,59 @@ final class ServingDefaultsTests: XCTestCase {
         XCTAssertNil(ServingResolution.resolve(remembered, in: food))
     }
 
+    // MARK: - Default choice (Siri, review note 10)
+
+    /// No remembered amount + a gram-based serving ("g" x 100): ONE serving
+    /// (100 g), never 100 servings (10 kg) -- the same start the confirm
+    /// screen uses (`LogQuantity.initial`).
+    func testNoRememberedAmountOnAGramServingLogsOneServing() {
+        let food = makeFood(servingIds: ["100g"])
+
+        let choice = ServingResolution.defaultChoice(for: food, remembered: nil)
+
+        XCTAssertEqual(choice?.serving.id, "100g")
+        XCTAssertEqual(choice?.numberOfUnits, 1)
+        XCTAssertEqual(choice?.numberOfUnits, LogQuantity.initial(remembered: nil))
+    }
+
+    func testRememberedServingAndAmountAreUsed() {
+        let food = makeFood(servingIds: ["100g", "1-medium"])
+        let remembered = ServingDefault(foodId: "food-1", servingId: "1-medium", numberOfUnits: 2.5, updatedAt: Date())
+
+        let choice = ServingResolution.defaultChoice(for: food, remembered: remembered)
+
+        XCTAssertEqual(choice?.serving.id, "1-medium")
+        XCTAssertEqual(choice?.numberOfUnits, 2.5)
+    }
+
+    /// The remembered amount belonged to a serving that's gone: first
+    /// serving at one serving, not the stale amount on a different serving.
+    func testStaleRememberedServingFallsBackToOneOfTheFirstServing() {
+        let food = makeFood(servingIds: ["100g"])
+        let remembered = ServingDefault(foodId: "food-1", servingId: "gone", numberOfUnits: 3, updatedAt: Date())
+
+        let choice = ServingResolution.defaultChoice(for: food, remembered: remembered)
+
+        XCTAssertEqual(choice?.serving.id, "100g")
+        XCTAssertEqual(choice?.numberOfUnits, 1)
+    }
+
+    func testOutOfRangeRememberedAmountFallsBackToOne() {
+        let food = makeFood(servingIds: ["100g"])
+        let remembered = ServingDefault(foodId: "food-1", servingId: "100g", numberOfUnits: LogQuantity.maximum * 2, updatedAt: Date())
+
+        XCTAssertEqual(ServingResolution.defaultChoice(for: food, remembered: remembered)?.numberOfUnits, 1)
+        XCTAssertEqual(LogQuantity.initial(remembered: 0), 1)
+        XCTAssertEqual(LogQuantity.initial(remembered: 3), 3)
+    }
+
+    func testEligibilitySkipsServingsAndNoEligibleServingIsNil() {
+        let food = makeFood(servingIds: ["100g", "1-medium"])
+
+        XCTAssertEqual(ServingResolution.defaultChoice(for: food, remembered: nil, isEligible: { $0.id == "1-medium" })?.serving.id, "1-medium")
+        XCTAssertNil(ServingResolution.defaultChoice(for: food, remembered: nil, isEligible: { _ in false }))
+    }
+
     // MARK: - Store persistence
 
     private func makeStore() -> (store: ServingDefaultStore, url: URL) {

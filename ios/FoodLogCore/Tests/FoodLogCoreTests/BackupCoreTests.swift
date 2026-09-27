@@ -31,6 +31,9 @@ final class BackupCoreTests: XCTestCase {
         XCTAssertTrue(BackupExclusions.includesFile(relativePath: "Gamification/features/secrets/state.json"))
         // A store nobody registered (e.g. supplements) is backed up anyway.
         XCTAssertTrue(BackupExclusions.includesFile(relativePath: "FoodLogCore/Supplements/supplement-log.json"))
+        // Only the quarantine's `.unreadable-` marker excludes a file, not
+        // the word on its own.
+        XCTAssertTrue(BackupExclusions.includesFile(relativePath: "Gamification/zzz-unreadable.json"))
     }
 
     func testExcludesDeviceStateCredentialsAndBackups() {
@@ -50,7 +53,11 @@ final class BackupCoreTests: XCTestCase {
             "Auth/credentials.json",
             "Auth/password.json",
             "FoodLogCore/custom-foods.txt",
-            "../FoodLogCore/custom-foods.json"
+            "../FoodLogCore/custom-foods.json",
+            // Review note 23: files the store quarantine moved aside.
+            "FoodLogCore/custom-foods.unreadable-20260920-101500.json",
+            "FoodLogCore/FoodLog/2026-09.unreadable-20260920-101500-1a2b3c4d.json",
+            "Gamification/xp-ledger.UNREADABLE-20260920-101500.json"
         ]
         for path in excluded {
             XCTAssertFalse(BackupExclusions.includesFile(relativePath: path), path)
@@ -259,6 +266,41 @@ final class BackupCoreTests: XCTestCase {
         XCTAssertEqual(BackupReminderPolicy.daysSince(lateEvening, now: justAfterMidnight, calendar: calendar), 1)
         XCTAssertEqual(BackupReminderPolicy.daysSince(lateEvening, now: lateEvening.addingTimeInterval(10 * 24 * 60 * 60), calendar: calendar), 10)
         XCTAssertEqual(BackupReminderPolicy.daysSince(justAfterMidnight, now: lateEvening, calendar: calendar), 0)
+    }
+
+    /// Review note 22: a restore keeps the phone's current data mode (and
+    /// testing toggle) -- a Garmin-mode backup restored onto a standalone
+    /// phone, or the reverse, must not switch it.
+    func testDataModeNeverTravelsWithABackup() {
+        XCTAssertFalse(BackupExclusions.includesPreference(key: DataMode.storageKey))
+        XCTAssertFalse(BackupExclusions.includesPreference(key: DataMode.forceStandaloneStorageKey))
+
+        let captured = PreferencesBackup.capture(domain: [
+            DataMode.storageKey: DataMode.garminConnected.rawValue,
+            "preferences.haptics": true
+        ])
+        XCTAssertNil(captured[DataMode.storageKey])
+
+        // The owner's Garmin-mode backup (as an older build wrote it, with
+        // the mode inside) restored onto a standalone phone.
+        let restored = PreferencesBackup.restoredDomain(
+            current: [DataMode.storageKey: DataMode.standalone.rawValue, "preferences.haptics": false],
+            backup: [
+                DataMode.storageKey: .string(DataMode.garminConnected.rawValue),
+                DataMode.forceStandaloneStorageKey: .bool(true),
+                "preferences.haptics": .bool(true)
+            ]
+        )
+        XCTAssertEqual(restored[DataMode.storageKey] as? String, DataMode.standalone.rawValue, "the phone keeps its mode")
+        XCTAssertNil(restored[DataMode.forceStandaloneStorageKey], "the testing toggle isn't switched on by a backup")
+        XCTAssertEqual(restored["preferences.haptics"] as? Bool, true, "ordinary preferences still restore")
+
+        // And the reverse: a standalone backup onto the owner's phone.
+        let reverse = PreferencesBackup.restoredDomain(
+            current: [DataMode.storageKey: DataMode.garminConnected.rawValue],
+            backup: [DataMode.storageKey: .string(DataMode.standalone.rawValue)]
+        )
+        XCTAssertEqual(reverse[DataMode.storageKey] as? String, DataMode.garminConnected.rawValue)
     }
 
     func testReminderBookkeepingKeysNeverTravelWithABackup() {

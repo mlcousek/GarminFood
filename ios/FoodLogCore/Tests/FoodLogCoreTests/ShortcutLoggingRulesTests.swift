@@ -46,9 +46,11 @@ final class ShortcutLoggingRulesTests: XCTestCase {
         XCTAssertFalse(ShortcutLoggingRules.waitsForGarminDelivery(in: .standalone))
     }
 
-    func testDefaultQuantity() {
-        XCTAssertEqual(ShortcutLoggingRules.siriDefaultQuantity(for: tvaroh.servings[0], in: .garminConnected), 100, "unchanged for the owner")
-        XCTAssertEqual(ShortcutLoggingRules.siriDefaultQuantity(for: tvaroh.servings[0], in: .standalone), 1, "one 100 g serving, never 10 kg")
+    /// Review note 10: with nothing remembered Siri logs ONE serving in
+    /// both modes -- a "100 g" serving is 100 g, never 100 servings (10 kg).
+    func testDefaultQuantityIsOneServingInEveryMode() {
+        XCTAssertEqual(ServingResolution.defaultChoice(for: tvaroh, remembered: nil)?.numberOfUnits, 1, "one 100 g serving, never 10 kg")
+        XCTAssertNil(ServingResolution.defaultChoice(for: noCalories, remembered: nil, isEligible: { $0.completeness.isLoggable }), "standalone skips servings without calories")
     }
 
     func testQuickPicksGarminCannotTake() {

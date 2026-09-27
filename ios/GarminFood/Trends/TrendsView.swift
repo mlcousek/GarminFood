@@ -3,16 +3,17 @@
 // The Trends screen (add-trends-and-insights): a ~30-day macro trend
 // (calories/protein/carbs/fat, actual vs. goal, from ONE new Garmin read --
 // `GarminClient.calorieSummaryDaily`, see `MacroTrendLoader`) plus a purely
-// local hydration streak + daily-total trend (`FoodLogCore.HydrationHistory
-// .streak`, no network at all). Reached from the Progress tab (see
+// hydration streak + daily-total trend over the same per-day totals Today
+// shows (`HydrationLoader.dayTotals`, FoodLogCore's `WaterDayTotals`;
+// review note 17), no network at all. Reached from the Progress tab (see
 // `TrendsSummaryCard` in ProgressViews.swift), same "card summarizes, tap
 // opens the detail screen" shape every other Progress entry point uses.
 //
 // Reads `environment.trendsLoader` (fetched on `.task`/pull-to-refresh,
 // never on app foreground -- see that loader's own header for why) and
-// `environment.hydrationLoader.entries` (already refreshed elsewhere;
-// hydration's own trend math is pure and local, so nothing extra is
-// fetched for it here).
+// `environment.hydrationLoader.dayTotals` (already refreshed elsewhere;
+// hydration's own trend math is pure over cached/local values, so nothing
+// extra is fetched for it here).
 //
 // add-day-notes: tagged days from `environment.dayNoteStore` (local, no
 // network) are drawn as emoji markers on every daily chart; tapping one
@@ -26,9 +27,11 @@ struct TrendsView: View {
     @Environment(AppEnvironment.self) private var environment
 
     /// The effective water goal (Garmin's unless overridden in Settings,
-    /// sync-weight-hydration-with-garmin D5). The streak/trend below still
-    /// sums only drinks logged in this app: Garmin's per-day totals are
-    /// fetched for today only, not for past days.
+    /// sync-weight-hydration-with-garmin D5). The streak/trend below use the
+    /// same per-day total as Today (review note 17): in Garmin mode Garmin's
+    /// cached total for each day the app read it (the cache keeps the last
+    /// `GarminHealthCacheStore.hydrationDaysKept` days), else the app's own
+    /// drinks for that day.
     private var hydrationGoalML: Double { environment.hydrationLoader.goalML }
 
     /// Matches `HydrationTrendChartView`'s reasonable phone-width range
@@ -41,12 +44,12 @@ struct TrendsView: View {
 
     var body: some View {
         let macroLoader = environment.trendsLoader
-        let hydrationEntries = environment.hydrationLoader.entries
+        let waterTotals = environment.hydrationLoader.dayTotals
 
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
                 macroSection(loader: macroLoader)
-                hydrationSection(entries: hydrationEntries)
+                hydrationSection(totals: waterTotals)
             }
             .padding(Theme.Spacing.md)
         }
@@ -109,9 +112,9 @@ struct TrendsView: View {
     // MARK: - Hydration
 
     @ViewBuilder
-    private func hydrationSection(entries: [HydrationEntry]) -> some View {
-        let points = hydrationTrendPoints(entries: entries)
-        let streak = HydrationHistory.streak(for: entries, goalML: hydrationGoalML)
+    private func hydrationSection(totals: WaterDayTotals) -> some View {
+        let points = hydrationTrendPoints(totals: totals)
+        let streak = totals.streak(goalML: hydrationGoalML)
 
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             SectionHeader(title: String(localized: "Water, last \(hydrationDaysBack) days", comment: "Trends section header; %lld = days shown (21). Plural."))
@@ -133,18 +136,18 @@ struct TrendsView: View {
     }
 
     /// `hydrationDaysBack` local-midnight days ending today, oldest first --
-    /// pure local computation over `environment.hydrationLoader.entries`,
-    /// no network call. Deliberately plain `Calendar.current`/local midnight
+    /// pure computation over `environment.hydrationLoader.dayTotals`, no
+    /// network call. Deliberately plain `Calendar.current`/local midnight
     /// rather than `NutritionDayBoundary`: hydration has no Garmin nutrition
     /// day concept of its own (`HydrationHistory.total` already buckets by
     /// plain calendar day, matching how a person thinks about "today's
     /// water" -- see that function's own doc comment), so this stays
     /// consistent with it rather than introducing a second day boundary.
-    private func hydrationTrendPoints(entries: [HydrationEntry], calendar: Calendar = .current) -> [HydrationTrendPoint] {
+    private func hydrationTrendPoints(totals: WaterDayTotals, calendar: Calendar = .current) -> [HydrationTrendPoint] {
         let today = calendar.startOfDay(for: Date())
         return (0..<hydrationDaysBack).reversed().compactMap { offset -> HydrationTrendPoint? in
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
-            return HydrationTrendPoint(date: day, totalML: HydrationHistory.total(for: entries, on: day, calendar: calendar))
+            return HydrationTrendPoint(date: day, totalML: totals.total(on: day))
         }
     }
 }

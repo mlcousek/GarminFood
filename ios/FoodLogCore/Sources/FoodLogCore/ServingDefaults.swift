@@ -96,4 +96,23 @@ public enum ServingResolution {
         guard let remembered else { return nil }
         return food.servings.first { $0.id == remembered.servingId }
     }
+
+    /// The serving and quantity to log a food at with no screen to ask
+    /// (Siri): the remembered serving at its remembered amount when that
+    /// serving still exists, else the first serving `isEligible` accepts at
+    /// ONE serving -- the same starting quantity the confirm screen and the
+    /// shelf cards use (`LogQuantity.initial`). A remembered amount belongs
+    /// to its remembered serving, so it's dropped when that serving is gone.
+    /// `nil` when no serving qualifies.
+    public static func defaultChoice(
+        for food: Food,
+        remembered: ServingDefault?,
+        isEligible: (Serving) -> Bool = { _ in true }
+    ) -> (serving: Serving, numberOfUnits: Double)? {
+        if let serving = resolve(remembered, in: food) {
+            return (serving, LogQuantity.initial(remembered: remembered?.numberOfUnits))
+        }
+        guard let serving = food.servings.first(where: isEligible) else { return nil }
+        return (serving, LogQuantity.initial(remembered: nil))
+    }
 }
