@@ -544,7 +544,31 @@ stderr only (stdout is the MCP channel).
   command and result is a file the owner can open; the diagnostics log has
   a `bridge` category; commands record `issuedBy`.
 
-## Open questions for the owner
+## Owner answers (2026-09-27)
+
+- **Q1 — answered:** `iCloud Drive/GarminFood Bridge`. iCloud for Windows is
+  installed and syncing; on the PC the folder is
+  `C:\Users\jmlcousek\iCloudDrive\GarminFood Bridge` (created 2026-09-27).
+- **Q2 — answered: through the phone.** Food logged from the PC goes to the
+  app as a bridge command (`via: "bridge"` is the default and the only food
+  path in the first release): the app logs it exactly like a tap, and its
+  outbox delivers it to Garmin as it does today. Garmin-direct food writes
+  (wave 6.1 `via: "garmin"`) are not built unless the owner asks later;
+  `food.adopt` is only needed for them and is deferred with them.
+- **Q3 — answered: keep** the existing generic `garmin` MCP server as it is,
+  alongside this one. Its writes still give no streak credit; the docs say so.
+- **Q4 — defaulted:** no probe. Food edits/deletes from the PC go through
+  the bridge (the app's own delete path), so the direct delete stays hidden.
+- **Q5 — defaulted:** the iCloud/PC account is the trust boundary
+  (unsigned commands, allow-listed kinds, no credential access).
+- **Q6 — defaulted:** no Shortcuts automation in the first release.
+- **Q7 — defaulted:** owner-only for now.
+- **Q8 — defaulted:** yes, no XP for items credited more than 7 days late.
+
+Weight and water from the PC also go through the bridge (same reason as Q2),
+unless the owner asks for Garmin-direct later.
+
+## Open questions for the owner (original wording)
 
 - **Q1** Which iCloud Drive path and folder name? (Default proposed:
   `iCloud Drive/GarminFood Bridge`.) Is iCloud for Windows already
