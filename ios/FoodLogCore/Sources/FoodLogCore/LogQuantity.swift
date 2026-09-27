@@ -27,6 +27,18 @@ public enum LogQuantity {
         quantity.isFinite && quantity > 0 && quantity <= maximum
     }
 
+    /// The quantity a log starts at: the remembered amount when there is a
+    /// valid one, else ONE serving. The single rule shared by the confirm
+    /// screen, the shelf cards (which open it with their remembered amount)
+    /// and Siri (`ServingResolution.defaultChoice`) -- review note 10: Siri
+    /// used to fall back to the serving's own declared quantity, which for
+    /// a "100 g" serving (`numberOfUnits == 100`) meant 100 servings, 10 kg.
+    /// The quantity is always a multiplier of one whole serving.
+    public static func initial(remembered: Double?) -> Double {
+        guard let remembered, isValid(remembered) else { return 1 }
+        return remembered
+    }
+
     /// What a screen shows when `isValid` fails for a quantity the user
     /// typed. Localized from this package's own `Resources/<lang>.lproj`
     /// (add-localization design.md D3); the key is the English text with

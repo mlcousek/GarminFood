@@ -18,9 +18,12 @@
 // (they log through their backing food and need its serving choice).
 //
 // Quantity: the food's remembered serving and amount when there is one
-// (ServingDefaults), else its first serving at that serving's own declared
-// quantity -- Siri has no natural way to ask "which serving, how much?"
-// without a multi-turn conversation. The entry stays editable in the app.
+// (ServingDefaults), else its first serving at ONE serving -- the same rule
+// as the confirm screen and shelf cards (`ServingResolution.defaultChoice`
+// / `LogQuantity.initial`). Review note 10: it used to fall back to the
+// serving's own declared quantity, 100 servings for a "100 g" serving.
+// Siri has no natural way to ask "which serving, how much?" without a
+// multi-turn conversation. The entry stays editable in the app.
 //
 // add-standalone-mode 3.6 (design D5; rules in FoodLogCore's
 // ShortcutLoggingRules.swift, gated on `AppServices.currentDataMode`):
@@ -88,11 +91,11 @@ struct LogNamedFoodIntent: AppIntent {
         }
 
         let remembered = await services.servingDefaults.defaultServing(forFoodId: food.id)
-        let rememberedServing = ServingResolution.resolve(remembered, in: food)
-        guard let serving = rememberedServing ?? food.servings.first else {
+        guard let choice = ServingResolution.defaultChoice(for: food, remembered: remembered) else {
             return .result(dialog: "\(food.name) has no serving Garmin can log.")
         }
-        let numberOfUnits = (rememberedServing != nil ? remembered?.numberOfUnits : nil) ?? serving.numberOfUnits
+        let serving = choice.serving
+        let numberOfUnits = choice.numberOfUnits
 
         let date = NutritionDate.todayString()
         try await services.logEntryCoordinator.confirm(
@@ -158,7 +161,7 @@ struct LogNamedFoodIntent: AppIntent {
             let remembered = await services.servingDefaults.defaultServing(forFoodId: draft.id.uuidString)
             try await services.logEntryCoordinator.confirmCustomFood(
                 draft,
-                quantity: remembered?.numberOfUnits ?? 1,
+                quantity: LogQuantity.initial(remembered: remembered?.numberOfUnits),
                 mealType: mealType,
                 date: date
             )
@@ -168,16 +171,17 @@ struct LogNamedFoodIntent: AppIntent {
 
         let food = top.food
         let remembered = await services.servingDefaults.defaultServing(forFoodId: food.id)
-        let rememberedServing = ServingResolution.resolve(remembered, in: food)
-        guard let serving = rememberedServing ?? food.servings.first(where: { $0.completeness.isLoggable }) else {
+        guard let choice = ServingResolution.defaultChoice(
+            for: food,
+            remembered: remembered,
+            isEligible: { $0.completeness.isLoggable }
+        ) else {
             return "\(food.name) has no calorie value, so it can't be logged. Open GarminFood to add it as a custom food."
         }
-        let numberOfUnits = (rememberedServing != nil ? remembered?.numberOfUnits : nil)
-            ?? ShortcutLoggingRules.siriDefaultQuantity(for: serving, in: mode)
         try await services.logEntryCoordinator.confirm(
             food: food,
-            serving: serving,
-            numberOfUnits: numberOfUnits,
+            serving: choice.serving,
+            numberOfUnits: choice.numberOfUnits,
             mealType: mealType,
             date: date
         )

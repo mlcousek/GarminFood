@@ -93,7 +93,8 @@ struct LogEntryConfirmView: View {
         // down to 50 rather than incrementing, which read as the app
         // randomly jumping to "50 servings" the moment you touched it.
         // A remembered amount outside `LogQuantity`'s bound falls back to 1.
-        _quantity = State(initialValue: initialQuantity.map { LogQuantity.isValid($0) ? $0 : 1 } ?? 1)
+        // `LogQuantity.initial` is the one rule Siri shares (review note 10).
+        _quantity = State(initialValue: LogQuantity.initial(remembered: initialQuantity))
         // (A remembered amount is still a multiplier; `ServingQuantityField`
         // shows it in grams when that's the input mode -- amount-in-grams.)
         // 2026-09-21 bug fix: `presetMealType` is applied HERE, directly in
