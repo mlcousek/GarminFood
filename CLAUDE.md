@@ -70,6 +70,13 @@ ios/
   Gamification/     SPM package (depends on FoodLogCore) — streaks, XP/levels,
                     daily/rotating challenges, achievements. App-only, not
                     linked into the widget extension.
+  VaultKit/         SPM package (depends on GarminKit) — the GitHub wire layer
+                    to the owner's Obsidian vault (add-vault-connection):
+                    fine-grained token in the Keychain, VaultPathPolicy
+                    allow-lists, conditional fetch (ConditionalFileSync),
+                    generic DurableQueue + create-only uploads, and the
+                    VaultTransport seam. No training concepts, no
+                    user-facing strings. App-only, never the widget.
   GarminFood/       The app target (SwiftUI views), organized by screen:
                     Today/, Catalog/, CustomFood/, LogEntry/, Profile/,
                     Progress/, App/ (composition root: AppEnvironment.swift).
@@ -90,6 +97,16 @@ Module boundary rule: UI (`GarminFood/`) never talks to `GarminKit` directly
 for anything domain-shaped — it goes through `FoodLogCore` (e.g.
 `LogEntryCoordinator`, not `Outbox`, from a view). `FoodLogCore` never imports
 SwiftUI.
+
+VaultKit keeps the same boundary for the vault: it knows GitHub's contents
+API and nothing about sessions or plans. Everything above it depends on
+`VaultTransport` (hub-relative paths), never on `GitHubContentsClient`;
+only `GarminFood/Vault/VaultServices.swift` knows the transport is GitHub.
+Every vault request goes through `VaultPathPolicy` first, and nothing may
+log the token, the repository owner or its name (`VaultLog`,
+`RedactionTests`). This repository is public: no vault repository name,
+token or vault content in code, CI or fixtures. See
+`docs/vault-connection.md`.
 
 `AppServices.swift` (`Shared/`) holds the one real instance of every JSON-file
 store per process; `AppEnvironment.swift` (`GarminFood/App/`) is the SwiftUI
