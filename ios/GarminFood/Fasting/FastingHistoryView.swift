@@ -120,7 +120,7 @@ struct FastingHistoryView: View {
                         .frame(maxWidth: .infinity)
                         .card()
                 }
-                Text("Judged from the times foods were logged in GarminFood (and in Garmin Connect, for days you've opened here). A fast is broken by the first food logged inside it.")
+                Text("Judged from the times foods were logged in Jirka's Arc (and in Garmin Connect, for days you've opened here). A fast is broken by the first food logged inside it.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

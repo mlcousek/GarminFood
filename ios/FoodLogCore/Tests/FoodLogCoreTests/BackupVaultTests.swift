@@ -235,7 +235,46 @@ final class BackupVaultTests: XCTestCase {
         XCTAssertEqual(preview.itemCounts[.foodLog], 3)
         XCTAssertEqual(preview.itemCounts[.customFoods], 2)
         XCTAssertEqual(preview.itemCounts[.weight], 1)
-        XCTAssertEqual(BackupVault.exportFileName(now: noon, calendar: calendar), "GarminFood-backup-2026-09-20.json")
+        XCTAssertEqual(BackupVault.exportFileName(now: noon, calendar: calendar), "JirkasArc-backup-2026-09-20.json")
+    }
+
+    /// rebrand-to-jirkas-arc 2.6: the rename touched only the export's file
+    /// name. A container exactly as the 1.x "GarminFood" builds wrote it
+    /// (marker `garminfood.backup`, app version "1.0 (1)") still decodes
+    /// and passes `BackupCompatibility`.
+    func testBackupFromThePreviousBuildStillImports() throws {
+        XCTAssertEqual(BackupManifest.schemaIdentifier, "garminfood.backup", "the marker must never change")
+        let previousBuild = #"""
+        {
+          "files" : [
+            {
+              "contents" : "W10=",
+              "path" : "FoodLogCore/custom-foods.json"
+            }
+          ],
+          "manifest" : {
+            "appVersion" : "1.0 (1)",
+            "createdAt" : "2026-09-20T10:00:00Z",
+            "files" : [
+              {
+                "byteCount" : 2,
+                "path" : "FoodLogCore/custom-foods.json",
+                "storeId" : "foodlog.custom-foods",
+                "storeVersion" : 1
+              }
+            ],
+            "formatVersion" : 1,
+            "kind" : "export",
+            "schema" : "garminfood.backup"
+          },
+          "preferences" : {}
+        }
+        """#
+        let container = try BackupContainer.decode(Data(previousBuild.utf8))
+        XCTAssertNoThrow(try BackupCompatibility.check(container.manifest))
+        XCTAssertEqual(container.manifest.appVersion, "1.0 (1)")
+        XCTAssertEqual(container.files.map(\.path), ["FoodLogCore/custom-foods.json"])
+        XCTAssertEqual(container.files.first?.contents, Data("[]".utf8))
     }
 
     // MARK: - Staged restore

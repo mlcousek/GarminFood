@@ -317,7 +317,7 @@ final class AppPreferences {
     }
 
     /// add-standalone-mode 5.2: the user's own display name for Profile in
-    /// standalone mode. Blank = none (Profile shows "GarminFood").
+    /// standalone mode. Blank = none (Profile shows "Jirka's Arc").
     var localDisplayName: String? {
         get { storedLocalDisplayName }
         set {

@@ -17,7 +17,7 @@ struct AppSignatureView: View {
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("GarminFood, by Jirka")
+        .accessibilityLabel("Jirka's Arc, by Jirka")
     }
 }
 

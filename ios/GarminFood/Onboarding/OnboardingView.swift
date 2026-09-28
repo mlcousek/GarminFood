@@ -1,7 +1,7 @@
 // OnboardingView.swift
 //
 // First-launch onboarding for a FRESH install (add-standalone-mode D10,
-// task 5.1): welcome -> "How do you want to use GarminFood?" -> (standalone
+// task 5.1): welcome -> "How do you want to use Jirka's Arc?" -> (standalone
 // only) skippable goal setup -> a one-screen "Back up regularly" explainer.
 //
 // Shown only while `AppEnvironment.needsOnboarding` is true, which the
@@ -66,7 +66,7 @@ struct OnboardingView: View {
     private var welcome: some View {
         page(
             symbol: "fork.knife.circle.fill",
-            title: String(localized: "Welcome to GarminFood"),
+            title: String(localized: "Welcome to Jirka's Arc"),
             message: String(localized: "Log what you eat in two taps, keep a streak going and see how your days add up.")
         ) {
             Button(String(localized: "Get started")) {
@@ -79,7 +79,7 @@ struct OnboardingView: View {
     private var choice: some View {
         page(
             symbol: "person.crop.circle.badge.questionmark",
-            title: String(localized: "How do you want to use GarminFood?"),
+            title: String(localized: "How do you want to use Jirka's Arc?"),
             message: String(localized: "You can change this later in Settings.")
         ) {
             Button {

@@ -2395,14 +2395,14 @@
         }
       }
     },
-    "Judged from the times foods were logged in GarminFood (and in Garmin Connect, for days you've opened here). A fast is broken by the first food logged inside it.": {
+    "Judged from the times foods were logged in Jirka's Arc (and in Garmin Connect, for days you've opened here). A fast is broken by the first food logged inside it.": {
       "comment": "Fasting history footnote.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Posuzuje se podle časů, kdy bylo jídlo zapsáno v GarminFood (a v Garmin Connect u dnů, které už tu máš otevřené). Půst přeruší první jídlo zapsané uvnitř okna."
+            "value": "Posuzuje se podle časů, kdy bylo jídlo zapsáno v Jirka's Arc (a v Garmin Connect u dnů, které už tu máš otevřené). Půst přeruší první jídlo zapsané uvnitř okna."
           }
         }
       }
@@ -4399,14 +4399,14 @@
         }
       }
     },
-    "Couldn't search Garmin: sign in again in GarminFood first.": {
+    "Couldn't search Garmin: sign in again in Jirka's Arc first.": {
       "comment": "Siri reply: food search failed because the Garmin sign-in expired.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Garmin nejde prohledat: nejdřív se v GarminFood znovu přihlas."
+            "value": "Garmin nejde prohledat: nejdřív se v Jirka's Arc znovu přihlas."
           }
         }
       }
@@ -6103,38 +6103,38 @@
         }
       }
     },
-    "GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
+    "Jirka's Arc: training plan, food and weight, by Jirka. It logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
       "comment": "Settings: About footer with the required ODbL attribution.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "GarminFood zapíše jídlo na dvě ťuknutí a synchronizuje ho do Garmin Connect. Data českých produktů © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+            "value": "Jirka's Arc: tréninkový plán, jídlo a váha, od Jirky. Zapíše jídlo na dvě ťuknutí a synchronizuje ho do Garmin Connect. Data českých produktů © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
           }
         }
       }
     },
-    "GarminFood Screen": {
+    "Jirka's Arc Screen": {
       "comment": "App Intents type name (Shared/OpenBarcodeScannerIntent.swift): the kind of screen the scan intent opens, shown in the Shortcuts app.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Obrazovka GarminFood"
+            "value": "Obrazovka Jirka's Arc"
           }
         }
       }
     },
-    "GarminFood, by Jirka": {
+    "Jirka's Arc, by Jirka": {
       "comment": "VoiceOver label of the app wordmark.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "GarminFood od Jirky"
+            "value": "Jirka's Arc od Jirky"
           }
         }
       }
@@ -7051,14 +7051,14 @@
         }
       }
     },
-    "Log ${foodName} in GarminFood": {
+    "Log ${foodName} in Jirka's Arc": {
       "comment": "Shortcuts parameter summary (LogNamedFoodIntent.parameterSummary). ${foodName} is the food-name parameter; keep it verbatim.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapsat ${foodName} do GarminFood"
+            "value": "Zapsat ${foodName} do Jirka's Arc"
           }
         }
       }
@@ -7363,50 +7363,50 @@
         }
       }
     },
-    "Logs your #1 most-used food in GarminFood.": {
+    "Logs your #1 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 1 / 'Log Usual Food').",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje nejčastější jídlo."
           }
         }
       }
     },
-    "Logs your #2 most-used food in GarminFood.": {
+    "Logs your #2 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 2).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje druhé nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje druhé nejčastější jídlo."
           }
         }
       }
     },
-    "Logs your #3 most-used food in GarminFood.": {
+    "Logs your #3 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 3).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje třetí nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje třetí nejčastější jídlo."
           }
         }
       }
     },
-    "Logs your #4 most-used food in GarminFood.": {
+    "Logs your #4 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 4).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje čtvrté nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje čtvrté nejčastější jídlo."
           }
         }
       }
@@ -7783,14 +7783,14 @@
         }
       }
     },
-    "My GarminFood look. Paste the code in Settings > Appearance > Import theme, or open the link on your iPhone.": {
+    "My Jirka's Arc look. Paste the code in Settings > Appearance > Import theme, or open the link on your iPhone.": {
       "comment": "First line of the shared theme message; the code and the link follow on their own lines.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Můj vzhled GarminFood. Vlož kód v Nastavení > Vzhled > Importovat motiv, nebo otevři odkaz v iPhonu."
+            "value": "Můj vzhled Jirka's Arc. Vlož kód v Nastavení > Vzhled > Importovat motiv, nebo otevři odkaz v iPhonu."
           }
         }
       }
@@ -8347,14 +8347,14 @@
         }
       }
     },
-    "Notifications are off for GarminFood in iOS Settings, so reminders below won't fire.": {
+    "Notifications are off for Jirka's Arc in iOS Settings, so reminders below won't fire.": {
       "comment": "Reminders screen: warning when iOS notification permission is off.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Oznámení pro GarminFood jsou v Nastavení iOS vypnutá, takže se připomínky níže nezobrazí."
+            "value": "Oznámení pro Jirka's Arc jsou v Nastavení iOS vypnutá, takže se připomínky níže nezobrazí."
           }
         }
       }
@@ -8599,26 +8599,26 @@
         }
       }
     },
-    "Opens GarminFood directly into the barcode scanner.": {
+    "Opens Jirka's Arc directly into the barcode scanner.": {
       "comment": "Shortcuts intent description and Control gallery description for the barcode-scan action.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevře GarminFood rovnou ve skeneru čárových kódů."
+            "value": "Otevře Jirka's Arc rovnou ve skeneru čárových kódů."
           }
         }
       }
     },
-    "Opens GarminFood's page in iOS Settings, where the app's language can be changed": {
+    "Opens the Jirka's Arc page in iOS Settings, where the app's language can be changed": {
       "comment": "VoiceOver hint of the Language settings row.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevře stránku GarminFood v Nastavení iOS, kde můžeš změnit jazyk aplikace"
+            "value": "Otevře stránku Jirka's Arc v Nastavení iOS, kde můžeš změnit jazyk aplikace"
           }
         }
       }
@@ -9487,14 +9487,14 @@
         }
       }
     },
-    "Saved %@, but it can't reach Garmin until you sign in again in GarminFood.": {
+    "Saved %@, but it can't reach Garmin until you sign in again in Jirka's Arc.": {
       "comment": "Siri reply: saved locally, Garmin sign-in expired. %@ is a food name.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@: uloženo, ale do Garminu se to nedostane, dokud se v GarminFood znovu nepřihlásíš."
+            "value": "%@: uloženo, ale do Garminu se to nedostane, dokud se v Jirka's Arc znovu nepřihlásíš."
           }
         }
       }
@@ -9523,14 +9523,14 @@
         }
       }
     },
-    "Saved in GarminFood, but not sent: sign in to Garmin again in the app.": {
+    "Saved in Jirka's Arc, but not sent: sign in to Garmin again in the app.": {
       "comment": "Error shown by a quick-log Control/Shortcut: the entry is saved locally but the Garmin sign-in expired.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uloženo v GarminFood, ale neodesláno: v aplikaci se znovu přihlas ke Garminu."
+            "value": "Uloženo v Jirka's Arc, ale neodesláno: v aplikaci se znovu přihlas ke Garminu."
           }
         }
       }
@@ -9655,14 +9655,14 @@
         }
       }
     },
-    "Searches your foods and Garmin's food database for a name and logs the clear best match in GarminFood.": {
+    "Searches your foods and Garmin's food database for a name and logs the clear best match in Jirka's Arc.": {
       "comment": "Shortcuts action description (LogNamedFoodIntent.swift).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vyhledá název ve tvých jídlech a v databázi potravin Garminu a jednoznačně nejlepší shodu zapíše do GarminFood."
+            "value": "Vyhledá název ve tvých jídlech a v databázi potravin Garminu a jednoznačně nejlepší shodu zapíše do Jirka's Arc."
           }
         }
       }
@@ -9895,14 +9895,14 @@
         }
       }
     },
-    "Set in Garmin Connect. GarminFood only displays it.": {
+    "Set in Garmin Connect. Jirka's Arc only displays it.": {
       "comment": "Settings: footer under the read-only nutrition plan.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nastavuje se v Garmin Connect. GarminFood ho jen zobrazuje."
+            "value": "Nastavuje se v Garmin Connect. Jirka's Arc ho jen zobrazuje."
           }
         }
       }
@@ -10789,14 +10789,14 @@
         }
       }
     },
-    "That isn't a GarminFood theme code. Nothing was changed.": {
+    "That isn't a Jirka's Arc theme code. Nothing was changed.": {
       "comment": "Import theme: the pasted text is not a theme code.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tohle není kód motivu GarminFood. Nic se nezměnilo."
+            "value": "Tohle není kód motivu Jirka's Arc. Nic se nezměnilo."
           }
         }
       }
@@ -10897,14 +10897,14 @@
         }
       }
     },
-    "This code comes from a newer version of GarminFood. Update the app to import it. Nothing was changed.": {
+    "This code comes from a newer version of Jirka's Arc. Update the app to import it. Nothing was changed.": {
       "comment": "Import theme: the code has a newer format version.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tento kód pochází z novější verze GarminFood. Pro import aplikaci aktualizuj. Nic se nezměnilo."
+            "value": "Tento kód pochází z novější verze Jirka's Arc. Pro import aplikaci aktualizuj. Nic se nezměnilo."
           }
         }
       }
@@ -12169,14 +12169,14 @@
         }
       }
     },
-    "%@ has no calorie value, so it can't be logged. Open GarminFood to add it as a custom food.": {
+    "%@ has no calorie value, so it can't be logged. Open Jirka's Arc to add it as a custom food.": {
       "comment": "Siri reply, standalone mode. %@ is a food name.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Potravina %@ nemá kalorickou hodnotu, takže ji nejde zapsat. V GarminFood ji přidej jako vlastní potravinu."
+            "value": "Potravina %@ nemá kalorickou hodnotu, takže ji nejde zapsat. V Jirka's Arc ji přidej jako vlastní potravinu."
           }
         }
       }
@@ -12781,14 +12781,14 @@
         }
       }
     },
-    "GarminFood logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
+    "Jirka's Arc: training plan, food and weight, by Jirka. It logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
       "comment": "Settings, About footer (standalone mode, no Garmin).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "GarminFood zapisuje jídlo na dvě klepnutí a uchovává ho v tomto telefonu. Česká data o výrobcích © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+            "value": "Jirka's Arc: tréninkový plán, jídlo a váha, od Jirky. Zapisuje jídlo na dvě klepnutí a uchovává ho v tomto telefonu. Česká data o výrobcích © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
           }
         }
       }
@@ -12913,14 +12913,14 @@
         }
       }
     },
-    "Welcome to GarminFood": {
+    "Welcome to Jirka's Arc": {
       "comment": "Onboarding: welcome title.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vítejte v GarminFood"
+            "value": "Vítejte v Jirka's Arc"
           }
         }
       }
@@ -12949,14 +12949,14 @@
         }
       }
     },
-    "How do you want to use GarminFood?": {
+    "How do you want to use Jirka's Arc?": {
       "comment": "Onboarding: mode choice title.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jak chcete GarminFood používat?"
+            "value": "Jak chcete Jirka's Arc používat?"
           }
         }
       }
@@ -13441,26 +13441,26 @@
         }
       }
     },
-    "This isn't a GarminFood backup.": {
+    "This isn't a Jirka's Arc backup.": {
       "comment": "Data screen: the imported file isn't a backup.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tohle není záloha GarminFood."
+            "value": "Tohle není záloha Jirka's Arc."
           }
         }
       }
     },
-    "This backup is from a newer version of GarminFood. Update the app, then try again.": {
+    "This backup is from a newer version of Jirka's Arc. Update the app, then try again.": {
       "comment": "Data screen: the backup was written by a newer app.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tahle záloha je z novější verze GarminFood. Aktualizuj aplikaci a zkus to znovu."
+            "value": "Tahle záloha je z novější verze Jirka's Arc. Aktualizuj aplikaci a zkus to znovu."
           }
         }
       }
@@ -13501,26 +13501,26 @@
         }
       }
     },
-    "Your data will be replaced with the backup from %@ the next time you open GarminFood. Your current data is saved as a safety backup first.": {
+    "Your data will be replaced with the backup from %@ the next time you open Jirka's Arc. Your current data is saved as a safety backup first.": {
       "comment": "Data screen: confirming a restore from a snapshot. %@ = the backup's date and time.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Při příštím otevření GarminFood se tvoje data nahradí zálohou z %@. Současná data se nejdřív uloží jako pojistná záloha."
+            "value": "Při příštím otevření Jirka's Arc se tvoje data nahradí zálohou z %@. Současná data se nejdřív uloží jako pojistná záloha."
           }
         }
       }
     },
-    "Close GarminFood and open it again to finish restoring the backup from %@.": {
+    "Close Jirka's Arc and open it again to finish restoring the backup from %@.": {
       "comment": "Data screen: a restore is staged. %@ = the backup's date and time.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zavři GarminFood a otevři ho znovu, aby se dokončila obnova zálohy z %@."
+            "value": "Zavři Jirka's Arc a otevři ho znovu, aby se dokončila obnova zálohy z %@."
           }
         }
       }
@@ -13657,14 +13657,14 @@
         }
       }
     },
-    "GarminFood backs up once a day when you open it and keeps the last 14 backups. They're deleted with the app, so export one now and then.": {
+    "Jirka's Arc backs up once a day when you open it and keeps the last 14 backups. They're deleted with the app, so export one now and then.": {
       "comment": "Data screen: footer under the snapshot list.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "GarminFood se zálohuje jednou denně, když ho otevřeš, a nechává si posledních 14 záloh. S aplikací se ale smažou, tak občas nějakou exportuj."
+            "value": "Jirka's Arc se zálohuje jednou denně, když ho otevřeš, a nechává si posledních 14 záloh. S aplikací se ale smažou, tak občas nějakou exportuj."
           }
         }
       }
@@ -14047,14 +14047,14 @@
         }
       }
     },
-    "Your current data is replaced the next time you open GarminFood. It's saved as a safety backup first, so you can go back.": {
+    "Your current data is replaced the next time you open Jirka's Arc. It's saved as a safety backup first, so you can go back.": {
       "comment": "Import preview: what Restore does.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Při příštím otevření GarminFood se současná data nahradí. Nejdřív se ale uloží jako pojistná záloha, takže se k nim můžeš vrátit."
+            "value": "Při příštím otevření Jirka's Arc se současná data nahradí. Nejdřív se ale uloží jako pojistná záloha, takže se k nim můžeš vrátit."
           }
         }
       }
@@ -14875,14 +14875,14 @@
         }
       }
     },
-    "With stock set, GarminFood counts it down as you tick and reminds you a week before it runs out.": {
+    "With stock set, Jirka's Arc counts it down as you tick and reminds you a week before it runs out.": {
       "comment": "Supplement editor: footer under pack and stock.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "S nastavenou zásobou ji GarminFood při odškrtávání odečítá a týden předem připomene, že dochází."
+            "value": "S nastavenou zásobou ji Jirka's Arc při odškrtávání odečítá a týden předem připomene, že dochází."
           }
         }
       }
@@ -15955,14 +15955,14 @@
         }
       }
     },
-    "Open GarminFood to tick them.": {
+    "Open Jirka's Arc to tick them.": {
       "comment": "Notification after the Taken action failed.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevři GarminFood a odškrtni je tam."
+            "value": "Otevři Jirka's Arc a odškrtni je tam."
           }
         }
       }

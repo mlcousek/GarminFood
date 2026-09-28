@@ -107,7 +107,7 @@ struct GarminFoodStreakWidgetView: View {
         .widgetURL(GarminFoodDeepLink.logFoodURL)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Keep your streak going")
-        .accessibilityHint("Opens GarminFood to log today")
+        .accessibilityHint("Opens Jirka's Arc to log today")
     }
 }
 
@@ -123,7 +123,7 @@ struct GarminFoodStreakWidget: Widget {
         // User-facing gallery text (add-localization 5.2). Shows no live
         // streak count -- there is no way for a widget to read that on this
         // account (design.md D2).
-        .description("One tap opens GarminFood's food catalog so you can keep your streak going.")
+        .description("One tap opens the food catalog in Jirka's Arc so you can keep your streak going.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

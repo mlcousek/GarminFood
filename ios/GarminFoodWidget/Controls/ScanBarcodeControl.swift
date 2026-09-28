@@ -24,6 +24,6 @@ struct ScanBarcodeControl: ControlWidget {
         // Same key as the intent's description (add-localization 5.2). A
         // camera session can't run inside a Control (design.md D3), so this
         // is the one flow in this project that is honestly three taps, not two.
-        .description("Opens GarminFood directly into the barcode scanner.")
+        .description("Opens Jirka's Arc directly into the barcode scanner.")
     }
 }

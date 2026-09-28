@@ -83,7 +83,7 @@ struct GarminFoodLockScreenWidgetView: View {
         .widgetURL(GarminFoodDeepLink.logFoodURL)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Log Food")
-        .accessibilityHint("Opens GarminFood")
+        .accessibilityHint("Opens Jirka's Arc")
     }
 }
 
@@ -98,7 +98,7 @@ struct GarminFoodLockScreenWidget: Widget {
         // User-facing gallery text (add-localization 5.2). Shows no live total
         // (design.md D2) and has no interactive element (Lock Screen widget
         // buttons are inert while locked, per Apple's own documentation).
-        .description("One tap opens GarminFood's food catalog, ready to log.")
+        .description("One tap opens the food catalog in Jirka's Arc, ready to log.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline])
     }
 }

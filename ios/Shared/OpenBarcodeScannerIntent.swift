@@ -35,7 +35,7 @@ import AppIntents
 enum ScannerDestination: String, AppEnum {
     case scanner
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = "GarminFood Screen"
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Jirka's Arc Screen"
     static var caseDisplayRepresentations: [ScannerDestination: DisplayRepresentation] = [
         .scanner: DisplayRepresentation(title: "Barcode Scanner")
     ]
@@ -43,7 +43,7 @@ enum ScannerDestination: String, AppEnum {
 
 struct OpenBarcodeScannerIntent: OpenIntent {
     static var title: LocalizedStringResource = "Scan Barcode"
-    static var description = IntentDescription("Opens GarminFood directly into the barcode scanner.")
+    static var description = IntentDescription("Opens Jirka's Arc directly into the barcode scanner.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
 
     @Parameter(title: "Screen")

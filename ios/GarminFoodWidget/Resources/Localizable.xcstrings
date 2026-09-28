@@ -73,14 +73,14 @@
         }
       }
     },
-    "GarminFood Screen": {
+    "Jirka's Arc Screen": {
       "comment": "App Intents type name (Shared/OpenBarcodeScannerIntent.swift): the kind of screen the scan intent opens, shown in the Shortcuts app.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Obrazovka GarminFood"
+            "value": "Obrazovka Jirka's Arc"
           }
         }
       }
@@ -241,14 +241,14 @@
         }
       }
     },
-    "Logs your #1 most-used food in GarminFood.": {
+    "Logs your #1 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 1 / 'Log Usual Food').",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje nejčastější jídlo."
           }
         }
       }
@@ -265,26 +265,26 @@
         }
       }
     },
-    "Logs your #2 most-used food in GarminFood.": {
+    "Logs your #2 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 2).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje druhé nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje druhé nejčastější jídlo."
           }
         }
       }
     },
-    "Logs your #2 most-used food. Briefly opens GarminFood to do it.": {
+    "Logs your #2 most-used food. Briefly opens Jirka's Arc to do it.": {
       "comment": "Control gallery description (quick log #2).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše tvoje druhé nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
+            "value": "Zapíše tvoje druhé nejčastější jídlo. Kvůli tomu na chvíli otevře Jirka's Arc."
           }
         }
       }
@@ -301,26 +301,26 @@
         }
       }
     },
-    "Logs your #3 most-used food in GarminFood.": {
+    "Logs your #3 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 3).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje třetí nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje třetí nejčastější jídlo."
           }
         }
       }
     },
-    "Logs your #3 most-used food. Briefly opens GarminFood to do it.": {
+    "Logs your #3 most-used food. Briefly opens Jirka's Arc to do it.": {
       "comment": "Control gallery description (quick log #3).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše tvoje třetí nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
+            "value": "Zapíše tvoje třetí nejčastější jídlo. Kvůli tomu na chvíli otevře Jirka's Arc."
           }
         }
       }
@@ -337,26 +337,26 @@
         }
       }
     },
-    "Logs your #4 most-used food in GarminFood.": {
+    "Logs your #4 most-used food in Jirka's Arc.": {
       "comment": "Shortcuts action description (quick pick rank 4).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše do GarminFood tvoje čtvrté nejčastější jídlo."
+            "value": "Zapíše do Jirka's Arc tvoje čtvrté nejčastější jídlo."
           }
         }
       }
     },
-    "Logs your #4 most-used food. Briefly opens GarminFood to do it.": {
+    "Logs your #4 most-used food. Briefly opens Jirka's Arc to do it.": {
       "comment": "Control gallery description (quick log #4).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše tvoje čtvrté nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
+            "value": "Zapíše tvoje čtvrté nejčastější jídlo. Kvůli tomu na chvíli otevře Jirka's Arc."
           }
         }
       }
@@ -373,14 +373,14 @@
         }
       }
     },
-    "Logs your most-used food. Briefly opens GarminFood to do it.": {
+    "Logs your most-used food. Briefly opens Jirka's Arc to do it.": {
       "comment": "Control gallery description (quick log #1).",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zapíše tvoje nejčastější jídlo. Kvůli tomu na chvíli otevře GarminFood."
+            "value": "Zapíše tvoje nejčastější jídlo. Kvůli tomu na chvíli otevře Jirka's Arc."
           }
         }
       }
@@ -409,62 +409,62 @@
         }
       }
     },
-    "One tap opens GarminFood's food catalog so you can keep your streak going.": {
+    "One tap opens the food catalog in Jirka's Arc so you can keep your streak going.": {
       "comment": "Widget gallery description of the streak widget.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jedním klepnutím otevřeš katalog jídel v GarminFood, ať udržíš svou sérii."
+            "value": "Jedním klepnutím otevřeš katalog jídel v Jirka's Arc, ať udržíš svou sérii."
           }
         }
       }
     },
-    "One tap opens GarminFood's food catalog, ready to log.": {
+    "One tap opens the food catalog in Jirka's Arc, ready to log.": {
       "comment": "Widget gallery description of the Home Screen and Lock Screen 'Log Food' widgets.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jedním klepnutím otevřeš katalog jídel v GarminFood a můžeš hned zapisovat."
+            "value": "Jedním klepnutím otevřeš katalog jídel v Jirka's Arc a můžeš hned zapisovat."
           }
         }
       }
     },
-    "Opens GarminFood": {
+    "Opens Jirka's Arc": {
       "comment": "VoiceOver hint on the Home Screen / Lock Screen 'Log Food' widget.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevře GarminFood"
+            "value": "Otevře Jirka's Arc"
           }
         }
       }
     },
-    "Opens GarminFood directly into the barcode scanner.": {
+    "Opens Jirka's Arc directly into the barcode scanner.": {
       "comment": "Shortcuts intent description and Control gallery description for the barcode-scan action.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevře GarminFood rovnou ve skeneru čárových kódů."
+            "value": "Otevře Jirka's Arc rovnou ve skeneru čárových kódů."
           }
         }
       }
     },
-    "Opens GarminFood to log today": {
+    "Opens Jirka's Arc to log today": {
       "comment": "VoiceOver hint on the streak widget.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevře GarminFood, ať můžeš zapsat dnešek"
+            "value": "Otevře Jirka's Arc, ať můžeš zapsat dnešek"
           }
         }
       }
@@ -529,14 +529,14 @@
         }
       }
     },
-    "Saved in GarminFood, but not sent: sign in to Garmin again in the app.": {
+    "Saved in Jirka's Arc, but not sent: sign in to Garmin again in the app.": {
       "comment": "Error shown by a quick-log Control/Shortcut: the entry is saved locally but the Garmin sign-in expired.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uloženo v GarminFood, ale neodesláno: v aplikaci se znovu přihlas ke Garminu."
+            "value": "Uloženo v Jirka's Arc, ale neodesláno: v aplikaci se znovu přihlas ke Garminu."
           }
         }
       }

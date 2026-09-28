@@ -130,7 +130,9 @@ private struct ProfileHeader: View {
         if let displayName = profile?.displayName, !displayName.trimmingCharacters(in: .whitespaces).isEmpty {
             return displayName
         }
-        return "GarminFood"
+        // The app's brand name (rebrand-to-jirkas-arc D2), the same in
+        // every language.
+        return "Jirka's Arc"
     }
 
     @ViewBuilder
