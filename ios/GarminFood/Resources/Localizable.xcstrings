@@ -16734,6 +16734,30 @@
           }
         }
       }
+    },
+    "Jirka's Arc: food and weight, by Jirka. It logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
+      "comment": "Settings -> About footer, food-first experience, standalone mode (no training plan mentioned). Jirka's Arc is the app name, never translated.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jirka's Arc: jídlo a váha, od Jirky. Zapisuje jídlo na dvě klepnutí a uchovává ho v tomto telefonu. Česká data o výrobcích © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+          }
+        }
+      }
+    },
+    "Jirka's Arc: food and weight, by Jirka. It logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).": {
+      "comment": "Settings -> About footer, food-first experience, Garmin mode (no training plan mentioned). Jirka's Arc is the app name, never translated.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jirka's Arc: jídlo a váha, od Jirky. Zapíše jídlo na dvě ťuknutí a synchronizuje ho do Garmin Connect. Data českých produktů © přispěvatelé Open Food Facts, dostupná pod licencí Open Database License (ODbL)."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

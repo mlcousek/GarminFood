@@ -30,6 +30,11 @@ order, visibility and variants as before this change.
 - **WHEN** a food-first install that never edited its layout opens Today
 - **THEN** the tabs, titles, icons and card order are identical to the previous build
 
+#### Scenario: About describes food and weight only
+
+- **WHEN** a food-first install (for example a standalone install with no vault connection) opens Settings → About
+- **THEN** the text describes Jirka's Arc as food and weight and does not mention a training plan, while the training experience's About text names the training plan
+
 #### Scenario: Layout editor lists no training cards
 
 - **WHEN** a food-first user opens "Edit layout…" on Today

@@ -19,6 +19,13 @@ final class AppShellTests: XCTestCase {
         XCTAssertEqual(AppExperience.default, .foodFirst)
     }
 
+    /// Settings -> About names the training plan only in training.
+    func testOnlyTrainingMentionsTheTrainingPlan() {
+        XCTAssertTrue(AppExperience.training.mentionsTrainingPlan)
+        XCTAssertFalse(AppExperience.foodFirst.mentionsTrainingPlan)
+        XCTAssertFalse(AppExperience(trainingEnabled: false).mentionsTrainingPlan)
+    }
+
     // MARK: Tabs
 
     /// The shell before this change: Today, Progress, Profile.

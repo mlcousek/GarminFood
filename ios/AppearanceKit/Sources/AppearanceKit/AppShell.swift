@@ -36,6 +36,13 @@ public enum AppExperience: String, CaseIterable, Sendable {
     public init(trainingEnabled: Bool) {
         self = trainingEnabled ? .training : .foodFirst
     }
+
+    /// Whether the app presents itself with its training plan (Settings ->
+    /// About): only in the training experience. Food-first installs,
+    /// including every standalone one, describe food and weight only.
+    public var mentionsTrainingPlan: Bool {
+        self == .training
+    }
 }
 
 /// A tab of the shell. Tabs are never reordered or hidden by the user; the
