@@ -1,4 +1,20 @@
-# GarminFood
+# GarminFood (the app is "Jirka's Arc")
+
+**Naming.** The app is called **Jirka's Arc** (repository, targets and
+identifiers still named GarminFood) since `rebrand-to-jirkas-arc`: only the
+display name (`APP_DISPLAY_NAME` in `ios/project.yml`), the icon and
+user-facing text say "Jirka's Arc". Bundle ids, the `garminfood` URL scheme,
+Keychain services, the BG task id, store paths, the backup marker, theme-code
+prefix, alternate icon names, layout card ids, Swift type names and every
+path in this file keep "GarminFood" -- a new bundle id on a free Personal
+Team is a new app with an empty container. Rule for new code: identifiers
+and storage say GarminFood; user-facing text says Jirka's Arc (ASCII
+apostrophe, the same in Czech).
+
+**Two experiences** (AppearanceKit `AppExperience`/`AppShell`): food-first
+(Today, Progress, Profile -- the default and the only one without a vault
+connection) and training (Today, Plan, Progress, Profile). `AppShell` is the
+single source of the tab set, the start tab and route targets.
 
 A personal iOS food-tracking app (Jiří's own Garmin account) — fast logging, a
 streak, levels, challenges — with Garmin Connect as the system of record,
@@ -71,8 +87,9 @@ ios/
                     daily/rotating challenges, achievements. App-only, not
                     linked into the widget extension.
   GarminFood/       The app target (SwiftUI views), organized by screen:
-                    Today/, Catalog/, CustomFood/, LogEntry/, Profile/,
-                    Progress/, App/ (composition root: AppEnvironment.swift).
+                    Today/, Plan/, Catalog/, CustomFood/, LogEntry/,
+                    Profile/, Progress/, App/ (composition root:
+                    AppEnvironment.swift).
   GarminFoodWidget/ Widget/Control extension target — static "open the app"
                     surfaces only; cannot show live data (no shared state,
                     see Hard constraints).
