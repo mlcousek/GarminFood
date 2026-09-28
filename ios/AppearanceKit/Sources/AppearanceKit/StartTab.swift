@@ -9,15 +9,23 @@
 // unit-tested (no Mac). The app's AppRouter only maps the result to its own
 // tab enum at launch; deep links and widget routes then override it there.
 //
-// Depended on by: LayoutConfig (this file's extension), the app's
+// rebrand-to-jirkas-arc D8 adds `.plan`, a tab only the training experience
+// shows. Which start tabs an experience offers, and the fallback to Today
+// for one it doesn't show, are AppShell's rules
+// (`AppShell.resolvedStartTab(stored:experience:)`); `resolvedStartTab`
+// below only parses the stored value.
+//
+// Depended on by: LayoutConfig (this file's extension), AppShell, the app's
 // AppEnvironment/AppRouter (initial tab) and AppearanceSettingsView (picker).
 
 import Foundation
 
 /// A tab the app can open on. Tabs themselves are never reordered or hidden
-/// (proposal non-goals); Profile is deliberately not offered.
+/// (proposal non-goals); Profile is deliberately not offered. `.plan` only
+/// in the training experience (`AppShell.startTabs(for:)`).
 public enum StartTab: String, CaseIterable, Sendable {
     case today
+    case plan
     case progress
 
     public static let `default`: StartTab = .today
@@ -25,7 +33,8 @@ public enum StartTab: String, CaseIterable, Sendable {
 
 public extension LayoutConfig {
     /// The stored start tab, or Today when none is stored or the stored
-    /// value is unknown to this build.
+    /// value is unknown to this build. Not experience-aware: the app opens
+    /// on `resolvedStartTab(for:)` (AppShell.swift).
     var resolvedStartTab: StartTab {
         startTab.flatMap(StartTab.init(rawValue:)) ?? .default
     }
@@ -39,7 +48,7 @@ public extension LayoutConfig {
     /// Whether `screen` renders exactly its default order, visibility and
     /// variants -- what the Appearance page shows as "Default" vs "Custom"
     /// for screens without presets.
-    func isDefaultLayout(_ screen: LayoutScreen) -> Bool {
-        resolved(screen) == LayoutConfig.default.resolved(screen)
+    func isDefaultLayout(_ screen: LayoutScreen, experience: AppExperience = .foodFirst) -> Bool {
+        resolved(screen, experience: experience) == LayoutConfig.default.resolved(screen, experience: experience)
     }
 }

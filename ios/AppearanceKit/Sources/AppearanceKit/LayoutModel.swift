@@ -227,6 +227,27 @@ public enum LayoutCatalog {
         case .progress: return progress
         }
     }
+
+    /// Today's catalog in `experience` (rebrand-to-jirkas-arc D6). The
+    /// food-first catalog is exactly `today` above (golden test). The
+    /// training catalog equals it until add-training-today-and-plan adds
+    /// its training cards there; a training card is never in the food-first
+    /// catalog, and a stored placement for one is kept, not rendered
+    /// (LayoutResolver rule 2), so switching experiences loses nothing.
+    public static func today(for experience: AppExperience) -> [CardSpec] {
+        switch experience {
+        case .foodFirst: return today
+        case .training: return today
+        }
+    }
+
+    /// `specs(for:)` in `experience`: only Today differs per experience.
+    public static func specs(for screen: LayoutScreen, experience: AppExperience) -> [CardSpec] {
+        switch screen {
+        case .today: return today(for: experience)
+        case .logFood, .progress: return specs(for: screen)
+        }
+    }
 }
 
 // MARK: - Stored placements
