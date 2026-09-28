@@ -145,6 +145,17 @@ public enum StoreCatalog {
             area: .progress
         ),
 
+        // VaultKit (add-vault-connection D12) -- all device-local, never
+        // backed up: a restore must never copy the device identity to
+        // another phone; status and the write queue are delivery state; the
+        // fetch cache (plus its `cache/*.bin` bytes, not JSON) is a
+        // re-fetchable copy of vault data. Only the connection SETTINGS
+        // travel, as the `vault.connection.v1` preference.
+        StoreCatalogEntry(id: "vault.device-identity", location: .file("VaultKit/device-identity.json"), schemaVersion: 1, area: .deviceOnly, inBackup: false),
+        StoreCatalogEntry(id: "vault.status", location: .file("VaultKit/status.json"), schemaVersion: 1, area: .deviceOnly, inBackup: false),
+        StoreCatalogEntry(id: "vault.fetch-cache", location: .file("VaultKit/fetch-cache.json"), schemaVersion: 1, area: .deviceOnly, inBackup: false),
+        StoreCatalogEntry(id: "vault.write-queue", location: .file("VaultKit/write-queue.json"), schemaVersion: 1, area: .deviceOnly, inBackup: false),
+
         // App target
         StoreCatalogEntry(id: "app.siri-donations", location: .file("GarminFood/donations.json"), schemaVersion: 1, area: .deviceOnly, inBackup: false)
     ]

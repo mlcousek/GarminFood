@@ -4,7 +4,8 @@
 // store's schema version lives, so a store missing from it would be backed
 // up without a version and never refused by an older build. These tests
 // keep it honest from the sources themselves: every literal `"<name>.json"`
-// in GarminKit, FoodLogCore, Gamification and the app target must be
+// in GarminKit, FoodLogCore, Gamification, VaultKit (add-vault-connection
+// task 3.1) and the app target must be
 // covered by a catalog entry (or exempted here with a reason), and each
 // entry's `inBackup` must agree with what `BackupExclusions` actually does.
 //
@@ -27,6 +28,7 @@ final class StoreCatalogTests: XCTestCase {
         "GarminKit/Sources",
         "FoodLogCore/Sources",
         "Gamification/Sources",
+        "VaultKit/Sources",
         "GarminFood",
         "Shared",
         "GarminFoodWidget"
@@ -73,7 +75,7 @@ final class StoreCatalogTests: XCTestCase {
         }
 
         // The scan must see stores from every package, or it proves nothing.
-        for known in ["diagnostics-log.json", "custom-foods.json", "xp-ledger.json", "donations.json"] {
+        for known in ["diagnostics-log.json", "custom-foods.json", "xp-ledger.json", "donations.json", "device-identity.json"] {
             XCTAssertTrue(found.contains(known), "scan didn't find \(known); found \(found.sorted())")
         }
 
@@ -119,5 +121,22 @@ final class StoreCatalogTests: XCTestCase {
         XCTAssertEqual(StoreCatalog.entry(forRelativePath: "GarminKit/outbox-app.json")?.id, "garminkit.outbox")
         XCTAssertNil(StoreCatalog.entry(forRelativePath: "FoodLogCore/Supplements/x.json"))
         XCTAssertEqual(StoreCatalog.entry(id: "foodlog.custom-foods")?.area, .customFoods)
+    }
+
+    /// add-vault-connection D12: every VaultKit file is device-only and
+    /// never backed up -- the fetch cache's non-JSON bytes included.
+    func testVaultKitFilesAreCataloguedAndExcluded() {
+        for (path, id) in [
+            ("VaultKit/device-identity.json", "vault.device-identity"),
+            ("VaultKit/status.json", "vault.status"),
+            ("VaultKit/fetch-cache.json", "vault.fetch-cache"),
+            ("VaultKit/write-queue.json", "vault.write-queue")
+        ] {
+            XCTAssertEqual(StoreCatalog.entry(forRelativePath: path)?.id, id, path)
+            XCTAssertEqual(StoreCatalog.entry(id: id)?.inBackup, false, id)
+            XCTAssertFalse(BackupExclusions.includesFile(relativePath: path), path)
+        }
+        XCTAssertFalse(BackupExclusions.includesFile(relativePath: "VaultKit/cache/0123abcd.bin"))
+        XCTAssertFalse(BackupExclusions.includesFile(relativePath: "VaultKit/future-store.json"), "the whole directory is excluded, including stores added later")
     }
 }

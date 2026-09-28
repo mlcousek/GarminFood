@@ -78,6 +78,99 @@ final class BackupCoreTests: XCTestCase {
         XCTAssertFalse(BackupSecretPolicy.containsSecret(Data(#"[{"name":"token bar","kcal":120}]"#.utf8)))
     }
 
+    // MARK: - GitHub tokens (add-vault-connection task 3.2)
+
+    /// A token-shaped string nobody issued, assembled at run time so no
+    /// secret scanner mistakes this public repository's source for a leak.
+    private static func fakeToken(_ prefix: String) -> String {
+        prefix + String(repeating: "Fak3", count: 6)
+    }
+
+    private static let githubPrefixes = ["github" + "_pat_", "gh" + "p_", "gh" + "o_", "gh" + "u_", "gh" + "s_", "gh" + "r_"]
+
+    func testSecretPolicyCatchesEveryGitHubTokenPrefix() {
+        XCTAssertEqual(BackupSecretPolicy.githubTokenPrefixes, Self.githubPrefixes)
+        for prefix in Self.githubPrefixes {
+            let token = Self.fakeToken(prefix)
+            // In a store value, a custom food's name, a note after a newline
+            // escape, at the very start, and in a plain-text file.
+            for text in [
+                #"{"value":"\#(token)"}"#,
+                #"[{"name":"Rohlík \#(token)","kcal":130}]"#,
+                #"{"text":"my vault token:\n\#(token)"}"#,
+                token,
+                "token = \(token)\n"
+            ] {
+                XCTAssertTrue(BackupSecretPolicy.containsSecret(Data(text.utf8)), text)
+            }
+        }
+    }
+
+    func testSecretPolicyIgnoresWordsThatMerelyContainAPrefix() {
+        for text in [
+            #"[{"name":"chicken thighs_grilled","kcal":200}]"#,
+            #"{"note":"laughs_and_smiles_all_day_long_really"}"#,
+            #"{"note":"the ghp_ prefix is a classic token"}"#,
+            #"{"note":"github_pat_short"}"#,
+            #"{"id":"weighs_1"}"#
+        ] {
+            XCTAssertFalse(BackupSecretPolicy.containsSecret(Data(text.utf8)), text)
+        }
+    }
+
+    func testAPreferenceHoldingAGitHubTokenNeverTravels() {
+        let token = Self.fakeToken("github" + "_pat_")
+        let captured = PreferencesBackup.capture(domain: [
+            "preferences.haptics": true,
+            "preferences.lastSearch": token,
+            "preferences.recentSearches": ["rohlík", token],
+            "preferences.note": "ghp_ is just a prefix here"
+        ])
+        XCTAssertEqual(captured["preferences.haptics"], .bool(true))
+        XCTAssertNil(captured["preferences.lastSearch"])
+        XCTAssertNil(captured["preferences.recentSearches"])
+        XCTAssertEqual(captured["preferences.note"], .string("ghp_ is just a prefix here"))
+    }
+
+    /// add-vault-connection task 3.3 (design D12): the connection settings
+    /// (`vault.connection.v1`: enabled, owner, name, branch) travel with a
+    /// backup and come back on restore; the token never does (it lives only
+    /// in the Keychain, and a planted one is dropped by the content scan).
+    func testVaultConnectionSettingsTravelAndComeBackWithoutAToken() throws {
+        let suite = "garminfood.backup-tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        addTeardownBlock { UserDefaults.standard.removePersistentDomain(forName: suite) }
+
+        let settings: [String: Any] = ["enabled": true, "owner": "example-owner", "name": "example-vault", "branch": "main"]
+        defaults.set(settings, forKey: "vault.connection.v1")
+        defaults.set(Self.fakeToken("github" + "_pat_"), forKey: "vault.pastedDraft")
+        XCTAssertTrue(BackupExclusions.includesPreference(key: "vault.connection.v1"))
+
+        let captured = PreferencesBackup.capture(domain: try XCTUnwrap(defaults.persistentDomain(forName: suite)))
+        XCTAssertEqual(captured["vault.connection.v1"], .dictionary([
+            "enabled": .bool(true), "owner": .string("example-owner"), "name": .string("example-vault"), "branch": .string("main")
+        ]))
+        XCTAssertNil(captured["vault.pastedDraft"], "a token-shaped value never travels")
+
+        // Through JSON, as a snapshot/export stores it; no token anywhere.
+        let stored = try JSONEncoder().encode(captured)
+        XCTAssertFalse(BackupSecretPolicy.containsSecret(stored))
+        let decoded = try JSONDecoder().decode([String: PreferenceValue].self, from: stored)
+
+        // A new phone: nothing set yet.
+        let newPhone = "garminfood.backup-tests.\(UUID().uuidString)"
+        let fresh = try XCTUnwrap(UserDefaults(suiteName: newPhone))
+        addTeardownBlock { UserDefaults.standard.removePersistentDomain(forName: newPhone) }
+        fresh.setPersistentDomain(PreferencesBackup.restoredDomain(current: [:], backup: decoded), forName: newPhone)
+
+        let restored = try XCTUnwrap(fresh.dictionary(forKey: "vault.connection.v1"))
+        XCTAssertEqual(restored["enabled"] as? Bool, true)
+        XCTAssertEqual(restored["owner"] as? String, "example-owner")
+        XCTAssertEqual(restored["name"] as? String, "example-vault")
+        XCTAssertEqual(restored["branch"] as? String, "main")
+        XCTAssertNil(fresh.object(forKey: "vault.pastedDraft"))
+    }
+
     // MARK: - Preferences
 
     func testPreferenceValueFromPropertyListKeepsTypes() {

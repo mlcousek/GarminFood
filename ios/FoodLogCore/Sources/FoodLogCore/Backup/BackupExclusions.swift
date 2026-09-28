@@ -30,9 +30,13 @@ public enum BackupExclusions {
         "GarminFood/donations.json"
     ]
 
-    /// Directories left out: the offline index is large and re-downloadable.
+    /// Directories left out: the offline index is large and re-downloadable;
+    /// VaultKit's files are device-local (add-vault-connection D12 -- the
+    /// device identity must never reach another phone, and the rest is
+    /// delivery state or a re-fetchable copy of vault data).
     static let excludedDirectories: [String] = [
-        "FoodLogCore/OfflineIndex"
+        "FoodLogCore/OfflineIndex",
+        "VaultKit"
     ]
 
     /// A path component containing one of these (case-insensitive) is
@@ -117,6 +121,17 @@ public enum BackupPath {
 
 /// add-data-safety D3/D5: a last line of defense -- a file whose CONTENT
 /// carries an OAuth/token key is skipped even if its name looked harmless.
+///
+/// add-vault-connection D3/D12: also any GitHub token, by its prefix
+/// (`github_pat_`, `ghp_`, `gho_`, `ghu_`, `ghs_`, `ghr_`). The vault token
+/// itself lives only in the Keychain, but one pasted into a day note, a
+/// custom food's name or a preference would otherwise travel inside a
+/// backup. A prefix counts only as a token: at the start of the data or
+/// after a character that can't be part of a word, or after a JSON escape
+/// such as a backslash-n (so `thighs_x` is not `ghs_`), and followed by at
+/// least `minimumTokenTail` token characters (so a stray `ghp_` in prose
+/// is not one either) -- a false positive drops
+/// a whole store file from the backup, so the shape check matters.
 public enum BackupSecretPolicy {
     /// JSON keys (with their quotes) that only credentials use. Matched as
     /// raw UTF-8 bytes, so the check costs one scan per file.
@@ -132,10 +147,75 @@ public enum BackupSecretPolicy {
         "\"refreshToken\""
     ]
 
+    /// GitHub token prefixes (VaultKit's `VaultToken.knownPrefixes`; kept
+    /// here too because FoodLogCore does not depend on VaultKit).
+    public static let githubTokenPrefixes: [String] = [
+        "github_pat_", "ghp_", "gho_", "ghu_", "ghs_", "ghr_"
+    ]
+
+    /// Real tokens carry 36 (classic) to 82 (fine-grained) characters
+    /// after the prefix; 16 is far below both and far above prose.
+    public static let minimumTokenTail = 16
+
     public static func containsSecret(_ data: Data) -> Bool {
         for key in secretKeys {
             if data.range(of: Data(key.utf8)) != nil { return true }
         }
+        return containsGitHubToken(data)
+    }
+
+    /// Whether `data` holds something shaped like a GitHub token (see the
+    /// type's header for the shape).
+    public static func containsGitHubToken(_ data: Data) -> Bool {
+        let bytes = [UInt8](data)
+        for prefix in githubTokenPrefixes {
+            let needle = [UInt8](prefix.utf8)
+            guard bytes.count >= needle.count else { continue }
+            var start = 0
+            while start <= bytes.count - needle.count {
+                guard let found = firstIndex(of: needle, in: bytes, from: start) else { break }
+                // A JSON escape (backslash-n, backslash-t) before the token
+                // is a boundary too: a note with the token on its own line
+                // stores a backslash, an `n`, then the token.
+                let precededByEscape = found > 1 && bytes[found - 2] == 0x5C
+                let precededByWordCharacter = found > 0 && isTokenByte(bytes[found - 1]) && !precededByEscape
+                if !precededByWordCharacter {
+                    var tail = 0
+                    var index = found + needle.count
+                    while index < bytes.count, isTokenByte(bytes[index]) {
+                        tail += 1
+                        index += 1
+                    }
+                    if tail >= minimumTokenTail { return true }
+                }
+                start = found + 1
+            }
+        }
         return false
+    }
+
+    /// `[A-Za-z0-9_]`, the characters a GitHub token is made of.
+    private static func isTokenByte(_ byte: UInt8) -> Bool {
+        switch byte {
+        case 0x30...0x39, 0x41...0x5A, 0x61...0x7A, 0x5F: return true
+        default: return false
+        }
+    }
+
+    private static func firstIndex(of needle: [UInt8], in haystack: [UInt8], from start: Int) -> Int? {
+        guard !needle.isEmpty, haystack.count >= needle.count, start <= haystack.count - needle.count else { return nil }
+        var index = start
+        while index <= haystack.count - needle.count {
+            if haystack[index] == needle[0] {
+                var matches = true
+                for offset in 1..<needle.count where haystack[index + offset] != needle[offset] {
+                    matches = false
+                    break
+                }
+                if matches { return index }
+            }
+            index += 1
+        }
+        return nil
     }
 }
