@@ -186,6 +186,35 @@ final class GitHubContentsClientTests: XCTestCase {
         }
     }
 
+    func testRedirectGuardDelegateRefusesAnotherHost() {
+        var original = URLRequest(url: URL(string: "https://api.github.com/repos/example-owner/example-vault/contents/x")!)
+        original.setValue("Bearer x", forHTTPHeaderField: "Authorization")
+        let session = URLSession(configuration: .ephemeral)
+        let task = session.dataTask(with: original)
+        let response = HTTPURLResponse(url: original.url!, statusCode: 302, httpVersion: "HTTP/1.1", headerFields: ["Location": "https://attacker.example/steal"])!
+
+        var answered = false
+        var decided: URLRequest?
+        RedirectGuard().urlSession(session, task: task, willPerformHTTPRedirection: response,
+                                   newRequest: URLRequest(url: URL(string: "https://attacker.example/steal")!)) { request in
+            answered = true
+            decided = request
+        }
+        XCTAssertTrue(answered, "the delegate must always answer")
+        XCTAssertNil(decided, "a redirect to another host is refused")
+
+        answered = false
+        RedirectGuard().urlSession(session, task: task, willPerformHTTPRedirection: response,
+                                   newRequest: URLRequest(url: URL(string: "https://api.github.com/repositories/1/contents/x")!)) { request in
+            answered = true
+            decided = request
+        }
+        XCTAssertTrue(answered)
+        XCTAssertEqual(decided?.value(forHTTPHeaderField: "Authorization"), "Bearer x", "a same-host redirect keeps the original headers")
+        task.cancel()
+        session.invalidateAndCancel()
+    }
+
     func testRedirectDecision() {
         var original = URLRequest(url: URL(string: "https://api.github.com/repos/example-owner/example-vault")!)
         original.setValue("Bearer x", forHTTPHeaderField: "Authorization")

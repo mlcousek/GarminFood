@@ -99,8 +99,14 @@ final class StubURLProtocol: URLProtocol {
             return
         }
         if let target = reply.redirectTo {
+            // Answer with a plain 302 — exactly what the client receives once
+            // RedirectGuard refuses a redirect. Driving the redirect through
+            // `wasRedirectedTo` and then finishing without a response traps in
+            // Foundation's URLProtocol machinery (CI: signal 5), so the
+            // delegate's decision is tested directly instead
+            // (GitHubContentsClientTests.testRedirectGuardDelegateRefusesAnotherHost).
             let response = HTTPURLResponse(url: url, statusCode: 302, httpVersion: "HTTP/1.1", headerFields: ["Location": target.absoluteString])!
-            client?.urlProtocol(self, wasRedirectedTo: URLRequest(url: target), redirectResponse: response)
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             client?.urlProtocolDidFinishLoading(self)
             return
         }
