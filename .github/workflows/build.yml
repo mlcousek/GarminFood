@@ -130,6 +130,17 @@ jobs:
           cd AppearanceKit
           swift test
 
+      - name: Run VaultKit unit tests
+        # add-vault-connection D13: the GitHub wire layer (path allow-lists,
+        # outcome classification, conditional fetch, durable queue,
+        # create-only uploads, redaction). Every HTTP behaviour runs through
+        # a URLProtocol stub -- no test and no workflow ever calls GitHub's
+        # real API or holds a vault token (this repository is public).
+        # Depends on GarminKit via a local path dependency.
+        run: |
+          cd VaultKit
+          swift test
+
       - name: Lint design tokens
         # add-themes-and-layout D12: views use Theme tokens, never literal
         # colors (exemptions, each with a reason, in

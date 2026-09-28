@@ -97,6 +97,10 @@ packages:
     path: Gamification
   AppearanceKit:
     path: AppearanceKit
+  # add-vault-connection D1: the GitHub wire layer to the owner's vault.
+  # App target ONLY -- the widget never links it and never holds the token.
+  VaultKit:
+    path: VaultKit
 
 settings:
   base:
@@ -222,6 +226,7 @@ targets:
       - package: FoodLogCore
       - package: Gamification
       - package: AppearanceKit
+      - package: VaultKit
     scheme:
       testTargets: []
       gatherCoverageData: false
