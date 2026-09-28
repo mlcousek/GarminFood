@@ -53,8 +53,9 @@
 # deprioritized (design.md D3) but still requires this key to present the
 # camera permission prompt at all. Its Czech text lives in
 # `GarminFood/Resources/InfoPlist.xcstrings` (add-localization 5.3; key = the
-# plist key name) -- the widget's `CFBundleDisplayName` likewise in
-# `GarminFoodWidget/Resources/InfoPlist.xcstrings`. Both are picked up by the
+# plist key name) -- both targets' `CFBundleDisplayName` entries sit in the
+# two InfoPlist catalogs too, untranslated on purpose (rebrand-to-jirkas-arc
+# D2, see below). Both catalogs are picked up by the
 # targets' path-globbed `sources` like the Localizable catalogs; changing the
 # English value here doesn't touch the Czech one, so update both together.
 #
@@ -75,6 +76,24 @@
 # gamification state never appears in a widget (a widget cannot read the
 # app's local data at all without an App Group -- add-glanceable-surfaces
 # design.md D2 -- so there is nothing for it to read there anyway).
+#
+# rebrand-to-jirkas-arc (design.md D1, D2, D5): the app is presented as
+# "Jirka's Arc", but ONLY through the display name. Every identifier stays
+# "GarminFood" on purpose: on a free Personal Team a new bundle id is a new
+# app (an empty container, an unreachable Keychain item, two more AltStore
+# App IDs, placed widgets and Controls gone). So the bundle ids, the
+# `garminfood` URL scheme, the BG task id, the target/scheme/product names
+# and the alternate icon names below are unchanged; only
+# `CFBundleDisplayName` (both targets, from the one `APP_DISPLAY_NAME`
+# setting, so a differently named build is one `xcodebuild ...
+# APP_DISPLAY_NAME="..."` argument) and the version keys are new. The
+# `InfoPlist.xcstrings` entries deliberately carry NO Czech
+# `CFBundleDisplayName` value (`shouldTranslate: false`): a Czech
+# `InfoPlist.strings` value would override the build setting on a Czech
+# phone, and the name is the same in both languages. `MARKETING_VERSION` is
+# bumped by hand in the PR that deserves it; `CURRENT_PROJECT_VERSION` is
+# "1" locally and CI's workflow run number in the archive
+# (.github/workflows/build.yml).
 
 name: GarminFood
 
@@ -111,6 +130,11 @@ settings:
     # the only compiler-accurate list of catalog keys available without a Mac.
     LOCALIZATION_PREFERS_STRING_CATALOGS: "YES"
     SWIFT_EMIT_LOC_STRINGS: "YES"
+    # rebrand-to-jirkas-arc D2/D5 (see the header): the name under the icon
+    # and in the widget gallery, and the version both targets report.
+    APP_DISPLAY_NAME: "Jirka's Arc"
+    MARKETING_VERSION: "2.0"
+    CURRENT_PROJECT_VERSION: "1"
 
 targets:
   GarminFood:
@@ -123,6 +147,11 @@ targets:
     info:
       path: GarminFood/Info.plist
       properties:
+        # rebrand-to-jirkas-arc D2/D5: from the base settings above, set
+        # explicitly rather than relying on XcodeGen's generated defaults.
+        CFBundleDisplayName: "$(APP_DISPLAY_NAME)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}
         # add-localization D1/D2: declaring both localizations is what makes
         # iOS show Settings > GarminFood > Language, and makes system UI
@@ -134,7 +163,7 @@ targets:
           - cs
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSCameraUsageDescription: "GarminFood uses the camera to scan a product barcode and look it up in food databases."
+        NSCameraUsageDescription: "Jirka's Arc uses the camera to scan a product barcode and look it up in food databases."
         CFBundleURLTypes:
           - CFBundleURLName: com.mlcousek.garminfood
             CFBundleURLSchemes:
@@ -143,7 +172,9 @@ targets:
         # add-app-icon-picker (2026-09-22), replaced by add-themes-and-layout
         # (2026-09-24, design.md R5: 11 "GF / by Jirka" gradient icons, one per
         # theme; the old Streak/Macro/Midnight/Mint/Pastel set is gone -- keep
-        # these keys in sync with AppIconOption.swift): the alternates are loose PNG
+        # these keys in sync with AppIconOption.swift; rebrand-to-jirkas-arc D3
+        # redrew them as the arc mark under the SAME names, so a chosen
+        # alternate survives the update): the alternates are loose PNG
         # pairs (`GarminFood/AppIcons/<Name>@2x.png`/`@3x.png`, iPhone-only
         # per this target's TARGETED_DEVICE_FAMILY, so no ~ipad sizes) --
         # NOT asset-catalog imagesets. This is the classic, stable
@@ -236,7 +267,12 @@ targets:
     info:
       path: GarminFoodWidget/Info.plist
       properties:
-        CFBundleDisplayName: GarminFood Widget
+        # rebrand-to-jirkas-arc D2: the app's own name (the widget gallery
+        # already groups widgets under the app), and the app's version
+        # (Xcode warns when an extension's differs from its parent's).
+        CFBundleDisplayName: "$(APP_DISPLAY_NAME)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         # add-localization: same two keys as the app (see there). The widget is
         # its own bundle with its own Resources/Localizable.xcstrings.
         CFBundleDevelopmentRegion: en

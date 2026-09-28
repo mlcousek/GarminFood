@@ -1,6 +1,11 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Home-screen name from Info.plist ($(APP_DISPLAY_NAME) in ios/project.yml, \"Jirka's Arc\"). A brand name, the same in every language: no translation on purpose, since a Czech value here would override the build setting (rebrand-to-jirkas-arc D2).",
+      "extractionState" : "manual",
+      "shouldTranslate" : false
+    },
     "CFBundleName" : {
       "comment" : "Bundle name from Info.plist; the product name is not translated.",
       "extractionState" : "manual",
@@ -13,7 +18,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GarminFood používá fotoaparát ke skenování čárového kódu výrobku a k jeho vyhledání v databázích potravin."
+            "value" : "Jirka's Arc používá fotoaparát ke skenování čárového kódu výrobku a k jeho vyhledání v databázích potravin."
           }
         }
       }
