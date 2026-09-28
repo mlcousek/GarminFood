@@ -1,22 +1,35 @@
+// AppSignatureView.swift
+//
+// The app's small in-app signature: Jirka's Arc's arc mark (`ArcMark`, the
+// app icon's glyph) in the flame-gradient token over a "by Jirka" credit
+// line, so the footer and the Home Screen icon read as one identity
+// (rebrand-to-jirkas-arc design.md D4; it replaced the "GF" monogram). A
+// quiet footer, not a splash screen: pinned to the bottom of Today
+// (`TodayCardID.signature`, not hideable) and shown on Profile.
+//
+// Theme tokens only, so it redraws on a theme switch; the mark's height
+// follows Dynamic Type with the caption under it. VoiceOver reads it as one
+// element, "Jirka's Arc, by Jirka".
+//
+// Depends on: ArcMark, Theme. Depended on by: TodayView, ProfileView.
+
 import SwiftUI
 
-/// The app's small in-app wordmark: a "GF" flame-gradient monogram plus a
-/// "by Jirka" credit line, reusing the same tokens as the App Icon
-/// (`Theme.flameGradient`) so the two marks read as one identity. Placed as
-/// a quiet footer on `HomeView`, not a splash screen -- it's a signature,
-/// not a loading gate.
 struct AppSignatureView: View {
+    /// About the old 15 pt "GF" cap height, scaled with the caption.
+    @ScaledMetric(relativeTo: .caption2) private var markHeight: CGFloat = 12
+
     var body: some View {
         VStack(spacing: Theme.Spacing.xs / 2) {
-            Text(verbatim: "GF")
-                .font(.system(size: 15, weight: .bold, design: .rounded))
-                .foregroundStyle(Theme.flameGradient)
+            ArcMark()
+                .fill(Theme.flameGradient)
+                .frame(width: markHeight * ArcMark.aspectRatio, height: markHeight)
             Text("by Jirka")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel("Jirka's Arc, by Jirka")
     }
 }

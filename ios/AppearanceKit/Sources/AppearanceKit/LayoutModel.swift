@@ -179,7 +179,8 @@ public enum LayoutCatalog {
     /// Today, in the order `TodayView` rendered before this change.
     ///
     /// - The day switcher is navigation: pinned to the top, never hidden.
-    /// - The "GF by Jirka" signature is pinned to the bottom and can't be
+    /// - The "by Jirka" signature (the arc mark since rebrand-to-jirkas-arc;
+    ///   the card id stays `signature`) is pinned to the bottom and can't be
     ///   hidden -- owner decision 0.6 was defaulted to today's behavior
     ///   (tasks.md); overriding it is a one-word change (`hideable`).
     public static let today: [CardSpec] = [
