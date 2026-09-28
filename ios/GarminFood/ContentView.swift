@@ -115,6 +115,7 @@ extension View {
             VStack(spacing: Theme.Spacing.xs) {
                 AuthBannerView()
                 DeliveryBannerView()
+                VaultBannerView() // add-vault-connection D10
             }
             .padding(.top, Theme.Spacing.xs)
         }

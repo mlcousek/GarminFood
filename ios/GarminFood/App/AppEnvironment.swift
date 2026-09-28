@@ -117,6 +117,10 @@ final class AppEnvironment {
     let profile: ProfileLoader
     let donations: LogDonations
     let router: AppRouter
+    /// add-vault-connection: the vault connection's state and actions for
+    /// Settings -> Vault and the vault banner (Vault/VaultController.swift).
+    /// App-only (VaultServices), never in the widget.
+    let vault: VaultController
 
     /// `true` while a drain is in flight, purely for a subtle "syncing"
     /// indicator. Never gates a user action.
@@ -243,6 +247,7 @@ final class AppEnvironment {
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
+        self.vault = VaultController(services: VaultServices.shared)
         // add-themes-and-layout 4.3: open on the user's start tab; links and
         // widget routes arriving after launch still override it.
         self.router = AppRouter(startTab: layoutStore.config.resolvedStartTab)
@@ -278,7 +283,10 @@ final class AppEnvironment {
     }
 
     /// Launch and every return to the foreground.
-    func refreshOnForeground() async {
+    /// `userInitiated` is pull to refresh: the vault fetch then skips its
+    /// once-a-minute interval (add-vault-connection D11). Nothing else
+    /// changes with it.
+    func refreshOnForeground(userInitiated: Bool = false) async {
         // Unstructured on purpose: loading the Czech offline index and its
         // at-most-daily update check must never hold up anything below or
         // any search (add-offline-czech-food-index D3).
@@ -286,6 +294,11 @@ final class AppEnvironment {
         Task { await offlineIndexLoader.loadAndCheckIfDue() }
         await classifyDataModeIfNeeded()
         await migrateLegacyFastingIfNeeded()
+        // add-vault-connection D11: one conditional GET of the vault's
+        // projection, unstructured so nothing waits for it; only on a
+        // Garmin-connected install (never standalone, never in onboarding)
+        // and only while the connection is on.
+        vault.refreshInBackground(force: userInitiated, allowed: !needsOnboarding && dataMode == .garminConnected)
         // add-standalone-mode 5.3: which Garmin work this foreground may do
         // (`GarminSyncPlan`): all of it in Garmin mode, exactly as before;
         // none in standalone mode, nor while a fresh install is still in

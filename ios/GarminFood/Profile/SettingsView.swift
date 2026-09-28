@@ -88,6 +88,15 @@ struct SettingsView: View {
                 } label: {
                     Label("Data", systemImage: "externaldrive")
                 }
+                // add-vault-connection D10: the vault connection, on
+                // Garmin-connected installs only (owner decision 0.3).
+                if !isStandalone {
+                    NavigationLink {
+                        VaultSettingsView()
+                    } label: {
+                        Label("Vault", systemImage: "books.vertical")
+                    }
+                }
             }
 
             // add-standalone-mode 4.3: standalone's plan is the local,

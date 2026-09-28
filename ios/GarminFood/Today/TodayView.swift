@@ -140,7 +140,7 @@ struct TodayView: View {
             Text(hydrationActionError ?? "")
         }
         .refreshable {
-            await environment.refreshOnForeground()
+            await environment.refreshOnForeground(userInitiated: true)
             await loadQuickPicks()
             await loadMealPresets()
         }
