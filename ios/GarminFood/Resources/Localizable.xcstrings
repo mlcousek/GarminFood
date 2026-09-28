@@ -2246,7 +2246,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Připojit k mému trezoru"
+            "value": "Připojit k mému vaultu"
           }
         }
       }
@@ -2402,7 +2402,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odpojit od trezoru?"
+            "value": "Odpojit od vaultu?"
           }
         }
       }
@@ -3266,7 +3266,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otevře nastavení trezoru"
+            "value": "Otevře nastavení vaultu"
           }
         }
       }
@@ -3338,7 +3338,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Znovu vlož token trezoru"
+            "value": "Znovu vlož token vaultu"
           }
         }
       }
@@ -3386,7 +3386,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Načítá tréninkový plán z GitHub repozitáře tvého trezoru Obsidianu. Dokud to nezapneš a neuložíš token, na GitHub se nic neposílá."
+            "value": "Načítá tréninkový plán z GitHub repozitáře tvého vaultu Obsidianu. Dokud to nezapneš a neuložíš token, na GitHub se nic neposílá."
           }
         }
       }
@@ -3650,7 +3650,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "GitHub účet a repozitář, ve kterém je tvůj trezor. Zadávají se jen tady, aplikace žádný vestavěný nemá."
+            "value": "GitHub účet a repozitář, ve kterém je tvůj vault. Zadávají se jen tady, aplikace žádný vestavěný nemá."
           }
         }
       }
@@ -3866,7 +3866,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trezor"
+            "value": "Vault"
           }
         }
       }
@@ -3878,7 +3878,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Token trezoru vypršel nebo byl zrušen"
+            "value": "Token vaultu vypršel nebo byl zrušen"
           }
         }
       }
@@ -3893,25 +3893,25 @@
               "few": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Token trezoru vyprší za %lld dny"
+                  "value": "Token vaultu vyprší za %lld dny"
                 }
               },
               "many": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Token trezoru vyprší za %lld dne"
+                  "value": "Token vaultu vyprší za %lld dne"
                 }
               },
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Token trezoru vyprší za %lld den"
+                  "value": "Token vaultu vyprší za %lld den"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Token trezoru vyprší za %lld dní"
+                  "value": "Token vaultu vyprší za %lld dní"
                 }
               }
             }
@@ -3944,7 +3944,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Token trezoru vyprší dnes"
+            "value": "Token vaultu vyprší dnes"
           }
         }
       }
