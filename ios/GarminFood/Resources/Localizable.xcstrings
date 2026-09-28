@@ -16674,6 +16674,66 @@
           }
         }
       }
+    },
+    "Plan": {
+      "comment": "Tab bar item and navigation title: the training plan (training experience only); also a Settings -> Appearance -> Start on option.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plán"
+          }
+        }
+      }
+    },
+    "Your plan shows here once a vault is connected": {
+      "comment": "Plan tab empty state title, before any training plan is available.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvůj plán se tu ukáže, jakmile připojíš vault"
+          }
+        }
+      }
+    },
+    "Jirka's Arc reads your training plan from your vault. Until then, log food on Today as always.": {
+      "comment": "Plan tab empty state message. Jirka's Arc is the app name, never translated.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jirka's Arc čte tvůj tréninkový plán z vaultu. Do té doby zapisuj jídlo na kartě Dnes jako vždy."
+          }
+        }
+      }
+    },
+    "Preview training shell (testing)": {
+      "comment": "Hidden developer toggle in the Diagnostics menu: show the training experience's tabs (Today, Plan, Progress, Profile) before a vault is connected.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Náhled tréninkového rozhraní (testování)"
+          }
+        }
+      }
+    },
+    "Shows the Today, Plan, Progress and Profile tabs before a vault is connected.": {
+      "comment": "Subtitle under the hidden \"Preview training shell (testing)\" toggle in the Diagnostics menu.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukáže karty Dnes, Plán, Pokrok a Profil ještě před připojením vaultu."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

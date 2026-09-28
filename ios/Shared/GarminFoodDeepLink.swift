@@ -29,6 +29,13 @@
 // that redundant second tap. `Action` exists (rather than one bare URL) so
 // a future widget with a genuinely different destination (e.g. Progress)
 // has somewhere to add its own case instead of overloading this one.
+//
+// rebrand-to-jirkas-arc D8: `plan` (`garminfood://plan`, optional
+// `?date=YYYY-MM-DD`) opens the Plan tab in the training experience and
+// Today in the food-first one (AppearanceKit's `AppShell.destination`).
+// Nothing sends it yet; it exists so later notifications and the race
+// countdown have a target. The date is validated by the pure
+// `AppShell.planLinkDate` and kept on AppRouter for the Plan tab.
 
 import Foundation
 
@@ -39,7 +46,12 @@ enum GarminFoodDeepLink {
         /// The one real intent every widget in this app has today: open
         /// straight into the food-logging screen, not just the app.
         case logFood
+        /// The training plan, optionally at a day (`date` query item).
+        case plan
     }
+
+    /// The query item carrying a `plan` link's day.
+    static let planDateQueryItem = "date"
 
     static let logFoodURL = url(for: .logFood)
 
@@ -52,5 +64,14 @@ enum GarminFoodDeepLink {
     static func action(from url: URL) -> Action? {
         guard url.scheme == scheme, let host = url.host else { return nil }
         return Action(rawValue: host)
+    }
+
+    /// The first value of query item `name`, if any. Unvalidated: callers
+    /// parse it (e.g. `AppShell.planLinkDate`).
+    static func queryValue(_ name: String, in url: URL) -> String? {
+        URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?
+            .first { $0.name == name }?
+            .value
     }
 }
