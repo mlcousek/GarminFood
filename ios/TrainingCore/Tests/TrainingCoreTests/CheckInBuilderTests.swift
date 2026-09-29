@@ -86,7 +86,7 @@ final class CheckInBuilderTests: XCTestCase {
     }
 
     func testCheckInRowOnARestDay() throws {
-        let row = try XCTUnwrap(today(try snapshot()).trainingDay(on: D.date("2030-10-25")).checkIn)
+        let row = try XCTUnwrap(today(try snapshot()).trainingDay(on: D.date("2030-10-27")).checkIn)
         XCTAssertNil(row.sessionID)
         XCTAssertEqual(row.buttons.count, 3)
     }

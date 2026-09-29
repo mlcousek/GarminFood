@@ -312,7 +312,12 @@ on the vault side when mirrored:
   option is not shown as a check-in), `session.feedback` (the rating falls
   back to it), week `ruleNotes` (shown in the week agenda), `origin.kind`
   (`swapped` reads "Swapped from …"), and `acks` (D5). `outcomes` and
-  `rejected` stay undecoded JSON.
+  `rejected` stay undecoded JSON: the app shows no plan-command outcome
+  yet (that is `add-plan-editing`'s pending badge), so the vault's new
+  `refused` outcome for a race move needs no screen here.
+- Re-mirrored once more (vault main `13c0d987`): race sessions can no
+  longer be moved, swapped or skipped; goldens that depended on where the
+  race session sat read its date from the fixture.
 
 ## Risks / Trade-offs
 

@@ -61,8 +61,12 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(zones.zones.map(\.number), [1, 2, 3, 4, 5])
         XCTAssertEqual(zones.zone(number: 2), HRZone(number: 2, low: 129, high: 145))
         // Filled from the event log since the vault's add-hub-ingest.
-        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: projection.acks), ["ios-0a1b2c3d": 22, "ios-5e6f7a8b": 3])
-        XCTAssertEqual(projection.outcomes.count, 9)
+        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: projection.acks), ["ios-0a1b2c3d": 23, "ios-5e6f7a8b": 3])
+        XCTAssertEqual(projection.outcomes.count, 10)
+        // Race sessions can't be moved from the app: the vault refuses it.
+        let refused = projection.outcomes.first { $0["seq"] == .number(16) && $0["deviceId"]?.stringValue == "ios-0a1b2c3d" }
+        XCTAssertEqual(refused?["status"]?.stringValue, "refused")
+        XCTAssertEqual(refused?["sessionId"]?.stringValue, "2030-w44-sun-am")
         XCTAssertEqual(projection.rejected.count, 3)
         XCTAssertNil(projection.supersededBy)
     }
@@ -213,6 +217,12 @@ final class ProjectionDecodingTests: XCTestCase {
             XCTAssertEqual(race.origin?["kind"]?.stringValue, "moved")
             XCTAssertEqual(race.origin?["from"]?.stringValue, "2030-11-03")
         }
+
+        // Another device's applied move: Sunday's walk now on Friday.
+        let walk = try XCTUnwrap(plan.weeks[2].day(D.date("2030-10-25"))?.sessions.first)
+        XCTAssertEqual(walk.id, "2030-w43-sun-pm")
+        XCTAssertEqual(walk.origin?["kind"]?.stringValue, "moved")
+        XCTAssertEqual(walk.origin?["from"]?.stringValue, "2030-10-27")
 
         // add-hub-ingest: feedback, a skipped session, a rule's edit.
         XCTAssertEqual(tempo.feedback, SessionFeedback(rpe: 7, feel: 3, note: "Calf tight on the last repeat, eased off."))

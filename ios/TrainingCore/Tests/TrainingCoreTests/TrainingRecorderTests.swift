@@ -305,7 +305,7 @@ final class TrainingRecorderTests: XCTestCase {
         XCTAssertEqual(night.date, D.date("2030-10-22"))
         XCTAssertNil(night.sessionId, "the 22nd's easy run has no options")
         // Rest day, and no projection at all.
-        XCTAssertNil(CheckInPlanning.checkInSessionID(on: D.date("2030-10-25"), plan: projection.plan))
+        XCTAssertNil(CheckInPlanning.checkInSessionID(on: D.date("2030-10-27"), plan: projection.plan))
         let bare = CheckInPlanning.morningCheckIn(light: .redLight, projection: nil, now: Date(timeIntervalSince1970: 1_918_951_500), deviceTimeZone: TimeZone(identifier: "UTC")!)
         XCTAssertEqual(bare.date, D.date("2030-10-23"))
         XCTAssertNil(bare.sessionId)

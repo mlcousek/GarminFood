@@ -50,7 +50,10 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(rows.filter(\.isToday).map(\.date), [D.asOf])
         XCTAssertEqual(rows[0].sessions.first?.status, .missed)
         XCTAssertEqual(rows[0].sessions.first?.statusText, "Missed")
-        XCTAssertEqual(rows[4].restText, "Rest day")
+        // Sunday's walk was moved to Friday by a plan command.
+        XCTAssertNil(rows[4].restText)
+        XCTAssertEqual(rows[4].sessions.map(\.id), ["2030-w43-sun-pm"])
+        XCTAssertEqual(rows[6].restText, "Rest day")
         XCTAssertEqual(rows[3].sessions.first?.badgeText, "Test")
         XCTAssertEqual(week.previous, D.week("2030-W42"))
         XCTAssertEqual(week.next, D.week("2030-W44"))

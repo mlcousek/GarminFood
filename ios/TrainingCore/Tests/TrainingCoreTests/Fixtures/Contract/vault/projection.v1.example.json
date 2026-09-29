@@ -1517,7 +1517,42 @@
             ],
             "habitsDone": null,
             "fuel": null,
-            "sessions": [],
+            "sessions": [
+              {
+                "id": "2030-w43-sun-pm",
+                "slot": "pm",
+                "sport": "walk",
+                "type": "recovery",
+                "title": {
+                  "en": "Walk 60 min",
+                  "cz": "Procházka 60 min"
+                },
+                "why": null,
+                "workout": null,
+                "targets": {
+                  "km": null,
+                  "min": 60,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": {
+                  "kind": "moved",
+                  "from": "2030-10-27",
+                  "rule": null,
+                  "event": "01beb4a8-d0e0-7206-b206-5eed00000106"
+                },
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null,
+                "feedback": null
+              }
+            ],
             "unplanned": []
           },
           {
@@ -1573,37 +1608,7 @@
             ],
             "habitsDone": null,
             "fuel": null,
-            "sessions": [
-              {
-                "id": "2030-w43-sun-pm",
-                "slot": "pm",
-                "sport": "walk",
-                "type": "recovery",
-                "title": {
-                  "en": "Walk 60 min",
-                  "cz": "Procházka 60 min"
-                },
-                "why": null,
-                "workout": null,
-                "targets": {
-                  "km": null,
-                  "min": 60,
-                  "hrMin": null,
-                  "hrMax": null,
-                  "zone": null
-                },
-                "status": "planned",
-                "trafficLight": false,
-                "options": [],
-                "done": null,
-                "origin": null,
-                "ruleNotes": [],
-                "raceId": null,
-                "fuel": null,
-                "test": null,
-                "feedback": null
-              }
-            ],
+            "sessions": [],
             "unplanned": []
           }
         ]
@@ -1922,6 +1927,18 @@
               "carbsGPerKg": 10,
               "carbsG": 700
             },
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-11-03",
+            "light": null,
+            "lightSource": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
             "sessions": [
               {
                 "id": "2030-w44-sun-am",
@@ -1945,12 +1962,7 @@
                 "trafficLight": false,
                 "options": [],
                 "done": null,
-                "origin": {
-                  "kind": "moved",
-                  "from": "2030-11-03",
-                  "rule": null,
-                  "event": "01beb4a8-d0e0-7206-b206-5eed00000106"
-                },
+                "origin": null,
                 "ruleNotes": [],
                 "raceId": "valley-30k-2030",
                 "fuel": {
@@ -1960,18 +1972,6 @@
                 "feedback": null
               }
             ],
-            "unplanned": []
-          },
-          {
-            "date": "2030-11-03",
-            "light": null,
-            "lightSource": null,
-            "habitsExpected": [
-              "holds"
-            ],
-            "habitsDone": null,
-            "fuel": null,
-            "sessions": [],
             "unplanned": []
           }
         ]
@@ -2870,8 +2870,8 @@
   },
   "acks": {
     "ios-0a1b2c3d": {
-      "seq": 22,
-      "maxSeq": 22
+      "seq": 23,
+      "maxSeq": 23
     },
     "ios-5e6f7a8b": {
       "seq": 3,
@@ -2929,10 +2929,10 @@
       "type": "plan.session.moved",
       "week": "2030-W44",
       "sessionId": "2030-w44-sun-am",
-      "status": "superseded",
+      "status": "refused",
       "reason": {
-        "en": "Session 2030-w44-sun-am is on 2030-11-03, not 2030-11-02.",
-        "cz": "Trénink 2030-w44-sun-am je 2030-11-03, ne 2030-11-02."
+        "en": "Session 2030-w44-sun-am is a race: its date is set by the organiser, so the app cannot move, swap or skip it.",
+        "cz": "Trénink 2030-w44-sun-am je závod: jeho datum určuje pořadatel, aplikace ho proto nemůže přesunout, prohodit ani vynechat."
       }
     },
     {
@@ -2975,12 +2975,25 @@
       }
     },
     {
+      "event": "01beca74-6640-7117-a117-5eed00000017",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 23,
+      "type": "plan.session.moved",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-fri-am",
+      "status": "superseded",
+      "reason": {
+        "en": "Session 2030-w44-fri-am is on 2030-10-29, not 2030-11-01.",
+        "cz": "Trénink 2030-w44-fri-am je 2030-10-29, ne 2030-11-01."
+      }
+    },
+    {
       "event": "01beb4a8-d0e0-7206-b206-5eed00000106",
       "deviceId": "ios-5e6f7a8b",
       "seq": 6,
       "type": "plan.session.moved",
-      "week": "2030-W44",
-      "sessionId": "2030-w44-sun-am",
+      "week": "2030-W43",
+      "sessionId": "2030-w43-sun-pm",
       "status": "applied",
       "reason": null
     }

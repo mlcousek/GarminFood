@@ -15,6 +15,11 @@
   `{ rpe, feel, note }`, week `ruleNotes`, rule edits (`origin` with
   `kind: moved|swapped|rule`, options cut to R, `status: "skipped"`), and
   top-level `acks`, `outcomes`, `rejected` filled from the event log.
+  Re-mirrored again the same day (vault main `13c0d987`): the vault now
+  refuses moving, swapping or skipping a race session, so the race stays
+  on Sun 3 Nov and the command's outcome is `refused` with a bilingual
+  reason; the second device's applied move now moves the W43 Sunday walk
+  (`2030-w43-sun-pm`) to Fri 25 Oct.
 
 | File | What it is |
 |---|---|
@@ -43,7 +48,7 @@ in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
 
 | File | What it is |
 |---|---|
-| `events.v1.example.jsonl` | 22 events of every v1 type, including the plan commands, `device.hello` and `event.retracted` this app doesn't write yet. |
+| `events.v1.example.jsonl` | 23 events of every v1 type, including the plan commands (seq 16 a refused race move, seq 23 a superseded move), `device.hello` and `event.retracted` this app doesn't write yet. |
 | `events.v1.minimal.jsonl` | 3 events with every optional key omitted. |
 
 `HubEventTests` decodes both: the four types this app writes decode to

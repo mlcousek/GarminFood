@@ -121,7 +121,8 @@ final class TodayBuilderTests: XCTestCase {
     // MARK: States (design D11)
 
     func testRestDayOutlinedWeekAndNoPlan() throws {
-        let rest = try builder().trainingDay(on: D.date("2030-10-25"))
+        // Sunday: its walk was moved to Friday by a plan command.
+        let rest = try builder().trainingDay(on: D.date("2030-10-27"))
         XCTAssertEqual(rest.emptyState?.kind, .restDay)
         XCTAssertEqual(rest.emptyState?.title, "Rest day")
 

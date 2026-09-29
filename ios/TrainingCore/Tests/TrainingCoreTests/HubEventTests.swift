@@ -89,8 +89,8 @@ final class HubEventTests: XCTestCase {
     func testTheVaultsExampleDecodes() throws {
         let decoded = HubEventCodec.decode(try EventFixtures.vault("events.v1.example.jsonl"))
         XCTAssertEqual(decoded.invalidLines, [])
-        XCTAssertEqual(decoded.events.count, 22)
-        XCTAssertEqual(decoded.events.map(\.seq), Array(1...22))
+        XCTAssertEqual(decoded.events.count, 23)
+        XCTAssertEqual(decoded.events.map(\.seq), Array(1...23))
         XCTAssertTrue(decoded.events.allSatisfy { $0.deviceId == "ios-0a1b2c3d" && $0.v == 1 })
 
         let byType = Dictionary(grouping: decoded.events, by: { $0.type.rawValue }).mapValues(\.count)
