@@ -623,6 +623,26 @@ show the last good plan with its date.
 4. Rollback: revert; the stored layout keeps the training card ids, which
    the older build ignores (rule 2).
 
+## Contract details confirmed against the fixtures (2026-09-29)
+
+Tasks 1.3, checked on the vault's `projection.v1.example.json` as mirrored
+into `ios/TrainingCore/Tests/TrainingCoreTests/Fixtures/Contract/vault/`:
+
+- **Schedule kinds** are camelCase (`weeklyCount`, `everyNWeeks`,
+  `withSessions`). The snake_case aliases stay accepted (D3); no fixture
+  uses them.
+- **`aiNote` introduces its own week** (contract point 11): the example's
+  note "Last week settled well; this week adds one long run." sits on
+  2030-W42 itself, and W43 (`asOf`'s week) has none, so Today shows W42's
+  note labelled "W42" (D7's "latest earlier week").
+- **`days[].habitsDone` and `targets.hrMin` are present** in v1 (a
+  `null` map on days the vault knows nothing about; `hrMin` on the tempo
+  session). Both are read and tested.
+- **`targets.zone` is upper case** (`"Z1"`); the app still accepts `z1`.
+- Also settled while mirroring: `reps` and `load` may be numbers or
+  strings (`8`, `"8-12"`, `"40 kg"`), read as display text; weekday codes
+  are two letters (`"MO"`, `"TH"`, `"SA"`); ids stay opaque.
+
 ## Open Questions
 
 Carried into tasks.md group 0 with proposed defaults:

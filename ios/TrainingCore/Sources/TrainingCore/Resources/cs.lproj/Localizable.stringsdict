@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  TrainingCore plurals, Czech: one / few / many (decimals) / other.
+  Generated with TrainingKey.swift; same keys in en.lproj and cs.lproj.
+-->
+<plist version="1.0">
+<dict>
+	<!-- Race countdown. Plural. -->
+	<key>in %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>za %lld den</string>
+			<key>few</key>
+			<string>za %lld dny</string>
+			<key>many</key>
+			<string>za %lld dne</string>
+			<key>other</key>
+			<string>za %lld dní</string>
+		</dict>
+	</dict>
+	<!-- Race countdown for an approximate date. Plural. -->
+	<key>in about %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>zhruba za %lld den</string>
+			<key>few</key>
+			<string>zhruba za %lld dny</string>
+			<key>many</key>
+			<string>zhruba za %lld dne</string>
+			<key>other</key>
+			<string>zhruba za %lld dní</string>
+		</dict>
+	</dict>
+	<!-- Freshness line: no sync for a day or more. Plural. -->
+	<key>Last synced %lld days ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Naposledy synchronizováno před %lld dnem</string>
+			<key>few</key>
+			<string>Naposledy synchronizováno před %lld dny</string>
+			<key>many</key>
+			<string>Naposledy synchronizováno před %lld dne</string>
+			<key>other</key>
+			<string>Naposledy synchronizováno před %lld dny</string>
+		</dict>
+	</dict>
+	<!-- A habit's adherence covers fewer days than the window. Plural. -->
+	<key>over %lld recorded days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>za %lld zaznamenaný den</string>
+			<key>few</key>
+			<string>za %lld zaznamenané dny</string>
+			<key>many</key>
+			<string>za %lld zaznamenaného dne</string>
+			<key>other</key>
+			<string>za %lld zaznamenaných dní</string>
+		</dict>
+	</dict>
+	<!-- Habit schedule. Plural. -->
+	<key>every %lld weeks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>každý %lld týden</string>
+			<key>few</key>
+			<string>každé %lld týdny</string>
+			<key>many</key>
+			<string>každého %lld týdne</string>
+			<key>other</key>
+			<string>každých %lld týdnů</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
