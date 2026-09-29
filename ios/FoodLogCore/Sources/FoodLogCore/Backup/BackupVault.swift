@@ -373,9 +373,13 @@ public struct BackupVault: Sendable {
         return (BackupContainer(manifest: manifest, files: files, preferences: preferences), skipped)
     }
 
-    /// `GarminFood-backup-yyyy-MM-dd.json`.
+    /// `JirkasArc-backup-yyyy-MM-dd.json` (rebrand-to-jirkas-arc D2; no
+    /// apostrophe in a file name). Only the name changed: import never
+    /// reads the file name and the manifest marker
+    /// (`BackupManifest.schemaIdentifier`) is unchanged, so an older
+    /// `GarminFood-backup-...json` still imports.
     public static func exportFileName(now: Date, calendar: Calendar = .current) -> String {
-        "GarminFood-backup-\(snapshotId(kind: .export, now: now, calendar: calendar)).json"
+        "JirkasArc-backup-\(snapshotId(kind: .export, now: now, calendar: calendar)).json"
     }
 
     // MARK: - Staging a restore (step 1 of design D4)

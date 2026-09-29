@@ -179,7 +179,8 @@ public enum LayoutCatalog {
     /// Today, in the order `TodayView` rendered before this change.
     ///
     /// - The day switcher is navigation: pinned to the top, never hidden.
-    /// - The "GF by Jirka" signature is pinned to the bottom and can't be
+    /// - The "by Jirka" signature (the arc mark since rebrand-to-jirkas-arc;
+    ///   the card id stays `signature`) is pinned to the bottom and can't be
     ///   hidden -- owner decision 0.6 was defaulted to today's behavior
     ///   (tasks.md); overriding it is a one-word change (`hideable`).
     public static let today: [CardSpec] = [
@@ -225,6 +226,27 @@ public enum LayoutCatalog {
         case .today: return today
         case .logFood: return logFood
         case .progress: return progress
+        }
+    }
+
+    /// Today's catalog in `experience` (rebrand-to-jirkas-arc D6). The
+    /// food-first catalog is exactly `today` above (golden test). The
+    /// training catalog equals it until add-training-today-and-plan adds
+    /// its training cards there; a training card is never in the food-first
+    /// catalog, and a stored placement for one is kept, not rendered
+    /// (LayoutResolver rule 2), so switching experiences loses nothing.
+    public static func today(for experience: AppExperience) -> [CardSpec] {
+        switch experience {
+        case .foodFirst: return today
+        case .training: return today
+        }
+    }
+
+    /// `specs(for:)` in `experience`: only Today differs per experience.
+    public static func specs(for screen: LayoutScreen, experience: AppExperience) -> [CardSpec] {
+        switch screen {
+        case .today: return today(for: experience)
+        case .logFood, .progress: return specs(for: screen)
         }
     }
 }

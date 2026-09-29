@@ -41,13 +41,13 @@ import FoodLogCore
 
 struct LogNamedFoodIntent: AppIntent {
     static var title: LocalizedStringResource = "Log a Food by Name"
-    static var description = IntentDescription("Searches your foods and Garmin's food database for a name and logs the clear best match in GarminFood.")
+    static var description = IntentDescription("Searches your foods and Garmin's food database for a name and logs the clear best match in Jirka's Arc.")
 
     @Parameter(title: "Food name")
     var foodName: String
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Log \(\.$foodName) in GarminFood")
+        Summary("Log \(\.$foodName) in Jirka's Arc")
     }
 
     @MainActor
@@ -75,7 +75,7 @@ struct LogNamedFoodIntent: AppIntent {
         switch SearchConfidence.decide(loggable) {
         case .noMatch:
             if case .failed(let failure)? = snapshot.statuses[.garmin], failure.kind == .signedOut {
-                return .result(dialog: "Couldn't search Garmin: sign in again in GarminFood first.")
+                return .result(dialog: "Couldn't search Garmin: sign in again in Jirka's Arc first.")
             }
             return .result(dialog: "Couldn't find \"\(foodName)\" in your foods or Garmin's food database.")
         case .ambiguous(let candidates):
@@ -115,7 +115,7 @@ struct LogNamedFoodIntent: AppIntent {
             return .result(dialog: "Saved \(food.name). It will sync to Garmin in a moment.")
         }
         if QuickPickControlAction.isSignedOut(result.authOutcome) {
-            return .result(dialog: "Saved \(food.name), but it can't reach Garmin until you sign in again in GarminFood.")
+            return .result(dialog: "Saved \(food.name), but it can't reach Garmin until you sign in again in Jirka's Arc.")
         }
         if result.delivered.isEmpty {
             return .result(dialog: "Saved \(food.name). It will sync to Garmin when Garmin accepts it.")
@@ -176,7 +176,7 @@ struct LogNamedFoodIntent: AppIntent {
             remembered: remembered,
             isEligible: { $0.completeness.isLoggable }
         ) else {
-            return "\(food.name) has no calorie value, so it can't be logged. Open GarminFood to add it as a custom food."
+            return "\(food.name) has no calorie value, so it can't be logged. Open Jirka's Arc to add it as a custom food."
         }
         try await services.logEntryCoordinator.confirm(
             food: food,

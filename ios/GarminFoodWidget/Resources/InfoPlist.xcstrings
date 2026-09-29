@@ -2,16 +2,9 @@
   "sourceLanguage" : "en",
   "strings" : {
     "CFBundleDisplayName" : {
-      "comment" : "Widget extension display name (Info.plist key; the English value 'GarminFood Widget' is in ios/project.yml). GarminFood is the app name, never translated.",
+      "comment" : "Widget extension display name from Info.plist ($(APP_DISPLAY_NAME) in ios/project.yml, \"Jirka's Arc\", the app's own name). A brand name, the same in every language: no translation on purpose, since a Czech value here would override the build setting (rebrand-to-jirkas-arc D2).",
       "extractionState" : "manual",
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Widget GarminFood"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "CFBundleName" : {
       "comment" : "Bundle name from Info.plist; the product name is not translated.",

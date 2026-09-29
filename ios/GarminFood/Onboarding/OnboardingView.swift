@@ -1,7 +1,7 @@
 // OnboardingView.swift
 //
 // First-launch onboarding for a FRESH install (add-standalone-mode D10,
-// task 5.1): welcome -> "How do you want to use GarminFood?" -> (standalone
+// task 5.1): welcome -> "How do you want to use Jirka's Arc?" -> (standalone
 // only) skippable goal setup -> a one-screen "Back up regularly" explainer.
 //
 // Shown only while `AppEnvironment.needsOnboarding` is true, which the
@@ -16,6 +16,9 @@
 //   postponing sign-in").
 // - "Just on this phone" stores `.standalone`, then offers the goal editor
 //   (Skip leaves no target) and the backup explainer.
+//
+// The welcome page shows Jirka's Arc's mark (`ArcMark`, the app icon's
+// glyph) where the other pages show an SF Symbol (rebrand-to-jirkas-arc D4).
 //
 // No Garmin work runs while this is up (`AppEnvironment.currentSyncPlan`).
 // Thin: the mode and finish live in AppEnvironment (`chooseDataMode`,
@@ -65,8 +68,8 @@ struct OnboardingView: View {
 
     private var welcome: some View {
         page(
-            symbol: "fork.knife.circle.fill",
-            title: String(localized: "Welcome to GarminFood"),
+            symbol: nil,
+            title: String(localized: "Welcome to Jirka's Arc"),
             message: String(localized: "Log what you eat in two taps, keep a streak going and see how your days add up.")
         ) {
             Button(String(localized: "Get started")) {
@@ -79,7 +82,7 @@ struct OnboardingView: View {
     private var choice: some View {
         page(
             symbol: "person.crop.circle.badge.questionmark",
-            title: String(localized: "How do you want to use GarminFood?"),
+            title: String(localized: "How do you want to use Jirka's Arc?"),
             message: String(localized: "You can change this later in Settings.")
         ) {
             Button {
@@ -121,14 +124,22 @@ struct OnboardingView: View {
 
     // MARK: Layout
 
-    private func page<Actions: View>(symbol: String, title: String, message: String, @ViewBuilder actions: () -> Actions) -> some View {
+    /// `symbol` nil: the app's arc mark instead of an SF Symbol.
+    private func page<Actions: View>(symbol: String?, title: String, message: String, @ViewBuilder actions: () -> Actions) -> some View {
         ScrollView {
             VStack(spacing: Theme.Spacing.lg) {
-                Image(systemName: symbol)
-                    .font(.system(size: 64))
-                    .foregroundStyle(Theme.accent)
-                    .accessibilityHidden(true)
-                    .padding(.top, Theme.Spacing.xl)
+                Group {
+                    if let symbol {
+                        Image(systemName: symbol)
+                            .font(.system(size: 64))
+                    } else {
+                        ArcMark()
+                            .frame(width: 44 * ArcMark.aspectRatio, height: 44)
+                    }
+                }
+                .foregroundStyle(Theme.accent)
+                .accessibilityHidden(true)
+                .padding(.top, Theme.Spacing.xl)
                 Text(title)
                     .font(.title.weight(.bold))
                     .multilineTextAlignment(.center)

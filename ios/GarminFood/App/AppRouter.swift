@@ -5,6 +5,13 @@
 // widget links and Control requests here, so they work whichever screen was
 // showing. The tab at launch is the user's start tab (Settings ->
 // Appearance -> Layout); those entry points still take priority over it.
+//
+// rebrand-to-jirkas-arc D6/D8: the tab set depends on the experience
+// (food-first: Today, Progress, Profile; training: Today, Plan, Progress,
+// Profile). Which tab a route lands on, the start-tab fallback and the
+// correction when the experience changes are AppearanceKit's pure
+// `AppShell` rules; this class only applies them. `Tab` is AppShell's
+// `ShellTab`, so there is one tab enum, not two to keep in step.
 
 import Foundation
 import Observation
@@ -13,24 +20,37 @@ import AppearanceKit
 @MainActor
 @Observable
 final class AppRouter {
-    enum Tab: Hashable {
-        case today
-        case progress
-        case profile
-    }
+    typealias Tab = ShellTab
 
     var selectedTab: Tab
 
+    /// A `garminfood://plan?date=YYYY-MM-DD` link's day, kept for the Plan
+    /// tab to consume (add-training-today-and-plan). Set only when the link
+    /// opened Plan with a valid date; `nil` otherwise.
+    var pendingPlanDate: DateComponents?
+
+    /// The current experience (AppEnvironment.experience), read when a
+    /// route arrives.
+    @ObservationIgnored private let experience: @MainActor () -> AppExperience
+
     /// `startTab` is the user's "Start on" choice (add-themes-and-layout
-    /// task 4.3, `LayoutConfig.resolvedStartTab`), read once at launch. It
-    /// only sets the initial selection: a widget link or Control route
-    /// arriving after launch (`handle(url:)`, `applyPendingRoute()`) still
-    /// switches to the tab it needs.
-    init(startTab: StartTab = .default) {
-        switch startTab {
-        case .today: selectedTab = .today
-        case .progress: selectedTab = .progress
-        }
+    /// task 4.3), already resolved for the experience
+    /// (`LayoutStore.resolvedStartTab`), read once at launch. It only sets
+    /// the initial selection: a widget link or Control route arriving after
+    /// launch (`handle(url:)`, `applyPendingRoute()`) still switches to the
+    /// tab it needs.
+    init(startTab: StartTab = .default, experience: @escaping @MainActor () -> AppExperience = { .foodFirst }) {
+        self.experience = experience
+        selectedTab = AppShell.tab(for: startTab)
+    }
+
+    /// The experience changed (the preview toggle, later the vault
+    /// connection): keep the selected tab if the new set shows it, else
+    /// Today (design D8).
+    func experienceDidChange(to experience: AppExperience) {
+        let corrected = AppShell.correctedSelection(selectedTab, experience: experience)
+        if corrected != selectedTab { selectedTab = corrected }
+        if !AppShell.shows(.plan, in: experience) { pendingPlanDate = nil }
     }
 
     /// Set when the barcode Control fired. The Today tab pushes the catalog,
@@ -74,23 +94,33 @@ final class AppRouter {
     /// Nothing is applied until the user taps Apply there (design D11).
     var pendingThemeImport: ThemeImportRequest?
 
-    /// A `garminfood://` link: a widget tap, or a shared theme.
+    /// A `garminfood://` link: a widget tap, a `plan` link, or a shared
+    /// theme.
     func handle(url: URL) {
         if let code = ThemeShareCode.code(fromLink: url, scheme: GarminFoodDeepLink.scheme) {
             pendingThemeImport = ThemeImportRequest(code: code)
             return
         }
         guard let action = GarminFoodDeepLink.action(from: url) else { return }
-        selectedTab = .today
         switch action {
         case .logFood:
+            selectedTab = AppShell.destination(for: .logFood, experience: experience())
             catalogRequested = true
+        case .plan:
+            let destination = AppShell.destination(for: .plan, experience: experience())
+            selectedTab = destination
+            if destination == .plan {
+                pendingPlanDate = AppShell.planLinkDate(
+                    GarminFoodDeepLink.queryValue(GarminFoodDeepLink.planDateQueryItem, in: url)
+                )
+            }
         }
     }
 
+    /// The barcode Control: Today plus the catalog, in both experiences.
     func applyPendingRoute() {
         guard AppNavigationBridge.shared.pendingRoute == .barcodeScanner else { return }
-        selectedTab = .today
+        selectedTab = AppShell.destination(for: .logFood, experience: experience())
         catalogRequested = true
     }
 }

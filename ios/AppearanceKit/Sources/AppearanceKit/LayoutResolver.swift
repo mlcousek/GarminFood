@@ -217,9 +217,10 @@ public enum LayoutResolver {
 // MARK: - Config-level editing
 
 public extension LayoutConfig {
-    /// A screen's rows as rendered (and listed in the editor).
-    func resolved(_ screen: LayoutScreen) -> [ResolvedPlacement] {
-        LayoutResolver.resolve(stored: layout(for: screen), specs: LayoutCatalog.specs(for: screen))
+    /// A screen's rows as rendered (and listed in the editor), in
+    /// `experience` (rebrand-to-jirkas-arc D6: only Today differs).
+    func resolved(_ screen: LayoutScreen, experience: AppExperience = .foodFirst) -> [ResolvedPlacement] {
+        LayoutResolver.resolve(stored: layout(for: screen), specs: LayoutCatalog.specs(for: screen, experience: experience))
     }
 
     /// Applies one editor change to `screen`. Any Today edit clears the
@@ -227,8 +228,12 @@ public extension LayoutConfig {
     /// leaves the layout as it already resolves (showing a visible card,
     /// moving a pinned one) is not an edit: nothing is stored and the
     /// preset (including the implicit Full) is kept.
-    mutating func edit(_ screen: LayoutScreen, _ change: (ScreenLayout?, [CardSpec]) -> ScreenLayout) {
-        let specs = LayoutCatalog.specs(for: screen)
+    mutating func edit(
+        _ screen: LayoutScreen,
+        experience: AppExperience = .foodFirst,
+        _ change: (ScreenLayout?, [CardSpec]) -> ScreenLayout
+    ) {
+        let specs = LayoutCatalog.specs(for: screen, experience: experience)
         let stored = layout(for: screen)
         let updated = change(stored, specs)
         guard updated.placements != LayoutResolver.merged(stored: stored, specs: specs) else { return }

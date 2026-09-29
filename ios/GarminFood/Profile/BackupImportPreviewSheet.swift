@@ -74,7 +74,7 @@ struct BackupImportPreviewSheet: View {
 
                 Section {
                     Label {
-                        Text("Your current data is replaced the next time you open GarminFood. It's saved as a safety backup first, so you can go back.", comment: "Import preview: what Restore does.")
+                        Text("Your current data is replaced the next time you open Jirka's Arc. It's saved as a safety backup first, so you can go back.", comment: "Import preview: what Restore does.")
                     } icon: {
                         Image(systemName: "lifepreserver")
                             .foregroundStyle(Theme.accent)

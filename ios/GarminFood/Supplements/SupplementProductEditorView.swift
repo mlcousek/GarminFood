@@ -231,7 +231,7 @@ struct SupplementProductEditorView: View {
         } header: {
             Text("Pack and stock")
         } footer: {
-            Text("With stock set, GarminFood counts it down as you tick and reminds you a week before it runs out.", comment: "Supplement editor: footer under pack and stock.")
+            Text("With stock set, Jirka's Arc counts it down as you tick and reminds you a week before it runs out.", comment: "Supplement editor: footer under pack and stock.")
         }
     }
 

@@ -25,7 +25,7 @@ struct NotificationSettingsView: View {
         Form {
             if authorizationStatus == .denied {
                 Section {
-                    Label("Notifications are off for GarminFood in iOS Settings, so reminders below won't fire.", systemImage: "bell.slash")
+                    Label("Notifications are off for Jirka's Arc in iOS Settings, so reminders below won't fire.", systemImage: "bell.slash")
                         .font(.footnote)
                         .foregroundStyle(Theme.warning)
                     Button("Open Settings") {

@@ -223,9 +223,9 @@ final class DataSafetyController {
         }
         switch backupError {
         case .notABackup, .unsafePath:
-            return String(localized: "This isn't a GarminFood backup.", comment: "Data screen: the imported file isn't a backup.")
+            return String(localized: "This isn't a Jirka's Arc backup.", comment: "Data screen: the imported file isn't a backup.")
         case .newerFormat, .newerStoreVersion:
-            return String(localized: "This backup is from a newer version of GarminFood. Update the app, then try again.", comment: "Data screen: the backup was written by a newer app.")
+            return String(localized: "This backup is from a newer version of Jirka's Arc. Update the app, then try again.", comment: "Data screen: the backup was written by a newer app.")
         case .snapshotNotFound:
             return String(localized: "That backup is no longer on this phone.", comment: "Data screen: the chosen snapshot was deleted meanwhile.")
         case .safetySnapshotFailed, .fileOperationFailed:
