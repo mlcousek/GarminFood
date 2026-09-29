@@ -2407,6 +2407,18 @@
         }
       }
     },
+    "Done activity": {
+      "comment": "add-training-today-and-plan: Session detail: the activity that completed the session.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splněná aktivita"
+          }
+        }
+      }
+    },
     "Each day": {
       "comment": "Settings > Fasting: row label before the fast/eating split ('16 h fast · 8 h eating').",
       "extractionState": "manual",
@@ -2641,6 +2653,18 @@
         }
       }
     },
+    "Fuel": {
+      "comment": "add-training-today-and-plan: Session detail: section with carbohydrate targets.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výživa"
+          }
+        }
+      }
+    },
     "Fun Facts": {
       "comment": "Achievements group header: playful lifetime-calorie comparisons.",
       "extractionState": "manual",
@@ -2733,6 +2757,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cíle, posledních 14 dní"
+          }
+        }
+      }
+    },
+    "Habit ladder": {
+      "comment": "add-training-today-and-plan: Plan: toolbar button and screen title for the habit ladder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žebříček návyků"
           }
         }
       }
@@ -3091,6 +3127,18 @@
         }
       }
     },
+    "Month": {
+      "comment": "add-training-today-and-plan: Plan: segment showing the month calendar.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Měsíc"
+          }
+        }
+      }
+    },
     "New achievement unlocked.": {
       "comment": "Celebration text under a newly unlocked badge's name.",
       "extractionState": "manual",
@@ -3099,6 +3147,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nový odznak odemčen."
+          }
+        }
+      }
+    },
+    "Next month": {
+      "comment": "add-training-today-and-plan: Plan -> Month: page to the next month (VoiceOver).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další měsíc"
+          }
+        }
+      }
+    },
+    "Next race": {
+      "comment": "add-training-today-and-plan: Layout editor row: the countdown to the next A race on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Příští závod"
+          }
+        }
+      }
+    },
+    "Next week": {
+      "comment": "add-training-today-and-plan: Plan -> Week: page to the next week (VoiceOver).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další týden"
           }
         }
       }
@@ -3259,6 +3343,54 @@
         }
       }
     },
+    "Opens the full note": {
+      "comment": "add-training-today-and-plan: VoiceOver hint on Today's weekly note card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře celou poznámku"
+          }
+        }
+      }
+    },
+    "Opens the habit ladder": {
+      "comment": "add-training-today-and-plan: VoiceOver hint on the Today habits card's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře žebříček návyků"
+          }
+        }
+      }
+    },
+    "Opens the month at the race day": {
+      "comment": "add-training-today-and-plan: VoiceOver hint on Today's race countdown chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře měsíc na dni závodu"
+          }
+        }
+      }
+    },
+    "Opens the session": {
+      "comment": "add-training-today-and-plan: VoiceOver hint on a training session or option card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře trénink"
+          }
+        }
+      }
+    },
     "Opens the vault settings": {
       "comment": "add-vault-connection: Vault banner: VoiceOver hint.",
       "extractionState": "manual",
@@ -3291,6 +3423,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otevře historii půstu"
+          }
+        }
+      }
+    },
+    "Option": {
+      "comment": "add-training-today-and-plan: Session detail: label of the G / A / R option picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Možnost"
+          }
+        }
+      }
+    },
+    "Option cards": {
+      "comment": "add-training-today-and-plan: Layout editor: the training card shows the G, A and R option cards.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karty možností"
           }
         }
       }
@@ -3375,6 +3531,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Soubor s plánem nalezen (%@)"
+          }
+        }
+      }
+    },
+    "Previous month": {
+      "comment": "add-training-today-and-plan: Plan -> Month: page to the previous month (VoiceOver).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předchozí měsíc"
+          }
+        }
+      }
+    },
+    "Previous week": {
+      "comment": "add-training-today-and-plan: Plan -> Week: page to the previous week (VoiceOver).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předchozí týden"
           }
         }
       }
@@ -3535,6 +3715,18 @@
         }
       }
     },
+    "Session": {
+      "comment": "add-training-today-and-plan: Session detail: fallback screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trénink"
+          }
+        }
+      }
+    },
     "Set a fasting window that repeats every day. The home screen shows where you are in it.": {
       "comment": "Settings > Fasting footer while fasting is off.",
       "extractionState": "manual",
@@ -3559,6 +3751,42 @@
         }
       }
     },
+    "Shows when an A or hero race is ahead": {
+      "comment": "add-training-today-and-plan: Layout editor: when the Next race card appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se, když je před tebou závod A nebo hlavní závod"
+          }
+        }
+      }
+    },
+    "Shows when the plan expects habits that day": {
+      "comment": "add-training-today-and-plan: Layout editor: when the Today's habits card appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se, když plán na ten den počítá s návyky"
+          }
+        }
+      }
+    },
+    "Shows when the plan has a weekly note": {
+      "comment": "add-training-today-and-plan: Layout editor: when the Weekly note card appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se, když má plán týdenní poznámku"
+          }
+        }
+      }
+    },
     "Start and end can't be the same time.": {
       "comment": "Settings > Fasting footer: the chosen start and end are equal.",
       "extractionState": "manual",
@@ -3567,6 +3795,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Začátek a konec nemůžou být ve stejný čas."
+          }
+        }
+      }
+    },
+    "Steps": {
+      "comment": "add-training-today-and-plan: Session detail: the workout's steps.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kroky"
           }
         }
       }
@@ -3631,6 +3871,18 @@
         }
       }
     },
+    "Test result": {
+      "comment": "add-training-today-and-plan: Session detail: a test session's results.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výsledek testu"
+          }
+        }
+      }
+    },
     "That doesn't look like a complete GitHub token.": {
       "comment": "add-vault-connection: Settings -> Vault: the pasted token has the right prefix but the wrong shape.",
       "extractionState": "manual",
@@ -3679,6 +3931,18 @@
         }
       }
     },
+    "This session is no longer in the plan": {
+      "comment": "add-training-today-and-plan: Session detail: the session's id isn't in the latest plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento trénink už v plánu není"
+          }
+        }
+      }
+    },
     "Today counted": {
       "comment": "Streak card: today already counts toward the streak.",
       "extractionState": "manual",
@@ -3711,6 +3975,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tady se objeví dnešní denní výzvy."
+          }
+        }
+      }
+    },
+    "Today's habits": {
+      "comment": "add-training-today-and-plan: Today: title of the training habits card.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dnešní návyky"
           }
         }
       }
@@ -3771,6 +4047,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Token uložen."
+          }
+        }
+      }
+    },
+    "Tomorrow": {
+      "comment": "add-training-today-and-plan: Today's day switcher: the selected day is tomorrow (training experience).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zítra"
+          }
+        }
+      }
+    },
+    "Training": {
+      "comment": "add-training-today-and-plan: Layout editor row: the day's training sessions and options on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trénink"
           }
         }
       }
@@ -3949,6 +4249,18 @@
         }
       }
     },
+    "View": {
+      "comment": "add-training-today-and-plan: Plan: label of the Week / Month segmented control.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazení"
+          }
+        }
+      }
+    },
     "Water trend": {
       "comment": "VoiceOver label of the Trends water chart.",
       "extractionState": "manual",
@@ -4011,6 +4323,42 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "Week": {
+      "comment": "add-training-today-and-plan: Plan: segment showing one week's agenda.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týden"
+          }
+        }
+      }
+    },
+    "Weekly note": {
+      "comment": "add-training-today-and-plan: Today: the weekly AI note card's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdenní poznámka"
+          }
+        }
+      }
+    },
+    "Why this session": {
+      "comment": "add-training-today-and-plan: Session detail: section with the reasons for the session.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proč tento trénink"
           }
         }
       }
@@ -17583,54 +17931,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Plán"
-          }
-        }
-      }
-    },
-    "Your plan shows here once a vault is connected": {
-      "comment": "Plan tab empty state title, before any training plan is available.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tvůj plán se tu ukáže, jakmile připojíš vault"
-          }
-        }
-      }
-    },
-    "Jirka's Arc reads your training plan from your vault. Until then, log food on Today as always.": {
-      "comment": "Plan tab empty state message. Jirka's Arc is the app name, never translated.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jirka's Arc čte tvůj tréninkový plán z vaultu. Do té doby zapisuj jídlo na kartě Dnes jako vždy."
-          }
-        }
-      }
-    },
-    "Preview training shell (testing)": {
-      "comment": "Hidden developer toggle in the Diagnostics menu: show the training experience's tabs (Today, Plan, Progress, Profile) before a vault is connected.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Náhled tréninkového rozhraní (testování)"
-          }
-        }
-      }
-    },
-    "Shows the Today, Plan, Progress and Profile tabs before a vault is connected.": {
-      "comment": "Subtitle under the hidden \"Preview training shell (testing)\" toggle in the Diagnostics menu.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ukáže karty Dnes, Plán, Pokrok a Profil ještě před připojením vaultu."
           }
         }
       }

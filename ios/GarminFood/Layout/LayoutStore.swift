@@ -73,7 +73,13 @@ final class LayoutStore {
 
     /// Today's preset, or `nil` for "Custom".
     var currentTodayPreset: LayoutPreset? {
-        LayoutPreset.current(in: config)
+        LayoutPreset.current(in: config, experience: self.experience())
+    }
+
+    /// The presets the editor offers in the current experience
+    /// (add-training-today-and-plan: Training only in training).
+    var todayPresets: [LayoutPreset] {
+        LayoutPreset.presets(for: self.experience())
     }
 
     func canMove(_ id: String, _ direction: LayoutResolver.Direction, on screen: LayoutScreen) -> Bool {

@@ -26,8 +26,22 @@ final class AppRouter {
 
     /// A `garminfood://plan?date=YYYY-MM-DD` link's day, kept for the Plan
     /// tab to consume (add-training-today-and-plan). Set only when the link
-    /// opened Plan with a valid date; `nil` otherwise.
+    /// opened Plan with a valid date; `nil` otherwise. PlanTabView opens the
+    /// week containing it and clears it.
     var pendingPlanDate: DateComponents?
+
+    /// With `pendingPlanDate`: open the month rather than the week (Today's
+    /// race chip, add-training-today-and-plan D7).
+    var pendingPlanShowsMonth = false
+
+    /// Today's race chip: Plan at that day, in the month calendar.
+    func openPlan(year: Int, month: Int, day: Int, showsMonth: Bool) {
+        let destination = AppShell.destination(for: .plan, experience: experience())
+        guard destination == .plan else { return }
+        pendingPlanShowsMonth = showsMonth
+        pendingPlanDate = DateComponents(year: year, month: month, day: day)
+        selectedTab = .plan
+    }
 
     /// The current experience (AppEnvironment.experience), read when a
     /// route arrives.
@@ -44,9 +58,8 @@ final class AppRouter {
         selectedTab = AppShell.tab(for: startTab)
     }
 
-    /// The experience changed (the preview toggle, later the vault
-    /// connection): keep the selected tab if the new set shows it, else
-    /// Today (design D8).
+    /// The experience changed (the vault connection was switched): keep
+    /// the selected tab if the new set shows it, else Today (design D8).
     func experienceDidChange(to experience: AppExperience) {
         let corrected = AppShell.correctedSelection(selectedTab, experience: experience)
         if corrected != selectedTab { selectedTab = corrected }
@@ -110,6 +123,7 @@ final class AppRouter {
             let destination = AppShell.destination(for: .plan, experience: experience())
             selectedTab = destination
             if destination == .plan {
+                pendingPlanShowsMonth = false
                 pendingPlanDate = AppShell.planLinkDate(
                     GarminFoodDeepLink.queryValue(GarminFoodDeepLink.planDateQueryItem, in: url)
                 )

@@ -125,7 +125,7 @@ struct LayoutEditorSheet: View {
 
     private var presetsMenu: some View {
         Menu("Presets") {
-            ForEach(LayoutPreset.allCases, id: \.self) { preset in
+            ForEach(store.todayPresets, id: \.self) { preset in
                 Button {
                     animate { store.apply(preset) }
                 } label: {

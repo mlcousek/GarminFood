@@ -539,6 +539,9 @@ struct StatTile: View {
 struct DaySwitcher: View {
     let date: Date
     let isToday: Bool
+    /// add-training-today-and-plan D6: the training experience may step
+    /// past today to see tomorrow's session; food-first stops at today.
+    var allowsFuture = false
     let onStep: (Int) -> Void
     let onToday: () -> Void
 
@@ -569,7 +572,7 @@ struct DaySwitcher: View {
                 Image(systemName: "chevron.right")
                     .frame(minWidth: 44, minHeight: 44)
             }
-            .disabled(isToday)
+            .disabled(isToday && !allowsFuture)
             .accessibilityLabel("Next day")
         }
         .tint(Theme.accent)
@@ -579,6 +582,7 @@ struct DaySwitcher: View {
         let calendar = Calendar.current
         if calendar.isDateInToday(date) { return "Today" }
         if calendar.isDateInYesterday(date) { return "Yesterday" }
+        if calendar.isDateInTomorrow(date) { return String(localized: "Tomorrow", comment: "Today's day switcher: the selected day is tomorrow (training experience).") }
         return date.formatted(.dateTime.weekday(.wide).day().month())
     }
 }
