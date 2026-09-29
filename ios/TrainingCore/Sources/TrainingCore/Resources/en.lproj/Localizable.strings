@@ -1,0 +1,369 @@
+/*
+  TrainingCore -- English.
+  Generated with TrainingKey.swift from one table; every key is in both
+  languages with the same format specifiers (tools/check-localizations.mjs,
+  TrainingTextTests).
+*/
+
+/* Sport name. */
+"Run" = "Run";
+
+/* Sport name (cycling). */
+"Ride" = "Ride";
+
+/* Sport name. */
+"Walk" = "Walk";
+
+/* Sport name. */
+"Swim" = "Swim";
+
+/* Sport name, also the strength session type. */
+"Strength" = "Strength";
+
+/* Sport name, also the mobility session type. */
+"Mobility" = "Mobility";
+
+/* Sport name. */
+"Winter sport" = "Winter sport";
+
+/* Sport name for anything else. */
+"Other sport" = "Other sport";
+
+/* Session type. */
+"Easy" = "Easy";
+
+/* Session type (long run). */
+"Long" = "Long";
+
+/* Session type. */
+"Tempo" = "Tempo";
+
+/* Session type. */
+"Threshold" = "Threshold";
+
+/* Session type. */
+"Intervals" = "Intervals";
+
+/* Session type. */
+"VO2max" = "VO2max";
+
+/* Session type. */
+"Cross-training" = "Cross-training";
+
+/* Session type for anything else. */
+"Other" = "Other";
+
+/* Session type, week kind and workout step (easy recovery). */
+"Recovery" = "Recovery";
+
+/* Session type, week kind and the race badge. */
+"Race" = "Race";
+
+/* Badge on a test session. */
+"Test" = "Test";
+
+/* Session slot: before noon. */
+"Morning" = "Morning";
+
+/* Session slot: after noon. */
+"Afternoon" = "Afternoon";
+
+/* Session status. */
+"Planned" = "Planned";
+
+/* Session status. */
+"Done" = "Done";
+
+/* Session status. */
+"Missed" = "Missed";
+
+/* Session status. */
+"Skipped" = "Skipped";
+
+/* Week row: done, with the option letter (G, A or R). */
+"Done · %@" = "Done · %@";
+
+/* Marks today's date in the plan. */
+"Today" = "Today";
+
+/* Week status: not yet approved. */
+"Proposed" = "Proposed";
+
+/* Week status. */
+"Approved" = "Approved";
+
+/* Week status: finished. */
+"Closed" = "Closed";
+
+/* Week kind in the outline. */
+"Build" = "Build";
+
+/* Week kind in the outline: an easier week. */
+"Deload" = "Deload";
+
+/* Week kind in the outline: before a race. */
+"Taper" = "Taper";
+
+/* Week kind in the outline. */
+"Transition" = "Transition";
+
+/* What option G means. */
+"Planned session" = "Planned session";
+
+/* What option A means. */
+"Easier" = "Easier";
+
+/* What option R means (no running). */
+"Alternative" = "Alternative";
+
+/* VoiceOver for an option card: letter, meaning, label. */
+"Option %@, %@: %@" = "Option %@, %@: %@";
+
+/* VoiceOver: this option matches the morning traffic light. */
+"Matches your morning check" = "Matches your morning check";
+
+/* Session detail: the option that was done, letter and meaning. */
+"Option %@ · %@" = "Option %@ · %@";
+
+/* Session detail: done, but the app can't tell which option. */
+"Option not identified" = "Option not identified";
+
+/* Watch push: the option is on the training calendar (not necessarily on the watch yet). */
+"On Garmin calendar" = "On Garmin calendar";
+
+/* Watch push: the option waits to be sent. */
+"Not on Garmin calendar yet" = "Not on Garmin calendar yet";
+
+/* Watch push: the last attempt failed. */
+"Couldn't send to Garmin calendar" = "Couldn't send to Garmin calendar";
+
+/* Morning traffic light. */
+"Green" = "Green";
+
+/* Morning traffic light. */
+"Amber" = "Amber";
+
+/* Morning traffic light. */
+"Red" = "Red";
+
+/* The morning traffic light of a day. */
+"Morning check: %@" = "Morning check: %@";
+
+/* A carb-loading day before a race: grams and grams per kilogram. */
+"Carb load: %@ g carbs (%@ g/kg)" = "Carb load: %@ g carbs (%@ g/kg)";
+
+/* A carb-loading day, grams only. */
+"Carb load: %@ g carbs" = "Carb load: %@ g carbs";
+
+/* A carb-loading day, grams per kilogram only. */
+"Carb load: %@ g/kg" = "Carb load: %@ g/kg";
+
+/* Carbohydrate to take per hour during a session. */
+"Fuel: %@ g carbs/h" = "Fuel: %@ g carbs/h";
+
+/* Race countdown: the race is today. */
+"today" = "today";
+
+/* Race countdown: the race is tomorrow. */
+"tomorrow" = "tomorrow";
+
+/* Race countdown for an approximate date. */
+"about today" = "about today";
+
+/* Race countdown for an approximate date. */
+"about tomorrow" = "about tomorrow";
+
+/* A race on this day; the race's name. */
+"Race day: %@" = "Race day: %@";
+
+/* Freshness line: the day the plan describes. */
+"Plan as of %@" = "Plan as of %@";
+
+/* Freshness line: the plan has no date. */
+"Plan date unknown" = "Plan date unknown";
+
+/* The latest plan file could not be read. */
+"Couldn't read the latest plan" = "Couldn't read the latest plan";
+
+/* The latest plan file could not be read; the date of the plan still shown. */
+"Couldn't read the latest plan; showing %@" = "Couldn't read the latest plan; showing %@";
+
+/* The plan file is newer than this app version. The app name stays in English. */
+"Update Jirka's Arc to read this plan" = "Update Jirka's Arc to read this plan";
+
+/* Quiet hint that a newer app reads more. */
+"A newer app version reads more of your plan" = "A newer app version reads more of your plan";
+
+/* Empty state while the first plan downloads. */
+"Fetching your plan…" = "Fetching your plan…";
+
+/* Empty state while the first plan downloads. */
+"The first time takes a moment." = "The first time takes a moment.";
+
+/* Empty state: the vault hasn't published a plan. */
+"No plan data yet" = "No plan data yet";
+
+/* Empty state: the vault hasn't published a plan. */
+"Your vault hasn't published it." = "Your vault hasn't published it.";
+
+/* Empty state: no training phase. */
+"No active plan" = "No active plan";
+
+/* Empty state: no training phase. */
+"Your vault has no training phase right now." = "Your vault has no training phase right now.";
+
+/* Nothing planned on a day. */
+"Rest day" = "Rest day";
+
+/* Nothing planned on a day. */
+"Nothing is planned for this day." = "Nothing is planned for this day.";
+
+/* The week exists only in the outline. */
+"Week not written yet" = "Week not written yet";
+
+/* A week outside every phase. */
+"No plan for this week" = "No plan for this week";
+
+/* A week outside every phase. */
+"This week is outside every phase of the season." = "This week is outside every phase of the season.";
+
+/* Plan week view of an outline-only week. */
+"Sessions for this week aren't written yet" = "Sessions for this week aren't written yet";
+
+/* ISO week number, short (Czech: T for tyden). */
+"W%lld" = "W%lld";
+
+/* ISO week number and its date range. */
+"W%lld · %@" = "W%lld · %@";
+
+/* Week header: kilometres run, no target. */
+"Run %@ km" = "Run %@ km";
+
+/* Week header: kilometres run of the target. */
+"Run %@ of %@ km" = "Run %@ of %@ km";
+
+/* Week header: the week's running target. */
+"Run target %@ km" = "Run target %@ km";
+
+/* Week header: sessions done, missed, of planned. */
+"%lld done · %lld missed of %lld" = "%lld done · %lld missed of %lld";
+
+/* Week header of a week that hasn't started. */
+"Sessions planned: %lld" = "Sessions planned: %lld";
+
+/* An activity that matched no planned session. */
+"Unplanned" = "Unplanned";
+
+/* Workout step. */
+"Warm-up" = "Warm-up";
+
+/* Workout step. */
+"Cool-down" = "Cool-down";
+
+/* Workout step: rest between exercises. */
+"Rest" = "Rest";
+
+/* Workout step: an isometric hold. */
+"Hold" = "Hold";
+
+/* Interval step: the recovery after each repeat, a duration. */
+"%@ recovery" = "%@ recovery";
+
+/* The workout has no steps in the plan. */
+"Steps not published" = "Steps not published";
+
+/* Exercise side. */
+"each side" = "each side";
+
+/* Exercise side. */
+"left" = "left";
+
+/* Exercise side. */
+"right" = "right";
+
+/* Exercise side. */
+"both sides" = "both sides";
+
+/* How the done option was recognised. */
+"Inferred from the sport" = "Inferred from the sport";
+
+/* How the done option was recognised: the option letter at the start of the activity's name. */
+"Recognised from the activity's name" = "Recognised from the activity's name";
+
+/* How the session was recognised as done. */
+"Recorded as a test result" = "Recorded as a test result";
+
+/* How the activity was matched to the session. */
+"Matched by date and sport" = "Matched by date and sport";
+
+/* Where a session came from: a date. */
+"Moved from %@" = "Moved from %@";
+
+/* Where a session came from. */
+"Changed by a rule" = "Changed by a rule";
+
+/* Where a session came from. */
+"Changed after planning" = "Changed after planning";
+
+/* A test before it was done. */
+"No result yet" = "No result yet";
+
+/* The previous result of a test, with its unit. */
+"Previous %@" = "Previous %@";
+
+/* Test result against the previous one. */
+"Improved" = "Improved";
+
+/* Test result against the previous one. */
+"Worse" = "Worse";
+
+/* Test result against the previous one. */
+"Unchanged" = "Unchanged";
+
+/* Habit ladder state. */
+"Active" = "Active";
+
+/* Habit ladder state. */
+"Next" = "Next";
+
+/* Habit ladder state. */
+"Later" = "Later";
+
+/* A habit's 14-day adherence has no data. */
+"not recorded yet" = "not recorded yet";
+
+/* A habit's 14-day adherence: done of expected and percent. */
+"%lld of %lld · %lld %%" = "%lld of %lld · %lld %%";
+
+/* A habit done today, of the times expected. */
+"Today: %lld of %lld" = "Today: %lld of %lld";
+
+/* The adherence gate for the next habit. */
+"Gate: %lld %% · %lld-day window" = "Gate: %lld %% · %lld-day window";
+
+/* The active habit met its gate. */
+"Gate met: the next habit can start at your Sunday review" = "Gate met: the next habit can start at your Sunday review";
+
+/* When a habit started: a date. */
+"Started %@" = "Started %@";
+
+/* When a habit can start: a date. */
+"Earliest start %@" = "Earliest start %@";
+
+/* The plan has no habit ladder. */
+"No habits in this plan" = "No habits in this plan";
+
+/* Habit schedule. */
+"Every day" = "Every day";
+
+/* Habit schedule: times a day. */
+"%lld× a day" = "%lld× a day";
+
+/* Habit schedule. */
+"Once a week" = "Once a week";
+
+/* Habit schedule: times a week. */
+"%lld× a week" = "%lld× a week";
+
+/* Habit schedule: after these session types. */
+"After sessions: %@" = "After sessions: %@";

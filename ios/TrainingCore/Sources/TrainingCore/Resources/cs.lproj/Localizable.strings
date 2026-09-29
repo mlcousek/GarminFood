@@ -1,0 +1,369 @@
+/*
+  TrainingCore -- Czech. Informal "ty" register (add-localization design.md D5).
+  Generated with TrainingKey.swift from one table; every key is in both
+  languages with the same format specifiers (tools/check-localizations.mjs,
+  TrainingTextTests).
+*/
+
+/* Sport name. */
+"Run" = "Běh";
+
+/* Sport name (cycling). */
+"Ride" = "Kolo";
+
+/* Sport name. */
+"Walk" = "Chůze";
+
+/* Sport name. */
+"Swim" = "Plavání";
+
+/* Sport name, also the strength session type. */
+"Strength" = "Posilování";
+
+/* Sport name, also the mobility session type. */
+"Mobility" = "Mobilita";
+
+/* Sport name. */
+"Winter sport" = "Zimní sport";
+
+/* Sport name for anything else. */
+"Other sport" = "Jiný sport";
+
+/* Session type. */
+"Easy" = "Klidný";
+
+/* Session type (long run). */
+"Long" = "Dlouhý";
+
+/* Session type. */
+"Tempo" = "Tempo";
+
+/* Session type. */
+"Threshold" = "Práh";
+
+/* Session type. */
+"Intervals" = "Intervaly";
+
+/* Session type. */
+"VO2max" = "VO2max";
+
+/* Session type. */
+"Cross-training" = "Doplňkový trénink";
+
+/* Session type for anything else. */
+"Other" = "Jiné";
+
+/* Session type, week kind and workout step (easy recovery). */
+"Recovery" = "Regenerace";
+
+/* Session type, week kind and the race badge. */
+"Race" = "Závod";
+
+/* Badge on a test session. */
+"Test" = "Test";
+
+/* Session slot: before noon. */
+"Morning" = "Dopoledne";
+
+/* Session slot: after noon. */
+"Afternoon" = "Odpoledne";
+
+/* Session status. */
+"Planned" = "Naplánováno";
+
+/* Session status. */
+"Done" = "Hotovo";
+
+/* Session status. */
+"Missed" = "Vynecháno";
+
+/* Session status. */
+"Skipped" = "Přeskočeno";
+
+/* Week row: done, with the option letter (G, A or R). */
+"Done · %@" = "Hotovo · %@";
+
+/* Marks today's date in the plan. */
+"Today" = "Dnes";
+
+/* Week status: not yet approved. */
+"Proposed" = "Návrh";
+
+/* Week status. */
+"Approved" = "Schváleno";
+
+/* Week status: finished. */
+"Closed" = "Uzavřeno";
+
+/* Week kind in the outline. */
+"Build" = "Budování";
+
+/* Week kind in the outline: an easier week. */
+"Deload" = "Odlehčení";
+
+/* Week kind in the outline: before a race. */
+"Taper" = "Ladění formy";
+
+/* Week kind in the outline. */
+"Transition" = "Přechod";
+
+/* What option G means. */
+"Planned session" = "Plánovaný trénink";
+
+/* What option A means. */
+"Easier" = "Lehčí";
+
+/* What option R means (no running). */
+"Alternative" = "Alternativa";
+
+/* VoiceOver for an option card: letter, meaning, label. */
+"Option %@, %@: %@" = "Možnost %@, %@: %@";
+
+/* VoiceOver: this option matches the morning traffic light. */
+"Matches your morning check" = "Odpovídá ranní kontrole";
+
+/* Session detail: the option that was done, letter and meaning. */
+"Option %@ · %@" = "Možnost %@ · %@";
+
+/* Session detail: done, but the app can't tell which option. */
+"Option not identified" = "Možnost nerozpoznána";
+
+/* Watch push: the option is on the training calendar (not necessarily on the watch yet). */
+"On Garmin calendar" = "V kalendáři Garmin";
+
+/* Watch push: the option waits to be sent. */
+"Not on Garmin calendar yet" = "Zatím není v kalendáři Garmin";
+
+/* Watch push: the last attempt failed. */
+"Couldn't send to Garmin calendar" = "Do kalendáře Garmin se nepodařilo odeslat";
+
+/* Morning traffic light. */
+"Green" = "Zelená";
+
+/* Morning traffic light. */
+"Amber" = "Oranžová";
+
+/* Morning traffic light. */
+"Red" = "Červená";
+
+/* The morning traffic light of a day. */
+"Morning check: %@" = "Ranní kontrola: %@";
+
+/* A carb-loading day before a race: grams and grams per kilogram. */
+"Carb load: %@ g carbs (%@ g/kg)" = "Nasycení sacharidy: %@ g sacharidů (%@ g/kg)";
+
+/* A carb-loading day, grams only. */
+"Carb load: %@ g carbs" = "Nasycení sacharidy: %@ g sacharidů";
+
+/* A carb-loading day, grams per kilogram only. */
+"Carb load: %@ g/kg" = "Nasycení sacharidy: %@ g/kg";
+
+/* Carbohydrate to take per hour during a session. */
+"Fuel: %@ g carbs/h" = "Výživa: %@ g sacharidů/h";
+
+/* Race countdown: the race is today. */
+"today" = "dnes";
+
+/* Race countdown: the race is tomorrow. */
+"tomorrow" = "zítra";
+
+/* Race countdown for an approximate date. */
+"about today" = "zhruba dnes";
+
+/* Race countdown for an approximate date. */
+"about tomorrow" = "zhruba zítra";
+
+/* A race on this day; the race's name. */
+"Race day: %@" = "Den závodu: %@";
+
+/* Freshness line: the day the plan describes. */
+"Plan as of %@" = "Plán ke dni %@";
+
+/* Freshness line: the plan has no date. */
+"Plan date unknown" = "Datum plánu není známé";
+
+/* The latest plan file could not be read. */
+"Couldn't read the latest plan" = "Nejnovější plán se nepodařilo přečíst";
+
+/* The latest plan file could not be read; the date of the plan still shown. */
+"Couldn't read the latest plan; showing %@" = "Nejnovější plán se nepodařilo přečíst; zobrazuji plán ke dni %@";
+
+/* The plan file is newer than this app version. The app name stays in English. */
+"Update Jirka's Arc to read this plan" = "Aktualizuj Jirka's Arc, aby tento plán přečetl";
+
+/* Quiet hint that a newer app reads more. */
+"A newer app version reads more of your plan" = "Novější verze aplikace přečte z tvého plánu víc";
+
+/* Empty state while the first plan downloads. */
+"Fetching your plan…" = "Načítám tvůj plán…";
+
+/* Empty state while the first plan downloads. */
+"The first time takes a moment." = "Poprvé to chvíli trvá.";
+
+/* Empty state: the vault hasn't published a plan. */
+"No plan data yet" = "Zatím žádná data plánu";
+
+/* Empty state: the vault hasn't published a plan. */
+"Your vault hasn't published it." = "Tvůj vault ho ještě nezveřejnil.";
+
+/* Empty state: no training phase. */
+"No active plan" = "Žádný aktivní plán";
+
+/* Empty state: no training phase. */
+"Your vault has no training phase right now." = "Tvůj vault teď nemá žádnou tréninkovou fázi.";
+
+/* Nothing planned on a day. */
+"Rest day" = "Den volna";
+
+/* Nothing planned on a day. */
+"Nothing is planned for this day." = "Na tento den není nic naplánováno.";
+
+/* The week exists only in the outline. */
+"Week not written yet" = "Týden ještě není rozepsaný";
+
+/* A week outside every phase. */
+"No plan for this week" = "Na tento týden není plán";
+
+/* A week outside every phase. */
+"This week is outside every phase of the season." = "Tento týden nepatří do žádné fáze sezóny.";
+
+/* Plan week view of an outline-only week. */
+"Sessions for this week aren't written yet" = "Tréninky na tento týden ještě nejsou rozepsané";
+
+/* ISO week number, short (Czech: T for tyden). */
+"W%lld" = "T%lld";
+
+/* ISO week number and its date range. */
+"W%lld · %@" = "T%lld · %@";
+
+/* Week header: kilometres run, no target. */
+"Run %@ km" = "Běh %@ km";
+
+/* Week header: kilometres run of the target. */
+"Run %@ of %@ km" = "Běh %@ z %@ km";
+
+/* Week header: the week's running target. */
+"Run target %@ km" = "Cíl běhu %@ km";
+
+/* Week header: sessions done, missed, of planned. */
+"%lld done · %lld missed of %lld" = "%lld hotovo · %lld vynecháno z %lld";
+
+/* Week header of a week that hasn't started. */
+"Sessions planned: %lld" = "Naplánované tréninky: %lld";
+
+/* An activity that matched no planned session. */
+"Unplanned" = "Neplánované";
+
+/* Workout step. */
+"Warm-up" = "Rozklusání";
+
+/* Workout step. */
+"Cool-down" = "Vyklusání";
+
+/* Workout step: rest between exercises. */
+"Rest" = "Pauza";
+
+/* Workout step: an isometric hold. */
+"Hold" = "Výdrž";
+
+/* Interval step: the recovery after each repeat, a duration. */
+"%@ recovery" = "%@ volně";
+
+/* The workout has no steps in the plan. */
+"Steps not published" = "Kroky nejsou zveřejněné";
+
+/* Exercise side. */
+"each side" = "každá strana";
+
+/* Exercise side. */
+"left" = "levá";
+
+/* Exercise side. */
+"right" = "pravá";
+
+/* Exercise side. */
+"both sides" = "obě strany";
+
+/* How the done option was recognised. */
+"Inferred from the sport" = "Odvozeno ze sportu";
+
+/* How the done option was recognised: the option letter at the start of the activity's name. */
+"Recognised from the activity's name" = "Rozpoznáno podle názvu aktivity";
+
+/* How the session was recognised as done. */
+"Recorded as a test result" = "Zapsáno jako výsledek testu";
+
+/* How the activity was matched to the session. */
+"Matched by date and sport" = "Spárováno podle data a sportu";
+
+/* Where a session came from: a date. */
+"Moved from %@" = "Přesunuto z %@";
+
+/* Where a session came from. */
+"Changed by a rule" = "Změněno pravidlem";
+
+/* Where a session came from. */
+"Changed after planning" = "Změněno po naplánování";
+
+/* A test before it was done. */
+"No result yet" = "Zatím bez výsledku";
+
+/* The previous result of a test, with its unit. */
+"Previous %@" = "Minule %@";
+
+/* Test result against the previous one. */
+"Improved" = "Zlepšení";
+
+/* Test result against the previous one. */
+"Worse" = "Zhoršení";
+
+/* Test result against the previous one. */
+"Unchanged" = "Beze změny";
+
+/* Habit ladder state. */
+"Active" = "Aktivní";
+
+/* Habit ladder state. */
+"Next" = "Další";
+
+/* Habit ladder state. */
+"Later" = "Později";
+
+/* A habit's 14-day adherence has no data. */
+"not recorded yet" = "zatím nezaznamenáno";
+
+/* A habit's 14-day adherence: done of expected and percent. */
+"%lld of %lld · %lld %%" = "%lld z %lld · %lld %%";
+
+/* A habit done today, of the times expected. */
+"Today: %lld of %lld" = "Dnes: %lld z %lld";
+
+/* The adherence gate for the next habit. */
+"Gate: %lld %% · %lld-day window" = "Brána: %lld %% · okno %lld dnů";
+
+/* The active habit met its gate. */
+"Gate met: the next habit can start at your Sunday review" = "Brána splněna: další návyk může začít při nedělní revizi";
+
+/* When a habit started: a date. */
+"Started %@" = "Začátek %@";
+
+/* When a habit can start: a date. */
+"Earliest start %@" = "Nejdřív od %@";
+
+/* The plan has no habit ladder. */
+"No habits in this plan" = "V tomto plánu nejsou žádné návyky";
+
+/* Habit schedule. */
+"Every day" = "Každý den";
+
+/* Habit schedule: times a day. */
+"%lld× a day" = "%lld× denně";
+
+/* Habit schedule. */
+"Once a week" = "Jednou týdně";
+
+/* Habit schedule: times a week. */
+"%lld× a week" = "%lld× týdně";
+
+/* Habit schedule: after these session types. */
+"After sessions: %@" = "Po trénincích: %@";

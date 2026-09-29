@@ -623,6 +623,39 @@ show the last good plan with its date.
 4. Rollback: revert; the stored layout keeps the training card ids, which
    the older build ignores (rule 2).
 
+## Contract details confirmed against the fixtures (2026-09-29)
+
+Tasks 1.3, checked on the vault's `projection.v1.example.json` as mirrored
+into `ios/TrainingCore/Tests/TrainingCoreTests/Fixtures/Contract/vault/`:
+
+- **Schedule kinds** are camelCase (`weeklyCount`, `everyNWeeks`,
+  `withSessions`). The snake_case aliases stay accepted (D3); no fixture
+  uses them.
+- **`aiNote` introduces its own week** (contract point 11): the example's
+  note "Last week settled well; this week adds one long run." sits on
+  2030-W42 itself, and W43 (`asOf`'s week) has none, so Today shows W42's
+  note labelled "W42" (D7's "latest earlier week").
+- **`days[].habitsDone` and `targets.hrMin` are present** in v1 (a
+  `null` map on days the vault knows nothing about; `hrMin` on the tempo
+  session). Both are read and tested.
+- **`targets.zone` is upper case** (`"Z1"`); the app still accepts `z1`.
+- **Contract update, same day** (the vault's `add-garmin-workout-push`,
+  additive, `schemaVersion` stays 1): `option.watch` is no longer reserved
+  but `{ name, state: pending|scheduled|failed, channel, ref, at }` or
+  `null` (decoded as `OptionWatch`, unknown states as `.unknown`);
+  `done.source` gains `"activity-name"` (the option token at the start of
+  the activity's name, contract point 3), so a done run day can now name
+  its option; every workout carries `watchName`. The option cards and the
+  session detail show the watch state as a quiet line -- `scheduled` is
+  "On Garmin calendar" / "V kalendáři Garmin" (the channel's calendar, not
+  the watch's own list, contract point 12) -- and the detail says a done
+  option was "Recognised from the activity's name". The fixtures were
+  re-mirrored and the goldens updated (the 2030-10-18 run is now done with
+  A; the "option unknown" case is a mutation of the example).
+- Also settled while mirroring: `reps` and `load` may be numbers or
+  strings (`8`, `"8-12"`, `"40 kg"`), read as display text; weekday codes
+  are two letters (`"MO"`, `"TH"`, `"SA"`); ids stay opaque.
+
 ## Open Questions
 
 Carried into tasks.md group 0 with proposed defaults:

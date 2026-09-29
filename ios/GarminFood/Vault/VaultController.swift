@@ -17,12 +17,19 @@
 // The token is read from the Keychain to answer "is there one?" and to
 // show its last four characters; it is never stored in a property.
 //
+// add-training-today-and-plan task 4.1: the refresh validates with
+// TrainingCore's decoder (`ProjectionStore.validate`), so an invalid or
+// too-new projection never replaces the last good one; the report is
+// folded into the store and `onProjectionRefresh` lets TrainingModel
+// rebuild what Today and Plan show.
+//
 // Owned by AppEnvironment (`environment.vault`). Depends on VaultServices.
 
 import Foundation
 import Observation
 import GarminKit
 import VaultKit
+import TrainingCore
 
 @MainActor
 @Observable
@@ -37,6 +44,9 @@ final class VaultController {
 
     @ObservationIgnored private let services: VaultServices
     @ObservationIgnored private let defaults: UserDefaults
+    /// Called on the main actor after every projection refresh and after a
+    /// disconnect (AppEnvironment wires it to `TrainingModel.reload`).
+    @ObservationIgnored var onProjectionRefresh: (@MainActor () async -> Void)?
 
     init(services: VaultServices, defaults: UserDefaults = .standard) {
         self.services = services
@@ -89,14 +99,19 @@ final class VaultController {
     func refreshInBackground(force: Bool, allowed: Bool) {
         guard allowed, settings.enabled else { return }
         let coordinator = services.coordinator
+        let store = services.projectionStore
         let inputs = self.inputs
         Task { [weak self] in
-            // task 4.5: a minimal validator until add-training-today-and-plan
-            // passes TrainingCore's decoder -- a JSON object of at most 5 MB.
-            _ = await coordinator.refreshProjection(inputs, force: force) { bytes in
-                try VaultValidators.jsonObject(bytes)
+            // add-training-today-and-plan D5: TrainingCore's decoder is the
+            // validator (header gates + the full v1 decode, 5 MB cap).
+            let report = await coordinator.refreshProjection(inputs, force: force) { bytes in
+                try ProjectionStore.validate(bytes)
+            }
+            if case .ran(let fetch) = report {
+                await store.noteRefresh(fetch)
             }
             await self?.reload()
+            await self?.onProjectionRefresh?()
         }
     }
 
@@ -208,6 +223,8 @@ final class VaultController {
         updated.enabled = false
         updated.save(to: defaults)
         lastTest = nil
+        await services.projectionStore.clear()
         await reload()
+        await onProjectionRefresh?()
     }
 }

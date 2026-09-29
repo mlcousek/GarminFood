@@ -120,6 +120,11 @@ packages:
   # App target ONLY -- the widget never links it and never holds the token.
   VaultKit:
     path: VaultKit
+  # add-training-today-and-plan D1: the training domain (projection
+  # decoding, the last good plan, Today and Plan view models). App target
+  # ONLY, like VaultKit, which it depends on.
+  TrainingCore:
+    path: TrainingCore
 
 settings:
   base:
@@ -258,6 +263,7 @@ targets:
       - package: Gamification
       - package: AppearanceKit
       - package: VaultKit
+      - package: TrainingCore
     scheme:
       testTargets: []
       gatherCoverageData: false

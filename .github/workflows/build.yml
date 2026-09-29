@@ -141,6 +141,18 @@ jobs:
           cd VaultKit
           swift test
 
+      - name: Run TrainingCore unit tests
+        # add-training-today-and-plan D1/D14: the training domain -- tolerant
+        # decoding of the vault's projection v1 (golden on the two contract
+        # fixtures mirrored verbatim from the vault, plus mutations of them),
+        # the last-good-copy store over a real ConditionalFileSync, the
+        # training day, ISO weeks, and every Today / Plan view model and
+        # formatter in English and Czech. Foundation only, no simulator.
+        # Depends on VaultKit and GarminKit via local path dependencies.
+        run: |
+          cd TrainingCore
+          swift test
+
       - name: Lint design tokens
         # add-themes-and-layout D12: views use Theme tokens, never literal
         # colors (exemptions, each with a reason, in

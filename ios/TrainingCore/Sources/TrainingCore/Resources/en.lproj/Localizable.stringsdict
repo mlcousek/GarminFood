@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  TrainingCore plurals, English: one / other.
+  Generated with TrainingKey.swift; same keys in en.lproj and cs.lproj.
+-->
+<plist version="1.0">
+<dict>
+	<!-- Race countdown. Plural. -->
+	<key>in %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>in %lld day</string>
+			<key>other</key>
+			<string>in %lld days</string>
+		</dict>
+	</dict>
+	<!-- Race countdown for an approximate date. Plural. -->
+	<key>in about %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>in about %lld day</string>
+			<key>other</key>
+			<string>in about %lld days</string>
+		</dict>
+	</dict>
+	<!-- Freshness line: no sync for a day or more. Plural. -->
+	<key>Last synced %lld days ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Last synced %lld day ago</string>
+			<key>other</key>
+			<string>Last synced %lld days ago</string>
+		</dict>
+	</dict>
+	<!-- A habit's adherence covers fewer days than the window. Plural. -->
+	<key>over %lld recorded days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>over %lld recorded day</string>
+			<key>other</key>
+			<string>over %lld recorded days</string>
+		</dict>
+	</dict>
+	<!-- Habit schedule. Plural. -->
+	<key>every %lld weeks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>every %lld week</string>
+			<key>other</key>
+			<string>every %lld weeks</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

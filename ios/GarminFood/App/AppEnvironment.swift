@@ -17,6 +17,7 @@ import GarminKit
 import FoodLogCore
 import Gamification
 import AppearanceKit
+import TrainingCore
 
 @MainActor
 @Observable
@@ -121,17 +122,21 @@ final class AppEnvironment {
     /// Settings -> Vault and the vault banner (Vault/VaultController.swift).
     /// App-only (VaultServices), never in the widget.
     let vault: VaultController
+    /// add-training-today-and-plan D12: the plan as Today and Plan read it
+    /// (Training/TrainingModel.swift), rebuilt after each vault refresh.
+    let training: TrainingModel
 
     /// rebrand-to-jirkas-arc D6: food-first (the default, and every install
     /// without a vault connection) or training. Observable: flipping the
     /// input switches the tab shell at once, without a restart.
-    var experience: AppExperience { AppEnvironment.experience(preferences) }
+    var experience: AppExperience { AppEnvironment.experience(preferences: preferences, vault: vault) }
 
-    /// The one input today is the Diagnostics preview toggle (D9);
-    /// add-training-today-and-plan replaces it with the vault connection
-    /// switch.
-    static func experience(_ preferences: AppPreferences) -> AppExperience {
-        AppExperience(trainingEnabled: preferences.previewTrainingShell)
+    /// add-training-today-and-plan D12: the vault connection switch is the
+    /// input (the rebrand's Diagnostics preview toggle is gone). Only a
+    /// Garmin-connected install ever talks to the vault, so a standalone
+    /// install stays food-first whatever is stored.
+    static func experience(preferences: AppPreferences, vault: VaultController) -> AppExperience {
+        AppExperience(trainingEnabled: vault.settings.enabled && preferences.effectiveDataMode == .garminConnected)
     }
 
     /// `true` while a drain is in flight, purely for a subtle "syncing"
@@ -254,19 +259,25 @@ final class AppEnvironment {
         )
         self.preferences = preferences
         self.themeStore = ThemeStore()
-        let layoutStore = LayoutStore(experience: { AppEnvironment.experience(preferences) })
+        let vault = VaultController(services: VaultServices.shared)
+        self.vault = vault
+        let training = TrainingModel(store: VaultServices.shared.projectionStore, vault: vault)
+        self.training = training
+        vault.onProjectionRefresh = { [weak training] in
+            await training?.reload()
+        }
+        let layoutStore = LayoutStore(experience: { AppEnvironment.experience(preferences: preferences, vault: vault) })
         self.layoutStore = layoutStore
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
         self.donations = LogDonations()
-        self.vault = VaultController(services: VaultServices.shared)
         // add-themes-and-layout 4.3: open on the user's start tab; links and
         // widget routes arriving after launch still override it.
         // rebrand-to-jirkas-arc D8: the experience's start tab (a stored
         // Plan opens Today in food-first), and routes that follow it.
         self.router = AppRouter(
             startTab: layoutStore.resolvedStartTab,
-            experience: { AppEnvironment.experience(preferences) }
+            experience: { AppEnvironment.experience(preferences: preferences, vault: vault) }
         )
         self.supplementPlanStore = services.supplementPlanStore
         self.supplementIntakeStore = services.supplementIntakeStore
@@ -316,6 +327,11 @@ final class AppEnvironment {
         // Garmin-connected install (never standalone, never in onboarding)
         // and only while the connection is on.
         vault.refreshInBackground(force: userInitiated, allowed: !needsOnboarding && dataMode == .garminConnected)
+        // add-training-today-and-plan D5: the cached plan decodes at once,
+        // without waiting for that fetch (which reloads it again after).
+        if experience == .training {
+            await training.reload()
+        }
         // add-standalone-mode 5.3: which Garmin work this foreground may do
         // (`GarminSyncPlan`): all of it in Garmin mode, exactly as before;
         // none in standalone mode, nor while a fresh install is still in
@@ -382,6 +398,11 @@ final class AppEnvironment {
     func dayDidChange() async {
         await dayLog.rollOverIfNeeded(previousToday: lastForegroundDay)
         lastForegroundDay = Date()
+        // add-training-today-and-plan D5: "Plan as of" and the stale line
+        // are relative to the training day.
+        if experience == .training {
+            await training.reload()
+        }
         // add-supplements: the checklist's "today" moves too, or the Today
         // card would keep ticking yesterday until the next foreground.
         await supplements.reload()

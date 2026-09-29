@@ -127,6 +127,10 @@ enum LayoutCardInfo {
             case .day: return String(localized: "Whole day", comment: "Layout editor: Supplements card variant showing all of today's slots as pills.")
             }
         }
+        // add-training-today-and-plan: "compact" is already named above.
+        if TrainingDayVariant(rawValue: variant) == .options {
+            return String(localized: "Option cards", comment: "Layout editor: the training card shows the G, A and R option cards.")
+        }
         if let weightWater = WeightWaterVariant(rawValue: variant) {
             switch weightWater {
             case .both: return String(localized: "Both", comment: "Layout editor: Weight & Water shows both cards.")
@@ -153,6 +157,10 @@ extension TodayCardID {
         case .weightWater: return String(localized: "Weight & Water")
         case .dayNote: return String(localized: "Day note", comment: "Layout editor row: the note and tags card for the day.")
         case .signature: return String(localized: "Signature", comment: "Layout editor row: the GF by Jirka signature at the bottom of Today.")
+        case .raceCountdown: return String(localized: "Next race", comment: "Layout editor row: the countdown to the next A race on Today.")
+        case .trainingDay: return String(localized: "Training", comment: "Layout editor row: the day's training sessions and options on Today.")
+        case .habitsToday: return String(localized: "Today's habits", comment: "Today: title of the training habits card.")
+        case .weeklyNote: return String(localized: "Weekly note", comment: "Today: the weekly AI note card's title.")
         }
     }
 
@@ -170,6 +178,10 @@ extension TodayCardID {
         case .weightWater: return "scalemass"
         case .dayNote: return "note.text"
         case .signature: return "signature"
+        case .raceCountdown: return "flag.checkered"
+        case .trainingDay: return "figure.run"
+        case .habitsToday: return "checklist"
+        case .weeklyNote: return "text.bubble"
         }
     }
 }
@@ -250,6 +262,7 @@ extension LayoutPreset {
         case .full: return String(localized: "Full", comment: "Layout preset: everything on Today, as by default.")
         case .minimal: return String(localized: "Minimal", comment: "Layout preset: only the essentials on Today.")
         case .athlete: return String(localized: "Athlete", comment: "Layout preset: weight and water moved up on Today.")
+        case .training: return String(localized: "Training", comment: "Layout editor row: the day's training sessions and options on Today.")
         }
     }
 }

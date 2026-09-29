@@ -18,10 +18,16 @@
 // token or repository saved in Settings applies to the very next request,
 // and the token is never held in a property here.
 //
-// Depended on by: VaultController (AppEnvironment.vault).
+// add-training-today-and-plan task 4.1: it also owns TrainingCore's
+// `ProjectionStore`, over the same `ConditionalFileSync`, so the last good
+// plan is VaultKit's cached copy and nothing else.
+//
+// Depended on by: VaultController (AppEnvironment.vault), TrainingModel
+// (AppEnvironment.training).
 
 import Foundation
 import VaultKit
+import TrainingCore
 
 @MainActor
 final class VaultServices {
@@ -33,6 +39,7 @@ final class VaultServices {
     let transport: VaultTransport
     let fetchSync: ConditionalFileSync
     let coordinator: VaultSyncCoordinator
+    let projectionStore: ProjectionStore
 
     private init() {
         let directory = VaultStorage.defaultDirectory()
@@ -58,6 +65,7 @@ final class VaultServices {
         self.statusStore = statusStore
         self.transport = transport
         self.fetchSync = fetchSync
+        self.projectionStore = ProjectionStore(fetchSync: fetchSync)
         self.coordinator = VaultSyncCoordinator(
             transport: transport,
             fetchSync: fetchSync,

@@ -32,12 +32,23 @@
 // AppearanceKit's LayoutResolverTests), so a user who never edits sees no
 // change. "Edit layout…" in the toolbar menu opens `LayoutEditorSheet` at
 // half height over this screen, which updates live underneath it.
+//
+// add-training-today-and-plan (design D7): in the training experience four
+// training cards lead the screen -- the next race, the day's training with
+// its G/A/R options, today's habits and the weekly note
+// (Training/TrainingTodayCards.swift). They follow the day switcher
+// through `TrainingModel.trainingDay` (the plan's time zone and day
+// boundary), are hidden when their data is absent, and are read-only:
+// tapping an option pushes the session detail. The food cards below log
+// exactly as in the food-first experience, which never lists or renders a
+// training card (its catalog has none).
 
 import SwiftUI
 import FoodLogCore
 import GarminKit
 import Gamification
 import AppearanceKit
+import TrainingCore
 
 @MainActor
 struct TodayView: View {
@@ -57,6 +68,11 @@ struct TodayView: View {
     @State private var isPresentingAddHydration = false
     @State private var hydrationActionError: String?
     @State private var isEditingLayout = false
+    /// add-training-today-and-plan: the session detail, habit ladder and
+    /// weekly note the training cards open.
+    @State private var sessionTarget: SessionDetailTarget?
+    @State private var isShowingLadder = false
+    @State private var weeklyNote: WeeklyNoteTeaserModel?
 
     var body: some View {
         let dayLog = environment.dayLog
@@ -118,6 +134,15 @@ struct TodayView: View {
         .navigationDestination(isPresented: $showSupplements) {
             SupplementsView()
         }
+        .navigationDestination(item: $sessionTarget) { target in
+            SessionDetailView(target: target)
+        }
+        .navigationDestination(isPresented: $isShowingLadder) {
+            HabitLadderView()
+        }
+        .sheet(item: $weeklyNote) { note in
+            WeeklyNoteSheet(model: note)
+        }
         .sheet(isPresented: $isPresentingAddHydration) {
             NavigationStack {
                 AddHydrationSheet()
@@ -148,6 +173,11 @@ struct TodayView: View {
         }
         .task { await loadQuickPicks() }
         .task { await loadMealPresets() }
+        .task(id: environment.experience) {
+            if environment.experience == .training, !environment.training.hasLoaded {
+                await environment.training.reload()
+            }
+        }
         .onChange(of: environment.router.catalogRequested, initial: true) { _, requested in
             guard requested else { return }
             environment.router.catalogRequested = false
@@ -207,9 +237,30 @@ struct TodayView: View {
             return environment.supplements.plan.products.isEmpty
                 ? .empty(String(localized: "Shows once you add a supplement", comment: "Layout editor: when the Supplements card appears on Today."))
                 : .available
+        // add-training-today-and-plan D7: each training card hides when its
+        // data is absent; the training card itself always shows (it
+        // explains every state).
+        case .raceCountdown:
+            return environment.training.todayBuilder.raceChip(from: trainingDate) != nil
+                ? .available
+                : .empty(String(localized: "Shows when an A or hero race is ahead", comment: "Layout editor: when the Next race card appears on Today."))
+        case .habitsToday:
+            return environment.training.todayBuilder.habits(on: trainingDate).isEmpty
+                ? .empty(String(localized: "Shows when the plan expects habits that day", comment: "Layout editor: when the Today's habits card appears on Today."))
+                : .available
+        case .weeklyNote:
+            return environment.training.todayBuilder.weeklyNote(for: trainingDate) == nil
+                ? .empty(String(localized: "Shows when the plan has a weekly note", comment: "Layout editor: when the Weekly note card appears on Today."))
+                : .available
         default:
             return TodayCardID.baseAvailability(card, preferences: environment.preferences)
         }
+    }
+
+    /// The plan day the training cards show: the day switcher's day, or
+    /// for today the training day in the plan's time zone and boundary.
+    private var trainingDate: LocalDate {
+        environment.training.trainingDay(selectedDate: environment.dayLog.selectedDate, isToday: environment.dayLog.isToday)
     }
 
     /// One Today card. Each arm is the view the fixed stack had in that
@@ -222,9 +273,36 @@ struct TodayView: View {
             DaySwitcher(
                 date: dayLog.selectedDate,
                 isToday: dayLog.isToday,
+                // add-training-today-and-plan D6: "what's tomorrow?" in the
+                // training experience; food-first stays as it was.
+                allowsFuture: environment.experience == .training,
                 onStep: { days in Task { await environment.stepDay(byDays: days) } },
                 onToday: { Task { await environment.goToToday() } }
             )
+
+        case .raceCountdown:
+            if let chip = environment.training.todayBuilder.raceChip(from: trainingDate) {
+                RaceCountdownChip(model: chip) {
+                    environment.router.openPlan(year: chip.date.year, month: chip.date.month, day: chip.date.day, showsMonth: true)
+                }
+            }
+
+        case .trainingDay:
+            TrainingDayCard(
+                model: environment.training.todayBuilder.trainingDay(on: trainingDate),
+                compact: variant == TrainingDayVariant.compact.rawValue,
+                onOpen: { sessionTarget = $0 }
+            )
+
+        case .habitsToday:
+            HabitsTodayCard(rows: environment.training.todayBuilder.habits(on: trainingDate)) {
+                isShowingLadder = true
+            }
+
+        case .weeklyNote:
+            if let note = environment.training.todayBuilder.weeklyNote(for: trainingDate) {
+                WeeklyNoteCard(model: note) { weeklyNote = note }
+            }
 
         case .summary:
             DaySummaryCard(

@@ -1,0 +1,49 @@
+{
+  "schema": "hub.projection",
+  "schemaVersion": 1,
+  "generatedAt": "2030-10-23T06:52:10+02:00",
+  "generator": "build-hub-projection.mjs/1",
+  "asOf": "2030-10-23",
+  "athlete": {
+    "tz": "Europe/Prague",
+    "dayBoundaryHour": 3,
+    "hrMax": 185,
+    "weightKg": 70,
+    "hrZones": {
+      "z1": [
+        0,
+        128
+      ],
+      "z2": [
+        129,
+        145
+      ],
+      "z3": [
+        146,
+        158
+      ],
+      "z4": [
+        159,
+        168
+      ],
+      "z5": [
+        169,
+        185
+      ]
+    }
+  },
+  "season": null,
+  "plan": null,
+  "workouts": {},
+  "tests": [],
+  "habits": {
+    "gate": {
+      "adherencePct": 80,
+      "windowDays": 14
+    },
+    "ladder": []
+  },
+  "acks": {},
+  "outcomes": [],
+  "rejected": []
+}

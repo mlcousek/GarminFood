@@ -135,9 +135,36 @@ final class AppShellTests: XCTestCase {
         XCTAssertEqual(LayoutCatalog.specs(for: .today, experience: .foodFirst), LayoutCatalog.specs(for: .today))
     }
 
-    /// Until add-training-today-and-plan adds its cards.
-    func testTrainingTodayCatalogEqualsFoodFirstForNow() {
-        XCTAssertEqual(LayoutCatalog.today(for: .training), LayoutCatalog.today(for: .foodFirst))
+    /// add-training-today-and-plan D7: the training catalog's golden order
+    /// -- the training cards lead, the summary is compact.
+    func testTrainingTodayCatalogOrder() {
+        XCTAssertEqual(LayoutCatalog.today(for: .training).map(\.id), [
+            "daySwitcher", "raceCountdown", "trainingDay", "habitsToday", "weeklyNote",
+            "summary", "logAgain", "meals", "weightWater", "logMeal",
+            "progressStrip", "fasting", "supplements", "banners", "dayNote", "signature",
+        ])
+        let specs = LayoutCatalog.today(for: .training)
+        XCTAssertEqual(specs.first { $0.id == "summary" }?.defaultVariant, SummaryVariant.compact.rawValue)
+        XCTAssertEqual(specs.first { $0.id == "meals" }?.defaultVariant, MealsVariant.expanded.rawValue)
+        XCTAssertEqual(specs.first { $0.id == "trainingDay" }?.variants, ["options", "compact"])
+        XCTAssertEqual(specs.first { $0.id == "trainingDay" }?.defaultVariant, "options")
+        XCTAssertEqual(specs.first?.pin, .top)
+        XCTAssertEqual(specs.last?.pin, .bottom)
+        // Same cards as food-first plus the four training cards, once each.
+        XCTAssertEqual(
+            Set(specs.map(\.id)),
+            Set(LayoutCatalog.today.map(\.id)).union(TodayCardID.trainingCards.map(\.rawValue))
+        )
+        XCTAssertEqual(Set(specs.map(\.id)).count, specs.count)
+    }
+
+    func testFoodFirstCatalogHasNoTrainingCard() {
+        let ids = Set(LayoutCatalog.today(for: .foodFirst).map(\.id))
+        for card in TodayCardID.trainingCards {
+            XCTAssertFalse(ids.contains(card.rawValue), card.rawValue)
+            XCTAssertTrue(card.isTrainingCard)
+        }
+        XCTAssertEqual(TodayCardID.foodCards.map(\.rawValue), LayoutCatalog.today.map(\.id))
     }
 
     func testOtherScreensDoNotDependOnExperience() {

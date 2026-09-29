@@ -1,0 +1,2712 @@
+{
+  "schema": "hub.projection",
+  "schemaVersion": 1,
+  "generatedAt": "2030-10-23T06:52:10+02:00",
+  "generator": "build-hub-projection.mjs/1",
+  "asOf": "2030-10-23",
+  "athlete": {
+    "tz": "Europe/Prague",
+    "dayBoundaryHour": 3,
+    "hrMax": 185,
+    "weightKg": 70,
+    "hrZones": {
+      "z1": [
+        0,
+        128
+      ],
+      "z2": [
+        129,
+        145
+      ],
+      "z3": [
+        146,
+        158
+      ],
+      "z4": [
+        159,
+        168
+      ],
+      "z5": [
+        169,
+        185
+      ]
+    }
+  },
+  "season": {
+    "id": "season-2030-31",
+    "title": {
+      "en": "Season 2030/31",
+      "cz": "Sezóna 2030/31"
+    },
+    "period": {
+      "from": "2030-09-02",
+      "to": "2031-08-31"
+    },
+    "goal": {
+      "en": "Finish the ridge ultra healthy",
+      "cz": "Doběhnout hřebenové ultra zdravý"
+    },
+    "phases": [
+      {
+        "id": "test-prelude-2030",
+        "title": {
+          "en": "Test Prelude 2030",
+          "cz": "Testovací úvod 2030"
+        },
+        "period": {
+          "from": "2030-09-02",
+          "to": "2030-10-13"
+        },
+        "kind": "transition",
+        "status": "closed",
+        "outline": [
+          {
+            "week": "2030-W41",
+            "runKmTarget": 30,
+            "kind": "transition",
+            "note": null
+          }
+        ],
+        "recap": {
+          "en": "Recovered; tests set the baseline.",
+          "cz": "Zotaveno; testy daly výchozí hodnoty."
+        }
+      },
+      {
+        "id": "test-base-2030",
+        "title": {
+          "en": "Test Base 2030",
+          "cz": "Testovací základ 2030"
+        },
+        "period": {
+          "from": "2030-10-14",
+          "to": "2031-01-31"
+        },
+        "kind": "base",
+        "status": "active",
+        "outline": [
+          {
+            "week": "2030-W42",
+            "runKmTarget": 50,
+            "kind": "build",
+            "note": {
+              "en": "Plan starts",
+              "cz": "Start plánu"
+            }
+          },
+          {
+            "week": "2030-W43",
+            "runKmTarget": 60,
+            "kind": "build",
+            "note": null
+          },
+          {
+            "week": "2030-W44",
+            "runKmTarget": 40,
+            "kind": "race",
+            "note": {
+              "en": "Race week",
+              "cz": "Závodní týden"
+            }
+          },
+          {
+            "week": "2030-W45",
+            "runKmTarget": 45,
+            "kind": "recovery",
+            "note": null
+          },
+          {
+            "week": "2030-W46",
+            "runKmTarget": null,
+            "kind": "build",
+            "note": null
+          }
+        ],
+        "recap": null
+      }
+    ],
+    "races": [
+      {
+        "id": "lakeside-10k-2030",
+        "name": "Lakeside 10K",
+        "date": "2030-09-21",
+        "dateApprox": false,
+        "priority": "C",
+        "hero": false,
+        "phaseId": "test-prelude-2030",
+        "folder": "Sport/Races/Running/ZZ/Lakeside 10K/Lakeside 10K 2030",
+        "category": "🛣️ Road",
+        "distanceLabel": "10 km",
+        "distanceKm": 10,
+        "elevationM": null,
+        "goal": null,
+        "prep": null,
+        "report": {
+          "note": "Sport/Races/Running/ZZ/Lakeside 10K/Lakeside 10K 2030/Report.md"
+        }
+      },
+      {
+        "id": "valley-30k-2030",
+        "name": "Test Valley 30K",
+        "date": "2030-11-03",
+        "dateApprox": false,
+        "priority": "B",
+        "hero": false,
+        "phaseId": "test-base-2030",
+        "folder": "Sport/Races/Running/ZZ/Test Valley 30K/Test Valley 30K 2030",
+        "category": "🏔️ Trail",
+        "distanceLabel": "30 km / 900m+",
+        "distanceKm": 30,
+        "elevationM": 900,
+        "goal": "Sub-3h",
+        "prep": {
+          "note": "Sport/Races/Running/ZZ/Test Valley 30K/Test Valley 30K 2030/Prep.md",
+          "startTime": "09:00",
+          "cutoffMin": 330,
+          "checkpoints": [
+            {
+              "name": "Start",
+              "km": 0,
+              "dPlusM": 0,
+              "aid": null,
+              "cutoffMin": null,
+              "targetMin": null,
+              "hrCap": null
+            },
+            {
+              "name": "CP1 Mill",
+              "km": 11.5,
+              "dPlusM": 320,
+              "aid": "water",
+              "cutoffMin": null,
+              "targetMin": 65,
+              "hrCap": 160
+            },
+            {
+              "name": "CP2 Ridge",
+              "km": 21,
+              "dPlusM": 700,
+              "aid": "full",
+              "cutoffMin": 210,
+              "targetMin": 125,
+              "hrCap": 165
+            },
+            {
+              "name": "Finish",
+              "km": 30,
+              "dPlusM": 900,
+              "aid": "none",
+              "cutoffMin": 330,
+              "targetMin": 178,
+              "hrCap": null
+            }
+          ],
+          "fuel": {
+            "carbsPerHour": 70,
+            "intervalMin": 25,
+            "fluidMlPerHour": 500
+          },
+          "carbLoad": [
+            {
+              "dayOffset": -2,
+              "carbsGPerKg": 8
+            },
+            {
+              "dayOffset": -1,
+              "carbsGPerKg": 10
+            }
+          ],
+          "gear": [
+            {
+              "item": "Soft flask 500 ml",
+              "mandatory": true
+            },
+            {
+              "item": "Wind jacket",
+              "mandatory": false
+            }
+          ]
+        },
+        "report": null
+      },
+      {
+        "id": "ridge-ultra-2031",
+        "name": "Ridge Ultra",
+        "date": "2031-06-21",
+        "dateApprox": true,
+        "priority": "A",
+        "hero": true,
+        "phaseId": null,
+        "folder": "Sport/Races/Running/ZZ/Ridge Ultra/Ridge Ultra 2031",
+        "category": "⚡ Ultra",
+        "distanceLabel": "80 km",
+        "distanceKm": 80,
+        "elevationM": 4200,
+        "goal": null,
+        "prep": null,
+        "report": null
+      }
+    ]
+  },
+  "plan": {
+    "id": "test-base-2030",
+    "title": {
+      "en": "Test Base 2030",
+      "cz": "Testovací základ 2030"
+    },
+    "period": {
+      "from": "2030-10-14",
+      "to": "2031-01-31"
+    },
+    "kind": "base",
+    "status": "active",
+    "outline": [
+      {
+        "week": "2030-W42",
+        "runKmTarget": 50,
+        "kind": "build",
+        "note": {
+          "en": "Plan starts",
+          "cz": "Start plánu"
+        }
+      },
+      {
+        "week": "2030-W43",
+        "runKmTarget": 60,
+        "kind": "build",
+        "note": null
+      },
+      {
+        "week": "2030-W44",
+        "runKmTarget": 40,
+        "kind": "race",
+        "note": {
+          "en": "Race week",
+          "cz": "Závodní týden"
+        }
+      },
+      {
+        "week": "2030-W45",
+        "runKmTarget": 45,
+        "kind": "recovery",
+        "note": null
+      },
+      {
+        "week": "2030-W46",
+        "runKmTarget": null,
+        "kind": "build",
+        "note": null
+      }
+    ],
+    "recap": null,
+    "goals": [
+      {
+        "id": "tendon",
+        "en": "Healthy tendon",
+        "cz": "Zdravá šlacha"
+      },
+      {
+        "id": "volume",
+        "en": "Volume",
+        "cz": "Objem"
+      }
+    ],
+    "rules": [
+      {
+        "id": "two-ambers",
+        "en": "Two ambers make the next quality session a ride",
+        "cz": "Dvě oranžové = další kvalita na kole"
+      }
+    ],
+    "weeks": [
+      {
+        "week": "2030-W41",
+        "from": "2030-10-07",
+        "to": "2030-10-13",
+        "phaseId": "test-prelude-2030",
+        "status": "closed",
+        "revision": 1,
+        "absorbed": {},
+        "targets": {
+          "runKm": 30,
+          "sessions": 2
+        },
+        "actual": {
+          "runKm": 22.6,
+          "sessionsDone": 2,
+          "sessionsMissed": 0
+        },
+        "aiNote": null,
+        "days": [
+          {
+            "date": "2030-10-07",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-08",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w41-tue-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 10 km",
+                  "cz": "Klidných 10 km"
+                },
+                "why": {
+                  "en": "Aerobic volume below the first threshold",
+                  "cz": "Aerobní objem pod prvním prahem"
+                },
+                "workout": "easy-10",
+                "targets": {
+                  "km": 10,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 140,
+                  "zone": "Z1"
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-08 Run - Morning Run.md",
+                    "sport": "Run",
+                    "group": "run",
+                    "start": "05:20",
+                    "km": 10.2,
+                    "min": 58
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-09",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 2
+            },
+            "fuel": null,
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-10",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 2
+            },
+            "fuel": null,
+            "sessions": [],
+            "unplanned": [
+              {
+                "note": "Sport/Activities/2030/10 October/2030-10-10 WeightTraining - Gym.md",
+                "sport": "WeightTraining",
+                "group": "strength",
+                "start": "17:00",
+                "km": null,
+                "min": 40
+              }
+            ]
+          },
+          {
+            "date": "2030-10-11",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-12",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w41-sat-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "long",
+                "title": {
+                  "en": "Long run 12 km, flat",
+                  "cz": "Dlouhý běh 12 km po rovině"
+                },
+                "why": null,
+                "workout": "long-12-flat",
+                "targets": {
+                  "km": 12,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-12 Run - Long Run.md",
+                    "sport": "Run",
+                    "group": "run",
+                    "start": "07:30",
+                    "km": 12.4,
+                    "min": 75
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-13",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 4
+            },
+            "fuel": null,
+            "sessions": [],
+            "unplanned": []
+          }
+        ]
+      },
+      {
+        "week": "2030-W42",
+        "from": "2030-10-14",
+        "to": "2030-10-20",
+        "phaseId": "test-base-2030",
+        "status": "closed",
+        "revision": 3,
+        "absorbed": {},
+        "targets": {
+          "runKm": 55,
+          "sessions": 8
+        },
+        "actual": {
+          "runKm": 60.1,
+          "sessionsDone": 8,
+          "sessionsMissed": 0
+        },
+        "aiNote": {
+          "en": "Last week settled well; this week adds one long run.",
+          "cz": "Minulý týden sedl; tento přidává jeden dlouhý běh."
+        },
+        "days": [
+          {
+            "date": "2030-10-14",
+            "light": null,
+            "habitsExpected": [
+              "holds",
+              "gym"
+            ],
+            "habitsDone": {
+              "holds": 2,
+              "gym": 1
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w42-mon-pm",
+                "slot": "pm",
+                "sport": "strength",
+                "type": "strength",
+                "title": {
+                  "en": "Gym A",
+                  "cz": "Posilovna A"
+                },
+                "why": null,
+                "workout": "gym-a",
+                "targets": {
+                  "km": null,
+                  "min": 45,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-14 WeightTraining - Gym A.md",
+                    "sport": "WeightTraining",
+                    "group": "strength",
+                    "start": "17:30",
+                    "km": null,
+                    "min": 48
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-15",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 1,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w42-tue-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 10 km",
+                  "cz": "Klidných 10 km"
+                },
+                "why": {
+                  "en": "Traffic-light day",
+                  "cz": "Semaforový den"
+                },
+                "workout": "easy-10",
+                "targets": {
+                  "km": 10,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 140,
+                  "zone": "Z1"
+                },
+                "status": "done",
+                "trafficLight": true,
+                "options": [
+                  {
+                    "code": "G",
+                    "workout": "easy-10",
+                    "label": {
+                      "en": "Easy 10 km",
+                      "cz": "Klidných 10 km"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 10,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 140,
+                      "zone": "Z1"
+                    },
+                    "watch": null
+                  },
+                  {
+                    "code": "A",
+                    "workout": "easy-6-flat",
+                    "label": {
+                      "en": "Easy 6 km, flat",
+                      "cz": "Klidných 6 km po rovině"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 6,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 135,
+                      "zone": null
+                    },
+                    "watch": null
+                  },
+                  {
+                    "code": "R",
+                    "workout": "bike-45-z1",
+                    "label": {
+                      "en": "Bike 45 min Z1 + holds",
+                      "cz": "Kolo 45 min Z1 + výdrže"
+                    },
+                    "sport": "ride",
+                    "targets": {
+                      "km": null,
+                      "min": 45,
+                      "hrMin": null,
+                      "hrMax": 128,
+                      "zone": null
+                    },
+                    "watch": null
+                  }
+                ],
+                "done": {
+                  "option": "R",
+                  "source": "sport-inferred",
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-15 VirtualRide - Trainer.md",
+                    "sport": "VirtualRide",
+                    "group": "ride",
+                    "start": "05:10",
+                    "km": 21.3,
+                    "min": 46
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": [
+              {
+                "note": "Sport/Activities/2030/10 October/2030-10-15 Ride - Commute.md",
+                "sport": "Ride",
+                "group": "ride",
+                "start": "17:05",
+                "km": 8.4,
+                "min": 24
+              }
+            ]
+          },
+          {
+            "date": "2030-10-16",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 0,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w42-wed-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 10 km",
+                  "cz": "Klidných 10 km"
+                },
+                "why": {
+                  "en": "Aerobic volume below the first threshold",
+                  "cz": "Aerobní objem pod prvním prahem"
+                },
+                "workout": "easy-10",
+                "targets": {
+                  "km": 12,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 140,
+                  "zone": "Z1"
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-16 Run - Morning Run.md",
+                    "sport": "Run",
+                    "group": "run",
+                    "start": "06:10",
+                    "km": 11.6,
+                    "min": 66
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              },
+              {
+                "id": "2030-w42-wed-pm",
+                "slot": "pm",
+                "sport": "strength",
+                "type": "test",
+                "title": {
+                  "en": "Single-leg calf raise to failure",
+                  "cz": "Výpony na jedné noze do vyčerpání"
+                },
+                "why": null,
+                "workout": "calf-raise-test",
+                "targets": {
+                  "km": null,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "test-result",
+                  "activity": null
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": {
+                  "workout": "calf-raise-test",
+                  "result": {
+                    "reps_l": 22,
+                    "reps_r": 27
+                  },
+                  "note": null,
+                  "ref": "Lab visit 2030.md"
+                }
+              }
+            ],
+            "unplanned": [
+              {
+                "note": "Sport/Activities/2030/10 October/2030-10-16 Run - Short Run.md",
+                "sport": "Run",
+                "group": "run",
+                "start": "05:00",
+                "km": 6,
+                "min": 36
+              }
+            ]
+          },
+          {
+            "date": "2030-10-17",
+            "light": null,
+            "habitsExpected": [
+              "holds",
+              "gym"
+            ],
+            "habitsDone": {
+              "holds": 2,
+              "gym": 1
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w42-thu-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 10 km",
+                  "cz": "Klidných 10 km"
+                },
+                "why": {
+                  "en": "Aerobic volume below the first threshold",
+                  "cz": "Aerobní objem pod prvním prahem"
+                },
+                "workout": "easy-10",
+                "targets": {
+                  "km": 12,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 140,
+                  "zone": "Z1"
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-17 Run - Morning Run.md",
+                    "sport": "Run",
+                    "group": "run",
+                    "start": "05:10",
+                    "km": 11.8,
+                    "min": 67
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              },
+              {
+                "id": "2030-w42-thu-pm",
+                "slot": "pm",
+                "sport": "run",
+                "type": "recovery",
+                "title": {
+                  "en": "Shake-out 5 km",
+                  "cz": "Vyklusání 5 km"
+                },
+                "why": null,
+                "workout": null,
+                "targets": {
+                  "km": 5,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-17 Run - Evening Run.md",
+                    "sport": "Run",
+                    "group": "run",
+                    "start": "17:30",
+                    "km": 5.2,
+                    "min": 31
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": [
+              {
+                "note": "Sport/Activities/2030/10 October/2030-10-17 WeightTraining - Gym.md",
+                "sport": "WeightTraining",
+                "group": "strength",
+                "start": "18:10",
+                "km": null,
+                "min": 45
+              }
+            ]
+          },
+          {
+            "date": "2030-10-18",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 1,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w42-fri-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 10 km",
+                  "cz": "Klidných 10 km"
+                },
+                "why": {
+                  "en": "Aerobic volume below the first threshold",
+                  "cz": "Aerobní objem pod prvním prahem"
+                },
+                "workout": "easy-10",
+                "targets": {
+                  "km": 10,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 140,
+                  "zone": "Z1"
+                },
+                "status": "done",
+                "trafficLight": true,
+                "options": [
+                  {
+                    "code": "G",
+                    "workout": "easy-10",
+                    "label": {
+                      "en": "Easy 10 km",
+                      "cz": "Klidných 10 km"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 10,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 140,
+                      "zone": "Z1"
+                    },
+                    "watch": null
+                  },
+                  {
+                    "code": "A",
+                    "workout": "easy-6-flat",
+                    "label": {
+                      "en": "Easy 6 km, flat",
+                      "cz": "Klidných 6 km po rovině"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 6,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 135,
+                      "zone": null
+                    },
+                    "watch": null
+                  }
+                ],
+                "done": {
+                  "option": "A",
+                  "source": "activity-name",
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-18 Run - A W42 Fri Easy 6k flat.md",
+                    "sport": "Run",
+                    "group": "run",
+                    "start": "05:15",
+                    "km": 8,
+                    "min": 47
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-19",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 2,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w42-sat-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "long",
+                "title": {
+                  "en": "Long run 18 km, trail",
+                  "cz": "Dlouhý běh 18 km, terén"
+                },
+                "why": null,
+                "workout": "long-18-trail",
+                "targets": {
+                  "km": 18,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 145,
+                  "zone": null
+                },
+                "status": "done",
+                "trafficLight": true,
+                "options": [
+                  {
+                    "code": "G",
+                    "workout": "long-18-trail",
+                    "label": {
+                      "en": "Long run 18 km, trail",
+                      "cz": "Dlouhý běh 18 km, terén"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 18,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 145,
+                      "zone": null
+                    },
+                    "watch": null
+                  },
+                  {
+                    "code": "A",
+                    "workout": "long-12-flat",
+                    "label": {
+                      "en": "Long run 12 km, flat",
+                      "cz": "Dlouhý běh 12 km po rovině"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 12,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": null,
+                      "zone": null
+                    },
+                    "watch": null
+                  },
+                  {
+                    "code": "R",
+                    "workout": "bike-90-z1",
+                    "label": {
+                      "en": "Bike 90 min Z1",
+                      "cz": "Kolo 90 min Z1"
+                    },
+                    "sport": "ride",
+                    "targets": {
+                      "km": null,
+                      "min": 90,
+                      "hrMin": null,
+                      "hrMax": null,
+                      "zone": null
+                    },
+                    "watch": null
+                  }
+                ],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-19 TrailRun - Trail Long Run.md",
+                    "sport": "TrailRun",
+                    "group": "run",
+                    "start": "07:40",
+                    "km": 17.5,
+                    "min": 118
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": {
+                  "carbsPerHour": 60
+                },
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-20",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 2,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [],
+            "unplanned": [
+              {
+                "note": "Sport/Activities/2030/10 October/2030-10-20 Swim - Pool.md",
+                "sport": "Swim",
+                "group": "swim",
+                "start": "10:00",
+                "km": 1.2,
+                "min": 35
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "week": "2030-W43",
+        "from": "2030-10-21",
+        "to": "2030-10-27",
+        "phaseId": "test-base-2030",
+        "status": "approved",
+        "revision": 1,
+        "absorbed": {},
+        "targets": {
+          "runKm": 60,
+          "sessions": 6
+        },
+        "actual": {
+          "runKm": 10.1,
+          "sessionsDone": 1,
+          "sessionsMissed": 1
+        },
+        "aiNote": null,
+        "days": [
+          {
+            "date": "2030-10-21",
+            "light": null,
+            "habitsExpected": [
+              "holds",
+              "gym"
+            ],
+            "habitsDone": {
+              "holds": 0,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w43-mon-pm",
+                "slot": "pm",
+                "sport": "strength",
+                "type": "strength",
+                "title": {
+                  "en": "Gym A",
+                  "cz": "Posilovna A"
+                },
+                "why": null,
+                "workout": "gym-a",
+                "targets": {
+                  "km": null,
+                  "min": 45,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "missed",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-22",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 2,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w43-tue-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "tempo",
+                "title": {
+                  "en": "Tempo 3 × 8 min",
+                  "cz": "Tempo 3 × 8 min"
+                },
+                "why": null,
+                "workout": "tempo-3x8",
+                "targets": {
+                  "km": null,
+                  "min": 50,
+                  "hrMin": 145,
+                  "hrMax": 151,
+                  "zone": null
+                },
+                "status": "done",
+                "trafficLight": false,
+                "options": [],
+                "done": {
+                  "option": null,
+                  "source": null,
+                  "matchedBy": "date-sport-group",
+                  "activity": {
+                    "note": "Sport/Activities/2030/10 October/2030-10-22 Run - Tempo.md",
+                    "sport": "Run",
+                    "group": "run",
+                    "start": "05:05",
+                    "km": 10.1,
+                    "min": 55
+                  }
+                },
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-23",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": {
+              "holds": 1,
+              "gym": 0
+            },
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w43-wed-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 10 km",
+                  "cz": "Klidných 10 km"
+                },
+                "why": {
+                  "en": "Aerobic volume below the first threshold",
+                  "cz": "Aerobní objem pod prvním prahem"
+                },
+                "workout": "easy-10",
+                "targets": {
+                  "km": 10,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 140,
+                  "zone": "Z1"
+                },
+                "status": "planned",
+                "trafficLight": true,
+                "options": [
+                  {
+                    "code": "G",
+                    "workout": "easy-10",
+                    "label": {
+                      "en": "Easy 10 km",
+                      "cz": "Klidných 10 km"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 10,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 140,
+                      "zone": "Z1"
+                    },
+                    "watch": {
+                      "name": "G W43 Wed Easy 10 km",
+                      "state": "scheduled",
+                      "channel": "intervals",
+                      "ref": "100001",
+                      "at": "2030-10-20T19:42:10+02:00"
+                    }
+                  },
+                  {
+                    "code": "A",
+                    "workout": "easy-6-flat",
+                    "label": {
+                      "en": "Easy 6 km, flat",
+                      "cz": "Klidných 6 km po rovině"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 6,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 135,
+                      "zone": null
+                    },
+                    "watch": {
+                      "name": "A W43 Wed Easy 6k flat",
+                      "state": "pending",
+                      "channel": "intervals",
+                      "ref": null,
+                      "at": null
+                    }
+                  },
+                  {
+                    "code": "R",
+                    "workout": "bike-45-z1",
+                    "label": {
+                      "en": "Bike 45 min Z1 + holds",
+                      "cz": "Kolo 45 min Z1 + výdrže"
+                    },
+                    "sport": "ride",
+                    "targets": {
+                      "km": null,
+                      "min": 45,
+                      "hrMin": null,
+                      "hrMax": 128,
+                      "zone": null
+                    },
+                    "watch": {
+                      "name": "R W43 Wed Bike 45 Z1",
+                      "state": "failed",
+                      "channel": "intervals",
+                      "ref": "100003",
+                      "at": "2030-10-20T19:42:10+02:00"
+                    }
+                  }
+                ],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-24",
+            "light": null,
+            "habitsExpected": [
+              "holds",
+              "gym"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w43-thu-pm",
+                "slot": "pm",
+                "sport": "run",
+                "type": "test",
+                "title": {
+                  "en": "3 km time trial",
+                  "cz": "Test na 3 km"
+                },
+                "why": null,
+                "workout": "time-trial-3k",
+                "targets": {
+                  "km": 3,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": {
+                  "workout": "time-trial-3k",
+                  "result": null,
+                  "note": null,
+                  "ref": null
+                }
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-25",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-26",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w43-sat-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "long",
+                "title": {
+                  "en": "Long run 18 km, trail",
+                  "cz": "Dlouhý běh 18 km, terén"
+                },
+                "why": null,
+                "workout": "long-18-trail",
+                "targets": {
+                  "km": 20,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 145,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": {
+                  "carbsPerHour": 60
+                },
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-27",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w43-sun-pm",
+                "slot": "pm",
+                "sport": "walk",
+                "type": "recovery",
+                "title": {
+                  "en": "Walk 60 min",
+                  "cz": "Procházka 60 min"
+                },
+                "why": null,
+                "workout": null,
+                "targets": {
+                  "km": null,
+                  "min": 60,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          }
+        ]
+      },
+      {
+        "week": "2030-W44",
+        "from": "2030-10-28",
+        "to": "2030-11-03",
+        "phaseId": "test-base-2030",
+        "status": "proposed",
+        "revision": 1,
+        "absorbed": {},
+        "targets": {
+          "runKm": 40,
+          "sessions": 4
+        },
+        "actual": null,
+        "aiNote": {
+          "en": "Race week: volume drops, carbohydrate goes up.",
+          "cz": "Závodní týden: objem dolů, sacharidy nahoru."
+        },
+        "days": [
+          {
+            "date": "2030-10-28",
+            "light": null,
+            "habitsExpected": [
+              "holds",
+              "gym"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w44-mon-pm",
+                "slot": "pm",
+                "sport": "strength",
+                "type": "strength",
+                "title": {
+                  "en": "Gym A",
+                  "cz": "Posilovna A"
+                },
+                "why": null,
+                "workout": "gym-a",
+                "targets": {
+                  "km": null,
+                  "min": 45,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-29",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w44-tue-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 10 km",
+                  "cz": "Klidných 10 km"
+                },
+                "why": {
+                  "en": "Aerobic volume below the first threshold",
+                  "cz": "Aerobní objem pod prvním prahem"
+                },
+                "workout": "easy-10",
+                "targets": {
+                  "km": 10,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 140,
+                  "zone": "Z1"
+                },
+                "status": "planned",
+                "trafficLight": true,
+                "options": [
+                  {
+                    "code": "G",
+                    "workout": "easy-10",
+                    "label": {
+                      "en": "Easy 10 km",
+                      "cz": "Klidných 10 km"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 10,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 140,
+                      "zone": "Z1"
+                    },
+                    "watch": null
+                  },
+                  {
+                    "code": "A",
+                    "workout": "easy-6-flat",
+                    "label": {
+                      "en": "Easy 6 km, flat",
+                      "cz": "Klidných 6 km po rovině"
+                    },
+                    "sport": "run",
+                    "targets": {
+                      "km": 6,
+                      "min": null,
+                      "hrMin": null,
+                      "hrMax": 135,
+                      "zone": null
+                    },
+                    "watch": null
+                  },
+                  {
+                    "code": "R",
+                    "workout": "bike-45-z1",
+                    "label": {
+                      "en": "Bike 45 min Z1 + holds",
+                      "cz": "Kolo 45 min Z1 + výdrže"
+                    },
+                    "sport": "ride",
+                    "targets": {
+                      "km": null,
+                      "min": 45,
+                      "hrMin": null,
+                      "hrMax": 128,
+                      "zone": null
+                    },
+                    "watch": null
+                  }
+                ],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-30",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-31",
+            "light": null,
+            "habitsExpected": [
+              "holds",
+              "gym"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-11-01",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": {
+              "kind": "carb-load",
+              "raceId": "valley-30k-2030",
+              "carbsGPerKg": 8,
+              "carbsG": 560
+            },
+            "sessions": [
+              {
+                "id": "2030-w44-fri-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 6 km, flat",
+                  "cz": "Klidných 6 km po rovině"
+                },
+                "why": null,
+                "workout": "easy-6-flat",
+                "targets": {
+                  "km": 6,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 135,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-11-02",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": {
+              "kind": "carb-load",
+              "raceId": "valley-30k-2030",
+              "carbsGPerKg": 10,
+              "carbsG": 700
+            },
+            "sessions": [],
+            "unplanned": []
+          },
+          {
+            "date": "2030-11-03",
+            "light": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w44-sun-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "race",
+                "title": {
+                  "en": "Race: Test Valley 30K",
+                  "cz": "Závod: Test Valley 30K"
+                },
+                "why": null,
+                "workout": null,
+                "targets": {
+                  "km": 30,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": "valley-30k-2030",
+                "fuel": {
+                  "carbsPerHour": 70
+                },
+                "test": null
+              }
+            ],
+            "unplanned": []
+          }
+        ]
+      }
+    ]
+  },
+  "workouts": {
+    "bike-45-z1": {
+      "id": "bike-45-z1",
+      "sport": "ride",
+      "kind": "session",
+      "title": {
+        "en": "Bike 45 min Z1 + holds",
+        "cz": "Kolo 45 min Z1 + výdrže"
+      },
+      "why": null,
+      "watchName": "Bike 45 Z1",
+      "targets": {
+        "km": null,
+        "min": 45,
+        "hrMin": null,
+        "hrMax": 128,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "warmup",
+          "km": null,
+          "min": 5,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "active",
+          "km": null,
+          "min": 35,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z1",
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "cooldown",
+          "km": null,
+          "min": 5,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "hold",
+          "km": null,
+          "min": null,
+          "sec": 45,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": 3,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": "each",
+          "note": "after the ride"
+        }
+      ],
+      "measures": []
+    },
+    "bike-90-z1": {
+      "id": "bike-90-z1",
+      "sport": "ride",
+      "kind": "session",
+      "title": {
+        "en": "Bike 90 min Z1",
+        "cz": "Kolo 90 min Z1"
+      },
+      "why": null,
+      "watchName": null,
+      "targets": {
+        "km": null,
+        "min": 90,
+        "hrMin": null,
+        "hrMax": null,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "active",
+          "km": null,
+          "min": 90,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z1",
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        }
+      ],
+      "measures": []
+    },
+    "calf-raise-test": {
+      "id": "calf-raise-test",
+      "sport": "strength",
+      "kind": "test",
+      "title": {
+        "en": "Single-leg calf raise to failure",
+        "cz": "Výpony na jedné noze do vyčerpání"
+      },
+      "why": null,
+      "watchName": null,
+      "targets": {
+        "km": null,
+        "min": null,
+        "hrMin": null,
+        "hrMax": null,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "exercise",
+          "km": null,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": "Single-leg calf raise",
+          "sets": 1,
+          "reps": "max",
+          "tempo": null,
+          "load": null,
+          "side": "each",
+          "note": null
+        }
+      ],
+      "measures": [
+        {
+          "key": "reps_l",
+          "unit": "reps",
+          "better": "higher",
+          "label": {
+            "en": "Left",
+            "cz": "Levá"
+          }
+        },
+        {
+          "key": "reps_r",
+          "unit": "reps",
+          "better": "higher",
+          "label": {
+            "en": "Right",
+            "cz": "Pravá"
+          }
+        }
+      ]
+    },
+    "easy-10": {
+      "id": "easy-10",
+      "sport": "run",
+      "kind": "session",
+      "title": {
+        "en": "Easy 10 km",
+        "cz": "Klidných 10 km"
+      },
+      "why": {
+        "en": "Aerobic volume below the first threshold",
+        "cz": "Aerobní objem pod prvním prahem"
+      },
+      "watchName": null,
+      "targets": {
+        "km": 10,
+        "min": null,
+        "hrMin": null,
+        "hrMax": 140,
+        "zone": "Z1"
+      },
+      "steps": [
+        {
+          "kind": "active",
+          "km": 10,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z1",
+          "hrMax": 140,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        }
+      ],
+      "measures": []
+    },
+    "easy-6-flat": {
+      "id": "easy-6-flat",
+      "sport": "run",
+      "kind": "session",
+      "title": {
+        "en": "Easy 6 km, flat",
+        "cz": "Klidných 6 km po rovině"
+      },
+      "why": null,
+      "watchName": "Easy 6k flat",
+      "targets": {
+        "km": 6,
+        "min": null,
+        "hrMin": null,
+        "hrMax": 135,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "active",
+          "km": 6,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z1",
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": "6:15",
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": "flat route only"
+        }
+      ],
+      "measures": []
+    },
+    "gym-a": {
+      "id": "gym-a",
+      "sport": "strength",
+      "kind": "session",
+      "title": {
+        "en": "Gym A",
+        "cz": "Posilovna A"
+      },
+      "why": null,
+      "watchName": null,
+      "targets": {
+        "km": null,
+        "min": 45,
+        "hrMin": null,
+        "hrMax": null,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "hold",
+          "km": null,
+          "min": null,
+          "sec": 45,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": 3,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": "each",
+          "note": null
+        },
+        {
+          "kind": "exercise",
+          "km": null,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": "Seated calf raise",
+          "sets": 3,
+          "reps": "8-12",
+          "tempo": "3-0-3",
+          "load": "40 kg",
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "exercise",
+          "km": null,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": "Split squat",
+          "sets": 3,
+          "reps": 8,
+          "tempo": null,
+          "load": null,
+          "side": "each",
+          "note": null
+        },
+        {
+          "kind": "rest",
+          "km": null,
+          "min": 2,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        }
+      ],
+      "measures": []
+    },
+    "long-12-flat": {
+      "id": "long-12-flat",
+      "sport": "run",
+      "kind": "session",
+      "title": {
+        "en": "Long run 12 km, flat",
+        "cz": "Dlouhý běh 12 km po rovině"
+      },
+      "why": null,
+      "watchName": null,
+      "targets": {
+        "km": 12,
+        "min": null,
+        "hrMin": null,
+        "hrMax": null,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "active",
+          "km": 12,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z1",
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        }
+      ],
+      "measures": []
+    },
+    "long-18-trail": {
+      "id": "long-18-trail",
+      "sport": "run",
+      "kind": "session",
+      "title": {
+        "en": "Long run 18 km, trail",
+        "cz": "Dlouhý běh 18 km, terén"
+      },
+      "why": null,
+      "watchName": null,
+      "targets": {
+        "km": 18,
+        "min": null,
+        "hrMin": null,
+        "hrMax": 145,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "active",
+          "km": 18,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z2",
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        }
+      ],
+      "measures": []
+    },
+    "tempo-3x8": {
+      "id": "tempo-3x8",
+      "sport": "run",
+      "kind": "session",
+      "title": {
+        "en": "Tempo 3 × 8 min",
+        "cz": "Tempo 3 × 8 min"
+      },
+      "why": null,
+      "watchName": null,
+      "targets": {
+        "km": null,
+        "min": 50,
+        "hrMin": 150,
+        "hrMax": 158,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "warmup",
+          "km": 2,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z1",
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "interval",
+          "km": null,
+          "min": 8,
+          "sec": null,
+          "times": 3,
+          "recoverMin": null,
+          "recoverSec": 90,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": 150,
+          "hrHi": 158,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "cooldown",
+          "km": 2,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        }
+      ],
+      "measures": []
+    },
+    "time-trial-3k": {
+      "id": "time-trial-3k",
+      "sport": "run",
+      "kind": "test",
+      "title": {
+        "en": "3 km time trial",
+        "cz": "Test na 3 km"
+      },
+      "why": null,
+      "watchName": null,
+      "targets": {
+        "km": 3,
+        "min": null,
+        "hrMin": null,
+        "hrMax": null,
+        "zone": null
+      },
+      "steps": [
+        {
+          "kind": "warmup",
+          "km": null,
+          "min": 15,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "active",
+          "km": 3,
+          "min": null,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": "Z5",
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        },
+        {
+          "kind": "cooldown",
+          "km": null,
+          "min": 10,
+          "sec": null,
+          "times": null,
+          "recoverMin": null,
+          "recoverSec": null,
+          "zone": null,
+          "hrMax": null,
+          "hrLo": null,
+          "hrHi": null,
+          "pace": null,
+          "name": null,
+          "sets": null,
+          "reps": null,
+          "tempo": null,
+          "load": null,
+          "side": null,
+          "note": null
+        }
+      ],
+      "measures": [
+        {
+          "key": "time_s",
+          "unit": "s",
+          "better": "lower",
+          "label": {
+            "en": "Time",
+            "cz": "Čas"
+          }
+        }
+      ]
+    }
+  },
+  "tests": [
+    {
+      "workout": "calf-raise-test",
+      "title": {
+        "en": "Single-leg calf raise to failure",
+        "cz": "Výpony na jedné noze do vyčerpání"
+      },
+      "measures": [
+        {
+          "key": "reps_l",
+          "unit": "reps",
+          "better": "higher",
+          "label": {
+            "en": "Left",
+            "cz": "Levá"
+          }
+        },
+        {
+          "key": "reps_r",
+          "unit": "reps",
+          "better": "higher",
+          "label": {
+            "en": "Right",
+            "cz": "Pravá"
+          }
+        }
+      ],
+      "history": [
+        {
+          "date": "2030-09-18",
+          "sessionId": "2030-w38-wed-pm",
+          "values": {
+            "reps_l": 18,
+            "reps_r": 24
+          },
+          "note": "left felt stiff"
+        },
+        {
+          "date": "2030-10-16",
+          "sessionId": "2030-w42-wed-pm",
+          "values": {
+            "reps_l": 22,
+            "reps_r": 27
+          },
+          "note": null
+        }
+      ]
+    },
+    {
+      "workout": "time-trial-3k",
+      "title": {
+        "en": "3 km time trial",
+        "cz": "Test na 3 km"
+      },
+      "measures": [
+        {
+          "key": "time_s",
+          "unit": "s",
+          "better": "lower",
+          "label": {
+            "en": "Time",
+            "cz": "Čas"
+          }
+        }
+      ],
+      "history": []
+    }
+  ],
+  "habits": {
+    "gate": {
+      "adherencePct": 80,
+      "windowDays": 14
+    },
+    "ladder": [
+      {
+        "id": "holds",
+        "step": 0,
+        "icon": "🦶",
+        "label": {
+          "en": "Holds",
+          "cz": "Výdrže"
+        },
+        "dose": "5 × 45 s, twice a day",
+        "why": "Tendon load",
+        "schedule": {
+          "kind": "daily",
+          "perDay": 2
+        },
+        "source": "daily-note",
+        "state": "active",
+        "started": "2030-09-20",
+        "earliest": "2030-09-20",
+        "window14": {
+          "done": 18,
+          "expected": 24,
+          "pct": 75,
+          "recordedDays": 12
+        },
+        "gateMet": null,
+        "gateBlockedBy": null
+      },
+      {
+        "id": "gym",
+        "step": 1,
+        "icon": "💪",
+        "label": {
+          "en": "Gym twice a week",
+          "cz": "Posilovna 2× týdně"
+        },
+        "dose": "Gym A, Monday and Thursday",
+        "why": null,
+        "schedule": {
+          "kind": "weekly",
+          "days": [
+            "MO",
+            "TH"
+          ]
+        },
+        "source": "activity",
+        "state": "active",
+        "started": "2030-10-14",
+        "earliest": "2030-10-14",
+        "window14": {
+          "done": 2,
+          "expected": 3,
+          "pct": 66,
+          "recordedDays": 9
+        },
+        "gateMet": false,
+        "gateBlockedBy": null
+      },
+      {
+        "id": "stretch",
+        "step": 2,
+        "icon": "🌙",
+        "label": {
+          "en": "Stretch after easy runs",
+          "cz": "Protažení po klidném běhu"
+        },
+        "dose": "10 min",
+        "why": null,
+        "schedule": {
+          "kind": "withSessions",
+          "sport": "run",
+          "types": [
+            "easy"
+          ]
+        },
+        "source": "daily-note",
+        "state": "next",
+        "started": null,
+        "earliest": "2030-10-28",
+        "window14": null,
+        "gateMet": null,
+        "gateBlockedBy": null
+      },
+      {
+        "id": "quality",
+        "step": 3,
+        "icon": "⚡",
+        "label": {
+          "en": "One quality session",
+          "cz": "Jeden kvalitní trénink"
+        },
+        "dose": "Tempo",
+        "why": null,
+        "schedule": {
+          "kind": "weeklyCount",
+          "times": 1
+        },
+        "source": "plan",
+        "state": "later",
+        "started": null,
+        "earliest": "2030-11-11",
+        "window14": null,
+        "gateMet": null,
+        "gateBlockedBy": null
+      },
+      {
+        "id": "pool",
+        "step": 4,
+        "icon": "🏊",
+        "label": {
+          "en": "Swim every two weeks",
+          "cz": "Plavání jednou za 14 dní"
+        },
+        "dose": "30 min",
+        "why": null,
+        "schedule": {
+          "kind": "everyNWeeks",
+          "n": 2,
+          "day": "SA",
+          "anchor": "2030-11-30"
+        },
+        "source": "activity",
+        "state": "later",
+        "started": null,
+        "earliest": "2030-11-25",
+        "window14": null,
+        "gateMet": null,
+        "gateBlockedBy": null
+      },
+      {
+        "id": "stretch-plus",
+        "step": 5,
+        "icon": "🧘",
+        "label": {
+          "en": "Longer stretch",
+          "cz": "Delší protažení"
+        },
+        "dose": "20 min",
+        "why": null,
+        "schedule": {
+          "kind": "daily",
+          "perDay": 1
+        },
+        "source": "daily-note",
+        "state": "later",
+        "started": null,
+        "earliest": "2030-12-09",
+        "window14": null,
+        "gateMet": null,
+        "gateBlockedBy": null
+      }
+    ]
+  },
+  "acks": {},
+  "outcomes": [],
+  "rejected": []
+}

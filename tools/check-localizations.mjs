@@ -72,7 +72,7 @@ const APP_TARGETS = [
   { name: 'GarminFoodWidget', catalog: 'GarminFoodWidget/Resources/Localizable.xcstrings', sources: ['GarminFoodWidget', 'Shared'] },
 ];
 /** SPM packages with .lproj resources (design.md D3). */
-const PACKAGES = ['FoodLogCore', 'Gamification', 'GarminKit'];
+const PACKAGES = ['FoodLogCore', 'Gamification', 'GarminKit', 'TrainingCore'];
 
 const errors = [];
 const notes = [];
