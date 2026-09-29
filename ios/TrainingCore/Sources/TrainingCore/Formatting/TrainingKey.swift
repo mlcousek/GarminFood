@@ -267,6 +267,22 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case scheduleEveryNWeeks = "every %lld weeks"
     /// Habit schedule: after these session types.
     case scheduleWithSessions = "After sessions: %@"
+    /// add-training-checkins: the check-in row on Today's training card.
+    case checkInTitle = "Morning check-in"
+    /// VoiceOver for a check-in button: the light and what its option means.
+    case a11yCheckInButton = "Morning check-in %@, %@"
+    /// A check-in, tick, RPE or note is stored on the phone, not uploaded yet.
+    case deliverySaved = "Saved on phone"
+    /// A check-in, tick, RPE or note has been uploaded to the vault.
+    case deliverySent = "Sent"
+    /// Reminder title before a run day's check-in.
+    case reminderCheckInTitle = "How do you feel today?"
+    /// Reminder body before a run day's check-in.
+    case reminderCheckInBody = "Check in green, amber or red before you run."
+    /// Reminder title for the evening habits.
+    case reminderHabitsTitle = "Evening habits"
+    /// Reminder body for the evening habits.
+    case reminderHabitsBody = "Tick today's habits before bed."
 
     /// Keys that live in `.stringsdict` (plural forms).
     public var isPlural: Bool {

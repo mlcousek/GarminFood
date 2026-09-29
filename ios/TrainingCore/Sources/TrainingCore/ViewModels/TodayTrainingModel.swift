@@ -11,11 +11,12 @@
 //   - `WeeklyNoteTeaserModel` -- this week's AI note, else the latest
 //     earlier week's.
 //
-// Read-only by construction: an option's action is `.openDetail`, a
-// habit's tick `.displayOnly` (`TrainingCapabilities` is all false). The
-// slots add-training-checkins fills (`.checkIn`, `.tickable`, a
-// `.pendingCheckIn` highlight, `pendingBadge`) are here already so that
-// change touches no view.
+// An option's action is always `.openDetail`: tapping a card to read it
+// never records anything. add-training-checkins (design D6) adds, when
+// `TrainingCapabilities` allow it, the morning check-in row
+// (`TodayTrainingModel.checkIn`, CheckInModels.swift) and on/off habit
+// ticks (`HabitTick.tickable`); a check-in's light reaches the option
+// cards as the existing morning-light highlight, through `EffectivePlan`.
 //
 // The highlighted option is the done one (with a check), else the one the
 // morning light points at, else none; a done session whose option the
@@ -112,11 +113,16 @@ public struct TodayTrainingModel: Equatable, Sendable {
     public let carbLoadLine: String?
     public let lightLine: String?
     public let notices: [TrainingNotice]
+    /// add-training-checkins: the morning check-in row, when allowed.
+    public var checkIn: CheckInRowModel? = nil
 }
 
 public enum HabitTick: Equatable, Sendable {
-    /// No control in this change (design D8).
+    /// No control: ticking isn't allowed (no vault device id).
     case displayOnly
+    /// add-training-checkins (decision A42): an on/off toggle. `pending`
+    /// while the phone's latest tick is not uploaded yet.
+    case tickable(done: Bool, pending: Bool)
 }
 
 public struct HabitRowModel: Equatable, Sendable, Identifiable {
@@ -168,8 +174,15 @@ public struct TodayTrainingBuilder: Sendable {
 
     private var text: TrainingText { format.text }
 
-    /// The training card for `date` (already resolved by `TrainingDay`).
+    /// The training card for `date` (already resolved by `TrainingDay`),
+    /// with the check-in row when allowed (add-training-checkins D6).
     public func trainingDay(on date: LocalDate) -> TodayTrainingModel {
+        var model = baseTrainingDay(on: date)
+        model.checkIn = checkInRow(on: date)
+        return model
+    }
+
+    private func baseTrainingDay(on date: LocalDate) -> TodayTrainingModel {
         let dateText = format.dates.short(date)
         guard let snapshot = source.snapshot else {
             return TodayTrainingModel(date: date, dateText: dateText, sessions: [], emptyState: format.emptyState(for: source), carbLoadLine: nil, lightLine: nil, notices: [])
@@ -320,11 +333,11 @@ public struct TodayTrainingBuilder: Sendable {
         guard let snapshot = source.snapshot, let day = snapshot.plan?.day(date) else { return [] }
         return day.habitsExpected.compactMap { id in
             guard let habit = snapshot.habits.habit(id) else { return nil }
-            return habitRow(habit, day: day, gate: snapshot.habits.gate)
+            return habitRow(habit, day: day, gate: snapshot.habits.gate, snapshot: snapshot)
         }
     }
 
-    func habitRow(_ habit: Habit, day: Day?, gate: HabitGate) -> HabitRowModel {
+    func habitRow(_ habit: Habit, day: Day?, gate: HabitGate, snapshot: TrainingSnapshot? = nil) -> HabitRowModel {
         let adherence = HabitText.adherence(habit.window14, gate: gate, text: text)
         let doneCount: Int? = day?.habitsDone?[habit.id]
         let doneToday = doneCount.map {
@@ -340,8 +353,15 @@ public struct TodayTrainingBuilder: Sendable {
             fraction: habit.window14?.pct.map { Double(min(max($0, 0), 100)) / 100 },
             gateFraction: gate.adherencePct.map { Double(min(max($0, 0), 100)) / 100 },
             doneToday: doneToday,
-            tick: .displayOnly
+            tick: habitTick(habit, day: day, snapshot: snapshot)
         )
+    }
+
+    /// add-training-checkins: an on/off toggle when ticking is allowed.
+    private func habitTick(_ habit: Habit, day: Day?, snapshot: TrainingSnapshot?) -> HabitTick {
+        guard let snapshot, let day, snapshot.capabilities.canTickHabits else { return .displayOnly }
+        let state = snapshot.habitDone(habit.id, on: day.date)
+        return .tickable(done: state.done, pending: state.local?.delivery == .savedOnPhone)
     }
 
     // MARK: Race chip

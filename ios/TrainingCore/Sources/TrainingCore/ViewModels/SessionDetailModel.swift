@@ -84,6 +84,8 @@ public struct SessionDetailModel: Equatable, Sendable {
     public let fuelLines: [String]
     public let test: TestDetailModel?
     public let raceLine: String?
+    /// add-training-checkins: RPE and note, when rating is allowed.
+    public var rating: SessionRatingModel? = nil
 }
 
 public extension PlanBuilder {
@@ -152,7 +154,7 @@ public extension PlanBuilder {
             text.format(.raceDayLine, race.name.resolvedText(language) ?? race.id) + " · " + format.dates.short(race.date)
         }
 
-        return SessionDetailModel(
+        var model = SessionDetailModel(
             id: session.id,
             title: title,
             dateLine: dateLine,
@@ -171,6 +173,8 @@ public extension PlanBuilder {
             test: testDetail(session, day: day, snapshot: snapshot),
             raceLine: raceLine
         )
+        model.rating = ratingModel(session, day: day, snapshot: snapshot)
+        return model
     }
 
     private func detailOption(id: String, code: OpenEnum<OptionCode>?, label: String, targets: Targets, workout: Workout?, watch: OptionWatch?) -> DetailOptionModel {
