@@ -166,6 +166,9 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
 
       - name: Archive for a real device, unsigned
+        # rebrand-to-jirkas-arc D5: the build number is this workflow's run
+        # number (grows on every run, any branch, nothing to remember); the
+        # marketing version comes from project.yml. A local build keeps "1".
         run: |
           xcodebuild archive \
             -project GarminFood.xcodeproj \
@@ -173,9 +176,24 @@ jobs:
             -destination 'generic/platform=iOS' \
             -archivePath build/GarminFood.xcarchive \
             -configuration Release \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Show the archived name and version (non-blocking)
+        # rebrand-to-jirkas-arc D5 / task 2.3: evidence, not assumption, that
+        # the app and the widget carry the same version and build number and
+        # the "Jirka's Arc" display name after build-setting expansion.
+        continue-on-error: true
+        run: |
+          APP="build/GarminFood.xcarchive/Products/Applications/GarminFood.app"
+          for plist in "$APP/Info.plist" "$APP"/PlugIns/*.appex/Info.plist; do
+            echo "== $plist"
+            for key in CFBundleDisplayName CFBundleShortVersionString CFBundleVersion; do
+              printf '%s = ' "$key"; /usr/libexec/PlistBuddy -c "Print :$key" "$plist" || echo "(missing)"
+            done
+          done
 
       - name: Package the archive as an unsigned .ipa
         # An .ipa is just Payload/<AppName>.app zipped up. Signing happens

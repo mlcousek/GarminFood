@@ -44,6 +44,11 @@ final class AppPreferences {
         // add-standalone-mode 5.2: the name Profile shows in standalone mode
         // (there is no Garmin profile to read it from).
         static let localDisplayName = "profile.localDisplayName"
+        // rebrand-to-jirkas-arc D9: developer-only "Preview training shell
+        // (testing)" (Diagnostics). `developer.` keeps it out of backups
+        // (BackupExclusions). Removed with its toggle by
+        // add-training-today-and-plan once the vault connection drives it.
+        static let previewTrainingShell = "developer.previewTrainingShell.v1"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -68,6 +73,7 @@ final class AppPreferences {
     private var storedForceStandaloneMode: Bool
     private var storedSupplementsEnabled: Bool
     private var storedLocalDisplayName: String?
+    private var storedPreviewTrainingShell: Bool
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -97,6 +103,7 @@ final class AppPreferences {
         // Off: nothing about supplements shows until the user turns it on.
         storedSupplementsEnabled = defaults.object(forKey: Key.supplementsEnabled) as? Bool ?? false
         storedLocalDisplayName = defaults.string(forKey: Key.localDisplayName)
+        storedPreviewTrainingShell = defaults.object(forKey: Key.previewTrainingShell) as? Bool ?? false
     }
 
     /// add-standalone-mode D1: the install's system of record, or `nil`
@@ -310,7 +317,7 @@ final class AppPreferences {
     }
 
     /// add-standalone-mode 5.2: the user's own display name for Profile in
-    /// standalone mode. Blank = none (Profile shows "GarminFood").
+    /// standalone mode. Blank = none (Profile shows "Jirka's Arc").
     var localDisplayName: String? {
         get { storedLocalDisplayName }
         set {
@@ -322,6 +329,18 @@ final class AppPreferences {
             } else {
                 defaults.removeObject(forKey: Key.localDisplayName)
             }
+        }
+    }
+
+    /// rebrand-to-jirkas-arc D9: "Preview training shell (testing)", a
+    /// hidden Diagnostics toggle that forces the training experience
+    /// (`AppEnvironment.experience`) before the vault connection exists.
+    /// Off by default, so every install stays food-first.
+    var previewTrainingShell: Bool {
+        get { storedPreviewTrainingShell }
+        set {
+            storedPreviewTrainingShell = newValue
+            defaults.set(newValue, forKey: Key.previewTrainingShell)
         }
     }
 

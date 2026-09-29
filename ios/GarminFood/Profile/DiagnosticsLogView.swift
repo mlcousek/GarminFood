@@ -17,6 +17,12 @@
 // (testing)"): the throwaway add-mcp-server wave-1 check that a picked
 // iCloud Drive folder stays readable and writable on this account. Remove
 // the item together with that file in add-mcp-server task 4.1.
+//
+// And "Preview training shell (testing)" (rebrand-to-jirkas-arc D9): forces
+// the training experience (four tabs, Plan's empty state) before the vault
+// connection exists, for device checks. `AppPreferences.
+// previewTrainingShell`; the shell switches at once. Removed with its key by
+// add-training-today-and-plan task 4.2.
 
 import SwiftUI
 import UIKit
@@ -83,6 +89,10 @@ struct DiagnosticsLogView: View {
                         Text("Force standalone mode (testing)")
                         Text("Entries logged now stay on this phone only; XP, streak and usage still count them.")
                     }
+                    Toggle(isOn: $preferences.previewTrainingShell) {
+                        Text("Preview training shell (testing)")
+                        Text("Shows the Today, Plan, Progress and Profile tabs before a vault is connected.")
+                    }
                     // THROWAWAY (add-mcp-server task 1.1, removed in 4.1).
                     Button {
                         isShowingBridgeSpike = true
@@ -110,6 +120,9 @@ struct DiagnosticsLogView: View {
         .onChange(of: preferences.forceStandaloneMode) { _, isOn in
             DiagnosticsLog.log(.info, category: "DataMode", "Force standalone mode (testing) \(isOn ? "on" : "off").")
             Task { await environment.dayLog.refresh() }
+        }
+        .onChange(of: preferences.previewTrainingShell) { _, isOn in
+            DiagnosticsLog.log(.info, category: "Shell", "Preview training shell (testing) \(isOn ? "on" : "off").")
         }
     }
 

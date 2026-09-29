@@ -139,9 +139,9 @@ struct ThemeImportPreviewSheet: View {
     static func message(for failure: ThemeShareCode.Failure) -> String {
         switch failure {
         case .notAShareCode:
-            return String(localized: "That isn't a GarminFood theme code. Nothing was changed.")
+            return String(localized: "That isn't a Jirka's Arc theme code. Nothing was changed.")
         case .unsupportedVersion:
-            return String(localized: "This code comes from a newer version of GarminFood. Update the app to import it. Nothing was changed.")
+            return String(localized: "This code comes from a newer version of Jirka's Arc. Update the app to import it. Nothing was changed.")
         case .tooLong, .corrupted:
             return String(localized: "The code is incomplete or damaged. Copy it again. Nothing was changed.")
         }

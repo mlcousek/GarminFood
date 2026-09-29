@@ -9,10 +9,15 @@
 // hidden -- the Garmin account section, Garmin's read-only plan (replaced
 // by the local editable one), the sync queue and "Default meal from
 // Garmin's schedule" -- and About no longer says it syncs to Garmin.
+//
+// rebrand-to-jirkas-arc D2: About names the training plan only in the
+// training experience (`AppExperience.mentionsTrainingPlan`, AppearanceKit);
+// food-first installs, standalone ones included, say "food and weight".
 
 import SwiftUI
 import UIKit
 import GarminKit
+import AppearanceKit
 
 @MainActor
 struct SettingsView: View {
@@ -43,7 +48,7 @@ struct SettingsView: View {
                     .foregroundStyle(.tertiary)
             }
         }
-        .accessibilityHint("Opens GarminFood's page in iOS Settings, where the app's language can be changed")
+        .accessibilityHint("Opens the Jirka's Arc page in iOS Settings, where the app's language can be changed")
     }
 
     /// The localization iOS picked for this app ("Čeština", "English"),
@@ -188,10 +193,19 @@ struct SettingsView: View {
             } header: {
                 Text("About")
             } footer: {
-                if isStandalone {
-                    Text("GarminFood logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                // rebrand-to-jirkas-arc D2: the training plan is named only
+                // in the training experience (AppExperience, as the tab
+                // shell); the data mode picks the Garmin sentence.
+                if environment.experience.mentionsTrainingPlan {
+                    if isStandalone {
+                        Text("Jirka's Arc: training plan, food and weight, by Jirka. It logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                    } else {
+                        Text("Jirka's Arc: training plan, food and weight, by Jirka. It logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                    }
+                } else if isStandalone {
+                    Text("Jirka's Arc: food and weight, by Jirka. It logs food in two taps and keeps it on this phone. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
                 } else {
-                    Text("GarminFood logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
+                    Text("Jirka's Arc: food and weight, by Jirka. It logs food in two taps and syncs it to Garmin Connect. Czech product data © Open Food Facts contributors, available under the Open Database License (ODbL).")
                 }
             }
         }
@@ -229,7 +243,7 @@ struct SettingsView: View {
             if environment.profile.settingsFailed {
                 Text("Couldn't load from Garmin.")
             } else {
-                Text("Set in Garmin Connect. GarminFood only displays it.")
+                Text("Set in Garmin Connect. Jirka's Arc only displays it.")
             }
         }
     }

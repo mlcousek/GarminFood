@@ -34,7 +34,7 @@ struct ThemeShareSheet: View {
     /// the link, each on its own line so either can be copied on its own.
     private var shareText: String {
         var lines = [
-            String(localized: "My GarminFood look. Paste the code in Settings > Appearance > Import theme, or open the link on your iPhone."),
+            String(localized: "My Jirka's Arc look. Paste the code in Settings > Appearance > Import theme, or open the link on your iPhone."),
             code
         ]
         if let link { lines.append(link.absoluteString) }

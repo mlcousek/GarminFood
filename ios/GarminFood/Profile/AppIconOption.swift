@@ -5,7 +5,11 @@
 // PR #37) plus 11 alternates in the same gradient style, one per theme
 // (add-themes-and-layout design.md R5, 2026-09-24). They replaced the
 // original add-app-icon-picker set (Streak, Macro, Midnight, Mint, Pastel),
-// which was drawn around the old coral primary. The alternates are loose
+// which was drawn around the old coral primary. rebrand-to-jirkas-arc D3
+// redrew all 12 as the arc mark over "by Jirka" (tools/generate-app-icons.py)
+// under the SAME names, so a chosen icon survives the update and
+// `AppIconSwitcher.resetRemovedAlternateIfNeeded` has nothing to reset. The
+// alternates are loose
 // `CFBundleAlternateIcons` entries (project.yml's own comment explains why
 // loose files, not an asset catalog -- there is no local Xcode to catch a
 // wrong guess against Info.plist keys, which `xcodebuild` in CI would NOT

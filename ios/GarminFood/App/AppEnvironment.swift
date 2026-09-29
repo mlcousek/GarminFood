@@ -122,6 +122,18 @@ final class AppEnvironment {
     /// App-only (VaultServices), never in the widget.
     let vault: VaultController
 
+    /// rebrand-to-jirkas-arc D6: food-first (the default, and every install
+    /// without a vault connection) or training. Observable: flipping the
+    /// input switches the tab shell at once, without a restart.
+    var experience: AppExperience { AppEnvironment.experience(preferences) }
+
+    /// The one input today is the Diagnostics preview toggle (D9);
+    /// add-training-today-and-plan replaces it with the vault connection
+    /// switch.
+    static func experience(_ preferences: AppPreferences) -> AppExperience {
+        AppExperience(trainingEnabled: preferences.previewTrainingShell)
+    }
+
     /// `true` while a drain is in flight, purely for a subtle "syncing"
     /// indicator. Never gates a user action.
     private(set) var isDraining = false
@@ -242,7 +254,7 @@ final class AppEnvironment {
         )
         self.preferences = preferences
         self.themeStore = ThemeStore()
-        let layoutStore = LayoutStore()
+        let layoutStore = LayoutStore(experience: { AppEnvironment.experience(preferences) })
         self.layoutStore = layoutStore
         self.notificationPreferences = NotificationPreferencesStore()
         self.profile = ProfileLoader(client: client)
@@ -250,7 +262,12 @@ final class AppEnvironment {
         self.vault = VaultController(services: VaultServices.shared)
         // add-themes-and-layout 4.3: open on the user's start tab; links and
         // widget routes arriving after launch still override it.
-        self.router = AppRouter(startTab: layoutStore.config.resolvedStartTab)
+        // rebrand-to-jirkas-arc D8: the experience's start tab (a stored
+        // Plan opens Today in food-first), and routes that follow it.
+        self.router = AppRouter(
+            startTab: layoutStore.resolvedStartTab,
+            experience: { AppEnvironment.experience(preferences) }
+        )
         self.supplementPlanStore = services.supplementPlanStore
         self.supplementIntakeStore = services.supplementIntakeStore
         self.supplementLimitsStore = services.supplementLimitsStore

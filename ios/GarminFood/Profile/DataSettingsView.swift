@@ -72,7 +72,7 @@ struct DataSettingsView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: { snapshot in
-            Text("Your data will be replaced with the backup from \(snapshot.manifest.createdAt.formatted(date: .abbreviated, time: .shortened)) the next time you open GarminFood. Your current data is saved as a safety backup first.", comment: "Data screen: confirming a restore from a snapshot. %@ = the backup's date and time.")
+            Text("Your data will be replaced with the backup from \(snapshot.manifest.createdAt.formatted(date: .abbreviated, time: .shortened)) the next time you open Jirka's Arc. Your current data is saved as a safety backup first.", comment: "Data screen: confirming a restore from a snapshot. %@ = the backup's date and time.")
         }
         .fileExporter(
             isPresented: $isExporting,
@@ -106,7 +106,7 @@ struct DataSettingsView: View {
     private func pendingRestoreSection(_ pending: BackupManifest) -> some View {
         Section {
             Label {
-                Text("Close GarminFood and open it again to finish restoring the backup from \(pending.createdAt.formatted(date: .abbreviated, time: .shortened)).", comment: "Data screen: a restore is staged. %@ = the backup's date and time.")
+                Text("Close Jirka's Arc and open it again to finish restoring the backup from \(pending.createdAt.formatted(date: .abbreviated, time: .shortened)).", comment: "Data screen: a restore is staged. %@ = the backup's date and time.")
             } icon: {
                 Image(systemName: "arrow.counterclockwise.circle.fill")
                     .foregroundStyle(Theme.warning)
@@ -185,7 +185,7 @@ struct DataSettingsView: View {
         } header: {
             Text("Backups on this phone")
         } footer: {
-            Text("GarminFood backs up once a day when you open it and keeps the last 14 backups. They're deleted with the app, so export one now and then.", comment: "Data screen: footer under the snapshot list.")
+            Text("Jirka's Arc backs up once a day when you open it and keeps the last 14 backups. They're deleted with the app, so export one now and then.", comment: "Data screen: footer under the snapshot list.")
         }
     }
 

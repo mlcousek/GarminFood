@@ -82,7 +82,7 @@ final class SupplementNotificationHandler: NSObject, UNUserNotificationCenterDel
     private func postFallback() async {
         let content = UNMutableNotificationContent()
         content.title = String(localized: "Couldn't tick your supplements", comment: "Notification after the Taken action failed (e.g. phone locked).")
-        content.body = String(localized: "Open GarminFood to tick them.", comment: "Notification after the Taken action failed.")
+        content.body = String(localized: "Open Jirka's Arc to tick them.", comment: "Notification after the Taken action failed.")
         content.sound = .default
         let request = UNNotificationRequest(
             identifier: "supplementTakenFailed." + UUID().uuidString,

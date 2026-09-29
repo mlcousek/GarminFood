@@ -150,7 +150,7 @@ public enum NotificationPlanning {
             result.append(PlannedNotification(
                 id: "dailyChallengeReminder",
                 title: String(localized: "Today's challenges are ready", bundle: .module, comment: "Daily-challenge reminder notification title."),
-                body: String(localized: "Check today's challenges in GarminFood.", bundle: .module, comment: "Daily-challenge reminder notification body."),
+                body: String(localized: "Check today's challenges in Jirka's Arc.", bundle: .module, comment: "Daily-challenge reminder notification body."),
                 hour: preferences.dailyChallengeReminder.hour,
                 minute: preferences.dailyChallengeReminder.minute
             ))

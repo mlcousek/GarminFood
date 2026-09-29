@@ -75,7 +75,9 @@ struct TodayView: View {
             .padding(Theme.Spacing.md)
         }
         .background { GradientHeaderBackground() }
-        .navigationTitle("Food log")
+        // rebrand-to-jirkas-arc D6: "Today" leads the training experience;
+        // food-first keeps "Food log".
+        .navigationTitle(environment.experience == .training ? Text("Today") : Text("Food log"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

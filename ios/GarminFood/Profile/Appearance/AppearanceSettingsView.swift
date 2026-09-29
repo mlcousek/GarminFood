@@ -9,7 +9,8 @@
 //   4. customization: custom accent, card style, corners, density, number
 //      font, gradient header, macro colors
 //   5. layout: Today, Log Food and Progress each open LayoutEditorSheet
-//      (waves 3-4), plus the start tab picker (task 4.3)
+//      (waves 3-4), plus the start tab picker (task 4.3), which lists only
+//      the tabs the current experience shows (rebrand-to-jirkas-arc D8)
 //   6. share / import a theme code (wave 5, ThemeShareSection)
 //   7. reset
 // Every change writes through ThemeStore / LayoutStore immediately and
@@ -120,8 +121,9 @@ struct AppearanceSettingsView: View {
         // it points (AppRouter).
         Section {
             Picker("Start on", selection: startTabBinding) {
-                Text("Today").tag(StartTab.today)
-                Text("Progress").tag(StartTab.progress)
+                ForEach(AppShell.startTabs(for: environment.experience), id: \.self) { tab in
+                    startTabTitle(tab).tag(tab)
+                }
             }
         } header: {
             Text("Start tab")
@@ -149,9 +151,18 @@ struct AppearanceSettingsView: View {
         .accessibilityHint("Opens the layout editor")
     }
 
+    /// The tab names as the tab bar shows them.
+    private func startTabTitle(_ tab: StartTab) -> Text {
+        switch tab {
+        case .today: return Text("Today")
+        case .plan: return Text("Plan")
+        case .progress: return Text("Progress")
+        }
+    }
+
     /// "Default" or "Custom" for the screens without presets.
     private func layoutSummary(_ screen: LayoutScreen) -> String {
-        layoutStore.config.isDefaultLayout(screen)
+        layoutStore.isDefaultLayout(screen)
             ? String(localized: "Default", comment: "Settings -> Appearance -> Layout: a screen whose layout was never changed.")
             : String(localized: "Custom")
     }
@@ -166,7 +177,9 @@ struct AppearanceSettingsView: View {
     private var startTabBinding: Binding<StartTab> {
         let layoutStore = self.layoutStore
         return Binding(
-            get: { layoutStore.config.resolvedStartTab },
+            // The experience's start tab: a stored Plan on a food-first
+            // install shows (and opens) Today (AppShell.resolvedStartTab).
+            get: { layoutStore.resolvedStartTab },
             set: { layoutStore.setStartTab($0) }
         )
     }

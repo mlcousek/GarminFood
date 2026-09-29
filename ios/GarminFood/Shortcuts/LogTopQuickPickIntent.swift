@@ -19,7 +19,7 @@ import AppIntents
 
 struct LogTopQuickPickIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Usual Food"
-    static var description = IntentDescription("Logs your #1 most-used food in GarminFood.")
+    static var description = IntentDescription("Logs your #1 most-used food in Jirka's Arc.")
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {

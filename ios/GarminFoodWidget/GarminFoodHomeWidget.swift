@@ -77,7 +77,7 @@ struct GarminFoodHomeWidgetView: View {
         .widgetURL(GarminFoodDeepLink.logFoodURL)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Log Food")
-        .accessibilityHint("Opens GarminFood")
+        .accessibilityHint("Opens Jirka's Arc")
     }
 }
 
@@ -94,7 +94,7 @@ struct GarminFoodHomeWidget: Widget {
         // User-facing gallery text (add-localization 5.2). Shows no live
         // calorie data -- there is no way for a widget to read that on this
         // account (design.md D2).
-        .description("One tap opens GarminFood's food catalog, ready to log.")
+        .description("One tap opens the food catalog in Jirka's Arc, ready to log.")
         .supportedFamilies([.systemSmall])
     }
 }

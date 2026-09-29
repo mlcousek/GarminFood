@@ -12,6 +12,13 @@
 // unit-tested there; this class only glues them to SwiftUI and keeps the
 // in-session "Undo reset" snapshot (D9).
 //
+// rebrand-to-jirkas-arc D6: Today's catalog depends on the experience
+// (food-first or training). The store reads the current one through
+// `experience`, a closure AppEnvironment supplies, so every read and edit
+// uses that experience's catalog without each caller passing it. The
+// closure reads observable state, so a view that renders `resolved(.today)`
+// re-renders when the experience changes.
+//
 // One instance per process, created in AppEnvironment (like ThemeStore).
 // Read by TodayView, LayoutEditorSheet and the Appearance page.
 
@@ -37,9 +44,12 @@ final class LayoutStore {
     }
 
     @ObservationIgnored private let defaults: UserDefaults
+    /// The experience whose catalogs apply (AppEnvironment.experience).
+    @ObservationIgnored private let experience: @MainActor () -> AppExperience
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, experience: @escaping @MainActor () -> AppExperience = { .foodFirst }) {
         self.defaults = defaults
+        self.experience = experience
         config = AppPreferences.loadLayout(from: defaults)
         showsResetNotice = defaults.bool(forKey: AppPreferences.Key.layoutResetNotice)
     }
@@ -48,7 +58,17 @@ final class LayoutStore {
 
     /// The screen's rows in order, as rendered and as the editor lists them.
     func resolved(_ screen: LayoutScreen) -> [ResolvedPlacement] {
-        config.resolved(screen)
+        config.resolved(screen, experience: self.experience())
+    }
+
+    /// Whether `screen` renders its default order in the current experience.
+    func isDefaultLayout(_ screen: LayoutScreen) -> Bool {
+        config.isDefaultLayout(screen, experience: self.experience())
+    }
+
+    /// The start tab the app opens on in the current experience.
+    var resolvedStartTab: StartTab {
+        config.resolvedStartTab(for: self.experience())
     }
 
     /// Today's preset, or `nil` for "Custom".
@@ -57,7 +77,7 @@ final class LayoutStore {
     }
 
     func canMove(_ id: String, _ direction: LayoutResolver.Direction, on screen: LayoutScreen) -> Bool {
-        LayoutResolver.canMove(id, direction, in: config.layout(for: screen), specs: LayoutCatalog.specs(for: screen))
+        LayoutResolver.canMove(id, direction, in: config.layout(for: screen), specs: LayoutCatalog.specs(for: screen, experience: self.experience()))
     }
 
     func canUndoReset(_ screen: LayoutScreen) -> Bool {
@@ -143,7 +163,8 @@ final class LayoutStore {
 
     private func edit(_ screen: LayoutScreen, _ change: (ScreenLayout?, [CardSpec]) -> ScreenLayout) {
         resetSnapshot = nil
-        write { $0.edit(screen, change) }
+        let current = self.experience()
+        write { $0.edit(screen, experience: current, change) }
     }
 
     private func write(_ change: (inout LayoutConfig) -> Void) {

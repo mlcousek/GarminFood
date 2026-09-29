@@ -135,9 +135,15 @@ user-facing text changes. Swift type names (`GarminFoodDeepLink`,
   `JirkasArc-backup-yyyy-MM-dd.json` (no apostrophe in file names). Import
   never looked at the file name, and the manifest marker is unchanged, so
   an old `GarminFood-backup-…json` still imports.
-- **The About text** in Settings becomes "Jirka's Arc: training plan, food
-  and weight, by Jirka." plus the existing Open Food Facts credit, in both
-  data modes; the mode-specific sentence about Garmin stays where it is.
+- **The About text** in Settings depends on the experience (owner review,
+  2026-09-28): in the training experience "Jirka's Arc: training plan, food
+  and weight, by Jirka."; in the food-first experience (every install
+  without a vault connection, so every standalone install, the second
+  install included) "Jirka's Arc: food and weight, by Jirka." Either is
+  followed by the mode-specific sentence about Garmin (or this phone) and
+  the existing Open Food Facts credit. The rule is AppearanceKit's
+  `AppExperience.mentionsTrainingPlan`, from the same experience input as
+  the tab shell (D6), and is unit-tested.
 
 ### D3 — The icon: an arc mark above "by Jirka"
 

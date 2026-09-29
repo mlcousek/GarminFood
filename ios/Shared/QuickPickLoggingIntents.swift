@@ -100,7 +100,7 @@ enum QuickPickControlAction {
             case .foodNotCachedLocally:
                 return "That food's details aren't saved locally yet -- open the app and log it once from there."
             case .savedButSignedOut:
-                return "Saved in GarminFood, but not sent: sign in to Garmin again in the app."
+                return "Saved in Jirka's Arc, but not sent: sign in to Garmin again in the app."
             case .needsGarminMatch:
                 return "Nothing logged: this food needs a Garmin match first. Log it once from the app."
             }
@@ -196,7 +196,7 @@ enum QuickPickControlAction {
 @available(iOS 18.0, *)
 struct LogQuickPick1Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #1"
-    static var description = IntentDescription("Logs your #1 most-used food in GarminFood.")
+    static var description = IntentDescription("Logs your #1 most-used food in Jirka's Arc.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
     static var openAppWhenRun: Bool = true
 
@@ -212,7 +212,7 @@ struct LogQuickPick1Intent: AppIntent {
 @available(iOS 18.0, *)
 struct LogQuickPick2Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #2"
-    static var description = IntentDescription("Logs your #2 most-used food in GarminFood.")
+    static var description = IntentDescription("Logs your #2 most-used food in Jirka's Arc.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
     static var openAppWhenRun: Bool = true
 
@@ -228,7 +228,7 @@ struct LogQuickPick2Intent: AppIntent {
 @available(iOS 18.0, *)
 struct LogQuickPick3Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #3"
-    static var description = IntentDescription("Logs your #3 most-used food in GarminFood.")
+    static var description = IntentDescription("Logs your #3 most-used food in Jirka's Arc.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
     static var openAppWhenRun: Bool = true
 
@@ -244,7 +244,7 @@ struct LogQuickPick3Intent: AppIntent {
 @available(iOS 18.0, *)
 struct LogQuickPick4Intent: AppIntent {
     static var title: LocalizedStringResource = "Log Quick Pick #4"
-    static var description = IntentDescription("Logs your #4 most-used food in GarminFood.")
+    static var description = IntentDescription("Logs your #4 most-used food in Jirka's Arc.")
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
     static var openAppWhenRun: Bool = true
 
