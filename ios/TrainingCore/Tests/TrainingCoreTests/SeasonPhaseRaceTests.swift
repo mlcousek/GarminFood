@@ -324,7 +324,7 @@ final class SeasonPhaseRaceTests: XCTestCase {
         XCTAssertEqual(race.taper.map(\.week), [D.week("2030-W43"), D.week("2030-W44")])
         XCTAssertEqual(race.taper.map(\.isRaceWeek), [false, true])
         XCTAssertEqual(race.taper.map(\.isCurrent), [true, false])
-        XCTAssertEqual(race.taper.map(\.targetText), ["Run target 60 km", "Run target 40 km"])
+        XCTAssertEqual(race.taper.map(\.targetText), ["Run target 55 km", "Run target 40 km"])  // W43 held at 55 by the red-holds rule
         XCTAssertEqual(race.taper.last?.kindText, "Race")
         XCTAssertEqual(race.taper.last?.noteText, "Race week")
 
