@@ -150,7 +150,7 @@ public struct VaultResponseHeaders: Equatable, Sendable {
     /// Never trust a rate-limit pause longer than this (the primary limit
     /// resets hourly); a bogus header can't park the connection for a day.
     public static let maximumRateLimitPause: TimeInterval = 60 * 60
-    /// design D10: "documented, not observed" until probe task 1.3.
+    /// design D10; name observed by the probe on 2026-09-29 (task 1.3).
     public static let tokenExpirationHeader = "github-authentication-token-expiration"
 
     private let values: [String: String]
@@ -210,7 +210,8 @@ public struct VaultResponseHeaders: Equatable, Sendable {
 }
 
 /// Tolerant parsing of the token-expiry header. GitHub's docs show
-/// `2023-11-14 18:30:00 UTC`; the probe (task 1.3) records the real format.
+/// `2023-11-14 18:30:00 UTC`, and the probe observed exactly that shape on
+/// 2026-09-29 (`2027-09-28 22:00:00 UTC`); the other formats stay as slack.
 /// Unparseable means "Expiry unknown", never an error.
 public enum TokenExpiryParser {
     public static func parse(_ raw: String) -> Date? {

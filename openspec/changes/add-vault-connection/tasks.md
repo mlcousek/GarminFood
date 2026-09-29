@@ -23,9 +23,9 @@ marked *defaulted, owner may override*.
 ## 1. Probes (owner's PC, read-only, before wave 3)
 
 - [x] 1.1 `tools/probe-github-contents.mjs`: GET-only; reads the token from `VAULT_PROBE_TOKEN` and the repository from `VAULT_PROBE_REPO` (never from a file in this repository); prints status codes, header names and selected header values (`etag` present?, expiry, rate-limit names) and byte counts; never prints a body, the token or the repository name. Header comment explains why and how. Refuses to run without both variables. *Built 2026-09-28; refuses to run without both variables (checked). Not run: needs the owner's token (1.2-1.4).*
-- [ ] 1.2 Run it: `GET /repos/{o}/{r}` (expect 200), the projection path with `Accept: application/vnd.github.raw+json` (200, or 404 if the vault hasn't generated it yet — then probe any small committed file under the hub root instead), then the same with `If-None-Match: <etag>` (expect 304). Record in design.md Evidence, dated: status codes, whether `ETag` came back on the raw response, whether the 304 lowered `x-ratelimit-remaining`.
-- [ ] 1.3 Record the token-expiry header's exact name and date format from the same responses (or "absent"), and the rate-limit header names. Update D10's parser note if they differ.
-- [ ] 1.4 Probe a 404 for a repository name that doesn't exist and a 401 with a deliberately wrong token (not the real token altered in the repository; typed in the shell). Record both.
+- [x] 1.2 Run it: `GET /repos/{o}/{r}` (expect 200), the projection path with `Accept: application/vnd.github.raw+json` (200, or 404 if the vault hasn't generated it yet — then probe any small committed file under the hub root instead), then the same with `If-None-Match: <etag>` (expect 304). Record in design.md Evidence, dated: status codes, whether `ETag` came back on the raw response, whether the 304 lowered `x-ratelimit-remaining`.
+- [x] 1.3 Record the token-expiry header's exact name and date format from the same responses (or "absent"), and the rate-limit header names. Update D10's parser note if they differ.
+- [x] 1.4 Probe a 404 for a repository name that doesn't exist and a 401 with a deliberately wrong token (not the real token altered in the repository; typed in the shell). Record both.
 
 ## 2. Wave 1 — VaultKit core, no app change (L)
 

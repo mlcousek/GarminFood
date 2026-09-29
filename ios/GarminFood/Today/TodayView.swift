@@ -295,7 +295,8 @@ struct TodayView: View {
         case .raceCountdown:
             if let chip = environment.training.todayBuilder.raceChip(from: trainingDate) {
                 RaceCountdownChip(model: chip) {
-                    environment.router.openPlan(year: chip.date.year, month: chip.date.month, day: chip.date.day, showsMonth: true)
+                    // add-season-phase-race-screens: the chip opens the race's screen.
+                    environment.router.openRace(id: chip.raceID)
                 }
             }
 

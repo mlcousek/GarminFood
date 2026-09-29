@@ -99,7 +99,9 @@ ios/
                     LossyArray, LocalizedText, LocalDate/ISOWeek), the last
                     good plan and its freshness (ProjectionStore), the
                     training day, and pure view models + formatters for
-                    Today's training cards and the Plan tab, in English and
+                    Today's training cards and the Plan tab (week, month,
+                    season timeline, phase, race prep, statistics --
+                    add-season-phase-race-screens, add-training-stats), in English and
                     Czech (lproj via TrainingText/TrainingKey). Golden-tested
                     on the vault's two contract fixtures, mirrored verbatim
                     under Tests/.../Fixtures/Contract/vault. Never SwiftUI.

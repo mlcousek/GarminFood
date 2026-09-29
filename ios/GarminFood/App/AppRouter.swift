@@ -43,6 +43,18 @@ final class AppRouter {
         selectedTab = .plan
     }
 
+    /// Today's race chip (add-season-phase-race-screens D2): the race
+    /// whose screen Plan pushes. PlanTabView consumes and clears it.
+    var pendingRaceID: String?
+
+    /// Today's race chip: Plan -> Season with that race's screen on top.
+    func openRace(id: String) {
+        let destination = AppShell.destination(for: .plan, experience: experience())
+        guard destination == .plan else { return }
+        pendingRaceID = id
+        selectedTab = .plan
+    }
+
     /// The current experience (AppEnvironment.experience), read when a
     /// route arrives.
     @ObservationIgnored private let experience: @MainActor () -> AppExperience
@@ -63,7 +75,10 @@ final class AppRouter {
     func experienceDidChange(to experience: AppExperience) {
         let corrected = AppShell.correctedSelection(selectedTab, experience: experience)
         if corrected != selectedTab { selectedTab = corrected }
-        if !AppShell.shows(.plan, in: experience) { pendingPlanDate = nil }
+        if !AppShell.shows(.plan, in: experience) {
+            pendingPlanDate = nil
+            pendingRaceID = nil
+        }
     }
 
     /// Set when the barcode Control fired. The Today tab pushes the catalog,
