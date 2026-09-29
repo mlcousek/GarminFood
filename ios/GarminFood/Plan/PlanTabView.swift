@@ -13,6 +13,11 @@
 // `garminfood://plan?date=YYYY-MM-DD` link opens the week containing it,
 // the race chip on Today opens the month at the race day.
 //
+// add-season-phase-race-screens (design D2): a third segment, Season --
+// the season timeline, whose phases and races push the Phase and Race
+// screens -- and Today's race chip opens that race's screen here
+// (`AppRouter.pendingRaceID`).
+//
 // Depended on by: ContentView (the Plan tab's root).
 
 import SwiftUI
@@ -21,6 +26,14 @@ import TrainingCore
 enum PlanMode: String, CaseIterable, Hashable {
     case week
     case month
+    /// add-season-phase-race-screens: the season timeline.
+    case season
+}
+
+/// A race whose screen is pushed (Today's race chip).
+struct PlanRaceTarget: Identifiable, Hashable {
+    let raceID: String
+    var id: String { raceID }
 }
 
 /// A month the calendar shows.
@@ -44,6 +57,7 @@ struct PlanTabView: View {
     @State private var sessionTarget: SessionDetailTarget?
     @State private var daySheet: PlanDaySheet?
     @State private var isShowingLadder = false
+    @State private var raceTarget: PlanRaceTarget?
 
     private var mode: Binding<PlanMode> {
         Binding(
@@ -62,6 +76,7 @@ struct PlanTabView: View {
                 Picker("View", selection: mode) {
                     Text("Week").tag(PlanMode.week)
                     Text("Month").tag(PlanMode.month)
+                    Text("Season").tag(PlanMode.season)
                 }
                 .pickerStyle(.segmented)
 
@@ -79,6 +94,8 @@ struct PlanTabView: View {
                         onPage: { month = $0 },
                         onSelectDay: { daySheet = PlanDaySheet(date: $0) }
                     )
+                case .season:
+                    SeasonTimelineView(model: builder.seasonTimeline())
                 }
             }
             .padding(Theme.Spacing.md)
@@ -101,6 +118,9 @@ struct PlanTabView: View {
         .navigationDestination(isPresented: $isShowingLadder) {
             HabitLadderView()
         }
+        .navigationDestination(item: $raceTarget) { target in
+            RaceDetailView(raceID: target.raceID)
+        }
         .sheet(item: $daySheet) { sheet in
             PlanDaySheetView(row: builder.dayRow(sheet.date)) { target in
                 daySheet = nil
@@ -118,6 +138,12 @@ struct PlanTabView: View {
             consume(pending, showsMonth: environment.router.pendingPlanShowsMonth)
             environment.router.pendingPlanDate = nil
             environment.router.pendingPlanShowsMonth = false
+        }
+        .onChange(of: environment.router.pendingRaceID, initial: true) { _, pending in
+            guard let pending else { return }
+            modeRaw = PlanMode.season.rawValue
+            raceTarget = PlanRaceTarget(raceID: pending)
+            environment.router.pendingRaceID = nil
         }
     }
 
