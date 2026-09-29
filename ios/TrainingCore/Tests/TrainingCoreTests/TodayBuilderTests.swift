@@ -39,10 +39,12 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(session.options[0].targetLines, ["10 km", "≤140 bpm · Z1"])
         XCTAssertEqual(session.options[1].targetLines, ["6 km", "≤135 bpm · Z2"])
         XCTAssertEqual(session.options[2].targetLines, ["45 min", "≤128 bpm · Z1"])
-        XCTAssertTrue(session.options.allSatisfy { $0.highlight == nil })
+        // The vault published this morning's amber check-in: A matches it.
+        XCTAssertEqual(session.options.map(\.highlight), [nil, .morningLight, nil])
+        XCTAssertEqual(model.lightLine, "Morning check: Amber")
         XCTAssertEqual(session.options.map(\.watchLine), ["On Garmin calendar", "Not on Garmin calendar yet", "Couldn't send to Garmin calendar"])
         XCTAssertEqual(session.options[1].action, .openDetail(sessionID: "2030-w43-wed-am", option: "A"))
-        XCTAssertEqual(session.options[1].accessibilityLabel, "Option A, Easier: Easy 6 km, flat, 6 km, ≤135 bpm · Z2. Not on Garmin calendar yet")
+        XCTAssertEqual(session.options[1].accessibilityLabel, "Option A, Easier: Easy 6 km, flat, 6 km, ≤135 bpm · Z2. Not on Garmin calendar yet. Matches your morning check")
         XCTAssertNil(session.pendingBadge)
         XCTAssertEqual(session.compactLine, "Morning · Easy 10 km · 10 km · Planned")
     }
@@ -88,11 +90,13 @@ final class TodayBuilderTests: XCTestCase {
     }
 
     func testCarbLoadDay() throws {
+        // Friday's easy run was swapped away: a rest day with a carb load.
         let model = try builder().trainingDay(on: D.date("2030-11-01"))
+        XCTAssertEqual(model.emptyState?.kind, .restDay)
         XCTAssertEqual(model.carbLoadLine, "Carb load: 560 g carbs (8 g/kg)")
-        XCTAssertEqual(model.sessions.first?.single?.label, "Easy 6 km, flat")
         let saturday = try builder().trainingDay(on: D.date("2030-11-02"))
-        XCTAssertEqual(saturday.emptyState?.kind, .restDay)
+        XCTAssertNil(saturday.emptyState)
+        XCTAssertEqual(saturday.sessions.first?.badge, .race)
         XCTAssertEqual(saturday.carbLoadLine, "Carb load: 700 g carbs (10 g/kg)")
     }
 
@@ -101,7 +105,7 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(test.badge, .test)
         XCTAssertEqual(test.badgeText, "Test")
         XCTAssertEqual(test.single?.targetLines, ["3 km"])
-        let race = try builder().trainingDay(on: D.date("2030-11-03")).sessions[0]
+        let race = try builder().trainingDay(on: D.date("2030-11-02")).sessions[0]
         XCTAssertEqual(race.badge, .race)
         XCTAssertEqual(race.fuelLine, "Fuel: 70 g carbs/h")
         XCTAssertEqual(race.title, "Race: Test Valley 30K")
@@ -173,7 +177,7 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(holds.adherence, "18 of 24 · 75 % · over 12 recorded days")
         XCTAssertEqual(holds.fraction, 0.75)
         XCTAssertEqual(holds.gateFraction, 0.8)
-        XCTAssertEqual(holds.doneToday, "Today: 1 of 2")
+        XCTAssertEqual(holds.doneToday, "Today: 2 of 2")
         XCTAssertEqual(holds.tick, .displayOnly)
 
         let monday = try builder().habits(on: D.date("2030-10-21"))

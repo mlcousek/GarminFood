@@ -60,9 +60,10 @@ final class ProjectionDecodingTests: XCTestCase {
         let zones = try XCTUnwrap(projection.athlete.hrZones)
         XCTAssertEqual(zones.zones.map(\.number), [1, 2, 3, 4, 5])
         XCTAssertEqual(zones.zone(number: 2), HRZone(number: 2, low: 129, high: 145))
-        XCTAssertTrue(projection.acks.isEmpty)
-        XCTAssertTrue(projection.outcomes.isEmpty)
-        XCTAssertTrue(projection.rejected.isEmpty)
+        // Filled from the event log since the vault's add-hub-ingest.
+        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: projection.acks), ["ios-0a1b2c3d": 22, "ios-5e6f7a8b": 3])
+        XCTAssertEqual(projection.outcomes.count, 9)
+        XCTAssertEqual(projection.rejected.count, 3)
         XCTAssertNil(projection.supersededBy)
     }
 
@@ -111,7 +112,11 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(plan.weeks[0].phaseId, "test-prelude-2030")
         let w43 = plan.weeks[2]
         XCTAssertEqual(w43.status, .known(.approved))
-        XCTAssertEqual(w43.targets.runKm, 60)
+        // red-holds: the red morning of 2030-10-14 held the volume at 55.
+        XCTAssertEqual(w43.targets.runKm, 55)
+        XCTAssertEqual(w43.ruleNotes.count, 2)
+        XCTAssertEqual(w43.ruleNotes.first?["rule"]?.stringValue, "red-holds")
+        XCTAssertTrue(plan.weeks[3].ruleNotes.isEmpty)
         XCTAssertEqual(w43.targets.sessions, 6)
         XCTAssertEqual(w43.actual?.runKm, 10.1)
         XCTAssertEqual(w43.actual?.sessionsDone, 1)
@@ -128,7 +133,15 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(fri.fuel?.raceId, "valley-30k-2030")
 
         let tue = try XCTUnwrap(plan.weeks[1].day(D.date("2030-10-15")))
-        XCTAssertNil(tue.light)
+        // No check-in that day: the light is inferred from the executed R.
+        XCTAssertEqual(tue.light, .known(.redLight))
+        XCTAssertEqual(tue.lightSource, .known(.option))
+        let checkedIn = try XCTUnwrap(plan.weeks[2].day(D.asOf))
+        XCTAssertEqual(checkedIn.light, .known(.amberLight))
+        XCTAssertEqual(checkedIn.lightSource, .known(.checkin))
+        XCTAssertEqual(checkedIn.habitsDone, ["holds": 2, "gym": 0], "a habit.tick overrides the daily note")
+        XCTAssertNil(plan.weeks[3].days[0].light)
+        XCTAssertNil(plan.weeks[3].days[0].lightSource)
         XCTAssertEqual(tue.habitsExpected, ["holds"])
         XCTAssertEqual(tue.habitsDone, ["holds": 1, "gym": 0])
         XCTAssertEqual(tue.unplanned.first?.group, .known(.ride))
@@ -187,9 +200,23 @@ final class ProjectionDecodingTests: XCTestCase {
         let tempo = try XCTUnwrap(plan.weeks[2].day(D.date("2030-10-22"))?.sessions.first)
         XCTAssertEqual(tempo.targets.hrMin, 145)
         XCTAssertEqual(tempo.targets.hrMax, 151)
-        let race = try XCTUnwrap(plan.weeks[3].day(D.date("2030-11-03"))?.sessions.first)
+        // The race session was moved to Saturday by a plan command (the
+        // race itself stays on Sunday 3 Nov in `season.races`).
+        let race = try XCTUnwrap(plan.weeks[3].day(D.date("2030-11-02"))?.sessions.first)
         XCTAssertEqual(race.raceId, "valley-30k-2030")
         XCTAssertEqual(race.fuel?.carbsPerHour, 70)
+        XCTAssertEqual(race.origin?["kind"]?.stringValue, "moved")
+        XCTAssertEqual(race.origin?["from"]?.stringValue, "2030-11-03")
+
+        // add-hub-ingest: feedback, a skipped session, a rule's edit.
+        XCTAssertEqual(tempo.feedback, SessionFeedback(rpe: 7, feel: 3, note: "Calf tight on the last repeat, eased off."))
+        XCTAssertEqual(plan.weeks[1].day(D.date("2030-10-19"))?.sessions.first?.feedback, SessionFeedback(rpe: 5, feel: nil, note: nil))
+        XCTAssertNil(wed.feedback)
+        XCTAssertEqual(plan.weeks[3].day(D.date("2030-10-28"))?.sessions.first?.status, .known(.skipped))
+        let ruled = try XCTUnwrap(plan.weeks[3].day(D.date("2030-10-30"))?.sessions.first)
+        XCTAssertEqual(ruled.options.map(\.code.rawValue), ["R"])
+        XCTAssertEqual(ruled.ruleNotes.count, 1)
+        XCTAssertEqual(ruled.origin?["kind"]?.stringValue, "rule")
 
         // Zone spelling in the contract is upper case.
         XCTAssertEqual(tue.targets.zone, "Z1")

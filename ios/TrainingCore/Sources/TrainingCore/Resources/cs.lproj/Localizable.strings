@@ -394,3 +394,6 @@
 
 /* The vault has read the event (its projection acknowledged it). */
 "Received by the vault" = "Přijato ve vaultu";
+
+/* Session detail: the session swapped days with another; its old date. */
+"Swapped from %@" = "Prohozeno z %@";

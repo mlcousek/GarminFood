@@ -79,7 +79,9 @@ public extension TodayTrainingBuilder {
               let day = plan.day(date)
         else { return nil }
         let text = format.text
-        let selected = day.light?.known
+        // A light the vault inferred from the executed option is not a
+        // check-in: the row shows only a real check-in as chosen.
+        let selected = day.lightSource?.known == .option ? nil : day.light?.known
         let buttons = MorningLight.checkInOrder.map { light -> CheckInButtonModel in
             let code = light.option
             let name = text.lightName(OpenEnum(light)) ?? light.rawValue
@@ -109,14 +111,16 @@ extension PlanBuilder {
     /// RPE and note for `session`; `nil` when rating isn't allowed.
     func ratingModel(_ session: Session, day: Day, snapshot: TrainingSnapshot) -> SessionRatingModel? {
         guard snapshot.capabilities.canRateSession else { return nil }
+        // The phone's latest value, else what the vault folded
+        // (`session.feedback`, e.g. from another install).
         let rpe = snapshot.checkIns.rpe(session: session.id)
         let note = snapshot.checkIns.note(session: session.id)
         return SessionRatingModel(
             sessionID: session.id,
             date: day.date,
-            rpe: rpe?.value,
+            rpe: rpe?.value ?? session.feedback?.rpe,
             rpeDeliveryLine: format.deliveryLine(rpe?.delivery),
-            note: note?.value,
+            note: note?.value ?? session.feedback?.note,
             noteDeliveryLine: format.deliveryLine(note?.delivery)
         )
     }

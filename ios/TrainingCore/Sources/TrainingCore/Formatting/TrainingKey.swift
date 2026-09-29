@@ -217,6 +217,8 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case recognisedDateSport = "Matched by date and sport"
     /// Where a session came from: a date.
     case originMovedFrom = "Moved from %@"
+    /// Session detail: the session swapped days with another; its old date.
+    case originSwappedFrom = "Swapped from %@"
     /// Where a session came from.
     case originRule = "Changed by a rule"
     /// Where a session came from.

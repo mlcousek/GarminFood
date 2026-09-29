@@ -21,9 +21,19 @@ final class CheckInBuilderTests: XCTestCase {
         )
     }
 
-    private func snapshot(_ events: [LoggedEvent] = [], enabled: Bool = true, unsent: Set<UUID> = []) throws -> TrainingSnapshot {
-        TrainingSnapshot(
-            projection: try Fixtures.exampleProjection().projection,
+    private func snapshot(_ events: [LoggedEvent] = [], enabled: Bool = true, unsent: Set<UUID> = [], data: Data? = nil) throws -> TrainingSnapshot {
+        let projection: Projection
+        if let data {
+            guard case .success(let decoded) = ProjectionDecoder.decode(data) else {
+                XCTFail("fixture did not decode")
+                throw ProjectionRejection.invalid(reason: "test")
+            }
+            projection = decoded.projection
+        } else {
+            projection = try Fixtures.exampleProjection().projection
+        }
+        return TrainingSnapshot(
+            projection: projection,
             checkIns: CheckInOverlay.fold(events, unsentSegments: unsent),
             capabilities: .checkIns(enabled: enabled)
         )
@@ -39,8 +49,18 @@ final class CheckInBuilderTests: XCTestCase {
 
     // MARK: Check-in row
 
+    /// The example with this morning's vault check-in removed.
+    private func withoutTodaysLight() throws -> Data {
+        try Fixtures.mutatedExample { object in
+            try Fixtures.mutateDay(&object, week: 2, day: 2) { day in
+                day["light"] = NSNull()
+                day["lightSource"] = NSNull()
+            }
+        }
+    }
+
     func testCheckInRowOnATrafficLightDay() throws {
-        let model = today(try snapshot()).trainingDay(on: D.asOf)
+        let model = today(try snapshot(data: try withoutTodaysLight())).trainingDay(on: D.asOf)
         let row = try XCTUnwrap(model.checkIn)
         XCTAssertEqual(row.title, "Morning check-in")
         XCTAssertEqual(row.sessionID, "2030-w43-wed-am")
@@ -53,6 +73,16 @@ final class CheckInBuilderTests: XCTestCase {
         XCTAssertNil(row.deliveryLine)
         // The option cards still only open the detail.
         XCTAssertEqual(model.sessions[0].options[1].action, .openDetail(sessionID: "2030-w43-wed-am", option: "A"))
+    }
+
+    func testTheVaultsCheckInIsShownAsChosen() throws {
+        // The example's own amber check-in (lightSource "checkin").
+        let row = try XCTUnwrap(today(try snapshot()).trainingDay(on: D.asOf).checkIn)
+        XCTAssertEqual(row.selected, .amberLight)
+        XCTAssertNil(row.deliveryLine, "not the phone's own event")
+        // A light inferred from the executed option is not a check-in.
+        let inferred = try XCTUnwrap(today(try snapshot()).trainingDay(on: D.date("2030-10-15")).checkIn)
+        XCTAssertNil(inferred.selected)
     }
 
     func testCheckInRowOnARestDay() throws {
@@ -91,10 +121,11 @@ final class CheckInBuilderTests: XCTestCase {
     }
 
     func testTheLightAlsoReachesThePlanTab() throws {
-        let checkedIn = try snapshot([logged(amber(), seq: 1)])
+        let red = HubEventPayload.morningCheckIn(MorningCheckInPayload(date: D.asOf, light: .redLight, sessionId: "2030-w43-wed-am"))
+        let checkedIn = try snapshot([logged(red, seq: 1)])
         let plan = PlanBuilder(source: .loaded(checkedIn), language: .english, today: D.asOf)
         let detail = try XCTUnwrap(plan.sessionDetail(id: "2030-w43-wed-am"))
-        XCTAssertEqual(detail.options[detail.initialOptionIndex].code, "A", "the detail opens on the checked-in option")
+        XCTAssertEqual(detail.options[detail.initialOptionIndex].code, "R", "the detail opens on the phone's checked-in option")
     }
 
     func testCzechCheckIn() throws {
@@ -150,6 +181,15 @@ final class CheckInBuilderTests: XCTestCase {
         XCTAssertNil(readOnly.sessionDetail(id: "2030-w43-tue-am")?.rating)
     }
 
+    func testRatingFallsBackToTheVaultsFeedback() throws {
+        let plan = PlanBuilder(source: .loaded(try snapshot()), language: .english, today: D.asOf)
+        let rating = try XCTUnwrap(plan.sessionDetail(id: "2030-w43-tue-am")?.rating)
+        XCTAssertEqual(rating.rpe, 7)
+        XCTAssertEqual(rating.note, "Calf tight on the last repeat, eased off.")
+        XCTAssertNil(rating.rpeDeliveryLine)
+        XCTAssertNil(rating.noteDeliveryLine)
+    }
+
     // MARK: Reminders
 
     private let prague = TimeZone(identifier: "Europe/Prague")!
@@ -157,7 +197,7 @@ final class CheckInBuilderTests: XCTestCase {
     private let midnight = Date(timeIntervalSince1970: 1_918_936_800)
 
     func testRemindersForTodayAndTomorrow() throws {
-        let reminders = TrainingReminderPlanner.plan(snapshot: try snapshot(), today: D.asOf, now: midnight, timeZone: prague, language: .english)
+        let reminders = TrainingReminderPlanner.plan(snapshot: try snapshot(data: try withoutTodaysLight()), today: D.asOf, now: midnight, timeZone: prague, language: .english)
         // The 23rd: a G/A/R day without a light; its one habit already done.
         // The 24th: no options; two habits unknown.
         XCTAssertEqual(reminders.map(\.id), ["checkin.2030-10-23", "habits.2030-10-24"])
@@ -170,8 +210,11 @@ final class CheckInBuilderTests: XCTestCase {
     }
 
     func testCheckingInRemovesTheMorningReminder() throws {
-        let reminders = TrainingReminderPlanner.plan(snapshot: try snapshot([logged(amber(), seq: 1)]), today: D.asOf, now: midnight, timeZone: prague, language: .english)
-        XCTAssertEqual(reminders.map(\.id), ["habits.2030-10-24"])
+        let local = TrainingReminderPlanner.plan(snapshot: try snapshot([logged(amber(), seq: 1)], data: try withoutTodaysLight()), today: D.asOf, now: midnight, timeZone: prague, language: .english)
+        XCTAssertEqual(local.map(\.id), ["habits.2030-10-24"])
+        // The vault's own check-in counts too (the example's amber).
+        let vault = TrainingReminderPlanner.plan(snapshot: try snapshot(), today: D.asOf, now: midnight, timeZone: prague, language: .english)
+        XCTAssertEqual(vault.map(\.id), ["habits.2030-10-24"])
     }
 
     func testPastRemindersAndReadOnlyPlanNothing() throws {

@@ -145,6 +145,7 @@ public struct CheckInOverlay: Equatable, Sendable {
                 let date = result.weeks[weekIndex].days[dayIndex].date
                 if let local = lights[date] {
                     result.weeks[weekIndex].days[dayIndex].light = OpenEnum(local.value)
+                    result.weeks[weekIndex].days[dayIndex].lightSource = OpenEnum(LightSource.checkin)
                 }
             }
         }

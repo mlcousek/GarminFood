@@ -305,6 +305,14 @@ on the vault side when mirrored:
   `events.v1.app.jsonl` (run locally with Node on 2026-09-29).
 - Not written by this app yet: `device.hello`, `event.retracted`, the
   `plan.*` commands (`add-plan-editing`).
+- Re-mirrored from the vault's main branch once `add-hub-ingest` merged
+  (tasks 1.4): the event fixtures were unchanged; the projection example
+  now carries what the ingest fills. TrainingCore reads, tolerantly, only
+  what the app uses: `day.lightSource` (a light inferred from the executed
+  option is not shown as a check-in), `session.feedback` (the rating falls
+  back to it), week `ruleNotes` (shown in the week agenda), `origin.kind`
+  (`swapped` reads "Swapped from …"), and `acks` (D5). `outcomes` and
+  `rejected` stay undecoded JSON.
 
 ## Risks / Trade-offs
 

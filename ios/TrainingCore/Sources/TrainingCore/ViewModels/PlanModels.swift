@@ -85,6 +85,9 @@ public struct WeekAgendaModel: Equatable, Sendable {
     public let previous: ISOWeek?
     public let next: ISOWeek?
     public let notices: [TrainingNotice]
+    /// The vault's rule notes for a written week (add-hub-ingest), e.g. a
+    /// red morning holding the volume.
+    public var ruleNoteLines: [String] = []
 }
 
 public enum GlyphStyle: String, Equatable, Sendable {
@@ -185,7 +188,7 @@ public struct PlanBuilder: Sendable {
         if let written = plan.week(isoWeek) {
             let phase = snapshot.phase(id: written.phaseId) ?? outline?.phase
             let targetKm = written.targets.runKm ?? outline?.row.runKmTarget
-            return WeekAgendaModel(
+            var model = WeekAgendaModel(
                 week: isoWeek,
                 title: title,
                 phaseTitle: phase?.title.resolvedText(format.language),
@@ -199,6 +202,8 @@ public struct PlanBuilder: Sendable {
                 next: next,
                 notices: notices
             )
+            model.ruleNoteLines = written.ruleNotes.compactMap(format.freeText)
+            return model
         }
         if let outline {
             return WeekAgendaModel(

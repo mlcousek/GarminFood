@@ -23,7 +23,7 @@ marked *defaulted, owner may override*.
 - [x] 1.1 When the vault publishes `scripts/fixtures/hub/contract/events.v1.*.jsonl`, grep it for the owner's name, handle, real race or phase names and any token-like string, then copy it **verbatim** into `ios/TrainingCore/Tests/TrainingCoreTests/Fixtures/Contract/vault/` and record it in that folder's `CONTRACT.md` (version, date copied, source change; no vault path or repository name).
 - [x] 1.2 Reconcile `Events/HubEvent.swift` with it field by field (design D2's table: `deviceId` vs `src.device`, `payload` vs `data`, `date` vs `day`, `light` words vs letters, `habit.tick`, `session.rpe`/`session.note` names), update `events.v1.app.jsonl` and the goldens, and add a test that decodes the vault's fixture with no `.other` types for the four kinds this app writes.
 - [x] 1.3 Record each answer, dated, in design.md ("Contract details confirmed"). *Mirrored 2026-09-29 from the vault change while still in progress; `option?` and `feel?` added, empty notes refused, a 900 KiB segment cap, `acks` read for "Received by the vault"; the vault's `validateEvent` accepts `events.v1.app.jsonl`.*
-- [ ] 1.4 Re-mirror both fixtures verbatim once the vault's `add-hub-ingest` merges (and on any entry in its fixture changelog); re-run `swift test`.
+- [x] 1.4 Re-mirror both fixtures verbatim once the vault's `add-hub-ingest` merges (and on any entry in its fixture changelog); re-run `swift test`. *Done 2026-09-29 from the vault's main (`add-hub-ingest` merged): event fixtures unchanged; the projection example's new fields decoded where the app uses them (lightSource, feedback, week ruleNotes, origin kind, acks) and the goldens updated.*
 
 ## 2. Event core in TrainingCore (L)
 
@@ -59,7 +59,7 @@ marked *defaulted, owner may override*.
 
 - [x] 5.1 `CLAUDE.md` (TrainingCore's event log) and `docs/vault-connection.md` (writes are live).
 - [ ] 5.2 CI green; `openspec validate add-training-checkins --strict` passes.
-- [ ] 5.3 Task 1.4 done (fixtures re-mirrored from the vault's merged change) before merge.
+- [x] 5.3 Task 1.4 done (fixtures re-mirrored from the vault's merged change) before merge.
 
 ## 6. On-device verification (owner)
 

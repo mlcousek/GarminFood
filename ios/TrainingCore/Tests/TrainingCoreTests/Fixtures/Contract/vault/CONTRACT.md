@@ -9,6 +9,12 @@
   `add-garmin-workout-push` (additive, still v1): `option.watch` is filled
   (`name`, `state` pending/scheduled/failed, `channel`, `ref`, `at`),
   `done.source` gains `"activity-name"`, every workout has `watchName`.
+  Re-mirrored 2026-09-29 from the vault's main branch after its
+  `add-hub-ingest` merged (additive, still v1): `day.light` filled with
+  `day.lightSource` (`checkin` | `option`), `session.feedback`
+  `{ rpe, feel, note }`, week `ruleNotes`, rule edits (`origin` with
+  `kind: moved|swapped|rule`, options cut to R, `status: "skipped"`), and
+  top-level `acks`, `outcomes`, `rejected` filled from the event log.
 
 | File | What it is |
 |---|---|
@@ -30,9 +36,10 @@ in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
   devices `ios-0a1b2c3d` and `ios-00000001`, season 2030, no real names or
   data.
 - **Copied:** 2026-09-29, verbatim (byte for byte, LF; see
-  `.gitattributes`), from the change while it was still in progress on the
-  vault side. Re-mirror when it lands and whenever the vault records a
-  change in its fixture changelog.
+  `.gitattributes`), first from the change in progress and then again
+  from the vault's main branch after it merged (both event files were
+  identical). Re-mirror whenever the vault records a change in its fixture
+  changelog.
 
 | File | What it is |
 |---|---|

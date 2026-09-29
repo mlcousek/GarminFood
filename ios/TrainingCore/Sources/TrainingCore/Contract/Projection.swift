@@ -527,9 +527,12 @@ public struct Week: Equatable, Sendable, Decodable, ProjectionElement {
     public var aiNote: LocalizedText?
     /// Monday first; seven in a well-formed file.
     public var days: [Day]
+    /// The vault's rule notes for the week (`{ rule, en, cz }`, added by
+    /// add-hub-ingest): e.g. a red morning holding the volume.
+    public var ruleNotes: [JSONValue]
 
     enum CodingKeys: String, CodingKey {
-        case week, from, to, phaseId, status, revision, absorbed, targets, actual, aiNote, days
+        case week, from, to, phaseId, status, revision, absorbed, targets, actual, aiNote, days, ruleNotes
     }
 
     public init(from decoder: Decoder) throws {
@@ -545,6 +548,7 @@ public struct Week: Equatable, Sendable, Decodable, ProjectionElement {
         actual = c.lenient(WeekActual.self, .actual)
         aiNote = c.lenient(LocalizedText.self, .aiNote)
         days = c.lossyList(Day.self, .days).sorted { $0.date < $1.date }
+        ruleNotes = c.lenient([JSONValue].self, .ruleNotes) ?? []
     }
 
     public func day(_ date: LocalDate) -> Day? {
@@ -573,8 +577,11 @@ public struct Day: Equatable, Sendable, Decodable, ProjectionElement {
     public static let elementName = "day"
 
     public var date: LocalDate
-    /// Reserved (`null` in v1): the morning traffic light.
+    /// The morning traffic light (the last check-in, else inferred from the
+    /// executed option; days up to `asOf` only).
     public var light: OpenEnum<MorningLight>?
+    /// Where `light` came from (add-hub-ingest); `nil` when unknown.
+    public var lightSource: OpenEnum<LightSource>?
     public var habitsExpected: [String]
     /// Uncapped counts; a missing key or a `null` map means unknown.
     public var habitsDone: [String: Int]?
@@ -583,12 +590,13 @@ public struct Day: Equatable, Sendable, Decodable, ProjectionElement {
     public var sessions: [Session]
     public var unplanned: [ActivityRef]
 
-    enum CodingKeys: String, CodingKey { case date, light, habitsExpected, habitsDone, fuel, sessions, unplanned }
+    enum CodingKeys: String, CodingKey { case date, light, lightSource, habitsExpected, habitsDone, fuel, sessions, unplanned }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         date = try c.decode(LocalDate.self, forKey: .date)
         light = c.lenient(OpenEnum<MorningLight>.self, .light)
+        lightSource = c.lenient(OpenEnum<LightSource>.self, .lightSource)
         habitsExpected = c.stringList(.habitsExpected)
         habitsDone = c.intMap(.habitsDone)
         fuel = c.lenient(DayFuel.self, .fuel)
@@ -774,10 +782,12 @@ public struct Session: Equatable, Sendable, Decodable, ProjectionElement {
     public var raceId: String?
     public var fuel: SessionFuel?
     public var test: SessionTest?
+    /// The vault's fold of `session.rpe` / `session.note` (add-hub-ingest).
+    public var feedback: SessionFeedback?
 
     enum CodingKeys: String, CodingKey {
         case id, slot, sport, type, title, why, workout, targets, status, trafficLight
-        case options, done, origin, ruleNotes, raceId, fuel, test
+        case options, done, origin, ruleNotes, raceId, fuel, test, feedback
     }
 
     public init(from decoder: Decoder) throws {
@@ -800,10 +810,34 @@ public struct Session: Equatable, Sendable, Decodable, ProjectionElement {
         raceId = c.lenientString(.raceId)
         fuel = c.lenient(SessionFuel.self, .fuel)
         test = c.lenient(SessionTest.self, .test)
+        feedback = c.lenient(SessionFeedback.self, .feedback)
     }
 
     public func option(_ code: OptionCode) -> SessionOption? {
         options.first { $0.code.known == code }
+    }
+}
+
+/// `session.feedback` `{ rpe, feel, note }` (add-hub-ingest): the latest
+/// RPE (1-10), feel (1-5) and note the vault folded from the app's events.
+public struct SessionFeedback: Equatable, Sendable, Decodable {
+    public var rpe: Int?
+    public var feel: Int?
+    public var note: String?
+
+    enum CodingKeys: String, CodingKey { case rpe, feel, note }
+
+    public init(rpe: Int? = nil, feel: Int? = nil, note: String? = nil) {
+        self.rpe = rpe
+        self.feel = feel
+        self.note = note
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rpe = c.lenientInt(.rpe)
+        feel = c.lenientInt(.feel)
+        note = c.lenientString(.note)
     }
 }
 

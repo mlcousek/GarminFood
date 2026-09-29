@@ -394,3 +394,6 @@
 
 /* The vault has read the event (its projection acknowledged it). */
 "Received by the vault" = "Received by the vault";
+
+/* Session detail: the session swapped days with another; its old date. */
+"Swapped from %@" = "Swapped from %@";

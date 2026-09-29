@@ -234,7 +234,9 @@ public extension PlanBuilder {
         guard let origin else { return nil }
         let text = format.text
         if let moved = origin["movedFrom"]?.stringValue ?? origin["from"]?.stringValue, let date = LocalDate(moved) {
-            return text.format(.originMovedFrom, format.dates.short(date))
+            // add-hub-ingest: `{ kind: moved|swapped|rule, from, rule, event }`.
+            let key: TrainingKey = origin["kind"]?.stringValue == "swapped" ? .originSwappedFrom : .originMovedFrom
+            return text.format(key, format.dates.short(date))
         }
         if origin["rule"] != nil || origin["kind"]?.stringValue == "rule" {
             return text(.originRule)
