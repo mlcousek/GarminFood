@@ -18,6 +18,9 @@
 // screens -- and Today's race chip opens that race's screen here
 // (`AppRouter.pendingRaceID`).
 //
+// add-training-stats: a toolbar button opens the statistics for the
+// current phase (TrainingStatsView).
+//
 // Depended on by: ContentView (the Plan tab's root).
 
 import SwiftUI
@@ -58,6 +61,7 @@ struct PlanTabView: View {
     @State private var daySheet: PlanDaySheet?
     @State private var isShowingLadder = false
     @State private var raceTarget: PlanRaceTarget?
+    @State private var isShowingStats = false
 
     private var mode: Binding<PlanMode> {
         Binding(
@@ -106,6 +110,13 @@ struct PlanTabView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+                    isShowingStats = true
+                } label: {
+                    Label("Statistics", systemImage: "chart.bar.xaxis")
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
                     isShowingLadder = true
                 } label: {
                     Label("Habit ladder", systemImage: "stairs")
@@ -117,6 +128,9 @@ struct PlanTabView: View {
         }
         .navigationDestination(isPresented: $isShowingLadder) {
             HabitLadderView()
+        }
+        .navigationDestination(isPresented: $isShowingStats) {
+            TrainingStatsView(phaseID: nil)
         }
         .navigationDestination(item: $raceTarget) { target in
             RaceDetailView(raceID: target.raceID)

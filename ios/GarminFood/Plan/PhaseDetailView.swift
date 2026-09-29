@@ -13,6 +13,8 @@
 // is summed here. Read-only. Pushed from Plan -> Season and from a race's
 // anchoring phase.
 //
+// add-training-stats: the header links to the statistics of this phase.
+//
 // Depended on by: SeasonTimelineView, RaceDetailView.
 
 import SwiftUI
@@ -147,6 +149,13 @@ struct PhaseDetailView: View {
                 Text(verbatim: progress)
                     .font(.subheadline.weight(.semibold))
             }
+            NavigationLink {
+                TrainingStatsView(phaseID: detail.id)
+            } label: {
+                Label("Statistics", systemImage: "chart.bar.xaxis")
+                    .font(.caption.weight(.semibold))
+            }
+            .tint(Theme.accent)
             if let restricted = detail.restrictedText {
                 Label {
                     Text(verbatim: restricted)

@@ -1903,6 +1903,18 @@
         }
       }
     },
+    "Adherence": {
+      "comment": "add-training-stats: Statistics: sessions done against the plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plnění plánu"
+          }
+        }
+      }
+    },
     "Adjust amount": {
       "comment": "Accessibility label of the quantity stepper (label hidden visually).",
       "extractionState": "manual",
@@ -2079,6 +2091,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přerušeno v %@"
+          }
+        }
+      }
+    },
+    "By phase": {
+      "comment": "add-training-stats: Statistics: adherence grouped by training phase.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podle fází"
           }
         }
       }
@@ -2881,6 +2905,18 @@
         }
       }
     },
+    "Kilometres": {
+      "comment": "add-training-stats: chart axis: running kilometres.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometry"
+          }
+        }
+      }
+    },
     "Last 6 weeks": {
       "comment": "Streak screen: the calendar grid's header.",
       "extractionState": "manual",
@@ -3535,6 +3571,18 @@
         }
       }
     },
+    "Options on done days": {
+      "comment": "add-training-stats: Statistics: which of G, A and R the done traffic-light sessions were.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Možnosti hotových tréninků"
+          }
+        }
+      }
+    },
     "Owner": {
       "comment": "add-vault-connection: Settings -> Vault: text field for the GitHub account that owns the repository.",
       "extractionState": "manual",
@@ -3907,6 +3955,18 @@
         }
       }
     },
+    "Scope": {
+      "comment": "add-training-stats: Statistics: picker between this phase and the whole season.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozsah"
+          }
+        }
+      }
+    },
     "Season": {
       "comment": "add-season-phase-race-screens: Plan tab: segment showing the season timeline.",
       "extractionState": "manual",
@@ -3919,6 +3979,18 @@
         }
       }
     },
+    "Series": {
+      "comment": "add-training-stats: chart axis: which line or bar series a value belongs to.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řada"
+          }
+        }
+      }
+    },
     "Session": {
       "comment": "add-training-today-and-plan: Session detail: fallback screen title.",
       "extractionState": "manual",
@@ -3927,6 +3999,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trénink"
+          }
+        }
+      }
+    },
+    "Sessions": {
+      "comment": "add-training-stats: chart axis: number of sessions.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tréninky"
           }
         }
       }
@@ -3999,6 +4083,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Začátek a konec nemůžou být ve stejný čas."
+          }
+        }
+      }
+    },
+    "Statistics": {
+      "comment": "add-training-stats: Plan toolbar button, Phase screen link and the statistics screen's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistiky"
           }
         }
       }
@@ -4123,6 +4219,18 @@
         }
       }
     },
+    "Tests": {
+      "comment": "add-training-stats: Statistics: section with every test's history.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testy"
+          }
+        }
+      }
+    },
     "That doesn't look like a complete GitHub token.": {
       "comment": "add-vault-connection: Settings -> Vault: the pasted token has the right prefix but the wrong shape.",
       "extractionState": "manual",
@@ -4167,6 +4275,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Token se odebere z klíčenky tohoto iPhonu a uložený plán se smaže."
+          }
+        }
+      }
+    },
+    "This phase": {
+      "comment": "add-training-stats: Statistics scope: one training phase.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato fáze"
           }
         }
       }
@@ -4411,6 +4531,18 @@
         }
       }
     },
+    "Value": {
+      "comment": "add-training-stats: chart axis: a test result's value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnota"
+          }
+        }
+      }
+    },
     "Variety": {
       "comment": "Achievements group header: badges for different foods.",
       "extractionState": "manual",
@@ -4525,6 +4657,18 @@
         }
       }
     },
+    "Volume vs target": {
+      "comment": "add-training-stats: Statistics: weekly running kilometres against the plan's target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objem proti cíli"
+          }
+        }
+      }
+    },
     "Water trend": {
       "comment": "VoiceOver label of the Trends water chart.",
       "extractionState": "manual",
@@ -4623,6 +4767,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Týdny"
+          }
+        }
+      }
+    },
+    "Whole season": {
+      "comment": "add-training-stats: Statistics scope: the whole season.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celá sezóna"
           }
         }
       }
