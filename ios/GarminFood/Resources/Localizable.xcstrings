@@ -17958,6 +17958,246 @@
           }
         }
       }
+    },
+    "Nothing recorded: turn on the vault connection first.": {
+      "comment": "add-training-checkins: a check-in, tick, RPE or note while the vault connection is off.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezaznamenalo: nejdřív zapni propojení s vaultem."
+          }
+        }
+      }
+    },
+    "Nothing recorded: test the vault connection in Settings first.": {
+      "comment": "add-training-checkins: a check-in, tick, RPE or note before the vault connection was tested (no device id).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezaznamenalo: nejdřív v Nastavení otestuj připojení k vaultu."
+          }
+        }
+      }
+    },
+    "Couldn't save that on the phone. Try again.": {
+      "comment": "add-training-checkins: recording a check-in, tick, RPE or note on the phone failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V telefonu se to nepodařilo uložit. Zkus to znovu."
+          }
+        }
+      }
+    },
+    "Not done": {
+      "comment": "add-training-checkins: VoiceOver value of a habit toggle that is off.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nesplněno"
+          }
+        }
+      }
+    },
+    "How did it feel?": {
+      "comment": "add-training-checkins: session detail, section title for the RPE and the note.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jak ses cítil?"
+          }
+        }
+      }
+    },
+    "Effort (RPE)": {
+      "comment": "add-training-checkins: session detail, label above the 1-10 rate of perceived exertion buttons.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Námaha (RPE)"
+          }
+        }
+      }
+    },
+    "RPE %lld": {
+      "comment": "add-training-checkins: VoiceOver label of an RPE button (1-10).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RPE %lld"
+          }
+        }
+      }
+    },
+    "How it went, anything to remember": {
+      "comment": "add-training-checkins: session detail, placeholder of the note field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jak to šlo, co si zapamatovat"
+          }
+        }
+      }
+    },
+    "Save note": {
+      "comment": "add-training-checkins: session detail, saves the session note.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložit poznámku"
+          }
+        }
+      }
+    },
+    "Training reminders": {
+      "comment": "add-training-checkins: Settings > Reminders, switch for the morning check-in and evening habits reminders.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tréninková připomenutí"
+          }
+        }
+      }
+    },
+    "A check-in reminder at 4:05 on run days until you check in, and a habits reminder at 20:10 while habits are still open.": {
+      "comment": "add-training-checkins: Settings > Reminders, footer of the training reminders switch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomenutí ranní kontroly ve 4:05 v běžecké dny, dokud ji nezadáš, a připomenutí návyků ve 20:10, dokud nejsou splněné."
+          }
+        }
+      }
+    },
+    "Traffic Light": {
+      "comment": "add-training-checkins: App Intents type and parameter name of the morning check-in light (green, amber, red).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semafor"
+          }
+        }
+      }
+    },
+    "Green": {
+      "comment": "add-training-checkins: the green morning check-in light (App Intents).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zelená"
+          }
+        }
+      }
+    },
+    "Amber": {
+      "comment": "add-training-checkins: the amber morning check-in light (App Intents).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oranžová"
+          }
+        }
+      }
+    },
+    "Red": {
+      "comment": "add-training-checkins: the red morning check-in light (App Intents).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Červená"
+          }
+        }
+      }
+    },
+    "Morning Check-in": {
+      "comment": "add-training-checkins: App Intent title, records the morning check-in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranní kontrola"
+          }
+        }
+      }
+    },
+    "Records this morning's check-in in Jirka's Arc.": {
+      "comment": "add-training-checkins: App Intent description.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaznamená ranní kontrolu v Jirka's Arc."
+          }
+        }
+      }
+    },
+    "Nothing recorded: turn on the vault connection in Jirka's Arc first.": {
+      "comment": "add-training-checkins: check-in Control error, the vault connection is off.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezaznamenalo: nejdřív v Jirka's Arc zapni propojení s vaultem."
+          }
+        }
+      }
+    },
+    "Nothing recorded: test the vault connection in Jirka's Arc first.": {
+      "comment": "add-training-checkins: check-in Control error, the vault connection has no device id yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezaznamenalo: nejdřív v Jirka's Arc otestuj připojení k vaultu."
+          }
+        }
+      }
+    },
+    "Nothing recorded: open Jirka's Arc once, then try again.": {
+      "comment": "add-training-checkins: check-in Control error, the app could not take the check-in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic se nezaznamenalo: jednou otevři Jirka's Arc a zkus to znovu."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

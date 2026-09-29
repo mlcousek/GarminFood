@@ -103,7 +103,18 @@ ios/
                     Czech (lproj via TrainingText/TrainingKey). Golden-tested
                     on the vault's two contract fixtures, mirrored verbatim
                     under Tests/.../Fixtures/Contract/vault. Never SwiftUI.
-                    App-only, never the widget.
+                    App-only, never the widget. Events/ (add-training-
+                    checkins): the app's writes -- HubEvent (the envelope v1,
+                    the ONLY file that knows the wire format; golden JSONL
+                    fixture), TrainingEventLog (the local outbox, durable
+                    before anything else), EventSegment (sealed JSONL into
+                    the device's own folder via VaultKit's write queue),
+                    CheckInOverlay (latest wins, merged over the
+                    projection), TrainingRecorder, TrainingReminderPlanner.
+                    The app's one recorder is GarminFood/Training/
+                    TrainingEventsService; the lock-screen check-in
+                    Controls reach it through a hook (Shared/
+                    MorningCheckInIntents.swift).
   GarminFood/       The app target (SwiftUI views), organized by screen:
                     Today/, Plan/, Training/, Catalog/, CustomFood/,
                     LogEntry/, Profile/, Progress/, App/ (composition root:

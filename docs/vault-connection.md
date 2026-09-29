@@ -16,7 +16,7 @@ is typed in on the phone.
 |---|---|---|
 | Reads | `projection/projection.v1.json` | On foreground, at most once a minute while the connection is on (pull to refresh skips the minute). A conditional GET: an unchanged file costs a `304` with no body. |
 | Reads | the repository itself (`GET /repos/{owner}/{repo}`) | "Test connection", and once after the plan file first answers `404`, to tell "no plan yet" from "repository not found". |
-| Writes | `events/<this phone's device id>/…/*.jsonl` | Nothing yet. The write path exists and is tested against stubs; the first real write arrives with `add-training-checkins`. Writes are create-only: an existing file is never overwritten. |
+| Writes | `events/<this phone's device id>/<yyyy>/<mm>/<yyyymmddThhmmssZ>-<firstSeq>.jsonl` | Since `add-training-checkins`: the training events recorded on the phone (morning check-in, habit ticks, RPE, notes), sealed into one JSON Lines file per delivery, on foreground, on leaving the app and two minutes after an action. Only once "Test connection" has succeeded (the device id names the folder). Writes are create-only: an existing file is never overwritten. |
 
 Everything else is refused before a request is built (`VaultPathPolicy`):
 another phone's events folder, anything outside the hub, daily notes,

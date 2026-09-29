@@ -155,6 +155,18 @@ struct TodayView: View {
                 TodayCardID(rawValue: id).map { availability($0) } ?? .available
             }
         }
+        // add-training-checkins: a check-in or tick that couldn't be saved.
+        .alert(
+            "Couldn't complete that action",
+            isPresented: Binding(
+                get: { environment.training.actionError != nil },
+                set: { if !$0 { environment.training.actionError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(verbatim: environment.training.actionError ?? "")
+        }
         .alert(
             "Couldn't complete that action",
             isPresented: Binding(
@@ -291,13 +303,23 @@ struct TodayView: View {
             TrainingDayCard(
                 model: environment.training.todayBuilder.trainingDay(on: trainingDate),
                 compact: variant == TrainingDayVariant.compact.rawValue,
-                onOpen: { sessionTarget = $0 }
+                onOpen: { sessionTarget = $0 },
+                // add-training-checkins D6: a local event; never waits.
+                onCheckIn: { row, light in
+                    Task { await environment.training.checkIn(light, date: row.date, sessionID: row.sessionID) }
+                }
             )
 
         case .habitsToday:
-            HabitsTodayCard(rows: environment.training.todayBuilder.habits(on: trainingDate)) {
-                isShowingLadder = true
-            }
+            let date = trainingDate
+            HabitsTodayCard(
+                rows: environment.training.todayBuilder.habits(on: date),
+                onOpenLadder: { isShowingLadder = true },
+                // add-training-checkins (A42): on/off for the shown day.
+                onTick: { habitID, done in
+                    Task { await environment.training.setHabit(habitID, done: done, date: date) }
+                }
+            )
 
         case .weeklyNote:
             if let note = environment.training.todayBuilder.weeklyNote(for: trainingDate) {

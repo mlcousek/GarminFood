@@ -10,6 +10,10 @@
 // with a link to fix it in Settings, per this project's existing
 // loud-failure convention (never a reminder that's silently never going to
 // fire).
+//
+// add-training-checkins D8: in the training experience, one "Training
+// reminders" switch (on by default) for the 04:05 check-in reminder on run
+// days and the 20:10 evening habits reminder; TrainingModel plans them.
 
 import SwiftUI
 import UIKit
@@ -20,6 +24,7 @@ import FoodLogCore
 struct NotificationSettingsView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var authorizationStatus: UNAuthorizationStatus = .notDetermined
+    @State private var trainingRemindersOn = true
 
     var body: some View {
         Form {
@@ -78,6 +83,28 @@ struct NotificationSettingsView: View {
                 Text("A daily nudge to check today's challenges.")
             }
 
+            if environment.experience == .training {
+                Section {
+                    Toggle("Training reminders", isOn: Binding(
+                        get: { trainingRemindersOn },
+                        set: { newValue in
+                            trainingRemindersOn = newValue
+                            Task {
+                                if newValue {
+                                    await environment.requestNotificationPermissionIfNeeded()
+                                    await refreshStatus()
+                                }
+                                await environment.training.setRemindersEnabled(newValue)
+                            }
+                        }
+                    ))
+                } header: {
+                    Text("Training")
+                } footer: {
+                    Text("A check-in reminder at 4:05 on run days until you check in, and a habits reminder at 20:10 while habits are still open.")
+                }
+            }
+
             Section {
                 fastingReminderRow(
                     title: String(localized: "Fast ending soon"),
@@ -97,7 +124,10 @@ struct NotificationSettingsView: View {
         }
         .navigationTitle("Reminders")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await refreshStatus() }
+        .task {
+            trainingRemindersOn = environment.training.remindersEnabled
+            await refreshStatus()
+        }
     }
 
     @ViewBuilder
