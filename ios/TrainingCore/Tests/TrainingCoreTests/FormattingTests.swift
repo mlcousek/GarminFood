@@ -153,7 +153,9 @@ final class FormattingTests: XCTestCase {
 
         let cs = ScheduleFormatter(text: czech)
         XCTAssertEqual(cs.line(try schedule(#"{"kind": "daily", "perDay": 2}"#)), "2× denně")
-        XCTAssertEqual(cs.line(try schedule(#"{"kind": "weekly", "days": ["MO", "TH"]}"#)), "po a čt")
+        // Czech typography binds the one-letter conjunction with a no-break space
+        // (U+00A0); which spaces Foundation uses is CLDR data, so compare them as one.
+        XCTAssertEqual(cs.line(try schedule(#"{"kind": "weekly", "days": ["MO", "TH"]}"#))?.replacingOccurrences(of: "\u{00A0}", with: " "), "po a čt")
         XCTAssertEqual(cs.line(try schedule(#"{"kind": "everyNWeeks", "n": 2, "day": "SA"}"#)), "každé 2 týdny · so")
     }
 
