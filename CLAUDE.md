@@ -93,9 +93,20 @@ ios/
                     generic DurableQueue + create-only uploads, and the
                     VaultTransport seam. No training concepts, no
                     user-facing strings. App-only, never the widget.
+  TrainingCore/     SPM package (depends on VaultKit, GarminKit) — the
+                    training domain (add-training-today-and-plan): tolerant
+                    decoding of the vault's projection v1 (OpenEnum,
+                    LossyArray, LocalizedText, LocalDate/ISOWeek), the last
+                    good plan and its freshness (ProjectionStore), the
+                    training day, and pure view models + formatters for
+                    Today's training cards and the Plan tab, in English and
+                    Czech (lproj via TrainingText/TrainingKey). Golden-tested
+                    on the vault's two contract fixtures, mirrored verbatim
+                    under Tests/.../Fixtures/Contract/vault. Never SwiftUI.
+                    App-only, never the widget.
   GarminFood/       The app target (SwiftUI views), organized by screen:
-                    Today/, Plan/, Catalog/, CustomFood/, LogEntry/,
-                    Profile/, Progress/, App/ (composition root:
+                    Today/, Plan/, Training/, Catalog/, CustomFood/,
+                    LogEntry/, Profile/, Progress/, App/ (composition root:
                     AppEnvironment.swift).
   GarminFoodWidget/ Widget/Control extension target — static "open the app"
                     surfaces only; cannot show live data (no shared state,
@@ -124,6 +135,15 @@ log the token, the repository owner or its name (`VaultLog`,
 `RedactionTests`). This repository is public: no vault repository name,
 token or vault content in code, CI or fixtures. See
 `docs/vault-connection.md`.
+
+TrainingCore sits on top: the app's views reach the plan only through it
+(`GarminFood/Training/TrainingModel.swift` holds its `TrainingSource`,
+views draw its builders' models), never through VaultKit. **The phone never
+computes what the vault computes** -- adherence, weekly volume (`actual`),
+matching activities to sessions, the done option, gate status: all are
+read from the projection. The training experience turns on with the vault
+connection switch (on a Garmin-connected install); the food-first
+experience has no training card at all.
 
 `AppServices.swift` (`Shared/`) holds the one real instance of every JSON-file
 store per process; `AppEnvironment.swift` (`GarminFood/App/`) is the SwiftUI

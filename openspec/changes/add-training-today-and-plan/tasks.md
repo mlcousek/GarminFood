@@ -52,27 +52,27 @@ marked *defaulted, owner may override*.
 
 ## 4. Wave 3 — Today (M)
 
-- [ ] 4.1 `VaultServices`: owns `ProjectionStore`, passes its validator to `ConditionalFileSync`; `GarminFood/Training/TrainingModel.swift` (`@MainActor @Observable`) holds the snapshot and rebuilds it after each refresh and on day change.
-- [ ] 4.2 `ContentView`: the experience input becomes the vault connection switch; remove the "Preview training shell (testing)" toggle and its preference key.
-- [ ] 4.3 Today cards: `TrainingDayCard` (session blocks, `OptionCard` ×3, a single card for sessions without options, fuel lines, compact variant, every D11 state), `HabitsTodayCard`, `RaceCountdownChip`, `WeeklyNoteCard` + full-note sheet; new arms in `TodayView`'s switch; availability rules (hidden when their data is absent); `LayoutCardInfo` titles, icons and variant names.
-- [ ] 4.4 Option cards per D9: token tints only, letter + shape, larger shapes with Differentiate Without Color, stacked at accessibility text sizes, one VoiceOver element each with spoken meaning; the watch line only when `watch` is non-null.
-- [ ] 4.5 Training cards follow the day switcher (`TrainingDay.resolve`); tapping an option pushes the session detail at that option.
-- [ ] 4.6 Czech strings for every new key; `node tools/check-localizations.mjs --scan` and `sh tools/lint-design-tokens.sh` pass.
+- [x] 4.1 `VaultServices`: owns `ProjectionStore`, passes its validator to `ConditionalFileSync`; `GarminFood/Training/TrainingModel.swift` (`@MainActor @Observable`) holds the snapshot and rebuilds it after each refresh and on day change.
+- [x] 4.2 `ContentView`: the experience input becomes the vault connection switch; remove the "Preview training shell (testing)" toggle and its preference key.
+- [x] 4.3 Today cards: `TrainingDayCard` (session blocks, `OptionCard` ×3, a single card for sessions without options, fuel lines, compact variant, every D11 state), `HabitsTodayCard`, `RaceCountdownChip`, `WeeklyNoteCard` + full-note sheet; new arms in `TodayView`'s switch; availability rules (hidden when their data is absent); `LayoutCardInfo` titles, icons and variant names.
+- [x] 4.4 Option cards per D9: token tints only, letter + shape, larger shapes with Differentiate Without Color, stacked at accessibility text sizes, one VoiceOver element each with spoken meaning; the watch line only when `watch` is non-null.
+- [x] 4.5 Training cards follow the day switcher (`TrainingDay.resolve`); tapping an option pushes the session detail at that option.
+- [x] 4.6 Czech strings for every new key; `node tools/check-localizations.mjs --scan` and `sh tools/lint-design-tokens.sh` pass.
 
 ## 5. Wave 4 — Plan tab (L)
 
-- [ ] 5.1 `PlanTabView`: Week · Month segmented control (remembered, default per 0.2), freshness line (`asOf`, last sync), D11 states, toolbar button to the habit ladder; consumes the router's pending date.
-- [ ] 5.2 `WeekAgendaView` with paging across the season.
-- [ ] 5.3 `MonthCalendarView` (grid, week column, glyph styles distinguishable without colour, race flags, day sheet with unplanned rows), swipe between months.
-- [ ] 5.4 `SessionDetailView` (option picker, targets, steps, why, origin once published, done, fuel, test result vs history, race day).
-- [ ] 5.5 `HabitLadderView`.
-- [ ] 5.6 Race chip → Month at the race date; `garminfood://plan?date=` → the week containing it.
-- [ ] 5.7 Czech strings; checker and lint pass.
+- [x] 5.1 `PlanTabView`: Week · Month segmented control (remembered, default per 0.2), freshness line (`asOf`, last sync), D11 states, toolbar button to the habit ladder; consumes the router's pending date.
+- [x] 5.2 `WeekAgendaView` with paging across the season.
+- [x] 5.3 `MonthCalendarView` (grid, week column, glyph styles distinguishable without colour, race flags, day sheet with unplanned rows), swipe between months.
+- [x] 5.4 `SessionDetailView` (option picker, targets, steps, why, origin once published, done, fuel, test result vs history, race day).
+- [x] 5.5 `HabitLadderView`.
+- [x] 5.6 Race chip → Month at the race date; `garminfood://plan?date=` → the week containing it.
+- [x] 5.7 Czech strings; checker and lint pass.
 
 ## 6. Close-out
 
-- [ ] 6.1 Group 1 done (vault fixtures mirrored, decoding and builders green on both).
-- [ ] 6.2 `CLAUDE.md` architecture section: TrainingCore's role, its boundary rule, and "the phone never computes what the vault computes".
+- [x] 6.1 Group 1 done (vault fixtures mirrored, decoding and builders green on both).
+- [x] 6.2 `CLAUDE.md` architecture section: TrainingCore's role, its boundary rule, and "the phone never computes what the vault computes".
 - [ ] 6.3 CI green on every wave PR; `openspec validate add-training-today-and-plan --strict` passes.
 
 ## 7. On-device verification (owner)
