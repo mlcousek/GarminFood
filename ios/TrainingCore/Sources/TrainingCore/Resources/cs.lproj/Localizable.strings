@@ -367,3 +367,135 @@
 
 /* Habit schedule: after these session types. */
 "After sessions: %@" = "Po trénincích: %@";
+
+/* Season screen: the vault has published no season. */
+"No season yet" = "Zatím žádná sezóna";
+
+/* Season screen: the vault has published no season. */
+"Your vault hasn't published a season." = "Tvůj vault zatím nezveřejnil sezónu.";
+
+/* Season timeline: a stretch of the season no phase covers. */
+"No phase planned" = "Žádná fáze v plánu";
+
+/* The season's hero race (its main goal). */
+"Hero race" = "Hlavní závod";
+
+/* A race no training phase prepares for yet. */
+"No phase covers this race yet" = "Závod zatím nepatří do žádné fáze";
+
+/* Race priority A (a goal race). */
+"A race" = "Závod A";
+
+/* Race priority B. */
+"B race" = "Závod B";
+
+/* Race priority C (a training race). */
+"C race" = "Závod C";
+
+/* Race checkpoint: food and drink. */
+"Full aid" = "Plné občerstvení";
+
+/* Race checkpoint: water only. */
+"Water" = "Voda";
+
+/* Race checkpoint: nothing to eat or drink. */
+"No aid" = "Bez občerstvení";
+
+/* Training phase kind. */
+"Base" = "Základ";
+
+/* Training phase kind: race-specific preparation. */
+"Specific" = "Specifická příprava";
+
+/* Training phase status: not started, still being written. */
+"Draft" = "Koncept";
+
+/* Phase header: the phase is over. */
+"Finished" = "Dokončeno";
+
+/* Phase header: which week of the phase today is. */
+"Week %lld of %lld" = "Týden %lld z %lld";
+
+/* Phase weeks: a past week the plan file no longer carries, so its distance isn't known here. */
+"Not in the app's window" = "Mimo okno aplikace";
+
+/* Phase screen of a phase other than the current one. */
+"Goals and rules are published for the current phase only." = "Cíle a pravidla se zveřejňují jen pro aktuální fázi.";
+
+/* Phase recap: kilometres run against the plan, over the weeks with known distance. */
+"Ran %@ of %@ km planned" = "Naběháno %@ z plánovaných %@ km";
+
+/* Phase recap: weeks whose distance was within ten percent of the target. */
+"%lld of %lld weeks within 10 %% of target" = "%lld z %lld týdnů do 10 %% od cíle";
+
+/* Phase recap: the week with the most kilometres and its ISO week number. */
+"Biggest week: %@ km (W%lld)" = "Největší týden: %@ km (T%lld)";
+
+/* Race: start time. */
+"Start %@" = "Start %@";
+
+/* Race or checkpoint: the time limit (duration and clock time). */
+"Cutoff %@" = "Limit %@";
+
+/* A race checkpoint without a name. */
+"Checkpoint %lld" = "Kontrola %lld";
+
+/* Race checkpoint: the planned arrival (duration and clock time). */
+"Target %@" = "Cíl %@";
+
+/* Race checkpoint: time between the planned arrival and the cutoff. */
+"Buffer %@" = "Rezerva %@";
+
+/* Race checkpoint: the planned arrival is after the cutoff by this much. */
+"%@ after the cutoff" = "%@ po limitu";
+
+/* Race fuel: carbohydrate per hour. */
+"%@ g carbs/h" = "%@ g sacharidů/h";
+
+/* Race fuel: how often to eat. */
+"Every %lld min" = "Každých %lld min";
+
+/* Race fuel: fluid per hour. */
+"%@ ml fluid/h" = "%@ ml tekutin/h";
+
+/* Race fuel: carbohydrate over the planned finish time. */
+"About %@ g carbs to the finish" = "Zhruba %@ g sacharidů do cíle";
+
+/* Race fuel: fluid over the planned finish time, in litres. */
+"About %@ l fluid to the finish" = "Zhruba %@ l tekutin do cíle";
+
+/* Carb load on the race day itself. */
+"Race day" = "Den závodu";
+
+/* Carb load day: grams of carbohydrate and grams per kilogram. */
+"%@ g carbs · %@ g/kg" = "%@ g sacharidů · %@ g/kg";
+
+/* Carb load day: grams of carbohydrate. */
+"%@ g carbs" = "%@ g sacharidů";
+
+/* Carb load day: grams of carbohydrate per kilogram of body weight. */
+"%@ g/kg" = "%@ g/kg";
+
+/* Carb load day without an amount. */
+"Amount not set" = "Množství není zadané";
+
+/* Carb load: the grams come from the plan file. */
+"From your plan" = "Z tvého plánu";
+
+/* Carb load: grams worked out from the body weight in the plan. */
+"Estimated for %@ kg" = "Odhad pro %@ kg";
+
+/* Carb load: grams can't be worked out without a body weight. */
+"No body weight in the plan to count grams" = "V plánu chybí váha, gramy nejde spočítat";
+
+/* Race gear that is required. */
+"Mandatory" = "Povinné";
+
+/* Race gear that is not required. */
+"Optional" = "Volitelné";
+
+/* Race screen: the race has no preparation yet. */
+"Race prep not written yet" = "Příprava na závod zatím není napsaná";
+
+/* Race screen: the vault has a report for the race. */
+"Race report written" = "Zpráva ze závodu je napsaná";

@@ -91,5 +91,124 @@
 			<string>every %lld weeks</string>
 		</dict>
 	</dict>
+	<!-- How many weeks a phase has. Plural. -->
+	<key>%lld weeks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld week</string>
+			<key>other</key>
+			<string>%lld weeks</string>
+		</dict>
+	</dict>
+	<!-- A race in the past. Plural. -->
+	<key>%lld days ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld day ago</string>
+			<key>other</key>
+			<string>%lld days ago</string>
+		</dict>
+	</dict>
+	<!-- A race with an approximate date in the past. Plural. -->
+	<key>about %lld days ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>about %lld day ago</string>
+			<key>other</key>
+			<string>about %lld days ago</string>
+		</dict>
+	</dict>
+	<!-- Phase header: a phase that hasn't started. Plural. -->
+	<key>Starts in %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Starts in %lld day</string>
+			<key>other</key>
+			<string>Starts in %lld days</string>
+		</dict>
+	</dict>
+	<!-- Phase header: days to the phase's end. Plural. -->
+	<key>%lld days left</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld day left</string>
+			<key>other</key>
+			<string>%lld days left</string>
+		</dict>
+	</dict>
+	<!-- Carb load: days before the race. Plural. -->
+	<key>%lld days before</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld day before</string>
+			<key>other</key>
+			<string>%lld days before</string>
+		</dict>
+	</dict>
+	<!-- Carb load: days after the race. Plural. -->
+	<key>%lld days after</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld day after</string>
+			<key>other</key>
+			<string>%lld days after</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

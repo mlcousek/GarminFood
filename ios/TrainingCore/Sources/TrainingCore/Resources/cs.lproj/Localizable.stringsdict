@@ -111,5 +111,152 @@
 			<string>každých %lld týdnů</string>
 		</dict>
 	</dict>
+	<!-- How many weeks a phase has. Plural. -->
+	<key>%lld weeks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld týden</string>
+			<key>few</key>
+			<string>%lld týdny</string>
+			<key>many</key>
+			<string>%lld týdne</string>
+			<key>other</key>
+			<string>%lld týdnů</string>
+		</dict>
+	</dict>
+	<!-- A race in the past. Plural. -->
+	<key>%lld days ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>před %lld dnem</string>
+			<key>few</key>
+			<string>před %lld dny</string>
+			<key>many</key>
+			<string>před %lld dne</string>
+			<key>other</key>
+			<string>před %lld dny</string>
+		</dict>
+	</dict>
+	<!-- A race with an approximate date in the past. Plural. -->
+	<key>about %lld days ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>zhruba před %lld dnem</string>
+			<key>few</key>
+			<string>zhruba před %lld dny</string>
+			<key>many</key>
+			<string>zhruba před %lld dne</string>
+			<key>other</key>
+			<string>zhruba před %lld dny</string>
+		</dict>
+	</dict>
+	<!-- Phase header: a phase that hasn't started. Plural. -->
+	<key>Starts in %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Začíná za %lld den</string>
+			<key>few</key>
+			<string>Začíná za %lld dny</string>
+			<key>many</key>
+			<string>Začíná za %lld dne</string>
+			<key>other</key>
+			<string>Začíná za %lld dní</string>
+		</dict>
+	</dict>
+	<!-- Phase header: days to the phase's end. Plural. -->
+	<key>%lld days left</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>zbývá %lld den</string>
+			<key>few</key>
+			<string>zbývají %lld dny</string>
+			<key>many</key>
+			<string>zbývá %lld dne</string>
+			<key>other</key>
+			<string>zbývá %lld dní</string>
+		</dict>
+	</dict>
+	<!-- Carb load: days before the race. Plural. -->
+	<key>%lld days before</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld den před závodem</string>
+			<key>few</key>
+			<string>%lld dny před závodem</string>
+			<key>many</key>
+			<string>%lld dne před závodem</string>
+			<key>other</key>
+			<string>%lld dní před závodem</string>
+		</dict>
+	</dict>
+	<!-- Carb load: days after the race. Plural. -->
+	<key>%lld days after</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld den po závodě</string>
+			<key>few</key>
+			<string>%lld dny po závodě</string>
+			<key>many</key>
+			<string>%lld dne po závodě</string>
+			<key>other</key>
+			<string>%lld dní po závodě</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

@@ -367,3 +367,135 @@
 
 /* Habit schedule: after these session types. */
 "After sessions: %@" = "After sessions: %@";
+
+/* Season screen: the vault has published no season. */
+"No season yet" = "No season yet";
+
+/* Season screen: the vault has published no season. */
+"Your vault hasn't published a season." = "Your vault hasn't published a season.";
+
+/* Season timeline: a stretch of the season no phase covers. */
+"No phase planned" = "No phase planned";
+
+/* The season's hero race (its main goal). */
+"Hero race" = "Hero race";
+
+/* A race no training phase prepares for yet. */
+"No phase covers this race yet" = "No phase covers this race yet";
+
+/* Race priority A (a goal race). */
+"A race" = "A race";
+
+/* Race priority B. */
+"B race" = "B race";
+
+/* Race priority C (a training race). */
+"C race" = "C race";
+
+/* Race checkpoint: food and drink. */
+"Full aid" = "Full aid";
+
+/* Race checkpoint: water only. */
+"Water" = "Water";
+
+/* Race checkpoint: nothing to eat or drink. */
+"No aid" = "No aid";
+
+/* Training phase kind. */
+"Base" = "Base";
+
+/* Training phase kind: race-specific preparation. */
+"Specific" = "Specific";
+
+/* Training phase status: not started, still being written. */
+"Draft" = "Draft";
+
+/* Phase header: the phase is over. */
+"Finished" = "Finished";
+
+/* Phase header: which week of the phase today is. */
+"Week %lld of %lld" = "Week %lld of %lld";
+
+/* Phase weeks: a past week the plan file no longer carries, so its distance isn't known here. */
+"Not in the app's window" = "Not in the app's window";
+
+/* Phase screen of a phase other than the current one. */
+"Goals and rules are published for the current phase only." = "Goals and rules are published for the current phase only.";
+
+/* Phase recap: kilometres run against the plan, over the weeks with known distance. */
+"Ran %@ of %@ km planned" = "Ran %@ of %@ km planned";
+
+/* Phase recap: weeks whose distance was within ten percent of the target. */
+"%lld of %lld weeks within 10 %% of target" = "%lld of %lld weeks within 10 %% of target";
+
+/* Phase recap: the week with the most kilometres and its ISO week number. */
+"Biggest week: %@ km (W%lld)" = "Biggest week: %@ km (W%lld)";
+
+/* Race: start time. */
+"Start %@" = "Start %@";
+
+/* Race or checkpoint: the time limit (duration and clock time). */
+"Cutoff %@" = "Cutoff %@";
+
+/* A race checkpoint without a name. */
+"Checkpoint %lld" = "Checkpoint %lld";
+
+/* Race checkpoint: the planned arrival (duration and clock time). */
+"Target %@" = "Target %@";
+
+/* Race checkpoint: time between the planned arrival and the cutoff. */
+"Buffer %@" = "Buffer %@";
+
+/* Race checkpoint: the planned arrival is after the cutoff by this much. */
+"%@ after the cutoff" = "%@ after the cutoff";
+
+/* Race fuel: carbohydrate per hour. */
+"%@ g carbs/h" = "%@ g carbs/h";
+
+/* Race fuel: how often to eat. */
+"Every %lld min" = "Every %lld min";
+
+/* Race fuel: fluid per hour. */
+"%@ ml fluid/h" = "%@ ml fluid/h";
+
+/* Race fuel: carbohydrate over the planned finish time. */
+"About %@ g carbs to the finish" = "About %@ g carbs to the finish";
+
+/* Race fuel: fluid over the planned finish time, in litres. */
+"About %@ l fluid to the finish" = "About %@ l fluid to the finish";
+
+/* Carb load on the race day itself. */
+"Race day" = "Race day";
+
+/* Carb load day: grams of carbohydrate and grams per kilogram. */
+"%@ g carbs · %@ g/kg" = "%@ g carbs · %@ g/kg";
+
+/* Carb load day: grams of carbohydrate. */
+"%@ g carbs" = "%@ g carbs";
+
+/* Carb load day: grams of carbohydrate per kilogram of body weight. */
+"%@ g/kg" = "%@ g/kg";
+
+/* Carb load day without an amount. */
+"Amount not set" = "Amount not set";
+
+/* Carb load: the grams come from the plan file. */
+"From your plan" = "From your plan";
+
+/* Carb load: grams worked out from the body weight in the plan. */
+"Estimated for %@ kg" = "Estimated for %@ kg";
+
+/* Carb load: grams can't be worked out without a body weight. */
+"No body weight in the plan to count grams" = "No body weight in the plan to count grams";
+
+/* Race gear that is required. */
+"Mandatory" = "Mandatory";
+
+/* Race gear that is not required. */
+"Optional" = "Optional";
+
+/* Race screen: the race has no preparation yet. */
+"Race prep not written yet" = "Race prep not written yet";
+
+/* Race screen: the vault has a report for the race. */
+"Race report written" = "Race report written";
