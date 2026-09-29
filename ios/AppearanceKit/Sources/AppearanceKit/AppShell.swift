@@ -7,8 +7,9 @@
 //     stays here). Exactly the three tabs the app had before: Today (the
 //     food log), Progress, Profile.
 //   - `.training`: only when the app reports training enabled (an enabled
-//     vault connection, or until that exists the hidden Diagnostics preview
-//     toggle). Four tabs: Today, Plan, Progress, Profile.
+//     vault connection on a Garmin-connected install, since
+//     add-training-today-and-plan). Four tabs: Today, Plan, Progress,
+//     Profile.
 //
 // Why it lives here and not in the app: the tab set, the start-tab fallback
 // and the route targets are the rules worth pinning, and the app can't be

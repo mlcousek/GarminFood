@@ -52,6 +52,28 @@ public enum TodayCardID: String, CaseIterable, Codable, Sendable {
     case weightWater
     case dayNote
     case signature
+    /// add-training-today-and-plan D7: the training cards, ONLY in the
+    /// training experience's catalog (`LayoutCatalog.today(for:)`). The next
+    /// A (or hero) race as a countdown chip.
+    case raceCountdown
+    /// The day's session(s) with their G/A/R option cards.
+    case trainingDay
+    /// The habits the plan expects today, display only.
+    case habitsToday
+    /// The week's AI note teaser.
+    case weeklyNote
+
+    /// The four training cards, in their default order.
+    public static let trainingCards: [TodayCardID] = [.raceCountdown, .trainingDay, .habitsToday, .weeklyNote]
+
+    /// Every card of the food-first catalog, in its (pre-change) order.
+    public static var foodCards: [TodayCardID] {
+        allCases.filter { !trainingCards.contains($0) }
+    }
+
+    public var isTrainingCard: Bool {
+        TodayCardID.trainingCards.contains(self)
+    }
 }
 
 /// The Log Food shelves (empty search), in their default order.
@@ -116,6 +138,14 @@ public enum SupplementsVariant: String, CaseIterable, Sendable {
     case slot
     /// All of today's slots as compact pills.
     case day
+}
+
+/// Today's training card (add-training-today-and-plan D7).
+public enum TrainingDayVariant: String, CaseIterable, Sendable {
+    /// The G/A/R option cards side by side.
+    case options
+    /// One line per session.
+    case compact
 }
 
 /// Today's Weight & Water section.
@@ -231,16 +261,59 @@ public enum LayoutCatalog {
 
     /// Today's catalog in `experience` (rebrand-to-jirkas-arc D6). The
     /// food-first catalog is exactly `today` above (golden test). The
-    /// training catalog equals it until add-training-today-and-plan adds
-    /// its training cards there; a training card is never in the food-first
-    /// catalog, and a stored placement for one is kept, not rendered
-    /// (LayoutResolver rule 2), so switching experiences loses nothing.
+    /// training catalog is `trainingToday` below; a training card is never
+    /// in the food-first catalog, and a stored placement for one is kept,
+    /// not rendered (LayoutResolver rule 2), so switching experiences loses
+    /// nothing.
     public static func today(for experience: AppExperience) -> [CardSpec] {
         switch experience {
         case .foodFirst: return today
-        case .training: return today
+        case .training: return trainingToday
         }
     }
+
+    /// Today in the training experience (add-training-today-and-plan D7):
+    /// the day switcher, the four training cards, then the food cards with
+    /// the summary compact and quick logging near the top. Because the
+    /// training cards directly follow the day switcher here, LayoutResolver
+    /// rule 3 inserts them right after it into a food layout the owner has
+    /// already customised, in this order, leaving every food card where he
+    /// put it with his variants.
+    public static let trainingToday: [CardSpec] = {
+        let food = Dictionary(uniqueKeysWithValues: today.map { ($0.id, $0) })
+        func spec(_ id: TodayCardID) -> CardSpec {
+            food[id.rawValue] ?? CardSpec(id: id.rawValue)
+        }
+        let summary = CardSpec(
+            id: TodayCardID.summary.rawValue,
+            variants: SummaryVariant.allCases.map(\.rawValue),
+            // Owner decision 0.1 (defaulted): compact in training.
+            defaultVariant: SummaryVariant.compact.rawValue
+        )
+        let trainingDay = CardSpec(
+            id: TodayCardID.trainingDay.rawValue,
+            variants: TrainingDayVariant.allCases.map(\.rawValue),
+            defaultVariant: TrainingDayVariant.options.rawValue
+        )
+        return [
+            spec(.daySwitcher),
+            CardSpec(id: TodayCardID.raceCountdown.rawValue),
+            trainingDay,
+            CardSpec(id: TodayCardID.habitsToday.rawValue),
+            CardSpec(id: TodayCardID.weeklyNote.rawValue),
+            summary,
+            spec(.logAgain),
+            spec(.meals),
+            spec(.weightWater),
+            spec(.logMeal),
+            spec(.progressStrip),
+            spec(.fasting),
+            spec(.supplements),
+            spec(.banners),
+            spec(.dayNote),
+            spec(.signature),
+        ]
+    }()
 
     /// `specs(for:)` in `experience`: only Today differs per experience.
     public static func specs(for screen: LayoutScreen, experience: AppExperience) -> [CardSpec] {

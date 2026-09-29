@@ -160,11 +160,17 @@ final class LayoutConfigTests: XCTestCase {
         XCTAssertEqual(rows.first { $0.id == "weightWater" }?.variant, WeightWaterVariant.both.rawValue)
     }
 
+    /// The food presets name every food card once; the training preset
+    /// (add-training-today-and-plan) every card of the training catalog.
     func testEveryPresetNamesEveryTodayCardOnce() {
-        for preset in LayoutPreset.allCases {
+        for preset in LayoutPreset.presets(for: .foodFirst) {
             let ids = preset.todayLayout.placements.map(\.id)
-            XCTAssertEqual(ids.sorted(), TodayCardID.allCases.map(\.rawValue).sorted(), "\(preset)")
+            XCTAssertEqual(ids.sorted(), TodayCardID.foodCards.map(\.rawValue).sorted(), "\(preset)")
         }
+        XCTAssertEqual(
+            LayoutPreset.training.todayLayout.placements.map(\.id).sorted(),
+            TodayCardID.allCases.map(\.rawValue).sorted()
+        )
     }
 
     func testUnknownAppliedPresetIsCustom() {
@@ -173,7 +179,7 @@ final class LayoutConfigTests: XCTestCase {
     }
 
     func testCatalogIDsMatchEnums() {
-        XCTAssertEqual(LayoutCatalog.today.map(\.id), TodayCardID.allCases.map(\.rawValue))
+        XCTAssertEqual(LayoutCatalog.today.map(\.id), TodayCardID.foodCards.map(\.rawValue))
         XCTAssertEqual(LayoutCatalog.logFood.map(\.id), LogFoodShelfID.allCases.map(\.rawValue))
         XCTAssertEqual(LayoutCatalog.progress.map(\.id), ProgressCardID.allCases.map(\.rawValue))
         for screen in LayoutScreen.allCases {

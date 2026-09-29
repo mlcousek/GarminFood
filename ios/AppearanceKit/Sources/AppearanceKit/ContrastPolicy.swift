@@ -53,6 +53,12 @@ public enum ContrastPolicy {
     /// Also the custom-accent collision warning threshold.
     public static let minimumAccentMacroDistance = 0.06
 
+    /// add-training-today-and-plan D9: minimum OKLab ΔE between the three
+    /// readiness colours (`success`, `warning`, `danger` -- the G, A and R
+    /// option cards) in every resolved palette. Letters and shapes carry
+    /// the meaning too; this keeps the colours from collapsing on top.
+    public static let minimumReadinessDistance = 0.10
+
     /// White or black, whichever contrasts more with `accent` (D4 step 5).
     /// Ties go to white.
     public static func preferredOnAccent(for accent: RGBA) -> RGBA {
