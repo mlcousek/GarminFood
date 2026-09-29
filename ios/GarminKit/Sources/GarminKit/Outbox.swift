@@ -755,7 +755,7 @@ public actor Outbox {
                 entry.attemptCount += 1
                 entry.lastError = "rate limited (429)"
                 entry.nextAttemptAt = now.addingTimeInterval(
-                    retryAfterSeconds ?? Self.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                    retryAfterSeconds ?? RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                 )
                 try? await store.update(entry)
                 return .stoppedRateLimited
@@ -788,7 +788,7 @@ public actor Outbox {
                     return .needsUser
                 }
                 entry.nextAttemptAt = now.addingTimeInterval(
-                    Self.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                    RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                 )
                 try? await store.update(entry)
                 return .retryLater
@@ -849,7 +849,7 @@ public actor Outbox {
             entry.attemptCount += 1
             entry.lastError = "old entry not removed yet: rate limited (429)"
             entry.nextAttemptAt = now.addingTimeInterval(
-                retryAfterSeconds ?? Self.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                retryAfterSeconds ?? RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
             )
             try? await store.update(entry)
             return .stoppedRateLimited
@@ -875,7 +875,7 @@ public actor Outbox {
                 return .needsUser
             }
             entry.nextAttemptAt = now.addingTimeInterval(
-                Self.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
             )
             try? await store.update(entry)
             return .retryLater
@@ -899,15 +899,10 @@ public actor Outbox {
     }
 
     /// Exponential backoff with full jitter, capped at `cap` (task 9.3:
-    /// "exponential backoff with jitter capped at 8 s"). `jitter` must be
-    /// in `[0, 1)`; the caller supplies it so this stays a pure, deterministic,
-    /// unit-testable function rather than depending on the global RNG.
-    /// `attempt` is 1-based (the count AFTER the failing attempt).
+    /// "exponential backoff with jitter capped at 8 s"). Now a forwarder to
+    /// `RetryBackoff.delay` (add-vault-connection task 2.2), kept so the
+    /// existing tests that pin the formula through this name stay unchanged.
     static func backoffDelay(attempt: Int, jitter: Double, base: TimeInterval, cap: TimeInterval) -> TimeInterval {
-        let exponent = Double(max(0, attempt - 1))
-        let exponential = base * pow(2.0, exponent)
-        let capped = min(exponential, cap)
-        let clampedJitter = min(max(jitter, 0), 1)
-        return capped * clampedJitter
+        RetryBackoff.delay(attempt: attempt, jitter: jitter, base: base, cap: cap)
     }
 }

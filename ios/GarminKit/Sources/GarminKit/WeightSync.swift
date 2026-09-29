@@ -9,9 +9,10 @@
 // (mealType/foodId/servingId/numberOfUnits vs a single weightKg+timestamp)
 // -- see GarminModels.swift's weight section and GarminClient.addWeighIn.
 //
-// Deliberately REUSES `Outbox.backoffDelay` (same module, package-internal
-// visibility) rather than duplicating that pure function -- it's the one
-// piece of `Outbox` that has nothing food-specific about it. Everything
+// Deliberately REUSES the shared backoff formula (`RetryBackoff.delay`,
+// formerly `Outbox.backoffDelay`) rather than duplicating that pure
+// function -- it's the one piece of `Outbox` that has nothing food-specific
+// about it. Everything
 // else here is a parallel actor, not a shared one: `Outbox`'s own
 // `OutboxEntry`/`DrainResult` types are hard-wired to
 // `CreateFoodLogEntryRequest` and can't represent a weigh-in without
@@ -615,7 +616,7 @@ public actor WeightOutbox {
                 entry.attemptCount += 1
                 entry.lastError = "rate limited (429)"
                 entry.nextAttemptAt = now.addingTimeInterval(
-                    retryAfterSeconds ?? Outbox.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                    retryAfterSeconds ?? RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                 )
                 stoppedDueToRateLimit = true
                 stop = true
@@ -640,7 +641,7 @@ public actor WeightOutbox {
                     entry.state = .failed
                 } else {
                     entry.nextAttemptAt = now.addingTimeInterval(
-                        Outbox.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                        RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                     )
                 }
             }

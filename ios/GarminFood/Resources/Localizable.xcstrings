@@ -1939,6 +1939,18 @@
         }
       }
     },
+    "Advanced": {
+      "comment": "add-vault-connection: Settings -> Vault: collapsible group holding the branch field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokročilé"
+          }
+        }
+      }
+    },
     "All challenges": {
       "comment": "Challenges screen section: the whole catalog.",
       "extractionState": "manual",
@@ -2035,6 +2047,30 @@
         }
       }
     },
+    "Blocked by the app's own path rules.": {
+      "comment": "add-vault-connection: Vault status: a request refused before sending by the app's path allow-list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zablokováno vlastními pravidly cest aplikace."
+          }
+        }
+      }
+    },
+    "Branch": {
+      "comment": "add-vault-connection: Settings -> Vault: text field for the git branch (default main).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Větev"
+          }
+        }
+      }
+    },
     "Broken at %@": {
       "comment": "Fasting history row: the fast was broken; %@ = clock time of the first food logged inside the window.",
       "extractionState": "manual",
@@ -2091,6 +2127,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Výzvy"
+          }
+        }
+      }
+    },
+    "Check": {
+      "comment": "add-vault-connection: Settings -> Vault: section header of the connection test.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrola"
+          }
+        }
+      }
+    },
+    "Check the branch name.": {
+      "comment": "add-vault-connection: Settings -> Vault: invalid branch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkontroluj název větve."
+          }
+        }
+      }
+    },
+    "Check the owner: letters, digits and hyphens only.": {
+      "comment": "add-vault-connection: Settings -> Vault: invalid owner.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkontroluj vlastníka: jen písmena, číslice a pomlčky."
+          }
+        }
+      }
+    },
+    "Check the repository name: letters, digits, dots, hyphens and underscores only.": {
+      "comment": "add-vault-connection: Settings -> Vault: invalid repository name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkontroluj název repozitáře: jen písmena, číslice, tečky, pomlčky a podtržítka."
           }
         }
       }
@@ -2155,6 +2239,90 @@
         }
       }
     },
+    "Connect to my vault": {
+      "comment": "add-vault-connection: Settings -> Vault: the main on/off switch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojit k mému vaultu"
+          }
+        }
+      }
+    },
+    "Connected. No plan data yet.": {
+      "comment": "add-vault-connection: Vault status: repository reachable, projection file not generated yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojeno. Zatím žádná data plánu."
+          }
+        }
+      }
+    },
+    "Couldn't reach GitHub.": {
+      "comment": "add-vault-connection: Vault status: a transport error that isn't being offline.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na GitHub se nepodařilo spojit."
+          }
+        }
+      }
+    },
+    "Couldn't save the token to the Keychain. Try again.": {
+      "comment": "add-vault-connection: Settings -> Vault: Keychain write failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token se nepodařilo uložit do klíčenky. Zkus to znovu."
+          }
+        }
+      }
+    },
+    "Create a fine-grained personal access token with access to this one repository only and the Contents permission set to Read and write, expiring in 180 days. It is kept only in this iPhone's Keychain, never in a backup, an export or the diagnostics log.": {
+      "comment": "add-vault-connection: Settings -> Vault: token section footer (how to create the token, where it is kept).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvoř fine-grained personal access token s přístupem jen k tomuto jednomu repozitáři, s oprávněním Contents nastaveným na Read and write a platností 180 dní. Uloží se jen do klíčenky tohoto iPhonu, nikdy do zálohy, exportu ani diagnostického logu."
+          }
+        }
+      }
+    },
+    "Create a token on GitHub": {
+      "comment": "add-vault-connection: Settings -> Vault: link to GitHub's token page.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit token na GitHubu"
+          }
+        }
+      }
+    },
+    "Created on the first successful test": {
+      "comment": "add-vault-connection: Settings -> Vault: device id placeholder before the first successful connection test.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvoří se při prvním úspěšném testu"
+          }
+        }
+      }
+    },
     "Daily Challenges": {
       "comment": "Achievements group header.",
       "extractionState": "manual",
@@ -2191,6 +2359,54 @@
         }
       }
     },
+    "Details": {
+      "comment": "add-vault-connection: Settings -> Vault: collapsible group with the device id.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podrobnosti"
+          }
+        }
+      }
+    },
+    "Device id": {
+      "comment": "add-vault-connection: Settings -> Vault: this install's id towards the vault, e.g. ios-7f3a91c2.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID zařízení"
+          }
+        }
+      }
+    },
+    "Disconnect": {
+      "comment": "add-vault-connection: Settings -> Vault: button and confirmation action that removes the token and turns the connection off.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odpojit"
+          }
+        }
+      }
+    },
+    "Disconnect from the vault?": {
+      "comment": "add-vault-connection: Settings -> Vault: confirmation title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odpojit od vaultu?"
+          }
+        }
+      }
+    },
     "Each day": {
       "comment": "Settings > Fasting: row label before the fast/eating split ('16 h fast · 8 h eating').",
       "extractionState": "manual",
@@ -2199,6 +2415,120 @@
           "stringUnit": {
             "state": "translated",
             "value": "Každý den"
+          }
+        }
+      }
+    },
+    "ends in …%@": {
+      "comment": "add-vault-connection: Settings -> Vault: the saved token, only its last four characters (%@).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "končí na …%@"
+          }
+        }
+      }
+    },
+    "Enter the repository and a token first.": {
+      "comment": "add-vault-connection: Vault status / test: not configured yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdřív zadej repozitář a token."
+          }
+        }
+      }
+    },
+    "Events folder": {
+      "comment": "add-vault-connection: Settings -> Vault: the install's own folder in the vault.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Složka událostí"
+          }
+        }
+      }
+    },
+    "Expires in %lld days": {
+      "comment": "add-vault-connection: Settings -> Vault: token expiry countdown. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vyprší za %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vyprší za %lld dne"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vyprší za %lld den"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vyprší za %lld dní"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Expires in %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Expires in %lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Expires today": {
+      "comment": "add-vault-connection: Settings -> Vault: the token expires today or already has.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyprší dnes"
+          }
+        }
+      }
+    },
+    "Expiry unknown": {
+      "comment": "add-vault-connection: Settings -> Vault: GitHub did not report the token's expiry.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platnost neznámá"
           }
         }
       }
@@ -2323,6 +2653,54 @@
         }
       }
     },
+    "GitHub asked to slow down. The app will try again later.": {
+      "comment": "add-vault-connection: Vault status: rate limited (quiet).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub požádal o zpomalení. Aplikace to zkusí později znovu."
+          }
+        }
+      }
+    },
+    "GitHub had a problem (%lld). The app will try again later.": {
+      "comment": "add-vault-connection: Vault status: 5xx; %lld is the HTTP status code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub měl potíže (%lld). Aplikace to zkusí později znovu."
+          }
+        }
+      }
+    },
+    "GitHub redirected somewhere else, so the request was stopped.": {
+      "comment": "add-vault-connection: Vault status: a redirect to another host was refused.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub přesměroval jinam, a tak byl požadavek zastaven."
+          }
+        }
+      }
+    },
+    "GitHub reported a conflict. The app will try again later.": {
+      "comment": "add-vault-connection: Vault status: 409 (quiet).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub hlásí konflikt. Aplikace to zkusí později znovu."
+          }
+        }
+      }
+    },
     "Goal Hitting": {
       "comment": "Achievements group header: badges for days a nutrition goal was met.",
       "extractionState": "manual",
@@ -2439,6 +2817,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Posledních 6 týdnů"
+          }
+        }
+      }
+    },
+    "Last problem": {
+      "comment": "add-vault-connection: Settings -> Vault: the last problem and when it happened.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední problém"
+          }
+        }
+      }
+    },
+    "Last sync": {
+      "comment": "add-vault-connection: Settings -> Vault: when the last successful sync happened.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslední synchronizace"
           }
         }
       }
@@ -2713,6 +3115,18 @@
         }
       }
     },
+    "No plan data yet": {
+      "comment": "add-vault-connection: Settings -> Vault: test checklist row when the vault hasn't generated the plan file yet (information, not an error).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádná data plánu"
+          }
+        }
+      }
+    },
     "Not tracked": {
       "comment": "Fasting history row: no data to judge that day (fasting off or history trimmed).",
       "extractionState": "manual",
@@ -2737,6 +3151,18 @@
         }
       }
     },
+    "Offline. The last plan stays available.": {
+      "comment": "add-vault-connection: Vault status: no connection (quiet).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline. Poslední plán zůstává k dispozici."
+          }
+        }
+      }
+    },
     "One challenge is active at a time. A new one starts when it's completed or its time runs out.": {
       "comment": "Challenges screen footer.",
       "extractionState": "manual",
@@ -2745,6 +3171,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktivní je vždy jedna výzva. Nová začne, když ji splníš nebo když jí vyprší čas."
+          }
+        }
+      }
+    },
+    "Only reads from GitHub: checks the token, the repository and the plan file. Nothing is written.": {
+      "comment": "add-vault-connection: Settings -> Vault: test section footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z GitHubu jen čte: ověří token, repozitář a soubor s plánem. Nic nezapisuje."
           }
         }
       }
@@ -2821,6 +3259,18 @@
         }
       }
     },
+    "Opens the vault settings": {
+      "comment": "add-vault-connection: Vault banner: VoiceOver hint.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře nastavení vaultu"
+          }
+        }
+      }
+    },
     "Opens trends and insights": {
       "comment": "VoiceOver hint of the Trends card.",
       "extractionState": "manual",
@@ -2845,6 +3295,66 @@
         }
       }
     },
+    "Owner": {
+      "comment": "add-vault-connection: Settings -> Vault: text field for the GitHub account that owns the repository.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastník"
+          }
+        }
+      }
+    },
+    "Paste a fine-grained token": {
+      "comment": "add-vault-connection: Settings -> Vault: secure text field placeholder for the GitHub token.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlož fine-grained token"
+          }
+        }
+      }
+    },
+    "Paste a token first.": {
+      "comment": "add-vault-connection: Settings -> Vault: Save token with an empty field.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdřív vlož token."
+          }
+        }
+      }
+    },
+    "Paste your vault token again": {
+      "comment": "add-vault-connection: Vault banner: enabled connection without a token, e.g. after a restore on a new phone.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znovu vlož token vaultu"
+          }
+        }
+      }
+    },
+    "Pending writes": {
+      "comment": "add-vault-connection: Settings -> Vault: queued vault writes (0 until check-ins exist).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čekající zápisy"
+          }
+        }
+      }
+    },
     "Pick two different times": {
       "comment": "Settings > Fasting: shown when start and end are the same time.",
       "extractionState": "manual",
@@ -2857,6 +3367,114 @@
         }
       }
     },
+    "Plan file found (%@)": {
+      "comment": "add-vault-connection: Settings -> Vault: test checklist row; %@ is a file size like 24 KB.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soubor s plánem nalezen (%@)"
+          }
+        }
+      }
+    },
+    "Reads your training plan from your Obsidian vault's GitHub repository. Nothing is sent to GitHub until you turn this on and save a token.": {
+      "comment": "add-vault-connection: Settings -> Vault: footer under the switch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Načítá tréninkový plán z GitHub repozitáře tvého vaultu Obsidianu. Dokud to nezapneš a neuložíš token, na GitHub se nic neposílá."
+          }
+        }
+      }
+    },
+    "Remove token": {
+      "comment": "add-vault-connection: Settings -> Vault: deletes the token from the Keychain.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat token"
+          }
+        }
+      }
+    },
+    "Removes the token from this iPhone, clears the cached plan and turns the connection off. The device id is kept.": {
+      "comment": "add-vault-connection: Settings -> Vault: footer under Disconnect.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebere token z tohoto iPhonu, smaže uložený plán a vypne připojení. ID zařízení zůstane."
+          }
+        }
+      }
+    },
+    "Repository": {
+      "comment": "add-vault-connection: Settings -> Vault: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repozitář"
+          }
+        }
+      }
+    },
+    "Repository name": {
+      "comment": "add-vault-connection: Settings -> Vault: text field for the GitHub repository name.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název repozitáře"
+          }
+        }
+      }
+    },
+    "Repository not found, or the token can't see it": {
+      "comment": "add-vault-connection: Vault banner / status: GitHub answered 404 for the repository.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repozitář nenalezen, nebo ho token nevidí"
+          }
+        }
+      }
+    },
+    "Repository reachable": {
+      "comment": "add-vault-connection: Settings -> Vault: test checklist row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repozitář je dostupný"
+          }
+        }
+      }
+    },
+    "Repository saved.": {
+      "comment": "add-vault-connection: Settings -> Vault: confirmation after saving the repository.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repozitář uložen."
+          }
+        }
+      }
+    },
     "Runs overnight, from %@ until %@ the next day. Logging food inside it shows a gentle note but never blocks.": {
       "comment": "Settings > Fasting footer for a window crossing midnight. %@ = clock times (start, end).",
       "extractionState": "manual",
@@ -2865,6 +3483,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Běží přes noc, od %1$@ do %2$@ dalšího dne. Zapsání jídla uvnitř okna ukáže jen jemné upozornění, nikdy ho nezablokuje."
+          }
+        }
+      }
+    },
+    "Save repository": {
+      "comment": "add-vault-connection: Settings -> Vault: saves owner, name and branch.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložit repozitář"
+          }
+        }
+      }
+    },
+    "Save token": {
+      "comment": "add-vault-connection: Settings -> Vault: stores the pasted token in the Keychain.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložit token"
+          }
+        }
+      }
+    },
+    "Saved on": {
+      "comment": "add-vault-connection: Settings -> Vault: when the token was saved.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uloženo"
+          }
+        }
+      }
+    },
+    "Saved token": {
+      "comment": "add-vault-connection: Settings -> Vault: label of the row showing the saved token's last characters.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložený token"
           }
         }
       }
@@ -2953,6 +3619,66 @@
         }
       }
     },
+    "Test connection": {
+      "comment": "add-vault-connection: Settings -> Vault: read-only connection check.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otestovat připojení"
+          }
+        }
+      }
+    },
+    "That doesn't look like a complete GitHub token.": {
+      "comment": "add-vault-connection: Settings -> Vault: the pasted token has the right prefix but the wrong shape.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle nevypadá jako celý GitHub token."
+          }
+        }
+      }
+    },
+    "The GitHub account and repository that hold your vault. They are typed in here only; the app has none built in.": {
+      "comment": "add-vault-connection: Settings -> Vault: repository section footer.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub účet a repozitář, ve kterém je tvůj vault. Zadávají se jen tady, aplikace žádný vestavěný nemá."
+          }
+        }
+      }
+    },
+    "The token can't access this repository": {
+      "comment": "add-vault-connection: Vault banner / status: GitHub answered 403 without rate-limit signals.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token nemá přístup k tomuto repozitáři"
+          }
+        }
+      }
+    },
+    "The token is removed from this iPhone's Keychain and the cached plan is deleted.": {
+      "comment": "add-vault-connection: Settings -> Vault: confirmation message.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token se odebere z klíčenky tohoto iPhonu a uložený plán se smaže."
+          }
+        }
+      }
+    },
     "Today counted": {
       "comment": "Streak card: today already counts toward the streak.",
       "extractionState": "manual",
@@ -3001,6 +3727,54 @@
         }
       }
     },
+    "Token": {
+      "comment": "add-vault-connection: Settings -> Vault: section header.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token"
+          }
+        }
+      }
+    },
+    "Token accepted": {
+      "comment": "add-vault-connection: Settings -> Vault: test checklist row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token přijat"
+          }
+        }
+      }
+    },
+    "Token expiry": {
+      "comment": "add-vault-connection: Settings -> Vault: the token's expiry countdown row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platnost tokenu"
+          }
+        }
+      }
+    },
+    "Token saved.": {
+      "comment": "add-vault-connection: Settings -> Vault: confirmation after saving the token.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token uložen."
+          }
+        }
+      }
+    },
     "Trends": {
       "comment": "Trends screen title and Progress card header.",
       "extractionState": "manual",
@@ -3021,6 +3795,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapni si denní okno půstu a uvidíš, které dny se ti ho podařilo dodržet."
+          }
+        }
+      }
+    },
+    "Unexpected answer from GitHub (%lld).": {
+      "comment": "add-vault-connection: Vault status: another HTTP status; %lld is the code.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neočekávaná odpověď z GitHubu (%lld)."
           }
         }
       }
@@ -3049,6 +3835,18 @@
         }
       }
     },
+    "Use a fine-grained token limited to one repository.": {
+      "comment": "add-vault-connection: Settings -> Vault: a classic or other kind of GitHub token was pasted.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použij fine-grained token omezený na jeden repozitář."
+          }
+        }
+      }
+    },
     "Variety": {
       "comment": "Achievements group header: badges for different foods.",
       "extractionState": "manual",
@@ -3057,6 +3855,96 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pestrost"
+          }
+        }
+      }
+    },
+    "Vault": {
+      "comment": "add-vault-connection: Settings row and screen title: the connection to the owner's Obsidian vault on GitHub.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vault"
+          }
+        }
+      }
+    },
+    "Vault token expired or revoked": {
+      "comment": "add-vault-connection: Vault banner / status: GitHub answered 401.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token vaultu vypršel nebo byl zrušen"
+          }
+        }
+      }
+    },
+    "Vault token expires in %lld days": {
+      "comment": "add-vault-connection: Vault banner: the GitHub token expires within 14 days. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Token vaultu vyprší za %lld dny"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Token vaultu vyprší za %lld dne"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Token vaultu vyprší za %lld den"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Token vaultu vyprší za %lld dní"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vault token expires in %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vault token expires in %lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Vault token expires today": {
+      "comment": "add-vault-connection: Vault banner: the GitHub token expires today or already has.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token vaultu vyprší dnes"
           }
         }
       }
@@ -11937,6 +12825,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Motiv, styl i rozložení obrazovek se vrátí na výchozí."
+          }
+        }
+      }
+    },
+    "Your training plan stays as last synced. Tap to fix.": {
+      "comment": "add-vault-connection: Vault banner: subtitle under the problem.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tréninkový plán zůstává podle poslední synchronizace. Klepni a oprav to."
           }
         }
       }

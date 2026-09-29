@@ -1,0 +1,213 @@
+// VaultController.swift
+//
+// What the vault screens show and the actions they take
+// (add-vault-connection tasks 4.2-4.5, design D10/D11). A thin
+// `@MainActor @Observable` layer over `VaultServices`: every rule --
+// when a request may go out, when the banner shows, what a response means
+// -- lives in VaultKit (`VaultSyncCoordinator`, `VaultConnectionState`) and
+// is tested there. This only holds the latest snapshot for SwiftUI and
+// turns taps into coordinator calls.
+//
+// Local-first: `refreshInBackground` launches the foreground fetch in an
+// unstructured task, so no screen and no confirm/save path ever waits on
+// GitHub. The fetch runs only on Garmin-connected installs (the caller
+// passes `allowed`; standalone installs never see the vault, owner decision
+// A26 / tasks 0.3) and only while the connection is on.
+//
+// The token is read from the Keychain to answer "is there one?" and to
+// show its last four characters; it is never stored in a property.
+//
+// Owned by AppEnvironment (`environment.vault`). Depends on VaultServices.
+
+import Foundation
+import Observation
+import GarminKit
+import VaultKit
+
+@MainActor
+@Observable
+final class VaultController {
+    private(set) var settings: VaultConnectionSettings
+    private(set) var status = VaultStatus()
+    private(set) var hasToken = false
+    private(set) var tokenLastFour: String?
+    private(set) var deviceID: VaultDeviceID?
+    private(set) var lastTest: VaultConnectionTestResult?
+    private(set) var isTesting = false
+
+    @ObservationIgnored private let services: VaultServices
+    @ObservationIgnored private let defaults: UserDefaults
+
+    init(services: VaultServices, defaults: UserDefaults = .standard) {
+        self.services = services
+        self.defaults = defaults
+        self.settings = VaultConnectionSettings.load(from: defaults)
+        readToken()
+    }
+
+    // MARK: - Derived
+
+    var inputs: VaultSyncInputs {
+        VaultSyncInputs(enabled: settings.enabled, configured: settings.isConfigured, hasToken: hasToken)
+    }
+
+    var connectionState: VaultConnectionState {
+        VaultConnectionState(enabled: settings.enabled, configured: settings.isConfigured, hasToken: hasToken, status: status)
+    }
+
+    /// The loud banner's reason right now, or `nil` (design D10).
+    func bannerReason(now: Date = Date()) -> VaultBannerReason? {
+        connectionState.bannerReason(now: now)
+    }
+
+    // MARK: - Loading
+
+    /// Re-reads settings, the Keychain, the status and the device id.
+    func reload() async {
+        settings = VaultConnectionSettings.load(from: defaults)
+        readToken()
+        status = await services.statusStore.current()
+        deviceID = await services.identityStore.currentID()
+    }
+
+    /// A Keychain read that fails (e.g. before first unlock) keeps the
+    /// previous answer rather than claiming the token is gone.
+    private func readToken() {
+        do {
+            let token = try services.tokenStore.load()
+            hasToken = token != nil
+            tokenLastFour = token?.lastFour
+        } catch {
+            VaultLog.log(.warning, "token could not be read from the Keychain (\(type(of: error)))")
+        }
+    }
+
+    // MARK: - Foreground refresh (design D11)
+
+    /// One conditional GET of the projection, never awaited by the caller.
+    /// `force` is pull to refresh (skips the 60 s interval, never the gate).
+    func refreshInBackground(force: Bool, allowed: Bool) {
+        guard allowed, settings.enabled else { return }
+        let coordinator = services.coordinator
+        let inputs = self.inputs
+        Task { [weak self] in
+            // task 4.5: a minimal validator until add-training-today-and-plan
+            // passes TrainingCore's decoder -- a JSON object of at most 5 MB.
+            _ = await coordinator.refreshProjection(inputs, force: force) { bytes in
+                try VaultValidators.jsonObject(bytes)
+            }
+            await self?.reload()
+        }
+    }
+
+    // MARK: - Settings actions
+
+    func setEnabled(_ enabled: Bool) async {
+        var updated = VaultConnectionSettings.load(from: defaults)
+        updated.enabled = enabled
+        updated.save(to: defaults)
+        VaultLog.log(.info, enabled ? "connection turned on" : "connection turned off")
+        if enabled { await services.coordinator.userActed() }
+        await reload()
+    }
+
+    /// Validates and saves the repository; `nil` on success. Never logs the
+    /// owner or the name.
+    func saveRepository(owner: String, name: String, branch: String) async -> VaultRepositoryProblem? {
+        let repository: VaultRepository
+        do {
+            repository = try VaultRepository(owner: owner, name: name, branch: branch)
+        } catch let problem as VaultRepositoryProblem {
+            return problem
+        } catch {
+            return .invalidName
+        }
+        var updated = VaultConnectionSettings.load(from: defaults)
+        updated.owner = repository.owner
+        updated.name = repository.name
+        updated.branch = repository.branch
+        updated.save(to: defaults)
+        VaultLog.log(.info, "repository settings saved")
+        // The user acted: lift a loud block (design D6).
+        await services.coordinator.userActed()
+        await reload()
+        return nil
+    }
+
+    enum TokenSaveError: Error, Equatable {
+        case invalid(VaultTokenProblem)
+        case keychain
+    }
+
+    /// Validates and stores a pasted token; `nil` on success.
+    func saveToken(_ raw: String) async -> TokenSaveError? {
+        let token: VaultToken
+        do {
+            token = try VaultToken(validating: raw)
+        } catch let problem as VaultTokenProblem {
+            return .invalid(problem)
+        } catch {
+            return .invalid(.malformed)
+        }
+        do {
+            try services.tokenStore.save(token)
+        } catch {
+            VaultLog.log(.error, "token could not be saved to the Keychain (\(type(of: error)))")
+            return .keychain
+        }
+        let now = Date()
+        _ = try? await services.statusStore.update { status in
+            status.tokenSavedAt = now
+            // A new token: the old one's expiry no longer applies.
+            status.tokenExpiresAt = nil
+        }
+        VaultLog.log(.info, "token saved")
+        await services.coordinator.userActed()
+        await reload()
+        return nil
+    }
+
+    func removeToken() async {
+        services.tokenStore.delete()
+        _ = try? await services.statusStore.update { status in
+            status.tokenSavedAt = nil
+            status.tokenExpiresAt = nil
+        }
+        VaultLog.log(.info, "token removed")
+        await reload()
+    }
+
+    /// "Test connection" (design D10): read-only; creates the device id on
+    /// the first success.
+    func testConnection() async {
+        guard !isTesting else { return }
+        isTesting = true
+        defer { isTesting = false }
+        readToken()
+        lastTest = await services.coordinator.testConnection(inputs)
+        await reload()
+    }
+
+    /// The banner's and Settings' "Try again" after a loud problem.
+    func tryAgain() async {
+        await services.coordinator.userActed()
+        await reload()
+        refreshInBackground(force: true, allowed: true)
+    }
+
+    /// Disconnect (design D3): token deleted, cache and status cleared,
+    /// switch off; the device id stays.
+    func disconnect() async {
+        services.tokenStore.delete()
+        do {
+            try await services.coordinator.disconnect()
+        } catch {
+            VaultLog.log(.warning, "disconnect could not clear everything (\(type(of: error)))")
+        }
+        var updated = VaultConnectionSettings.load(from: defaults)
+        updated.enabled = false
+        updated.save(to: defaults)
+        lastTest = nil
+        await reload()
+    }
+}

@@ -492,4 +492,47 @@ final class BackupVaultTests: XCTestCase {
             assertNoSecrets(in: file.contents, "export \(file.path) (base64-decoded)")
         }
     }
+
+    // MARK: - GitHub tokens (add-vault-connection task 3.2)
+
+    /// spec "Token absent from an export": a GitHub token pasted anywhere
+    /// -- a custom food's name, some store's value, a preference -- keeps
+    /// that file (or preference) out of every snapshot and export, and no
+    /// VaultKit file is ever included.
+    func testGitHubTokensNeverReachASnapshotOrAnExport() throws {
+        // Assembled at run time: no scanner should mistake this for a leak.
+        let token = "github" + "_pat_" + String(repeating: "Fak3", count: 6)
+        let classic = "gh" + "p_" + String(repeating: "Fak3", count: 6)
+        try write(#"[{"id":"cf1","name":"\#(token)"}]"#, "FoodLogCore/custom-foods.json")
+        try write(#"{"totalXP":1200,"note":"\#(classic)"}"#, "Gamification/xp-ledger.json")
+        try write(#"[{"kg":80.1}]"#, "FoodLogCore/weight-entries.json")
+        try write(#"{"createdAt":"2026-09-28T08:00:00Z","deviceId":"ios-0000abcd","nextSequence":1}"#, "VaultKit/device-identity.json")
+        try write(#"{"lastSuccessAt":"2026-09-28T08:00:00Z"}"#, "VaultKit/status.json")
+        try write(#"{}"#, "VaultKit/fetch-cache.json")
+        let prefs = PreferencesBackup.capture(domain: [
+            "preferences.haptics": true,
+            "preferences.lastSearch": token,
+            "vault.connection.v1": ["enabled": true, "owner": "example-owner", "name": "example-vault", "branch": "main"] as [String: Any]
+        ])
+
+        let snapshot = try XCTUnwrap(vault.writeSnapshot(kind: .manual, preferences: prefs, appVersion: nil, now: noon, calendar: calendar))
+        let (container, skipped) = try vault.makeExportContainer(preferences: prefs, appVersion: nil, now: noon)
+
+        XCTAssertEqual(Set(snapshot.skippedPaths), ["FoodLogCore/custom-foods.json", "Gamification/xp-ledger.json"])
+        XCTAssertEqual(Set(skipped), ["FoodLogCore/custom-foods.json", "Gamification/xp-ledger.json"])
+        XCTAssertEqual(snapshot.snapshot.manifest.files.map(\.path), ["FoodLogCore/weight-entries.json"])
+        XCTAssertFalse(container.files.contains { $0.path.hasPrefix("VaultKit/") })
+        XCTAssertNotNil(container.preferences["vault.connection.v1"], "the connection settings travel")
+
+        let exported = try container.encoded()
+        for needle in [token, classic, "github" + "_pat_", "ios-0000abcd"] {
+            XCTAssertNil(exported.range(of: Data(needle.utf8)), "export contains \(needle)")
+            for file in container.files {
+                XCTAssertNil(file.contents.range(of: Data(needle.utf8)), "export \(file.path) (base64-decoded) contains \(needle)")
+            }
+            for (name, data) in try allBytes(under: vault.backupsDirectory.appendingPathComponent(snapshot.snapshot.id, isDirectory: true)) {
+                XCTAssertNil(data.range(of: Data(needle.utf8)), "snapshot \(name) contains \(needle)")
+            }
+        }
+    }
 }

@@ -8,9 +8,9 @@
 // `OutboxEntry`'s food-log fields or `WeightOutboxEntry`'s weight field --
 // see GarminModels.swift's hydration section and GarminClient.addHydration.
 //
-// Deliberately REUSES `Outbox.backoffDelay` (same module, package-internal
-// visibility), exactly like `WeightOutbox` does -- see that file's header
-// for the full reasoning, which applies here unchanged.
+// Deliberately REUSES the shared backoff formula (`RetryBackoff.delay`,
+// formerly `Outbox.backoffDelay`), exactly like `WeightOutbox` does -- see
+// that file's header for the full reasoning, which applies here unchanged.
 //
 // One instance per process, same as `Outbox`/`WeightOutbox` -- see
 // `AppServices.swift`. `OutboxEntryState`/`DrainAuthOutcome` (Outbox.swift)
@@ -425,7 +425,7 @@ public actor HydrationOutbox {
                 entry.attemptCount += 1
                 entry.lastError = "rate limited (429)"
                 entry.nextAttemptAt = now.addingTimeInterval(
-                    retryAfterSeconds ?? Outbox.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                    retryAfterSeconds ?? RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                 )
                 stoppedDueToRateLimit = true
                 stop = true
@@ -450,7 +450,7 @@ public actor HydrationOutbox {
                     entry.state = .failed
                 } else {
                     entry.nextAttemptAt = now.addingTimeInterval(
-                        Outbox.backoffDelay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
+                        RetryBackoff.delay(attempt: entry.attemptCount, jitter: randomJitter(), base: backoffBase, cap: backoffCap)
                     )
                 }
             }

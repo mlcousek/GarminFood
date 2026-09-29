@@ -159,10 +159,19 @@ public enum PreferencesBackup {
     /// The keys of `domain` that travel with a backup
     /// (`BackupExclusions.includesPreference`), converted to typed values.
     /// A value that isn't a property-list type is skipped.
+    ///
+    /// add-vault-connection D3/D12: a value whose content looks like a
+    /// credential (`BackupSecretPolicy`, e.g. a GitHub token pasted into a
+    /// text preference) is skipped too, whatever its key -- the same
+    /// content scan every store file gets.
     public static func capture(domain: [String: Any]) -> [String: PreferenceValue] {
         var captured: [String: PreferenceValue] = [:]
+        let encoder = JSONEncoder()
         for (key, value) in domain where BackupExclusions.includesPreference(key: key) {
             if let converted = PreferenceValue(propertyListValue: value) {
+                if let encoded = try? encoder.encode(converted), BackupSecretPolicy.containsSecret(encoded) {
+                    continue
+                }
                 captured[key] = converted
             }
         }
