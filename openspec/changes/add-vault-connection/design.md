@@ -43,18 +43,30 @@ are probed from the owner's PC, read-only, before wave 3 (tasks 1.1–1.3):
 
 | Behaviour | Source | Status |
 |---|---|---|
-| `GET /repos/{owner}/{repo}/contents/{path}` with `Accept: application/vnd.github.raw+json` returns the file's bytes | GitHub REST docs, "Get repository content" | documented, not observed |
-| That response carries an `ETag`, and `If-None-Match` with it returns `304` with no body | GitHub REST docs, "Conditional requests" | documented, not observed |
-| A `304` does not count against the primary rate limit | GitHub REST docs, rate limits | documented, not observed |
+| `GET /repos/{owner}/{repo}/contents/{path}` with `Accept: application/vnd.github.raw+json` returns the file's bytes | GitHub REST docs, "Get repository content" | **observed 2026-09-29** (200, 83 528 bytes) |
+| That response carries an `ETag`, and `If-None-Match` with it returns `304` with no body | GitHub REST docs, "Conditional requests" | **observed 2026-09-29** (strong ETag on the raw response; 304, 0 bytes) |
+| A `304` does not count against the primary rate limit | GitHub REST docs, rate limits | **observed 2026-09-29** (`x-ratelimit-remaining` 4992 before and after) |
 | Fine-grained tokens get 5,000 requests/hour; content-creating requests have secondary limits (about 80/minute, 500/hour) | GitHub REST docs | documented |
-| Responses to requests made with an expiring token carry `github-authentication-token-expiration` | GitHub docs ("Token expiration") | **header name unverified** |
+| Responses to requests made with an expiring token carry `github-authentication-token-expiration` | GitHub docs ("Token expiration") | **observed 2026-09-29**: exact name, value `yyyy-MM-dd HH:mm:ss UTC` (the parser's first format); present on 200/304/404, absent on 401 |
 | `PUT …/contents/{path}` without `sha` creates a file and returns `201`; if the path exists it returns `422` | GitHub REST docs, "Create or update file contents" | documented; probed only in `add-training-checkins` |
-| `GET /repos/{owner}/{repo}` returns `404` for a private repository the token can't see | GitHub REST docs | documented, not observed |
+| `GET /repos/{owner}/{repo}` returns `404` for a private repository the token can't see | GitHub REST docs | **observed 2026-09-29** (404 for a non-existent name; 401 for a wrong token) |
 
 `tools/probe-github-contents.mjs` (GET-only) records, dated, in this file:
 status codes, the presence and name of `ETag`, the expiry header's exact
 name and date format, and the rate-limit header names. It prints no body,
 no token and no repository name.
+
+**Probe run 2026-09-29 (owner's PC, fine-grained token, Contents read/write on one repository):**
+
+| Step | Status | Notes |
+|---|---|---|
+| 1. `GET /repos/{o}/{r}` | 200 | weak ETag; expiry header present |
+| 2. projection, raw media type | 200 | 83 528 bytes; strong ETag (42 chars); `last-modified` present |
+| 3. same, `If-None-Match` | 304 | 0 bytes; rate limit not spent; no redirect |
+| 4. non-existent repository | 404 | expiry header present |
+| 5. wrong token | 401 | no rate-limit or expiry headers |
+
+Rate-limit headers seen: `x-ratelimit-limit` (5000), `x-ratelimit-remaining`, `x-ratelimit-used`, `x-ratelimit-reset` (epoch seconds), `x-ratelimit-resource` (`core`). `retry-after` did not appear (no limit was hit). The owner chose a one-year expiry instead of the suggested 180 days; the 14-day banner covers either.
 
 ## Goals / Non-Goals
 
