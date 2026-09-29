@@ -268,10 +268,140 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     /// Habit schedule: after these session types.
     case scheduleWithSessions = "After sessions: %@"
 
+    /// Season screen: the vault has published no season.
+    case seasonNoneTitle = "No season yet"
+    /// Season screen: the vault has published no season.
+    case seasonNoneMessage = "Your vault hasn't published a season."
+    /// Season timeline: a stretch of the season no phase covers.
+    case seasonNoPhase = "No phase planned"
+    /// How many weeks a phase has. Plural.
+    case weeksCount = "%lld weeks"
+    /// A race in the past. Plural.
+    case countdownDaysAgo = "%lld days ago"
+    /// A race with an approximate date in the past. Plural.
+    case countdownAboutDaysAgo = "about %lld days ago"
+    /// The season's hero race (its main goal).
+    case raceHero = "Hero race"
+    /// A race no training phase prepares for yet.
+    case raceUnanchored = "No phase covers this race yet"
+    /// Race priority A (a goal race).
+    case racePriorityA = "A race"
+    /// Race priority B.
+    case racePriorityB = "B race"
+    /// Race priority C (a training race).
+    case racePriorityC = "C race"
+    /// Race checkpoint: food and drink.
+    case aidFull = "Full aid"
+    /// Race checkpoint: water only.
+    case aidWater = "Water"
+    /// Race checkpoint: nothing to eat or drink.
+    case aidNone = "No aid"
+    /// Training phase kind.
+    case phaseKindBase = "Base"
+    /// Training phase kind: race-specific preparation.
+    case phaseKindSpecific = "Specific"
+    /// Training phase status: not started, still being written.
+    case phaseDraft = "Draft"
+    /// Phase header: the phase is over.
+    case phaseFinished = "Finished"
+    /// Phase header: a phase that hasn't started. Plural.
+    case phaseStartsIn = "Starts in %lld days"
+    /// Phase header: which week of the phase today is.
+    case phaseWeekOf = "Week %lld of %lld"
+    /// Phase header: days to the phase's end. Plural.
+    case phaseDaysLeft = "%lld days left"
+    /// Phase weeks: a past week the plan file no longer carries, so its distance isn't known here.
+    case weekOutsideWindow = "Not in the app's window"
+    /// Phase screen of a phase other than the current one.
+    case phaseRestricted = "Goals and rules are published for the current phase only."
+    /// Phase recap: kilometres run against the plan, over the weeks with known distance.
+    case recapRun = "Ran %@ of %@ km planned"
+    /// Phase recap: weeks whose distance was within ten percent of the target.
+    case recapWithinTen = "%lld of %lld weeks within 10 %% of target"
+    /// Phase recap: the week with the most kilometres and its ISO week number.
+    case recapBiggest = "Biggest week: %@ km (W%lld)"
+    /// Race: start time.
+    case raceStart = "Start %@"
+    /// Race or checkpoint: the time limit (duration and clock time).
+    case raceCutoff = "Cutoff %@"
+    /// A race checkpoint without a name.
+    case checkpointNumber = "Checkpoint %lld"
+    /// Race checkpoint: the planned arrival (duration and clock time).
+    case checkpointTarget = "Target %@"
+    /// Race checkpoint: time between the planned arrival and the cutoff.
+    case checkpointBuffer = "Buffer %@"
+    /// Race checkpoint: the planned arrival is after the cutoff by this much.
+    case checkpointOverCutoff = "%@ after the cutoff"
+    /// Race fuel: carbohydrate per hour.
+    case raceFuelCarbs = "%@ g carbs/h"
+    /// Race fuel: how often to eat.
+    case raceFuelEvery = "Every %lld min"
+    /// Race fuel: fluid per hour.
+    case raceFuelFluid = "%@ ml fluid/h"
+    /// Race fuel: carbohydrate over the planned finish time.
+    case raceFuelTotalCarbs = "About %@ g carbs to the finish"
+    /// Race fuel: fluid over the planned finish time, in litres.
+    case raceFuelTotalFluid = "About %@ l fluid to the finish"
+    /// Carb load on the race day itself.
+    case raceDay = "Race day"
+    /// Carb load: days before the race. Plural.
+    case carbLoadDaysBefore = "%lld days before"
+    /// Carb load: days after the race. Plural.
+    case carbLoadDaysAfter = "%lld days after"
+    /// Carb load day: grams of carbohydrate and grams per kilogram.
+    case carbLoadAmount = "%@ g carbs · %@ g/kg"
+    /// Carb load day: grams of carbohydrate.
+    case carbLoadGrams = "%@ g carbs"
+    /// Carb load day: grams of carbohydrate per kilogram of body weight.
+    case carbLoadPerKg = "%@ g/kg"
+    /// Carb load day without an amount.
+    case carbLoadUnknown = "Amount not set"
+    /// Carb load: the grams come from the plan file.
+    case carbLoadFromPlan = "From your plan"
+    /// Carb load: grams worked out from the body weight in the plan.
+    case carbLoadEstimate = "Estimated for %@ kg"
+    /// Carb load: grams can't be worked out without a body weight.
+    case carbLoadNoWeight = "No body weight in the plan to count grams"
+    /// Race gear that is required.
+    case gearMandatory = "Mandatory"
+    /// Race gear that is not required.
+    case gearOptional = "Optional"
+    /// Race screen: the race has no preparation yet.
+    case raceStub = "Race prep not written yet"
+    /// Race screen: the vault has a report for the race.
+    case raceReported = "Race report written"
+    /// Statistics scope: the whole season.
+    case statsWholeSeason = "Whole season"
+    /// Statistics: share of the sessions due so far that were done (a percentage).
+    case statsAdherence = "Done %@ of the sessions due so far"
+    /// Statistics: nothing has been due in the scope yet.
+    case statsNoneDue = "No sessions due yet"
+    /// Statistics: started weeks the plan file no longer carries (a list of week numbers); not counted.
+    case statsOutsideWindow = "Not in the app's window: %@"
+    /// Statistics: sessions done, missed and still planned.
+    case statsCounts = "%lld done · %lld missed · %lld planned"
+    /// Statistics: sessions skipped.
+    case statsSkipped = "%lld skipped"
+    /// Statistics: a number of sessions. Plural.
+    case statsSessions = "%lld sessions"
+    /// Statistics: no done session with G/A/R options in the scope.
+    case statsNoOptions = "No traffic-light session done yet"
+    /// Statistics: kilometres run of the week's target.
+    case statsOfTarget = "%@ of %@ km"
+    /// Statistics: the run target summed over the weeks.
+    case statsPlannedTotal = "Planned %@ km in total"
+    /// Statistics: mean kilometres per week with a known distance.
+    case statsMeanWeekly = "Average %@ km a week"
+    /// Statistics: a test never done.
+    case statsNoResults = "No results yet"
+    /// Statistics: a test's left and right values (L = left, R = right).
+    case statsLeftRight = "L %@ · R %@"
+    /// Statistics: the difference between left and right as a percentage.
+    case statsAsymmetry = "Asymmetry %@"
     /// Keys that live in `.stringsdict` (plural forms).
     public var isPlural: Bool {
         switch self {
-        case .countdownInDays, .countdownInAboutDays, .noticeLastSynced, .habitRecordedDays, .scheduleEveryNWeeks: return true
+        case .countdownInDays, .countdownInAboutDays, .noticeLastSynced, .habitRecordedDays, .scheduleEveryNWeeks, .weeksCount, .countdownDaysAgo, .countdownAboutDaysAgo, .phaseStartsIn, .phaseDaysLeft, .carbLoadDaysBefore, .carbLoadDaysAfter, .statsSessions: return true
         default: return false
         }
     }

@@ -1903,6 +1903,18 @@
         }
       }
     },
+    "Adherence": {
+      "comment": "add-training-stats: Statistics: sessions done against the plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plnění plánu"
+          }
+        }
+      }
+    },
     "Adjust amount": {
       "comment": "Accessibility label of the quantity stepper (label hidden visually).",
       "extractionState": "manual",
@@ -2083,6 +2095,18 @@
         }
       }
     },
+    "By phase": {
+      "comment": "add-training-stats: Statistics: adherence grouped by training phase.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podle fází"
+          }
+        }
+      }
+    },
     "Calendar": {
       "comment": "Achievements group header: date-based badges.",
       "extractionState": "manual",
@@ -2091,6 +2115,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kalendář"
+          }
+        }
+      }
+    },
+    "Carb load": {
+      "comment": "add-season-phase-race-screens: Race screen: the carbohydrate-loading days before the race.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasycení sacharidy"
           }
         }
       }
@@ -2677,6 +2713,18 @@
         }
       }
     },
+    "Gear": {
+      "comment": "add-season-phase-race-screens: Race screen: the race gear list.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výbava"
+          }
+        }
+      }
+    },
     "GitHub asked to slow down. The app will try again later.": {
       "comment": "add-vault-connection: Vault status: rate limited (quiet).",
       "extractionState": "manual",
@@ -2841,6 +2889,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dodrženo"
+          }
+        }
+      }
+    },
+    "Key sessions": {
+      "comment": "add-season-phase-race-screens: Phase screen: long runs, quality sessions, tests and races.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klíčové tréninky"
+          }
+        }
+      }
+    },
+    "Kilometres": {
+      "comment": "add-training-stats: chart axis: running kilometres.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometry"
           }
         }
       }
@@ -3235,6 +3307,18 @@
         }
       }
     },
+    "Now": {
+      "comment": "add-season-phase-race-screens: badge on the phase or week that contains today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teď"
+          }
+        }
+      }
+    },
     "Offline. The last plan stays available.": {
       "comment": "add-vault-connection: Vault status: no connection (quiet).",
       "extractionState": "manual",
@@ -3267,6 +3351,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Z GitHubu jen čte: ověří token, repozitář a soubor s plánem. Nic nezapisuje."
+          }
+        }
+      }
+    },
+    "Open food log": {
+      "comment": "add-season-phase-race-screens: Race screen: opens Today's food log on a carb-load day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevřít deník jídla"
           }
         }
       }
@@ -3379,6 +3475,30 @@
         }
       }
     },
+    "Opens the phase": {
+      "comment": "add-season-phase-race-screens: VoiceOver hint on a phase row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře fázi"
+          }
+        }
+      }
+    },
+    "Opens the race": {
+      "comment": "add-season-phase-race-screens: VoiceOver hint on a race row.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře závod"
+          }
+        }
+      }
+    },
     "Opens the session": {
       "comment": "add-training-today-and-plan: VoiceOver hint on a training session or option card.",
       "extractionState": "manual",
@@ -3451,6 +3571,18 @@
         }
       }
     },
+    "Options on done days": {
+      "comment": "add-training-stats: Statistics: which of G, A and R the done traffic-light sessions were.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Možnosti hotových tréninků"
+          }
+        }
+      }
+    },
     "Owner": {
       "comment": "add-vault-connection: Settings -> Vault: text field for the GitHub account that owns the repository.",
       "extractionState": "manual",
@@ -3511,6 +3643,30 @@
         }
       }
     },
+    "Phase": {
+      "comment": "add-season-phase-race-screens: Phase screen title while it has no data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fáze"
+          }
+        }
+      }
+    },
+    "Phases": {
+      "comment": "add-season-phase-race-screens: Season screen: section listing the training phases.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fáze"
+          }
+        }
+      }
+    },
     "Pick two different times": {
       "comment": "Settings > Fasting: shown when start and end are the same time.",
       "extractionState": "manual",
@@ -3559,6 +3715,66 @@
         }
       }
     },
+    "Race": {
+      "comment": "add-season-phase-race-screens: Race screen title while it has no data.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Závod"
+          }
+        }
+      }
+    },
+    "Race day in the plan": {
+      "comment": "add-season-phase-race-screens: Race screen: the plan's session that is this race.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den závodu v plánu"
+          }
+        }
+      }
+    },
+    "Race fuel": {
+      "comment": "add-season-phase-race-screens: Race screen: what to eat and drink during the race.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výživa v závodě"
+          }
+        }
+      }
+    },
+    "Race plan": {
+      "comment": "add-season-phase-race-screens: Race screen: start, cutoff and the checkpoint table.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plán závodu"
+          }
+        }
+      }
+    },
+    "Races": {
+      "comment": "add-season-phase-race-screens: Season and Phase screens: section listing races.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Závody"
+          }
+        }
+      }
+    },
     "Reads your training plan from your Obsidian vault's GitHub repository. Nothing is sent to GitHub until you turn this on and save a token.": {
       "comment": "add-vault-connection: Settings -> Vault: footer under the switch.",
       "extractionState": "manual",
@@ -3567,6 +3783,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Načítá tréninkový plán z GitHub repozitáře tvého vaultu Obsidianu. Dokud to nezapneš a neuložíš token, na GitHub se nic neposílá."
+          }
+        }
+      }
+    },
+    "Recap": {
+      "comment": "add-season-phase-race-screens: Phase screen: the summary of a finished phase.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shrnutí"
           }
         }
       }
@@ -3655,6 +3883,18 @@
         }
       }
     },
+    "Rules": {
+      "comment": "add-season-phase-race-screens: Phase screen: the plan's rules.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pravidla"
+          }
+        }
+      }
+    },
     "Runs overnight, from %@ until %@ the next day. Logging food inside it shows a gentle note but never blocks.": {
       "comment": "Settings > Fasting footer for a window crossing midnight. %@ = clock times (start, end).",
       "extractionState": "manual",
@@ -3715,6 +3955,42 @@
         }
       }
     },
+    "Scope": {
+      "comment": "add-training-stats: Statistics: picker between this phase and the whole season.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozsah"
+          }
+        }
+      }
+    },
+    "Season": {
+      "comment": "add-season-phase-race-screens: Plan tab: segment showing the season timeline.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sezóna"
+          }
+        }
+      }
+    },
+    "Series": {
+      "comment": "add-training-stats: chart axis: which line or bar series a value belongs to.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řada"
+          }
+        }
+      }
+    },
     "Session": {
       "comment": "add-training-today-and-plan: Session detail: fallback screen title.",
       "extractionState": "manual",
@@ -3723,6 +3999,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trénink"
+          }
+        }
+      }
+    },
+    "Sessions": {
+      "comment": "add-training-stats: chart axis: number of sessions.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tréninky"
           }
         }
       }
@@ -3799,6 +4087,18 @@
         }
       }
     },
+    "Statistics": {
+      "comment": "add-training-stats: Plan toolbar button, Phase screen link and the statistics screen's title.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistiky"
+          }
+        }
+      }
+    },
     "Steps": {
       "comment": "add-training-today-and-plan: Session detail: the workout's steps.",
       "extractionState": "manual",
@@ -3859,6 +4159,30 @@
         }
       }
     },
+    "Taper": {
+      "comment": "add-season-phase-race-screens: Race screen: the weeks leading into the race.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ladění formy"
+          }
+        }
+      }
+    },
+    "Target": {
+      "comment": "add-season-phase-race-screens: chart legend: the planned kilometres.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl"
+          }
+        }
+      }
+    },
     "Test connection": {
       "comment": "add-vault-connection: Settings -> Vault: read-only connection check.",
       "extractionState": "manual",
@@ -3879,6 +4203,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Výsledek testu"
+          }
+        }
+      }
+    },
+    "Test results": {
+      "comment": "add-season-phase-race-screens: Phase screen: test results dated inside the phase.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výsledky testů"
+          }
+        }
+      }
+    },
+    "Tests": {
+      "comment": "add-training-stats: Statistics: section with every test's history.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testy"
           }
         }
       }
@@ -3927,6 +4275,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Token se odebere z klíčenky tohoto iPhonu a uložený plán se smaže."
+          }
+        }
+      }
+    },
+    "This phase": {
+      "comment": "add-training-stats: Statistics scope: one training phase.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato fáze"
+          }
+        }
+      }
+    },
+    "This phase is no longer in the plan": {
+      "comment": "add-season-phase-race-screens: Phase screen: the phase's id isn't in the latest plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato fáze už v plánu není"
+          }
+        }
+      }
+    },
+    "This race is no longer in the season": {
+      "comment": "add-season-phase-race-screens: Race screen: the race's id isn't in the latest plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento závod už v sezóně není"
           }
         }
       }
@@ -4147,6 +4531,18 @@
         }
       }
     },
+    "Value": {
+      "comment": "add-training-stats: chart axis: a test result's value.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hodnota"
+          }
+        }
+      }
+    },
     "Variety": {
       "comment": "Achievements group header: badges for different foods.",
       "extractionState": "manual",
@@ -4261,6 +4657,18 @@
         }
       }
     },
+    "Volume vs target": {
+      "comment": "add-training-stats: Statistics: weekly running kilometres against the plan's target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objem proti cíli"
+          }
+        }
+      }
+    },
     "Water trend": {
       "comment": "VoiceOver label of the Trends water chart.",
       "extractionState": "manual",
@@ -4347,6 +4755,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Týdenní poznámka"
+          }
+        }
+      }
+    },
+    "Weeks": {
+      "comment": "add-season-phase-race-screens: Phase screen: week-by-week targets against what was run.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Týdny"
+          }
+        }
+      }
+    },
+    "Whole season": {
+      "comment": "add-training-stats: Statistics scope: the whole season.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celá sezóna"
           }
         }
       }
