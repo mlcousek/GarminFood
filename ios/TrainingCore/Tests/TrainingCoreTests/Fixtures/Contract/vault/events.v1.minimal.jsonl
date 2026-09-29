@@ -1,0 +1,3 @@
+{"v":1,"id":"01beca67-9500-7117-a117-5eed00000017","deviceId":"ios-00000001","seq":1,"at":"2030-10-23T04:00:00+02:00","type":"device.hello","payload":{"appVersion":"2.1.0 (230)","contractVersions":[1]}}
+{"v":1,"id":"01beca68-7f60-7118-a118-5eed00000018","deviceId":"ios-00000001","seq":2,"at":"2030-10-23T04:01:00+02:00","type":"checkin.morning","payload":{"date":"2030-10-23","light":"green"}}
+{"v":1,"id":"01becdd6-7d00-7119-a119-5eed00000019","deviceId":"ios-00000001","seq":3,"at":"2030-10-23T20:00:00+02:00","type":"habit.tick","payload":{"date":"2030-10-23","habitId":"holds","done":true}}

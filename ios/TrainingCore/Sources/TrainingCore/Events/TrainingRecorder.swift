@@ -117,11 +117,12 @@ public actor TrainingRecorder {
         return result
     }
 
-    /// The phone's events as the screens show them.
-    public func overlay() async -> CheckInOverlay {
+    /// The phone's events as the screens show them; `acks` is the cached
+    /// projection's `acks` (empty until the vault has read any).
+    public func overlay(acks: [String: JSONValue] = [:]) async -> CheckInOverlay {
         let events = await log.all()
         let unsent = Set(await queue.all().filter { $0.state != .sent }.map { $0.record.id })
-        return CheckInOverlay.fold(events, unsentSegments: unsent)
+        return CheckInOverlay.fold(events, unsentSegments: unsent, ackedSeqs: CheckInOverlay.ackedSeqs(from: acks))
     }
 
     /// Events not yet uploaded: unsealed ones, plus those in segments still

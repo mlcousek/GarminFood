@@ -4,29 +4,28 @@
 // design D2): one event per training action, serialised as one JSON object
 // per line (JSONL) into segment files under `events/<deviceId>/`. This is
 // the ONLY file that knows the envelope's field names, the type strings and
-// the payload keys, so when the vault's event contract v1 (its
-// `add-hub-ingest` change) settles a detail differently, the change is made
-// here, and `HubEventTests` + the golden fixture
-// (Tests/TrainingCoreTests/Fixtures/Events/events.v1.app.jsonl) catch any
-// drift.
-//
-// Envelope v1 (app side, pending the vault's fixture -- tasks group 1):
+// the payload keys. It follows the vault's event contract v1 (its
+// `add-hub-ingest` change, "Event log v1" in its Training Hub Contract),
+// whose two fixtures are mirrored verbatim under
+// Tests/TrainingCoreTests/Fixtures/Contract/vault/ and decoded by
+// `HubEventTests`, beside the app's own golden file
+// (Fixtures/Events/events.v1.app.jsonl, byte-exact).
 //
 //   {"at":"2030-10-23T04:07:31.000+02:00","deviceId":"ios-0000beef",
 //    "id":"<UUIDv7>","payload":{...},"seq":7,"type":"checkin.morning","v":1}
 //
-//   checkin.morning  {date, light: green|amber|red, sessionId?}
+//   checkin.morning  {date, light: green|amber|red, sessionId?, option?: G|A|R}
 //   habit.tick       {date, habitId, done}           (decision A42: on/off)
-//   session.rpe      {date, sessionId, rpe: 1...10}
-//   session.note     {date, sessionId, text}         (<= 2000 characters)
+//   session.rpe      {date, sessionId, rpe: 1...10, feel?: 1...5}
+//   session.note     {date, sessionId, text}         (1...2000 characters)
 //
-// Differences from the architecture note's section 2.4 draft, each a
-// one-line change below if the contract says otherwise: `deviceId` (not
-// `src.device`), `payload` (not `data`), `date` inside the payload (not a
-// top-level `day`), no `tz`/`src`/`cmd`, `habit.tick {done}` (not
-// `habit.done {n, part}`), `session.rpe`/`session.note` (not
-// `session.rated`/`note.added`). The light uses the projection's own words
-// (`day.light`), from which the option letter follows (G<->green, ...).
+// The contract: optional keys may be absent or `null` with the same
+// meaning, and the app should write them -- so this encoder writes them,
+// as `null` when unknown. The light is the morning's state, never the
+// workout letter; `option` is the option he intends (the light's letter
+// when the day has a traffic-light session, else null). The vault's other
+// types (`device.hello`, `event.retracted`, the `plan.*` commands) decode
+// as `.other` here: this app doesn't write them yet.
 //
 // Encoding is deterministic (sorted keys, unescaped slashes, `\n` after
 // every line) because a sealed segment's bytes and git blob SHA must be the
@@ -77,11 +76,19 @@ public struct MorningCheckInPayload: Equatable, Sendable {
     public var light: MorningLight
     /// The day's traffic-light session, when it has one.
     public var sessionId: String?
+    /// The option he intends: by default the light's letter when there is
+    /// a session, else `nil` (the contract's `option?`).
+    public var option: OptionCode?
 
     public init(date: LocalDate, light: MorningLight, sessionId: String? = nil) {
+        self.init(date: date, light: light, sessionId: sessionId, option: sessionId == nil ? nil : light.option)
+    }
+
+    public init(date: LocalDate, light: MorningLight, sessionId: String?, option: OptionCode?) {
         self.date = date
         self.light = light
         self.sessionId = sessionId
+        self.option = option
     }
 }
 
@@ -99,15 +106,20 @@ public struct HabitTickPayload: Equatable, Sendable {
 
 public struct SessionRPEPayload: Equatable, Sendable {
     public static let range = 1...10
+    public static let feelRange = 1...5
 
     public var date: LocalDate
     public var sessionId: String
     public var rpe: Int
+    /// The contract's optional 1-5 feel; the app doesn't ask for it yet
+    /// (tasks 0.5) and writes `null`.
+    public var feel: Int?
 
-    public init(date: LocalDate, sessionId: String, rpe: Int) {
+    public init(date: LocalDate, sessionId: String, rpe: Int, feel: Int? = nil) {
         self.date = date
         self.sessionId = sessionId
         self.rpe = rpe
+        self.feel = feel
     }
 }
 
@@ -163,8 +175,10 @@ public enum HubEventPayload: Equatable, Sendable {
         case .sessionRPE(let payload):
             if payload.sessionId.isEmpty { throw HubEventError.invalidPayload("empty sessionId") }
             if !SessionRPEPayload.range.contains(payload.rpe) { throw HubEventError.invalidPayload("rpe out of range") }
+            if let feel = payload.feel, !SessionRPEPayload.feelRange.contains(feel) { throw HubEventError.invalidPayload("feel out of range") }
         case .sessionNote(let payload):
             if payload.sessionId.isEmpty { throw HubEventError.invalidPayload("empty sessionId") }
+            if payload.text.isEmpty { throw HubEventError.invalidPayload("empty note") }
             if payload.text.count > SessionNotePayload.maxLength { throw HubEventError.invalidPayload("note too long") }
         case .other:
             throw HubEventError.unknownType
@@ -212,7 +226,7 @@ extension HubEvent: Codable {
     }
 
     enum PayloadKeys: String, CodingKey {
-        case date, light, sessionId, habitId, done, rpe, text
+        case date, light, sessionId, option, habitId, done, rpe, feel, text
     }
 
     public init(from decoder: Decoder) throws {
@@ -242,7 +256,13 @@ extension HubEvent: Codable {
             guard let light = MorningLight(rawValue: lightText) else {
                 throw DecodingError.dataCorruptedError(forKey: .light, in: p, debugDescription: "unknown light")
             }
-            payload = .morningCheckIn(MorningCheckInPayload(date: date, light: light, sessionId: try p.decodeIfPresent(String.self, forKey: .sessionId)))
+            let optionText = try p.decodeIfPresent(String.self, forKey: .option)
+            payload = .morningCheckIn(MorningCheckInPayload(
+                date: date,
+                light: light,
+                sessionId: try p.decodeIfPresent(String.self, forKey: .sessionId),
+                option: optionText.flatMap { OptionCode(rawValue: $0) }
+            ))
         case .habitTick:
             payload = .habitTick(HabitTickPayload(
                 date: date,
@@ -253,7 +273,8 @@ extension HubEvent: Codable {
             payload = .sessionRPE(SessionRPEPayload(
                 date: date,
                 sessionId: try p.decode(String.self, forKey: .sessionId),
-                rpe: try p.decode(Int.self, forKey: .rpe)
+                rpe: try p.decode(Int.self, forKey: .rpe),
+                feel: try p.decodeIfPresent(Int.self, forKey: .feel)
             ))
         case .sessionNote:
             payload = .sessionNote(SessionNotePayload(
@@ -282,7 +303,9 @@ extension HubEvent: Codable {
         case .morningCheckIn(let value):
             try p.encode(value.date.description, forKey: .date)
             try p.encode(value.light.rawValue, forKey: .light)
-            try p.encodeIfPresent(value.sessionId, forKey: .sessionId)
+            // Optional keys are written, as null when unknown (contract).
+            try p.encode(value.sessionId, forKey: .sessionId)
+            try p.encode(value.option?.rawValue, forKey: .option)
         case .habitTick(let value):
             try p.encode(value.date.description, forKey: .date)
             try p.encode(value.habitId, forKey: .habitId)
@@ -291,6 +314,7 @@ extension HubEvent: Codable {
             try p.encode(value.date.description, forKey: .date)
             try p.encode(value.sessionId, forKey: .sessionId)
             try p.encode(value.rpe, forKey: .rpe)
+            try p.encode(value.feel, forKey: .feel)
         case .sessionNote(let value):
             try p.encode(value.date.description, forKey: .date)
             try p.encode(value.sessionId, forKey: .sessionId)

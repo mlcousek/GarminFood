@@ -197,7 +197,7 @@ final class TrainingModel {
         )
         // add-training-checkins: the phone's events over the plan, and
         // whether it may record at all.
-        let checkIns = await events.recorder.overlay()
+        let checkIns = await events.recorder.overlay(acks: cached?.projection.acks ?? [:])
         let canRecord = await events.canRecord()
         source = TrainingSource.from(availability, freshness: freshness, checkIns: checkIns, capabilities: .checkIns(enabled: canRecord))
         hasLoaded = true

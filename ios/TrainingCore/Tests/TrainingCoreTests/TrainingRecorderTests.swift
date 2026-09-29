@@ -275,6 +275,24 @@ final class TrainingRecorderTests: XCTestCase {
         XCTAssertTrue(CheckInOverlay.empty.isEmpty)
     }
 
+    func testTheVaultsAcksMarkEventsReceived() {
+        let acks: [String: JSONValue] = [
+            "d": .object(["seq": .number(1), "maxSeq": .number(2)]),
+            "broken": .string("x")
+        ]
+        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: acks), ["d": 1])
+        let segment = UUID()
+        let events = [
+            LoggedEvent(event: HubEvent(id: "1", deviceId: "d", seq: 1, at: "t", payload: .sessionRPE(SessionRPEPayload(date: D.asOf, sessionId: "s1", rpe: 5))), recordedAt: t0, segmentID: segment),
+            LoggedEvent(event: HubEvent(id: "2", deviceId: "d", seq: 2, at: "t", payload: .sessionRPE(SessionRPEPayload(date: D.asOf, sessionId: "s2", rpe: 6))), recordedAt: t0.addingTimeInterval(1), segmentID: segment)
+        ]
+        let overlay = CheckInOverlay.fold(events, unsentSegments: [], ackedSeqs: CheckInOverlay.ackedSeqs(from: acks))
+        XCTAssertEqual(overlay.rpe(session: "s1")?.delivery, .received)
+        XCTAssertEqual(overlay.rpe(session: "s2")?.delivery, .sent, "seq 2 is past the ack (a gap holds it)")
+        XCTAssertEqual(TrainingFormatting(language: .english, zones: nil).deliveryLine(.received), "Received by the vault")
+        XCTAssertEqual(TrainingFormatting(language: .czech, zones: nil).deliveryLine(.received), "Přijato ve vaultu")
+    }
+
     // MARK: Planning
 
     func testCheckInPlanningUsesThePlansDayAndSession() throws {

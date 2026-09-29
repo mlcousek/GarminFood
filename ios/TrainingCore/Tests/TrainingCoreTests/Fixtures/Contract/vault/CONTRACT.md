@@ -20,3 +20,26 @@ changes only within v1), copy them again verbatim, update the date above and
 re-run `swift test` (ProjectionDecodingTests, TodayBuilderTests,
 PlanBuilderTests). App-authored edge cases are mutations of the example made
 in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
+
+# Event contract fixtures (mirrored)
+
+- **Contract:** the event log v1 (envelope `v: 1`) -- what the app writes
+  into `events/<deviceId>/` (`add-training-checkins` design D2).
+- **Source:** the vault's `add-hub-ingest` change (its contract's "Event
+  log v1" section and its executable validator), generated synthetic:
+  devices `ios-0a1b2c3d` and `ios-00000001`, season 2030, no real names or
+  data.
+- **Copied:** 2026-09-29, verbatim (byte for byte, LF; see
+  `.gitattributes`), from the change while it was still in progress on the
+  vault side. Re-mirror when it lands and whenever the vault records a
+  change in its fixture changelog.
+
+| File | What it is |
+|---|---|
+| `events.v1.example.jsonl` | 22 events of every v1 type, including the plan commands, `device.hello` and `event.retracted` this app doesn't write yet. |
+| `events.v1.minimal.jsonl` | 3 events with every optional key omitted. |
+
+`HubEventTests` decodes both: the four types this app writes decode to
+their payloads, every other type to `.other`, no line is invalid. The app's
+own byte-exact golden file is `../../Events/events.v1.app.jsonl`, which the
+vault's validator (`validateEvent`) accepted on 2026-09-29.

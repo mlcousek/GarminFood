@@ -11,7 +11,8 @@
 - **Golden:** `HubEventTests` encodes the same events and compares the bytes
   with this file exactly (sorted keys, unescaped slashes, `\n` after every
   line, LF only -- see `.gitattributes`), and decodes it back.
-- **Provisional:** written before the vault's event contract v1
-  (`add-hub-ingest`) published its fixture. When it does, mirror the vault's
-  file verbatim into `../Contract/vault/`, reconcile `Events/HubEvent.swift`
-  and regenerate this file (tasks group 1).
+- **Checked against the vault:** the vault's event contract v1
+  (`add-hub-ingest`) validator accepts every line (2026-09-29). Its own
+  fixtures are mirrored verbatim in `../Contract/vault/`. When the vault
+  changes the contract, reconcile `Events/HubEvent.swift` and regenerate
+  this file.

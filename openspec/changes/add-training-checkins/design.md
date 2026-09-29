@@ -80,10 +80,11 @@ Events/
 
 ### D2 — The envelope v1 (app side), one file
 
-The vault's event contract v1 is being written in parallel
-(`add-hub-ingest`); its fixture did not exist when this was built. The
-envelope follows the owner's brief for this change and the architecture
-note's §2.4, reconciled:
+The vault's event contract v1 comes from its `add-hub-ingest` change
+("Event log v1" in its Training Hub Contract, executable as
+`validateEvent`). Its two fixtures appeared while this was being built and
+are mirrored verbatim (see "Contract details confirmed" below). The
+envelope:
 
 ```json
 {"at":"2030-10-23T04:07:31.482+02:00","deviceId":"ios-0000beef","id":"01f2…","payload":{"date":"2030-10-23","light":"amber","sessionId":"2030-w43-wed-am"},"seq":7,"type":"checkin.morning","v":1}
@@ -101,36 +102,36 @@ note's §2.4, reconciled:
 
 | Type | Payload |
 |---|---|
-| `checkin.morning` | `{date, light: green\|amber\|red, sessionId?}` |
+| `checkin.morning` | `{date, light: green\|amber\|red, sessionId?, option?: G\|A\|R}` |
 | `habit.tick` | `{date, habitId, done: bool}` (A42) |
-| `session.rpe` | `{date, sessionId, rpe: 1…10}` |
-| `session.note` | `{date, sessionId, text}` (≤ 2000 characters) |
+| `session.rpe` | `{date, sessionId, rpe: 1…10, feel?: 1…5}` |
+| `session.note` | `{date, sessionId, text}` (1–2000 characters) |
 
-- **Reconciliation with §2.4**, each a one-line change in `HubEvent.swift`
-  if the vault's contract says otherwise: `deviceId` at top level (§2.4:
-  `src.device`); `payload` (§2.4: `data`); `date` inside the payload
-  (§2.4: top-level `day`); no `tz`, `src.kind`, `src.build` or `cmd`;
-  `light` as the projection's words `green|amber|red` (the brief wrote
-  "G|A|R"; the option letter follows from the light, so no separate
-  `option`); `habit.tick {done}` instead of §2.4's `habit.done {n, part}`
-  (A42); `session.rpe` and `session.note` instead of §2.4's
-  `session.rated {rpe, feel, note}` and `note.added` (no `feel` yet).
+- **Optional keys are written, as `null` when unknown** (the contract:
+  absent and `null` mean the same, "the app should write them"). `option`
+  is the option he intends: the light's letter when the day has a
+  traffic-light session, else `null`. `feel` is `null` (not asked yet,
+  tasks 0.5). The light is `green|amber|red`, never the workout letter.
 - **Serialisation is deterministic**: `JSONEncoder` with sorted keys and
   unescaped slashes, one object per line, `\n` line ends, a trailing
   newline. The same events always make the same bytes, which is what
   "seal, then send" and the blob-SHA idempotency need.
-- **Decoding is tolerant** of unknown fields; an unknown `type` decodes as
-  `.other(type)` (a future vault fixture may carry `device.hello`), and is
-  never encoded.
+- **Decoding is tolerant** of unknown fields; a type this app doesn't
+  write (`device.hello`, `event.retracted`, the `plan.*` commands) decodes
+  as `.other(type)` and is never encoded.
 - Corrections are newer events of the same kind: the vault and the app take
   the **latest by `seq`** per (date) for a light, per (date, habit) for a
   tick, per session for an RPE or a note. No `event.retracted` yet.
 - **Golden fixture**: `Tests/TrainingCoreTests/Fixtures/Events/
   events.v1.app.jsonl`, synthetic (the vault example's 2030 season ids,
   device `ios-0000beef`); encode must reproduce it byte for byte and decode
-  must read it back. When the vault publishes
-  `scripts/fixtures/hub/contract/events.v1.*.jsonl`, it is mirrored
-  verbatim beside it and decoded in the same test (tasks group 1).
+  must read it back. The vault's `events.v1.example.jsonl` and
+  `events.v1.minimal.jsonl` are mirrored verbatim under
+  `Fixtures/Contract/vault/` and decoded by `HubEventTests`.
+- **Segments stay under the contract's limits**: at most 500 events and
+  900 KiB per file (the vault quarantines a segment over 1 MiB), lines far
+  under 16 KiB, note texts 1–2000 characters (an empty note is never
+  sent).
 
 ### D3 — The local log is the outbox
 
@@ -203,10 +204,13 @@ event by `seq` and whether it has reached the vault:
   without a builder change (the D8 seam of the previous change).
 - Habits: a local tick wins; else the projection's `habitsDone[id]`
   (≥ 1 is on, 0 is off, absent is off and "unknown").
-- **Local wins while it is kept** (21 days). The vault ingests the same
-  events, so after ingest both agree; `acks` are reserved in projection v1
-  and are not read yet. The phone never runs the rules: amber shows the
-  light, and the week adapts at the next desk sync.
+- A third state, `.received` ("Received by the vault"), once the cached
+  projection's `acks[deviceId].seq` reaches the event's `seq` (the
+  contract: `seq` is the highest `n` with `1…n` all received; a gap holds
+  it).
+- **Local wins while it is kept** (21 days). The vault folds the very same
+  events, so after ingest both agree. The phone never runs the rules: amber
+  shows the light, and the week adapts at the next desk sync.
 
 ### D6 — Today and the session detail
 
@@ -284,12 +288,29 @@ TrainingCore strings go through `TrainingKey` + both `.lproj` tables
 duplicate keys that a JSON round-trip would drop), with Czech in the
 informal register. Keys used in `Shared/` are in both catalogs.
 
+## Contract details confirmed (2026-09-29)
+
+Against the vault's `add-hub-ingest` event contract v1, still in progress
+on the vault side when mirrored:
+
+- Envelope `v, id, deviceId, seq, at, type, payload` -- as built. `id` is
+  a UUID compared case-insensitively (v7 recommended); `deviceId` must
+  equal the segment's folder; `at` has an optional fraction.
+- `checkin.morning` has `option?` (the intended letter) -- added;
+  `session.rpe` has `feel?` 1–5 -- added, written `null`; texts 1–2000
+  characters -- empty notes refused; segment ≤ 1 MiB -- 900 KiB cap added.
+- The segment path and name are exactly D4's.
+- `acks[deviceId] = {seq, maxSeq}` -- read for `.received` (D5).
+- The vault's `validateEvent` accepts every line of
+  `events.v1.app.jsonl` (run locally with Node on 2026-09-29).
+- Not written by this app yet: `device.hello`, `event.retracted`, the
+  `plan.*` commands (`add-plan-editing`).
+
 ## Risks / Trade-offs
 
-- **The contract may differ** (D2). One file changes; the golden fixture
-  and its test catch any drift once the vault's fixture is mirrored. Until
-  then events already on the phone use the draft; the vault's ingest can
-  reject them loudly (its report) and they stay in git for a re-read.
+- **The contract may still move** before the vault's change merges. One
+  file changes (`HubEvent.swift`); the mirrored fixtures and the golden
+  file catch drift. Re-mirror when the vault's change lands (tasks 1.4).
 - **Duplicate events after a crash** during sealing: harmless by id.
 - **A lost phone loses unsent events** (D3). Acceptable for daily facts.
 - **Lock-screen Controls may ask for Face ID** before opening the app

@@ -10,9 +10,11 @@
 //     habit), an RPE and a note per session. "Latest" is the recording
 //     time, then `seq` (a device's own order; a new device id starts at 1
 //     again, but always later);
-//   - each value says whether it is only saved on the phone or already
-//     sent: sent once the segment it was sealed into is no longer pending
-//     in VaultKit's write queue;
+//   - each value says whether it is only saved on the phone, sent (its
+//     segment is no longer pending in VaultKit's write queue) or received
+//     (the projection's `acks[deviceId].seq` has reached its `seq`: the
+//     vault read every event of this device up to it -- the contract's
+//     rule for clearing a pending event);
 //   - it wins over the projection's value for the same key while the event
 //     is kept (TrainingEventLog, 21 days). The vault ingests the very same
 //     events, so both then agree; `acks` in the projection are reserved in
@@ -33,6 +35,8 @@ import Foundation
 public enum EventDelivery: Equatable, Sendable {
     case savedOnPhone
     case sent
+    /// The vault acknowledged it (`acks[deviceId].seq >= seq`).
+    case received
 }
 
 public struct OverlayValue<Value: Equatable & Sendable>: Equatable, Sendable {
@@ -87,9 +91,20 @@ public struct CheckInOverlay: Equatable, Sendable {
         notes[id]
     }
 
+    /// The projection's `acks` as `deviceId -> seq` (the highest `n` with
+    /// events `1...n` all received). Anything unreadable is left out.
+    public static func ackedSeqs(from acks: [String: JSONValue]) -> [String: Int] {
+        var result: [String: Int] = [:]
+        for (device, value) in acks {
+            guard case .object(let fields) = value, case .number(let seq)? = fields["seq"], seq >= 0 else { continue }
+            result[device] = Int(seq)
+        }
+        return result
+    }
+
     /// Folds `events`; `unsentSegments` are the segment ids still pending
-    /// (or failed) in the write queue.
-    public static func fold(_ events: [LoggedEvent], unsentSegments: Set<UUID>) -> CheckInOverlay {
+    /// (or failed) in the write queue; `ackedSeqs` from `ackedSeqs(from:)`.
+    public static func fold(_ events: [LoggedEvent], unsentSegments: Set<UUID>, ackedSeqs: [String: Int] = [:]) -> CheckInOverlay {
         var overlay = CheckInOverlay()
         let ordered = events.sorted { lhs, rhs in
             if lhs.recordedAt != rhs.recordedAt { return lhs.recordedAt < rhs.recordedAt }
@@ -97,7 +112,9 @@ public struct CheckInOverlay: Equatable, Sendable {
         }
         for logged in ordered {
             let delivery: EventDelivery
-            if let segment = logged.segmentID, !unsentSegments.contains(segment) {
+            if let acked = ackedSeqs[logged.event.deviceId], logged.event.seq <= acked {
+                delivery = .received
+            } else if let segment = logged.segmentID, !unsentSegments.contains(segment) {
                 delivery = .sent
             } else {
                 delivery = .savedOnPhone

@@ -353,7 +353,8 @@ private struct SessionRatingCard: View {
 
     private var canSave: Bool {
         let trimmed = draft.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed != (rating.note ?? "") && trimmed.count <= SessionNotePayload.maxLength
+        // The contract takes 1-2000 characters: an empty note isn't sent.
+        return !trimmed.isEmpty && trimmed != (rating.note ?? "") && trimmed.count <= SessionNotePayload.maxLength
     }
 
     private func rpeButton(_ value: Int) -> some View {

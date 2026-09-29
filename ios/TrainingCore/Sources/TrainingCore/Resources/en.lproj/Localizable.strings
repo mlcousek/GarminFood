@@ -391,3 +391,6 @@
 
 /* Reminder body for the evening habits. */
 "Tick today's habits before bed." = "Tick today's habits before bed.";
+
+/* The vault has read the event (its projection acknowledged it). */
+"Received by the vault" = "Received by the vault";

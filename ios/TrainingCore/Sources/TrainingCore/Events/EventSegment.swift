@@ -13,11 +13,12 @@
 //   message  "hub: ios-0000beef seq 7-9 (3)" -- distinct from the vault's
 //            own "vault backup: ..." commits, so history can be filtered.
 //
-// At most `maxEvents` (500) per file, oldest first. A name can't collide:
+// At most `maxEvents` (500) events and `maxBytes` (900 KiB; the vault
+// quarantines a segment over 1 MiB) per file, oldest first. A name can't collide:
 // it embeds the device id, the second and the first sequence number, and a
 // sequence number is never handed out twice.
 //
-// Depended on by: TrainingRecorder.seal. Tests: EventSegmentTests.
+// Depended on by: TrainingRecorder.seal. Tests: HubEventTests (segments).
 
 import Foundation
 import VaultKit
@@ -65,15 +66,27 @@ public enum EventSegment {
         )
     }
 
-    /// `events` in chunks of at most `maxEvents`.
+    /// The vault quarantines a segment over 1 MiB whole (its contract's
+    /// limits); stay well under it.
+    public static let maxBytes = 900 * 1024
+
+    /// `events` in order, in chunks of at most `maxEvents` events and
+    /// `maxBytes` bytes (a chunk always takes at least one event).
     public static func chunks(_ events: [HubEvent]) -> [[HubEvent]] {
         var result: [[HubEvent]] = []
-        var start = 0
-        while start < events.count {
-            let end = min(start + maxEvents, events.count)
-            result.append(Array(events[start..<end]))
-            start = end
+        var current: [HubEvent] = []
+        var bytes = 0
+        for event in events {
+            let size = ((try? HubEventCodec.line(event).count) ?? 0) + 1
+            if !current.isEmpty, current.count >= maxEvents || bytes + size > maxBytes {
+                result.append(current)
+                current = []
+                bytes = 0
+            }
+            current.append(event)
+            bytes += size
         }
+        if !current.isEmpty { result.append(current) }
         return result
     }
 }

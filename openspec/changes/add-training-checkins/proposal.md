@@ -92,8 +92,8 @@ what an option card does (design D8).
   A correction here is a newer event of the same kind (latest wins).
 - **The optimistic "done" from the Garmin activity list**: needs an
   activity route and matching rules the vault owns; later.
-- **Showing the vault's acknowledgements** (`acks`, `rejected`): reserved
-  in projection v1; this change shows "Saved on phone" / "Sent" only.
+- **The vault's `rejected[]` and `outcomes`**: not shown yet. This change
+  reads only `acks`, to say "Received by the vault".
 - **Background delivery** through `BGAppRefresh`: foreground, backgrounding
   and the debounce are enough for a check-in that the vault ingests every
   ~30 min at best.
@@ -126,6 +126,6 @@ what an option card does (design D8).
 
 **Depends on**: `add-training-today-and-plan` (PR #108: TrainingCore, Today,
 session detail), `add-vault-connection` (write queue, uploader, device id),
-and the vault's `add-hub-ingest` for the event contract v1 (design D2: the
-envelope is coded to the architecture note and the owner's brief; it is
-re-checked against the vault's fixture before merge, tasks group 1).
+and the vault's `add-hub-ingest` for the event contract v1, whose fixtures
+are mirrored and decoded (design D2, "Contract details confirmed"); they
+are re-mirrored once that change merges (tasks 1.4).

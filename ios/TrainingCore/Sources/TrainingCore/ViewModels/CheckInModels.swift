@@ -58,11 +58,12 @@ public struct SessionRatingModel: Equatable, Sendable {
 }
 
 public extension TrainingFormatting {
-    /// "Saved on phone" / "Sent".
+    /// "Saved on phone" / "Sent" / "Received by the vault".
     func deliveryLine(_ delivery: EventDelivery?) -> String? {
         switch delivery {
         case .savedOnPhone?: return text(.deliverySaved)
         case .sent?: return text(.deliverySent)
+        case .received?: return text(.deliveryReceived)
         case nil: return nil
         }
     }

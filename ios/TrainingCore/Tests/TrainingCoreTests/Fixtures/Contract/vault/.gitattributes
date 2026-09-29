@@ -1,3 +1,4 @@
 # The vault's contract fixtures are mirrored byte for byte (design D13):
 # never let git rewrite their line endings.
 *.json -text
+*.jsonl -text

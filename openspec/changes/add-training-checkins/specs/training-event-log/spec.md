@@ -30,13 +30,15 @@ the same kind.
 
 The system SHALL serialise events as JSON Lines, one object per line with
 sorted keys, a `\n` after every line, envelope version `v: 1`, and the
-types `checkin.morning` `{date, light: green|amber|red, sessionId?}`,
-`habit.tick` `{date, habitId, done}`, `session.rpe` `{date, sessionId,
-rpe 1-10}` and `session.note` `{date, sessionId, text}`. The same events
-SHALL always produce the same bytes. Decoding SHALL ignore unknown fields
-and SHALL read an unknown type without failing the file. The envelope
-SHALL be defined in one source file and golden-tested against a synthetic
-fixture, and against the vault's own contract fixture once it is published.
+types `checkin.morning` `{date, light: green|amber|red, sessionId?,
+option?}`, `habit.tick` `{date, habitId, done}`, `session.rpe` `{date,
+sessionId, rpe 1-10, feel?}` and `session.note` `{date, sessionId, text of
+1-2000 characters}`, writing optional keys as `null` when unknown. The
+same events SHALL always produce the same bytes. Decoding SHALL ignore
+unknown fields and SHALL read an unknown type without failing the file.
+The envelope SHALL be defined in one source file and golden-tested against
+a synthetic fixture and against the vault's own contract fixtures,
+mirrored verbatim.
 
 #### Scenario: Golden encode
 

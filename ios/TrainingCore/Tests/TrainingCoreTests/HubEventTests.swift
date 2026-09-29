@@ -6,8 +6,9 @@
 // decoding it back, tolerance of unknown fields and types, payload bounds,
 // UUIDv7 ids, the `at` clock, and segments (path, bytes, message, chunks).
 //
-// When the vault's own event fixture is mirrored (tasks group 1), a test
-// decoding it joins these.
+// The vault's own event fixtures (its `add-hub-ingest` contract, mirrored
+// verbatim under Fixtures/Contract/vault/) are decoded here too: the four
+// types this app writes decode to their payloads, the rest to `.other`.
 
 import XCTest
 import VaultKit
@@ -20,6 +21,10 @@ enum EventFixtures {
 
     static func appGolden() throws -> Data {
         try Data(contentsOf: directory.appendingPathComponent("events.v1.app.jsonl"))
+    }
+
+    static func vault(_ name: String) throws -> Data {
+        try Fixtures.data(name)
     }
 
     static let device = "ios-0000beef"
@@ -66,9 +71,69 @@ final class HubEventTests: XCTestCase {
         ])
     }
 
-    func testRestDayCheckInOmitsTheSession() throws {
-        let line = try HubEventCodec.line(EventFixtures.goldenEvents[6])
-        XCTAssertFalse(String(decoding: line, as: UTF8.self).contains("sessionId"))
+    func testOptionalKeysAreWrittenAsNull() throws {
+        // The contract: optional keys may be absent or null, and the app
+        // should write them.
+        let rest = String(decoding: try HubEventCodec.line(EventFixtures.goldenEvents[6]), as: UTF8.self)
+        XCTAssertTrue(rest.contains("\"option\":null"))
+        XCTAssertTrue(rest.contains("\"sessionId\":null"))
+        let rpe = String(decoding: try HubEventCodec.line(EventFixtures.goldenEvents[4]), as: UTF8.self)
+        XCTAssertTrue(rpe.contains("\"feel\":null"))
+        // The option follows the light when the day has a session.
+        XCTAssertEqual(MorningCheckInPayload(date: D.asOf, light: .amberLight, sessionId: "s").option, .a)
+        XCTAssertNil(MorningCheckInPayload(date: D.asOf, light: .amberLight).option)
+    }
+
+    // MARK: The vault's contract fixtures
+
+    func testTheVaultsExampleDecodes() throws {
+        let decoded = HubEventCodec.decode(try EventFixtures.vault("events.v1.example.jsonl"))
+        XCTAssertEqual(decoded.invalidLines, [])
+        XCTAssertEqual(decoded.events.count, 22)
+        XCTAssertEqual(decoded.events.map(\.seq), Array(1...22))
+        XCTAssertTrue(decoded.events.allSatisfy { $0.deviceId == "ios-0a1b2c3d" && $0.v == 1 })
+
+        let byType = Dictionary(grouping: decoded.events, by: { $0.type.rawValue }).mapValues(\.count)
+        XCTAssertEqual(byType["checkin.morning"], 7)
+        XCTAssertEqual(byType["habit.tick"], 3)
+        XCTAssertEqual(byType["session.rpe"], 1)
+        XCTAssertEqual(byType["session.note"], 1)
+        let others = decoded.events.filter { if case .other = $0.type { return true } else { return false } }
+        XCTAssertEqual(Set(others.map(\.type.rawValue)), [
+            "device.hello", "plan.session.skipped", "plan.session.moved", "plan.session.swapped",
+            "plan.rule.overridden", "event.retracted", "plan.session.unskipped"
+        ])
+
+        XCTAssertEqual(decoded.events[1].payload, .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-14"), light: .redLight, sessionId: nil, option: nil)))
+        XCTAssertEqual(decoded.events[2].payload, .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-16"), light: .greenLight, sessionId: "2030-w42-wed-am", option: .g)))
+        XCTAssertEqual(decoded.events[8].payload, .sessionRPE(SessionRPEPayload(date: D.date("2030-10-22"), sessionId: "2030-w43-tue-am", rpe: 7, feel: 3)))
+        XCTAssertEqual(decoded.events[11].payload, .habitTick(HabitTickPayload(date: D.date("2030-10-22"), habitId: "holds", done: true)))
+        XCTAssertNil(decoded.events[3].payload.date, "a plan command carries a week, not a date")
+
+        // Every event this app could write re-encodes and reads back the same.
+        for event in decoded.events {
+            if case .other = event.payload { continue }
+            XCTAssertEqual(HubEventCodec.decode(try HubEventCodec.jsonl([event])).events, [event])
+        }
+    }
+
+    func testTheVaultsMinimalDecodes() throws {
+        let decoded = HubEventCodec.decode(try EventFixtures.vault("events.v1.minimal.jsonl"))
+        XCTAssertEqual(decoded.invalidLines, [])
+        XCTAssertEqual(decoded.events.map(\.type.rawValue), ["device.hello", "checkin.morning", "habit.tick"])
+        XCTAssertEqual(decoded.events[1].payload, .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-23"), light: .greenLight, sessionId: nil, option: nil)))
+        XCTAssertEqual(decoded.events[1].at, "2030-10-23T04:01:00+02:00", "the fraction is optional")
+    }
+
+    func testTheVaultsExampleFoldsLikeThePhonesOwnEvents() throws {
+        let events = HubEventCodec.decode(try EventFixtures.vault("events.v1.example.jsonl")).events
+        let base = Date(timeIntervalSince1970: 1_918_000_000)
+        let logged = events.map { LoggedEvent(event: $0, recordedAt: base.addingTimeInterval(Double($0.seq)), segmentID: nil) }
+        let overlay = CheckInOverlay.fold(logged, unsentSegments: [])
+        XCTAssertEqual(overlay.light(on: D.date("2030-10-23"))?.value, .amberLight)
+        XCTAssertEqual(overlay.habitTick(on: D.date("2030-10-22"), habitId: "holds")?.value, true, "last per habit and day wins")
+        XCTAssertEqual(overlay.rpe(session: "2030-w43-tue-am")?.value, 7)
+        XCTAssertEqual(overlay.note(session: "2030-w43-tue-am")?.value, "Calf tight on the last repeat, eased off.")
     }
 
     // MARK: Tolerance
@@ -108,6 +173,9 @@ final class HubEventTests: XCTestCase {
         let long = String(repeating: "a", count: SessionNotePayload.maxLength + 1)
         XCTAssertThrowsError(try HubEventPayload.sessionNote(SessionNotePayload(date: date, sessionId: "s", text: long)).validate())
         XCTAssertNoThrow(try HubEventPayload.sessionNote(SessionNotePayload(date: date, sessionId: "s", text: String(long.dropFirst()))).validate())
+        XCTAssertThrowsError(try HubEventPayload.sessionNote(SessionNotePayload(date: date, sessionId: "s", text: "")).validate())
+        XCTAssertThrowsError(try HubEventPayload.sessionRPE(SessionRPEPayload(date: date, sessionId: "s", rpe: 5, feel: 6)).validate())
+        XCTAssertNoThrow(try HubEventPayload.sessionRPE(SessionRPEPayload(date: date, sessionId: "s", rpe: 5, feel: 3)).validate())
     }
 
     // MARK: Ids and clock

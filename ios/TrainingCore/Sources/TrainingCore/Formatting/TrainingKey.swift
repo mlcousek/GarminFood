@@ -275,6 +275,8 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case deliverySaved = "Saved on phone"
     /// A check-in, tick, RPE or note has been uploaded to the vault.
     case deliverySent = "Sent"
+    /// The vault has read the event (its projection acknowledged it).
+    case deliveryReceived = "Received by the vault"
     /// Reminder title before a run day's check-in.
     case reminderCheckInTitle = "How do you feel today?"
     /// Reminder body before a run day's check-in.
