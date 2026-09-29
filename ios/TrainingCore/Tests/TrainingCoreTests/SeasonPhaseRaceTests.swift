@@ -166,13 +166,18 @@ final class SeasonPhaseRaceTests: XCTestCase {
         XCTAssertTrue(phase.isSelected)
         XCTAssertNil(phase.restrictedText)
         XCTAssertEqual(phase.goals, ["Healthy tendon", "Volume"])
-        XCTAssertEqual(phase.rules, ["Two ambers make the next quality session a ride"])
+        XCTAssertEqual(phase.rules, [
+            "Two ambers make the next quality session a ride",
+            "A red morning holds next week's volume",
+            "Three greens allow a step up",
+            "Long run at most 35 % of the week"
+        ])
         XCTAssertNil(phase.recap)
 
         XCTAssertEqual(phase.weeks.map(\.week), ["2030-W42", "2030-W43", "2030-W44", "2030-W45", "2030-W46"].map(D.week))
         // The written week's own target (55) wins over the outline's (50),
-        // the same number Plan -> Week shows.
-        XCTAssertEqual(phase.weeks.map(\.targetKm), [55, 60, 40, 45, nil])
+        // the same number Plan -> Week shows; W43 is the red-held 55.
+        XCTAssertEqual(phase.weeks.map(\.targetKm), [55, 55, 40, 45, nil])
         XCTAssertEqual(phase.weeks.map(\.actualKm), [60.1, 10.1, nil, nil, nil])
         XCTAssertEqual(phase.weeks[0].actualText, "60.1 km")
         XCTAssertEqual(phase.weeks[0].targetText, "55 km")
@@ -184,7 +189,9 @@ final class SeasonPhaseRaceTests: XCTestCase {
         XCTAssertEqual(phase.weeks[0].noteText, "Plan starts")
 
         XCTAssertEqual(phase.keySessions.map(\.id), [
-            "2030-w42-wed-pm", "2030-w42-sat-am", "2030-w43-tue-am", "2030-w43-thu-pm", "2030-w43-sat-am", "2030-w44-sun-am"
+            "2030-w42-wed-pm", "2030-w42-sat-am", "2030-w43-tue-am", "2030-w43-thu-pm", "2030-w43-sat-am",
+            // The rule-edited tempo (only R left) is still a key session.
+            "2030-w44-wed-am", "2030-w44-sun-am"
         ])
         XCTAssertEqual(phase.keySessions.first?.dateText, "Wed 16 Oct")
         XCTAssertEqual(phase.keySessions.first?.row.badgeText, "Test")
@@ -240,10 +247,10 @@ final class SeasonPhaseRaceTests: XCTestCase {
         let ramp = PhaseRamp.series(phase, snapshot: snapshot, today: D.asOf)
         let totals = PhaseRamp.totals(ramp)
         XCTAssertEqual(totals.weeks, 5)
-        XCTAssertEqual(totals.plannedTotal, 200)
+        XCTAssertEqual(totals.plannedTotal, 195)
         XCTAssertEqual(totals.knownWeeks, 2)
         XCTAssertEqual(totals.actualTotal, 70.2)
-        XCTAssertEqual(totals.plannedKnown, 115)
+        XCTAssertEqual(totals.plannedKnown, 110)
         XCTAssertEqual(totals.withinTen, 1)
         XCTAssertEqual(totals.unknownWeeks, 0)
         XCTAssertEqual(totals.biggest, RampPeak(week: D.week("2030-W42"), km: 60.1))
@@ -276,6 +283,8 @@ final class SeasonPhaseRaceTests: XCTestCase {
         XCTAssertNil(race.reportText)
         XCTAssertEqual(race.startText, "Start 09:00")
         XCTAssertEqual(race.cutoffText, "Cutoff 5 h 30 min · 14:30")
+        // Found by `raceId`, wherever the plan put it (a plan command moved
+        // it to the day before in the current example).
         XCTAssertEqual(race.sessions.map(\.id), ["2030-w44-sun-am"])
 
         XCTAssertEqual(race.checkpoints.map(\.name), ["Start", "CP1 Mill", "CP2 Ridge", "Finish"])

@@ -269,9 +269,17 @@ final class PlanBuilderTests: XCTestCase {
         let detail = try XCTUnwrap(try builder().sessionDetail(id: "2030-w44-sun-am"))
         XCTAssertEqual(detail.badgeText, "Race")
         XCTAssertEqual(detail.raceLine, "Race day: Test Valley 30K · Sun 3 Nov")
-        // Moved to Saturday, the carb-load day before the race.
-        XCTAssertEqual(detail.fuelLines, ["Fuel: 70 g carbs/h", "Carb load: 700 g carbs (10 g/kg)"])
-        XCTAssertEqual(detail.originText, "Moved from Sun 3 Nov")
+        // The session's own fuel, plus its day's carb load if the plan put
+        // it on a carb-load day (a plan command moved it to Saturday in the
+        // current example; the vault is about to refuse that for races).
+        let raceDate = try Fixtures.exampleDate(ofSession: "2030-w44-sun-am")
+        if raceDate == D.date("2030-11-03") {
+            XCTAssertEqual(detail.fuelLines, ["Fuel: 70 g carbs/h"])
+            XCTAssertNil(detail.originText)
+        } else {
+            XCTAssertEqual(detail.fuelLines, ["Fuel: 70 g carbs/h", "Carb load: 700 g carbs (10 g/kg)"])
+            XCTAssertEqual(detail.originText, "Moved from Sun 3 Nov")
+        }
         let swapped = try XCTUnwrap(try builder().sessionDetail(id: "2030-w44-fri-am"))
         XCTAssertEqual(swapped.fuelLines, [])
         XCTAssertEqual(swapped.originText, "Swapped from Fri 1 Nov")

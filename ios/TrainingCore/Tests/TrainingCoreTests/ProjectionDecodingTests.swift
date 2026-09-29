@@ -200,13 +200,19 @@ final class ProjectionDecodingTests: XCTestCase {
         let tempo = try XCTUnwrap(plan.weeks[2].day(D.date("2030-10-22"))?.sessions.first)
         XCTAssertEqual(tempo.targets.hrMin, 145)
         XCTAssertEqual(tempo.targets.hrMax, 151)
-        // The race session was moved to Saturday by a plan command (the
-        // race itself stays on Sunday 3 Nov in `season.races`).
-        let race = try XCTUnwrap(plan.weeks[3].day(D.date("2030-11-02"))?.sessions.first)
+        // The race session: on the race's day, or moved by a plan command
+        // with the move recorded in `origin` (the vault is about to refuse
+        // moving race sessions; either state of the example passes).
+        let raceDate = try Fixtures.exampleDate(ofSession: "2030-w44-sun-am")
+        let race = try XCTUnwrap(plan.weeks[3].day(raceDate)?.sessions.first { $0.id == "2030-w44-sun-am" })
         XCTAssertEqual(race.raceId, "valley-30k-2030")
         XCTAssertEqual(race.fuel?.carbsPerHour, 70)
-        XCTAssertEqual(race.origin?["kind"]?.stringValue, "moved")
-        XCTAssertEqual(race.origin?["from"]?.stringValue, "2030-11-03")
+        if raceDate == D.date("2030-11-03") {
+            XCTAssertNil(race.origin)
+        } else {
+            XCTAssertEqual(race.origin?["kind"]?.stringValue, "moved")
+            XCTAssertEqual(race.origin?["from"]?.stringValue, "2030-11-03")
+        }
 
         // add-hub-ingest: feedback, a skipped session, a rule's edit.
         XCTAssertEqual(tempo.feedback, SessionFeedback(rpe: 7, feel: 3, note: "Calf tight on the last repeat, eased off."))

@@ -95,8 +95,6 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(model.emptyState?.kind, .restDay)
         XCTAssertEqual(model.carbLoadLine, "Carb load: 560 g carbs (8 g/kg)")
         let saturday = try builder().trainingDay(on: D.date("2030-11-02"))
-        XCTAssertNil(saturday.emptyState)
-        XCTAssertEqual(saturday.sessions.first?.badge, .race)
         XCTAssertEqual(saturday.carbLoadLine, "Carb load: 700 g carbs (10 g/kg)")
     }
 
@@ -105,7 +103,7 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(test.badge, .test)
         XCTAssertEqual(test.badgeText, "Test")
         XCTAssertEqual(test.single?.targetLines, ["3 km"])
-        let race = try builder().trainingDay(on: D.date("2030-11-02")).sessions[0]
+        let race = try builder().trainingDay(on: try Fixtures.exampleDate(ofSession: "2030-w44-sun-am")).sessions[0]
         XCTAssertEqual(race.badge, .race)
         XCTAssertEqual(race.fuelLine, "Fuel: 70 g carbs/h")
         XCTAssertEqual(race.title, "Race: Test Valley 30K")

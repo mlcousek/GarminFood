@@ -74,6 +74,21 @@ enum Fixtures {
         }
     }
 
+    /// The date of session `id` in the example's plan. Goldens that depend
+    /// on where the vault put a session (the race session was moved by a
+    /// plan command, which the vault is about to refuse for races) read it
+    /// from here instead of spelling it.
+    static func exampleDate(ofSession id: String) throws -> LocalDate {
+        let plan = try XCTUnwrap(try exampleProjection().projection.plan)
+        for week in plan.weeks {
+            for day in week.days where day.sessions.contains(where: { $0.id == id }) {
+                return day.date
+            }
+        }
+        XCTFail("no session \(id) in the example")
+        throw ProjectionRejection.invalid(reason: "test")
+    }
+
     static func mutateSession(_ object: inout [String: Any], week: Int, day: Int, session: Int, _ change: @escaping (inout [String: Any]) -> Void) throws {
         try mutateDay(&object, week: week, day: day) { dayObject in
             guard var sessions = dayObject["sessions"] as? [[String: Any]] else { return }
