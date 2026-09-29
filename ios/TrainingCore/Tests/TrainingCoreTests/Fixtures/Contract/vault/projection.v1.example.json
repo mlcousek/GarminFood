@@ -1002,11 +1002,11 @@
                   }
                 ],
                 "done": {
-                  "option": null,
-                  "source": null,
+                  "option": "A",
+                  "source": "activity-name",
                   "matchedBy": "date-sport-group",
                   "activity": {
-                    "note": "Sport/Activities/2030/10 October/2030-10-18 Run - Morning Run.md",
+                    "note": "Sport/Activities/2030/10 October/2030-10-18 Run - A W42 Fri Easy 6k flat.md",
                     "sport": "Run",
                     "group": "run",
                     "start": "05:15",
@@ -1326,7 +1326,13 @@
                       "hrMax": 140,
                       "zone": "Z1"
                     },
-                    "watch": null
+                    "watch": {
+                      "name": "G W43 Wed Easy 10 km",
+                      "state": "scheduled",
+                      "channel": "intervals",
+                      "ref": "100001",
+                      "at": "2030-10-20T19:42:10+02:00"
+                    }
                   },
                   {
                     "code": "A",
@@ -1343,7 +1349,13 @@
                       "hrMax": 135,
                       "zone": null
                     },
-                    "watch": null
+                    "watch": {
+                      "name": "A W43 Wed Easy 6k flat",
+                      "state": "pending",
+                      "channel": "intervals",
+                      "ref": null,
+                      "at": null
+                    }
                   },
                   {
                     "code": "R",
@@ -1360,7 +1372,13 @@
                       "hrMax": 128,
                       "zone": null
                     },
-                    "watch": null
+                    "watch": {
+                      "name": "R W43 Wed Bike 45 Z1",
+                      "state": "failed",
+                      "channel": "intervals",
+                      "ref": "100003",
+                      "at": "2030-10-20T19:42:10+02:00"
+                    }
                   }
                 ],
                 "done": null,
@@ -1808,6 +1826,7 @@
         "cz": "Kolo 45 min Z1 + výdrže"
       },
       "why": null,
+      "watchName": "Bike 45 Z1",
       "targets": {
         "km": null,
         "min": 45,
@@ -1912,6 +1931,7 @@
         "cz": "Kolo 90 min Z1"
       },
       "why": null,
+      "watchName": null,
       "targets": {
         "km": null,
         "min": 90,
@@ -1953,6 +1973,7 @@
         "cz": "Výpony na jedné noze do vyčerpání"
       },
       "why": null,
+      "watchName": null,
       "targets": {
         "km": null,
         "min": null,
@@ -2016,6 +2037,7 @@
         "en": "Aerobic volume below the first threshold",
         "cz": "Aerobní objem pod prvním prahem"
       },
+      "watchName": null,
       "targets": {
         "km": 10,
         "min": null,
@@ -2057,6 +2079,7 @@
         "cz": "Klidných 6 km po rovině"
       },
       "why": null,
+      "watchName": "Easy 6k flat",
       "targets": {
         "km": 6,
         "min": null,
@@ -2098,6 +2121,7 @@
         "cz": "Posilovna A"
       },
       "why": null,
+      "watchName": null,
       "targets": {
         "km": null,
         "min": 45,
@@ -2202,6 +2226,7 @@
         "cz": "Dlouhý běh 12 km po rovině"
       },
       "why": null,
+      "watchName": null,
       "targets": {
         "km": 12,
         "min": null,
@@ -2243,6 +2268,7 @@
         "cz": "Dlouhý běh 18 km, terén"
       },
       "why": null,
+      "watchName": null,
       "targets": {
         "km": 18,
         "min": null,
@@ -2284,6 +2310,7 @@
         "cz": "Tempo 3 × 8 min"
       },
       "why": null,
+      "watchName": null,
       "targets": {
         "km": null,
         "min": 50,
@@ -2367,6 +2394,7 @@
         "cz": "Test na 3 km"
       },
       "why": null,
+      "watchName": null,
       "targets": {
         "km": 3,
         "min": null,

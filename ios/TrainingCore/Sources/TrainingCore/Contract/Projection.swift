@@ -15,9 +15,11 @@
 //   - unknown keys are ignored.
 //
 // The reserved fields (`acks`, `outcomes`, `rejected`, week `absorbed`, day
-// `light`, session `origin`/`ruleNotes`, option `watch`, habit
-// `gateBlockedBy`) have slots now (D8), so the vault's later changes only
-// change what it writes. Vault paths (`folder`, `note`, `ref`) are decoded
+// `light`, session `origin`/`ruleNotes`, habit `gateBlockedBy`) have slots
+// now (D8), so the vault's later changes only change what it writes.
+// Option `watch` was reserved until the vault's add-garmin-workout-push
+// filled it on 2026-09-29 (additive, still v1): it is `OptionWatch`; that
+// change also added `done.source: "activity-name"` and `workout.watchName`. Vault paths (`folder`, `note`, `ref`) are decoded
 // but never shown: the phone has no vault checkout.
 //
 // Depended on by: ProjectionDecoder, TrainingSnapshot and every builder.
@@ -637,8 +639,8 @@ public struct SessionOption: Equatable, Sendable, Decodable, ProjectionElement {
     public var label: LocalizedText?
     public var sport: OpenEnum<Sport>?
     public var targets: Targets
-    /// Reserved (`null` until the Garmin push change).
-    public var watch: JSONValue?
+    /// The option on the watch push's channel; `null` when not eligible.
+    public var watch: OptionWatch?
 
     enum CodingKeys: String, CodingKey { case code, workout, label, sport, targets, watch }
 
@@ -649,8 +651,29 @@ public struct SessionOption: Equatable, Sendable, Decodable, ProjectionElement {
         label = c.lenient(LocalizedText.self, .label)
         sport = c.lenient(OpenEnum<Sport>.self, .sport)
         targets = c.lenient(Targets.self, .targets) ?? Targets()
-        let watchValue = c.lenient(JSONValue.self, .watch)
-        watch = watchValue?.isNull == true ? nil : watchValue
+        watch = c.lenient(OptionWatch.self, .watch)
+    }
+}
+
+/// `{ name, state, channel, ref, at }` (contract point 12). The state is
+/// open: an unknown one decodes as `.unknown`.
+public struct OptionWatch: Equatable, Sendable, Decodable {
+    public var name: String?
+    public var state: OpenEnum<WatchState>?
+    public var channel: OpenEnum<WatchChannel>?
+    public var ref: String?
+    /// ISO 8601 with offset, kept as written.
+    public var at: String?
+
+    enum CodingKeys: String, CodingKey { case name, state, channel, ref, at }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        name = c.lenientString(.name)
+        state = c.lenient(OpenEnum<WatchState>.self, .state)
+        channel = c.lenient(OpenEnum<WatchChannel>.self, .channel)
+        ref = c.lenientString(.ref) ?? c.lenientInt(.ref).map { String($0) }
+        at = c.lenientString(.at)
     }
 }
 
@@ -869,11 +892,13 @@ public struct Workout: Equatable, Sendable, Decodable, ProjectionElement {
     public var kind: OpenEnum<WorkoutKind>?
     public var title: LocalizedText?
     public var why: LocalizedText?
+    /// The short name the watch push uses (<= 20 ASCII characters).
+    public var watchName: String?
     public var targets: Targets
     public var steps: [Step]
     public var measures: [Measure]
 
-    enum CodingKeys: String, CodingKey { case id, sport, kind, title, why, targets, steps, measures }
+    enum CodingKeys: String, CodingKey { case id, sport, kind, title, why, watchName, targets, steps, measures }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -882,6 +907,7 @@ public struct Workout: Equatable, Sendable, Decodable, ProjectionElement {
         kind = c.lenient(OpenEnum<WorkoutKind>.self, .kind)
         title = c.lenient(LocalizedText.self, .title)
         why = c.lenient(LocalizedText.self, .why)
+        watchName = c.lenientString(.watchName)
         targets = c.lenient(Targets.self, .targets) ?? Targets()
         steps = c.lossyList(Step.self, .steps)
         measures = c.lossyList(Measure.self, .measures)

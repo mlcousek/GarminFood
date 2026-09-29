@@ -161,11 +161,21 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertNil(tue.origin)
         XCTAssertTrue(tue.ruleNotes.isEmpty)
 
-        // Done, but G and A are both runs: no option.
+        // Done, and the option token in the activity's name says A
+        // (add-garmin-workout-push, contract point 3).
         let fri = try XCTUnwrap(plan.weeks[1].day(D.date("2030-10-18"))?.sessions.first)
         XCTAssertEqual(fri.status, .known(.done))
-        XCTAssertNil(fri.done?.option)
-        XCTAssertNil(fri.done?.source)
+        XCTAssertEqual(fri.done?.option, .known(.a))
+        XCTAssertEqual(fri.done?.source, .known(.activityName))
+
+        // The watch push's state on today's options (contract point 12).
+        let wed = try XCTUnwrap(plan.weeks[2].day(D.asOf)?.sessions.first)
+        XCTAssertEqual(wed.options.map { $0.watch?.state }, [.known(.scheduled), .known(.pending), .known(.failed)])
+        XCTAssertEqual(wed.options[0].watch?.name, "G W43 Wed Easy 10 km")
+        XCTAssertEqual(wed.options[0].watch?.channel, .known(.intervals))
+        XCTAssertEqual(wed.options[0].watch?.ref, "100001")
+        XCTAssertEqual(wed.options[0].watch?.at, "2030-10-20T19:42:10+02:00")
+        XCTAssertNil(wed.options[1].watch?.ref)
 
         // A test with a result.
         let test = try XCTUnwrap(plan.weeks[1].day(D.date("2030-10-16"))?.sessions.last)
@@ -203,6 +213,9 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(calf.kind, .known(.test))
         XCTAssertEqual(calf.measures.map(\.key), ["reps_l", "reps_r"])
         XCTAssertEqual(calf.measures[0].better, .known(.higher))
+        XCTAssertEqual(projection.workouts["bike-45-z1"]?.watchName, "Bike 45 Z1")
+        XCTAssertEqual(projection.workouts["easy-6-flat"]?.watchName, "Easy 6k flat")
+        XCTAssertNil(projection.workouts["gym-a"]?.watchName)
 
         XCTAssertEqual(projection.tests.map(\.workout), ["calf-raise-test", "time-trial-3k"])
         XCTAssertEqual(projection.tests[0].history.map(\.date.description), ["2030-09-18", "2030-10-16"])
@@ -285,6 +298,18 @@ final class ProjectionDecodingTests: XCTestCase {
             try Fixtures.mutateDay(&object, week: 2, day: 1) { day in
                 day["light"] = "purple"
             }
+            try Fixtures.mutateSession(&object, week: 1, day: 1, session: 0) { session in
+                guard var done = session["done"] as? [String: Any] else { return }
+                done["source"] = "watch-link"
+                session["done"] = done
+            }
+            try Fixtures.mutateSession(&object, week: 2, day: 2, session: 0) { session in
+                guard var options = session["options"] as? [[String: Any]],
+                      var watch = options[0]["watch"] as? [String: Any] else { return }
+                watch["state"] = "archived"
+                options[0]["watch"] = watch
+                session["options"] = options
+            }
         }
         let decoded = try decoded(data)
         XCTAssertTrue(decoded.issues.isEmpty)
@@ -294,6 +319,8 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(session.status, .unknown("rescheduled"))
         XCTAssertEqual(session.title?.resolved(.english), "Easy 10 km")
         XCTAssertEqual(plan.weeks[2].day(D.date("2030-10-22"))?.light, .unknown("purple"))
+        XCTAssertEqual(plan.weeks[1].day(D.date("2030-10-15"))?.sessions.first?.done?.source, .unknown("watch-link"))
+        XCTAssertEqual(session.options[0].watch?.state, .unknown("archived"))
     }
 
     func testSessionWithoutIDIsDroppedAndCounted() throws {
@@ -362,6 +389,6 @@ final class ProjectionDecodingTests: XCTestCase {
         let session = try XCTUnwrap(day.sessions.first)
         XCTAssertEqual(session.origin?["movedFrom"]?.stringValue, "2030-10-22")
         XCTAssertEqual(session.ruleNotes.count, 1)
-        XCTAssertEqual(session.options[0].watch?["state"]?.stringValue, "scheduled")
+        XCTAssertEqual(session.options[0].watch?.state, .known(.scheduled))
     }
 }

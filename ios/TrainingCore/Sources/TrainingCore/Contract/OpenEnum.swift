@@ -135,7 +135,20 @@ public enum MorningLight: String, OpenEnumValue {
 }
 
 public enum DoneSource: String, OpenEnumValue {
+    /// The option token at the start of the activity's name ("A W43 Tue ...",
+    /// added to v1 by the vault's add-garmin-workout-push, 2026-09-29).
+    case activityName = "activity-name"
     case sportInferred = "sport-inferred"
+}
+
+/// An option's state on the watch push's channel (contract point 12).
+/// `scheduled` means on the channel's calendar, not on the watch itself.
+public enum WatchState: String, OpenEnumValue {
+    case pending, scheduled, failed
+}
+
+public enum WatchChannel: String, OpenEnumValue {
+    case intervals, garmin
 }
 
 public enum MatchedBy: String, OpenEnumValue {

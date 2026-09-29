@@ -97,8 +97,12 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case doneOptionMeaning = "Option %@ · %@"
     /// Session detail: done, but the app can't tell which option.
     case optionNotIdentified = "Option not identified"
-    /// The option's state on the watch.
-    case watchLine = "Watch: %@"
+    /// Watch push: the option is on the training calendar (not necessarily on the watch yet).
+    case watchScheduled = "On Garmin calendar"
+    /// Watch push: the option waits to be sent.
+    case watchPending = "Not on Garmin calendar yet"
+    /// Watch push: the last attempt failed.
+    case watchFailed = "Couldn't send to Garmin calendar"
     /// Morning traffic light.
     case lightGreen = "Green"
     /// Morning traffic light.
@@ -205,6 +209,8 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case sideBoth = "both sides"
     /// How the done option was recognised.
     case recognisedSport = "Inferred from the sport"
+    /// How the done option was recognised: the option letter at the start of the activity's name.
+    case recognisedName = "Recognised from the activity's name"
     /// How the session was recognised as done.
     case recognisedTest = "Recorded as a test result"
     /// How the activity was matched to the session.

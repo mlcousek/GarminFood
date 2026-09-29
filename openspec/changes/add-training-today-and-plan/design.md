@@ -639,6 +639,19 @@ into `ios/TrainingCore/Tests/TrainingCoreTests/Fixtures/Contract/vault/`:
   `null` map on days the vault knows nothing about; `hrMin` on the tempo
   session). Both are read and tested.
 - **`targets.zone` is upper case** (`"Z1"`); the app still accepts `z1`.
+- **Contract update, same day** (the vault's `add-garmin-workout-push`,
+  additive, `schemaVersion` stays 1): `option.watch` is no longer reserved
+  but `{ name, state: pending|scheduled|failed, channel, ref, at }` or
+  `null` (decoded as `OptionWatch`, unknown states as `.unknown`);
+  `done.source` gains `"activity-name"` (the option token at the start of
+  the activity's name, contract point 3), so a done run day can now name
+  its option; every workout carries `watchName`. The option cards and the
+  session detail show the watch state as a quiet line -- `scheduled` is
+  "On Garmin calendar" / "V kalendáři Garmin" (the channel's calendar, not
+  the watch's own list, contract point 12) -- and the detail says a done
+  option was "Recognised from the activity's name". The fixtures were
+  re-mirrored and the goldens updated (the 2030-10-18 run is now done with
+  A; the "option unknown" case is a mutation of the example).
 - Also settled while mirroring: `reps` and `load` may be numbers or
   strings (`8`, `"8-12"`, `"40 kg"`), read as display text; weekday codes
   are two letters (`"MO"`, `"TH"`, `"SA"`); ids stay opaque.

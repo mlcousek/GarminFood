@@ -173,7 +173,7 @@ public extension PlanBuilder {
         )
     }
 
-    private func detailOption(id: String, code: OpenEnum<OptionCode>?, label: String, targets: Targets, workout: Workout?, watch: JSONValue?) -> DetailOptionModel {
+    private func detailOption(id: String, code: OpenEnum<OptionCode>?, label: String, targets: Targets, workout: Workout?, watch: OptionWatch?) -> DetailOptionModel {
         let steps = (workout?.steps ?? []).map(format.steps.line)
         let today = TodayTrainingBuilder(source: source, language: format.language)
         return DetailOptionModel(
@@ -211,7 +211,9 @@ public extension PlanBuilder {
             activityLine = parts.isEmpty ? nil : parts.joined(separator: " · ")
         }
         var recognised: String?
-        if done.source?.known == .sportInferred {
+        if done.source?.known == .activityName {
+            recognised = text(.recognisedName)
+        } else if done.source?.known == .sportInferred {
             recognised = text(.recognisedSport)
         } else {
             switch done.matchedBy?.known {

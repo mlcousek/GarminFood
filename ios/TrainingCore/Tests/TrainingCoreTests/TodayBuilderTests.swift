@@ -40,9 +40,9 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(session.options[1].targetLines, ["6 km", "≤135 bpm · Z2"])
         XCTAssertEqual(session.options[2].targetLines, ["45 min", "≤128 bpm · Z1"])
         XCTAssertTrue(session.options.allSatisfy { $0.highlight == nil })
-        XCTAssertTrue(session.options.allSatisfy { $0.watchLine == nil })
+        XCTAssertEqual(session.options.map(\.watchLine), ["On Garmin calendar", "Not on Garmin calendar yet", "Couldn't send to Garmin calendar"])
         XCTAssertEqual(session.options[1].action, .openDetail(sessionID: "2030-w43-wed-am", option: "A"))
-        XCTAssertEqual(session.options[1].accessibilityLabel, "Option A, Easier: Easy 6 km, flat, 6 km, ≤135 bpm · Z2")
+        XCTAssertEqual(session.options[1].accessibilityLabel, "Option A, Easier: Easy 6 km, flat, 6 km, ≤135 bpm · Z2. Not on Garmin calendar yet")
         XCTAssertNil(session.pendingBadge)
         XCTAssertEqual(session.compactLine, "Morning · Easy 10 km · 10 km · Planned")
     }
@@ -52,6 +52,7 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(session.options[1].label, "Klidných 6 km po rovině")
         XCTAssertEqual(session.options[1].meaning, "Lehčí")
         XCTAssertEqual(session.statusText, "Naplánováno")
+        XCTAssertEqual(session.options[0].watchLine, "V kalendáři Garmin")
     }
 
     func testRedDayRecognisedFromTheSport() throws {
@@ -63,8 +64,15 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertTrue(session.options[2].accessibilityLabel.hasSuffix(". Done"))
     }
 
-    func testDoneWithTheOptionUnknown() throws {
+    func testDoneRecognisedFromTheActivityName() throws {
         let session = try builder().trainingDay(on: D.date("2030-10-18")).sessions[0]
+        XCTAssertEqual(session.status, .done)
+        XCTAssertEqual(session.options.map(\.highlight), [nil, .done])
+        XCTAssertFalse(session.doneOptionUnknown)
+    }
+
+    func testDoneWithTheOptionUnknown() throws {
+        let session = try builder(data: try Fixtures.exampleWithAnonymousFridayRun()).trainingDay(on: D.date("2030-10-18")).sessions[0]
         XCTAssertEqual(session.status, .done)
         XCTAssertTrue(session.doneOptionUnknown)
         XCTAssertTrue(session.options.allSatisfy { $0.highlight == nil })

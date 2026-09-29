@@ -146,7 +146,8 @@ public struct RaceChipModel: Equatable, Sendable {
     public let accessibilityLabel: String
 }
 
-public struct WeeklyNoteTeaserModel: Equatable, Sendable {
+public struct WeeklyNoteTeaserModel: Equatable, Sendable, Identifiable {
+    public var id: ISOWeek { week }
     public let week: ISOWeek
     /// "W42 · 14–20 Oct".
     public let weekLabel: String
@@ -258,6 +259,8 @@ public struct TodayTrainingBuilder: Sendable {
         let meaning = text.optionMeaning(option.code)
         var spoken = text.format(.a11yOption, option.code.rawValue, meaning ?? option.code.rawValue, label)
         if !lines.isEmpty { spoken += ", " + lines.joined(separator: ", ") }
+        let watch = watchLine(option.watch)
+        if let watch { spoken += ". " + watch }
         switch highlight {
         case .done?: spoken += ". " + text(.statusDone)
         case .morningLight?: spoken += ". " + text(.a11yMatchesLight)
@@ -271,7 +274,7 @@ public struct TodayTrainingBuilder: Sendable {
             label: label,
             sportSymbol: SportSymbol.name(option.sport ?? session.sport),
             targetLines: lines,
-            watchLine: watchLine(option.watch),
+            watchLine: watch,
             highlight: highlight,
             action: .openDetail(sessionID: session.id, option: option.code.rawValue),
             accessibilityLabel: spoken
@@ -298,12 +301,16 @@ public struct TodayTrainingBuilder: Sendable {
         )
     }
 
-    /// The watch state once the push change publishes it: `state`, else
-    /// `name`, else a plain string.
-    func watchLine(_ watch: JSONValue?) -> String? {
-        guard let watch else { return nil }
-        let value = watch["state"]?.stringValue ?? watch["name"]?.stringValue ?? watch.stringValue
-        return value.map { text.format(.watchLine, $0) }
+    /// The option's watch-push state (contract point 12): `scheduled` is
+    /// "on Garmin calendar" -- the channel's calendar, not the watch's own
+    /// list. An unknown state shows nothing.
+    func watchLine(_ watch: OptionWatch?) -> String? {
+        switch watch?.state?.known {
+        case .scheduled?: return text(.watchScheduled)
+        case .pending?: return text(.watchPending)
+        case .failed?: return text(.watchFailed)
+        case nil: return nil
+        }
     }
 
     // MARK: Habits

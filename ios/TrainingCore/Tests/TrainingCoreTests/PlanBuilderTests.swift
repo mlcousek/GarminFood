@@ -66,7 +66,9 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(tuesday.sessions.first?.doneText, "Done · R")
         XCTAssertEqual(tuesday.unplanned.map(\.text), ["Unplanned · Ride · 8.4 km · 24 min"])
         XCTAssertEqual(tuesday.sessions.first?.status, .done)
-        XCTAssertEqual(rows[4].sessions.first?.doneText, "Done")
+        XCTAssertEqual(rows[4].sessions.first?.doneText, "Done · A")
+        let anonymous = try days(try builder(data: try Fixtures.exampleWithAnonymousFridayRun()).week(D.week("2030-W42")))
+        XCTAssertEqual(anonymous[4].sessions.first?.doneText, "Done")
         XCTAssertEqual(rows[5].sessions.first?.fuelLine, "Fuel: 60 g carbs/h")
         XCTAssertEqual(rows[6].unplanned.first?.text, "Unplanned · Swim · 1.2 km · 35 min")
         XCTAssertEqual(try builder().week(D.week("2030-W42")).noteText, "Plan starts")
@@ -188,8 +190,16 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertNil(detail.originText)
     }
 
-    func testDoneOptionNotIdentified() throws {
+    func testDoneOptionFromTheActivityName() throws {
         let detail = try XCTUnwrap(try builder().sessionDetail(id: "2030-w42-fri-am"))
+        XCTAssertEqual(detail.initialOptionIndex, 1)
+        XCTAssertEqual(detail.done?.optionText, "Option A · Easier")
+        XCTAssertEqual(detail.done?.recognisedText, "Recognised from the activity's name")
+        XCTAssertEqual(try builder(.czech).sessionDetail(id: "2030-w42-fri-am")?.done?.recognisedText, "Rozpoznáno podle názvu aktivity")
+    }
+
+    func testDoneOptionNotIdentified() throws {
+        let detail = try XCTUnwrap(try builder(data: try Fixtures.exampleWithAnonymousFridayRun()).sessionDetail(id: "2030-w42-fri-am"))
         XCTAssertEqual(detail.done?.optionText, "Option not identified")
         XCTAssertEqual(detail.done?.recognisedText, "Matched by date and sport")
         XCTAssertEqual(detail.initialOptionIndex, 0)
@@ -268,7 +278,8 @@ final class PlanBuilderTests: XCTestCase {
         let detail = try XCTUnwrap(try builder(data: data).sessionDetail(id: "2030-w43-wed-am"))
         XCTAssertEqual(detail.originText, "Moved from Mon 21 Oct")
         XCTAssertEqual(detail.whyLines.last, "Two ambers make the next quality session a ride")
-        XCTAssertEqual(detail.options[0].watchLine, "Watch: scheduled")
+        XCTAssertEqual(detail.options[0].watchLine, "On Garmin calendar")
+        XCTAssertEqual(detail.options[2].watchLine, "Couldn't send to Garmin calendar")
     }
 
     // MARK: Habit ladder

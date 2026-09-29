@@ -5,7 +5,10 @@
   both files from a synthetic 2030/31 season (no real names, races, zones
   or activities) and checks them byte for byte on its side.
 - **Copied:** 2026-09-29, verbatim (byte for byte, LF line endings; see
-  `.gitattributes`).
+  `.gitattributes`). Re-mirrored the same day after the vault's
+  `add-garmin-workout-push` (additive, still v1): `option.watch` is filled
+  (`name`, `state` pending/scheduled/failed, `channel`, `ref`, `at`),
+  `done.source` gains `"activity-name"`, every workout has `watchName`.
 
 | File | What it is |
 |---|---|

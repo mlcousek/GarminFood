@@ -61,6 +61,19 @@ enum Fixtures {
         object["plan"] = plan
     }
 
+    /// The example with the 2030-10-18 run's option token removed: done,
+    /// option unknown (an anonymous run on a G/A day, contract point 3).
+    static func exampleWithAnonymousFridayRun() throws -> Data {
+        try mutatedExample { object in
+            try mutateSession(&object, week: 1, day: 4, session: 0) { session in
+                guard var done = session["done"] as? [String: Any] else { return }
+                done["option"] = NSNull()
+                done["source"] = NSNull()
+                session["done"] = done
+            }
+        }
+    }
+
     static func mutateSession(_ object: inout [String: Any], week: Int, day: Int, session: Int, _ change: @escaping (inout [String: Any]) -> Void) throws {
         try mutateDay(&object, week: week, day: day) { dayObject in
             guard var sessions = dayObject["sessions"] as? [[String: Any]] else { return }

@@ -128,8 +128,14 @@
 /* Session detail: done, but the app can't tell which option. */
 "Option not identified" = "Možnost nerozpoznána";
 
-/* The option's state on the watch. */
-"Watch: %@" = "Hodinky: %@";
+/* Watch push: the option is on the training calendar (not necessarily on the watch yet). */
+"On Garmin calendar" = "V kalendáři Garmin";
+
+/* Watch push: the option waits to be sent. */
+"Not on Garmin calendar yet" = "Zatím není v kalendáři Garmin";
+
+/* Watch push: the last attempt failed. */
+"Couldn't send to Garmin calendar" = "Do kalendáře Garmin se nepodařilo odeslat";
 
 /* Morning traffic light. */
 "Green" = "Zelená";
@@ -280,6 +286,9 @@
 
 /* How the done option was recognised. */
 "Inferred from the sport" = "Odvozeno ze sportu";
+
+/* How the done option was recognised: the option letter at the start of the activity's name. */
+"Recognised from the activity's name" = "Rozpoznáno podle názvu aktivity";
 
 /* How the session was recognised as done. */
 "Recorded as a test result" = "Zapsáno jako výsledek testu";

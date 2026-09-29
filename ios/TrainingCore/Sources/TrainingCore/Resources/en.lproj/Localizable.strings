@@ -128,8 +128,14 @@
 /* Session detail: done, but the app can't tell which option. */
 "Option not identified" = "Option not identified";
 
-/* The option's state on the watch. */
-"Watch: %@" = "Watch: %@";
+/* Watch push: the option is on the training calendar (not necessarily on the watch yet). */
+"On Garmin calendar" = "On Garmin calendar";
+
+/* Watch push: the option waits to be sent. */
+"Not on Garmin calendar yet" = "Not on Garmin calendar yet";
+
+/* Watch push: the last attempt failed. */
+"Couldn't send to Garmin calendar" = "Couldn't send to Garmin calendar";
 
 /* Morning traffic light. */
 "Green" = "Green";
@@ -280,6 +286,9 @@
 
 /* How the done option was recognised. */
 "Inferred from the sport" = "Inferred from the sport";
+
+/* How the done option was recognised: the option letter at the start of the activity's name. */
+"Recognised from the activity's name" = "Recognised from the activity's name";
 
 /* How the session was recognised as done. */
 "Recorded as a test result" = "Recorded as a test result";
