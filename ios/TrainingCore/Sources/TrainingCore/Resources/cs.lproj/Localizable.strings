@@ -499,3 +499,42 @@
 
 /* Race screen: the vault has a report for the race. */
 "Race report written" = "Zpráva ze závodu je napsaná";
+
+/* Statistics scope: the whole season. */
+"Whole season" = "Celá sezóna";
+
+/* Statistics: share of the sessions due so far that were done (a percentage). */
+"Done %@ of the sessions due so far" = "Hotovo %@ tréninků, které už byly na řadě";
+
+/* Statistics: nothing has been due in the scope yet. */
+"No sessions due yet" = "Zatím nebyl na řadě žádný trénink";
+
+/* Statistics: started weeks the plan file no longer carries (a list of week numbers); not counted. */
+"Not in the app's window: %@" = "Mimo okno aplikace: %@";
+
+/* Statistics: sessions done, missed and still planned. */
+"%lld done · %lld missed · %lld planned" = "%lld hotovo · %lld vynecháno · %lld naplánováno";
+
+/* Statistics: sessions skipped. */
+"%lld skipped" = "%lld přeskočeno";
+
+/* Statistics: no done session with G/A/R options in the scope. */
+"No traffic-light session done yet" = "Zatím žádný hotový trénink se semaforem";
+
+/* Statistics: kilometres run of the week's target. */
+"%@ of %@ km" = "%@ z %@ km";
+
+/* Statistics: the run target summed over the weeks. */
+"Planned %@ km in total" = "Plánováno celkem %@ km";
+
+/* Statistics: mean kilometres per week with a known distance. */
+"Average %@ km a week" = "Průměrně %@ km týdně";
+
+/* Statistics: a test never done. */
+"No results yet" = "Zatím bez výsledků";
+
+/* Statistics: a test's left and right values (L = left, R = right). */
+"L %@ · R %@" = "L %@ · P %@";
+
+/* Statistics: the difference between left and right as a percentage. */
+"Asymmetry %@" = "Asymetrie %@";

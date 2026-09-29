@@ -370,10 +370,38 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case raceStub = "Race prep not written yet"
     /// Race screen: the vault has a report for the race.
     case raceReported = "Race report written"
+    /// Statistics scope: the whole season.
+    case statsWholeSeason = "Whole season"
+    /// Statistics: share of the sessions due so far that were done (a percentage).
+    case statsAdherence = "Done %@ of the sessions due so far"
+    /// Statistics: nothing has been due in the scope yet.
+    case statsNoneDue = "No sessions due yet"
+    /// Statistics: started weeks the plan file no longer carries (a list of week numbers); not counted.
+    case statsOutsideWindow = "Not in the app's window: %@"
+    /// Statistics: sessions done, missed and still planned.
+    case statsCounts = "%lld done · %lld missed · %lld planned"
+    /// Statistics: sessions skipped.
+    case statsSkipped = "%lld skipped"
+    /// Statistics: a number of sessions. Plural.
+    case statsSessions = "%lld sessions"
+    /// Statistics: no done session with G/A/R options in the scope.
+    case statsNoOptions = "No traffic-light session done yet"
+    /// Statistics: kilometres run of the week's target.
+    case statsOfTarget = "%@ of %@ km"
+    /// Statistics: the run target summed over the weeks.
+    case statsPlannedTotal = "Planned %@ km in total"
+    /// Statistics: mean kilometres per week with a known distance.
+    case statsMeanWeekly = "Average %@ km a week"
+    /// Statistics: a test never done.
+    case statsNoResults = "No results yet"
+    /// Statistics: a test's left and right values (L = left, R = right).
+    case statsLeftRight = "L %@ · R %@"
+    /// Statistics: the difference between left and right as a percentage.
+    case statsAsymmetry = "Asymmetry %@"
     /// Keys that live in `.stringsdict` (plural forms).
     public var isPlural: Bool {
         switch self {
-        case .countdownInDays, .countdownInAboutDays, .noticeLastSynced, .habitRecordedDays, .scheduleEveryNWeeks, .weeksCount, .countdownDaysAgo, .countdownAboutDaysAgo, .phaseStartsIn, .phaseDaysLeft, .carbLoadDaysBefore, .carbLoadDaysAfter: return true
+        case .countdownInDays, .countdownInAboutDays, .noticeLastSynced, .habitRecordedDays, .scheduleEveryNWeeks, .weeksCount, .countdownDaysAgo, .countdownAboutDaysAgo, .phaseStartsIn, .phaseDaysLeft, .carbLoadDaysBefore, .carbLoadDaysAfter, .statsSessions: return true
         default: return false
         }
     }

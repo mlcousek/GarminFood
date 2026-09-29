@@ -499,3 +499,42 @@
 
 /* Race screen: the vault has a report for the race. */
 "Race report written" = "Race report written";
+
+/* Statistics scope: the whole season. */
+"Whole season" = "Whole season";
+
+/* Statistics: share of the sessions due so far that were done (a percentage). */
+"Done %@ of the sessions due so far" = "Done %@ of the sessions due so far";
+
+/* Statistics: nothing has been due in the scope yet. */
+"No sessions due yet" = "No sessions due yet";
+
+/* Statistics: started weeks the plan file no longer carries (a list of week numbers); not counted. */
+"Not in the app's window: %@" = "Not in the app's window: %@";
+
+/* Statistics: sessions done, missed and still planned. */
+"%lld done · %lld missed · %lld planned" = "%lld done · %lld missed · %lld planned";
+
+/* Statistics: sessions skipped. */
+"%lld skipped" = "%lld skipped";
+
+/* Statistics: no done session with G/A/R options in the scope. */
+"No traffic-light session done yet" = "No traffic-light session done yet";
+
+/* Statistics: kilometres run of the week's target. */
+"%@ of %@ km" = "%@ of %@ km";
+
+/* Statistics: the run target summed over the weeks. */
+"Planned %@ km in total" = "Planned %@ km in total";
+
+/* Statistics: mean kilometres per week with a known distance. */
+"Average %@ km a week" = "Average %@ km a week";
+
+/* Statistics: a test never done. */
+"No results yet" = "No results yet";
+
+/* Statistics: a test's left and right values (L = left, R = right). */
+"L %@ · R %@" = "L %@ · R %@";
+
+/* Statistics: the difference between left and right as a percentage. */
+"Asymmetry %@" = "Asymmetry %@";
