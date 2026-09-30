@@ -20,6 +20,12 @@
 // FoodLogCore doesn't depend on Gamification (the dependency runs the
 // other way), and Gamification doesn't import GarminKit, so the app maps
 // one to the other. Tests: GoalStatusEvaluatorTests.
+//
+// add-winter-arc-nutrition-and-rewards (A1): `evaluate(_:fuel:)` is the
+// training experience's judgement -- with a plan day's `FuelDayTarget` the
+// day is judged by the carb band (and the plan's protein) instead of the
+// fixed calorie target, so eating inside the band is never a missed goal
+// (`FuelDayEvaluator.judge`). Without a target it is exactly `evaluate(_:)`.
 
 import Foundation
 import GarminKit
@@ -50,6 +56,28 @@ public enum GoalStatusEvaluator {
             metProteinGoal: metAtLeast(actual: content.protein, goal: goals.protein ?? goals.adjustedProtein),
             metCarbGoal: metAtLeast(actual: content.carbs, goal: goals.carbs ?? goals.adjustedCarbs),
             metFatGoal: metAtLeast(actual: content.fat, goal: goals.fat ?? goals.adjustedFat)
+        )
+    }
+
+    /// The training experience's judgement (see the header). With a
+    /// target, a day with content but no Garmin goals is still judged when
+    /// the target has a carb band (the band IS the goal); otherwise the
+    /// same `nil` rule as `evaluate(_:)`.
+    public static func evaluate(_ log: DailyFoodLog, fuel: FuelDayTarget?) -> DayGoalJudgement? {
+        guard let fuel else { return evaluate(log) }
+        guard let content = log.dailyNutritionContent else { return nil }
+        let goals = log.dailyNutritionGoals
+        guard goals != nil || fuel.carbBand != nil else { return nil }
+        return FuelDayEvaluator.judge(
+            calories: content.calories,
+            protein: content.protein,
+            carbs: content.carbs,
+            fat: content.fat,
+            calorieGoal: goals.flatMap { $0.calories ?? $0.adjustedCalories },
+            proteinGoal: goals.flatMap { $0.protein ?? $0.adjustedProtein },
+            carbGoal: goals.flatMap { $0.carbs ?? $0.adjustedCarbs },
+            fatGoal: goals.flatMap { $0.fat ?? $0.adjustedFat },
+            target: fuel
         )
     }
 

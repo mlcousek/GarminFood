@@ -256,6 +256,10 @@ public enum FastingDayResult: Sendable, Equatable {
     /// earliest moment the log data is known to be complete -- judging it
     /// either way would be a guess.
     case notTracked
+    /// add-winter-arc-nutrition-and-rewards: the training plan switched
+    /// fasting off for this day (`fuel.fasting == "off"`, a build week).
+    /// Neutral: never kept, never broken, and it doesn't end the streak.
+    case paused
 }
 
 public struct FastingDay: Sendable, Equatable, Identifiable {
@@ -291,11 +295,16 @@ public enum FastingDayEvaluator {
     /// - Parameter trackedSince: windows STARTING before this are
     ///   `.notTracked` (fasting was off, or the log data doesn't reach back
     ///   that far). `nil` means "track everything".
+    /// - Parameter pausedDays: start-of-day dates (the day a fast ENDS on)
+    ///   the training plan paused fasting for: `.paused`, whatever was
+    ///   logged (add-winter-arc-nutrition-and-rewards). Empty by default,
+    ///   which is exactly the behaviour before that change.
     public static func history(
         schedule: FastingSchedule,
         days: Int,
         logTimestamps: [Date],
         trackedSince: Date?,
+        pausedDays: Set<Date> = [],
         now: Date,
         calendar: Calendar
     ) -> [FastingDay] {
@@ -306,6 +315,9 @@ public enum FastingDayEvaluator {
                   let window = schedule.window(forFastEndingOn: dayDate, calendar: calendar)
             else { return nil }
             let day = calendar.startOfDay(for: dayDate)
+            if pausedDays.contains(day) {
+                return FastingDay(day: day, window: window, result: .paused)
+            }
             if let trackedSince, window.start < trackedSince {
                 return FastingDay(day: day, window: window, result: .notTracked)
             }
@@ -319,11 +331,13 @@ public enum FastingDayEvaluator {
     /// broken ends the streak immediately (spec: "that day is marked broken
     /// and the kept-days streak resets to 0"). An untracked day ends it
     /// too: a streak never reaches back past what the data can vouch for.
+    /// A day the training plan paused is skipped like a running fast
+    /// (add-winter-arc-nutrition-and-rewards: "no broken streak").
     public static func keptStreak(days: [FastingDay]) -> Int {
         var streak = 0
         for fastingDay in days.sorted(by: { $0.day > $1.day }) {
             switch fastingDay.result {
-            case .inProgress, .upcoming:
+            case .inProgress, .upcoming, .paused:
                 continue
             case .kept:
                 streak += 1
