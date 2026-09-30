@@ -69,4 +69,23 @@ final class WeekKeyTests: XCTestCase {
         XCTAssertEqual(String(data: data, encoding: .utf8), "[\"2026-W39\"]")
         XCTAssertEqual(try JSONDecoder().decode([WeekKey].self, from: data), [WeekKey(yearForWeek: 2026, week: 39)])
     }
+
+    // MARK: - Non-Gregorian phone (fix-review-findings-2026-09-b)
+
+    /// Day keys are Gregorian `yyyy-MM-dd` whatever calendar the phone uses,
+    /// and every key reader here reads them back the same way.
+    func testDayKeysStayGregorianOnABuddhistPhone() throws {
+        var buddhist = Calendar(identifier: .buddhist)
+        buddhist.timeZone = TimeZone(identifier: "UTC")!
+        let noon = TestClock.date(2026, 9, 24)
+
+        XCTAssertEqual(WeekKey(dayKey: "2026-09-24", calendar: buddhist)?.rawValue, "2026-W39")
+        XCTAssertEqual(WeekKey(yearForWeek: 2026, week: 39).dayKeys(calendar: buddhist).first, "2026-09-21")
+        XCTAssertEqual(NutritionDayBoundary.dayString(for: noon, calendar: buddhist), "2026-09-24")
+        let start = try XCTUnwrap(NutritionDayBoundary.date(fromDayString: "2026-09-24", calendar: buddhist))
+        XCTAssertEqual(NutritionDayBoundary.string(forNutritionDay: start, calendar: buddhist), "2026-09-24")
+        XCTAssertEqual(FreezeDayKey.key(for: start, calendar: buddhist), "2026-09-24")
+        XCTAssertEqual(FreezeDayKey.date(for: "2026-09-24", calendar: buddhist), start)
+        XCTAssertEqual(SportRules.dayKey("2026-09-30", offsetBy: 1, calendar: buddhist), "2026-10-01")
+    }
 }

@@ -321,11 +321,8 @@ private struct EntryResolver {
     init(input: SignalsInput, calendar: Calendar) {
         self.input = input
         self.calendar = calendar
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "yyyy-MM-dd"
-        self.dayFormatter = formatter
+        // Gregorian, like `NutritionDate.string` (GarminWireDate).
+        self.dayFormatter = GarminWireDate.formatter(GarminWireDate.dayFormat, timeZone: calendar.timeZone)
     }
 
     func dayKey(_ date: Date) -> String {
@@ -448,15 +445,7 @@ private struct EntryResolver {
     }
 
     private func dayNoon(_ day: String) -> Date {
-        let parts = day.split(separator: "-").compactMap { Int($0) }
-        var components = DateComponents()
-        if parts.count == 3 {
-            components.year = parts[0]
-            components.month = parts[1]
-            components.day = parts[2]
-        }
-        components.hour = 12
-        return calendar.date(from: components) ?? Date(timeIntervalSince1970: 0)
+        NutritionDate.noon(ofDayString: day, calendar: calendar) ?? Date(timeIntervalSince1970: 0)
     }
 
     private func nonBlank(_ value: String?) -> String? {

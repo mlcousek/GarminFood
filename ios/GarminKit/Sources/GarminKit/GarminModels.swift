@@ -809,9 +809,7 @@ struct FoodLogWriteBody: Encodable, Equatable {
 
     /// `2026-09-16T13:35:49.324Z` -- the exact shape entries read back with.
     static func logTimestampString(_ date: Date) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter.string(from: date)
+        GarminWireDate.isoTimestampString(date)
     }
 
     /// A meal with a window is logged at its start time, which is how the
@@ -1203,12 +1201,9 @@ struct WeighInWriteBody: Encodable, Equatable {
     /// passes the device's own `timeZone` for `dateTimestamp` and UTC for
     /// `gmtTimestamp`, exactly `add_weigh_in`'s `dt` vs `dt.astimezone(UTC)`
     /// split.
+    /// Gregorian whatever the device calendar is (`GarminWireDate`).
     static func timestampString(_ date: Date, timeZone: TimeZone) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        formatter.timeZone = timeZone
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.string(from: date)
+        GarminWireDate.localTimestampString(date, timeZone: timeZone)
     }
 }
 
@@ -1272,11 +1267,7 @@ struct HydrationWriteBody: Encodable, Equatable {
     }
 
     private static func calendarDateString(_ date: Date, timeZone: TimeZone) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = timeZone
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.string(from: date)
+        GarminWireDate.dayString(from: date, timeZone: timeZone)
     }
 }
 

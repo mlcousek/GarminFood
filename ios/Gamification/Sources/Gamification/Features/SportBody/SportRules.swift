@@ -210,15 +210,8 @@ public enum SportRules {
 
     /// `key` moved by `days` calendar days (`nil` for a malformed key).
     static func dayKey(_ key: String, offsetBy days: Int, calendar: Calendar) -> String? {
-        let parts = key.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3 else { return nil }
-        var components = DateComponents()
-        components.year = parts[0]
-        components.month = parts[1]
-        components.day = parts[2]
-        components.hour = 12
-        guard let noon = calendar.date(from: components),
-              let moved = calendar.date(byAdding: .day, value: days, to: noon)
+        guard let noon = NutritionDate.noon(ofDayString: key, calendar: calendar),
+              let moved = NutritionDate.keyCalendar(matching: calendar).date(byAdding: .day, value: days, to: noon)
         else { return nil }
         return NutritionDate.string(from: moved, calendar: calendar)
     }

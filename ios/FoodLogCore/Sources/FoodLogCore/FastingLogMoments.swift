@@ -89,9 +89,6 @@ public enum FastingLogMoments {
     /// `2026-09-16T13:35:49.324Z` as Garmin returns it, with or without the
     /// fractional seconds.
     static func parseTimestamp(_ raw: String) -> Date? {
-        let withFraction = ISO8601DateFormatter()
-        withFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let date = withFraction.date(from: raw) { return date }
-        return ISO8601DateFormatter().date(from: raw)
+        GarminWireDate.parseISOTimestamp(raw)
     }
 }

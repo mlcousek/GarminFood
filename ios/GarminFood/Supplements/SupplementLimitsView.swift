@@ -70,6 +70,7 @@ struct SupplementLimitsView: View {
 }
 
 private struct TotalRow: View {
+    @Environment(AppEnvironment.self) private var environment
     let ingredient: IngredientID
     let amount: Double
     let limit: EffectiveLimit
@@ -78,7 +79,7 @@ private struct TotalRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(verbatim: EvidenceCatalog.name(of: ingredient))
+                Text(verbatim: environment.supplements.ingredientName(ingredient))
                 Spacer()
                 Text(verbatim: SupplementFormat.amount(amount, unit: limit.unit))
                     .monospacedDigit()
@@ -101,11 +102,12 @@ private struct TotalRow: View {
 }
 
 private struct LimitSummaryRow: View {
+    @Environment(AppEnvironment.self) private var environment
     let limit: EffectiveLimit
 
     var body: some View {
         HStack {
-            Text(verbatim: EvidenceCatalog.name(of: limit.ingredient))
+            Text(verbatim: environment.supplements.ingredientName(limit.ingredient))
             Spacer()
             Text(verbatim: limit.upperLimit.map { SupplementFormat.amount($0, unit: limit.unit) } ?? "–")
                 .monospacedDigit()
@@ -176,7 +178,7 @@ struct LimitEditorView: View {
                 Text("Default and source")
             }
         }
-        .navigationTitle(EvidenceCatalog.name(of: ingredient))
+        .navigationTitle(supplements.ingredientName(ingredient))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

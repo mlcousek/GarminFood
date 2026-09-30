@@ -188,7 +188,7 @@ struct LabelScoreView: View {
     private func partSection(_ title: String, _ part: LabelScore.Part) -> some View {
         Section {
             ForEach(Array(part.findings.enumerated()), id: \.offset) { item in
-                Text(verbatim: Self.text(item.element))
+                Text(verbatim: Self.text(item.element, name: environment.supplements.ingredientName))
                     .font(.subheadline)
             }
         } header: {
@@ -201,30 +201,32 @@ struct LabelScoreView: View {
         }
     }
 
-    static func text(_ finding: LabelScore.Finding) -> String {
+    /// `name`: how an ingredient id is shown -- the controller's, so a
+    /// custom ingredient reads by its name, not its id.
+    static func text(_ finding: LabelScore.Finding, name: (IngredientID) -> String = { EvidenceCatalog.name(of: $0) }) -> String {
         switch finding {
         case .noIngredients:
             return String(localized: "No ingredients entered yet.", comment: "Label score finding.")
         case .allAmountsStated:
             return String(localized: "Every ingredient has an amount.", comment: "Label score finding.")
         case .amountMissing(let id):
-            return String(localized: "\(EvidenceCatalog.name(of: id)): no amount on the label.", comment: "Label score finding. %@ = ingredient.")
+            return String(localized: "\(name(id)): no amount on the label.", comment: "Label score finding. %@ = ingredient.")
         case .formMissing(let id):
-            return String(localized: "\(EvidenceCatalog.name(of: id)): the form isn't stated.", comment: "Label score finding (e.g. which magnesium salt). %@ = ingredient.")
+            return String(localized: "\(name(id)): the form isn't stated.", comment: "Label score finding (e.g. which magnesium salt). %@ = ingredient.")
         case .proprietaryBlend(let name):
             return String(localized: "Proprietary blend \(name): amounts hidden.", comment: "Label score finding. %@ = blend name.")
         case .withinRange(let id):
-            return String(localized: "\(EvidenceCatalog.name(of: id)): in the range studies use.", comment: "Label score finding. %@ = ingredient.")
+            return String(localized: "\(name(id)): in the range studies use.", comment: "Label score finding. %@ = ingredient.")
         case .belowRange(let id):
-            return String(localized: "\(EvidenceCatalog.name(of: id)): below the range studies use.", comment: "Label score finding. %@ = ingredient.")
+            return String(localized: "\(name(id)): below the range studies use.", comment: "Label score finding. %@ = ingredient.")
         case .aboveRange(let id):
-            return String(localized: "\(EvidenceCatalog.name(of: id)): above the range studies use.", comment: "Label score finding. %@ = ingredient.")
+            return String(localized: "\(name(id)): above the range studies use.", comment: "Label score finding. %@ = ingredient.")
         case .noReferenceRange(let id):
-            return String(localized: "\(EvidenceCatalog.name(of: id)): no reference range to compare with.", comment: "Label score finding. %@ = ingredient.")
+            return String(localized: "\(name(id)): no reference range to compare with.", comment: "Label score finding. %@ = ingredient.")
         case .underLimits:
             return String(localized: "Your planned dose stays under your limits.", comment: "Label score finding.")
         case .overLimit(let id):
-            return String(localized: "\(EvidenceCatalog.name(of: id)): your planned total goes over your limit.", comment: "Label score finding. %@ = ingredient.")
+            return String(localized: "\(name(id)): your planned total goes over your limit.", comment: "Label score finding. %@ = ingredient.")
         }
     }
 }

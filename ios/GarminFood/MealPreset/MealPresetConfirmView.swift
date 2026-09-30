@@ -53,6 +53,17 @@ struct MealPresetConfirmView: View {
 
     private var canConfirm: Bool {
         !didConfirm && !isSaving && !preset.ingredients.isEmpty && portionsAreValid && blockingMessage == nil
+            && backingMessage == nil
+    }
+
+    /// A custom-food ingredient whose amount in Garmin (its scaled amount
+    /// times its multiplier) is out of `LogQuantity`'s bound -- the check
+    /// `confirmMealPreset` makes up front (fix-review-findings-2026-09-b).
+    private var backingMessage: String? {
+        guard environment.dataMode == .garminConnected, LogQuantity.isValid(portions),
+              !preset.backingQuantitiesAreValid(servingsMultiplier: portions)
+        else { return nil }
+        return CustomFoodDraft.backingQuantityInvalidMessage
     }
 
     /// Why this preset can't be logged in the current mode, or `nil`.
@@ -140,7 +151,7 @@ struct MealPresetConfirmView: View {
             // redesign-fasting-schedule 2.4: a note, never a block.
             FastingLogNoteSection(logDate: date)
 
-            if let message = errorMessage ?? blockingMessage {
+            if let message = errorMessage ?? blockingMessage ?? backingMessage {
                 Section {
                     Text(message).foregroundStyle(Theme.danger)
                 }

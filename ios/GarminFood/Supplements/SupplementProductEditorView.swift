@@ -13,8 +13,14 @@
 // it is. Setting the stock records today as the pack's start
 // (`SupplementProduct.setStock`, D14), so earlier ticks don't drain it.
 //
-// Depends on: SupplementsController, SupplementScheduleEditor, FoodLogCore
-// (SupplementProduct, IngredientAmount, SupplementCatalog).
+// Ingredients are chosen in `SupplementIngredientPicker` (search over the
+// known ones and the user's own, or create a new one --
+// add-custom-ingredients-and-owner-supplements); each row takes a free
+// form ("citrate", "MK-7") with suggestions.
+//
+// Depends on: SupplementsController, SupplementScheduleEditor,
+// SupplementIngredientPicker, FoodLogCore (SupplementProduct,
+// IngredientAmount, SupplementCatalog, IngredientCatalog).
 // Depended on by: SupplementStackView.
 
 import SwiftUI
@@ -37,6 +43,7 @@ struct SupplementProductEditorView: View {
     @State private var isScanning = false
     @State private var isLookingUp = false
     @State private var lookupMessage: String?
+    @State private var isAddingIngredient = false
 
     private var supplements: SupplementsController { environment.supplements }
 
@@ -212,9 +219,21 @@ struct SupplementProductEditorView: View {
                 product.wrappedValue.ingredients.remove(atOffsets: offsets)
             }
             Button {
-                product.wrappedValue.ingredients.append(IngredientAmount(ingredient: .magnesium, amount: nil, unit: IngredientID.magnesium.canonicalUnit))
+                isAddingIngredient = true
             } label: {
                 Label("Add ingredient", systemImage: "plus")
+            }
+            .sheet(isPresented: $isAddingIngredient) {
+                NavigationStack {
+                    SupplementIngredientPicker(selected: nil) { choice in
+                        product.wrappedValue.ingredients.append(IngredientAmount(
+                            ingredient: choice.id,
+                            amount: nil,
+                            unit: choice.unit,
+                            customName: choice.isCustom ? choice.name : nil
+                        ))
+                    }
+                }
             }
         } header: {
             Text("Per serving")
@@ -344,17 +363,53 @@ struct SupplementProductEditorView: View {
     }
 }
 
-/// One ingredient row: which ingredient, the amount and unit, and for
-/// magnesium its form (the EU limit applies to some salts, design D2).
+/// One ingredient row: which ingredient (any known one or the user's own,
+/// chosen in `SupplementIngredientPicker`), the amount and unit, and the
+/// form printed on the label (magnesium's matters for the EU limit, design
+/// D2 of add-supplements; any other is kept for the label score).
 private struct IngredientRowEditor: View {
+    @Environment(AppEnvironment.self) private var environment
     @Binding var row: IngredientAmount
     @State private var amountText = ""
+    @State private var formText = ""
+    @State private var isPicking = false
+
+    private var supplements: SupplementsController { environment.supplements }
+
+    private var name: String {
+        row.customName ?? supplements.ingredientName(row.ingredient)
+    }
+
+    private var suggestedForms: [String] {
+        IngredientCatalog.suggestedForms(
+            of: row.ingredient,
+            custom: supplements.customIngredients.first { $0.id == row.ingredient }
+        )
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            Picker("Ingredient", selection: $row.ingredient) {
-                ForEach(IngredientID.builtIn, id: \.self) { ingredient in
-                    Text(verbatim: EvidenceCatalog.name(of: ingredient)).tag(ingredient)
+            Button {
+                isPicking = true
+            } label: {
+                HStack {
+                    Text("Ingredient")
+                    Spacer()
+                    Text(verbatim: name)
+                        .foregroundStyle(.secondary)
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
+                }
+            }
+            .foregroundStyle(.primary)
+            .buttonStyle(.borderless)
+            .sheet(isPresented: $isPicking) {
+                NavigationStack {
+                    SupplementIngredientPicker(selected: row.ingredient) { choice in
+                        apply(choice)
+                    }
                 }
             }
             HStack {
@@ -370,28 +425,57 @@ private struct IngredientRowEditor: View {
                 }
                 .labelsHidden()
             }
-            if row.ingredient == .magnesium {
-                Picker("Form", selection: Binding(
-                    get: { row.form ?? "" },
-                    set: { row.form = $0.isEmpty ? nil : $0 }
-                )) {
-                    Text("Not stated").tag("")
-                    ForEach([MagnesiumForm.citrate, .bisglycinate, .oxide, .malate, .lactate, .chloride, .carbonate, .glycerophosphate, .threonate, .aspartate], id: \.rawValue) { form in
-                        Text(verbatim: form.rawValue).tag(form.rawValue)
+            HStack {
+                TextField(text: $formText, prompt: Text("Form (optional)")) { Text("Form (optional)") }
+                    .textInputAutocapitalization(.never)
+                    .onChange(of: formText) { _, text in
+                        let trimmed = text.trimmingCharacters(in: .whitespaces)
+                        row.form = trimmed.isEmpty ? nil : trimmed
                     }
+                    .onSubmit {
+                        Task { await supplements.rememberForm(row.form, of: row.ingredient) }
+                    }
+                if !suggestedForms.isEmpty {
+                    Menu {
+                        Button("Not stated") { formText = "" }
+                        ForEach(suggestedForms, id: \.self) { form in
+                            Button {
+                                formText = form
+                            } label: {
+                                Text(verbatim: form)
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "list.bullet")
+                    }
+                    .accessibilityLabel(Text("Suggested forms"))
                 }
             }
         }
         .onAppear {
             amountText = row.amount.map { SupplementFormat.servings($0) } ?? ""
-        }
-        .onChange(of: row.ingredient) { _, ingredient in
-            // A new ingredient starts in its own unit (IU only for vitamin D).
-            if !units.contains(row.unit) { row.unit = ingredient.canonicalUnit }
+            formText = row.form ?? ""
         }
     }
 
+    /// A newly picked ingredient starts in its own unit unless the current
+    /// one still applies, and drops the previous ingredient's form.
+    private func apply(_ choice: IngredientChoice) {
+        guard choice.id != row.ingredient else { return }
+        row.ingredient = choice.id
+        row.customName = choice.isCustom ? choice.name : nil
+        if !units.contains(row.unit) { row.unit = choice.unit }
+        row.form = nil
+        formText = ""
+    }
+
+    /// Mass units convert freely; IU only for vitamin D; a custom
+    /// ingredient in IU or ml stays in that unit (its totals are kept in
+    /// it, add-custom-ingredients-and-owner-supplements D2).
     private var units: [DoseUnit] {
-        row.ingredient == .vitaminD ? [.ug, .iu, .mg] : [.g, .mg, .ug]
+        if row.ingredient == .vitaminD { return [.ug, .iu, .mg] }
+        let own = row.ingredient.canonicalUnit
+        if row.ingredient.isCustom, own == .iu || own == .ml { return [own] }
+        return [.g, .mg, .ug]
     }
 }

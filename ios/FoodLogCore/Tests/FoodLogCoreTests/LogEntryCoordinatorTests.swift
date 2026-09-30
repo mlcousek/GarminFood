@@ -331,4 +331,74 @@ final class LogEntryCoordinatorTests: XCTestCase {
         let stored = await outbox.allEntries()
         XCTAssertTrue(stored.isEmpty, "checked up front, so the valid first ingredient isn't left logged on its own")
     }
+
+    // MARK: - Custom-food amount in Garmin (fix-review-findings-2026-09-b, finding 2)
+
+    private func backedCustomFood(multiplier: Double) -> CustomFoodDraft {
+        CustomFoodDraft(
+            name: "Domácí tvaroh",
+            servingUnit: "bowl",
+            numberOfUnits: 1,
+            backingFoodId: "garmin-42",
+            backingFoodName: "Cottage cheese",
+            backingServingId: "garmin-serving-7",
+            backingQuantityMultiplier: multiplier
+        )
+    }
+
+    func testConfirmCustomFoodNeverQueuesAZeroOrInvalidServingQuantity() async throws {
+        // A stored draft never went through the editor (an older or restored
+        // file): its multiplier can be anything.
+        for multiplier in [0, -2, Double.nan, 1e-300] {
+            let (coordinator, outbox, usageHistory, _) = makeCoordinator()
+            do {
+                _ = try await coordinator.confirmCustomFood(backedCustomFood(multiplier: multiplier), quantity: multiplier == 1e-300 ? 1e-300 : 1, mealType: .dinner, date: "2026-09-30")
+                XCTFail("expected LogQuantityError.backingOutOfRange for multiplier \(multiplier)")
+            } catch let error as LogQuantityError {
+                XCTAssertEqual(error, .backingOutOfRange)
+            }
+            let stored = await outbox.allEntries()
+            XCTAssertTrue(stored.isEmpty, "nothing reaches the durable outbox (multiplier \(multiplier))")
+            let events = await usageHistory.all()
+            XCTAssertTrue(events.isEmpty)
+        }
+    }
+
+    func testConfirmCustomFoodRefusesAnAmountInGarminAboveTheMaximum() async throws {
+        let (coordinator, outbox, _, _) = makeCoordinator()
+
+        do {
+            // 200 x 100 = 20 000 servings of the backing food.
+            _ = try await coordinator.confirmCustomFood(backedCustomFood(multiplier: 100), quantity: 200, mealType: .dinner, date: "2026-09-30")
+            XCTFail("expected LogQuantityError.backingOutOfRange")
+        } catch let error as LogQuantityError {
+            XCTAssertEqual(error, .backingOutOfRange)
+        }
+        let stored = await outbox.allEntries()
+        XCTAssertTrue(stored.isEmpty)
+
+        _ = try await coordinator.confirmCustomFood(backedCustomFood(multiplier: 100), quantity: 100, mealType: .dinner, date: "2026-09-30")
+        let accepted = await outbox.allEntries()
+        XCTAssertEqual(accepted.first?.numberOfUnits, LogQuantity.maximum, "the maximum itself is still accepted")
+    }
+
+    func testConfirmMealPresetRefusesTheWholePresetIfACustomFoodsAmountInGarminIsOutOfRange() async throws {
+        let (coordinator, outbox, _, _) = makeCoordinator()
+        let customFood = backedCustomFood(multiplier: 5_000)
+        let preset = MealPreset(name: "Breakfast bowl", ingredients: [
+            MealPresetIngredient(food: food, serving: food.servings[0], quantity: 1),
+            MealPresetIngredient(food: customFood.asFood(), serving: customFood.asFood().servings[0], quantity: 1, customFoodDraft: customFood),
+        ])
+        XCTAssertTrue(preset.backingQuantitiesAreValid(servingsMultiplier: 2), "5 000 x 1 x 2 = 10 000")
+        XCTAssertFalse(preset.backingQuantitiesAreValid(servingsMultiplier: 3))
+
+        do {
+            _ = try await coordinator.confirmMealPreset(preset, servingsMultiplier: 3, mealType: .breakfast, date: "2026-09-30")
+            XCTFail("expected LogQuantityError.backingOutOfRange")
+        } catch let error as LogQuantityError {
+            XCTAssertEqual(error, .backingOutOfRange)
+        }
+        let stored = await outbox.allEntries()
+        XCTAssertTrue(stored.isEmpty, "checked up front, so the plain first ingredient isn't left logged on its own")
+    }
 }

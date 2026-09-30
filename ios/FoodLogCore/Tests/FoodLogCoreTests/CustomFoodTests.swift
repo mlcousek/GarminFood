@@ -134,4 +134,28 @@ final class CustomFoodTests: XCTestCase {
 
         XCTAssertEqual(all.map(\.id), [draft.id])
     }
+
+    // MARK: - Amount in Garmin (fix-review-findings-2026-09-b, finding 2)
+
+    func testTheAmountInGarminIsHeldToTheLoggedQuantityBound() {
+        XCTAssertTrue(makeDraft(multiplier: 0.5).backingQuantityIsValid(for: 2))
+        XCTAssertTrue(makeDraft(multiplier: 100).backingQuantityIsValid(for: 100), "exactly LogQuantity.maximum")
+        XCTAssertFalse(makeDraft(multiplier: 100).backingQuantityIsValid(for: 101), "two in-bound numbers, an out-of-bound product")
+        XCTAssertFalse(makeDraft(multiplier: 0).backingQuantityIsValid(for: 1), "servingQty 0")
+        XCTAssertFalse(makeDraft(multiplier: -1).backingQuantityIsValid(for: 1))
+        XCTAssertFalse(makeDraft(multiplier: .nan).backingQuantityIsValid(for: 1))
+        XCTAssertFalse(makeDraft(multiplier: .infinity).backingQuantityIsValid(for: 1))
+        XCTAssertFalse(makeDraft(multiplier: 1e-300).backingQuantityIsValid(for: 1e-300), "underflows to zero")
+    }
+
+    func testWithoutABackingTheAmountCheckLeavesItToTheGarminMatchRule() {
+        let standalone = CustomFoodDraft(name: "Local only", servingUnit: "bowl", numberOfUnits: 1, calories: 100, backingQuantityMultiplier: 0)
+        XCTAssertTrue(standalone.backingQuantityIsValid(for: 1), "nothing is sent; hasGarminBacking decides")
+        XCTAssertFalse(standalone.hasGarminBacking)
+    }
+
+    func testTheOutOfRangeErrorSaysWhy() {
+        XCTAssertEqual(LogQuantityError.backingOutOfRange.errorDescription, CustomFoodDraft.backingQuantityInvalidMessage)
+        XCTAssertNotEqual(CustomFoodDraft.backingQuantityInvalidMessage, LogQuantity.invalidMessage)
+    }
 }
