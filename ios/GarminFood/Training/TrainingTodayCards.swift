@@ -13,8 +13,13 @@
 //   RaceCountdownChip  the next A (or hero) race.
 //   WeeklyNoteCard     the week's AI note teaser, and its full-text sheet.
 //
-// Read-only (design D8): tapping an option pushes the session detail at
-// that option and records nothing. Option cards follow D9: a token tint
+// Tapping an option pushes the session detail at that option and records
+// nothing (design D8). add-training-checkins (its D6) adds, when the
+// builders allow it: the morning check-in row (G/A/R buttons, letter and
+// shape as well as colour, one VoiceOver element each, "Saved on phone" /
+// "Sent") at the top of the training card, and an on/off toggle per habit.
+// Both only call back; TodayView turns the callbacks into TrainingModel
+// actions (local events, never a network wait). Option cards follow D9: a token tint
 // only as a light wash, the letter AND a shape, larger shapes with
 // Differentiate Without Color, stacked at accessibility text sizes, one
 // VoiceOver element each with the option's meaning spoken.
@@ -31,9 +36,14 @@ struct TrainingDayCard: View {
     let model: TodayTrainingModel
     let compact: Bool
     let onOpen: (SessionDetailTarget) -> Void
+    /// add-training-checkins: a check-in button was tapped.
+    var onCheckIn: (CheckInRowModel, MorningLight) -> Void = { _, _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.md) {
+            if let row = model.checkIn {
+                CheckInRowView(row: row) { light in onCheckIn(row, light) }
+            }
             if let state = model.emptyState {
                 TrainingEmptyStateView(state: state)
             }
@@ -239,11 +249,90 @@ private struct CompactSessionRow: View {
     }
 }
 
+// MARK: - Morning check-in (add-training-checkins D6)
+
+/// "Morning check-in" and three buttons G · A · R. The chosen one is
+/// filled and marked selected; the tint is a token (success, warning,
+/// danger), never the only signal: each has its letter and its shape.
+struct CheckInRowView: View {
+    let row: CheckInRowModel
+    let onSelect: (MorningLight) -> Void
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(verbatim: row.title)
+                    .font(.subheadline.weight(.semibold))
+                Spacer(minLength: Theme.Spacing.xs)
+                if let delivery = row.deliveryLine {
+                    Text(verbatim: delivery)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            let layout = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(spacing: Theme.Spacing.sm))
+                : AnyLayout(HStackLayout(spacing: Theme.Spacing.sm))
+            layout {
+                ForEach(row.buttons) { button in
+                    CheckInButton(button: button) {
+                        Haptics.selection()
+                        onSelect(button.light)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct CheckInButton: View {
+    let button: CheckInButtonModel
+    let onTap: () -> Void
+
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+    @ScaledMetric(relativeTo: .body) private var shapeSize: CGFloat = 14
+
+    var body: some View {
+        let tint = OptionStyle.tint(button.code)
+        let shape = RoundedRectangle(cornerRadius: Theme.Radius.md, style: .continuous)
+        Button(action: onTap) {
+            HStack(spacing: Theme.Spacing.xs) {
+                Image(systemName: OptionStyle.symbol(button.code))
+                    .font(.system(size: differentiateWithoutColor ? shapeSize * 1.4 : shapeSize))
+                    .foregroundStyle(tint)
+                Text(verbatim: button.letter)
+                    .font(.headline.weight(.heavy))
+                    .foregroundStyle(.primary)
+                if button.isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.primary)
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .background(
+                shape.fill(differentiateWithoutColor ? Theme.groupedBackground : tint.opacity(button.isSelected ? 0.28 : 0.10))
+            )
+            .overlay(
+                shape.strokeBorder(button.isSelected ? tint : Theme.stroke, lineWidth: button.isSelected ? 2 : 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(button.accessibilityLabel)
+        .accessibilityAddTraits(button.isSelected ? [.isButton, .isSelected] : .isButton)
+    }
+}
+
 // MARK: - Habits
 
 struct HabitsTodayCard: View {
     let rows: [HabitRowModel]
     let onOpenLadder: () -> Void
+    /// add-training-checkins: a habit toggle changed (id, done).
+    var onTick: (String, Bool) -> Void = { _, _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
@@ -258,7 +347,7 @@ struct HabitsTodayCard: View {
             .buttonStyle(.plain)
             .accessibilityHint("Opens the habit ladder")
             ForEach(rows) { row in
-                HabitRow(row: row)
+                HabitRow(row: row) { done in onTick(row.id, done) }
             }
         }
         .card()
@@ -267,10 +356,23 @@ struct HabitsTodayCard: View {
 
 private struct HabitRow: View {
     let row: HabitRowModel
+    var onTick: (Bool) -> Void = { _ in }
 
     @ScaledMetric(relativeTo: .body) private var ringSize: CGFloat = 30
 
     var body: some View {
+        HStack(alignment: .center, spacing: Theme.Spacing.sm) {
+            info
+            if case .tickable(let done, let pending) = row.tick {
+                HabitTickButton(label: row.label, done: done, pending: pending) {
+                    Haptics.selection()
+                    onTick(!done)
+                }
+            }
+        }
+    }
+
+    private var info: some View {
         HStack(alignment: .center, spacing: Theme.Spacing.sm) {
             if let icon = row.icon {
                 Text(verbatim: icon)
@@ -308,6 +410,37 @@ private struct HabitRow: View {
             .accessibilityHidden(true)
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// add-training-checkins (decision A42): a habit is on or off for the day.
+/// A check shape as well as colour; a small clock while the phone's tick
+/// isn't uploaded yet.
+private struct HabitTickButton: View {
+    let label: String
+    let done: Bool
+    let pending: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            Image(systemName: done ? "checkmark.circle.fill" : "circle")
+                .font(.title2)
+                .foregroundStyle(done ? Theme.success : Color.secondary)
+                .overlay(alignment: .bottomTrailing) {
+                    if pending {
+                        Image(systemName: "clock.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .offset(x: 4, y: 4)
+                    }
+                }
+                .frame(minWidth: 44, minHeight: 44)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: label))
+        .accessibilityValue(done ? Text("Done") : Text("Not done"))
+        .accessibilityAddTraits(done ? [.isButton, .isSelected] : .isButton)
     }
 }
 

@@ -38,7 +38,11 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(week.statusText, "Approved")
         XCTAssertEqual(week.kindText, "Build")
         XCTAssertNil(week.noteText)
-        XCTAssertEqual(week.runLine, "Run 10.1 of 60 km")
+        XCTAssertEqual(week.runLine, "Run 10.1 of 55 km")
+        XCTAssertEqual(week.ruleNoteLines, [
+            "Red morning on 2030-10-14: volume held at last week's 55 km instead of adding.",
+            "Three green mornings in a row (2030-10-16 – 2030-10-18): the next step up is allowed."
+        ])
         XCTAssertEqual(week.sessionsLine, "1 done · 1 missed of 6")
         let rows = try days(week)
         XCTAssertEqual(rows.count, 7)
@@ -46,7 +50,10 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(rows.filter(\.isToday).map(\.date), [D.asOf])
         XCTAssertEqual(rows[0].sessions.first?.status, .missed)
         XCTAssertEqual(rows[0].sessions.first?.statusText, "Missed")
-        XCTAssertEqual(rows[4].restText, "Rest day")
+        // Sunday's walk was moved to Friday by a plan command.
+        XCTAssertNil(rows[4].restText)
+        XCTAssertEqual(rows[4].sessions.map(\.id), ["2030-w43-sun-pm"])
+        XCTAssertEqual(rows[6].restText, "Rest day")
         XCTAssertEqual(rows[3].sessions.first?.badgeText, "Test")
         XCTAssertEqual(week.previous, D.week("2030-W42"))
         XCTAssertEqual(week.next, D.week("2030-W44"))
@@ -77,7 +84,8 @@ final class PlanBuilderTests: XCTestCase {
     func testFutureWeekShowsTargetsOnly() throws {
         let week = try builder().week(D.week("2030-W44"))
         XCTAssertEqual(week.runLine, "Run target 40 km")
-        XCTAssertEqual(week.sessionsLine, "Sessions planned: 4")
+        XCTAssertEqual(week.sessionsLine, "Sessions planned: 5")
+        XCTAssertEqual(week.ruleNoteLines, [])
         XCTAssertEqual(week.statusText, "Proposed")
         XCTAssertEqual(week.kindText, "Race")
         XCTAssertEqual(week.noteText, "Race week")
@@ -118,7 +126,7 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(month.rows.count, 6)
         XCTAssertEqual(month.rows.flatMap(\.cells).count, 42)
         XCTAssertEqual(month.rows.map(\.label), ["W40", "W41", "W42", "W43", "W44", "W45"])
-        XCTAssertEqual(month.rows.map(\.targetText), [nil, "30 km", "55 km", "60 km", "40 km", "45 km"])
+        XCTAssertEqual(month.rows.map(\.targetText), [nil, "30 km", "55 km", "55 km", "40 km", "45 km"])
         XCTAssertEqual(month.rows[0].cells[0].date, D.date("2030-09-30"))
         XCTAssertFalse(month.rows[0].cells[0].isInMonth)
         XCTAssertNil(month.emptyState)
@@ -132,7 +140,9 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(cells[D.date("2030-10-23")]?.isToday, true)
         XCTAssertEqual(cells[D.date("2030-11-03")]?.raceNames, ["Test Valley 30K"])
         XCTAssertEqual(cells[D.date("2030-11-03")]?.isInMonth, false)
-        XCTAssertEqual(cells[D.date("2030-10-21")]?.accessibilityLabel, "Mon 21 Oct. Gym A, Missed")
+        XCTAssertEqual(cells[D.date("2030-10-21")]?.accessibilityLabel, "Mon 21 Oct. Gym A, Missed. Morning check: Green")
+        XCTAssertEqual(cells[D.date("2030-10-21")]?.lightName, "Green")
+        XCTAssertEqual(cells[D.date("2030-10-28")]?.glyphs.map(\.style), [.skipped])
         XCTAssertEqual(month.previous.month, 9)
         XCTAssertEqual(month.next.month, 11)
     }
@@ -167,8 +177,11 @@ final class PlanBuilderTests: XCTestCase {
 
     func testDetailOpensOnTheTappedOptionElseG() throws {
         let plan = try builder()
-        XCTAssertEqual(plan.sessionDetail(id: "2030-w43-wed-am", option: "A")?.initialOptionIndex, 1)
-        XCTAssertEqual(plan.sessionDetail(id: "2030-w43-wed-am")?.initialOptionIndex, 0)
+        XCTAssertEqual(plan.sessionDetail(id: "2030-w43-wed-am", option: "R")?.initialOptionIndex, 2)
+        // Untapped: the morning's amber check-in picks A.
+        XCTAssertEqual(plan.sessionDetail(id: "2030-w43-wed-am")?.initialOptionIndex, 1)
+        // No light, nothing done: G.
+        XCTAssertEqual(plan.sessionDetail(id: "2030-w44-tue-am")?.initialOptionIndex, 0)
         XCTAssertNil(plan.sessionDetail(id: "no-such-session"))
     }
 
@@ -259,9 +272,24 @@ final class PlanBuilderTests: XCTestCase {
         let detail = try XCTUnwrap(try builder().sessionDetail(id: "2030-w44-sun-am"))
         XCTAssertEqual(detail.badgeText, "Race")
         XCTAssertEqual(detail.raceLine, "Race day: Test Valley 30K · Sun 3 Nov")
-        XCTAssertEqual(detail.fuelLines, ["Fuel: 70 g carbs/h"])
-        let friday = try XCTUnwrap(try builder().sessionDetail(id: "2030-w44-fri-am"))
-        XCTAssertEqual(friday.fuelLines, ["Carb load: 560 g carbs (8 g/kg)"])
+        // The session's own fuel, plus its day's carb load if the plan put
+        // it on a carb-load day (a plan command moved it to Saturday in the
+        // current example; the vault is about to refuse that for races).
+        let raceDate = try Fixtures.exampleDate(ofSession: "2030-w44-sun-am")
+        if raceDate == D.date("2030-11-03") {
+            XCTAssertEqual(detail.fuelLines, ["Fuel: 70 g carbs/h"])
+            XCTAssertNil(detail.originText)
+        } else {
+            XCTAssertEqual(detail.fuelLines, ["Fuel: 70 g carbs/h", "Carb load: 700 g carbs (10 g/kg)"])
+            XCTAssertEqual(detail.originText, "Moved from Sun 3 Nov")
+        }
+        let swapped = try XCTUnwrap(try builder().sessionDetail(id: "2030-w44-fri-am"))
+        XCTAssertEqual(swapped.fuelLines, [])
+        XCTAssertEqual(swapped.originText, "Swapped from Fri 1 Nov")
+        XCTAssertEqual(try builder(.czech).sessionDetail(id: "2030-w44-fri-am")?.originText, "Prohozeno z pá 1. 11.")
+        let ruled = try XCTUnwrap(try builder().sessionDetail(id: "2030-w44-wed-am"))
+        XCTAssertEqual(ruled.originText, "Changed by a rule")
+        XCTAssertEqual(ruled.whyLines.last, "Two amber mornings in a row (2030-10-22, 2030-10-23): only the ride option (R) stays for this quality session.")
     }
 
     func testOriginAndRuleNotesOncePublished() throws {

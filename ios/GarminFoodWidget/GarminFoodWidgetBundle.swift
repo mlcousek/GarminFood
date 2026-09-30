@@ -40,6 +40,10 @@ struct GarminFoodWidgetBundle: WidgetBundle {
             QuickPickControl3()
             QuickPickControl4()
             ScanBarcodeControl()
+            // add-training-checkins D7: the morning check-in, G/A/R.
+            MorningCheckInGreenControl()
+            MorningCheckInAmberControl()
+            MorningCheckInRedControl()
         }
     }
 }

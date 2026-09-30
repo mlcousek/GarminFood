@@ -1,0 +1,3 @@
+# The golden event fixture is compared byte for byte (add-training-checkins
+# design D2): never let git rewrite its line endings.
+*.jsonl -text

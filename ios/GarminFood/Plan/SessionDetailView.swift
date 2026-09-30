@@ -11,8 +11,11 @@
 // recognised; fuel; a test's results against the test history; the race.
 //
 // Pushed from Today's option cards and from Plan's week, month and day
-// sheet. Read-only: no control moves, swaps, skips, checks in or rates
-// the session. Everything shown is `SessionDetailModel` from TrainingCore.
+// sheet. No control moves, swaps or skips the session. add-training-checkins
+// (its D6) adds "How did it feel?" when the vault connection can record:
+// RPE 1-10 as ten buttons and a note with Save, each a local event
+// (TrainingModel), shown with "Saved on phone" / "Sent". Everything shown is
+// `SessionDetailModel` from TrainingCore.
 //
 // Depended on by: TodayView, PlanTabView.
 
@@ -91,6 +94,10 @@ struct SessionDetailView: View {
 
             if let done = detail.done {
                 doneCard(done)
+            }
+
+            if let rating = detail.rating {
+                SessionRatingCard(rating: rating)
             }
 
             if !detail.fuelLines.isEmpty {
@@ -277,5 +284,95 @@ struct SessionDetailView: View {
         case .unchanged?: return "equal"
         case nil: return "minus"
         }
+    }
+}
+
+// MARK: - Rating (add-training-checkins D6)
+
+/// RPE and a note for one session. Every tap is a local event; the note is
+/// saved on "Save note" only, so typing never records half a sentence.
+private struct SessionRatingCard: View {
+    let rating: SessionRatingModel
+
+    @Environment(AppEnvironment.self) private var environment
+    @State private var draft = ""
+    @State private var didLoadDraft = false
+    @FocusState private var isEditingNote: Bool
+
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.xs), count: 5)
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            SectionHeader(
+                title: String(localized: "How did it feel?", comment: "Session detail: section title for the RPE and the note."),
+                trailing: rating.rpeDeliveryLine
+            )
+            Text("Effort (RPE)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            LazyVGrid(columns: columns, spacing: Theme.Spacing.xs) {
+                ForEach(1...10, id: \.self) { value in
+                    rpeButton(value)
+                }
+            }
+
+            Text("Note")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.top, Theme.Spacing.xs)
+            TextField("How it went, anything to remember", text: $draft, axis: .vertical)
+                .lineLimit(2...6)
+                .focused($isEditingNote)
+                .padding(Theme.Spacing.sm)
+                .background(
+                    RoundedRectangle(cornerRadius: Theme.Radius.sm, style: .continuous)
+                        .strokeBorder(Theme.stroke)
+                )
+            HStack {
+                if let line = rating.noteDeliveryLine {
+                    Text(verbatim: line)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Button("Save note") {
+                    isEditingNote = false
+                    let text = draft
+                    Task { await environment.training.saveNote(sessionID: rating.sessionID, date: rating.date, text: text) }
+                }
+                .disabled(!canSave)
+            }
+        }
+        .card()
+        .onAppear {
+            guard !didLoadDraft else { return }
+            draft = rating.note ?? ""
+            didLoadDraft = true
+        }
+    }
+
+    private var canSave: Bool {
+        let trimmed = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        // The contract takes 1-2000 characters: an empty note isn't sent.
+        return !trimmed.isEmpty && trimmed != (rating.note ?? "") && trimmed.count <= SessionNotePayload.maxLength
+    }
+
+    private func rpeButton(_ value: Int) -> some View {
+        let selected = rating.rpe == value
+        let shape = RoundedRectangle(cornerRadius: Theme.Radius.sm, style: .continuous)
+        return Button {
+            Haptics.selection()
+            Task { await environment.training.rate(sessionID: rating.sessionID, date: rating.date, rpe: value) }
+        } label: {
+            Text(verbatim: "\(value)")
+                .font(.subheadline.weight(selected ? .heavy : .regular))
+                .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity, minHeight: 40)
+                .background(shape.fill(selected ? Theme.accent.opacity(0.25) : Theme.groupedBackground))
+                .overlay(shape.strokeBorder(selected ? Theme.accent : Theme.stroke, lineWidth: selected ? 2 : 1))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("RPE \(value)"))
+        .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
     }
 }

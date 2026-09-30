@@ -106,6 +106,16 @@ struct WeekAgendaView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
+            // add-training-checkins: the vault's rule notes for the week.
+            ForEach(model.ruleNoteLines, id: \.self) { line in
+                Label {
+                    Text(verbatim: line)
+                } icon: {
+                    Image(systemName: "arrow.triangle.branch")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
             TrainingNoticeLines(notices: model.notices)
         }
         .card()

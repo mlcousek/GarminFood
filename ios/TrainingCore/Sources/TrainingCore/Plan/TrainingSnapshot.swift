@@ -8,9 +8,14 @@
 //     phone's unacknowledged commands, and every screen then shows the
 //     moved or skipped session with its pending badge without a builder
 //     change;
-//   - `TrainingCapabilities` is all `false` here; add-training-checkins
-//     turns on check-ins and habit ticks, and the option cards' action goes
-//     from `.openDetail` to `.checkIn`.
+//   - `TrainingCapabilities` says what the app may record.
+//     add-training-checkins turns on check-ins, habit ticks and session
+//     ratings when the vault connection has a device id
+//     (`.checkIns(enabled:)`); plan edits stay off. The option cards keep
+//     opening the detail; the check-in is its own row (that change's D6);
+//   - `checkIns` is the phone's own recent events (CheckInOverlay):
+//     `EffectivePlan` applies their lights to each day, and the builders
+//     read ticks, RPE and notes from it (that change's D5).
 //
 // Lookups across the season live here too (a week's own phase by
 // `phaseId`, outline rows of every phase, races), so the builders never
@@ -30,7 +35,7 @@ public struct PendingOverlay: Equatable, Sendable {
     public var isEmpty: Bool { true }
 }
 
-/// What the app may do beyond reading (design D8). All `false` here.
+/// What the app may do beyond reading (design D8).
 public struct TrainingCapabilities: Equatable, Sendable {
     public var canCheckIn: Bool
     public var canTickHabits: Bool
@@ -38,6 +43,13 @@ public struct TrainingCapabilities: Equatable, Sendable {
     public var canRateSession: Bool
 
     public static let readOnly = TrainingCapabilities(canCheckIn: false, canTickHabits: false, canEditPlan: false, canRateSession: false)
+
+    /// add-training-checkins D6: check-ins, ticks and ratings together,
+    /// when the vault connection is on and has a device id. Plan edits are
+    /// add-plan-editing's.
+    public static func checkIns(enabled: Bool) -> TrainingCapabilities {
+        TrainingCapabilities(canCheckIn: enabled, canTickHabits: enabled, canEditPlan: false, canRateSession: enabled)
+    }
 
     public init(canCheckIn: Bool, canTickHabits: Bool, canEditPlan: Bool, canRateSession: Bool) {
         self.canCheckIn = canCheckIn
@@ -48,13 +60,14 @@ public struct TrainingCapabilities: Equatable, Sendable {
 }
 
 /// The selected phase as the screens see it: the file's weeks with the
-/// overlay applied (a no-op until add-plan-editing).
+/// overlay applied (a no-op until add-plan-editing) and the phone's own
+/// morning check-ins as each day's `light` (add-training-checkins D5).
 public struct EffectivePlan: Equatable, Sendable {
     public let plan: Plan
     public let overlay: PendingOverlay
 
-    public init(plan: Plan, overlay: PendingOverlay = .empty) {
-        self.plan = plan
+    public init(plan: Plan, overlay: PendingOverlay = .empty, checkIns: CheckInOverlay = .empty) {
+        self.plan = checkIns.applyingLights(to: plan)
         self.overlay = overlay
     }
 
@@ -83,6 +96,8 @@ public struct TrainingSnapshot: Equatable, Sendable {
     public let habits: Habits
     public let freshness: TrainingFreshness
     public let capabilities: TrainingCapabilities
+    /// The phone's own recent events (add-training-checkins D5).
+    public let checkIns: CheckInOverlay
 
     public init(
         asOf: LocalDate?,
@@ -93,7 +108,8 @@ public struct TrainingSnapshot: Equatable, Sendable {
         tests: [TestHistory],
         habits: Habits,
         freshness: TrainingFreshness = TrainingFreshness(),
-        capabilities: TrainingCapabilities = .readOnly
+        capabilities: TrainingCapabilities = .readOnly,
+        checkIns: CheckInOverlay = .empty
     ) {
         self.asOf = asOf
         self.athlete = athlete
@@ -104,20 +120,43 @@ public struct TrainingSnapshot: Equatable, Sendable {
         self.habits = habits
         self.freshness = freshness
         self.capabilities = capabilities
+        self.checkIns = checkIns
     }
 
-    /// From a decoded projection, with an empty overlay.
-    public init(projection: Projection, freshness: TrainingFreshness = TrainingFreshness(), overlay: PendingOverlay = .empty) {
+    /// From a decoded projection, with an empty pending overlay and the
+    /// phone's check-ins applied.
+    public init(
+        projection: Projection,
+        freshness: TrainingFreshness = TrainingFreshness(),
+        overlay: PendingOverlay = .empty,
+        checkIns: CheckInOverlay = .empty,
+        capabilities: TrainingCapabilities = .readOnly
+    ) {
         self.init(
             asOf: projection.asOf,
             athlete: projection.athlete,
             season: projection.season,
-            plan: projection.plan.map { EffectivePlan(plan: $0, overlay: overlay) },
+            plan: projection.plan.map { EffectivePlan(plan: $0, overlay: overlay, checkIns: checkIns) },
             workouts: projection.workouts,
             tests: projection.tests,
             habits: projection.habits,
-            freshness: freshness
+            freshness: freshness,
+            capabilities: capabilities,
+            checkIns: checkIns
         )
+    }
+
+    // MARK: Check-ins
+
+    /// Whether habit `id` counts as done on `date`: the phone's latest tick,
+    /// else the projection's count (>= 1 is on; absent is off). `local` is
+    /// the phone's tick, if any (decision A42: on/off).
+    public func habitDone(_ id: String, on date: LocalDate) -> (done: Bool, local: OverlayValue<Bool>?) {
+        if let local = checkIns.habitTick(on: date, habitId: id) {
+            return (local.value, local)
+        }
+        let count = plan?.day(date)?.habitsDone?[id] ?? 0
+        return (count >= 1, nil)
     }
 
     // MARK: Lookups

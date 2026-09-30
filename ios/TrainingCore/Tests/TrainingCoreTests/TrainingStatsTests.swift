@@ -36,17 +36,21 @@ final class TrainingStatsTests: XCTestCase {
 
         let adherence = try XCTUnwrap(stats.adherence)
         XCTAssertEqual(adherence.weeks.map(\.title), ["W42", "W43", "W44"])
+        // W44's Monday gym was skipped by a plan command: due, not done
+        // (the stats design's rule), even before the week starts.
         XCTAssertEqual(adherence.weeks.map(\.countsText), [
             "8 done · 0 missed · 0 planned",
             "1 done · 1 missed · 4 planned",
-            "0 done · 0 missed · 4 planned"
+            "0 done · 0 missed · 4 planned · 1 skipped"
         ])
-        XCTAssertEqual(adherence.weeks.map(\.adherenceText), ["100 %", "50 %", nil])
+        XCTAssertEqual(adherence.weeks.map(\.adherenceText), ["100 %", "50 %", "0 %"])
         XCTAssertEqual(adherence.weeks.map(\.isCurrent), [false, true, false])
         XCTAssertEqual(adherence.totals.done, 9)
         XCTAssertEqual(adherence.totals.missed, 1)
+        XCTAssertEqual(adherence.totals.skipped, 1)
         XCTAssertEqual(adherence.totals.planned, 8)
-        XCTAssertEqual(adherence.summary, "Done 90 % of the sessions due so far")
+        // 9 of 11 due.
+        XCTAssertEqual(adherence.summary, "Done 82 % of the sessions due so far")
         XCTAssertNil(adherence.outsideText)
         XCTAssertEqual(adherence.phases.map(\.title), ["Test Base 2030"])
         XCTAssertEqual(adherence.legend.missed, "Missed")
@@ -58,13 +62,14 @@ final class TrainingStatsTests: XCTestCase {
         let adherence = try XCTUnwrap(stats.adherence)
         XCTAssertEqual(adherence.weeks.map(\.title), ["W41", "W42", "W43", "W44"])
         XCTAssertEqual(adherence.phases.map(\.title), ["Test Prelude 2030", "Test Base 2030"])
-        XCTAssertEqual(adherence.phases.map(\.countsText), ["2 done · 0 missed · 0 planned", "9 done · 1 missed · 8 planned"])
-        XCTAssertEqual(adherence.summary, "Done 92 % of the sessions due so far")
+        XCTAssertEqual(adherence.phases.map(\.countsText), ["2 done · 0 missed · 0 planned", "9 done · 1 missed · 8 planned · 1 skipped"])
+        // 11 of 13 due.
+        XCTAssertEqual(adherence.summary, "Done 85 % of the sessions due so far")
         // The season started in W36; W36-W40 are not in the file: listed, not zero.
         XCTAssertEqual(adherence.outsideText, "Not in the app's window: W36, W37, W38, W39, W40")
 
         let czech = try XCTUnwrap(try builder(.czech).stats(scope: .season).adherence)
-        XCTAssertEqual(czech.summary, "Hotovo 92 % tréninků, které už byly na řadě")
+        XCTAssertEqual(czech.summary, "Hotovo 85 % tréninků, které už byly na řadě")
         XCTAssertEqual(czech.weeks[0].countsText, "2 hotovo · 0 vynecháno · 0 naplánováno")
         XCTAssertEqual(czech.outsideText, "Mimo okno aplikace: T36, T37, T38, T39, T40")
     }
@@ -121,11 +126,12 @@ final class TrainingStatsTests: XCTestCase {
     func testVolumeVsTarget() throws {
         let volume = try XCTUnwrap(try builder().stats(scope: .phase("test-base-2030")).volume)
         XCTAssertEqual(volume.rows.map(\.label), ["W42", "W43", "W44", "W45", "W46"])
-        XCTAssertEqual(volume.rows.map(\.valueText), ["60.1 of 55 km", "10.1 of 60 km", "40 km", "45 km", "–"])
-        XCTAssertEqual(volume.rows.map(\.deltaText), ["+5.1 km (+9 %)", "−49.9 km (−83 %)", nil, nil, nil])
+        // W43's target is the red-held 55 km (the vault's rule edit).
+        XCTAssertEqual(volume.rows.map(\.valueText), ["60.1 of 55 km", "10.1 of 55 km", "40 km", "45 km", "–"])
+        XCTAssertEqual(volume.rows.map(\.deltaText), ["+5.1 km (+9 %)", "−44.9 km (−82 %)", nil, nil, nil])
         XCTAssertEqual(volume.summaryLines, [
-            "Planned 200 km in total",
-            "Ran 70.2 of 115 km planned",
+            "Planned 195 km in total",
+            "Ran 70.2 of 110 km planned",
             "1 of 2 weeks within 10 % of target",
             "Average 35.1 km a week"
         ])

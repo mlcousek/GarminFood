@@ -35,13 +35,20 @@ public enum TrainingSource: Equatable, Sendable {
         return nil
     }
 
-    /// From the store's availability and the freshness to attach.
-    public static func from(_ availability: ProjectionAvailability, freshness: TrainingFreshness) -> TrainingSource {
+    /// From the store's availability and the freshness to attach, with
+    /// the phone's check-ins and what it may record (add-training-checkins).
+    public static func from(
+        _ availability: ProjectionAvailability,
+        freshness: TrainingFreshness,
+        checkIns: CheckInOverlay = .empty,
+        capabilities: TrainingCapabilities = .readOnly
+    ) -> TrainingSource {
         switch availability {
         case .waitingForFirstSync: return .waitingForFirstSync
         case .notGenerated: return .notGenerated
         case .unreadable(let rejection): return .unreadable(rejection)
-        case .loaded(let cached): return .loaded(TrainingSnapshot(projection: cached.projection, freshness: freshness))
+        case .loaded(let cached):
+            return .loaded(TrainingSnapshot(projection: cached.projection, freshness: freshness, checkIns: checkIns, capabilities: capabilities))
         }
     }
 }

@@ -22,6 +22,13 @@ struct GarminFoodApp: App {
         // is set here, before launch finishes. (Touches no store until an
         // action arrives, so it doesn't break the rule above.)
         UNUserNotificationCenter.current().delegate = SupplementNotificationHandler.shared
+        // add-training-checkins D7: the lock-screen check-in Controls run
+        // their intent in this process; Shared/ can't import TrainingCore,
+        // so it calls this hook. Set before any scene, so a cold launch by
+        // a Control finds it. (Touches no store until a Control fires.)
+        MorningCheckInControlAction.handler = { rawLight in
+            try await TrainingEventsService.shared.handleControlCheckIn(rawLight)
+        }
     }
 
     var body: some Scene {

@@ -368,6 +368,36 @@
 /* Habit schedule: after these session types. */
 "After sessions: %@" = "After sessions: %@";
 
+/* add-training-checkins: the check-in row on Today's training card. */
+"Morning check-in" = "Morning check-in";
+
+/* VoiceOver for a check-in button: the light and what its option means. */
+"Morning check-in %@, %@" = "Morning check-in %@, %@";
+
+/* A check-in, tick, RPE or note is stored on the phone, not uploaded yet. */
+"Saved on phone" = "Saved on phone";
+
+/* A check-in, tick, RPE or note has been uploaded to the vault. */
+"Sent" = "Sent";
+
+/* Reminder title before a run day's check-in. */
+"How do you feel today?" = "How do you feel today?";
+
+/* Reminder body before a run day's check-in. */
+"Check in green, amber or red before you run." = "Check in green, amber or red before you run.";
+
+/* Reminder title for the evening habits. */
+"Evening habits" = "Evening habits";
+
+/* Reminder body for the evening habits. */
+"Tick today's habits before bed." = "Tick today's habits before bed.";
+
+/* The vault has read the event (its projection acknowledged it). */
+"Received by the vault" = "Received by the vault";
+
+/* Session detail: the session swapped days with another; its old date. */
+"Swapped from %@" = "Swapped from %@";
+
 /* Season screen: the vault has published no season. */
 "No season yet" = "No season yet";
 

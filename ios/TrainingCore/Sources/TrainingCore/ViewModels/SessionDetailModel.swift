@@ -84,6 +84,8 @@ public struct SessionDetailModel: Equatable, Sendable {
     public let fuelLines: [String]
     public let test: TestDetailModel?
     public let raceLine: String?
+    /// add-training-checkins: RPE and note, when rating is allowed.
+    public var rating: SessionRatingModel? = nil
 }
 
 public extension PlanBuilder {
@@ -152,7 +154,7 @@ public extension PlanBuilder {
             text.format(.raceDayLine, race.name.resolvedText(language) ?? race.id) + " · " + format.dates.short(race.date)
         }
 
-        return SessionDetailModel(
+        var model = SessionDetailModel(
             id: session.id,
             title: title,
             dateLine: dateLine,
@@ -171,6 +173,8 @@ public extension PlanBuilder {
             test: testDetail(session, day: day, snapshot: snapshot),
             raceLine: raceLine
         )
+        model.rating = ratingModel(session, day: day, snapshot: snapshot)
+        return model
     }
 
     private func detailOption(id: String, code: OpenEnum<OptionCode>?, label: String, targets: Targets, workout: Workout?, watch: OptionWatch?) -> DetailOptionModel {
@@ -230,7 +234,9 @@ public extension PlanBuilder {
         guard let origin else { return nil }
         let text = format.text
         if let moved = origin["movedFrom"]?.stringValue ?? origin["from"]?.stringValue, let date = LocalDate(moved) {
-            return text.format(.originMovedFrom, format.dates.short(date))
+            // add-hub-ingest: `{ kind: moved|swapped|rule, from, rule, event }`.
+            let key: TrainingKey = origin["kind"]?.stringValue == "swapped" ? .originSwappedFrom : .originMovedFrom
+            return text.format(key, format.dates.short(date))
         }
         if origin["rule"] != nil || origin["kind"]?.stringValue == "rule" {
             return text(.originRule)

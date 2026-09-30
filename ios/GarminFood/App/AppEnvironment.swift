@@ -261,10 +261,15 @@ final class AppEnvironment {
         self.themeStore = ThemeStore()
         let vault = VaultController(services: VaultServices.shared)
         self.vault = vault
-        let training = TrainingModel(store: VaultServices.shared.projectionStore, vault: vault)
+        let training = TrainingModel(store: VaultServices.shared.projectionStore, vault: vault, events: TrainingEventsService.shared)
         self.training = training
         vault.onProjectionRefresh = { [weak training] in
             await training?.reload()
+        }
+        // add-training-checkins D4: an upload stopped on auth -> a forced
+        // projection fetch, whose answer names the loud problem.
+        TrainingEventsService.shared.onAuthStop = { [weak vault] in
+            vault?.refreshInBackground(force: true, allowed: true)
         }
         let layoutStore = LayoutStore(experience: { AppEnvironment.experience(preferences: preferences, vault: vault) })
         self.layoutStore = layoutStore
@@ -331,6 +336,12 @@ final class AppEnvironment {
         // without waiting for that fetch (which reloads it again after).
         if experience == .training {
             await training.reload()
+        }
+        // add-training-checkins D4: deliver the phone's training events
+        // (sealed segments, create-only), unstructured like the fetch; the
+        // service checks the connection and VaultKit's request gate.
+        if !needsOnboarding, dataMode == .garminConnected {
+            deliverTrainingEvents()
         }
         // add-standalone-mode 5.3: which Garmin work this foreground may do
         // (`GarminSyncPlan`): all of it in Garmin mode, exactly as before;
@@ -863,6 +874,11 @@ final class AppEnvironment {
     // MARK: - Lifecycle
 
     func didEnterBackground() {
+        // add-training-checkins D4: leaving the app delivers what the
+        // morning check-in just recorded (never awaited).
+        if dataMode == .garminConnected {
+            deliverTrainingEvents()
+        }
         // add-standalone-mode 5.3: nothing to deliver in standalone mode, so
         // no background refresh is ever scheduled (and a stale one from
         // Garmin mode is cancelled).
@@ -949,6 +965,19 @@ final class AppEnvironment {
             startsSoon: notificationPreferences.preferences.fastingStartReminder
         )
         await syncSupplementReminders()
+        // add-training-checkins D8: morning check-in and evening habits;
+        // none unless the vault connection can record.
+        await training.syncReminders()
+    }
+
+    /// add-training-checkins D4: one unstructured delivery of the phone's
+    /// training events, then Settings -> Vault's counts.
+    private func deliverTrainingEvents() {
+        let vault = self.vault
+        Task {
+            await TrainingEventsService.shared.drainNow()
+            await vault.reload()
+        }
     }
 
     /// add-supplements D5: slot reminders (re-planned and diffed, skipped

@@ -368,6 +368,36 @@
 /* Habit schedule: after these session types. */
 "After sessions: %@" = "Po trénincích: %@";
 
+/* add-training-checkins: the check-in row on Today's training card. */
+"Morning check-in" = "Ranní kontrola";
+
+/* VoiceOver for a check-in button: the light and what its option means. */
+"Morning check-in %@, %@" = "Ranní kontrola %@, %@";
+
+/* A check-in, tick, RPE or note is stored on the phone, not uploaded yet. */
+"Saved on phone" = "Uloženo v telefonu";
+
+/* A check-in, tick, RPE or note has been uploaded to the vault. */
+"Sent" = "Odesláno";
+
+/* Reminder title before a run day's check-in. */
+"How do you feel today?" = "Jak se dnes cítíš?";
+
+/* Reminder body before a run day's check-in. */
+"Check in green, amber or red before you run." = "Než vyběhneš, dej zelenou, oranžovou, nebo červenou.";
+
+/* Reminder title for the evening habits. */
+"Evening habits" = "Večerní návyky";
+
+/* Reminder body for the evening habits. */
+"Tick today's habits before bed." = "Před spaním si odškrtni dnešní návyky.";
+
+/* The vault has read the event (its projection acknowledged it). */
+"Received by the vault" = "Přijato ve vaultu";
+
+/* Session detail: the session swapped days with another; its old date. */
+"Swapped from %@" = "Prohozeno z %@";
+
 /* Season screen: the vault has published no season. */
 "No season yet" = "Zatím žádná sezóna";
 

@@ -316,6 +316,21 @@
         "id": "two-ambers",
         "en": "Two ambers make the next quality session a ride",
         "cz": "Dvě oranžové = další kvalita na kole"
+      },
+      {
+        "id": "red-holds",
+        "en": "A red morning holds next week's volume",
+        "cz": "Červené ráno drží objem příštího týdne"
+      },
+      {
+        "id": "three-greens",
+        "en": "Three greens allow a step up",
+        "cz": "Tři zelené dovolí krok nahoru"
+      },
+      {
+        "id": "long-run-35",
+        "en": "Long run at most 35 % of the week",
+        "cz": "Dlouhý běh nejvýš 35 % týdne"
       }
     ],
     "weeks": [
@@ -337,10 +352,12 @@
           "sessionsMissed": 0
         },
         "aiNote": null,
+        "ruleNotes": [],
         "days": [
           {
             "date": "2030-10-07",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -352,6 +369,7 @@
           {
             "date": "2030-10-08",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -399,7 +417,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -407,6 +426,7 @@
           {
             "date": "2030-10-09",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -420,6 +440,7 @@
           {
             "date": "2030-10-10",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -442,6 +463,7 @@
           {
             "date": "2030-10-11",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -453,6 +475,7 @@
           {
             "date": "2030-10-12",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -497,7 +520,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -505,6 +529,7 @@
           {
             "date": "2030-10-13",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -524,7 +549,9 @@
         "phaseId": "test-base-2030",
         "status": "closed",
         "revision": 3,
-        "absorbed": {},
+        "absorbed": {
+          "ios-0a1b2c3d": 4
+        },
         "targets": {
           "runKm": 55,
           "sessions": 8
@@ -538,10 +565,12 @@
           "en": "Last week settled well; this week adds one long run.",
           "cz": "Minulý týden sedl; tento přidává jeden dlouhý běh."
         },
+        "ruleNotes": [],
         "days": [
           {
             "date": "2030-10-14",
-            "light": null,
+            "light": "red",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds",
               "gym"
@@ -590,14 +619,16 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
           },
           {
             "date": "2030-10-15",
-            "light": null,
+            "light": "red",
+            "lightSource": "option",
             "habitsExpected": [
               "holds"
             ],
@@ -700,7 +731,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": [
@@ -716,7 +748,8 @@
           },
           {
             "date": "2030-10-16",
-            "light": null,
+            "light": "green",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds"
             ],
@@ -767,7 +800,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               },
               {
                 "id": "2030-w42-wed-pm",
@@ -808,7 +842,8 @@
                   },
                   "note": null,
                   "ref": "Lab visit 2030.md"
-                }
+                },
+                "feedback": null
               }
             ],
             "unplanned": [
@@ -824,7 +859,8 @@
           },
           {
             "date": "2030-10-17",
-            "light": null,
+            "light": "green",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds",
               "gym"
@@ -876,7 +912,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               },
               {
                 "id": "2030-w42-thu-pm",
@@ -916,7 +953,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": [
@@ -932,7 +970,8 @@
           },
           {
             "date": "2030-10-18",
-            "light": null,
+            "light": "green",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds"
             ],
@@ -1018,7 +1057,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -1026,6 +1066,7 @@
           {
             "date": "2030-10-19",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1127,14 +1168,20 @@
                 "fuel": {
                   "carbsPerHour": 60
                 },
-                "test": null
+                "test": null,
+                "feedback": {
+                  "rpe": 5,
+                  "feel": null,
+                  "note": null
+                }
               }
             ],
             "unplanned": []
           },
           {
             "date": "2030-10-20",
-            "light": null,
+            "light": "amber",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds"
             ],
@@ -1166,7 +1213,7 @@
         "revision": 1,
         "absorbed": {},
         "targets": {
-          "runKm": 60,
+          "runKm": 55,
           "sessions": 6
         },
         "actual": {
@@ -1175,10 +1222,23 @@
           "sessionsMissed": 1
         },
         "aiNote": null,
+        "ruleNotes": [
+          {
+            "rule": "red-holds",
+            "en": "Red morning on 2030-10-14: volume held at last week's 55 km instead of adding.",
+            "cz": "Červené ráno 2030-10-14: objem zůstává na 55 km z minulého týdne, nepřidává se."
+          },
+          {
+            "rule": "three-greens",
+            "en": "Three green mornings in a row (2030-10-16 – 2030-10-18): the next step up is allowed.",
+            "cz": "Tři zelená rána za sebou (2030-10-16 – 2030-10-18): další krok nahoru je povolen."
+          }
+        ],
         "days": [
           {
             "date": "2030-10-21",
-            "light": null,
+            "light": "green",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds",
               "gym"
@@ -1215,14 +1275,16 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
           },
           {
             "date": "2030-10-22",
-            "light": null,
+            "light": "amber",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds"
             ],
@@ -1270,19 +1332,25 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": {
+                  "rpe": 7,
+                  "feel": 3,
+                  "note": "Calf tight on the last repeat, eased off."
+                }
               }
             ],
             "unplanned": []
           },
           {
             "date": "2030-10-23",
-            "light": null,
+            "light": "amber",
+            "lightSource": "checkin",
             "habitsExpected": [
               "holds"
             ],
             "habitsDone": {
-              "holds": 1,
+              "holds": 2,
               "gym": 0
             },
             "fuel": null,
@@ -1386,7 +1454,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -1394,6 +1463,7 @@
           {
             "date": "2030-10-24",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -1432,7 +1502,8 @@
                   "result": null,
                   "note": null,
                   "ref": null
-                }
+                },
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -1440,17 +1511,54 @@
           {
             "date": "2030-10-25",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
             "habitsDone": null,
             "fuel": null,
-            "sessions": [],
+            "sessions": [
+              {
+                "id": "2030-w43-sun-pm",
+                "slot": "pm",
+                "sport": "walk",
+                "type": "recovery",
+                "title": {
+                  "en": "Walk 60 min",
+                  "cz": "Procházka 60 min"
+                },
+                "why": null,
+                "workout": null,
+                "targets": {
+                  "km": null,
+                  "min": 60,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": {
+                  "kind": "moved",
+                  "from": "2030-10-27",
+                  "rule": null,
+                  "event": "01beb4a8-d0e0-7206-b206-5eed00000106"
+                },
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null,
+                "feedback": null
+              }
+            ],
             "unplanned": []
           },
           {
             "date": "2030-10-26",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1485,7 +1593,8 @@
                 "fuel": {
                   "carbsPerHour": 60
                 },
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -1493,41 +1602,13 @@
           {
             "date": "2030-10-27",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
             "habitsDone": null,
             "fuel": null,
-            "sessions": [
-              {
-                "id": "2030-w43-sun-pm",
-                "slot": "pm",
-                "sport": "walk",
-                "type": "recovery",
-                "title": {
-                  "en": "Walk 60 min",
-                  "cz": "Procházka 60 min"
-                },
-                "why": null,
-                "workout": null,
-                "targets": {
-                  "km": null,
-                  "min": 60,
-                  "hrMin": null,
-                  "hrMax": null,
-                  "zone": null
-                },
-                "status": "planned",
-                "trafficLight": false,
-                "options": [],
-                "done": null,
-                "origin": null,
-                "ruleNotes": [],
-                "raceId": null,
-                "fuel": null,
-                "test": null
-              }
-            ],
+            "sessions": [],
             "unplanned": []
           }
         ]
@@ -1542,17 +1623,19 @@
         "absorbed": {},
         "targets": {
           "runKm": 40,
-          "sessions": 4
+          "sessions": 5
         },
         "actual": null,
         "aiNote": {
           "en": "Race week: volume drops, carbohydrate goes up.",
           "cz": "Závodní týden: objem dolů, sacharidy nahoru."
         },
+        "ruleNotes": [],
         "days": [
           {
             "date": "2030-10-28",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -1578,7 +1661,7 @@
                   "hrMax": null,
                   "zone": null
                 },
-                "status": "planned",
+                "status": "skipped",
                 "trafficLight": false,
                 "options": [],
                 "done": null,
@@ -1586,7 +1669,8 @@
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -1594,8 +1678,128 @@
           {
             "date": "2030-10-29",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w44-fri-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "easy",
+                "title": {
+                  "en": "Easy 6 km, flat",
+                  "cz": "Klidných 6 km po rovině"
+                },
+                "why": null,
+                "workout": "easy-6-flat",
+                "targets": {
+                  "km": 6,
+                  "min": null,
+                  "hrMin": null,
+                  "hrMax": 135,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": {
+                  "kind": "swapped",
+                  "from": "2030-11-01",
+                  "rule": null,
+                  "event": "01bec8d6-94c0-710f-a10f-5eed0000000f"
+                },
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null,
+                "feedback": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-30",
+            "light": null,
+            "lightSource": null,
+            "habitsExpected": [
+              "holds"
+            ],
+            "habitsDone": null,
+            "fuel": null,
+            "sessions": [
+              {
+                "id": "2030-w44-wed-am",
+                "slot": "am",
+                "sport": "run",
+                "type": "tempo",
+                "title": {
+                  "en": "Tempo 3 × 8 min",
+                  "cz": "Tempo 3 × 8 min"
+                },
+                "why": null,
+                "workout": "tempo-3x8",
+                "targets": {
+                  "km": null,
+                  "min": 50,
+                  "hrMin": 150,
+                  "hrMax": 158,
+                  "zone": null
+                },
+                "status": "planned",
+                "trafficLight": true,
+                "options": [
+                  {
+                    "code": "R",
+                    "workout": "bike-45-z1",
+                    "label": {
+                      "en": "Bike 45 min Z1 + holds",
+                      "cz": "Kolo 45 min Z1 + výdrže"
+                    },
+                    "sport": "ride",
+                    "targets": {
+                      "km": null,
+                      "min": 45,
+                      "hrMin": null,
+                      "hrMax": 128,
+                      "zone": null
+                    },
+                    "watch": null
+                  }
+                ],
+                "done": null,
+                "origin": {
+                  "kind": "rule",
+                  "from": null,
+                  "rule": "two-ambers",
+                  "event": null
+                },
+                "ruleNotes": [
+                  {
+                    "rule": "two-ambers",
+                    "en": "Two amber mornings in a row (2030-10-22, 2030-10-23): only the ride option (R) stays for this quality session.",
+                    "cz": "Dvě oranžová rána za sebou (2030-10-22, 2030-10-23): u tohoto kvalitního tréninku zůstává jen varianta na kole (R)."
+                  }
+                ],
+                "raceId": null,
+                "fuel": null,
+                "test": null,
+                "feedback": null
+              }
+            ],
+            "unplanned": []
+          },
+          {
+            "date": "2030-10-31",
+            "light": null,
+            "lightSource": null,
+            "habitsExpected": [
+              "holds",
+              "gym"
             ],
             "habitsDone": null,
             "fuel": null,
@@ -1677,41 +1881,25 @@
                   }
                 ],
                 "done": null,
-                "origin": null,
+                "origin": {
+                  "kind": "swapped",
+                  "from": "2030-10-29",
+                  "rule": null,
+                  "event": "01bec8d6-94c0-710f-a10f-5eed0000000f"
+                },
                 "ruleNotes": [],
                 "raceId": null,
                 "fuel": null,
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
           },
           {
-            "date": "2030-10-30",
-            "light": null,
-            "habitsExpected": [
-              "holds"
-            ],
-            "habitsDone": null,
-            "fuel": null,
-            "sessions": [],
-            "unplanned": []
-          },
-          {
-            "date": "2030-10-31",
-            "light": null,
-            "habitsExpected": [
-              "holds",
-              "gym"
-            ],
-            "habitsDone": null,
-            "fuel": null,
-            "sessions": [],
-            "unplanned": []
-          },
-          {
             "date": "2030-11-01",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1722,41 +1910,13 @@
               "carbsGPerKg": 8,
               "carbsG": 560
             },
-            "sessions": [
-              {
-                "id": "2030-w44-fri-am",
-                "slot": "am",
-                "sport": "run",
-                "type": "easy",
-                "title": {
-                  "en": "Easy 6 km, flat",
-                  "cz": "Klidných 6 km po rovině"
-                },
-                "why": null,
-                "workout": "easy-6-flat",
-                "targets": {
-                  "km": 6,
-                  "min": null,
-                  "hrMin": null,
-                  "hrMax": 135,
-                  "zone": null
-                },
-                "status": "planned",
-                "trafficLight": false,
-                "options": [],
-                "done": null,
-                "origin": null,
-                "ruleNotes": [],
-                "raceId": null,
-                "fuel": null,
-                "test": null
-              }
-            ],
+            "sessions": [],
             "unplanned": []
           },
           {
             "date": "2030-11-02",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1773,6 +1933,7 @@
           {
             "date": "2030-11-03",
             "light": null,
+            "lightSource": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1807,7 +1968,8 @@
                 "fuel": {
                   "carbsPerHour": 70
                 },
-                "test": null
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -2706,7 +2868,163 @@
       }
     ]
   },
-  "acks": {},
-  "outcomes": [],
-  "rejected": []
+  "acks": {
+    "ios-0a1b2c3d": {
+      "seq": 23,
+      "maxSeq": 23
+    },
+    "ios-5e6f7a8b": {
+      "seq": 3,
+      "maxSeq": 6
+    }
+  },
+  "outcomes": [
+    {
+      "event": "01bea9d3-3448-7104-a104-5eed00000004",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 4,
+      "type": "plan.session.skipped",
+      "week": "2030-W42",
+      "sessionId": "2030-w42-thu-pm",
+      "status": "absorbed",
+      "reason": {
+        "en": "Included in revision 3 of the week.",
+        "cz": "Zahrnuto do verze 3 týdne."
+      }
+    },
+    {
+      "event": "01bec8d4-c000-710d-a10d-5eed0000000d",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 13,
+      "type": "plan.session.skipped",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-mon-pm",
+      "status": "applied",
+      "reason": null
+    },
+    {
+      "event": "01bec8d5-aa60-710e-a10e-5eed0000000e",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 14,
+      "type": "plan.session.moved",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-fri-am",
+      "status": "applied",
+      "reason": null
+    },
+    {
+      "event": "01bec8d6-94c0-710f-a10f-5eed0000000f",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 15,
+      "type": "plan.session.swapped",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-tue-am",
+      "status": "applied",
+      "reason": null
+    },
+    {
+      "event": "01bec8d7-7f20-7110-a110-5eed00000010",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 16,
+      "type": "plan.session.moved",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-sun-am",
+      "status": "refused",
+      "reason": {
+        "en": "Session 2030-w44-sun-am is a race: its date is set by the organiser, so the app cannot move, swap or skip it.",
+        "cz": "Trénink 2030-w44-sun-am je závod: jeho datum určuje pořadatel, aplikace ho proto nemůže přesunout, prohodit ani vynechat."
+      }
+    },
+    {
+      "event": "01bec8d8-6980-7111-a111-5eed00000011",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 17,
+      "type": "plan.session.moved",
+      "week": "2030-W43",
+      "sessionId": "2030-w43-mon-pm",
+      "status": "refused",
+      "reason": {
+        "en": "Past days follow the activities; only skip and unskip can change them.",
+        "cz": "Minulé dny se řídí aktivitami; změnit je lze jen vynecháním nebo jeho zrušením."
+      }
+    },
+    {
+      "event": "01beca6a-5420-7113-a113-5eed00000013",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 19,
+      "type": "plan.rule.overridden",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-wed-am",
+      "status": "retracted",
+      "reason": {
+        "en": "Withdrawn in the app.",
+        "cz": "Staženo v aplikaci."
+      }
+    },
+    {
+      "event": "01beca72-9180-7116-a116-5eed00000016",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 22,
+      "type": "plan.session.unskipped",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-sun-am",
+      "status": "applied",
+      "reason": {
+        "en": "Nothing to undo: the session was not skipped.",
+        "cz": "Není co vracet: trénink nebyl vynechán."
+      }
+    },
+    {
+      "event": "01beca74-6640-7117-a117-5eed00000017",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 23,
+      "type": "plan.session.moved",
+      "week": "2030-W44",
+      "sessionId": "2030-w44-fri-am",
+      "status": "superseded",
+      "reason": {
+        "en": "Session 2030-w44-fri-am is on 2030-10-29, not 2030-11-01.",
+        "cz": "Trénink 2030-w44-fri-am je 2030-10-29, ne 2030-11-01."
+      }
+    },
+    {
+      "event": "01beb4a8-d0e0-7206-b206-5eed00000106",
+      "deviceId": "ios-5e6f7a8b",
+      "seq": 6,
+      "type": "plan.session.moved",
+      "week": "2030-W43",
+      "sessionId": "2030-w43-sun-pm",
+      "status": "applied",
+      "reason": null
+    }
+  ],
+  "rejected": [
+    {
+      "event": null,
+      "deviceId": null,
+      "seq": null,
+      "type": null,
+      "path": "Sport/Training/_hub/events/Phone/2030/10/20301020T040500Z-1.jsonl",
+      "line": null,
+      "reason": "segment quarantined: not under events/<deviceId>/"
+    },
+    {
+      "event": "01beb4a6-11c0-7203-b203-5eed00000103",
+      "deviceId": "ios-5e6f7a8b",
+      "seq": 3,
+      "type": "plan.week.approved",
+      "path": "Sport/Training/_hub/events/ios-5e6f7a8b/2030/10/20301020T040500Z-1.jsonl",
+      "line": 3,
+      "reason": "$.type: unknown type \"plan.week.approved\" (this vault reads the 11 v1 types)"
+    },
+    {
+      "event": null,
+      "deviceId": null,
+      "seq": null,
+      "type": null,
+      "path": "Sport/Training/_hub/events/ios-5e6f7a8b/2030/10/20301020T040500Z-1.jsonl",
+      "line": 4,
+      "reason": "not valid JSON (Expected double-quoted property name in JSON at position 140 (line 1 column 141))"
+    }
+  ]
 }

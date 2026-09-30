@@ -134,6 +134,13 @@ public enum MorningLight: String, OpenEnumValue {
     }
 }
 
+/// Where a day's `light` came from (add-hub-ingest, additive in v1): the
+/// morning check-in, or inferred from the executed traffic-light option.
+public enum LightSource: String, OpenEnumValue {
+    case checkin
+    case option
+}
+
 public enum DoneSource: String, OpenEnumValue {
     /// The option token at the start of the activity's name ("A W43 Tue ...",
     /// added to v1 by the vault's add-garmin-workout-push, 2026-09-29).

@@ -36,6 +36,7 @@ import Foundation
 import UserNotifications
 import FoodLogCore
 import GarminKit
+import TrainingCore
 
 @MainActor
 final class NotificationScheduler {
@@ -458,5 +459,51 @@ final class NotificationScheduler {
     private static func fireDate(day: String, hour: Int, minute: Int) -> Date? {
         guard let noon = SupplementDay.date(day) else { return nil }
         return Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: noon)
+    }
+}
+
+// MARK: - Training reminders (add-training-checkins D8)
+
+extension NotificationScheduler {
+    /// Own prefix, disjoint from every other cycle's (see
+    /// `fastingIdentifierPrefix`'s note on why a shared prefix would make
+    /// two cycles delete each other's requests).
+    private static let trainingPrefix = "trainingReminder."
+
+    /// Dated one-shot requests (`trainingReminder.checkin.<day>`,
+    /// `trainingReminder.habits.<day>`) for today and tomorrow, re-planned
+    /// by TrainingCore's `TrainingReminderPlanner` and diffed like the
+    /// supplement slots, so a check-in or the last tick removes its
+    /// reminder. An empty plan removes them all (switch off, no vault
+    /// connection, food-first). No category or action: a tap opens Today.
+    func syncTrainingReminders(_ reminders: [TrainingReminder], now: Date = Date()) async {
+        let pending = await pendingTexts()
+        var planned: [String: TrainingReminder] = [:]
+        for reminder in reminders {
+            planned[Self.trainingPrefix + reminder.id] = reminder
+        }
+        let status = await center.notificationSettings().authorizationStatus
+        let authorized = status == .authorized || status == .provisional
+        let diff = NotificationPlanning.diff(
+            planned: authorized ? planned.mapValues { NotificationPlanning.NotificationText(title: $0.title, body: $0.body) } : [:],
+            pending: pending,
+            ownedPrefix: Self.trainingPrefix
+        )
+        if !diff.toRemove.isEmpty {
+            center.removePendingNotificationRequests(withIdentifiers: diff.toRemove)
+        }
+        guard authorized else { return }
+        for identifier in diff.toAdd {
+            guard let reminder = planned[identifier],
+                  let fireDate = TrainingReminderPlanner.fireDate(reminder, timeZone: .current),
+                  fireDate > now
+            else { continue }
+            let content = UNMutableNotificationContent()
+            content.title = reminder.title
+            content.body = reminder.body
+            content.sound = .default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(fireDate.timeIntervalSince(now), 1), repeats: false)
+            await add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger))
+        }
     }
 }
