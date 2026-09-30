@@ -139,7 +139,11 @@ public enum StoreCatalog {
             location: .directory("Gamification/features", fileNames: [
                 "bingo.json", "seasonal.json", "collections.json", "journeys.json",
                 "records.json", "sport.json", "boss.json", "streak-freezes.json",
-                "supplements.json"
+                "supplements.json",
+                // add-winter-arc-nutrition-and-rewards: the training rewards
+                // feature (features/training/training.json); additive, so the
+                // schema version stays.
+                "training.json"
             ]),
             schemaVersion: 2,
             area: .progress

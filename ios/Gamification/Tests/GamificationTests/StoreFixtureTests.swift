@@ -72,6 +72,7 @@ final class StoreFixtureTests: XCTestCase {
         "streak-freezes.json",
         "streak-freezes.v2.json",
         "supplements.json",
+        "training.json",
     ]
 
     /// Literal `"<name>.json"` strings in Sources/Gamification that are NOT a
@@ -601,6 +602,20 @@ final class StoreFixtureTests: XCTestCase {
         XCTAssertEqual(StreakFreezePlanner.supplementFrozenDays(from: consumptions), ["2026-09-21"])
         // Every consumption counts against the shared pool.
         XCTAssertEqual(FreezeBalance.compute(grants: [], consumptions: consumptions).used, 4)
+    }
+
+    // MARK: - training.json (TrainingRewardsStore)
+
+    func testTrainingFixtureDecodesThroughTheRealStore() async throws {
+        let url = try copyFixture("training.json")
+        let store = TrainingRewardsStore(directory: url.deletingLastPathComponent())
+
+        let isReadable = await store.isReadable()
+        let counts = await store.counts()
+
+        assertNotQuarantined(url)
+        XCTAssertTrue(isReadable)
+        XCTAssertEqual(counts, TrainingRewardCounts(checkInDays: 3, honestCalls: 1, habitTicks: 3, gymWeeks: 1, keptWeeks: 1))
     }
 
     // MARK: - supplements.json (SupplementsState, FeatureStateFile)
