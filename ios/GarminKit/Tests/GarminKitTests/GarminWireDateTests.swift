@@ -83,6 +83,6 @@ final class GarminWireDateTests: XCTestCase {
         XCTAssertEqual(drink.calendarDate, "2026-09-30")
         XCTAssertEqual(drink.timestampLocal, "2026-09-30T00:30:00.000")
 
-        XCTAssertEqual(WeightSync.localCalendarDate(of: justAfterMidnightInPrague, timeZone: prague), "2026-09-30")
+        XCTAssertEqual(WeightOutbox.localCalendarDate(of: justAfterMidnightInPrague, timeZone: prague), "2026-09-30")
     }
 }
