@@ -78,7 +78,11 @@ public actor PersonalRecordsFeature: GamificationFeature {
         guard loaded.isReadable else { return .empty }
 
         windowDays = context.snapshot.windowDays
-        let result = RecordsEvaluator.evaluate(state: loaded.state, snapshot: context.snapshot)
+        // add-winter-arc-nutrition-and-rewards: in the training experience
+        // the active-kcal and fasting records stay quiet (they would push
+        // against eating for the training).
+        let quiet: Set<PersonalRecordId> = context.isTrainingExperience ? TrainingExperienceAvailability.quietRecords : []
+        let result = RecordsEvaluator.evaluate(state: loaded.state, snapshot: context.snapshot, quiet: quiet)
         do {
             try await store.save(result.state)
         } catch {
@@ -98,7 +102,7 @@ public actor PersonalRecordsFeature: GamificationFeature {
         }
         return FeatureUpdate(
             grants: grants,
-            unlockBadgeIds: RecordsEvaluator.earnedBadgeIds(result.state),
+            unlockBadgeIds: RecordsEvaluator.earnedBadgeIds(result.state, excluding: quiet),
             moments: moments,
             summary: Self.summary(state: result.state)
         )

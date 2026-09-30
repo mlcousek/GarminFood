@@ -156,6 +156,17 @@ public enum XPBudget {
                 + badgeXP(10),
             optional: true
         ),
+        // add-winter-arc-nutrition-and-rewards D1: the training experience's
+        // rewards -- badges only (no grants of its own): 14 ladder badges
+        // over three winters, each the generic badge bonus. Optional: on
+        // only in the training experience, and the host scales its badge
+        // bonus by `optionalMultiplier` like every optional source, so it
+        // never moves the curve (~0.38 XP/day, under the 0.5 % allowance).
+        XPBudgetLine(
+            source: TrainingRewardsFeature.id,
+            expectedDailyXP: badgeXP(14),
+            optional: true
+        ),
     ]
 
     /// Whether `source` is an optional source (design D4): its grants --

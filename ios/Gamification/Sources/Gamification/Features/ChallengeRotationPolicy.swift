@@ -65,21 +65,28 @@ public struct ChallengeRotationPolicy: Sendable {
     /// add-supplements D9: the supplement digest; supplement templates are
     /// offered only while it is active (feature on, at least one product).
     public let supplements: SupplementSignals?
+    /// add-winter-arc-nutrition-and-rewards: in the training experience a
+    /// template judged by the fixed calorie target is not offered (weight
+    /// 0 for this pick only; its static weight is unchanged, so "complete
+    /// every challenge" keeps its denominator).
+    public let isTrainingExperience: Bool
 
     /// `recentDays` empty = no signal data known: templates with a data
     /// requirement are not offered.
-    public init(recentDays: [DaySignals] = [], supplements: SupplementSignals? = nil) {
+    public init(recentDays: [DaySignals] = [], supplements: SupplementSignals? = nil, isTrainingExperience: Bool = false) {
         self.recentDays = recentDays
         self.supplements = supplements
+        self.isTrainingExperience = isTrainingExperience
     }
 
-    public init(signals: SignalsSnapshot?, supplements: SupplementSignals? = nil) {
+    public init(signals: SignalsSnapshot?, supplements: SupplementSignals? = nil, isTrainingExperience: Bool = false) {
         if let signals {
             self.recentDays = signals.days(signals.recentDayKeys(Self.requirementLookbackDays))
         } else {
             self.recentDays = []
         }
         self.supplements = supplements
+        self.isTrainingExperience = isTrainingExperience
     }
 
     /// The weight ignoring data availability. Supplement templates: 0 --
@@ -104,6 +111,7 @@ public struct ChallengeRotationPolicy: Sendable {
         }
         let base = Self.staticWeight(for: template)
         guard base > 0 else { return 0 }
+        if isTrainingExperience, TrainingExperienceAvailability.judgesFixedCalorieTarget(template) { return 0 }
         return template.kind.dataRequirement.isSatisfied(byAnyOf: recentDays) ? base : 0
     }
 

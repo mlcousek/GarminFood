@@ -9,7 +9,8 @@
 // Order is fixed (it is the order features run in and the order the app's
 // Progress slots appear in): bingo, seasonal, collections, journeys,
 // records, secrets, sport & body, boss, then the optional supplements
-// feature (add-supplements, appended -- the one tolerated line).
+// feature (add-supplements, appended -- the one tolerated line), then the
+// training experience's rewards (add-winter-arc-nutrition-and-rewards).
 //
 // Each feature gets its own directory `<directory>/<featureId>/` for its
 // JSON stores.
@@ -33,6 +34,9 @@ public enum GamificationFeatureRegistry {
         // add-supplements D9: optional (off by default); does nothing
         // until the host passes an active supplement digest.
         SupplementsFeature.id,
+        // add-winter-arc-nutrition-and-rewards D1: the training experience's
+        // rewards; does nothing without `FeatureContext.training`.
+        TrainingRewardsFeature.id,
     ]
 
     /// `<Gamification storage>/features/`.
@@ -57,6 +61,7 @@ public enum GamificationFeatureRegistry {
             SportAndBodyFeature(directory: dir(SportAndBodyFeature.id)),
             WeeklyBossFeature(directory: dir(WeeklyBossFeature.id)),
             SupplementsFeature(directory: dir(SupplementsFeature.id)),
+            TrainingRewardsFeature(directory: dir(TrainingRewardsFeature.id)),
         ]
     }
 }
