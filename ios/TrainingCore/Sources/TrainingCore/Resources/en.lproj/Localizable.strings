@@ -353,6 +353,21 @@
 /* The plan has no habit ladder. */
 "No habits in this plan" = "No habits in this plan";
 
+/* polish-training-today: the highest active habit's place on the ladder. */
+"Step %lld of %lld" = "Step %lld of %lld";
+
+/* polish-training-today: habits done of those expected on the shown day. */
+"%lld of %lld done today" = "%lld of %lld done today";
+
+/* polish-training-today: an active habit the plan doesn't expect on the shown day. */
+"Not on today's plan" = "Not on today's plan";
+
+/* polish-training-today: what unlocks the next habit (the current habit's name, the gate percent, the window in days). */
+"Unlocks when %@ holds %lld %% over a %lld-day window" = "Unlocks when %@ holds %lld %% over a %lld-day window";
+
+/* polish-training-today: the next habit on the ladder (its name). */
+"Next step: %@" = "Next step: %@";
+
 /* Habit schedule. */
 "Every day" = "Every day";
 
@@ -412,6 +427,9 @@
 
 /* A race no training phase prepares for yet. */
 "No phase covers this race yet" = "No phase covers this race yet";
+
+/* polish-training-today: the season's main race under the next race's countdown (name, countdown). */
+"Main race: %@ · %@" = "Main race: %@ · %@";
 
 /* Race priority A (a goal race). */
 "A race" = "A race";

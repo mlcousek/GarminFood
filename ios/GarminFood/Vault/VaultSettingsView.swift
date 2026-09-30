@@ -14,6 +14,9 @@
 // problem, expiry countdown, pending writes); Details with the device id;
 // Disconnect with a confirmation.
 //
+// polish-training-today D1: the status shows the first fetch that
+// finishing the setup starts ("Fetching your plan…", then its answer).
+//
 // No repository or token is ever built in: this repository is public
 // (proposal "Why"). The help text says how to make a token limited to one
 // repository with Contents read/write; docs/vault-connection.md has the
@@ -223,6 +226,27 @@ struct VaultSettingsView: View {
     private func statusSection(_ vault: VaultController) -> some View {
         let state = vault.connectionState
         return Section("Status") {
+            // polish-training-today D1: the first fetch after the setup.
+            if vault.isSyncingPlan {
+                HStack(spacing: Theme.Spacing.sm) {
+                    Text("Fetching your plan…")
+                    Spacer()
+                    ProgressView()
+                }
+            } else if case .ran(let fetch)? = vault.lastSetupReport {
+                switch fetch {
+                case .updated, .unchanged:
+                    Label("Plan fetched. Today and Plan show it.", systemImage: "checkmark.circle.fill")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.success)
+                case .rejected:
+                    Label("The plan file couldn't be read. Today and Plan say why.", systemImage: "exclamationmark.triangle.fill")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.warning)
+                case .failed:
+                    EmptyView()
+                }
+            }
             LabeledContent("Last sync") {
                 if let last = vault.status.lastSuccessAt {
                     Text(last, format: .relative(presentation: .named))

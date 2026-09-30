@@ -23,6 +23,13 @@
 // folded into the store and `onProjectionRefresh` lets TrainingModel
 // rebuild what Today and Plan show.
 //
+// polish-training-today D1: finishing the setup (the switch on, a
+// repository or token saved, a successful "Test connection") starts the
+// first fetch itself, once, through VaultKit's `VaultSetupRefresh` rule --
+// before, only a later foreground, pull to refresh or "Try again" did, so a
+// configured owner could sit on "Fetching your plan..." indefinitely.
+// `isSyncingPlan` and `lastSetupReport` show its progress in Settings.
+//
 // Owned by AppEnvironment (`environment.vault`). Depends on VaultServices.
 
 import Foundation
@@ -41,12 +48,20 @@ final class VaultController {
     private(set) var deviceID: VaultDeviceID?
     private(set) var lastTest: VaultConnectionTestResult?
     private(set) var isTesting = false
+    /// polish-training-today D1: the setup fetch is running.
+    private(set) var isSyncingPlan = false
+    /// The setup fetch's answer, for Settings' status row.
+    private(set) var lastSetupReport: VaultRefreshReport?
 
     @ObservationIgnored private let services: VaultServices
     @ObservationIgnored private let defaults: UserDefaults
     /// Called on the main actor after every projection refresh and after a
     /// disconnect (AppEnvironment wires it to `TrainingModel.reload`).
     @ObservationIgnored var onProjectionRefresh: (@MainActor () async -> Void)?
+    /// Whether this install may talk to the vault at all (Garmin-connected,
+    /// out of onboarding); AppEnvironment wires it (owner decision A26).
+    @ObservationIgnored var isRefreshAllowed: @MainActor () -> Bool = { true }
+    @ObservationIgnored private var setupRefresh = VaultSetupRefresh()
 
     init(services: VaultServices, defaults: UserDefaults = .standard) {
         self.services = services
@@ -98,32 +113,61 @@ final class VaultController {
     /// `force` is pull to refresh (skips the 60 s interval, never the gate).
     func refreshInBackground(force: Bool, allowed: Bool) {
         guard allowed, settings.enabled else { return }
-        let coordinator = services.coordinator
         let store = services.projectionStore
+        let coordinator = services.coordinator
         let inputs = self.inputs
         Task { [weak self] in
             // add-training-today-and-plan D5: TrainingCore's decoder is the
             // validator (header gates + the full v1 decode, 5 MB cap).
-            let report = await coordinator.refreshProjection(inputs, force: force) { bytes in
-                try ProjectionStore.validate(bytes)
-            }
-            if case .ran(let fetch) = report {
-                await store.noteRefresh(fetch)
-            }
+            await store.refresh(via: coordinator, inputs: inputs, force: force)
             await self?.reload()
             await self?.onProjectionRefresh?()
+        }
+    }
+
+    // MARK: - Setup fetch (polish-training-today D1)
+
+    /// After a settings action: start the first fetch when VaultKit's rule
+    /// says so. Unstructured; the action never waits for GitHub.
+    private func requestSetupRefresh(_ trigger: VaultSetupRefresh.Trigger, before: VaultSyncInputs) {
+        guard isRefreshAllowed() else { return }
+        let hasSynced = status.lastSuccessAt != nil
+        guard setupRefresh.request(trigger, before: before, after: inputs, hasSynced: hasSynced) else { return }
+        runSetupRefresh()
+    }
+
+    private func runSetupRefresh() {
+        isSyncingPlan = true
+        lastSetupReport = nil
+        VaultLog.log(.info, "setup finished: first projection fetch")
+        let store = services.projectionStore
+        let coordinator = services.coordinator
+        let inputs = self.inputs
+        Task { [weak self] in
+            let report = await store.refresh(via: coordinator, inputs: inputs, force: true)
+            guard let self else { return }
+            await self.reload()
+            self.lastSetupReport = report
+            await self.onProjectionRefresh?()
+            if self.setupRefresh.finish() {
+                self.runSetupRefresh()
+            } else {
+                self.isSyncingPlan = false
+            }
         }
     }
 
     // MARK: - Settings actions
 
     func setEnabled(_ enabled: Bool) async {
+        let before = inputs
         var updated = VaultConnectionSettings.load(from: defaults)
         updated.enabled = enabled
         updated.save(to: defaults)
         VaultLog.log(.info, enabled ? "connection turned on" : "connection turned off")
         if enabled { await services.coordinator.userActed() }
         await reload()
+        if enabled { requestSetupRefresh(.switchedOn, before: before) }
     }
 
     /// Validates and saves the repository; `nil` on success. Never logs the
@@ -137,6 +181,7 @@ final class VaultController {
         } catch {
             return .invalidName
         }
+        let before = inputs
         var updated = VaultConnectionSettings.load(from: defaults)
         updated.owner = repository.owner
         updated.name = repository.name
@@ -146,6 +191,7 @@ final class VaultController {
         // The user acted: lift a loud block (design D6).
         await services.coordinator.userActed()
         await reload()
+        requestSetupRefresh(.repositorySaved, before: before)
         return nil
     }
 
@@ -164,6 +210,7 @@ final class VaultController {
         } catch {
             return .invalid(.malformed)
         }
+        let before = inputs
         do {
             try services.tokenStore.save(token)
         } catch {
@@ -179,6 +226,7 @@ final class VaultController {
         VaultLog.log(.info, "token saved")
         await services.coordinator.userActed()
         await reload()
+        requestSetupRefresh(.tokenSaved, before: before)
         return nil
     }
 
@@ -199,8 +247,12 @@ final class VaultController {
         isTesting = true
         defer { isTesting = false }
         readToken()
-        lastTest = await services.coordinator.testConnection(inputs)
+        let result = await services.coordinator.testConnection(inputs)
+        lastTest = result
         await reload()
+        if result.probe?.repository == .success {
+            requestSetupRefresh(.testSucceeded, before: inputs)
+        }
     }
 
     /// The banner's and Settings' "Try again" after a loud problem.
@@ -223,6 +275,8 @@ final class VaultController {
         updated.enabled = false
         updated.save(to: defaults)
         lastTest = nil
+        setupRefresh.reset()
+        lastSetupReport = nil
         await services.projectionStore.clear()
         await reload()
         await onProjectionRefresh?()

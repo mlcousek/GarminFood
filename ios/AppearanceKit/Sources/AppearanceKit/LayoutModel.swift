@@ -54,17 +54,24 @@ public enum TodayCardID: String, CaseIterable, Codable, Sendable {
     case signature
     /// add-training-today-and-plan D7: the training cards, ONLY in the
     /// training experience's catalog (`LayoutCatalog.today(for:)`). The next
-    /// A (or hero) race as a countdown chip.
+    /// race as a countdown chip (any priority since polish-training-today).
     case raceCountdown
     /// The day's session(s) with their G/A/R option cards.
     case trainingDay
-    /// The habits the plan expects today, display only.
-    case habitsToday
+    /// polish-training-today D2: the Habits card -- the ladder step, the
+    /// active habits with today's ticks, the day's progress and the next
+    /// step. It replaces `habitsToday` ("Today's habits", expected habits
+    /// only), whose id is retired: a stored placement for it is kept but
+    /// not rendered (LayoutResolver rule 2), and this new id joins every
+    /// stored layout visible, right after the training card (rule 3) --
+    /// so it is on for existing layouts too, even where the old card was
+    /// hidden.
+    case habits
     /// The week's AI note teaser.
     case weeklyNote
 
     /// The four training cards, in their default order.
-    public static let trainingCards: [TodayCardID] = [.raceCountdown, .trainingDay, .habitsToday, .weeklyNote]
+    public static let trainingCards: [TodayCardID] = [.raceCountdown, .trainingDay, .habits, .weeklyNote]
 
     /// Every card of the food-first catalog, in its (pre-change) order.
     public static var foodCards: [TodayCardID] {
@@ -299,7 +306,7 @@ public enum LayoutCatalog {
             spec(.daySwitcher),
             CardSpec(id: TodayCardID.raceCountdown.rawValue),
             trainingDay,
-            CardSpec(id: TodayCardID.habitsToday.rawValue),
+            CardSpec(id: TodayCardID.habits.rawValue),
             CardSpec(id: TodayCardID.weeklyNote.rawValue),
             summary,
             spec(.logAgain),
