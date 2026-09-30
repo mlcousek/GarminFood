@@ -55,9 +55,18 @@
 - [ ] 7.4 Add regression tests for profile-name selection, delivered
   weigh-in deletion, and superseded search responses.
 
-## 8. Verification
+## 8. Durable-store recovery
 
-- [ ] 8.1 Run all Swift package suites.
-- [ ] 8.2 Run app-target integration tests on iOS Simulator.
-- [ ] 8.3 Verify background delivery on a device with interrupted
+- [ ] 8.1 Distinguish missing persisted files from unreadable existing files;
+  retry safely or reject writes while data is unavailable.
+- [ ] 8.2 Make remote acknowledgement state durable before reporting delivery,
+  with an explicit ambiguous-delivery recovery state if persistence fails.
+- [ ] 8.3 Add restart tests for transient read failure and post-acknowledgement
+  write failure across food, weight, and hydration queues.
+
+## 9. Verification
+
+- [ ] 9.1 Run all Swift package suites.
+- [ ] 9.2 Run app-target integration tests on iOS Simulator.
+- [ ] 9.3 Verify background delivery on a device with interrupted
   connectivity.

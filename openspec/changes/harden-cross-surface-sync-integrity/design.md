@@ -114,6 +114,22 @@ already in flight can still apply their results, errors, and loading-state
 changes after cancellation. A delayed response for an old query can therefore
 be shown under a newer query and can clear the newer query's spinner.
 
+### F15 — Temporarily unreadable stores are latched empty and overwritten
+
+The shared persisted-JSON loader distinguishes missing files from read
+failures only by returning `nil` for both. Stores mark themselves loaded
+before treating `nil` as empty. If protected data or a transient I/O error
+prevents the first read, a later successful mutation overwrites the existing
+file with the empty in-memory state plus only the new item.
+
+### F16 — Remote success is reported before sent-state persistence succeeds
+
+Food, weight, and hydration drains ignore errors while persisting the
+post-success `sent` state. A process restart after a successful remote write
+but failed state write reloads the entry as pending and sends it again. The
+caller was already told the entry was delivered, while the durable state is
+not.
+
 ## Test strategy
 
 - App-intent integration: one quick-pick invocation produces one food entry,
@@ -145,3 +161,7 @@ be shown under a newer query and can clear the newer query's spinner.
   complete together; remote failure remains visible and retryable.
 - Search request ownership: a delayed cancelled query cannot apply results,
   error, or loading state after a newer query begins.
+- Unreadable-store recovery: a transient first-read failure followed by
+  restored access cannot overwrite the pre-existing collection.
+- Post-acknowledgement durability: a failed sent-state write followed by
+  restart cannot redeliver an accepted food, weight, or hydration request.
