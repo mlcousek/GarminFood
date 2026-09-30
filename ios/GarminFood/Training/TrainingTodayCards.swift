@@ -18,6 +18,8 @@
 // builders allow it: the morning check-in row (G/A/R buttons, letter and
 // shape as well as colour, one VoiceOver element each, "Saved on phone" /
 // "Sent") at the top of the training card, and an on/off toggle per habit.
+// add-plan-editing: a session with a plan change of this phone still
+// waiting for the vault (or not applied) shows it under its header.
 // Both only call back; TodayView turns the callbacks into TrainingModel
 // actions (local events, never a network wait). Option cards follow D9: a token tint
 // only as a light wash, the letter AND a shape, larger shapes with
@@ -90,6 +92,15 @@ private struct SessionBlock: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             header
+            if let pending = session.pendingBadge {
+                Label {
+                    Text(verbatim: pending)
+                } icon: {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                }
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            }
             let layout = dynamicTypeSize.isAccessibilitySize
                 ? AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Spacing.sm))
                 : AnyLayout(HStackLayout(alignment: .top, spacing: Theme.Spacing.sm))

@@ -11,7 +11,10 @@
 // recognised; fuel; a test's results against the test history; the race.
 //
 // Pushed from Today's option cards and from Plan's week, month and day
-// sheet. No control moves, swaps or skips the session. add-training-checkins
+// sheet. add-plan-editing adds the "Change the plan" card
+// (PlanEditViews.swift): move, swap, skip, undo the skip, override a rule
+// edit and withdraw, with this phone's last change and the vault's answer.
+// add-training-checkins
 // (its D6) adds "How did it feel?" when the vault connection can record:
 // RPE 1-10 as ten buttons and a note with Save, each a local event
 // (TrainingModel), shown with "Saved on phone" / "Sent". Everything shown is
@@ -98,6 +101,10 @@ struct SessionDetailView: View {
 
             if let rating = detail.rating {
                 SessionRatingCard(rating: rating)
+            }
+
+            if let editing = detail.editing {
+                SessionEditCard(editing: editing)
             }
 
             if !detail.fuelLines.isEmpty {

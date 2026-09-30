@@ -18630,6 +18630,186 @@
           }
         }
       }
+    },
+    "Change the plan": {
+      "comment": "add-plan-editing: session detail, section with move, swap, skip and the vault's answers.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Změnit plán"
+          }
+        }
+      }
+    },
+    "Move to which day?": {
+      "comment": "add-plan-editing: title of the list of days a session can move to.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na který den přesunout?"
+          }
+        }
+      }
+    },
+    "Swap with which session?": {
+      "comment": "add-plan-editing: title of the list of sessions to swap days with.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S kterým tréninkem prohodit?"
+          }
+        }
+      }
+    },
+    "Skip this session?": {
+      "comment": "add-plan-editing: title of the skip confirmation.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přeskočit tenhle trénink?"
+          }
+        }
+      }
+    },
+    "Reason (optional)": {
+      "comment": "add-plan-editing: placeholder of the optional reason for skipping a session.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Důvod (nepovinné)"
+          }
+        }
+      }
+    },
+    "The vault marks it skipped: it takes no activity and leaves the watch.": {
+      "comment": "add-plan-editing: skip confirmation, what skipping does.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vault ho označí jako přeskočený: nepřiřadí se k němu žádná aktivita a zmizí z hodinek."
+          }
+        }
+      }
+    },
+    "Override anyway": {
+      "comment": "add-plan-editing: confirms overriding a training rule after the warning (decision A17).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesto obejít"
+          }
+        }
+      }
+    },
+    "Keep the rule": {
+      "comment": "add-plan-editing: cancels overriding a training rule.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nechat pravidlo"
+          }
+        }
+      }
+    },
+    "Move to another day": {
+      "comment": "add-plan-editing: session detail button, move the session within its week.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesunout na jiný den"
+          }
+        }
+      }
+    },
+    "Swap with another session": {
+      "comment": "add-plan-editing: session detail button, swap days with another session of the week.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prohodit s jiným tréninkem"
+          }
+        }
+      }
+    },
+    "Undo the skip": {
+      "comment": "add-plan-editing: session detail button, undo skipping the session.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zrušit přeskočení"
+          }
+        }
+      }
+    },
+    "Withdraw: %@": {
+      "comment": "add-plan-editing: session detail button, withdraw a plan change still waiting for the vault (the change, e.g. \"Move to Thu 31 Oct\").",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhnout: %@"
+          }
+        }
+      }
+    },
+    "Plan changes": {
+      "comment": "add-plan-editing: week agenda, this phone's changes to the week and the vault's answers.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Změny plánu"
+          }
+        }
+      }
+    },
+    "Withdraw": {
+      "comment": "add-plan-editing: week agenda, withdraw a plan change still waiting for the vault.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhnout"
+          }
+        }
+      }
+    },
+    "That change isn't possible any more: the plan has changed. Have another look.": {
+      "comment": "add-plan-editing: a plan change was refused on the phone because the plan changed under the screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle změna už nejde: plán se mezitím změnil. Podívej se na něj znovu."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

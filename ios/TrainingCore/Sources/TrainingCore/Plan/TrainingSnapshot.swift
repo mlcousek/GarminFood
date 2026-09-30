@@ -4,15 +4,17 @@
 // changes extend the screens instead of rewriting them:
 //
 //   - `EffectivePlan` = the selected phase's weeks (+) a `PendingOverlay`.
-//     The overlay is always empty here; add-plan-editing fills it with the
-//     phone's unacknowledged commands, and every screen then shows the
-//     moved or skipped session with its pending badge without a builder
-//     change;
+//     add-plan-editing fills it (PlanCommandOverlay.swift) with the
+//     phone's plan commands: the unacknowledged ones are applied, so every
+//     screen shows the moved, swapped or skipped session where the phone
+//     put it, and the builders read each command's status and the vault's
+//     outcome from `EffectivePlan.overlay`;
 //   - `TrainingCapabilities` says what the app may record.
 //     add-training-checkins turns on check-ins, habit ticks and session
 //     ratings when the vault connection has a device id
-//     (`.checkIns(enabled:)`); plan edits stay off. The option cards keep
-//     opening the detail; the check-in is its own row (that change's D6);
+//     (`.checkIns(enabled:)`); add-plan-editing adds plan edits
+//     (`.recording(enabled:)`). The option cards keep opening the detail;
+//     the check-in is its own row (that change's D6);
 //   - `checkIns` is the phone's own recent events (CheckInOverlay):
 //     `EffectivePlan` applies their lights to each day, and the builders
 //     read ticks, RPE and notes from it (that change's D5).
@@ -26,15 +28,6 @@
 
 import Foundation
 
-/// The phone's pending commands (add-plan-editing). Empty in this change.
-public struct PendingOverlay: Equatable, Sendable {
-    public static let empty = PendingOverlay()
-
-    public init() {}
-
-    public var isEmpty: Bool { true }
-}
-
 /// What the app may do beyond reading (design D8).
 public struct TrainingCapabilities: Equatable, Sendable {
     public var canCheckIn: Bool
@@ -46,9 +39,15 @@ public struct TrainingCapabilities: Equatable, Sendable {
 
     /// add-training-checkins D6: check-ins, ticks and ratings together,
     /// when the vault connection is on and has a device id. Plan edits are
-    /// add-plan-editing's.
+    /// off here (see `recording(enabled:)`).
     public static func checkIns(enabled: Bool) -> TrainingCapabilities {
         TrainingCapabilities(canCheckIn: enabled, canTickHabits: enabled, canEditPlan: false, canRateSession: enabled)
+    }
+
+    /// add-plan-editing D8: everything the app records -- check-ins,
+    /// ticks, ratings and plan edits -- under the same guard.
+    public static func recording(enabled: Bool) -> TrainingCapabilities {
+        TrainingCapabilities(canCheckIn: enabled, canTickHabits: enabled, canEditPlan: enabled, canRateSession: enabled)
     }
 
     public init(canCheckIn: Bool, canTickHabits: Bool, canEditPlan: Bool, canRateSession: Bool) {
@@ -60,15 +59,19 @@ public struct TrainingCapabilities: Equatable, Sendable {
 }
 
 /// The selected phase as the screens see it: the file's weeks with the
-/// overlay applied (a no-op until add-plan-editing) and the phone's own
-/// morning check-ins as each day's `light` (add-training-checkins D5).
+/// phone's pending plan commands applied (add-plan-editing D5) and the
+/// phone's own morning check-ins as each day's `light`
+/// (add-training-checkins D5).
 public struct EffectivePlan: Equatable, Sendable {
     public let plan: Plan
+    /// The phone's commands, each with its status and whether the preview
+    /// applied it.
     public let overlay: PendingOverlay
 
     public init(plan: Plan, overlay: PendingOverlay = .empty, checkIns: CheckInOverlay = .empty) {
-        self.plan = checkIns.applyingLights(to: plan)
-        self.overlay = overlay
+        let previewed = overlay.applying(to: plan)
+        self.plan = checkIns.applyingLights(to: previewed.plan)
+        self.overlay = previewed.overlay
     }
 
     public var weeks: [Week] { plan.weeks }

@@ -568,3 +568,75 @@
 
 /* Statistics: the difference between left and right as a percentage. */
 "Asymmetry %@" = "Asymmetry %@";
+
+/* Plan change: move the session to another day (the day). */
+"Move to %@" = "Move to %@";
+
+/* Plan change: swap days with another session (its title, its day). */
+"Swap with %@ (%@)" = "Swap with %@ (%@)";
+
+/* Plan change: skip the session. */
+"Skip" = "Skip";
+
+/* Plan change: skip the session, with the owner's reason. */
+"Skip: %@" = "Skip: %@";
+
+/* Plan change: undo a skip. */
+"Undo the skip" = "Undo the skip";
+
+/* Plan change: override a training rule's edit of the session (the rule's id). */
+"Override the rule %@" = "Override the rule %@";
+
+/* Plan change status: waiting for the vault, only saved on the phone. */
+"Pending · Saved on phone" = "Pending · Saved on phone";
+
+/* Plan change status: waiting for the vault, uploaded. */
+"Pending · Sent" = "Pending · Sent";
+
+/* Plan change status: its withdrawal waits for the vault, only saved on the phone. */
+"Withdrawal pending · Saved on phone" = "Withdrawal pending · Saved on phone";
+
+/* Plan change status: its withdrawal waits for the vault, uploaded. */
+"Withdrawal pending · Sent" = "Withdrawal pending · Sent";
+
+/* Plan change status: the vault applied it. */
+"Applied" = "Applied";
+
+/* Plan change status: the vault did not apply it (the session was elsewhere or gone). */
+"Not applied" = "Not applied";
+
+/* Plan change status: the vault refused it. */
+"Refused" = "Refused";
+
+/* Plan change status: withdrawn in the app. */
+"Withdrawn" = "Withdrawn";
+
+/* Plan change status: the vault answered with a status this app doesn't know. */
+"Answered by the vault" = "Answered by the vault";
+
+/* Badge on a session: a plan change waits for the vault. */
+"Change pending" = "Change pending";
+
+/* Badge on a session: the vault did not apply the phone's plan change. */
+"Change not applied" = "Change not applied";
+
+/* Session detail: why a race session can't be changed. */
+"A race: the organiser sets its date, so it can't be moved, swapped or skipped here." = "A race: the organiser sets its date, so it can't be moved, swapped or skipped here.";
+
+/* Session detail: why a past session can't be moved or swapped. */
+"Past days follow the activities: they can only be skipped or unskipped." = "Past days follow the activities: they can only be skipped or unskipped.";
+
+/* Session detail: why a done session can't be moved, swapped or skipped. */
+"Done: this session follows its activity." = "Done: this session follows its activity.";
+
+/* Session detail: the week has no revision, so the phone can't change it. */
+"This week can't be changed from the phone." = "This week can't be changed from the phone.";
+
+/* Session detail: a plan change on the session still waits for the vault. */
+"Waiting for the vault's answer. Withdraw the change to make another." = "Waiting for the vault's answer. Withdraw the change to make another.";
+
+/* Warning before overriding a training rule (the rule's id). */
+"Override the rule %@?" = "Override the rule %@?";
+
+/* Warning before overriding a training rule: why the rule exists and that the override is logged. */
+"The rule changed this session as a precaution. You have the last word, and the override is logged for the Sunday review." = "The rule changed this session as a precaution. You have the last word, and the override is logged for the Sunday review.";

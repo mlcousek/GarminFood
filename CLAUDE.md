@@ -116,7 +116,14 @@ ios/
                     The app's one recorder is GarminFood/Training/
                     TrainingEventsService; the lock-screen check-in
                     Controls reach it through a hook (Shared/
-                    MorningCheckInIntents.swift).
+                    MorningCheckInIntents.swift). Plan edits (add-plan-
+                    editing): the plan.* commands and event.retracted are
+                    in HubEvent too; PlanEditPolicy (what may be asked --
+                    never a race, a past day or another week) builds them,
+                    PendingOverlay (PlanCommandOverlay.swift) previews the
+                    unacknowledged ones over the projection and reads the
+                    vault's `outcomes`; the session detail's "Change the
+                    plan" card (GarminFood/Plan/PlanEditViews.swift).
   GarminFood/       The app target (SwiftUI views), organized by screen:
                     Today/, Plan/, Training/, Catalog/, CustomFood/,
                     LogEntry/, Profile/, Progress/, App/ (composition root:

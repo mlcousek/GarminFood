@@ -98,7 +98,9 @@ public struct SessionCardModel: Equatable, Sendable, Identifiable {
     public let fuelLine: String?
     /// Done, but the vault couldn't tell which option.
     public let doneOptionUnknown: Bool
-    /// add-plan-editing's pending badge; always `nil` here.
+    /// add-plan-editing: "Change pending" while this phone's change on it
+    /// waits for the vault, "Change not applied" when the vault did not
+    /// apply it; else `nil`.
     public let pendingBadge: String?
     /// The compact variant's one line.
     public let compactLine: String
@@ -261,7 +263,7 @@ public struct TodayTrainingBuilder: Sendable {
             single: single,
             fuelLine: format.fuel.sessionLine(session.fuel),
             doneOptionUnknown: status == .done && !session.options.isEmpty && doneCode == nil,
-            pendingBadge: nil,
+            pendingBadge: format.editBadge(sessionID: session.id, snapshot: snapshot)?.text,
             compactLine: compact
         )
     }

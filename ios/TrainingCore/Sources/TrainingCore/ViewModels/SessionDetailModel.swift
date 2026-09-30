@@ -13,6 +13,10 @@
 // It opens on the tapped option, else the done one, else the one the
 // morning light points at, else G.
 //
+// add-plan-editing adds `editing` (PlanEditModels.swift): the "Change the
+// plan" card with this phone's latest command on the session, the
+// vault's answer and the edits PlanEditPolicy allows.
+//
 // Depended on by: the app's SessionDetailView. Tests: PlanBuilderTests.
 
 import Foundation
@@ -86,6 +90,9 @@ public struct SessionDetailModel: Equatable, Sendable {
     public let raceLine: String?
     /// add-training-checkins: RPE and note, when rating is allowed.
     public var rating: SessionRatingModel? = nil
+    /// add-plan-editing: move, swap, skip, override, withdraw, and what
+    /// became of this phone's last change.
+    public var editing: SessionEditModel? = nil
 }
 
 public extension PlanBuilder {
@@ -174,6 +181,7 @@ public extension PlanBuilder {
             raceLine: raceLine
         )
         model.rating = ratingModel(session, day: day, snapshot: snapshot)
+        model.editing = sessionEdit(session, day: day, snapshot: snapshot)
         return model
     }
 

@@ -8,8 +8,9 @@
 // `add-hub-ingest` change, "Event log v1" in its Training Hub Contract),
 // whose two fixtures are mirrored verbatim under
 // Tests/TrainingCoreTests/Fixtures/Contract/vault/ and decoded by
-// `HubEventTests`, beside the app's own golden file
-// (Fixtures/Events/events.v1.app.jsonl, byte-exact).
+// `HubEventTests`, beside the app's own golden files
+// (Fixtures/Events/events.v1.app.jsonl and plan-commands.v1.app.jsonl,
+// byte-exact).
 //
 //   {"at":"2030-10-23T04:07:31.000+02:00","deviceId":"ios-0000beef",
 //    "id":"<UUIDv7>","payload":{...},"seq":7,"type":"checkin.morning","v":1}
@@ -19,23 +20,35 @@
 //   session.rpe      {date, sessionId, rpe: 1...10, feel?: 1...5}
 //   session.note     {date, sessionId, text}         (1...2000 characters)
 //
+// add-plan-editing adds the plan commands and the retraction (its design
+// D2). Commands carry the ISO week and the week revision the app showed,
+// never a `date`:
+//
+//   plan.session.moved      {week, baseRevision, sessionId, from, to}
+//   plan.session.swapped    {week, baseRevision, a, aDate, b, bDate}
+//   plan.session.skipped    {week, baseRevision, sessionId, reason?}
+//   plan.session.unskipped  {week, baseRevision, sessionId}
+//   plan.rule.overridden    {week, baseRevision, sessionId, rule}
+//   event.retracted         {target, reason?}
+//
 // The contract: optional keys may be absent or `null` with the same
 // meaning, and the app should write them -- so this encoder writes them,
 // as `null` when unknown. The light is the morning's state, never the
 // workout letter; `option` is the option he intends (the light's letter
-// when the day has a traffic-light session, else null). The vault's other
-// types (`device.hello`, `event.retracted`, the `plan.*` commands) decode
-// as `.other` here: this app doesn't write them yet.
+// when the day has a traffic-light session, else null). The vault's
+// `device.hello` decodes as `.other` here: this app doesn't write it yet.
 //
 // Encoding is deterministic (sorted keys, unescaped slashes, `\n` after
 // every line) because a sealed segment's bytes and git blob SHA must be the
-// same on every retry (VaultKit's SealedFile). Decoding is tolerant: unknown
-// fields are ignored and an unknown type is kept as `.other`, never
-// encoded.
+// same on every retry (VaultKit's SealedFile). `.sortedKeys` compares keys
+// case-insensitively on Apple platforms, so `baseRevision` precedes
+// `bDate` in a swap; the golden plan-command fixture records the exact
+// bytes. Decoding is tolerant: unknown fields are ignored and an unknown
+// type is kept as `.other`, never encoded.
 //
 // Depended on by: TrainingEventLog (stores these), EventSegment (writes
-// them), CheckInOverlay (folds them), TrainingRecorder. Tests:
-// HubEventTests.
+// them), CheckInOverlay and PendingOverlay (fold them), PlanEditPolicy
+// (builds the commands), TrainingRecorder. Tests: HubEventTests.
 
 import Foundation
 
@@ -46,6 +59,12 @@ public enum HubEventType: Hashable, Sendable {
     case habitTick
     case sessionRPE
     case sessionNote
+    case sessionMoved
+    case sessionsSwapped
+    case sessionSkipped
+    case sessionUnskipped
+    case ruleOverridden
+    case eventRetracted
     /// A type this build doesn't write (read from a newer fixture).
     case other(String)
 
@@ -55,6 +74,12 @@ public enum HubEventType: Hashable, Sendable {
         case "habit.tick": self = .habitTick
         case "session.rpe": self = .sessionRPE
         case "session.note": self = .sessionNote
+        case "plan.session.moved": self = .sessionMoved
+        case "plan.session.swapped": self = .sessionsSwapped
+        case "plan.session.skipped": self = .sessionSkipped
+        case "plan.session.unskipped": self = .sessionUnskipped
+        case "plan.rule.overridden": self = .ruleOverridden
+        case "event.retracted": self = .eventRetracted
         default: self = .other(rawValue)
         }
     }
@@ -65,6 +90,12 @@ public enum HubEventType: Hashable, Sendable {
         case .habitTick: return "habit.tick"
         case .sessionRPE: return "session.rpe"
         case .sessionNote: return "session.note"
+        case .sessionMoved: return "plan.session.moved"
+        case .sessionsSwapped: return "plan.session.swapped"
+        case .sessionSkipped: return "plan.session.skipped"
+        case .sessionUnskipped: return "plan.session.unskipped"
+        case .ruleOverridden: return "plan.rule.overridden"
+        case .eventRetracted: return "event.retracted"
         case .other(let raw): return raw
         }
     }
@@ -137,11 +168,111 @@ public struct SessionNotePayload: Equatable, Sendable {
     }
 }
 
+// MARK: Plan commands (add-plan-editing D2)
+
+/// Move a session to another day of the same ISO week.
+public struct SessionMovedPayload: Equatable, Sendable {
+    public var week: ISOWeek
+    /// The `week.revision` the app showed.
+    public var baseRevision: Int
+    public var sessionId: String
+    public var from: LocalDate
+    public var to: LocalDate
+
+    public init(week: ISOWeek, baseRevision: Int, sessionId: String, from: LocalDate, to: LocalDate) {
+        self.week = week
+        self.baseRevision = baseRevision
+        self.sessionId = sessionId
+        self.from = from
+        self.to = to
+    }
+}
+
+/// Swap the dates of two sessions of one week.
+public struct SessionsSwappedPayload: Equatable, Sendable {
+    public var week: ISOWeek
+    public var baseRevision: Int
+    public var a: String
+    public var aDate: LocalDate
+    public var b: String
+    public var bDate: LocalDate
+
+    public init(week: ISOWeek, baseRevision: Int, a: String, aDate: LocalDate, b: String, bDate: LocalDate) {
+        self.week = week
+        self.baseRevision = baseRevision
+        self.a = a
+        self.aDate = aDate
+        self.b = b
+        self.bDate = bDate
+    }
+}
+
+public struct SessionSkippedPayload: Equatable, Sendable {
+    public var week: ISOWeek
+    public var baseRevision: Int
+    public var sessionId: String
+    /// Optional, 1-2000 characters (the contract's text limit).
+    public var reason: String?
+
+    public init(week: ISOWeek, baseRevision: Int, sessionId: String, reason: String? = nil) {
+        self.week = week
+        self.baseRevision = baseRevision
+        self.sessionId = sessionId
+        self.reason = reason
+    }
+}
+
+public struct SessionUnskippedPayload: Equatable, Sendable {
+    public var week: ISOWeek
+    public var baseRevision: Int
+    public var sessionId: String
+
+    public init(week: ISOWeek, baseRevision: Int, sessionId: String) {
+        self.week = week
+        self.baseRevision = baseRevision
+        self.sessionId = sessionId
+    }
+}
+
+/// Decision A17: the human overrides a rule's edit of one session.
+public struct RuleOverriddenPayload: Equatable, Sendable {
+    public var week: ISOWeek
+    public var baseRevision: Int
+    public var sessionId: String
+    /// The rule id (`two-ambers`).
+    public var rule: String
+
+    public init(week: ISOWeek, baseRevision: Int, sessionId: String, rule: String) {
+        self.week = week
+        self.baseRevision = baseRevision
+        self.sessionId = sessionId
+        self.rule = rule
+    }
+}
+
+/// Takes an earlier event of the same device out of the vault's fold.
+public struct EventRetractedPayload: Equatable, Sendable {
+    /// The retracted event's id.
+    public var target: String
+    public var reason: String?
+
+    public init(target: String, reason: String? = nil) {
+        self.target = target
+        self.reason = reason
+    }
+}
+
 public enum HubEventPayload: Equatable, Sendable {
     case morningCheckIn(MorningCheckInPayload)
     case habitTick(HabitTickPayload)
     case sessionRPE(SessionRPEPayload)
     case sessionNote(SessionNotePayload)
+    case sessionMoved(SessionMovedPayload)
+    case sessionsSwapped(SessionsSwappedPayload)
+    case sessionSkipped(SessionSkippedPayload)
+    case sessionUnskipped(SessionUnskippedPayload)
+    case ruleOverridden(RuleOverriddenPayload)
+    case eventRetracted(EventRetractedPayload)
     /// An unknown type, read only; `date` when its payload had one.
     case other(type: String, date: LocalDate?)
 
@@ -151,17 +282,54 @@ public enum HubEventPayload: Equatable, Sendable {
         case .habitTick: return .habitTick
         case .sessionRPE: return .sessionRPE
         case .sessionNote: return .sessionNote
+        case .sessionMoved: return .sessionMoved
+        case .sessionsSwapped: return .sessionsSwapped
+        case .sessionSkipped: return .sessionSkipped
+        case .sessionUnskipped: return .sessionUnskipped
+        case .ruleOverridden: return .ruleOverridden
+        case .eventRetracted: return .eventRetracted
         case .other(let type, _): return .other(type)
         }
     }
 
+    /// The training day of a fact; `nil` for the commands (they carry a
+    /// week) and a retraction.
     public var date: LocalDate? {
         switch self {
         case .morningCheckIn(let payload): return payload.date
         case .habitTick(let payload): return payload.date
         case .sessionRPE(let payload): return payload.date
         case .sessionNote(let payload): return payload.date
+        case .sessionMoved, .sessionsSwapped, .sessionSkipped, .sessionUnskipped, .ruleOverridden, .eventRetracted:
+            return nil
         case .other(_, let date): return date
+        }
+    }
+
+    /// The ISO week of a plan command; `nil` for everything else.
+    public var commandWeek: ISOWeek? {
+        switch self {
+        case .sessionMoved(let payload): return payload.week
+        case .sessionsSwapped(let payload): return payload.week
+        case .sessionSkipped(let payload): return payload.week
+        case .sessionUnskipped(let payload): return payload.week
+        case .ruleOverridden(let payload): return payload.week
+        default: return nil
+        }
+    }
+
+    /// Whether this is a `plan.*` command.
+    public var isPlanCommand: Bool { commandWeek != nil }
+
+    /// The sessions a plan command names (two for a swap).
+    public var commandSessionIDs: [String] {
+        switch self {
+        case .sessionMoved(let payload): return [payload.sessionId]
+        case .sessionsSwapped(let payload): return [payload.a, payload.b]
+        case .sessionSkipped(let payload): return [payload.sessionId]
+        case .sessionUnskipped(let payload): return [payload.sessionId]
+        case .ruleOverridden(let payload): return [payload.sessionId]
+        default: return []
         }
     }
 
@@ -180,9 +348,45 @@ public enum HubEventPayload: Equatable, Sendable {
             if payload.sessionId.isEmpty { throw HubEventError.invalidPayload("empty sessionId") }
             if payload.text.isEmpty { throw HubEventError.invalidPayload("empty note") }
             if payload.text.count > SessionNotePayload.maxLength { throw HubEventError.invalidPayload("note too long") }
+        case .sessionMoved(let payload):
+            try Self.validateCommand(payload.baseRevision, ids: [payload.sessionId])
+            if payload.from == payload.to { throw HubEventError.invalidPayload("move to the same day") }
+            if !payload.week.contains(payload.from) || !payload.week.contains(payload.to) {
+                throw HubEventError.invalidPayload("move outside its week")
+            }
+        case .sessionsSwapped(let payload):
+            try Self.validateCommand(payload.baseRevision, ids: [payload.a, payload.b])
+            if payload.a == payload.b { throw HubEventError.invalidPayload("swap with itself") }
+            if payload.aDate == payload.bDate { throw HubEventError.invalidPayload("swap on the same day") }
+            if !payload.week.contains(payload.aDate) || !payload.week.contains(payload.bDate) {
+                throw HubEventError.invalidPayload("swap outside its week")
+            }
+        case .sessionSkipped(let payload):
+            try Self.validateCommand(payload.baseRevision, ids: [payload.sessionId])
+            try Self.validateText(payload.reason)
+        case .sessionUnskipped(let payload):
+            try Self.validateCommand(payload.baseRevision, ids: [payload.sessionId])
+        case .ruleOverridden(let payload):
+            try Self.validateCommand(payload.baseRevision, ids: [payload.sessionId])
+            if payload.rule.isEmpty { throw HubEventError.invalidPayload("empty rule") }
+        case .eventRetracted(let payload):
+            if payload.target.isEmpty { throw HubEventError.invalidPayload("empty target") }
+            try Self.validateText(payload.reason)
         case .other:
             throw HubEventError.unknownType
         }
+    }
+
+    private static func validateCommand(_ baseRevision: Int, ids: [String]) throws {
+        if baseRevision < 1 { throw HubEventError.invalidPayload("baseRevision below 1") }
+        if ids.contains(where: { $0.isEmpty }) { throw HubEventError.invalidPayload("empty sessionId") }
+    }
+
+    /// An optional text: absent, or 1-2000 characters.
+    private static func validateText(_ text: String?) throws {
+        guard let text else { return }
+        if text.isEmpty { throw HubEventError.invalidPayload("empty text") }
+        if text.count > SessionNotePayload.maxLength { throw HubEventError.invalidPayload("text too long") }
     }
 }
 
@@ -227,6 +431,7 @@ extension HubEvent: Codable {
 
     enum PayloadKeys: String, CodingKey {
         case date, light, sessionId, option, habitId, done, rpe, feel, text
+        case week, baseRevision, from, to, a, aDate, b, bDate, reason, rule, target
     }
 
     public init(from decoder: Decoder) throws {
@@ -246,6 +451,10 @@ extension HubEvent: Codable {
         }
 
         let p = try c.nestedContainer(keyedBy: PayloadKeys.self, forKey: .payload)
+        if let command = try Self.decodeCommand(type, p) {
+            payload = command
+            return
+        }
         let dateText = try p.decode(String.self, forKey: .date)
         guard let date = LocalDate(dateText) else {
             throw DecodingError.dataCorruptedError(forKey: .date, in: p, debugDescription: "not a YYYY-MM-DD date")
@@ -284,6 +493,74 @@ extension HubEvent: Codable {
             ))
         case .other(let raw):
             payload = .other(type: raw, date: date)
+        case .sessionMoved, .sessionsSwapped, .sessionSkipped, .sessionUnskipped, .ruleOverridden, .eventRetracted:
+            // Already returned by `decodeCommand`.
+            throw DecodingError.dataCorruptedError(forKey: .date, in: p, debugDescription: "a command has no date")
+        }
+    }
+
+    /// The commands and the retraction (they have no `date`); `nil` for
+    /// the facts.
+    private static func decodeCommand(_ type: HubEventType, _ p: KeyedDecodingContainer<PayloadKeys>) throws -> HubEventPayload? {
+        func week() throws -> ISOWeek {
+            let raw = try p.decode(String.self, forKey: .week)
+            guard let week = ISOWeek(raw) else {
+                throw DecodingError.dataCorruptedError(forKey: .week, in: p, debugDescription: "not a YYYY-Www week")
+            }
+            return week
+        }
+        func day(_ key: PayloadKeys) throws -> LocalDate {
+            let raw = try p.decode(String.self, forKey: key)
+            guard let date = LocalDate(raw) else {
+                throw DecodingError.dataCorruptedError(forKey: key, in: p, debugDescription: "not a YYYY-MM-DD date")
+            }
+            return date
+        }
+        switch type {
+        case .sessionMoved:
+            return .sessionMoved(SessionMovedPayload(
+                week: try week(),
+                baseRevision: try p.decode(Int.self, forKey: .baseRevision),
+                sessionId: try p.decode(String.self, forKey: .sessionId),
+                from: try day(.from),
+                to: try day(.to)
+            ))
+        case .sessionsSwapped:
+            return .sessionsSwapped(SessionsSwappedPayload(
+                week: try week(),
+                baseRevision: try p.decode(Int.self, forKey: .baseRevision),
+                a: try p.decode(String.self, forKey: .a),
+                aDate: try day(.aDate),
+                b: try p.decode(String.self, forKey: .b),
+                bDate: try day(.bDate)
+            ))
+        case .sessionSkipped:
+            return .sessionSkipped(SessionSkippedPayload(
+                week: try week(),
+                baseRevision: try p.decode(Int.self, forKey: .baseRevision),
+                sessionId: try p.decode(String.self, forKey: .sessionId),
+                reason: try p.decodeIfPresent(String.self, forKey: .reason)
+            ))
+        case .sessionUnskipped:
+            return .sessionUnskipped(SessionUnskippedPayload(
+                week: try week(),
+                baseRevision: try p.decode(Int.self, forKey: .baseRevision),
+                sessionId: try p.decode(String.self, forKey: .sessionId)
+            ))
+        case .ruleOverridden:
+            return .ruleOverridden(RuleOverriddenPayload(
+                week: try week(),
+                baseRevision: try p.decode(Int.self, forKey: .baseRevision),
+                sessionId: try p.decode(String.self, forKey: .sessionId),
+                rule: try p.decode(String.self, forKey: .rule)
+            ))
+        case .eventRetracted:
+            return .eventRetracted(EventRetractedPayload(
+                target: try p.decode(String.self, forKey: .target),
+                reason: try p.decodeIfPresent(String.self, forKey: .reason)
+            ))
+        case .morningCheckIn, .habitTick, .sessionRPE, .sessionNote, .other:
+            return nil
         }
     }
 
@@ -319,6 +596,36 @@ extension HubEvent: Codable {
             try p.encode(value.date.description, forKey: .date)
             try p.encode(value.sessionId, forKey: .sessionId)
             try p.encode(value.text, forKey: .text)
+        case .sessionMoved(let value):
+            try p.encode(value.week.description, forKey: .week)
+            try p.encode(value.baseRevision, forKey: .baseRevision)
+            try p.encode(value.sessionId, forKey: .sessionId)
+            try p.encode(value.from.description, forKey: .from)
+            try p.encode(value.to.description, forKey: .to)
+        case .sessionsSwapped(let value):
+            try p.encode(value.week.description, forKey: .week)
+            try p.encode(value.baseRevision, forKey: .baseRevision)
+            try p.encode(value.a, forKey: .a)
+            try p.encode(value.aDate.description, forKey: .aDate)
+            try p.encode(value.b, forKey: .b)
+            try p.encode(value.bDate.description, forKey: .bDate)
+        case .sessionSkipped(let value):
+            try p.encode(value.week.description, forKey: .week)
+            try p.encode(value.baseRevision, forKey: .baseRevision)
+            try p.encode(value.sessionId, forKey: .sessionId)
+            try p.encode(value.reason, forKey: .reason)
+        case .sessionUnskipped(let value):
+            try p.encode(value.week.description, forKey: .week)
+            try p.encode(value.baseRevision, forKey: .baseRevision)
+            try p.encode(value.sessionId, forKey: .sessionId)
+        case .ruleOverridden(let value):
+            try p.encode(value.week.description, forKey: .week)
+            try p.encode(value.baseRevision, forKey: .baseRevision)
+            try p.encode(value.sessionId, forKey: .sessionId)
+            try p.encode(value.rule, forKey: .rule)
+        case .eventRetracted(let value):
+            try p.encode(value.target, forKey: .target)
+            try p.encode(value.reason, forKey: .reason)
         case .other:
             break
         }
