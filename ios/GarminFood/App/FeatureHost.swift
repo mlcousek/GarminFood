@@ -41,6 +41,15 @@
 // over the supplement stores) that GamificationEngine passes to the shared
 // freeze planner and into `FeatureContext.supplements`; an optional
 // source's badge bonus is scaled by `XPBudget.optionalGrantXP`.
+//
+// add-winter-arc-nutrition-and-rewards: three providers AppEnvironment sets
+// from the training plan (TrainingNutritionBridge) -- whether the training
+// experience is on, the plan's reward facts and the days the plan paused
+// fasting. They go into `FeatureContext` (features keep quiet what pushes
+// against the plan, the training feature rewards what supports it), the
+// fasting days of the snapshot (a paused day is neutral), the visible
+// badges (TrainingExperienceAvailability) and the optional sources (the
+// training rewards count as one while that experience is on).
 // Depended on by: GamificationEngine; Progress/Today slot views (via
 // `feature(_:)` and `summaries`).
 
@@ -94,6 +103,15 @@ final class FeatureHost {
     private let ledger: RewardLedger
     @ObservationIgnored private var isRunning = false
 
+    // add-winter-arc-nutrition-and-rewards: set by AppEnvironment; the
+    // defaults are the food-first experience (nothing changes).
+    @ObservationIgnored var isTrainingExperienceProvider: @MainActor () -> Bool = { false }
+    @ObservationIgnored var trainingSignalsProvider: @MainActor (Date) -> TrainingSignals? = { _ in nil }
+    @ObservationIgnored var fastingPausedDaysProvider: @MainActor (Date) -> Set<Date> = { _ in [] }
+
+    /// add-winter-arc-nutrition-and-rewards: the training experience is on.
+    var isTrainingExperience: Bool { isTrainingExperienceProvider() }
+
     init(
         sources: Sources,
         ledger: RewardLedger = RewardLedger(),
@@ -114,7 +132,11 @@ final class FeatureHost {
     /// only once earned.
     func visibleBadgeCatalog(unlockedIds: Set<String>) -> [AchievementDefinition] {
         let visible = StandaloneAvailability.visibleBadges(badgeCatalog, isStandalone: isStandalone, unlockedIds: unlockedIds)
-        return SupplementsCatalog.visibleBadges(visible, isEnabled: sources.preferences.supplementsEnabled, unlockedIds: unlockedIds)
+        let supplements = SupplementsCatalog.visibleBadges(visible, isEnabled: sources.preferences.supplementsEnabled, unlockedIds: unlockedIds)
+        // add-winter-arc-nutrition-and-rewards: fasting/weight-goal badges
+        // hidden in the training experience, training badges outside it
+        // (earned ones always stay).
+        return TrainingExperienceAvailability.visibleBadges(supplements, isTraining: isTrainingExperience, unlockedIds: unlockedIds)
     }
 
     /// A registered feature by concrete type, for a slot's detail screen
@@ -154,6 +176,9 @@ final class FeatureHost {
                 days: 42,
                 logTimestamps: FastingLogMoments.moments(from: events, calendar: calendar),
                 trackedSince: preferences.fastingTrackedSince,
+                // add-winter-arc-nutrition-and-rewards: days the plan paused
+                // fasting are neutral (empty outside the training experience).
+                pausedDays: isTrainingExperience ? fastingPausedDaysProvider(now) : [],
                 now: now,
                 calendar: calendar
             )
@@ -213,7 +238,11 @@ final class FeatureHost {
     /// of rebalance-xp-economy): their grants and badge bonuses are scaled
     /// by `XPBudget.optionalMultiplier`.
     var enabledOptionalSources: Set<String> {
-        sources.preferences.supplementsEnabled ? [SupplementsFeature.id] : []
+        var enabled: Set<String> = sources.preferences.supplementsEnabled ? [SupplementsFeature.id] : []
+        // add-winter-arc-nutrition-and-rewards: the training rewards are an
+        // optional source while the training experience is on.
+        if isTrainingExperience { enabled.insert(TrainingRewardsFeature.id) }
+        return enabled
     }
 
     /// The supplement digest from the local supplement stores (never the
@@ -279,6 +308,7 @@ final class FeatureHost {
         var unlocked = await achievementStore.unlockedIds()
         let levelBefore = await xpStore.currentProgress().level
         var xpChanged = false
+        let isTraining = isTrainingExperience
         let context = FeatureContext(
             snapshot: snapshot,
             now: now,
@@ -287,7 +317,9 @@ final class FeatureHost {
             level: level,
             unlockedBadgeIds: unlocked,
             isConfirmPath: isConfirmPath,
-            supplements: supplements
+            supplements: supplements,
+            isTrainingExperience: isTraining,
+            training: isTraining ? trainingSignalsProvider(now) : nil
         )
 
         for feature in features {

@@ -51,6 +51,14 @@ public struct FeatureContext: Sendable {
     /// the shared freeze planner's frozen days filled in. `nil` when the
     /// stores couldn't be read; only the `supplements` feature reads it.
     public let supplements: SupplementSignals?
+    /// add-winter-arc-nutrition-and-rewards: the app is in the training
+    /// experience, so rewards that push against the plan stay quiet
+    /// (`TrainingExperienceAvailability`).
+    public let isTrainingExperience: Bool
+    /// add-winter-arc-nutrition-and-rewards: the plan's facts (the app's
+    /// adapter over TrainingCore); `nil` outside the training experience
+    /// or without a loaded plan. Only the `training` feature reads it.
+    public let training: TrainingSignals?
 
     public init(
         snapshot: SignalsSnapshot,
@@ -60,7 +68,9 @@ public struct FeatureContext: Sendable {
         level: Int,
         unlockedBadgeIds: Set<String>,
         isConfirmPath: Bool,
-        supplements: SupplementSignals? = nil
+        supplements: SupplementSignals? = nil,
+        isTrainingExperience: Bool = false,
+        training: TrainingSignals? = nil
     ) {
         self.snapshot = snapshot
         self.now = now
@@ -70,6 +80,8 @@ public struct FeatureContext: Sendable {
         self.unlockedBadgeIds = unlockedBadgeIds
         self.isConfirmPath = isConfirmPath
         self.supplements = supplements
+        self.isTrainingExperience = isTrainingExperience
+        self.training = training
     }
 }
 

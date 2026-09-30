@@ -20,6 +20,10 @@
 // local weigh-ins only and the goal comes from the local overrides (start =
 // the first weigh-in) -- `WeightAndWaterOverview.standalone*`. The Garmin
 // cache and the outbox are ignored, so no "not in Garmin yet" badge shows.
+//
+// add-winter-arc-nutrition-and-rewards (A4): `monitor(now:)` is the
+// training experience's view of the same rows -- FoodLogCore's
+// `WeightMonitor` (7-day morning average, one quiet flag past 0.7 % a week).
 
 import Foundation
 import Observation
@@ -72,6 +76,12 @@ final class WeightLoader {
 
     var progress: WeightGoalProgress? {
         WeightAndWaterOverview.weightProgress(rows: rows, goal: goal, now: Date())
+    }
+
+    /// add-winter-arc-nutrition-and-rewards (A4): the 7-day morning average
+    /// and the quiet "falling too fast" flag over the merged history.
+    func monitor(now: Date = Date()) -> WeightMonitorSummary? {
+        WeightMonitor.summary(samples: rows.map { WeightSample(date: $0.loggedAt, kg: $0.weightKg) }, now: now)
     }
 
     /// Garmin's own target in kg, for Settings' "Use Garmin's goal" row.

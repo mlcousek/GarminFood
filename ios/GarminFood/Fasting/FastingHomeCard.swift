@@ -16,6 +16,12 @@
 // tick -- no timers or cached phase in state, so it can't drift or go
 // stale while the app sits in the background.
 //
+// add-winter-arc-nutrition-and-rewards: on a day the training plan paused
+// fasting (`fuel.fasting: "off"`, build weeks) the section shows a small
+// "Fasting paused -- build week" note instead of the phase (no countdown to
+// nag with); the schedule in Settings is untouched and the card is back on
+// the next "allowed" day.
+//
 // Its own file so TodayView only gains a one-line `FastingHomeSection`
 // (TodayView is edited by several concurrent changes). Reuses
 // `ProgressRing`/`SectionHeader`/`card()` and the `ProgressStrip`-style
@@ -35,7 +41,11 @@ struct FastingHomeSection: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 SectionHeader(title: String(localized: "Fasting"))
                 TimelineView(.everyMinute) { context in
-                    FastingHomeCard(schedule: schedule, now: context.date, onTap: onOpen)
+                    if environment.isFastingPausedByPlan(on: context.date) {
+                        FastingPausedCard(onTap: onOpen)
+                    } else {
+                        FastingHomeCard(schedule: schedule, now: context.date, onTap: onOpen)
+                    }
                 }
             }
         }
@@ -103,6 +113,37 @@ struct FastingHomeCard: View {
             let remaining = FastingFormat.duration(phase.remaining(at: now))
             return String(localized: "closes at \(closesAt) (\(remaining))", comment: "Eating-window card detail. First %@ = clock time it closes, second = time remaining ('2 h 5 m').")
         }
+    }
+}
+
+/// add-winter-arc-nutrition-and-rewards: the plan paused fasting today.
+struct FastingPausedCard: View {
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: Theme.Spacing.md) {
+                Image(systemName: "pause.circle")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Fasting paused — build week", comment: "Fasting card when the training plan switches fasting off for the day.")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Your plan switches fasting off on build days. Your schedule stays as it is.", comment: "Fasting card detail when the training plan paused fasting.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: Theme.Spacing.xs)
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .card(padding: Theme.Spacing.sm + 4)
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint(Text("Opens your fasting history"))
     }
 }
 

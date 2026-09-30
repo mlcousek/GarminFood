@@ -128,7 +128,7 @@ public actor WeeklyBingoFeature: GamificationFeature {
             await store.setCard(previous, week: previousWeek)
         }
 
-        var record = await cardForWeek(week, snapshot: context.snapshot, calendar: calendar)
+        var record = await cardForWeek(week, snapshot: context.snapshot, calendar: calendar, isTraining: context.isTrainingExperience)
         let merged = BingoEvaluator.completions(
             taskIds: record.taskIds,
             week: week,
@@ -262,12 +262,15 @@ public actor WeeklyBingoFeature: GamificationFeature {
 
     // MARK: - Private
 
-    private func cardForWeek(_ week: WeekKey, snapshot: SignalsSnapshot, calendar: Calendar) async -> BingoCardRecord {
+    /// add-winter-arc-nutrition-and-rewards: a NEW card in the training
+    /// experience has no fixed-calorie-target squares (an existing card is
+    /// kept as generated).
+    private func cardForWeek(_ week: WeekKey, snapshot: SignalsSnapshot, calendar: Calendar, isTraining: Bool = false) async -> BingoCardRecord {
         if let existing = await store.card(week: week), existing.taskIds.count == BingoCardGenerator.cardSize {
             return existing
         }
         let recent = snapshot.days(snapshot.recentDayKeys(BingoCardGenerator.eligibilityWindowDays))
-        let eligible = BingoCardGenerator.eligibleTasks(recentDays: recent)
+        let eligible = TrainingExperienceAvailability.bingoTasks(BingoCardGenerator.eligibleTasks(recentDays: recent), isTraining: isTraining)
         var previousIds: [String]?
         if let previousWeek = week.adding(weeks: -1, calendar: calendar) {
             previousIds = await store.card(week: previousWeek)?.taskIds

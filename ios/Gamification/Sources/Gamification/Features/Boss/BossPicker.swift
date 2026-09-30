@@ -104,11 +104,16 @@ public enum BossPicker {
         return min(max(ceiling + 2, 3), 7)
     }
 
+    /// - Parameter excluding: archetypes never chosen this week --
+    ///   add-winter-arc-nutrition-and-rewards: the Calorie Kraken in the
+    ///   training experience (it fights for the fixed calorie target). The
+    ///   new-user ghost and the fallbacks are never excluded.
     public static func pick(
         week: WeekKey,
         previous: BossKind?,
         snapshot: SignalsSnapshot,
-        calendar: Calendar
+        calendar: Calendar,
+        excluding: Set<BossKind> = []
     ) -> BossPick {
         let keys = analysisDayKeys(before: week, calendar: calendar)
         let logged = snapshot.days(keys).filter(\.hasEntries).count
@@ -133,7 +138,7 @@ public enum BossPicker {
         }
 
         var candidates: [(kind: BossKind, value: Adherence)] = []
-        for kind in BossKind.allCases where kind != previous {
+        for kind in BossKind.allCases where kind != previous && !excluding.contains(kind) {
             let value = adherence(kind, dayKeys: keys, snapshot: snapshot, calendar: calendar)
             if isEligible(kind, adherence: value, dayKeys: keys, snapshot: snapshot) {
                 candidates.append((kind: kind, value: value))

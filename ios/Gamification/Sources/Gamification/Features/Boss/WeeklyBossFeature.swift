@@ -144,7 +144,15 @@ public actor WeeklyBossFeature: GamificationFeature {
         var introduced = false
         if weeks[week.rawValue] == nil {
             let previous = week.adding(weeks: -1, calendar: calendar).flatMap { weeks[$0.rawValue]?.kind }
-            let pick = BossPicker.pick(week: week, previous: previous, snapshot: context.snapshot, calendar: calendar)
+            // add-winter-arc-nutrition-and-rewards: no fixed-calorie boss
+            // in the training experience.
+            let pick = BossPicker.pick(
+                week: week,
+                previous: previous,
+                snapshot: context.snapshot,
+                calendar: calendar,
+                excluding: context.isTrainingExperience ? [TrainingExperienceAvailability.excludedBoss] : []
+            )
             weeks[week.rawValue] = BossWeekRecord(
                 bossId: pick.kind.rawValue,
                 target: pick.target,

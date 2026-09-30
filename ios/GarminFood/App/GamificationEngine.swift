@@ -19,6 +19,13 @@
 // deliberate SECOND step immediately after the coordinator's call succeeds
 // (see that file), the same way it already treats `drainAndReconcile()` as
 // a separate, later step.
+//
+// add-winter-arc-nutrition-and-rewards: in the training experience (asked
+// through `featureHost.isTrainingExperience`) goal status is judged by the
+// plan day's carb band (`fuelTargetProvider`, FoodLogCore's
+// `GoalStatusEvaluator.evaluate(_:fuel:)`), and challenges / daily
+// challenges that judge the fixed calorie target are not offered
+// (Gamification's TrainingExperienceAvailability). Food-first: unchanged.
 import Foundation
 import Observation
 import GarminKit
@@ -38,6 +45,10 @@ final class GamificationEngine {
     private let dailyChallengeStore: DailyChallengeStore
     private let lifetimeStatsStore: LifetimeStatsStore
     private let achievementStore: AchievementStore
+    /// add-winter-arc-nutrition-and-rewards: the plan day's food targets
+    /// for a nutrition day (`yyyy-MM-dd`), set by AppEnvironment. Read only
+    /// in the training experience.
+    @ObservationIgnored var fuelTargetProvider: @MainActor (String) -> FuelDayTarget? = { _ in nil }
     /// add-gamification-signals D7: runs the registered gamification
     /// features and builds the day signals they (and the signal-based
     /// challenges) read. `nil` only where no app stores exist (previews).
@@ -280,7 +291,10 @@ final class GamificationEngine {
         // FoodLogCore's pure `GoalStatusEvaluator` (add-standalone-mode 2.4),
         // unchanged, so a local day is judged by the same code. `nil` = no
         // goals or no content: nothing is recorded, as before.
-        guard let judgement = GoalStatusEvaluator.evaluate(log) else { return }
+        // add-winter-arc-nutrition-and-rewards: judged by the plan day's
+        // carb band in the training experience.
+        let fuel = isTrainingExperience ? fuelTargetProvider(dateString) : nil
+        guard let judgement = GoalStatusEvaluator.evaluate(log, fuel: fuel) else { return }
         let status = DailyGoalStatus(
             date: dateString,
             metCalorieGoal: judgement.metCalorieGoal,
@@ -436,7 +450,7 @@ final class GamificationEngine {
 
     private func refreshDailyChallenges(events: [UsageEvent], goalStatuses: [DailyGoalStatus], now: Date) async {
         let dayString = NutritionDayBoundary.dayString(for: now, boundaryHour: boundaryHour)
-        guard let templates = try? await dailyChallengeStore.templatesForDay(dayString, catalog: DailyChallengeCatalog.all) else {
+        guard let templates = try? await dailyChallengeStore.templatesForDay(dayString, catalog: dailyChallengeCatalog) else {
             todayDailyChallenges = []
             return
         }
@@ -454,7 +468,7 @@ final class GamificationEngine {
     /// own idempotent `markCompleted`.
     private func checkDailyChallengeCompletion(events: [UsageEvent], goalStatuses: [DailyGoalStatus], now: Date) async {
         let dayString = NutritionDayBoundary.dayString(for: now, boundaryHour: boundaryHour)
-        guard let templates = try? await dailyChallengeStore.templatesForDay(dayString, catalog: DailyChallengeCatalog.all) else { return }
+        guard let templates = try? await dailyChallengeStore.templatesForDay(dayString, catalog: dailyChallengeCatalog) else { return }
         let (todayEvents, priorEvents) = eventsForToday(events, now: now)
         let goalStatus = goalStatuses.first { $0.date == dayString }
 
@@ -534,7 +548,19 @@ final class GamificationEngine {
     /// needing water/macros/activities are not offered). add-supplements D9:
     /// supplement templates only while the supplement digest is active.
     private var rotationPolicy: ChallengeRotationPolicy {
-        ChallengeRotationPolicy(signals: signals, supplements: supplementSignals)
+        ChallengeRotationPolicy(signals: signals, supplements: supplementSignals, isTrainingExperience: isTrainingExperience)
+    }
+
+    /// add-winter-arc-nutrition-and-rewards: the training experience is on
+    /// (`false` without a feature host, e.g. previews).
+    private var isTrainingExperience: Bool {
+        featureHost?.isTrainingExperience ?? false
+    }
+
+    /// The daily-challenge catalog for today's pick: without the fixed-
+    /// calorie-target templates in the training experience.
+    private var dailyChallengeCatalog: [DailyChallengeTemplate] {
+        TrainingExperienceAvailability.dailyCatalog(DailyChallengeCatalog.all, isTraining: isTrainingExperience)
     }
 
     /// Runs every registered feature via `FeatureHost` and applies its

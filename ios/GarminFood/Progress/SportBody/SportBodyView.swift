@@ -18,6 +18,11 @@
 // with a spoken summary; everything uses Dynamic Type text styles and
 // `Theme` tokens (dark mode / themes).
 //
+// add-winter-arc-nutrition-and-rewards: in the training experience the
+// weight-goal and fasting sections are left out (weight is an outcome,
+// fasting pauses in build weeks) and their unearned badges are hidden
+// (Gamification's TrainingExperienceAvailability).
+//
 // Depends on: AppEnvironment, SportAndBodyFeature, SportBodyCatalog,
 // BodyRules, SportActivityKind, BadgeMedallion, SectionHeader, MilestoneChip
 // (Progress/Slots/SportBodySlotView.swift).
@@ -26,6 +31,7 @@
 import SwiftUI
 import FoodLogCore
 import Gamification
+import AppearanceKit
 
 @MainActor
 struct SportBodyView: View {
@@ -37,13 +43,16 @@ struct SportBodyView: View {
 
     private var featureHost: FeatureHost? { environment.gamificationEngine.featureHost }
     private var unlocked: [String: Date] { environment.gamificationEngine.unlockedAchievements }
+    private var isTraining: Bool { environment.experience == .training }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Density.stackSpacing) {
                 activitiesSection
-                weightSection
-                fastingSection
+                if !isTraining {
+                    weightSection
+                    fastingSection
+                }
                 badgesSection
             }
             .padding(Theme.Spacing.md)
@@ -156,7 +165,7 @@ struct SportBodyView: View {
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 88), spacing: Theme.Spacing.sm)], spacing: Theme.Spacing.md) {
-                    ForEach(SportBodyCatalog.badges) { badge in
+                    ForEach(TrainingExperienceAvailability.visibleBadges(SportBodyCatalog.badges, isTraining: isTraining, unlockedIds: Set(unlocked.keys))) { badge in
                         SportBadgeCell(badge: badge, isUnlocked: unlocked[badge.id] != nil)
                     }
                 }

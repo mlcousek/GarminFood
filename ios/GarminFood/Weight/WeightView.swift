@@ -25,6 +25,7 @@
 import SwiftUI
 import FoodLogCore
 import GarminKit
+import AppearanceKit
 
 @MainActor
 struct WeightView: View {
@@ -38,21 +39,25 @@ struct WeightView: View {
         let loader = environment.weightLoader
         let rows = loader.rows
         let isStandalone = environment.dataMode == .standalone
+        // add-winter-arc-nutrition-and-rewards (A4): a monitor, not a goal,
+        // in the training experience -- no goal bar, ETA or goal line.
+        let isTraining = environment.experience == .training
 
         List {
             Section {
                 WeightHeroCard(
                     latest: loader.latest,
                     previous: loader.previous,
-                    progress: loader.progress,
+                    progress: isTraining ? nil : loader.progress,
                     refreshFailed: loader.lastGarminRefreshFailed,
-                    isStandalone: isStandalone
+                    isStandalone: isStandalone,
+                    monitor: isTraining ? loader.monitor() : nil
                 )
             }
 
             if rows.count >= 2 {
                 Section("Trend") {
-                    WeightChartView(rows: chartRows(rows), targetKg: loader.goal?.targetKg)
+                    WeightChartView(rows: chartRows(rows), targetKg: isTraining ? nil : loader.goal?.targetKg)
                         .frame(height: 180)
                         .padding(.vertical, Theme.Spacing.xs)
                 }

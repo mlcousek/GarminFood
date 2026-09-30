@@ -584,3 +584,71 @@
 
 /* Supplements hub card: the current supplement streak. The value is a number of days. */
 "Supplement streak: %lld" = "Supplement streak: %lld";
+
+/* add-winter-arc-nutrition-and-rewards: training rewards (TrainingRewardsFeature). */
+
+/* Hub card title of the training rewards (check-ins, gym, habits, weeks kept within plan). */
+"Training rewards" = "Training rewards";
+
+/* Training rewards summary. First %lld = morning check-ins this week, then strength sessions done of the weekly two. */
+"This week: check-ins %lld · gym %lld/%lld" = "This week: check-ins %lld · gym %lld/%lld";
+
+/* Training badge title: 7 morning check-ins. */
+"Morning Report" = "Morning Report";
+
+/* Training badge title: 30 morning check-ins. */
+"Honest Mornings" = "Honest Mornings";
+
+/* Training badge title: 100 morning check-ins. */
+"Hundred Mornings" = "Hundred Mornings";
+
+/* Training badge title: an amber or red morning followed by its easier option. */
+"Listened to the Body" = "Listened to the Body";
+
+/* Training badge description. */
+"Check in amber or red, then do that option instead of the full session." = "Check in amber or red, then do that option instead of the full session.";
+
+/* Training badge title: ten honest amber/red mornings followed. */
+"Smart Athlete" = "Smart Athlete";
+
+/* Training badge description. */
+"Follow an amber or red morning with its option 10 times." = "Follow an amber or red morning with its option 10 times.";
+
+/* Training badge title: a week with two strength sessions. */
+"Gym Twice" = "Gym Twice";
+
+/* Training badge title: four weeks with two strength sessions. */
+"Strong Month" = "Strong Month";
+
+/* Training badge title: twelve weeks with two strength sessions. */
+"Built to Last" = "Built to Last";
+
+/* Training badge title: 25 habit ticks. */
+"Habit Builder" = "Habit Builder";
+
+/* Training badge title: 100 habit ticks. */
+"Daily Details" = "Daily Details";
+
+/* Training badge title: 300 habit ticks. */
+"Habit Machine" = "Habit Machine";
+
+/* Training badge title: a week closed within plan. */
+"By the Plan" = "By the Plan";
+
+/* Training badge title: four weeks closed within plan. */
+"Patient Builder" = "Patient Builder";
+
+/* Training badge title: twelve weeks closed within plan (the season's English name, kept in Czech too). */
+"Winter Arc" = "Winter Arc";
+
+/* Training badge description; %lld = days with a morning check-in needed (7, 30 or 100). */
+"Days with a morning check-in: %lld" = "Days with a morning check-in: %lld";
+
+/* Training badge description; %lld = weeks with two strength sessions done needed (1, 4 or 12). */
+"Weeks with both strength sessions: %lld" = "Weeks with both strength sessions: %lld";
+
+/* Training badge description; %lld = habit ticks needed (25, 100 or 300). */
+"Habit ticks: %lld" = "Habit ticks: %lld";
+
+/* Training badge description; %lld = weeks the plan closed with no missed session and no volume overshoot (1, 4 or 12). */
+"Weeks closed within the plan: %lld" = "Weeks closed within the plan: %lld";

@@ -340,14 +340,7 @@ struct TodayView: View {
             }
 
         case .summary:
-            DaySummaryCard(
-                dashboard: dayLog.dashboard,
-                isStale: dayLog.isStale,
-                isLoading: dayLog.isLoading,
-                activeKilocalories: dayLog.activeKilocalories,
-                isToday: dayLog.isToday,
-                style: variant.flatMap(SummaryVariant.init(rawValue:)) ?? .ring
-            )
+            summaryCard(variant: variant)
 
         case .progressStrip:
             ProgressStrip(
@@ -415,6 +408,42 @@ struct TodayView: View {
         }
     }
 
+    /// add-winter-arc-nutrition-and-rewards (A1): in the training experience
+    /// a plan day with a carb band leads with carbs and protein
+    /// (`FuelSummaryCard`); any other day keeps `DaySummaryCard`, whose ring
+    /// never shows "over" as a warning on a training day. Food-first: no
+    /// fuel target, so exactly the card it always had.
+    @ViewBuilder
+    private func summaryCard(variant: String?) -> some View {
+        let dayLog = environment.dayLog
+        let fuelTarget = environment.trainingFuelTarget(for: dayLog.selectedDate)
+        if let fuel = FuelDayEvaluator.summary(
+            carbsG: dayLog.dashboard.totals.carbs.consumed,
+            proteinG: dayLog.dashboard.totals.protein.consumed,
+            target: fuelTarget,
+            isToday: dayLog.isToday,
+            now: Date()
+        ) {
+            FuelSummaryCard(
+                summary: fuel,
+                calories: dayLog.dashboard.totals.calories,
+                isStale: dayLog.isStale,
+                isLoading: dayLog.isLoading,
+                hasGarminData: dayLog.dashboard.hasGarminData
+            )
+        } else {
+            DaySummaryCard(
+                dashboard: dayLog.dashboard,
+                isStale: dayLog.isStale,
+                isLoading: dayLog.isLoading,
+                activeKilocalories: dayLog.activeKilocalories,
+                isToday: dayLog.isToday,
+                style: variant.flatMap(SummaryVariant.init(rawValue:)) ?? .ring,
+                fuelTarget: fuelTarget
+            )
+        }
+    }
+
     /// "Weight & Water": both cards (today's look), or just one.
     private func weightWater(_ variant: WeightWaterVariant) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
@@ -427,12 +456,16 @@ struct TodayView: View {
                 SectionHeader(title: String(localized: "Water", comment: "Today: section header when only the water card is shown."))
             }
             if variant != .water {
+                // add-winter-arc-nutrition-and-rewards (A4): in the training
+                // experience a 7-day morning average instead of a goal.
+                let isTraining = environment.experience == .training
                 TodayWeightCard(
                     latest: environment.weightLoader.latest,
                     previous: environment.weightLoader.previous,
-                    progress: environment.weightLoader.progress,
+                    progress: isTraining ? nil : environment.weightLoader.progress,
                     refreshFailed: environment.weightLoader.lastGarminRefreshFailed,
-                    isStandalone: environment.dataMode == .standalone
+                    isStandalone: environment.dataMode == .standalone,
+                    monitor: isTraining ? environment.weightLoader.monitor() : nil
                 )
             }
             if variant != .weight {
@@ -524,6 +557,16 @@ struct DaySummaryCard: View {
     /// add-themes-and-layout D8: the layout editor's summary variant.
     /// `.ring` is the look this card always had.
     var style: SummaryVariant = .ring
+    /// add-winter-arc-nutrition-and-rewards: the plan day's targets in the
+    /// training experience (`nil` in food-first). On a training day "over"
+    /// is never a warning colour (`FuelDayEvaluator.displayBand`).
+    var fuelTarget: FuelDayTarget? = nil
+
+    /// The ring/bar colour: the calorie band's step, "over" softened on a
+    /// training day.
+    private func ringTint(_ calories: MacroProgress) -> Color {
+        FuelDayEvaluator.displayBand(calories.calorieBand, target: fuelTarget)?.tint ?? Theme.accent
+    }
 
     @ScaledMetric(relativeTo: .largeTitle) private var ringSize: CGFloat = 132
     @ScaledMetric(relativeTo: .largeTitle) private var compactRingSize: CGFloat = 72
@@ -547,7 +590,7 @@ struct DaySummaryCard: View {
                 ProgressRing(
                     fraction: calories.fraction ?? 0,
                     lineWidth: 12,
-                    tint: calories.calorieBand?.tint ?? Theme.accent
+                    tint: ringTint(calories)
                 ) {
                     VStack(spacing: 0) {
                         Text("\(calories.consumed.wholeNumberText)")
@@ -594,7 +637,7 @@ struct DaySummaryCard: View {
             ProgressRing(
                 fraction: calories.fraction ?? 0,
                 lineWidth: 7,
-                tint: calories.calorieBand?.tint ?? Theme.accent
+                tint: ringTint(calories)
             ) {
                 Text(verbatim: calories.consumed.wholeNumberText)
                     .font(.macroValue)
@@ -633,7 +676,7 @@ struct DaySummaryCard: View {
                 }
                 if calories.goal != nil {
                     ProgressView(value: min(max(calories.fraction ?? 0, 0), 1))
-                        .tint(calories.calorieBand?.tint ?? Theme.accent)
+                        .tint(ringTint(calories))
                 }
             }
             .accessibilityElement(children: .ignore)
@@ -709,7 +752,7 @@ struct DaySummaryCard: View {
         let consumed = calories.consumed.wholeNumberText
         guard let goal = calories.goal else { return String(localized: "Kilocalories: \(consumed)") }
         let base = String(localized: "\(consumed) of \(goal.wholeNumberText) kilocalories")
-        guard let band = calories.calorieBand else { return base }
+        guard let band = FuelDayEvaluator.displayBand(calories.calorieBand, target: fuelTarget) else { return base }
         return "\(base), \(band.accessibilityDescription)"
     }
 

@@ -580,3 +580,71 @@
 
 /* Supplements hub card: the current supplement streak. The value is a number of days. */
 "Supplement streak: %lld" = "Série doplňků: %lld";
+
+/* add-winter-arc-nutrition-and-rewards: training rewards (TrainingRewardsFeature). */
+
+/* Hub card title of the training rewards (check-ins, gym, habits, weeks kept within plan). */
+"Training rewards" = "Tréninkové odměny";
+
+/* Training rewards summary. First %lld = morning check-ins this week, then strength sessions done of the weekly two. */
+"This week: check-ins %lld · gym %lld/%lld" = "Tento týden: check-iny %lld · posilovna %lld/%lld";
+
+/* Training badge title: 7 morning check-ins. */
+"Morning Report" = "Ranní hlášení";
+
+/* Training badge title: 30 morning check-ins. */
+"Honest Mornings" = "Upřímná rána";
+
+/* Training badge title: 100 morning check-ins. */
+"Hundred Mornings" = "Sto rán";
+
+/* Training badge title: an amber or red morning followed by its easier option. */
+"Listened to the Body" = "Poslechl jsi tělo";
+
+/* Training badge description. */
+"Check in amber or red, then do that option instead of the full session." = "Ráno ohlas oranžovou nebo červenou a pak odtrénuj tuhle variantu místo plného tréninku.";
+
+/* Training badge title: ten honest amber/red mornings followed. */
+"Smart Athlete" = "Chytrý sportovec";
+
+/* Training badge description. */
+"Follow an amber or red morning with its option 10 times." = "Desetkrát dodrž variantu po oranžovém nebo červeném ránu.";
+
+/* Training badge title: a week with two strength sessions. */
+"Gym Twice" = "Dvakrát posilovna";
+
+/* Training badge title: four weeks with two strength sessions. */
+"Strong Month" = "Silný měsíc";
+
+/* Training badge title: twelve weeks with two strength sessions. */
+"Built to Last" = "Postavený vydržet";
+
+/* Training badge title: 25 habit ticks. */
+"Habit Builder" = "Budovatel návyků";
+
+/* Training badge title: 100 habit ticks. */
+"Daily Details" = "Každodenní drobnosti";
+
+/* Training badge title: 300 habit ticks. */
+"Habit Machine" = "Stroj na návyky";
+
+/* Training badge title: a week closed within plan. */
+"By the Plan" = "Podle plánu";
+
+/* Training badge title: four weeks closed within plan. */
+"Patient Builder" = "Trpělivý stavitel";
+
+/* Training badge title: twelve weeks closed within plan (the season's English name, kept in Czech too). */
+"Winter Arc" = "Winter Arc";
+
+/* Training badge description; %lld = days with a morning check-in needed (7, 30 or 100). */
+"Days with a morning check-in: %lld" = "Dny s ranním check-inem: %lld";
+
+/* Training badge description; %lld = weeks with two strength sessions done needed (1, 4 or 12). */
+"Weeks with both strength sessions: %lld" = "Týdny s oběma posilovnami: %lld";
+
+/* Training badge description; %lld = habit ticks needed (25, 100 or 300). */
+"Habit ticks: %lld" = "Odškrtnuté návyky: %lld";
+
+/* Training badge description; %lld = weeks the plan closed with no missed session and no volume overshoot (1, 4 or 12). */
+"Weeks closed within the plan: %lld" = "Týdny uzavřené podle plánu: %lld";

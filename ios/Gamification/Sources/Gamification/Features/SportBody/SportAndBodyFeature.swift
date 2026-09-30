@@ -160,9 +160,15 @@ public actor SportAndBodyFeature: GamificationFeature {
         if !SportRules.carbLoadedRaceDays(in: snapshot, calendar: context.calendar).isEmpty {
             request([SportBodyCatalog.carbLoaderId])
         }
-        request(BodyRules.weightBadgeIds(in: snapshot, calendar: context.calendar))
+        // add-winter-arc-nutrition-and-rewards: weight is an outcome and
+        // fasting pauses in build weeks, so neither the weight-goal
+        // milestones nor the fasting streak tiers unlock in the training
+        // experience (TrainingExperienceAvailability.hiddenBadgeIds).
         let fastingStreak = BodyRules.keptFastingStreak(in: snapshot)
-        request(BodyRules.fastingBadgeIds(streak: fastingStreak))
+        if !context.isTrainingExperience {
+            request(BodyRules.weightBadgeIds(in: snapshot, calendar: context.calendar))
+            request(BodyRules.fastingBadgeIds(streak: fastingStreak))
+        }
         update.unlockBadgeIds = requested
 
         // 3. Small moments, once per activity.

@@ -25,7 +25,9 @@ final class SupplementsFeatureTests: XCTestCase {
     // MARK: - Registry and budget line
 
     func testRegisteredLastWithAnOptionalBudgetLine() {
-        XCTAssertEqual(GamificationFeatureRegistry.orderedIds.last, SupplementsFeature.id)
+        // add-winter-arc-nutrition-and-rewards appended the training rewards
+        // after it; supplements stays the last food-side feature.
+        XCTAssertEqual(Array(GamificationFeatureRegistry.orderedIds.suffix(2)), [SupplementsFeature.id, TrainingRewardsFeature.id])
         let line = XPBudget.lines.first { $0.source == SupplementsFeature.id }
         XCTAssertEqual(line?.optional, true)
         XCTAssertEqual(line?.expectedDailyXP ?? 0, 6, accuracy: 1, "design D9: ~6 XP/day before the multiplier")

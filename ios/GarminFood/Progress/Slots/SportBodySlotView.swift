@@ -13,11 +13,15 @@
 // `unlockedAchievements`. Without any Garmin activity data (standalone mode,
 // route broken) it says activities appear after a sync -- never "failed".
 //
+// add-winter-arc-nutrition-and-rewards: no weight-goal chips and no fasting
+// streak in the training experience.
+//
 // Depends on: AppEnvironment, SportAndBodyFeature, SportBodyCatalog,
 // BodyRules, SportBodyView. Depended on by: ProgressSlotHost.
 
 import SwiftUI
 import Gamification
+import AppearanceKit
 
 @MainActor
 struct SportBodySlotView: View {
@@ -71,14 +75,14 @@ struct SportBodySlotView: View {
                     .foregroundStyle(.secondary)
             }
 
-            if let weight = progress?.weight {
+            if environment.experience != .training, let weight = progress?.weight {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: Theme.Spacing.xs) { milestoneChips(weight) }
                     VStack(alignment: .leading, spacing: Theme.Spacing.xs) { milestoneChips(weight) }
                 }
             }
 
-            if let streak = progress?.fastingStreak, streak > 0 {
+            if environment.experience != .training, let streak = progress?.fastingStreak, streak > 0 {
                 HStack(spacing: Theme.Spacing.xs) {
                     Image(systemName: "flame.fill")
                         .foregroundStyle(Theme.ember)

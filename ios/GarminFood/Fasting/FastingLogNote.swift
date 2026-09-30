@@ -30,7 +30,10 @@ struct FastingLogNoteSection: View {
     /// out as a section, and a confirm screen is on screen for seconds --
     /// any edit (quantity, date) re-renders it anyway.
     var body: some View {
+        // add-winter-arc-nutrition-and-rewards: no note on a day the
+        // training plan paused fasting (a build week).
         if let schedule = environment.preferences.activeFastingSchedule,
+           !environment.isFastingPausedByPlan(on: logDate),
            let fastEnd = schedule.fastEndIfLogging(at: Date(), forDay: logDate, calendar: .current) {
             Section {
                 Label("You're fasting until \(FastingFormat.clock(fastEnd)) — log anyway?", systemImage: "moon.stars")

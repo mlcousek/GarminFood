@@ -169,7 +169,7 @@ public enum DaySignalsBuilder {
             switch fast.result {
             case .kept: fastingByDay[key] = .kept
             case .broken: fastingByDay[key] = .broken
-            case .inProgress, .upcoming, .notTracked: break
+            case .inProgress, .upcoming, .notTracked, .paused: break
             }
         }
 

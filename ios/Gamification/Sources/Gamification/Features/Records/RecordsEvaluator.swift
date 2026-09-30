@@ -134,7 +134,12 @@ public enum RecordsEvaluator {
 
     // MARK: - Evaluation
 
-    public static func evaluate(state: RecordsState, snapshot: SignalsSnapshot) -> Result {
+    /// - Parameter quiet: records that keep their values silently but
+    ///   announce nothing (no PR event, moment, XP or badge count) --
+    ///   add-winter-arc-nutrition-and-rewards: "Biggest active day" and
+    ///   "Longest fast" in the training experience
+    ///   (`TrainingExperienceAvailability.quietRecords`). Empty = as before.
+    public static func evaluate(state: RecordsState, snapshot: SignalsSnapshot, quiet: Set<PersonalRecordId> = []) -> Result {
         let wasFirstRun = state.isFirstRun
         let openDays = Set(snapshot.windowDays.suffix(DailyLedger<Double>.openWindowLength))
         var next = state
@@ -190,6 +195,7 @@ public enum RecordsEvaluator {
                     continue
                 }
                 guard !wasFirstRun,
+                      !quiet.contains(definition.id),
                       let previousValue = previous?.value,
                       qualifyingDays >= PersonalRecordCatalog.warmUpDays,
                       openDays.contains(candidate.day)
@@ -227,13 +233,15 @@ public enum RecordsEvaluator {
 
     /// Design D6: first PR, 10 PRs, 50 PRs, and a PR in every record that
     /// has a value (at least `fullHouseMinRecords` of them).
-    public static func earnedBadgeIds(_ state: RecordsState) -> [String] {
+    /// `excluding`: quiet records (the training experience) don't count
+    /// toward the full house, since they can't earn a PR there.
+    public static func earnedBadgeIds(_ state: RecordsState, excluding: Set<PersonalRecordId> = []) -> [String] {
         var ids: [String] = []
         let total = state.totalPRs
         if total >= 1 { ids.append("record.first-pr") }
         if total >= 10 { ids.append("record.pr-10") }
         if total >= 50 { ids.append("record.pr-50") }
-        let withValue = PersonalRecordId.allCases.filter { state.record($0).current?.value != nil }
+        let withValue = PersonalRecordId.allCases.filter { !excluding.contains($0) && state.record($0).current?.value != nil }
         if withValue.count >= PersonalRecordCatalog.fullHouseMinRecords,
            withValue.allSatisfy({ (state.record($0).prCount ?? 0) > 0 }) {
             ids.append("record.full-house")
