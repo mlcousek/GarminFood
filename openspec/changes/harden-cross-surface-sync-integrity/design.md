@@ -130,6 +130,21 @@ but failed state write reloads the entry as pending and sends it again. The
 caller was already told the entry was delivered, while the durable state is
 not.
 
+### F17 — Garmin wire dates follow the device's non-Gregorian calendar
+
+Nutrition date formatting and parsing use `Calendar.current`. Garmin route
+keys and persisted nutrition-day identities require Gregorian `YYYY-MM-DD`.
+On a Buddhist, Japanese, or Islamic device calendar, outbound route dates can
+use the wrong year and inbound Garmin dates can be interpreted centuries from
+their actual day.
+
+### F18 — Custom-food multipliers can enqueue zero-serving writes
+
+The custom-food editor accepts a zero backing multiplier. Confirming a
+positive quantity then computes zero servings, and the coordinator/outbox
+persist and deliver `servingQty: 0` without a strictly-positive finite
+boundary validation.
+
 ## Test strategy
 
 - App-intent integration: one quick-pick invocation produces one food entry,
@@ -165,3 +180,7 @@ not.
   restored access cannot overwrite the pre-existing collection.
 - Post-acknowledgement durability: a failed sent-state write followed by
   restart cannot redeliver an accepted food, weight, or hydration request.
+- Gregorian wire dates: formatting and parsing retain a Gregorian day under a
+  non-Gregorian device calendar in the same timezone.
+- Custom-food quantity validation: zero, negative, and non-finite multiplier
+  or resulting quantities create no outbox entry.

@@ -64,9 +64,17 @@
 - [ ] 8.3 Add restart tests for transient read failure and post-acknowledgement
   write failure across food, weight, and hydration queues.
 
-## 9. Verification
+## 9. Data-contract correctness
 
-- [ ] 9.1 Run all Swift package suites.
-- [ ] 9.2 Run app-target integration tests on iOS Simulator.
-- [ ] 9.3 Verify background delivery on a device with interrupted
+- [ ] 9.1 Use Gregorian calendar rules for Garmin wire-date formatting and
+  parsing while retaining the relevant local timezone.
+- [ ] 9.2 Reject zero, negative, and non-finite custom-food multiplier and
+  resulting serving quantities at UI, domain, and outbox boundaries.
+- [ ] 9.3 Add non-Gregorian-calendar and invalid-custom-quantity regressions.
+
+## 10. Verification
+
+- [ ] 10.1 Run all Swift package suites.
+- [ ] 10.2 Run app-target integration tests on iOS Simulator.
+- [ ] 10.3 Verify background delivery on a device with interrupted
   connectivity.
