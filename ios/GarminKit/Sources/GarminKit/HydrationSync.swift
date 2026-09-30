@@ -74,6 +74,13 @@ public struct HydrationOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// drain that holds it then drops it, or -- if Garmin accepted it --
     /// queues its correction. Optional so older outbox files still decode.
     public var removalRequested: Bool?
+    /// fix-review-findings-2026-09 finding 16: saved BEFORE the request
+    /// goes out, cleared with its outcome -- still set after a relaunch =
+    /// possibly already in Garmin (DeliverySafety.swift). Decode-safe.
+    public var sendStartedAt: Date? = nil
+    /// fix-review-findings-2026-09 finding 9: the account it was logged
+    /// under (hashed); only ever delivered there. Decode-safe.
+    public var accountKey: String? = nil
     /// For a correction: the `id` of the drink entry it cancels out, when
     /// known. Lets a correction Garmin keeps rejecting be discarded with
     /// the drink restored to the local list (FoodLogCore's
@@ -235,12 +242,15 @@ actor HydrationOutboxStore {
                 var sent = attempted
                 sent.removalRequested = true
                 entries[index] = sent
-                entries.append(HydrationOutboxEntry(
+                var correction = HydrationOutboxEntry(
                     valueInML: -attempted.valueInML,
                     loggedAt: attempted.loggedAt,
                     nextAttemptAt: attempted.nextAttemptAt,
                     correctsEntryId: attempted.id
-                ))
+                )
+                // Same account as the drink it corrects (finding 9).
+                correction.accountKey = attempted.accountKey
+                entries.append(correction)
                 settlement = .correctionQueued
             } else {
                 entries.remove(at: index)
@@ -256,6 +266,38 @@ actor HydrationOutboxStore {
             DiagnosticsLog.log(.error, category: "HydrationOutboxStore", "couldn't persist a delivery result: \(error)")
         }
         return settlement
+    }
+
+    /// Finding 16: saves `sendStartedAt` before the request is sent; the
+    /// in-memory copy changes only once that write succeeded.
+    func markSending(id: UUID, at date: Date) throws -> HydrationOutboxEntry {
+        loadIfNeeded()
+        guard let index = entries.firstIndex(where: { $0.id == id }) else { throw OutboxEditError.entryNotFound }
+        var updated = entries
+        updated[index].sendStartedAt = date
+        try write(updated)
+        entries = updated
+        return updated[index]
+    }
+
+    /// Releases a claim without writing anything (an entry skipped this
+    /// drain).
+    func release(id: UUID) {
+        claimedIds.remove(id)
+    }
+
+    /// Finding 9: ties every undelivered, unstamped entry to `key`.
+    func assignUnscoped(to key: String) throws {
+        loadIfNeeded()
+        var updated = entries
+        var changed = false
+        for index in updated.indices where updated[index].accountKey == nil && updated[index].state != .sent {
+            updated[index].accountKey = key
+            changed = true
+        }
+        guard changed else { return }
+        try write(updated)
+        entries = updated
     }
 
     /// Removes a not-yet-delivered entry, or flags it if a drain is sending
@@ -308,17 +350,21 @@ public actor HydrationOutbox {
     private let backoffBase: TimeInterval
     private let backoffCap: TimeInterval
     private var isDraining = false
+    /// The signed-in account's key (finding 9, DeliverySafety.swift).
+    private let accountKey: AccountScope.Provider
 
     public init(
         processName: String = "default",
         maxAttempts: Int = 5,
         backoffBase: TimeInterval = 0.5,
-        backoffCap: TimeInterval = 8
+        backoffCap: TimeInterval = 8,
+        accountKey: @escaping AccountScope.Provider = { nil }
     ) {
         self.store = HydrationOutboxStore(fileURL: HydrationOutboxStore.defaultFileURL(processName: processName))
         self.maxAttempts = maxAttempts
         self.backoffBase = backoffBase
         self.backoffCap = backoffCap
+        self.accountKey = accountKey
     }
 
     /// Test-only entry point, mirroring `WeightOutbox`'s internal
@@ -327,12 +373,14 @@ public actor HydrationOutbox {
         store: HydrationOutboxStore,
         maxAttempts: Int = 5,
         backoffBase: TimeInterval = 0.5,
-        backoffCap: TimeInterval = 8
+        backoffCap: TimeInterval = 8,
+        accountKey: @escaping AccountScope.Provider = { nil }
     ) {
         self.store = store
         self.maxAttempts = maxAttempts
         self.backoffBase = backoffBase
         self.backoffCap = backoffCap
+        self.accountKey = accountKey
     }
 
     /// Enqueues a drink (positive `valueInML`) or a correction (negative --
@@ -344,7 +392,7 @@ public actor HydrationOutbox {
     @discardableResult
     public func logHydration(valueInML: Double, loggedAt: Date = Date(), correctsEntryId: UUID? = nil, id: UUID = UUID()) async throws -> HydrationOutboxEntry {
         let entry = HydrationOutboxEntry(id: id, valueInML: valueInML, loggedAt: loggedAt, correctsEntryId: correctsEntryId)
-        return try await store.enqueue(entry)
+        return try await store.enqueue(stamped(entry))
     }
 
     /// Removes a drink that Garmin has not accepted yet -- or, if a drain is
@@ -365,12 +413,26 @@ public actor HydrationOutbox {
         await store.pending(now: now).count
     }
 
+    /// `entry` stamped with the account signed in now (finding 9).
+    private func stamped(_ entry: HydrationOutboxEntry) async -> HydrationOutboxEntry {
+        var stamped = entry
+        stamped.accountKey = await accountKey()
+        return stamped
+    }
+
+    /// Signing out (finding 9): ties every undelivered, unstamped entry to
+    /// `key`, the account being signed out.
+    public func assignUnscopedEntries(to key: String) async throws {
+        try await store.assignUnscoped(to: key)
+    }
+
     public func retry(id: UUID) async throws {
         guard var entry = await store.all().first(where: { $0.id == id }) else { return }
         entry.state = .pending
         entry.attemptCount = 0
         entry.lastError = nil
         entry.nextAttemptAt = Date()
+        entry.sendStartedAt = nil
         try await store.update(entry)
     }
 
@@ -403,13 +465,44 @@ public actor HydrationOutbox {
         // `settle` appends for a drink removed mid-flight goes out in this
         // same drain instead of waiting for the next trigger.
         var attempted = Set<UUID>()
+        let currentAccount = await accountKey()
 
         while true {
-            guard let next = await store.pending(now: now).first(where: { !attempted.contains($0.id) }) else { break }
+            // Finding 9: another account's entry is held, not sent.
+            guard let next = await store.pending(now: now).first(where: {
+                !attempted.contains($0.id) && AccountScope.mayDeliver(entryKey: $0.accountKey, currentKey: currentAccount)
+            }) else { break }
             attempted.insert(next.id)
             // Re-read under a claim: it may have been removed since, and
             // while claimed a removal only flags it (see `settle`).
             guard var entry = await store.claim(id: next.id, now: now) else { continue }
+
+            // Finding 16: a drink whose outcome was never recorded (the app
+            // stopped after sending it) may already be in Garmin's day
+            // total, and nothing can tell -- so it is NOT sent again. It
+            // waits in the sync queue, failed with a note, for the user to
+            // check and retry or discard.
+            if entry.sendStartedAt != nil {
+                entry.sendStartedAt = nil
+                entry.state = .failed
+                entry.lastError = PossiblyDelivered.note
+                switch await store.settle(entry, accepted: false) {
+                case .dropped:
+                    break
+                case .written, .gone, .correctionQueued:
+                    failed.append(entry)
+                }
+                continue
+            }
+            // Recorded BEFORE the request goes out; not sent if that can't
+            // be saved.
+            do {
+                entry = try await store.markSending(id: entry.id, at: now)
+            } catch {
+                DiagnosticsLog.log(.warning, category: "HydrationOutbox", "couldn't record a send before making it (\(error)); trying on a later drain")
+                await store.release(id: entry.id)
+                continue
+            }
 
             var accepted = false
             var stop = false
@@ -457,6 +550,8 @@ public actor HydrationOutbox {
                 }
             }
 
+            // The outcome is being recorded now (finding 16).
+            entry.sendStartedAt = nil
             switch await store.settle(entry, accepted: accepted) {
             case .written, .gone:
                 if accepted {

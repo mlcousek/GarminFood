@@ -875,8 +875,21 @@ final class AppEnvironment {
     // MARK: - Account
 
     /// Removes the stored Garmin credentials. Queued entries stay queued
-    /// and deliver after the next sign-in.
+    /// and deliver after the next sign-in -- of the SAME account only
+    /// (fix-review-findings-2026-09 finding 9): anything not yet tied to an
+    /// account is tied to the one signing out first, and a different
+    /// account never receives it (it stays held in the sync queue).
     func signOut() async {
+        if let key = GarminAccountKey.lastRecorded() {
+            do {
+                try await outbox.assignUnscopedEntries(to: key)
+                try await weightOutbox.assignUnscopedEntries(to: key)
+                try await hydrationOutbox.assignUnscopedEntries(to: key)
+            } catch {
+                DiagnosticsLog.log(.error, category: "Account", "couldn't tie queued entries to the account signing out: \(error)")
+            }
+        }
+        GarminAccountKey.clear()
         await garminClientTokenProvider.signOut()
         authState.markSignedOut()
         profile.clear()

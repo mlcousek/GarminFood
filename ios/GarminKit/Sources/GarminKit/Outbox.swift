@@ -169,6 +169,17 @@ public struct OutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// kept separate because a parked replace must never go back through
     /// the create step. Optional, decode-safe.
     public var parkedAt: Date?
+    /// fix-review-findings-2026-09 finding 16: set and saved BEFORE the
+    /// create is sent, cleared with its outcome. Still set on a `.pending`
+    /// entry after a relaunch = the app stopped between sending and
+    /// recording Garmin's answer, so it may already be in Garmin
+    /// (DeliverySafety.swift). Optional, decode-safe.
+    public var sendStartedAt: Date? = nil
+    /// fix-review-findings-2026-09 finding 9: the Garmin account this entry
+    /// was logged under (`GarminAccountKey`, hashed); `nil` = not known.
+    /// Only ever delivered to that account (`AccountScope`). Optional,
+    /// decode-safe.
+    public var accountKey: String? = nil
 
     public init(
         id: UUID = UUID(),
@@ -386,6 +397,33 @@ actor OutboxStore {
         entries = updated
     }
 
+    /// Finding 16: saves `sendStartedAt` on `id` before its create is
+    /// sent. The in-memory copy changes only once the write succeeded, so a
+    /// failed save leaves nothing that looks like an earlier send.
+    func markSending(id: UUID, at date: Date) throws -> OutboxEntry {
+        loadIfNeeded()
+        guard let index = entries.firstIndex(where: { $0.id == id }) else { throw OutboxEditError.entryNotFound }
+        var updated = entries
+        updated[index].sendStartedAt = date
+        try write(updated)
+        entries = updated
+        return updated[index]
+    }
+
+    /// Finding 9: ties every undelivered, unstamped entry to `key`.
+    func assignUnscoped(to key: String) throws {
+        loadIfNeeded()
+        var updated = entries
+        var changed = false
+        for index in updated.indices where updated[index].accountKey == nil && updated[index].state != .sent {
+            updated[index].accountKey = key
+            changed = true
+        }
+        guard changed else { return }
+        try write(updated)
+        entries = updated
+    }
+
     /// Removes a not-yet-delivered entry, refusing one that is in flight.
     func cancel(id: UUID) throws {
         loadIfNeeded()
@@ -448,6 +486,9 @@ public actor Outbox {
     /// `drain()`, cleared unconditionally (including on early return) via
     /// `defer`.
     private var isDraining = false
+    /// The signed-in account's key (finding 9, DeliverySafety.swift):
+    /// stamped on each new entry and checked before each send.
+    private let accountKey: AccountScope.Provider
 
     /// The initializer every real caller (app, widget extension, Control)
     /// uses. `processName` becomes part of this process's own outbox file
@@ -465,12 +506,14 @@ public actor Outbox {
         processName: String = "default",
         maxAttempts: Int = 5,
         backoffBase: TimeInterval = 0.5,
-        backoffCap: TimeInterval = 8
+        backoffCap: TimeInterval = 8,
+        accountKey: @escaping AccountScope.Provider = { nil }
     ) {
         self.store = OutboxStore(fileURL: OutboxStore.defaultFileURL(processName: processName))
         self.maxAttempts = maxAttempts
         self.backoffBase = backoffBase
         self.backoffCap = backoffCap
+        self.accountKey = accountKey
     }
 
     /// Test-only entry point so GarminKitTests can point the outbox at an
@@ -482,12 +525,14 @@ public actor Outbox {
         store: OutboxStore,
         maxAttempts: Int = 5,
         backoffBase: TimeInterval = 0.5,
-        backoffCap: TimeInterval = 8
+        backoffCap: TimeInterval = 8,
+        accountKey: @escaping AccountScope.Provider = { nil }
     ) {
         self.store = store
         self.maxAttempts = maxAttempts
         self.backoffBase = backoffBase
         self.backoffCap = backoffCap
+        self.accountKey = accountKey
     }
 
     /// Enqueues a new entry. Per design.md D5 / the garmin-sync spec's
@@ -527,7 +572,27 @@ public actor Outbox {
             createdAt: createdAt,
             nextAttemptAt: createdAt
         )
-        return try await store.enqueue(entry)
+        return try await store.enqueue(stamped(entry))
+    }
+
+    /// `entry` stamped with the account signed in now (finding 9).
+    private func stamped(_ entry: OutboxEntry) async -> OutboxEntry {
+        var stamped = entry
+        stamped.accountKey = await accountKey()
+        return stamped
+    }
+
+    /// Signing out (finding 9): every undelivered entry not yet tied to an
+    /// account is tied to `key`, the account being signed out, so the next
+    /// account to sign in never receives it.
+    public func assignUnscopedEntries(to key: String) async throws {
+        try await store.assignUnscoped(to: key)
+    }
+
+    /// The entries the current account may receive (finding 9).
+    func inCurrentAccount(_ entries: [OutboxEntry]) async -> [OutboxEntry] {
+        let current = await accountKey()
+        return entries.filter { AccountScope.mayDeliver(entryKey: $0.accountKey, currentKey: current) }
     }
 
     public func allEntries() async -> [OutboxEntry] {
@@ -559,6 +624,7 @@ public actor Outbox {
         entry.attemptCount = 0
         entry.lastError = nil
         entry.nextAttemptAt = Date()
+        entry.sendStartedAt = nil
         try await store.update(entry)
     }
 
@@ -584,7 +650,7 @@ public actor Outbox {
         guard let old = await store.all().first(where: { $0.id == id }) else {
             throw OutboxEditError.entryNotFound
         }
-        let replacement = OutboxEntry(
+        var replacement = OutboxEntry(
             date: old.date,
             mealType: mealType,
             foodId: old.foodId,
@@ -598,6 +664,8 @@ public actor Outbox {
             createdAt: createdAt,
             nextAttemptAt: createdAt
         )
+        // Still the account it was logged under (finding 9).
+        replacement.accountKey = old.accountKey
         // Re-validates state and in-flight status atomically on the store.
         try await store.replace(id: id, with: replacement)
         return replacement
@@ -703,10 +771,42 @@ public actor Outbox {
         var stoppedDueToRateLimit = false
         var authOutcome: DrainAuthOutcome = .none
 
+        let currentAccount = await accountKey()
         for snapshot in await store.pending(now: now) {
+            // Finding 9: another account's entry is held, not sent.
+            guard AccountScope.mayDeliver(entryKey: snapshot.accountKey, currentKey: currentAccount) else { continue }
             // Re-read under a claim: an edit may have swapped or removed
             // this entry since the snapshot, and while claimed no edit can.
             guard var entry = await store.claim(id: snapshot.id, now: now) else { continue }
+
+            if entry.state == .pending {
+                // Finding 16: a create whose outcome was never recorded
+                // (the app stopped after sending it) is not sent blindly
+                // again. A plain create goes to Reconciliation as `.sent`:
+                // the day's re-read confirms it, or re-queues it as
+                // missing. A replace keeps its documented path (re-created,
+                // and Reconciliation removes the provable re-sent copy).
+                if entry.sendStartedAt != nil, entry.replaces == nil {
+                    entry.sendStartedAt = nil
+                    entry.state = .sent
+                    entry.lastError = nil
+                    try? await store.update(entry)
+                    await store.release(id: entry.id)
+                    DiagnosticsLog.log(.warning, category: "Outbox", "an entry's earlier send was never recorded; checking Garmin's log instead of sending it again")
+                    delivered.append(entry)
+                    continue
+                }
+                // Recorded BEFORE the request goes out; not sent if that
+                // can't be saved.
+                do {
+                    entry = try await store.markSending(id: entry.id, at: now)
+                } catch {
+                    DiagnosticsLog.log(.warning, category: "Outbox", "couldn't record a send before making it (\(error)); trying on a later drain")
+                    await store.release(id: entry.id)
+                    continue
+                }
+            }
+
             let result = await deliver(&entry, using: deliverer, now: now, randomJitter: randomJitter)
             await store.release(id: entry.id)
 
@@ -750,7 +850,17 @@ public actor Outbox {
     ) async -> StepResult {
         if entry.state != .createdAwaitingDelete {
             do {
-                try await deliverer.createFoodLogEntry(entry.createRequest)
+                // The marker set before sending is cleared with whatever
+                // happened, so every write below records the outcome.
+                let sent: Result<Void, Error>
+                do {
+                    try await deliverer.createFoodLogEntry(entry.createRequest)
+                    sent = .success(())
+                } catch {
+                    sent = .failure(error)
+                }
+                entry.sendStartedAt = nil
+                try sent.get()
             } catch GarminClientError.rateLimited(let retryAfterSeconds) {
                 entry.attemptCount += 1
                 entry.lastError = "rate limited (429)"

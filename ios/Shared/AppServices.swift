@@ -135,13 +135,16 @@ final class AppServices {
 
     private init() {
         let client = GarminClient()
-        let outbox = Outbox(processName: "app")
+        // fix-review-findings-2026-09 finding 9: every outbox stamps and
+        // checks the signed-in Garmin account (GarminKit DeliverySafety.swift).
+        let accountKey: AccountScope.Provider = { await GarminAccountKey.currentKey() }
+        let outbox = Outbox(processName: "app", accountKey: accountKey)
         let usageHistory = UsageHistoryStore()
         let servingDefaults = ServingDefaultStore()
         let weightStore = WeightStore()
-        let weightOutbox = WeightOutbox(processName: "app")
+        let weightOutbox = WeightOutbox(processName: "app", accountKey: accountKey)
         let hydrationStore = HydrationStore()
-        let hydrationOutbox = HydrationOutbox(processName: "app")
+        let hydrationOutbox = HydrationOutbox(processName: "app", accountKey: accountKey)
         let garminHealthCache = GarminHealthCacheStore()
         let foodCache = FoodCacheStore()
         let offlineIndex = OfflineFoodIndexHolder()
