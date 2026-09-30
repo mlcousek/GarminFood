@@ -35,9 +35,19 @@
 - [ ] 5.4 Reconcile previously sent entries and retain background scheduling
   after a reconciliation read failure.
 
-## 6. Verification
+## 6. Account and notification lifecycle
 
-- [ ] 6.1 Run all Swift package suites.
-- [ ] 6.2 Run app-target integration tests on iOS Simulator.
-- [ ] 6.3 Verify background delivery on a device with interrupted
+- [ ] 6.1 Bind retained queues and account-scoped local data to a stable
+  Garmin identity; quarantine or purge it safely on account change.
+- [ ] 6.2 Add same-account reconnect and different-account switch tests.
+- [ ] 6.3 Re-run notification scheduling after first authorization is granted.
+- [ ] 6.4 Schedule/reconcile a future reminder horizon that survives
+  midnight without foregrounding.
+- [ ] 6.5 Add authorization-transition and date-rollover scheduler tests.
+
+## 7. Verification
+
+- [ ] 7.1 Run all Swift package suites.
+- [ ] 7.2 Run app-target integration tests on iOS Simulator.
+- [ ] 7.3 Verify background delivery on a device with interrupted
   connectivity.

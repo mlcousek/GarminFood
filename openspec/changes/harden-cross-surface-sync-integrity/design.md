@@ -72,6 +72,28 @@ and schedules future execution only for pending entries. A 2xx food write
 followed by a failed read leaves an entry in `sent`; later background runs do
 not reconcile it or schedule another retry.
 
+### F9 — Signing out permits cross-account writes and local-data exposure
+
+Sign-out clears credentials and profile data but deliberately retains durable
+queues, which are not associated with a Garmin identity. If account B signs
+in after account A saved offline work, foreground draining sends A's queued
+food to B's diary. Other retained local health and food data also remains
+visible in the live environment.
+
+### F10 — First enabled reminder can miss scheduling after permission grant
+
+Enabling a reminder requests notification permission asynchronously and
+persists the enabled setting immediately. The initial notification sync sees
+`notDetermined` and returns. After the user grants permission, the UI updates
+its displayed authorization state but does not re-run notification scheduling.
+
+### F11 — Daily reminders stop without a foreground launch
+
+Meal, streak, and challenge reminders are one-shot requests scoped to the
+current date. No future horizon is preplanned, and neither the background
+worker nor any recurring scheduling path replaces them after midnight while
+the app remains closed.
+
 ## Test strategy
 
 - App-intent integration: one quick-pick invocation produces one food entry,
@@ -91,3 +113,9 @@ not reconcile it or schedule another retry.
   deleted without a reliable ownership/idempotency identifier.
 - Background recovery: a sent entry left after a failed reconciliation read
   is retried and keeps background scheduling active.
+- Account switch: pending account-A entries and account-scoped retained data
+  are unavailable and non-deliverable after account B signs in.
+- Notification authorization: enabling the first reminder and granting
+  permission causes its request to be scheduled immediately.
+- Reminder rollover: a user who does not foreground after midnight still has
+  a request scheduled for the next configured reminder time.
