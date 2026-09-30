@@ -21,6 +21,9 @@
 // lists this phone's changes for it (`planChanges`) with the vault's
 // answers (PlanEditModels.swift).
 //
+// add-checkin-pain-score D6: a day row carries its recorded morning pain as
+// tags ("Achilles (left) 5.5/10"), the vault's or the phone's answer.
+//
 // Nothing is summed here: `actual`, statuses and matching come from the
 // file. Glyph styles carry a shape as well as a colour in the app, so they
 // are distinguishable without colour (spec "Missed and done sessions").
@@ -69,6 +72,9 @@ public struct DayRowModel: Equatable, Sendable, Identifiable {
     public let raceLines: [String]
     /// "Rest day" when there is nothing at all.
     public let restText: String?
+    /// add-checkin-pain-score: one tag per recorded site; `[]` when the
+    /// pain was not asked or nothing hurts.
+    public var painTags: [String] = []
 
     public var id: LocalDate { date }
 }
@@ -295,7 +301,7 @@ public struct PlanBuilder: Sendable {
             text.format(.raceDayLine, race.name.resolvedText(format.language) ?? race.id)
         }
         let isEmpty = sessions.isEmpty && unplanned.isEmpty && races.isEmpty
-        return DayRowModel(
+        var row = DayRowModel(
             date: date,
             title: long ? format.dates.short(date) : format.dates.weekdayAndDay(date),
             isToday: date == today,
@@ -306,6 +312,8 @@ public struct PlanBuilder: Sendable {
             raceLines: races,
             restText: isEmpty ? text(.stateRestDayTitle) : nil
         )
+        row.painTags = format.painTags(day?.pains)
+        return row
     }
 
     func sessionRow(_ session: Session, date: LocalDate, snapshot: TrainingSnapshot) -> SessionRowModel {

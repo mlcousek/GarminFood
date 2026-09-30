@@ -479,6 +479,47 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case editOverrideTitle = "Override the rule %@?"
     /// Warning before overriding a training rule: why the rule exists and that the override is logged.
     case editOverrideMessage = "The rule changed this session as a precaution. You have the last word, and the override is logged for the Sunday review."
+    // add-checkin-pain-score: the morning pain step and pain tags.
+    /// Pain site: the left Achilles tendon.
+    case painSiteAchillesLeft = "Achilles (left)"
+    /// Pain site: the right Achilles tendon.
+    case painSiteAchillesRight = "Achilles (right)"
+    /// Pain site: the left knee.
+    case painSiteKneeLeft = "Knee (left)"
+    /// Pain site: the right knee.
+    case painSiteKneeRight = "Knee (right)"
+    /// Pain site: anywhere else (with a short note).
+    case painSiteOther = "Other site"
+    /// A pain score out of ten (the score, e.g. 4.5).
+    case painScore = "%@/10"
+    /// A pain tag: the site and its score out of ten (e.g. Achilles (left) 4.5/10).
+    case painTag = "%@ %@/10"
+    /// A pain tag for another site: the site, its score out of ten and the owner's note.
+    case painTagNote = "%@ %@/10 (%@)"
+    /// The day's recorded morning pain (the sites with their scores).
+    case painLine = "Pain: %@"
+    /// The day's morning check recorded that nothing hurts.
+    case painNone = "Pain: none"
+    /// Title of the pain step under the morning check-in.
+    case painTitle = "Pain this morning"
+    /// The pain scale, under the pain step's title.
+    case painHint = "0 = no pain, 10 = worst imaginable"
+    /// Button: record the morning pain with the check-in.
+    case painSave = "Save pain"
+    /// Button: fold the pain step without recording anything.
+    case painNotNow = "Not now"
+    /// Button: change the morning pain recorded today.
+    case painEdit = "Edit pain"
+    /// Menu: add another painful site to the morning pain.
+    case painAddSite = "Add another site"
+    /// VoiceOver for the button that removes a site from the morning pain (the site).
+    case painRemoveSite = "Remove %@"
+    /// Placeholder of the note for another painful site.
+    case painNotePlaceholder = "What hurts? (short note)"
+    /// The pain step with every site removed: saving records that nothing hurts.
+    case painNothingHurts = "Nothing hurts"
+    /// VoiceOver value of a pain score control (the score).
+    case a11yPainValue = "%@ of 10"
     /// Keys that live in `.stringsdict` (plural forms).
     public var isPlural: Bool {
         switch self {

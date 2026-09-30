@@ -14,6 +14,9 @@
 //     points at `handleControlCheckIn` before any scene exists: the
 //     Controls' intent runs in the app's process (`openAppWhenRun`), but
 //     Shared/ is compiled into the widget too and can't import TrainingCore.
+//     A Control records the light only; afterwards `onControlCheckIn`
+//     brings Today's today forward, where the pain step asks the rest
+//     (add-checkin-pain-score D7).
 //
 // Rules:
 //   - Recording is local and durable; nothing awaits the network. It
@@ -53,6 +56,10 @@ final class TrainingEventsService {
     /// Set by AppEnvironment: a drain stopped on auth; refresh the
     /// projection so the vault banner names the problem.
     var onAuthStop: (@MainActor () -> Void)?
+    /// Set by AppEnvironment (add-checkin-pain-score D7): a Control's
+    /// check-in was recorded; show Today's today, where the pain step
+    /// waits (the Controls stay light-only).
+    var onControlCheckIn: (@MainActor () -> Void)?
 
     enum RecordError: Error, LocalizedError, Equatable {
         case vaultOff
@@ -124,6 +131,7 @@ final class TrainingEventsService {
         )
         do {
             try await record(.morningCheckIn(payload))
+            onControlCheckIn?()
         } catch RecordError.vaultOff {
             throw MorningCheckInControlAction.ActionError.vaultOff
         } catch RecordError.notTested {

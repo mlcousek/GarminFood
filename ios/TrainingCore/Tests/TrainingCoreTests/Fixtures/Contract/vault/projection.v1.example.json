@@ -358,6 +358,7 @@
             "date": "2030-10-07",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -370,6 +371,7 @@
             "date": "2030-10-08",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -427,6 +429,7 @@
             "date": "2030-10-09",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -441,6 +444,7 @@
             "date": "2030-10-10",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -464,6 +468,7 @@
             "date": "2030-10-11",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -476,6 +481,7 @@
             "date": "2030-10-12",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -530,6 +536,7 @@
             "date": "2030-10-13",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -571,6 +578,7 @@
             "date": "2030-10-14",
             "light": "red",
             "lightSource": "checkin",
+            "pains": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -629,6 +637,7 @@
             "date": "2030-10-15",
             "light": "red",
             "lightSource": "option",
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -750,6 +759,7 @@
             "date": "2030-10-16",
             "light": "green",
             "lightSource": "checkin",
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -861,6 +871,7 @@
             "date": "2030-10-17",
             "light": "green",
             "lightSource": "checkin",
+            "pains": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -972,6 +983,7 @@
             "date": "2030-10-18",
             "light": "green",
             "lightSource": "checkin",
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1067,6 +1079,7 @@
             "date": "2030-10-19",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1182,6 +1195,7 @@
             "date": "2030-10-20",
             "light": "amber",
             "lightSource": "checkin",
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1232,6 +1246,11 @@
             "rule": "three-greens",
             "en": "Three green mornings in a row (2030-10-16 – 2030-10-18): the next step up is allowed.",
             "cz": "Tři zelená rána za sebou (2030-10-16 – 2030-10-18): další krok nahoru je povolen."
+          },
+          {
+            "rule": "pain-high",
+            "en": "Achilles (left) 5.5/10 on 2030-10-23 — above the 5/10 pain-monitoring limit (PM-ACH-1): the next tendon-heavy session drops one class. Pain rising week to week, or a sudden sharp pain, a snap or swelling → physio or doctor (PM-ACH-8).",
+            "cz": "Achilovka (levá) 5,5/10 dne 2030-10-23 — nad hranicí 5/10 pro sledování bolesti (PM-ACH-1): další náročný trénink pro šlachu o třídu níž. Bolest rostoucí z týdne na týden, náhlá ostrá bolest, lupnutí či otok → fyzioterapeut nebo lékař (PM-ACH-8)."
           }
         ],
         "days": [
@@ -1239,6 +1258,7 @@
             "date": "2030-10-21",
             "light": "green",
             "lightSource": "checkin",
+            "pains": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -1285,6 +1305,7 @@
             "date": "2030-10-22",
             "light": "amber",
             "lightSource": "checkin",
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1346,6 +1367,18 @@
             "date": "2030-10-23",
             "light": "amber",
             "lightSource": "checkin",
+            "pains": [
+              {
+                "site": "achilles-left",
+                "score": 5.5,
+                "note": "Stiff first steps, eases after 10 min"
+              },
+              {
+                "site": "knee-right",
+                "score": 1,
+                "note": null
+              }
+            ],
             "habitsExpected": [
               "holds"
             ],
@@ -1464,6 +1497,7 @@
             "date": "2030-10-24",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -1512,6 +1546,7 @@
             "date": "2030-10-25",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1559,6 +1594,7 @@
             "date": "2030-10-26",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1603,6 +1639,7 @@
             "date": "2030-10-27",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1636,6 +1673,7 @@
             "date": "2030-10-28",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -1679,6 +1717,7 @@
             "date": "2030-10-29",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1726,6 +1765,7 @@
             "date": "2030-10-30",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1797,6 +1837,7 @@
             "date": "2030-10-31",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds",
               "gym"
@@ -1900,6 +1941,7 @@
             "date": "2030-11-01",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1917,6 +1959,7 @@
             "date": "2030-11-02",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -1934,6 +1977,7 @@
             "date": "2030-11-03",
             "light": null,
             "lightSource": null,
+            "pains": null,
             "habitsExpected": [
               "holds"
             ],
@@ -2870,8 +2914,8 @@
   },
   "acks": {
     "ios-0a1b2c3d": {
-      "seq": 23,
-      "maxSeq": 23
+      "seq": 24,
+      "maxSeq": 24
     },
     "ios-5e6f7a8b": {
       "seq": 3,

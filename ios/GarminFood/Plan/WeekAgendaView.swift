@@ -14,6 +14,11 @@
 // header lists the week's plan changes with the vault's answers and
 // Withdraw (PlanEditViews.swift).
 //
+// add-checkin-pain-score D6: a day with a recorded morning pain shows its
+// tags under the day's header ("Achilles (left) 5.5/10"), a bandage symbol
+// and the words, never colour alone. The vault's pain-* notes arrive as
+// week rule notes.
+//
 // Everything shown is `WeekAgendaModel` from TrainingCore's PlanBuilder;
 // nothing is summed here. Depended on by: PlanTabView (and `DayRowView` by
 // its day sheet).
@@ -157,6 +162,17 @@ struct DayRowView: View {
                 }
             }
             .accessibilityElement(children: .combine)
+
+            if !row.painTags.isEmpty {
+                Label {
+                    Text(verbatim: row.painTags.joined(separator: " · "))
+                } icon: {
+                    Image(systemName: "bandage")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .accessibilityElement(children: .combine)
+            }
 
             ForEach(row.raceLines, id: \.self) { line in
                 Label {

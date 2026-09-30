@@ -12,6 +12,10 @@
 // `.other`. add-plan-editing adds the plan commands and the retraction: a
 // byte-exact golden file of its own (`plan-commands.v1.app.jsonl`) and a
 // line-by-line comparison with the vault's example commands.
+// add-checkin-pain-score adds `pains` to the check-in: every check-in line
+// of the first golden file carries `"pains":null`, and a third golden file
+// (`checkin-pains.v1.app.jsonl`, accepted by the vault's `validateEvent`
+// on 2026-09-30) pins a list, an empty list and a note that needs escaping.
 
 import XCTest
 import VaultKit
@@ -28,6 +32,29 @@ enum EventFixtures {
 
     static func planGolden() throws -> Data {
         try Data(contentsOf: directory.appendingPathComponent("plan-commands.v1.app.jsonl"))
+    }
+
+    static func painGolden() throws -> Data {
+        try Data(contentsOf: directory.appendingPathComponent("checkin-pains.v1.app.jsonl"))
+    }
+
+    /// The pain golden file's events, built in Swift (add-checkin-pain-score D1).
+    static var painGoldenEvents: [HubEvent] {
+        [
+            HubEvent(id: "01beca7b-6c00-7abc-bd11-223344556615", deviceId: device, seq: 15, at: "2030-10-23T04:20:00.000+02:00",
+                     payload: .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-23"), light: .amberLight, sessionId: "2030-w43-wed-am", pains: [
+                        PainEntry(site: .achillesLeft, score: 5.5, note: "Stiff for the first steps"),
+                        PainEntry(site: .kneeRight, score: 1)
+                     ]))),
+            HubEvent(id: "01becf9f-f8e0-7abc-bd11-223344556616", deviceId: device, seq: 16, at: "2030-10-24T04:05:00.000+02:00",
+                     payload: .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-24"), light: .greenLight, sessionId: nil, pains: []))),
+            HubEvent(id: "01bed507-9d20-7abc-bd11-223344556617", deviceId: device, seq: 17, at: "2030-10-25T05:31:00.000+02:00",
+                     payload: .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-25"), light: .redLight, sessionId: nil, pains: [
+                        PainEntry(site: .achillesLeft, score: 0),
+                        PainEntry(site: .achillesRight, score: 0),
+                        PainEntry(site: .other, score: 2, note: "Lower back / \"desk day\"")
+                     ])))
+        ]
     }
 
     /// The plan-command golden file's events, built in Swift
@@ -107,6 +134,7 @@ final class HubEventTests: XCTestCase {
         let rest = String(decoding: try HubEventCodec.line(EventFixtures.goldenEvents[6]), as: UTF8.self)
         XCTAssertTrue(rest.contains("\"option\":null"))
         XCTAssertTrue(rest.contains("\"sessionId\":null"))
+        XCTAssertTrue(rest.contains("\"pains\":null"), "pain not asked (add-checkin-pain-score)")
         let rpe = String(decoding: try HubEventCodec.line(EventFixtures.goldenEvents[4]), as: UTF8.self)
         XCTAssertTrue(rpe.contains("\"feel\":null"))
         // The option follows the light when the day has a session.
@@ -119,12 +147,12 @@ final class HubEventTests: XCTestCase {
     func testTheVaultsExampleDecodes() throws {
         let decoded = HubEventCodec.decode(try EventFixtures.vault("events.v1.example.jsonl"))
         XCTAssertEqual(decoded.invalidLines, [])
-        XCTAssertEqual(decoded.events.count, 23)
-        XCTAssertEqual(decoded.events.map(\.seq), Array(1...23))
+        XCTAssertEqual(decoded.events.count, 24)
+        XCTAssertEqual(decoded.events.map(\.seq), Array(1...24))
         XCTAssertTrue(decoded.events.allSatisfy { $0.deviceId == "ios-0a1b2c3d" && $0.v == 1 })
 
         let byType = Dictionary(grouping: decoded.events, by: { $0.type.rawValue }).mapValues(\.count)
-        XCTAssertEqual(byType["checkin.morning"], 7)
+        XCTAssertEqual(byType["checkin.morning"], 8)
         XCTAssertEqual(byType["habit.tick"], 3)
         XCTAssertEqual(byType["session.rpe"], 1)
         XCTAssertEqual(byType["session.note"], 1)
@@ -145,6 +173,17 @@ final class HubEventTests: XCTestCase {
         XCTAssertEqual(decoded.events[3].payload, .sessionSkipped(SessionSkippedPayload(week: D.week("2030-W42"), baseRevision: 2, sessionId: "2030-w42-thu-pm", reason: "Calf tight, skip the shake-out")))
         XCTAssertEqual(decoded.events[14].payload, .sessionsSwapped(SessionsSwappedPayload(week: D.week("2030-W44"), baseRevision: 1, a: "2030-w44-tue-am", aDate: D.date("2030-10-29"), b: "2030-w44-fri-am", bDate: D.date("2030-10-31"))))
         XCTAssertEqual(decoded.events[19].payload, .eventRetracted(EventRetractedPayload(target: "01beca6a-5420-7113-a113-5eed00000013", reason: "Changed my mind, ride it")))
+        // seq 24 (2026-09-30, the vault's A57): a second check-in of the day
+        // with pains; a missing note reads as none.
+        XCTAssertEqual(decoded.events[23].payload, .morningCheckIn(MorningCheckInPayload(
+            date: D.date("2030-10-23"), light: .amberLight, sessionId: "2030-w43-wed-am", option: .a,
+            pains: [PainEntry(site: .achillesLeft, score: 5.5, note: "Stiff first steps, eases after 10 min"), PainEntry(site: .kneeRight, score: 1)]
+        )))
+        let otherPains = decoded.events.filter { $0.seq != 24 }.compactMap { event -> [PainEntry]? in
+            if case .morningCheckIn(let payload) = event.payload { return payload.pains }
+            return nil
+        }
+        XCTAssertEqual(otherPains, [], "no other check-in carries pains")
 
         // Every event this app could write re-encodes and reads back the same.
         for event in decoded.events {
@@ -170,6 +209,63 @@ final class HubEventTests: XCTestCase {
         XCTAssertEqual(overlay.habitTick(on: D.date("2030-10-22"), habitId: "holds")?.value, true, "last per habit and day wins")
         XCTAssertEqual(overlay.rpe(session: "2030-w43-tue-am")?.value, 7)
         XCTAssertEqual(overlay.note(session: "2030-w43-tue-am")?.value, "Calf tight on the last repeat, eased off.")
+        XCTAssertEqual(overlay.pains(on: D.date("2030-10-23"))?.value.map(\.site), [.achillesLeft, .kneeRight])
+        XCTAssertNil(overlay.pains(on: D.date("2030-10-22")), "not asked")
+    }
+
+    // MARK: Pain (add-checkin-pain-score)
+
+    func testPainCheckInsReproduceTheirGoldenFileByteForByte() throws {
+        let encoded = try HubEventCodec.jsonl(EventFixtures.painGoldenEvents)
+        let golden = try EventFixtures.painGolden()
+        XCTAssertEqual(String(decoding: encoded, as: UTF8.self), String(decoding: golden, as: UTF8.self))
+        XCTAssertEqual(encoded, golden)
+
+        let decoded = HubEventCodec.decode(golden)
+        XCTAssertEqual(decoded.invalidLines, [])
+        XCTAssertEqual(decoded.events, EventFixtures.painGoldenEvents)
+        for event in decoded.events {
+            XCTAssertNoThrow(try event.payload.validate())
+        }
+        let text = String(decoding: golden, as: UTF8.self)
+        XCTAssertTrue(text.contains("\"score\":1,"), "a whole score has no fraction")
+        XCTAssertTrue(text.contains("\"score\":5.5,"))
+        XCTAssertTrue(text.contains("\"pains\":[]"), "asked, nothing hurts")
+    }
+
+    func testPainBounds() {
+        func checkIn(_ pains: [PainEntry]) -> HubEventPayload {
+            .morningCheckIn(MorningCheckInPayload(date: D.asOf, light: .amberLight, sessionId: nil, pains: pains))
+        }
+        XCTAssertNoThrow(try checkIn([]).validate())
+        XCTAssertNoThrow(try checkIn([PainEntry(site: .achillesLeft, score: 0)]).validate())
+        XCTAssertNoThrow(try checkIn([PainEntry(site: .achillesLeft, score: 10)]).validate())
+        XCTAssertNoThrow(try checkIn([PainEntry(site: .kneeLeft, score: 4.5)]).validate())
+        for score in [4.3, -0.5, 10.5, Double.nan, Double.infinity] {
+            XCTAssertThrowsError(try checkIn([PainEntry(site: .achillesLeft, score: score)]).validate(), "\(score)")
+        }
+        XCTAssertThrowsError(try checkIn([PainEntry(site: .other, score: 1, note: "   ")]).validate(), "a blank note")
+        XCTAssertThrowsError(try checkIn([PainEntry(site: .other, score: 1, note: "")]).validate())
+        XCTAssertNoThrow(try checkIn([PainEntry(site: .other, score: 1, note: String(repeating: "a", count: 200))]).validate())
+        XCTAssertThrowsError(try checkIn([PainEntry(site: .other, score: 1, note: String(repeating: "a", count: 201))]).validate())
+        // The vault counts UTF-16 units: 100 emoji are 200 units, 101 too many.
+        XCTAssertNoThrow(try checkIn([PainEntry(site: .other, score: 1, note: String(repeating: "\u{1F9B5}", count: 100))]).validate())
+        XCTAssertThrowsError(try checkIn([PainEntry(site: .other, score: 1, note: String(repeating: "\u{1F9B5}", count: 101))]).validate())
+    }
+
+    func testUnknownPainSiteReadsAsOther() {
+        let line = #"{"v":1,"id":"01beca76-3b00-7118-a118-5eed00000099","deviceId":"ios-0a1b2c3d","seq":30,"at":"2030-10-23T04:16:00.000+02:00","type":"checkin.morning","payload":{"date":"2030-10-23","light":"green","pains":[{"site":"hip-left","score":2},{"site":"achilles-right","score":0.5,"note":null}]}}"#
+        let decoded = HubEventCodec.decode(Data(line.utf8))
+        XCTAssertEqual(decoded.invalidLines, [])
+        XCTAssertEqual(decoded.events.first?.payload, .morningCheckIn(MorningCheckInPayload(
+            date: D.date("2030-10-23"), light: .greenLight, sessionId: nil, option: nil,
+            pains: [PainEntry(site: .other, score: 2), PainEntry(site: .achillesRight, score: 0.5)]
+        )))
+        let nullPains = #"{"v":1,"id":"01beca76-3b00-7118-a118-5eed0000009a","deviceId":"ios-0a1b2c3d","seq":31,"at":"2030-10-23T04:17:00.000+02:00","type":"checkin.morning","payload":{"date":"2030-10-23","light":"green","pains":null}}"#
+        guard case .morningCheckIn(let payload)? = HubEventCodec.decode(Data(nullPains.utf8)).events.first?.payload else {
+            return XCTFail("not a check-in")
+        }
+        XCTAssertNil(payload.pains, "null = not asked")
     }
 
     // MARK: Plan commands (add-plan-editing)

@@ -124,6 +124,11 @@ ios/
                     unacknowledged ones over the projection and reads the
                     vault's `outcomes`; the session detail's "Change the
                     plan" card (GarminFood/Plan/PlanEditViews.swift).
+                    Morning pain (add-checkin-pain-score): `pains` on the
+                    check-in and on each projection day (Contract/
+                    Pain.swift), kept or replaced like the vault does
+                    (CheckInOverlay), the pain step and tags
+                    (ViewModels/PainModels.swift).
   GarminFood/       The app target (SwiftUI views), organized by screen:
                     Today/, Plan/, Training/, Catalog/, CustomFood/,
                     LogEntry/, Profile/, Progress/, App/ (composition root:

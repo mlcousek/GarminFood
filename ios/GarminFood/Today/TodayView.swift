@@ -312,6 +312,11 @@ struct TodayView: View {
                 // add-training-checkins D6: a local event; never waits.
                 onCheckIn: { row, light in
                     Task { await environment.training.checkIn(light, date: row.date, sessionID: row.sessionID) }
+                },
+                // add-checkin-pain-score D5: the same check-in plus `pains`
+                // (replaces the day's answer); local, never waits.
+                onSavePain: { payload in
+                    Task { await environment.training.recordPain(payload) }
                 }
             )
 

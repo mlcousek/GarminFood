@@ -26,6 +26,10 @@
 // "Sent") at the top of the training card, and an on/off toggle per habit.
 // add-plan-editing: a session with a plan change of this phone still
 // waiting for the vault (or not applied) shows it under its header.
+// add-checkin-pain-score (its D5): once a light is chosen, the check-in row
+// carries the pain step -- open while the day's pain is not asked (the
+// default sites at 0, so Save alone confirms "0"), else folded to "Edit
+// pain" -- and the card shows the day's recorded pain as a line.
 // Both only call back; TodayView turns the callbacks into TrainingModel
 // actions (local events, never a network wait). Option cards follow D9: a token tint
 // only as a light wash, the letter AND a shape, larger shapes with
@@ -46,11 +50,13 @@ struct TrainingDayCard: View {
     let onOpen: (SessionDetailTarget) -> Void
     /// add-training-checkins: a check-in button was tapped.
     var onCheckIn: (CheckInRowModel, MorningLight) -> Void = { _, _ in }
+    /// add-checkin-pain-score: the pain step's Save (the whole check-in).
+    var onSavePain: (MorningCheckInPayload) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             if let row = model.checkIn {
-                CheckInRowView(row: row) { light in onCheckIn(row, light) }
+                CheckInRowView(row: row, onSelect: { light in onCheckIn(row, light) }, onSavePain: onSavePain)
             }
             if let state = model.emptyState {
                 TrainingEmptyStateView(state: state)
@@ -78,6 +84,15 @@ struct TrainingDayCard: View {
                     Text(verbatim: light)
                 } icon: {
                     Image(systemName: "sunrise")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+            if let pain = model.painLine {
+                Label {
+                    Text(verbatim: pain)
+                } icon: {
+                    Image(systemName: "bandage")
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -274,6 +289,8 @@ private struct CompactSessionRow: View {
 struct CheckInRowView: View {
     let row: CheckInRowModel
     let onSelect: (MorningLight) -> Void
+    /// add-checkin-pain-score: the pain step's Save.
+    var onSavePain: (MorningCheckInPayload) -> Void = { _ in }
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -299,6 +316,213 @@ struct CheckInRowView: View {
                         onSelect(button.light)
                     }
                 }
+            }
+            if let pain = row.pain {
+                PainStepView(step: pain, onSave: onSavePain)
+            }
+        }
+    }
+}
+
+// MARK: - Morning pain (add-checkin-pain-score D5)
+
+/// The pain step under the lights. Every string, the default rows and the
+/// payload come from TrainingCore's `PainStepModel` / `PainDraft`; this
+/// view holds the owner's edits and draws them. Nothing is recorded until
+/// Save.
+private struct PainStepView: View {
+    let step: PainStepModel
+    let onSave: (MorningCheckInPayload) -> Void
+
+    /// The owner's edits; `nil` = the model's draft untouched.
+    @State private var editing: PainDraft?
+    /// "Edit pain" was tapped on a recorded answer.
+    @State private var isEditingRecorded = false
+    /// "Not now" (or Save) folded the step for this day, on this screen.
+    @State private var foldedDate: LocalDate?
+
+    private var current: PainDraft { editing ?? step.draft }
+
+    private var showsEditor: Bool {
+        isEditingRecorded || (!step.isRecorded && foldedDate != step.date)
+    }
+
+    var body: some View {
+        Group {
+            if showsEditor {
+                editor
+            } else {
+                folded
+            }
+        }
+        .onChange(of: step.date) { _, _ in
+            editing = nil
+            isEditingRecorded = false
+        }
+    }
+
+    /// A recorded answer: "Edit pain". Not asked but folded: the title, to
+    /// open it again.
+    private var folded: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Button {
+                editing = nil
+                if step.isRecorded {
+                    isEditingRecorded = true
+                } else {
+                    foldedDate = nil
+                }
+            } label: {
+                Label {
+                    Text(verbatim: step.isRecorded ? step.editTitle : step.title)
+                } icon: {
+                    Image(systemName: "bandage")
+                }
+                .font(.subheadline.weight(.medium))
+            }
+            .buttonStyle(.borderless)
+            Spacer(minLength: Theme.Spacing.xs)
+            if let delivery = step.deliveryLine {
+                Text(verbatim: delivery)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var editor: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            HStack(alignment: .firstTextBaseline) {
+                Label {
+                    Text(verbatim: step.title)
+                } icon: {
+                    Image(systemName: "bandage")
+                }
+                .font(.subheadline.weight(.semibold))
+                Spacer(minLength: Theme.Spacing.xs)
+                if let delivery = step.deliveryLine {
+                    Text(verbatim: delivery)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Text(verbatim: step.hint)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            if current.isEmpty {
+                Text(verbatim: step.nothingHurtsText)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            ForEach(current.rows) { row in
+                PainSiteRow(
+                    row: row,
+                    step: step,
+                    onScore: { score in mutate { $0.setScore(score, for: row.site) } },
+                    onNote: { note in mutate { $0.setNote(note, for: row.site) } },
+                    onRemove: { mutate { $0.remove(row.site) } }
+                )
+            }
+            if !current.addableSites.isEmpty {
+                Menu {
+                    ForEach(current.addableSites, id: \.self) { site in
+                        Button {
+                            mutate { $0.add(site) }
+                        } label: {
+                            Text(verbatim: step.siteName(site))
+                        }
+                    }
+                } label: {
+                    Label {
+                        Text(verbatim: step.addSiteTitle)
+                    } icon: {
+                        Image(systemName: "plus.circle")
+                    }
+                    .font(.subheadline)
+                }
+            }
+            HStack(spacing: Theme.Spacing.sm) {
+                Button {
+                    editing = nil
+                    isEditingRecorded = false
+                    foldedDate = step.date
+                } label: {
+                    Text(verbatim: step.notNowTitle)
+                        .frame(minHeight: 32)
+                }
+                .buttonStyle(.bordered)
+                Spacer(minLength: 0)
+                Button {
+                    Haptics.success()
+                    onSave(step.payload(current))
+                    editing = nil
+                    isEditingRecorded = false
+                    foldedDate = step.date
+                } label: {
+                    Text(verbatim: step.saveTitle)
+                        .fontWeight(.semibold)
+                        .frame(minHeight: 32)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Theme.accent)
+            }
+        }
+        .padding(Theme.Spacing.sm)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.md, style: .continuous)
+                .fill(Theme.groupedBackground)
+        )
+    }
+
+    private func mutate(_ change: (inout PainDraft) -> Void) {
+        var draft = current
+        change(&draft)
+        editing = draft
+    }
+}
+
+/// One site: its name, the score as text, a 0-10 half-step slider (one
+/// VoiceOver element, adjustable by half steps), remove, and a short note
+/// for "other".
+private struct PainSiteRow: View {
+    let row: PainDraftRow
+    let step: PainStepModel
+    let onScore: (Double) -> Void
+    let onNote: (String) -> Void
+    let onRemove: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.sm) {
+                Text(verbatim: step.siteName(row.site))
+                    .font(.subheadline)
+                Spacer(minLength: Theme.Spacing.xs)
+                Text(verbatim: step.scoreText(row.score))
+                    .font(.subheadline.weight(.semibold).monospacedDigit())
+                    .accessibilityHidden(true)
+                Button(action: onRemove) {
+                    Image(systemName: "minus.circle")
+                        .foregroundStyle(.secondary)
+                        .frame(minWidth: 32, minHeight: 32)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(verbatim: step.removeLabels[row.site] ?? step.siteName(row.site)))
+            }
+            Slider(
+                value: Binding(get: { row.score }, set: { onScore($0) }),
+                in: PainEntry.scoreRange,
+                step: PainEntry.scoreStep
+            )
+            .tint(Theme.accent)
+            .accessibilityLabel(Text(verbatim: step.siteName(row.site)))
+            .accessibilityValue(Text(verbatim: step.scoreAccessibilityValue(row.score)))
+            if row.site == .other {
+                TextField(
+                    step.notePlaceholder,
+                    text: Binding(get: { row.note }, set: { onNote(String($0.prefix(PainEntry.noteMaxLength))) })
+                )
+                .textFieldStyle(.roundedBorder)
+                .font(.subheadline)
             }
         }
     }

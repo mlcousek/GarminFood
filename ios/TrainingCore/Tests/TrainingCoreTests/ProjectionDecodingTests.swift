@@ -61,7 +61,7 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(zones.zones.map(\.number), [1, 2, 3, 4, 5])
         XCTAssertEqual(zones.zone(number: 2), HRZone(number: 2, low: 129, high: 145))
         // Filled from the event log since the vault's add-hub-ingest.
-        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: projection.acks), ["ios-0a1b2c3d": 23, "ios-5e6f7a8b": 3])
+        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: projection.acks), ["ios-0a1b2c3d": 24, "ios-5e6f7a8b": 3])
         XCTAssertEqual(projection.outcomes.count, 10)
         // Race sessions can't be moved from the app: the vault refuses it.
         let refused = projection.outcomes.first { $0["seq"] == .number(16) && $0["deviceId"]?.stringValue == "ios-0a1b2c3d" }
@@ -118,8 +118,10 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(w43.status, .known(.approved))
         // red-holds: the red morning of 2030-10-14 held the volume at 55.
         XCTAssertEqual(w43.targets.runKm, 55)
-        XCTAssertEqual(w43.ruleNotes.count, 2)
+        XCTAssertEqual(w43.ruleNotes.count, 3)
         XCTAssertEqual(w43.ruleNotes.first?["rule"]?.stringValue, "red-holds")
+        // add-checkin-pain-score: the vault's pain flag for the week of asOf.
+        XCTAssertEqual(w43.ruleNotes.last?["rule"]?.stringValue, "pain-high")
         XCTAssertTrue(plan.weeks[3].ruleNotes.isEmpty)
         XCTAssertEqual(w43.targets.sessions, 6)
         XCTAssertEqual(w43.actual?.runKm, 10.1)

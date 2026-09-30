@@ -17,7 +17,9 @@
 //     the check-in is its own row (that change's D6);
 //   - `checkIns` is the phone's own recent events (CheckInOverlay):
 //     `EffectivePlan` applies their lights to each day, and the builders
-//     read ticks, RPE and notes from it (that change's D5).
+//     read ticks, RPE and notes from it (that change's D5); since
+//     add-checkin-pain-score also each day's morning `pains` (kept or
+//     replaced like the vault does, CheckInOverlay).
 //
 // Lookups across the season live here too (a week's own phase by
 // `phaseId`, outline rows of every phase, races), so the builders never
@@ -61,7 +63,7 @@ public struct TrainingCapabilities: Equatable, Sendable {
 /// The selected phase as the screens see it: the file's weeks with the
 /// phone's pending plan commands applied (add-plan-editing D5) and the
 /// phone's own morning check-ins as each day's `light`
-/// (add-training-checkins D5).
+/// (add-training-checkins D5) and `pains` (add-checkin-pain-score D3).
 public struct EffectivePlan: Equatable, Sendable {
     public let plan: Plan
     /// The phone's commands, each with its status and whether the preview

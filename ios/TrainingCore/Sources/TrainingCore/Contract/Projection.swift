@@ -19,7 +19,9 @@
 // now (D8), so the vault's later changes only change what it writes.
 // Option `watch` was reserved until the vault's add-garmin-workout-push
 // filled it on 2026-09-29 (additive, still v1): it is `OptionWatch`; that
-// change also added `done.source: "activity-name"` and `workout.watchName`. Vault paths (`folder`, `note`, `ref`) are decoded
+// change also added `done.source: "activity-name"` and `workout.watchName`.
+// Day `pains` came with the vault's morning pain score on 2026-09-30
+// (add-checkin-pain-score, additive in v1). Vault paths (`folder`, `note`, `ref`) are decoded
 // but never shown: the phone has no vault checkout.
 //
 // Depended on by: ProjectionDecoder, TrainingSnapshot and every builder.
@@ -582,6 +584,11 @@ public struct Day: Equatable, Sendable, Decodable, ProjectionElement {
     public var light: OpenEnum<MorningLight>?
     /// Where `light` came from (add-hub-ingest); `nil` when unknown.
     public var lightSource: OpenEnum<LightSource>?
+    /// add-checkin-pain-score (the vault's A57): the morning pain of the
+    /// day's last check-in that carried it. `nil` = not asked (absent,
+    /// `null` or not a list), `[]` = nothing hurts; a broken entry is
+    /// dropped, an unknown site reads as `other` (Pain.swift).
+    public var pains: [PainEntry]?
     public var habitsExpected: [String]
     /// Uncapped counts; a missing key or a `null` map means unknown.
     public var habitsDone: [String: Int]?
@@ -590,13 +597,14 @@ public struct Day: Equatable, Sendable, Decodable, ProjectionElement {
     public var sessions: [Session]
     public var unplanned: [ActivityRef]
 
-    enum CodingKeys: String, CodingKey { case date, light, lightSource, habitsExpected, habitsDone, fuel, sessions, unplanned }
+    enum CodingKeys: String, CodingKey { case date, light, lightSource, pains, habitsExpected, habitsDone, fuel, sessions, unplanned }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         date = try c.decode(LocalDate.self, forKey: .date)
         light = c.lenient(OpenEnum<MorningLight>.self, .light)
         lightSource = c.lenient(OpenEnum<LightSource>.self, .lightSource)
+        pains = c.lenient(LossyArray<PainEntry>.self, .pains)?.elements
         habitsExpected = c.stringList(.habitsExpected)
         habitsDone = c.intMap(.habitsDone)
         fuel = c.lenient(DayFuel.self, .fuel)

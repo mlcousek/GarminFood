@@ -120,6 +120,9 @@ public struct TodayTrainingModel: Equatable, Sendable {
     public let notices: [TrainingNotice]
     /// add-training-checkins: the morning check-in row, when allowed.
     public var checkIn: CheckInRowModel? = nil
+    /// add-checkin-pain-score: the day's recorded morning pain ("Pain:
+    /// Achilles (left) 4.5/10", "Pain: none"); `nil` when not asked.
+    public var painLine: String? = nil
 }
 
 public enum HabitTick: Equatable, Sendable {
@@ -206,6 +209,7 @@ public struct TodayTrainingBuilder: Sendable {
     public func trainingDay(on date: LocalDate) -> TodayTrainingModel {
         var model = baseTrainingDay(on: date)
         model.checkIn = checkInRow(on: date)
+        model.painLine = format.painLine(source.snapshot?.plan?.day(date)?.pains)
         return model
     }
 

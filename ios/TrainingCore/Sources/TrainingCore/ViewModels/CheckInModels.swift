@@ -12,6 +12,9 @@
 //     morning, not the run.
 //   - `SessionRatingModel`: the session detail's RPE (1-10) and note, the
 //     phone's latest values with their delivery lines.
+//   - add-checkin-pain-score: once the row has a chosen light, its `pain`
+//     step (PainModels.swift) -- open while the day's pain is not asked,
+//     else "Edit pain".
 //
 // The option cards are untouched: they keep opening the detail, and a
 // check-in reaches them as the morning-light highlight that already exists
@@ -46,6 +49,8 @@ public struct CheckInRowModel: Equatable, Sendable {
     public let selected: MorningLight?
     /// "Saved on phone" / "Sent" for the phone's own check-in.
     public let deliveryLine: String?
+    /// add-checkin-pain-score: the pain step, once a light is chosen.
+    public var pain: PainStepModel? = nil
 }
 
 public struct SessionRatingModel: Equatable, Sendable {
@@ -96,14 +101,17 @@ public extension TodayTrainingBuilder {
                 accessibilityLabel: text.format(.a11yCheckInButton, name, meaning)
             )
         }
-        return CheckInRowModel(
+        let sessionID = CheckInPlanning.checkInSessionID(on: date, plan: plan.plan)
+        var row = CheckInRowModel(
             date: date,
-            sessionID: CheckInPlanning.checkInSessionID(on: date, plan: plan.plan),
+            sessionID: sessionID,
             title: text(.checkInTitle),
             buttons: buttons,
             selected: selected,
             deliveryLine: format.deliveryLine(snapshot.checkIns.light(on: date)?.delivery)
         )
+        row.pain = painStep(on: date, light: selected, sessionID: sessionID, snapshot: snapshot)
+        return row
     }
 }
 

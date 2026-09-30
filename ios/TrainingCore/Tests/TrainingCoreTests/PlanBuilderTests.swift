@@ -39,10 +39,14 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(week.kindText, "Build")
         XCTAssertNil(week.noteText)
         XCTAssertEqual(week.runLine, "Run 10.1 of 55 km")
-        XCTAssertEqual(week.ruleNoteLines, [
+        XCTAssertEqual(Array(week.ruleNoteLines.prefix(2)), [
             "Red morning on 2030-10-14: volume held at last week's 55 km instead of adding.",
             "Three green mornings in a row (2030-10-16 – 2030-10-18): the next step up is allowed."
         ])
+        // add-checkin-pain-score: the vault's pain-high note, shown like any
+        // other rule note of the week.
+        XCTAssertEqual(week.ruleNoteLines.count, 3)
+        XCTAssertTrue(week.ruleNoteLines[2].hasPrefix("Achilles (left) 5.5/10 on 2030-10-23"))
         XCTAssertEqual(week.sessionsLine, "1 done · 1 missed of 6")
         let rows = try days(week)
         XCTAssertEqual(rows.count, 7)

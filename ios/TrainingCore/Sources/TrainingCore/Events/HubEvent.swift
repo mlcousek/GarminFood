@@ -15,7 +15,8 @@
 //   {"at":"2030-10-23T04:07:31.000+02:00","deviceId":"ios-0000beef",
 //    "id":"<UUIDv7>","payload":{...},"seq":7,"type":"checkin.morning","v":1}
 //
-//   checkin.morning  {date, light: green|amber|red, sessionId?, option?: G|A|R}
+//   checkin.morning  {date, light: green|amber|red, sessionId?, option?: G|A|R,
+//                     pains?: [{site, score, note?}]}   (add-checkin-pain-score)
 //   habit.tick       {date, habitId, done}           (decision A42: on/off)
 //   session.rpe      {date, sessionId, rpe: 1...10, feel?: 1...5}
 //   session.note     {date, sessionId, text}         (1...2000 characters)
@@ -35,16 +36,20 @@
 // meaning, and the app should write them -- so this encoder writes them,
 // as `null` when unknown. The light is the morning's state, never the
 // workout letter; `option` is the option he intends (the light's letter
-// when the day has a traffic-light session, else null). The vault's
-// `device.hello` decodes as `.other` here: this app doesn't write it yet.
+// when the day has a traffic-light session, else null). `pains` (the
+// vault's A57, add-checkin-pain-score D1) is null when the pain was not
+// asked -- the vault then keeps the day's earlier answer -- and a list,
+// possibly empty, when it was (Pain.swift has the entry's shape). The
+// vault's `device.hello` decodes as `.other` here: this app doesn't write
+// it yet.
 //
 // Encoding is deterministic (sorted keys, unescaped slashes, `\n` after
 // every line) because a sealed segment's bytes and git blob SHA must be the
 // same on every retry (VaultKit's SealedFile). `.sortedKeys` compares keys
-// case-insensitively on Apple platforms, so `baseRevision` precedes
-// `bDate` in a swap; the golden plan-command fixture records the exact
-// bytes. Decoding is tolerant: unknown fields are ignored and an unknown
-// type is kept as `.other`, never encoded.
+// case-sensitively (by code unit) on Apple platforms, so `bDate` precedes
+// `baseRevision` in a swap; the golden fixtures record the exact bytes.
+// Decoding is tolerant: unknown fields are ignored and an unknown type is
+// kept as `.other`, never encoded.
 //
 // Depended on by: TrainingEventLog (stores these), EventSegment (writes
 // them), CheckInOverlay and PendingOverlay (fold them), PlanEditPolicy
@@ -110,16 +115,20 @@ public struct MorningCheckInPayload: Equatable, Sendable {
     /// The option he intends: by default the light's letter when there is
     /// a session, else `nil` (the contract's `option?`).
     public var option: OptionCode?
+    /// add-checkin-pain-score: `nil` = pain not asked (the vault keeps the
+    /// day's earlier answer), `[]` = asked, nothing hurts.
+    public var pains: [PainEntry]?
 
-    public init(date: LocalDate, light: MorningLight, sessionId: String? = nil) {
-        self.init(date: date, light: light, sessionId: sessionId, option: sessionId == nil ? nil : light.option)
+    public init(date: LocalDate, light: MorningLight, sessionId: String? = nil, pains: [PainEntry]? = nil) {
+        self.init(date: date, light: light, sessionId: sessionId, option: sessionId == nil ? nil : light.option, pains: pains)
     }
 
-    public init(date: LocalDate, light: MorningLight, sessionId: String?, option: OptionCode?) {
+    public init(date: LocalDate, light: MorningLight, sessionId: String?, option: OptionCode?, pains: [PainEntry]? = nil) {
         self.date = date
         self.light = light
         self.sessionId = sessionId
         self.option = option
+        self.pains = pains
     }
 }
 
@@ -336,8 +345,11 @@ public enum HubEventPayload: Equatable, Sendable {
     /// Whether this build may write it (see `HubEventError`).
     public func validate() throws {
         switch self {
-        case .morningCheckIn:
-            return
+        case .morningCheckIn(let payload):
+            for pain in payload.pains ?? [] {
+                if !PainEntry.isValidScore(pain.score) { throw HubEventError.invalidPayload("pain score must be 0-10 in steps of 0.5") }
+                if !PainEntry.isValidNote(pain.note) { throw HubEventError.invalidPayload("pain note must be 1-200 characters") }
+            }
         case .habitTick(let payload):
             if payload.habitId.isEmpty { throw HubEventError.invalidPayload("empty habitId") }
         case .sessionRPE(let payload):
@@ -430,7 +442,7 @@ extension HubEvent: Codable {
     }
 
     enum PayloadKeys: String, CodingKey {
-        case date, light, sessionId, option, habitId, done, rpe, feel, text
+        case date, light, sessionId, option, pains, habitId, done, rpe, feel, text
         case week, baseRevision, from, to, a, aDate, b, bDate, reason, rule, target
     }
 
@@ -470,7 +482,9 @@ extension HubEvent: Codable {
                 date: date,
                 light: light,
                 sessionId: try p.decodeIfPresent(String.self, forKey: .sessionId),
-                option: optionText.flatMap { OptionCode(rawValue: $0) }
+                option: optionText.flatMap { OptionCode(rawValue: $0) },
+                // Absent or null = not asked; an unknown site is `other`.
+                pains: try p.decodeIfPresent([PainEntry].self, forKey: .pains)
             ))
         case .habitTick:
             payload = .habitTick(HabitTickPayload(
@@ -583,6 +597,7 @@ extension HubEvent: Codable {
             // Optional keys are written, as null when unknown (contract).
             try p.encode(value.sessionId, forKey: .sessionId)
             try p.encode(value.option?.rawValue, forKey: .option)
+            try p.encode(value.pains, forKey: .pains)
         case .habitTick(let value):
             try p.encode(value.date.description, forKey: .date)
             try p.encode(value.habitId, forKey: .habitId)

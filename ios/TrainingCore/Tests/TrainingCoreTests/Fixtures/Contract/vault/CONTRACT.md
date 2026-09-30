@@ -20,6 +20,13 @@
   on Sun 3 Nov and the command's outcome is `refused` with a bilingual
   reason; the second device's applied move now moves the W43 Sunday walk
   (`2030-w43-sun-pm`) to Fri 25 Oct.
+  Re-mirrored 2026-09-30 from the vault's main branch after its morning
+  pain score (decision A57; additive, still v1): every day has `pains`
+  (`null` = not asked; 2030-10-23 has `achilles-left` 5.5 with a note and
+  `knee-right` 1), W43 gains a `pain-high` rule note, and the phone's ack
+  is `seq` 24. The minimal projection is unchanged. All four files were
+  copied again and checked for anything non-synthetic first (no names,
+  repositories, tokens or real dates: season 2030/31 only).
 
 | File | What it is |
 |---|---|
@@ -44,11 +51,13 @@ in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
   `.gitattributes`), first from the change in progress and then again
   from the vault's main branch after it merged (both event files were
   identical). Re-mirror whenever the vault records a change in its fixture
-  changelog.
+  changelog. Re-mirrored 2026-09-30 for the morning pain score
+  (add-checkin-pain-score): the example gained seq 24; the minimal file is
+  unchanged.
 
 | File | What it is |
 |---|---|
-| `events.v1.example.jsonl` | 23 events of every v1 type, including the plan commands (seq 16 a refused race move, seq 23 a superseded move) and `event.retracted`, which this app writes since add-plan-editing, and `device.hello`, which it doesn't write yet. |
+| `events.v1.example.jsonl` | 24 events of every v1 type, including the plan commands (seq 16 a refused race move, seq 23 a superseded move) and `event.retracted`, which this app writes since add-plan-editing, `device.hello`, which it doesn't write yet, and (seq 24, 2026-09-30) a second check-in of 2030-10-23 with `pains`. |
 | `events.v1.minimal.jsonl` | 3 events with every optional key omitted. |
 
 `HubEventTests` decodes both: every type this app writes decodes to its
@@ -56,5 +65,7 @@ payload (`device.hello` to `.other`), no line is invalid, and each
 command and retraction line re-encodes to the same JSON object
 (add-plan-editing). `PlanEditingTests` folds the example's commands with
 the example projection's `acks` and `outcomes`. The app's
-own byte-exact golden file is `../../Events/events.v1.app.jsonl`, which the
-vault's validator (`validateEvent`) accepted on 2026-09-29.
+own byte-exact golden files are `../../Events/events.v1.app.jsonl` (every
+check-in now carries `"pains":null`), `plan-commands.v1.app.jsonl` and
+`checkin-pains.v1.app.jsonl` (add-checkin-pain-score), which the vault's
+validator (`validateEvent`) accepted on 2026-09-29 and 2026-09-30.
