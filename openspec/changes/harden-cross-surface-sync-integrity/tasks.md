@@ -24,9 +24,20 @@
 - [ ] 4.3 Test successful compensation and explicit compensation-failure
   recovery.
 
-## 5. Verification
+## 5. Food lifecycle integrity
 
-- [ ] 5.1 Run all Swift package suites.
-- [ ] 5.2 Run app-target integration tests on iOS Simulator.
-- [ ] 5.3 Verify background delivery on a device with interrupted
+- [ ] 5.1 Carry a Quick Pick's retained quantity into confirmation and add a
+  UI-input mapping regression test.
+- [ ] 5.2 Represent deletion requested during an in-flight delivery as a
+  compensating remote-delete operation; add a gated-delivery race test.
+- [ ] 5.3 Stop destructive duplicate cleanup without a reliable ownership
+  identifier; add a later independent-Garmin-entry regression test.
+- [ ] 5.4 Reconcile previously sent entries and retain background scheduling
+  after a reconciliation read failure.
+
+## 6. Verification
+
+- [ ] 6.1 Run all Swift package suites.
+- [ ] 6.2 Run app-target integration tests on iOS Simulator.
+- [ ] 6.3 Verify background delivery on a device with interrupted
   connectivity.

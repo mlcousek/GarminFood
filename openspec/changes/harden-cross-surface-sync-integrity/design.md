@@ -41,6 +41,37 @@ The coordinators enqueue the remote write before persisting the user-visible
 local history record. A subsequent local persistence failure throws to the
 UI, yet leaves the queued entry deliverable later.
 
+### F5 — Quick Pick display quantity is not its confirmation quantity
+
+Quick Pick cards retain and display the most recently logged serving
+multiplier, but both entry points create a `LogTarget` containing only the
+food and serving. `LogEntryConfirmView` then initializes quantity to `1`.
+A card labelled `2.5x` can therefore silently enqueue one serving when
+confirmed without editing.
+
+### F6 — Deleting an in-flight food delivery can orphan it remotely
+
+The food outbox snapshots a pending entry before awaiting the remote POST.
+While the request is in flight, the dashboard marks it syncing and its delete
+action removes only the local outbox record. If the POST subsequently
+succeeds, the outbox treats the missing local record as harmless and no
+compensating remote delete is issued.
+
+### F7 — Reconciliation can delete an independent later Garmin entry
+
+When more matching remote entries exist than local outbox entries,
+reconciliation deletes later timestamp-sorted matches. A user can create the
+same food, serving, quantity, and meal in Garmin Connect after the app's
+delivery but before reconciliation. That legitimate later entry is
+indistinguishable from a retry duplicate and is selected for deletion.
+
+### F8 — Background reconciliation strands sent entries after a read failure
+
+The background worker reconciles only entries delivered in its current run
+and schedules future execution only for pending entries. A 2xx food write
+followed by a failed read leaves an entry in `sent`; later background runs do
+not reconcile it or schedule another retry.
+
 ## Test strategy
 
 - App-intent integration: one quick-pick invocation produces one food entry,
@@ -52,3 +83,11 @@ UI, yet leaves the queued entry deliverable later.
 - Coordinator failure injection: a failed local weight/hydration history
   write compensates the newly created queue item, with a separate test for
   compensation failure and its visible recovery state.
+- Quick Pick handoff: a `2.5x` recent item initializes confirmation at `2.5`,
+  not one serving.
+- In-flight delete: a gated delivery that succeeds after local deletion
+  produces a durable compensating remote-delete state.
+- Reconciliation ownership: a later matching manual Garmin entry is never
+  deleted without a reliable ownership/idempotency identifier.
+- Background recovery: a sent entry left after a failed reconciliation read
+  is retried and keeps background scheduling active.
