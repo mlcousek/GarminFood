@@ -36,6 +36,10 @@
 // TrainingCore's PlanEditPolicy (which refuses what the vault would
 // refuse) and recorded like a check-in.
 //
+// add-checkin-pain-score: the pain step's Save records the row's check-in
+// again with `pains` (`recordPain`), which replaces the day's answer; a
+// light alone keeps it (TrainingCore's CheckInOverlay).
+//
 // Owned by AppEnvironment (`environment.training`); read by the Today
 // training cards and the Plan tab.
 
@@ -83,6 +87,13 @@ final class TrainingModel {
     /// The morning check-in for `date` (Today's row).
     func checkIn(_ light: MorningLight, date: LocalDate, sessionID: String?) async {
         await perform(.morningCheckIn(MorningCheckInPayload(date: date, light: light, sessionId: sessionID)))
+    }
+
+    /// add-checkin-pain-score: the check-in with the morning pain, built by
+    /// TrainingCore's `PainStepModel.payload` (same light, session and
+    /// option as the row).
+    func recordPain(_ payload: MorningCheckInPayload) async {
+        await perform(.morningCheckIn(payload))
     }
 
     /// Habit on/off for `date` (decision A42).

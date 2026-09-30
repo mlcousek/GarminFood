@@ -319,6 +319,13 @@ final class AppEnvironment {
             guard let self else { return false }
             return !self.needsOnboarding && self.dataMode == .garminConnected
         }
+        // add-checkin-pain-score D7: a lock-screen Control recorded the
+        // light; show Today at today, where the pain step is waiting.
+        TrainingEventsService.shared.onControlCheckIn = { [weak self] in
+            guard let self else { return }
+            self.router.selectedTab = .today
+            Task { await self.goToToday() }
+        }
     }
 
     /// Launch and every return to the foreground.

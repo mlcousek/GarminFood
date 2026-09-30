@@ -658,3 +658,63 @@
 
 /* Warning before overriding a training rule: why the rule exists and that the override is logged. */
 "The rule changed this session as a precaution. You have the last word, and the override is logged for the Sunday review." = "The rule changed this session as a precaution. You have the last word, and the override is logged for the Sunday review.";
+
+/* Pain site: the left Achilles tendon. */
+"Achilles (left)" = "Achilles (left)";
+
+/* Pain site: the right Achilles tendon. */
+"Achilles (right)" = "Achilles (right)";
+
+/* Pain site: the left knee. */
+"Knee (left)" = "Knee (left)";
+
+/* Pain site: the right knee. */
+"Knee (right)" = "Knee (right)";
+
+/* Pain site: anywhere else (with a short note). */
+"Other site" = "Other site";
+
+/* A pain score out of ten (the score, e.g. 4.5). */
+"%@/10" = "%@/10";
+
+/* A pain tag: the site and its score out of ten (e.g. Achilles (left) 4.5/10). */
+"%@ %@/10" = "%@ %@/10";
+
+/* A pain tag for another site: the site, its score out of ten and the owner's note. */
+"%@ %@/10 (%@)" = "%@ %@/10 (%@)";
+
+/* The day's recorded morning pain (the sites with their scores). */
+"Pain: %@" = "Pain: %@";
+
+/* The day's morning check recorded that nothing hurts. */
+"Pain: none" = "Pain: none";
+
+/* Title of the pain step under the morning check-in. */
+"Pain this morning" = "Pain this morning";
+
+/* The pain scale, under the pain step's title. */
+"0 = no pain, 10 = worst imaginable" = "0 = no pain, 10 = worst imaginable";
+
+/* Button: record the morning pain with the check-in. */
+"Save pain" = "Save pain";
+
+/* Button: fold the pain step without recording anything. */
+"Not now" = "Not now";
+
+/* Button: change the morning pain recorded today. */
+"Edit pain" = "Edit pain";
+
+/* Menu: add another painful site to the morning pain. */
+"Add another site" = "Add another site";
+
+/* VoiceOver for the button that removes a site from the morning pain (the site). */
+"Remove %@" = "Remove %@";
+
+/* Placeholder of the note for another painful site. */
+"What hurts? (short note)" = "What hurts? (short note)";
+
+/* The pain step with every site removed: saving records that nothing hurts. */
+"Nothing hurts" = "Nothing hurts";
+
+/* VoiceOver value of a pain score control (the score). */
+"%@ of 10" = "%@ of 10";

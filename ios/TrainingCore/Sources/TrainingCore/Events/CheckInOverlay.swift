@@ -27,6 +27,13 @@
 // (Today's highlight, the month glyph, the detail's pre-selection) shows
 // the phone's check-in without a builder change.
 //
+// add-checkin-pain-score D3: the morning pain follows the vault's
+// replace/keep rule -- per day, the `pains` of the latest check-in of that
+// date that CARRIES them (non-nil). A later check-in without `pains` (a
+// corrected light, a lock-screen Control) keeps the earlier answer; one
+// with `pains`, `[]` included, replaces it. `applyingLights` also sets the
+// day's `pains` from it.
+//
 // Plan commands and retractions (add-plan-editing) are not folded here:
 // they are PendingOverlay's (PlanCommandOverlay.swift).
 //
@@ -71,15 +78,24 @@ public struct CheckInOverlay: Equatable, Sendable {
     public private(set) var habitTicks: [HabitDayKey: OverlayValue<Bool>] = [:]
     public private(set) var rpes: [String: OverlayValue<Int>] = [:]
     public private(set) var notes: [String: OverlayValue<String>] = [:]
+    /// add-checkin-pain-score: the day's answer, from the latest check-in
+    /// of that date that carried `pains` (see this file's header).
+    public private(set) var painAnswers: [LocalDate: OverlayValue<[PainEntry]>] = [:]
 
     public init() {}
 
     public var isEmpty: Bool {
-        lights.isEmpty && habitTicks.isEmpty && rpes.isEmpty && notes.isEmpty
+        lights.isEmpty && habitTicks.isEmpty && rpes.isEmpty && notes.isEmpty && painAnswers.isEmpty
     }
 
     public func light(on date: LocalDate) -> OverlayValue<MorningLight>? {
         lights[date]
+    }
+
+    /// The phone's pain answer for `date`; `nil` when no check-in of the
+    /// phone carried one.
+    public func pains(on date: LocalDate) -> OverlayValue<[PainEntry]>? {
+        painAnswers[date]
     }
 
     public func habitTick(on date: LocalDate, habitId: String) -> OverlayValue<Bool>? {
@@ -126,6 +142,10 @@ public struct CheckInOverlay: Equatable, Sendable {
             case .morningCheckIn(let payload):
                 overlay.lights[payload.date] = OverlayValue(value: payload.light, delivery: delivery)
                 overlay.checkInSessions[payload.date] = payload.sessionId
+                // Keep without the key, replace with it (`[]` included).
+                if let pains = payload.pains {
+                    overlay.painAnswers[payload.date] = OverlayValue(value: pains, delivery: delivery)
+                }
             case .habitTick(let payload):
                 overlay.habitTicks[HabitDayKey(date: payload.date, habitId: payload.habitId)] = OverlayValue(value: payload.done, delivery: delivery)
             case .sessionRPE(let payload):
@@ -143,9 +163,10 @@ public struct CheckInOverlay: Equatable, Sendable {
         return overlay
     }
 
-    /// `plan` with each day's `light` replaced by the phone's check-in.
+    /// `plan` with each day's `light` replaced by the phone's check-in, and
+    /// its `pains` by the phone's pain answer (add-checkin-pain-score).
     public func applyingLights(to plan: Plan) -> Plan {
-        guard !lights.isEmpty else { return plan }
+        guard !lights.isEmpty || !painAnswers.isEmpty else { return plan }
         var result = plan
         for weekIndex in result.weeks.indices {
             for dayIndex in result.weeks[weekIndex].days.indices {
@@ -153,6 +174,9 @@ public struct CheckInOverlay: Equatable, Sendable {
                 if let local = lights[date] {
                     result.weeks[weekIndex].days[dayIndex].light = OpenEnum(local.value)
                     result.weeks[weekIndex].days[dayIndex].lightSource = OpenEnum(LightSource.checkin)
+                }
+                if let local = painAnswers[date] {
+                    result.weeks[weekIndex].days[dayIndex].pains = local.value
                 }
             }
         }
