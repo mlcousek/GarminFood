@@ -48,10 +48,13 @@ in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
 
 | File | What it is |
 |---|---|
-| `events.v1.example.jsonl` | 23 events of every v1 type, including the plan commands (seq 16 a refused race move, seq 23 a superseded move), `device.hello` and `event.retracted` this app doesn't write yet. |
+| `events.v1.example.jsonl` | 23 events of every v1 type, including the plan commands (seq 16 a refused race move, seq 23 a superseded move) and `event.retracted`, which this app writes since add-plan-editing, and `device.hello`, which it doesn't write yet. |
 | `events.v1.minimal.jsonl` | 3 events with every optional key omitted. |
 
-`HubEventTests` decodes both: the four types this app writes decode to
-their payloads, every other type to `.other`, no line is invalid. The app's
+`HubEventTests` decodes both: every type this app writes decodes to its
+payload (`device.hello` to `.other`), no line is invalid, and each
+command and retraction line re-encodes to the same JSON object
+(add-plan-editing). `PlanEditingTests` folds the example's commands with
+the example projection's `acks` and `outcomes`. The app's
 own byte-exact golden file is `../../Events/events.v1.app.jsonl`, which the
 vault's validator (`validateEvent`) accepted on 2026-09-29.

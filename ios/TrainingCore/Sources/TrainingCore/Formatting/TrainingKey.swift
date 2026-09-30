@@ -418,6 +418,55 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case statsLeftRight = "L %@ · R %@"
     /// Statistics: the difference between left and right as a percentage.
     case statsAsymmetry = "Asymmetry %@"
+    // add-plan-editing: plan changes from the phone.
+    /// Plan change: move the session to another day (the day).
+    case editMoveTo = "Move to %@"
+    /// Plan change: swap days with another session (its title, its day).
+    case editSwapWith = "Swap with %@ (%@)"
+    /// Plan change: skip the session.
+    case editSkip = "Skip"
+    /// Plan change: skip the session, with the owner's reason.
+    case editSkipReason = "Skip: %@"
+    /// Plan change: undo a skip.
+    case editUnskip = "Undo the skip"
+    /// Plan change: override a training rule's edit of the session (the rule's id).
+    case editOverride = "Override the rule %@"
+    /// Plan change status: waiting for the vault, only saved on the phone.
+    case editPendingSaved = "Pending · Saved on phone"
+    /// Plan change status: waiting for the vault, uploaded.
+    case editPendingSent = "Pending · Sent"
+    /// Plan change status: its withdrawal waits for the vault, only saved on the phone.
+    case editWithdrawingSaved = "Withdrawal pending · Saved on phone"
+    /// Plan change status: its withdrawal waits for the vault, uploaded.
+    case editWithdrawingSent = "Withdrawal pending · Sent"
+    /// Plan change status: the vault applied it.
+    case editApplied = "Applied"
+    /// Plan change status: the vault did not apply it (the session was elsewhere or gone).
+    case editNotApplied = "Not applied"
+    /// Plan change status: the vault refused it.
+    case editRefused = "Refused"
+    /// Plan change status: withdrawn in the app.
+    case editWithdrawn = "Withdrawn"
+    /// Plan change status: the vault answered with a status this app doesn't know.
+    case editAnswered = "Answered by the vault"
+    /// Badge on a session: a plan change waits for the vault.
+    case editBadgePending = "Change pending"
+    /// Badge on a session: the vault did not apply the phone's plan change.
+    case editBadgeNotApplied = "Change not applied"
+    /// Session detail: why a race session can't be changed.
+    case editBlockRace = "A race: the organiser sets its date, so it can't be moved, swapped or skipped here."
+    /// Session detail: why a past session can't be moved or swapped.
+    case editBlockPastDay = "Past days follow the activities: they can only be skipped or unskipped."
+    /// Session detail: why a done session can't be moved, swapped or skipped.
+    case editBlockDone = "Done: this session follows its activity."
+    /// Session detail: the week has no revision, so the phone can't change it.
+    case editBlockNoRevision = "This week can't be changed from the phone."
+    /// Session detail: a plan change on the session still waits for the vault.
+    case editBlockWaiting = "Waiting for the vault's answer. Withdraw the change to make another."
+    /// Warning before overriding a training rule (the rule's id).
+    case editOverrideTitle = "Override the rule %@?"
+    /// Warning before overriding a training rule: why the rule exists and that the override is logged.
+    case editOverrideMessage = "The rule changed this session as a precaution. You have the last word, and the override is logged for the Sunday review."
     /// Keys that live in `.stringsdict` (plural forms).
     public var isPlural: Bool {
         switch self {

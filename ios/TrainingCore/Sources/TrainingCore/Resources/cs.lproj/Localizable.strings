@@ -568,3 +568,75 @@
 
 /* Statistics: the difference between left and right as a percentage. */
 "Asymmetry %@" = "Asymetrie %@";
+
+/* Plan change: move the session to another day (the day). */
+"Move to %@" = "Přesunout na %@";
+
+/* Plan change: swap days with another session (its title, its day). */
+"Swap with %@ (%@)" = "Prohodit s tréninkem %@ (%@)";
+
+/* Plan change: skip the session. */
+"Skip" = "Přeskočit";
+
+/* Plan change: skip the session, with the owner's reason. */
+"Skip: %@" = "Přeskočit: %@";
+
+/* Plan change: undo a skip. */
+"Undo the skip" = "Zrušit přeskočení";
+
+/* Plan change: override a training rule's edit of the session (the rule's id). */
+"Override the rule %@" = "Obejít pravidlo %@";
+
+/* Plan change status: waiting for the vault, only saved on the phone. */
+"Pending · Saved on phone" = "Čeká · Uloženo v telefonu";
+
+/* Plan change status: waiting for the vault, uploaded. */
+"Pending · Sent" = "Čeká · Odesláno";
+
+/* Plan change status: its withdrawal waits for the vault, only saved on the phone. */
+"Withdrawal pending · Saved on phone" = "Stažení čeká · Uloženo v telefonu";
+
+/* Plan change status: its withdrawal waits for the vault, uploaded. */
+"Withdrawal pending · Sent" = "Stažení čeká · Odesláno";
+
+/* Plan change status: the vault applied it. */
+"Applied" = "Provedeno";
+
+/* Plan change status: the vault did not apply it (the session was elsewhere or gone). */
+"Not applied" = "Neprovedeno";
+
+/* Plan change status: the vault refused it. */
+"Refused" = "Odmítnuto";
+
+/* Plan change status: withdrawn in the app. */
+"Withdrawn" = "Staženo";
+
+/* Plan change status: the vault answered with a status this app doesn't know. */
+"Answered by the vault" = "Vault odpověděl";
+
+/* Badge on a session: a plan change waits for the vault. */
+"Change pending" = "Změna čeká";
+
+/* Badge on a session: the vault did not apply the phone's plan change. */
+"Change not applied" = "Změna neprovedena";
+
+/* Session detail: why a race session can't be changed. */
+"A race: the organiser sets its date, so it can't be moved, swapped or skipped here." = "Závod: datum určuje pořadatel, proto ho tady nejde přesunout, prohodit ani přeskočit.";
+
+/* Session detail: why a past session can't be moved or swapped. */
+"Past days follow the activities: they can only be skipped or unskipped." = "Minulé dny se řídí aktivitami: jde je jen přeskočit nebo přeskočení zrušit.";
+
+/* Session detail: why a done session can't be moved, swapped or skipped. */
+"Done: this session follows its activity." = "Hotovo: tenhle trénink se řídí svou aktivitou.";
+
+/* Session detail: the week has no revision, so the phone can't change it. */
+"This week can't be changed from the phone." = "Tenhle týden z telefonu změnit nejde.";
+
+/* Session detail: a plan change on the session still waits for the vault. */
+"Waiting for the vault's answer. Withdraw the change to make another." = "Čeká se na odpověď vaultu. Pro jinou změnu tuhle nejdřív stáhni.";
+
+/* Warning before overriding a training rule (the rule's id). */
+"Override the rule %@?" = "Obejít pravidlo %@?";
+
+/* Warning before overriding a training rule: why the rule exists and that the override is logged. */
+"The rule changed this session as a precaution. You have the last word, and the override is logged for the Sunday review." = "Pravidlo tenhle trénink z opatrnosti změnilo. Poslední slovo máš ty a obejití se zapíše do nedělní revize.";

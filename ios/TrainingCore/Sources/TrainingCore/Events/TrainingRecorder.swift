@@ -17,6 +17,9 @@
 //            prune old sealed events. Auth/offline/rate limits stop the
 //            cycle without spending attempts (DurableQueue's rules).
 //   overlay  the log folded over the queue's state (CheckInOverlay).
+//   planEdits the plan commands in the log with their status: the queue's
+//            state, the projection's acks and outcomes (PendingOverlay,
+//            add-plan-editing).
 //
 // No device id (the connection was never tested successfully) means no
 // recording at all: `record` throws `.noDeviceIdentity`, and the app keeps
@@ -123,6 +126,19 @@ public actor TrainingRecorder {
         let events = await log.all()
         let unsent = Set(await queue.all().filter { $0.state != .sent }.map { $0.record.id })
         return CheckInOverlay.fold(events, unsentSegments: unsent, ackedSeqs: CheckInOverlay.ackedSeqs(from: acks))
+    }
+
+    /// The phone's plan commands and what became of them (add-plan-editing
+    /// D4); `acks` and `outcomes` are the cached projection's.
+    public func planEdits(acks: [String: JSONValue] = [:], outcomes: [JSONValue] = []) async -> PendingOverlay {
+        let events = await log.all()
+        let unsent = Set(await queue.all().filter { $0.state != .sent }.map { $0.record.id })
+        return PendingOverlay.fold(
+            events,
+            unsentSegments: unsent,
+            ackedSeqs: CheckInOverlay.ackedSeqs(from: acks),
+            outcomes: PlanOutcome.parse(outcomes)
+        )
     }
 
     /// Events not yet uploaded: unsealed ones, plus those in segments still

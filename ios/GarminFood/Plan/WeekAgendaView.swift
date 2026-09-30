@@ -9,6 +9,11 @@
 // their sessions aren't written yet; weeks outside every phase have no
 // plan. Previous/next page across the season.
 //
+// add-plan-editing: a session row shows this phone's plan-change mark
+// ("Change pending" / "Change not applied", symbol and words), and the
+// header lists the week's plan changes with the vault's answers and
+// Withdraw (PlanEditViews.swift).
+//
 // Everything shown is `WeekAgendaModel` from TrainingCore's PlanBuilder;
 // nothing is summed here. Depended on by: PlanTabView (and `DayRowView` by
 // its day sheet).
@@ -117,6 +122,10 @@ struct WeekAgendaView: View {
                 .foregroundStyle(.secondary)
             }
             TrainingNoticeLines(notices: model.notices)
+            if !model.planChanges.isEmpty {
+                Divider()
+                PlanChangesList(changes: model.planChanges)
+            }
         }
         .card()
     }
@@ -218,6 +227,9 @@ private struct SessionRowView: View {
                     Text(verbatim: details.joined(separator: " · "))
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+                if let edit = session.editBadgeText {
+                    PlanEditBadgeLabel(badge: session.editBadge, text: edit)
                 }
             }
             Spacer(minLength: Theme.Spacing.xs)

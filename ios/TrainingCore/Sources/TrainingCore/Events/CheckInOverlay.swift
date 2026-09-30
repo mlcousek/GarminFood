@@ -27,6 +27,9 @@
 // (Today's highlight, the month glyph, the detail's pre-selection) shows
 // the phone's check-in without a builder change.
 //
+// Plan commands and retractions (add-plan-editing) are not folded here:
+// they are PendingOverlay's (PlanCommandOverlay.swift).
+//
 // Depended on by: TrainingSnapshot/EffectivePlan, the builders,
 // TrainingReminderPlanner. Tests: CheckInOverlayTests.
 
@@ -129,6 +132,10 @@ public struct CheckInOverlay: Equatable, Sendable {
                 overlay.rpes[payload.sessionId] = OverlayValue(value: payload.rpe, delivery: delivery)
             case .sessionNote(let payload):
                 overlay.notes[payload.sessionId] = OverlayValue(value: payload.text, delivery: delivery)
+            case .sessionMoved, .sessionsSwapped, .sessionSkipped, .sessionUnskipped, .ruleOverridden, .eventRetracted:
+                // Plan commands and retractions: PendingOverlay's
+                // (add-plan-editing). The app never retracts a fact.
+                continue
             case .other:
                 continue
             }

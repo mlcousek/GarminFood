@@ -16,6 +16,11 @@
 //     season's races and today's mark.
 //   - `DayRowModel` doubles as the month's day sheet.
 //
+// add-plan-editing: a session row carries this phone's plan-change mark
+// (`editBadge`: waiting for the vault, or not applied), and a written week
+// lists this phone's changes for it (`planChanges`) with the vault's
+// answers (PlanEditModels.swift).
+//
 // Nothing is summed here: `actual`, statuses and matching come from the
 // file. Glyph styles carry a shape as well as a colour in the app, so they
 // are distinguishable without colour (spec "Missed and done sessions").
@@ -40,6 +45,10 @@ public struct SessionRowModel: Equatable, Sendable, Identifiable {
     public let doneText: String?
     public let badgeText: String?
     public let fuelLine: String?
+    /// add-plan-editing: this phone's change on it waits for the vault, or
+    /// was not applied; with its text ("Change pending").
+    public var editBadge: PlanEditBadge? = nil
+    public var editBadgeText: String? = nil
 }
 
 public struct UnplannedRowModel: Equatable, Sendable, Identifiable {
@@ -88,6 +97,9 @@ public struct WeekAgendaModel: Equatable, Sendable {
     /// The vault's rule notes for a written week (add-hub-ingest), e.g. a
     /// red morning holding the volume.
     public var ruleNoteLines: [String] = []
+    /// add-plan-editing: this phone's plan changes for the week, with the
+    /// vault's answers.
+    public var planChanges: [PlanChangeLineModel] = []
 }
 
 public enum GlyphStyle: String, Equatable, Sendable {
@@ -203,6 +215,7 @@ public struct PlanBuilder: Sendable {
                 notices: notices
             )
             model.ruleNoteLines = written.ruleNotes.compactMap(format.freeText)
+            model.planChanges = planChangeLines(isoWeek, snapshot: snapshot)
             return model
         }
         if let outline {
@@ -311,7 +324,7 @@ public struct PlanBuilder: Sendable {
         case .race?: badgeText = text(.race)
         default: badgeText = nil
         }
-        return SessionRowModel(
+        var row = SessionRowModel(
             id: session.id,
             date: date,
             sportSymbol: SportSymbol.name(session.sport),
@@ -324,6 +337,11 @@ public struct PlanBuilder: Sendable {
             badgeText: badgeText,
             fuelLine: format.fuel.sessionLine(session.fuel)
         )
+        if let mark = format.editBadge(sessionID: session.id, snapshot: snapshot) {
+            row.editBadge = mark.badge
+            row.editBadgeText = mark.text
+        }
+        return row
     }
 
     // MARK: Month

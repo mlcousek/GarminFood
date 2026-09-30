@@ -7,8 +7,11 @@
 // UUIDv7 ids, the `at` clock, and segments (path, bytes, message, chunks).
 //
 // The vault's own event fixtures (its `add-hub-ingest` contract, mirrored
-// verbatim under Fixtures/Contract/vault/) are decoded here too: the four
-// types this app writes decode to their payloads, the rest to `.other`.
+// verbatim under Fixtures/Contract/vault/) are decoded here too: every
+// type this app writes decodes to its payload, `device.hello` to
+// `.other`. add-plan-editing adds the plan commands and the retraction: a
+// byte-exact golden file of its own (`plan-commands.v1.app.jsonl`) and a
+// line-by-line comparison with the vault's example commands.
 
 import XCTest
 import VaultKit
@@ -21,6 +24,33 @@ enum EventFixtures {
 
     static func appGolden() throws -> Data {
         try Data(contentsOf: directory.appendingPathComponent("events.v1.app.jsonl"))
+    }
+
+    static func planGolden() throws -> Data {
+        try Data(contentsOf: directory.appendingPathComponent("plan-commands.v1.app.jsonl"))
+    }
+
+    /// The plan-command golden file's events, built in Swift
+    /// (add-plan-editing D2).
+    static var planGoldenEvents: [HubEvent] {
+        let w43 = D.week("2030-W43")
+        let w44 = D.week("2030-W44")
+        return [
+            HubEvent(id: "01becdb6-a200-7abc-bd11-223344556608", deviceId: device, seq: 8, at: "2030-10-23T20:00:00.000+02:00",
+                     payload: .sessionMoved(SessionMovedPayload(week: w44, baseRevision: 1, sessionId: "2030-w44-tue-am", from: D.date("2030-10-31"), to: D.date("2030-11-01")))),
+            HubEvent(id: "01becdb7-8c60-7abc-bd11-223344556609", deviceId: device, seq: 9, at: "2030-10-23T20:01:00.000+02:00",
+                     payload: .sessionsSwapped(SessionsSwappedPayload(week: w44, baseRevision: 1, a: "2030-w44-fri-am", aDate: D.date("2030-10-29"), b: "2030-w44-wed-am", bDate: D.date("2030-10-30")))),
+            HubEvent(id: "01becdb8-76c0-7abc-bd11-22334455660a", deviceId: device, seq: 10, at: "2030-10-23T20:02:00.000+02:00",
+                     payload: .sessionSkipped(SessionSkippedPayload(week: w43, baseRevision: 1, sessionId: "2030-w43-sat-am", reason: "Travel day / rest"))),
+            HubEvent(id: "01becdb9-6120-7abc-bd11-22334455660b", deviceId: device, seq: 11, at: "2030-10-23T20:03:00.000+02:00",
+                     payload: .sessionSkipped(SessionSkippedPayload(week: w43, baseRevision: 1, sessionId: "2030-w43-thu-pm", reason: nil))),
+            HubEvent(id: "01becdba-4b80-7abc-bd11-22334455660c", deviceId: device, seq: 12, at: "2030-10-23T20:04:00.000+02:00",
+                     payload: .sessionUnskipped(SessionUnskippedPayload(week: w44, baseRevision: 1, sessionId: "2030-w44-mon-pm"))),
+            HubEvent(id: "01becdbb-35e0-7abc-bd11-22334455660d", deviceId: device, seq: 13, at: "2030-10-23T20:05:00.000+02:00",
+                     payload: .ruleOverridden(RuleOverriddenPayload(week: w44, baseRevision: 1, sessionId: "2030-w44-wed-am", rule: "two-ambers"))),
+            HubEvent(id: "01becdbc-2040-7abc-bd11-22334455660e", deviceId: device, seq: 14, at: "2030-10-23T20:06:00.000+02:00",
+                     payload: .eventRetracted(EventRetractedPayload(target: "01becdb9-6120-7abc-bd11-22334455660b")))
+        ]
     }
 
     static func vault(_ name: String) throws -> Data {
@@ -98,17 +128,23 @@ final class HubEventTests: XCTestCase {
         XCTAssertEqual(byType["habit.tick"], 3)
         XCTAssertEqual(byType["session.rpe"], 1)
         XCTAssertEqual(byType["session.note"], 1)
+        XCTAssertEqual(byType["plan.session.moved"], 4)
+        XCTAssertEqual(byType["plan.session.swapped"], 1)
+        XCTAssertEqual(byType["plan.session.skipped"], 2)
+        XCTAssertEqual(byType["plan.session.unskipped"], 1)
+        XCTAssertEqual(byType["plan.rule.overridden"], 1)
+        XCTAssertEqual(byType["event.retracted"], 1)
         let others = decoded.events.filter { if case .other = $0.type { return true } else { return false } }
-        XCTAssertEqual(Set(others.map(\.type.rawValue)), [
-            "device.hello", "plan.session.skipped", "plan.session.moved", "plan.session.swapped",
-            "plan.rule.overridden", "event.retracted", "plan.session.unskipped"
-        ])
+        XCTAssertEqual(Set(others.map(\.type.rawValue)), ["device.hello"], "add-plan-editing reads every type but device.hello")
 
         XCTAssertEqual(decoded.events[1].payload, .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-14"), light: .redLight, sessionId: nil, option: nil)))
         XCTAssertEqual(decoded.events[2].payload, .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-16"), light: .greenLight, sessionId: "2030-w42-wed-am", option: .g)))
         XCTAssertEqual(decoded.events[8].payload, .sessionRPE(SessionRPEPayload(date: D.date("2030-10-22"), sessionId: "2030-w43-tue-am", rpe: 7, feel: 3)))
         XCTAssertEqual(decoded.events[11].payload, .habitTick(HabitTickPayload(date: D.date("2030-10-22"), habitId: "holds", done: true)))
         XCTAssertNil(decoded.events[3].payload.date, "a plan command carries a week, not a date")
+        XCTAssertEqual(decoded.events[3].payload, .sessionSkipped(SessionSkippedPayload(week: D.week("2030-W42"), baseRevision: 2, sessionId: "2030-w42-thu-pm", reason: "Calf tight, skip the shake-out")))
+        XCTAssertEqual(decoded.events[14].payload, .sessionsSwapped(SessionsSwappedPayload(week: D.week("2030-W44"), baseRevision: 1, a: "2030-w44-tue-am", aDate: D.date("2030-10-29"), b: "2030-w44-fri-am", bDate: D.date("2030-10-31"))))
+        XCTAssertEqual(decoded.events[19].payload, .eventRetracted(EventRetractedPayload(target: "01beca6a-5420-7113-a113-5eed00000013", reason: "Changed my mind, ride it")))
 
         // Every event this app could write re-encodes and reads back the same.
         for event in decoded.events {
@@ -134,6 +170,77 @@ final class HubEventTests: XCTestCase {
         XCTAssertEqual(overlay.habitTick(on: D.date("2030-10-22"), habitId: "holds")?.value, true, "last per habit and day wins")
         XCTAssertEqual(overlay.rpe(session: "2030-w43-tue-am")?.value, 7)
         XCTAssertEqual(overlay.note(session: "2030-w43-tue-am")?.value, "Calf tight on the last repeat, eased off.")
+    }
+
+    // MARK: Plan commands (add-plan-editing)
+
+    func testPlanCommandsReproduceTheirGoldenFileByteForByte() throws {
+        let encoded = try HubEventCodec.jsonl(EventFixtures.planGoldenEvents)
+        let golden = try EventFixtures.planGolden()
+        XCTAssertEqual(String(decoding: encoded, as: UTF8.self), String(decoding: golden, as: UTF8.self))
+        XCTAssertEqual(encoded, golden)
+
+        let decoded = HubEventCodec.decode(golden)
+        XCTAssertEqual(decoded.invalidLines, [])
+        XCTAssertEqual(decoded.events, EventFixtures.planGoldenEvents)
+        XCTAssertEqual(decoded.events.map(\.type.rawValue), [
+            "plan.session.moved", "plan.session.swapped", "plan.session.skipped", "plan.session.skipped",
+            "plan.session.unskipped", "plan.rule.overridden", "event.retracted"
+        ])
+        for event in decoded.events {
+            XCTAssertNoThrow(try event.payload.validate(), event.type.rawValue)
+        }
+    }
+
+    func testTheVaultsExampleCommandsReencodeToTheSameObjects() throws {
+        // The vault's lines are not key-sorted, so compare JSON objects.
+        let data = try EventFixtures.vault("events.v1.example.jsonl")
+        let lines = String(decoding: data, as: UTF8.self).split(separator: "\n").map(String.init)
+        var compared = 0
+        for line in lines {
+            let event = try XCTUnwrap(HubEventCodec.decode(Data(line.utf8)).events.first)
+            guard event.payload.isPlanCommand || event.type == .eventRetracted else { continue }
+            let ours = try XCTUnwrap(JSONSerialization.jsonObject(with: try HubEventCodec.line(event)) as? NSDictionary)
+            let theirs = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(line.utf8)) as? NSDictionary)
+            XCTAssertEqual(ours, theirs, "seq \(event.seq)")
+            compared += 1
+        }
+        XCTAssertEqual(compared, 10, "nine commands and one retraction")
+    }
+
+    func testOptionalReasonIsWrittenAsNull() throws {
+        let skip = String(decoding: try HubEventCodec.line(EventFixtures.planGoldenEvents[3]), as: UTF8.self)
+        XCTAssertTrue(skip.contains("\"reason\":null"))
+        let retraction = String(decoding: try HubEventCodec.line(EventFixtures.planGoldenEvents[6]), as: UTF8.self)
+        XCTAssertTrue(retraction.contains("\"reason\":null"))
+        XCTAssertNil(EventFixtures.planGoldenEvents[0].payload.date)
+        XCTAssertEqual(EventFixtures.planGoldenEvents[1].payload.commandSessionIDs, ["2030-w44-fri-am", "2030-w44-wed-am"])
+        XCTAssertEqual(EventFixtures.planGoldenEvents[1].payload.commandWeek, D.week("2030-W44"))
+        XCTAssertFalse(EventFixtures.planGoldenEvents[6].payload.isPlanCommand)
+    }
+
+    func testPlanCommandBounds() {
+        let week = D.week("2030-W43")
+        func move(_ from: String, _ to: String, revision: Int = 1, id: String = "s") -> HubEventPayload {
+            .sessionMoved(SessionMovedPayload(week: week, baseRevision: revision, sessionId: id, from: D.date(from), to: D.date(to)))
+        }
+        XCTAssertNoThrow(try move("2030-10-24", "2030-10-27").validate())
+        XCTAssertThrowsError(try move("2030-10-24", "2030-10-28").validate(), "another week")
+        XCTAssertThrowsError(try move("2030-10-24", "2030-10-24").validate(), "the same day")
+        XCTAssertThrowsError(try move("2030-10-24", "2030-10-25", revision: 0).validate(), "no revision")
+        XCTAssertThrowsError(try move("2030-10-24", "2030-10-25", id: "").validate(), "no session")
+
+        let swapSame = HubEventPayload.sessionsSwapped(SessionsSwappedPayload(week: week, baseRevision: 1, a: "x", aDate: D.date("2030-10-24"), b: "x", bDate: D.date("2030-10-25")))
+        XCTAssertThrowsError(try swapSame.validate())
+        let swapDay = HubEventPayload.sessionsSwapped(SessionsSwappedPayload(week: week, baseRevision: 1, a: "x", aDate: D.date("2030-10-24"), b: "y", bDate: D.date("2030-10-24")))
+        XCTAssertThrowsError(try swapDay.validate())
+
+        XCTAssertThrowsError(try HubEventPayload.sessionSkipped(SessionSkippedPayload(week: week, baseRevision: 1, sessionId: "s", reason: "")).validate(), "an empty reason is written as null, never as \"\"")
+        let long = String(repeating: "a", count: SessionNotePayload.maxLength + 1)
+        XCTAssertThrowsError(try HubEventPayload.sessionSkipped(SessionSkippedPayload(week: week, baseRevision: 1, sessionId: "s", reason: long)).validate())
+        XCTAssertThrowsError(try HubEventPayload.ruleOverridden(RuleOverriddenPayload(week: week, baseRevision: 1, sessionId: "s", rule: "")).validate())
+        XCTAssertThrowsError(try HubEventPayload.eventRetracted(EventRetractedPayload(target: "")).validate())
+        XCTAssertNoThrow(try HubEventPayload.eventRetracted(EventRetractedPayload(target: "x", reason: "why")).validate())
     }
 
     // MARK: Tolerance

@@ -28,6 +28,14 @@
 // note -- local, durable, never waiting for the network), and re-plans the
 // training reminders after each change.
 //
+// add-plan-editing: it also carries the phone's plan commands
+// (`PendingOverlay`, folded with the cached projection's `acks` and
+// `outcomes`) into the snapshot, with `TrainingCapabilities.recording`
+// turning plan edits on under the same guard, and turns Move, Swap, Skip,
+// Undo the skip, Override the rule and Withdraw into commands built by
+// TrainingCore's PlanEditPolicy (which refuses what the vault would
+// refuse) and recorded like a check-in.
+//
 // Owned by AppEnvironment (`environment.training`); read by the Today
 // training cards and the Plan tab.
 
@@ -101,6 +109,63 @@ final class TrainingModel {
             actionError = (error as? LocalizedError)?.errorDescription
                 ?? String(localized: "Couldn't save that on the phone. Try again.", comment: "Training: recording a check-in, tick, RPE or note failed.")
         }
+    }
+
+    // MARK: Plan edits (add-plan-editing D3, D6)
+
+    func moveSession(_ sessionID: String, to date: LocalDate) async {
+        await performEdit { snapshot, today in
+            try PlanEditPolicy.move(sessionID: sessionID, to: date, snapshot: snapshot, today: today)
+        }
+    }
+
+    func swapSession(_ sessionID: String, with partnerID: String) async {
+        await performEdit { snapshot, today in
+            try PlanEditPolicy.swap(sessionID: sessionID, with: partnerID, snapshot: snapshot, today: today)
+        }
+    }
+
+    func skipSession(_ sessionID: String, reason: String?) async {
+        await performEdit { snapshot, today in
+            try PlanEditPolicy.skip(sessionID: sessionID, reason: reason, snapshot: snapshot, today: today)
+        }
+    }
+
+    func unskipSession(_ sessionID: String) async {
+        await performEdit { snapshot, today in
+            try PlanEditPolicy.unskip(sessionID: sessionID, snapshot: snapshot, today: today)
+        }
+    }
+
+    /// Decision A17: called only after the warning was confirmed.
+    func overrideRule(_ rule: String, sessionID: String) async {
+        await performEdit { snapshot, today in
+            try PlanEditPolicy.overrideRule(rule, sessionID: sessionID, snapshot: snapshot, today: today)
+        }
+    }
+
+    /// Retracts this phone's pending command (or applied override).
+    func withdrawPlanChange(_ commandID: String) async {
+        await performEdit { snapshot, _ in
+            try PlanEditPolicy.withdraw(commandID: commandID, snapshot: snapshot)
+        }
+    }
+
+    /// Builds the command from the current snapshot and training day, then
+    /// records it like any other event. A refusal means the plan changed
+    /// under the screen; it is said, never swallowed.
+    private func performEdit(_ make: (TrainingSnapshot, LocalDate) throws -> HubEventPayload) async {
+        guard let snapshot = source.snapshot else { return }
+        let payload: HubEventPayload
+        do {
+            payload = try make(snapshot, today())
+        } catch {
+            DiagnosticsLog.log(.error, category: "training", "plan edit not offered any more: \(error)")
+            actionError = String(localized: "That change isn't possible any more: the plan has changed. Have another look.", comment: "add-plan-editing: a plan change was refused on the phone because the plan changed under the screen.")
+            return
+        }
+        Haptics.success()
+        await perform(payload)
     }
 
     // MARK: Reminders (add-training-checkins D8)
@@ -198,8 +263,11 @@ final class TrainingModel {
         // add-training-checkins: the phone's events over the plan, and
         // whether it may record at all.
         let checkIns = await events.recorder.overlay(acks: cached?.projection.acks ?? [:])
+        // add-plan-editing: the phone's plan commands and the vault's
+        // answers; plan edits under the same guard as the check-ins.
+        let planEdits = await events.recorder.planEdits(acks: cached?.projection.acks ?? [:], outcomes: cached?.projection.outcomes ?? [])
         let canRecord = await events.canRecord()
-        source = TrainingSource.from(availability, freshness: freshness, checkIns: checkIns, capabilities: .checkIns(enabled: canRecord))
+        source = TrainingSource.from(availability, freshness: freshness, checkIns: checkIns, planEdits: planEdits, capabilities: .recording(enabled: canRecord))
         hasLoaded = true
         await syncReminders(now: now)
     }
