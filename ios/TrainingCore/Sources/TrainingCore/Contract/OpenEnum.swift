@@ -213,3 +213,10 @@ public enum ScheduleKind: String, OpenEnumValue {
 public enum DayFuelKind: String, OpenEnumValue {
     case carbLoad = "carb-load"
 }
+
+/// A day's `fuel.fasting` (add-winter-arc-nutrition-and-rewards, the
+/// vault's per-day fuel, additive in v1): `off` in build weeks.
+public enum DayFastingPolicy: String, OpenEnumValue {
+    case allowed
+    case off
+}

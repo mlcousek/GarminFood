@@ -558,13 +558,46 @@ public struct Week: Equatable, Sendable, Decodable, ProjectionElement {
     }
 }
 
+/// A day's `fuel`. Two shapes share the object (both additive in v1):
+///   - a carb-load day (`kind: "carb-load"`): `carbsGPerKg` is ONE number
+///     and `carbsG` the grams it means;
+///   - every other day since add-winter-arc-nutrition-and-rewards (the
+///     vault's PM-FUEL-1 band): `carbsGPerKg` is `{ min, max }`, plus
+///     `proteinGPerKg` and `fasting: "allowed" | "off"`.
+/// So `carbsGPerKg` reads as a number into `carbsGPerKg` or as an object
+/// into `carbsBand`, never both; anything else in it reads as `nil`.
 public struct DayFuel: Equatable, Sendable, Decodable {
     public var kind: OpenEnum<DayFuelKind>?
     public var raceId: String?
+    /// The carb-load day's single g/kg value.
     public var carbsGPerKg: Double?
     public var carbsG: Int?
+    /// The day's carbohydrate band in g/kg (the `{ min, max }` shape).
+    public var carbsBand: GramsPerKgRange?
+    /// About this much protein in g/kg for the day.
+    public var proteinGPerKg: Double?
+    /// Whether the fasting window applies on this day (`nil` = not said).
+    public var fasting: OpenEnum<DayFastingPolicy>?
 
-    enum CodingKeys: String, CodingKey { case kind, raceId, carbsGPerKg, carbsG }
+    public init(
+        kind: OpenEnum<DayFuelKind>? = nil,
+        raceId: String? = nil,
+        carbsGPerKg: Double? = nil,
+        carbsG: Int? = nil,
+        carbsBand: GramsPerKgRange? = nil,
+        proteinGPerKg: Double? = nil,
+        fasting: OpenEnum<DayFastingPolicy>? = nil
+    ) {
+        self.kind = kind
+        self.raceId = raceId
+        self.carbsGPerKg = carbsGPerKg
+        self.carbsG = carbsG
+        self.carbsBand = carbsBand
+        self.proteinGPerKg = proteinGPerKg
+        self.fasting = fasting
+    }
+
+    enum CodingKeys: String, CodingKey { case kind, raceId, carbsGPerKg, carbsG, proteinGPerKg, fasting }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -572,6 +605,39 @@ public struct DayFuel: Equatable, Sendable, Decodable {
         raceId = c.lenientString(.raceId)
         carbsGPerKg = c.lenientDouble(.carbsGPerKg)
         carbsG = c.lenientInt(.carbsG)
+        carbsBand = carbsGPerKg == nil ? c.lenient(GramsPerKgRange.self, .carbsGPerKg) : nil
+        proteinGPerKg = c.lenientDouble(.proteinGPerKg).flatMap { $0 > 0 ? $0 : nil }
+        fasting = c.lenient(OpenEnum<DayFastingPolicy>.self, .fasting)
+    }
+
+    /// The vault said fasting is off for the day (a build week).
+    public var isFastingOff: Bool {
+        fasting?.known == .off
+    }
+}
+
+/// `{ min, max }` in g/kg. A missing bound takes the other one's value, a
+/// reversed pair is put in order, and a band without any usable positive
+/// bound fails to decode (so the field reads as `nil`).
+public struct GramsPerKgRange: Equatable, Sendable, Decodable {
+    public var min: Double
+    public var max: Double
+
+    public init(min: Double, max: Double) {
+        self.min = Swift.min(min, max)
+        self.max = Swift.max(min, max)
+    }
+
+    enum CodingKeys: String, CodingKey { case min, max }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let low = c.lenientDouble(.min).flatMap { $0 > 0 ? $0 : nil }
+        let high = c.lenientDouble(.max).flatMap { $0 > 0 ? $0 : nil }
+        guard let first = low ?? high, let second = high ?? low else {
+            throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "fuel band without a positive bound"))
+        }
+        self.init(min: first, max: second)
     }
 }
 
