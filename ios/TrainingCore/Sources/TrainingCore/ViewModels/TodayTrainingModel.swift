@@ -6,8 +6,11 @@
 //   - `TodayTrainingModel` -- the day's sessions with their G/A/R option
 //     cards (or one card for a session without options), status, test or
 //     race badge, fuel lines and the morning light, or a designed state;
-//   - `HabitRowModel` -- today's expected habits, display only;
-//   - `RaceChipModel` -- the next A (or hero) race, as a countdown;
+//   - `HabitRowModel` -- today's expected habits, display only (and the
+//     rows of polish-training-today's Habits card, HabitsCardModel.swift);
+//   - `RaceChipModel` -- the next race of any priority, as a countdown,
+//     with the season's main (hero, else A) race when that is a later one
+//     (polish-training-today D3; it was the next A or hero race);
 //   - `WeeklyNoteTeaserModel` -- this week's AI note, else the latest
 //     earlier week's.
 //
@@ -142,6 +145,11 @@ public struct HabitRowModel: Equatable, Sendable, Identifiable {
     /// "Today: 1 of 2", when the vault published the day's count.
     public let doneToday: String?
     public let tick: HabitTick
+    /// polish-training-today: the plan expects it on the shown day (the
+    /// Habits card also lists active habits that are not expected).
+    public var isScheduledToday: Bool = true
+    /// "Not on today's plan" when not scheduled.
+    public var notTodayText: String? = nil
 }
 
 public struct RaceChipModel: Equatable, Sendable {
@@ -151,7 +159,24 @@ public struct RaceChipModel: Equatable, Sendable {
     public let dateText: String
     /// "in 23 days", "in about 23 days", "tomorrow", "today".
     public let countdown: String
+    /// polish-training-today D3: "A", "B", "C" as written; `nil` when absent.
+    public let priorityCode: String?
+    public let priority: RacePriorityKind
+    /// "B race", or "Hero race" for the hero.
+    public let priorityText: String?
+    public let isHero: Bool
+    /// The season's main race when it is not this one.
+    public let mainRace: MainRaceLineModel?
     public let accessibilityLabel: String
+}
+
+/// The chip's second line: the hero race, else the next A race.
+public struct MainRaceLineModel: Equatable, Sendable {
+    public let raceID: String
+    public let name: String
+    public let countdown: String
+    /// "Main race: Ridge Ultra · in about 241 days".
+    public let text: String
 }
 
 public struct WeeklyNoteTeaserModel: Equatable, Sendable, Identifiable {
@@ -339,7 +364,7 @@ public struct TodayTrainingBuilder: Sendable {
         }
     }
 
-    func habitRow(_ habit: Habit, day: Day?, gate: HabitGate, snapshot: TrainingSnapshot? = nil) -> HabitRowModel {
+    func habitRow(_ habit: Habit, day: Day?, gate: HabitGate, snapshot: TrainingSnapshot? = nil, scheduled: Bool = true) -> HabitRowModel {
         let adherence = HabitText.adherence(habit.window14, gate: gate, text: text)
         let doneCount: Int? = day?.habitsDone?[habit.id]
         let doneToday = doneCount.map {
@@ -355,7 +380,9 @@ public struct TodayTrainingBuilder: Sendable {
             fraction: habit.window14?.pct.map { Double(min(max($0, 0), 100)) / 100 },
             gateFraction: gate.adherencePct.map { Double(min(max($0, 0), 100)) / 100 },
             doneToday: doneToday,
-            tick: habitTick(habit, day: day, snapshot: snapshot)
+            tick: habitTick(habit, day: day, snapshot: snapshot),
+            isScheduledToday: scheduled,
+            notTodayText: scheduled ? nil : text(.habitNotToday)
         )
     }
 
@@ -368,23 +395,44 @@ public struct TodayTrainingBuilder: Sendable {
 
     // MARK: Race chip
 
-    /// The next race on or after `date` with priority A or `hero: true`
-    /// (owner decision 0.4, defaulted); `nil` hides the chip.
+    /// polish-training-today D3: the next race on or after `date`, of any
+    /// priority (it was A or hero only), with the season's main race --
+    /// the next hero race, else the next A race -- as a second line when
+    /// that is a different, later race. `nil` hides the chip.
     public func raceChip(from date: LocalDate) -> RaceChipModel? {
         guard let snapshot = source.snapshot else { return nil }
-        let candidate = snapshot.races.first { race in
-            race.date >= date && (race.priority?.known == .a || race.hero)
-        }
-        guard let race = candidate else { return nil }
+        let upcoming = snapshot.races.filter { $0.date >= date }
+        guard let race = upcoming.first else { return nil }
         let name = race.name.resolvedText(format.language) ?? race.id
         let countdown = format.countdown.phrase(days: date.days(until: race.date), approximate: race.dateApprox)
+        let priorityText = race.hero ? text(.raceHero) : text.priorityName(race.priority)
+
+        let main = upcoming.first(where: { $0.hero }) ?? upcoming.first(where: { $0.priority?.known == .a })
+        var mainLine: MainRaceLineModel?
+        if let main, main.id != race.id {
+            let mainName = main.name.resolvedText(format.language) ?? main.id
+            let mainCountdown = format.countdown.phrase(days: date.days(until: main.date), approximate: main.dateApprox)
+            mainLine = MainRaceLineModel(
+                raceID: main.id,
+                name: mainName,
+                countdown: mainCountdown,
+                text: text.format(.raceMainLine, mainName, mainCountdown)
+            )
+        }
+        let spoken = [name, priorityText, countdown].compactMap { $0 }.joined(separator: ", ")
+            + (mainLine.map { ". " + $0.text } ?? "")
         return RaceChipModel(
             raceID: race.id,
             name: name,
             date: race.date,
             dateText: format.dates.short(race.date),
             countdown: countdown,
-            accessibilityLabel: "\(name), \(countdown)"
+            priorityCode: race.priority?.rawValue,
+            priority: RacePriorityKind(race.priority),
+            priorityText: priorityText,
+            isHero: race.hero,
+            mainRace: mainLine,
+            accessibilityLabel: spoken
         )
     }
 

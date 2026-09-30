@@ -35,7 +35,9 @@
 //
 // add-training-today-and-plan (design D7): in the training experience four
 // training cards lead the screen -- the next race, the day's training with
-// its G/A/R options, today's habits and the weekly note
+// its G/A/R options, the habits (polish-training-today D2: the Habits card,
+// the ladder step with today's ticks, right after the check-in) and the
+// weekly note
 // (Training/TrainingTodayCards.swift). They follow the day switcher
 // through `TrainingModel.trainingDay` (the plan's time zone and day
 // boundary), are hidden when their data is absent, and are read-only:
@@ -252,13 +254,15 @@ struct TodayView: View {
         // add-training-today-and-plan D7: each training card hides when its
         // data is absent; the training card itself always shows (it
         // explains every state).
+        // polish-training-today D3: any race, not only an A or hero one.
         case .raceCountdown:
             return environment.training.todayBuilder.raceChip(from: trainingDate) != nil
                 ? .available
-                : .empty(String(localized: "Shows when an A or hero race is ahead", comment: "Layout editor: when the Next race card appears on Today."))
-        case .habitsToday:
-            return environment.training.todayBuilder.habits(on: trainingDate).isEmpty
-                ? .empty(String(localized: "Shows when the plan expects habits that day", comment: "Layout editor: when the Today's habits card appears on Today."))
+                : .empty(String(localized: "Shows when a race is ahead", comment: "polish-training-today: Layout editor: when the Next race card appears on Today."))
+        // polish-training-today D2: whenever the plan has a habit ladder.
+        case .habits:
+            return environment.training.todayBuilder.habitsCard(on: trainingDate) == nil
+                ? .empty(String(localized: "Shows when the plan has a habit ladder", comment: "polish-training-today: Layout editor: when the Habits card appears on Today."))
                 : .available
         case .weeklyNote:
             return environment.training.todayBuilder.weeklyNote(for: trainingDate) == nil
@@ -311,16 +315,19 @@ struct TodayView: View {
                 }
             )
 
-        case .habitsToday:
+        case .habits:
             let date = trainingDate
-            HabitsTodayCard(
-                rows: environment.training.todayBuilder.habits(on: date),
-                onOpenLadder: { isShowingLadder = true },
-                // add-training-checkins (A42): on/off for the shown day.
-                onTick: { habitID, done in
-                    Task { await environment.training.setHabit(habitID, done: done, date: date) }
-                }
-            )
+            if let habits = environment.training.todayBuilder.habitsCard(on: date) {
+                HabitsTodayCard(
+                    model: habits,
+                    onOpenLadder: { isShowingLadder = true },
+                    // add-training-checkins (A42): on/off for the shown day,
+                    // through the one recorder (local, never waits).
+                    onTick: { habitID, done in
+                        Task { await environment.training.setHabit(habitID, done: done, date: date) }
+                    }
+                )
+            }
 
         case .weeklyNote:
             if let note = environment.training.todayBuilder.weeklyNote(for: trainingDate) {

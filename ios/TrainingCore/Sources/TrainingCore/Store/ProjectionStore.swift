@@ -12,7 +12,10 @@
 //     once; it decodes each new copy once and logs its dropped elements in
 //     ONE Diagnostics line (design D2);
 //   - `noteRefresh(_:)` folds a refresh's report in: a rejection is kept
-//     (and reported on Today and Plan) until a good copy arrives.
+//     (and reported on Today and Plan) until a good copy arrives;
+//   - `refresh(via:inputs:force:)` is the app's one refresh step (the
+//     coordinator's gated GET, this validator, `noteRefresh`), used for the
+//     foreground fetch and the setup fetch (polish-training-today D1).
 //
 // There is no store file of its own: the only copy of the projection is
 // VaultKit's cache (excluded from backups; the vault is the system of
@@ -122,6 +125,20 @@ public actor ProjectionStore {
         case .unchanged, .failed:
             break
         }
+    }
+
+    /// One foreground (or setup) refresh through VaultKit's coordinator,
+    /// validated with this store's decoder and folded in -- the app's whole
+    /// refresh step, here so it is tested (polish-training-today D1).
+    @discardableResult
+    public func refresh(via coordinator: VaultSyncCoordinator, inputs: VaultSyncInputs, force: Bool, now: Date = Date()) async -> VaultRefreshReport {
+        let report = await coordinator.refreshProjection(inputs, force: force, now: now) { bytes in
+            try ProjectionStore.validate(bytes)
+        }
+        if case .ran(let fetch) = report {
+            noteRefresh(fetch)
+        }
+        return report
     }
 
     /// The app restores a rejection across launches (see the header).

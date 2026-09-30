@@ -9,8 +9,14 @@
 //                      options); carb-load and session fuel lines; every
 //                      non-happy state; a `compact` variant (one line per
 //                      session).
-//   HabitsTodayCard    the habits the plan expects, display only.
-//   RaceCountdownChip  the next A (or hero) race.
+//   HabitsTodayCard    polish-training-today D2: the Habits card -- the
+//                      ladder step, the active habits with today's ticks,
+//                      the day's progress bar, the next step and what
+//                      unlocks it; the header and the next step open the
+//                      full ladder.
+//   RaceCountdownChip  the next race of any priority with its priority
+//                      letter, and the season's main race as a second line
+//                      when that is a later one (polish-training-today D3).
 //   WeeklyNoteCard     the week's AI note teaser, and its full-text sheet.
 //
 // Tapping an option pushes the session detail at that option and records
@@ -340,7 +346,7 @@ private struct CheckInButton: View {
 // MARK: - Habits
 
 struct HabitsTodayCard: View {
-    let rows: [HabitRowModel]
+    let model: HabitsCardModel
     let onOpenLadder: () -> Void
     /// add-training-checkins: a habit toggle changed (id, done).
     var onTick: (String, Bool) -> Void = { _, _ in }
@@ -349,7 +355,10 @@ struct HabitsTodayCard: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             Button(action: onOpenLadder) {
                 HStack {
-                    SectionHeader(title: String(localized: "Today's habits", comment: "Today: title of the training habits card."))
+                    SectionHeader(
+                        title: String(localized: "Habits", comment: "polish-training-today: Layout editor row and title of the Habits card on Today (the habit ladder)."),
+                        trailing: model.stepText
+                    )
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.tertiary)
@@ -357,11 +366,78 @@ struct HabitsTodayCard: View {
             }
             .buttonStyle(.plain)
             .accessibilityHint("Opens the habit ladder")
-            ForEach(rows) { row in
+            if let progress = model.progressText {
+                HStack(spacing: Theme.Spacing.sm) {
+                    ProgressView(value: Double(model.doneCount), total: Double(max(model.expectedCount, 1)))
+                        .tint(model.doneCount >= model.expectedCount ? Theme.success : Theme.accent)
+                        .accessibilityHidden(true)
+                    Text(verbatim: progress)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .fixedSize()
+                }
+                .accessibilityElement(children: .combine)
+            }
+            ForEach(model.rows) { row in
                 HabitRow(row: row) { done in onTick(row.id, done) }
+            }
+            if let next = model.next {
+                Button(action: onOpenLadder) {
+                    HabitNextStepRow(next: next)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Opens the habit ladder")
             }
         }
         .card()
+    }
+}
+
+/// The ladder's next step and what unlocks it (polish-training-today D2).
+private struct HabitNextStepRow: View {
+    let next: HabitNextStepModel
+
+    var body: some View {
+        HStack(alignment: .top, spacing: Theme.Spacing.sm) {
+            if let icon = next.icon {
+                Text(verbatim: icon)
+                    .font(.title3)
+                    .accessibilityHidden(true)
+            } else {
+                Image(systemName: "lock")
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: next.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                if let unlock = next.unlockText {
+                    Text(verbatim: unlock)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                if let earliest = next.earliestText {
+                    Text(verbatim: earliest)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer(minLength: Theme.Spacing.xs)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .padding(Theme.Spacing.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.md, style: .continuous)
+                .fill(Theme.groupedBackground)
+        )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: next.accessibilityLabel))
     }
 }
 
@@ -402,6 +478,11 @@ private struct HabitRow: View {
                 Text(verbatim: row.adherence)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                if let notToday = row.notTodayText {
+                    Text(verbatim: notToday)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
             }
             Spacer(minLength: Theme.Spacing.xs)
             if let doneToday = row.doneToday {
@@ -463,28 +544,45 @@ struct RaceCountdownChip: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: Theme.Spacing.sm) {
-                Image(systemName: "flag.checkered")
-                    .foregroundStyle(Theme.accent)
-                Text(verbatim: model.name)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-                Text(verbatim: "·")
-                    .foregroundStyle(.tertiary)
-                Text(verbatim: model.countdown)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: Theme.Spacing.sm) {
+                    Image(systemName: model.priority == .a || model.isHero ? "flag.checkered" : "flag")
+                        .foregroundStyle(Theme.accent)
+                    if let code = model.priorityCode {
+                        // The letter as text, not colour (polish-training-today D3).
+                        Text(verbatim: model.isHero ? "\(code) ★" : code)
+                            .font(.caption2.weight(.bold))
+                            .padding(.horizontal, Theme.Spacing.xs + 2)
+                            .padding(.vertical, 1)
+                            .background(Capsule().strokeBorder(Theme.stroke))
+                    }
+                    Text(verbatim: model.name)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                    Text(verbatim: "·")
+                        .foregroundStyle(.tertiary)
+                    Text(verbatim: model.countdown)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                if let main = model.mainRace {
+                    Text(verbatim: main.text)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
             }
             .card(padding: Theme.Spacing.sm + 4)
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(model.accessibilityLabel)
-        .accessibilityHint("Opens the month at the race day")
+        .accessibilityHint("Opens the race")
     }
 }
 

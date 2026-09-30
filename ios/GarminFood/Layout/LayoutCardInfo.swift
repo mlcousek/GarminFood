@@ -157,9 +157,9 @@ extension TodayCardID {
         case .weightWater: return String(localized: "Weight & Water")
         case .dayNote: return String(localized: "Day note", comment: "Layout editor row: the note and tags card for the day.")
         case .signature: return String(localized: "Signature", comment: "Layout editor row: the GF by Jirka signature at the bottom of Today.")
-        case .raceCountdown: return String(localized: "Next race", comment: "Layout editor row: the countdown to the next A race on Today.")
+        case .raceCountdown: return String(localized: "Next race", comment: "Layout editor row: the countdown to the next race on Today.")
         case .trainingDay: return String(localized: "Training", comment: "Layout editor row: the day's training sessions and options on Today.")
-        case .habitsToday: return String(localized: "Today's habits", comment: "Today: title of the training habits card.")
+        case .habits: return String(localized: "Habits", comment: "polish-training-today: Layout editor row and title of the Habits card on Today (the habit ladder).")
         case .weeklyNote: return String(localized: "Weekly note", comment: "Today: the weekly AI note card's title.")
         }
     }
@@ -180,7 +180,7 @@ extension TodayCardID {
         case .signature: return "signature"
         case .raceCountdown: return "flag.checkered"
         case .trainingDay: return "figure.run"
-        case .habitsToday: return "checklist"
+        case .habits: return "stairs"
         case .weeklyNote: return "text.bubble"
         }
     }
