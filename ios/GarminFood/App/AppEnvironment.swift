@@ -322,6 +322,12 @@ final class AppEnvironment {
             await self?.syncSupplementReminders()
             await self?.gamificationEngine.refresh()
         }
+        // polish-training-today D1: the setup fetch obeys the same rule as
+        // the foreground one (Garmin-connected, out of onboarding).
+        vault.isRefreshAllowed = { [weak self] in
+            guard let self else { return false }
+            return !self.needsOnboarding && self.dataMode == .garminConnected
+        }
     }
 
     /// Launch and every return to the foreground.

@@ -157,6 +157,22 @@ final class CheckInBuilderTests: XCTestCase {
         XCTAssertEqual(tomorrow.first { $0.id == "gym" }?.tick, .tickable(done: true, pending: true))
     }
 
+    /// polish-training-today D2: the Habits card ticks what the day
+    /// expects, counts the phone's latest tick, and never ticks the rest.
+    func testHabitsCardTicksAndProgress() throws {
+        let off = HubEventPayload.habitTick(HabitTickPayload(date: D.asOf, habitId: "holds", done: false))
+        let card = try XCTUnwrap(today(try snapshot([logged(off, seq: 1)])).habitsCard(on: D.asOf))
+        XCTAssertEqual(card.rows.map(\.id), ["holds", "gym"])
+        XCTAssertEqual(card.rows[0].tick, .tickable(done: false, pending: true))
+        XCTAssertEqual(card.rows[1].tick, .displayOnly, "gym is not expected on Wednesday")
+        XCTAssertEqual(card.doneCount, 0)
+        XCTAssertEqual(card.progressText, "0 of 1 done today")
+
+        let tomorrow = try XCTUnwrap(today(try snapshot()).habitsCard(on: D.date("2030-10-24")))
+        XCTAssertEqual(tomorrow.rows.map(\.tick), [.tickable(done: false, pending: false), .tickable(done: false, pending: false)])
+        XCTAssertEqual(tomorrow.progressText, "0 of 2 done today")
+    }
+
     // MARK: Rating
 
     func testSessionRating() throws {

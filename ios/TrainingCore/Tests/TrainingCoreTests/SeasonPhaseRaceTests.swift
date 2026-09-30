@@ -7,7 +7,9 @@
 // checkpoint table (clock times, buffers, section paces), fuel totals,
 // carb-load grams from the plan and from the weight formula, gear and
 // taper. The fixture is the vault's synthetic 2030/31 season; "today" is
-// its `asOf`, Wednesday 23 October 2030.
+// its `asOf`, Wednesday 23 October 2030. polish-training-today D3: B races
+// before the first phase (the season starting earlier than its first
+// phase) are drawn, listed, opened and shown on Today's chip.
 //
 // Czech assertions avoid Foundation's CLDR spacing and month abbreviations
 // (they are data, not this code): only our own table strings and numbers
@@ -124,6 +126,62 @@ final class SeasonPhaseRaceTests: XCTestCase {
         XCTAssertEqual(czech.races[1].countdown, "za 11 dní")
         XCTAssertEqual(czech.races[2].priorityText, "Hlavní závod")
         XCTAssertEqual(czech.gaps.first?.label, "Žádná fáze v plánu")
+    }
+
+    /// polish-training-today D3: the season starts two weeks before its
+    /// first phase and two B races fall in that gap, with no phase.
+    private func earlyBRaces() throws -> Data {
+        try Fixtures.mutatedExample { object in
+            var season = try XCTUnwrap(object["season"] as? [String: Any])
+            var phases = try XCTUnwrap(season["phases"] as? [[String: Any]])
+            phases[0]["period"] = ["from": "2030-09-16", "to": "2030-10-13"]
+            season["phases"] = phases
+            var races = try XCTUnwrap(season["races"] as? [[String: Any]])
+            races.append(["id": "relay-2030", "name": "Test Relay", "date": "2030-09-05", "dateApprox": false, "priority": "B", "hero": false, "phaseId": NSNull()])
+            races.append(["id": "trail-2030", "name": "Test Trail", "date": "2030-09-12", "dateApprox": false, "priority": "B", "hero": false, "phaseId": NSNull()])
+            season["races"] = races
+            object["season"] = season
+        }
+    }
+
+    func testBRacesBeforeTheFirstPhase() throws {
+        let data = try earlyBRaces()
+        let today = D.date("2030-09-03")
+        let season = try builder(data: data, today: today).seasonTimeline()
+        // The gap before the first phase is drawn, not hidden.
+        XCTAssertEqual(season.gaps.first?.from, D.date("2030-09-02"))
+        XCTAssertEqual(season.gaps.first?.to, D.date("2030-09-15"))
+        XCTAssertEqual(season.gaps.first?.start, 0)
+        XCTAssertEqual(season.gaps.first?.label, "No phase planned")
+        // Both B races are on the axis, in date order, none dropped.
+        XCTAssertEqual(season.races.map(\.id), ["relay-2030", "trail-2030", "lakeside-10k-2030", "valley-30k-2030", "ridge-ultra-2031"])
+        let relay = season.races[0]
+        XCTAssertEqual(relay.priority, .b)
+        XCTAssertEqual(relay.priorityCode, "B")
+        XCTAssertEqual(relay.priorityText, "B race")
+        XCTAssertEqual(relay.unanchoredText, "No phase covers this race yet")
+        XCTAssertEqual(relay.countdown, "in 2 days")
+        XCTAssertFalse(relay.isClamped)
+        XCTAssertEqual(Set(season.races.prefix(3).map(\.lane)).count, 3, "three close labels, three lanes")
+        XCTAssertEqual(season.nextRace?.id, "relay-2030")
+
+        // The race screen opens an unanchored B race.
+        let detail = try XCTUnwrap(try builder(data: data, today: today).raceDetail(id: "trail-2030"))
+        XCTAssertEqual(detail.priority, .b)
+        XCTAssertEqual(detail.priorityText, "B race")
+        XCTAssertNil(detail.phaseTitle)
+        XCTAssertEqual(detail.unanchoredText, "No phase covers this race yet")
+        XCTAssertTrue(detail.taper.isEmpty)
+        XCTAssertEqual(detail.stubText, "Race prep not written yet")
+        XCTAssertEqual(try builder(data: data, today: today).nextRaceID(), "relay-2030")
+
+        // Today's chip: the B race next, the hero as the main race.
+        guard case .success(let decoded) = ProjectionDecoder.decode(data) else { return XCTFail("did not decode") }
+        let chip = try XCTUnwrap(TodayTrainingBuilder(source: .loaded(TrainingSnapshot(projection: decoded.projection)), language: .english).raceChip(from: today))
+        XCTAssertEqual(chip.raceID, "relay-2030")
+        XCTAssertEqual(chip.priorityText, "B race")
+        XCTAssertEqual(chip.countdown, "in 2 days")
+        XCTAssertEqual(chip.mainRace?.text, "Main race: Ridge Ultra · in about 291 days")
     }
 
     func testLanesNeverDropALabel() {

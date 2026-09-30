@@ -139,7 +139,7 @@ final class AppShellTests: XCTestCase {
     /// -- the training cards lead, the summary is compact.
     func testTrainingTodayCatalogOrder() {
         XCTAssertEqual(LayoutCatalog.today(for: .training).map(\.id), [
-            "daySwitcher", "raceCountdown", "trainingDay", "habitsToday", "weeklyNote",
+            "daySwitcher", "raceCountdown", "trainingDay", "habits", "weeklyNote",
             "summary", "logAgain", "meals", "weightWater", "logMeal",
             "progressStrip", "fasting", "supplements", "banners", "dayNote", "signature",
         ])

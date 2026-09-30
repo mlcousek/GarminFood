@@ -257,6 +257,16 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case habitEarliest = "Earliest start %@"
     /// The plan has no habit ladder.
     case habitsNone = "No habits in this plan"
+    /// polish-training-today: the highest active habit's place on the ladder.
+    case habitStepOf = "Step %lld of %lld"
+    /// polish-training-today: habits done of those expected on the shown day.
+    case habitsDoneToday = "%lld of %lld done today"
+    /// polish-training-today: an active habit the plan doesn't expect on the shown day.
+    case habitNotToday = "Not on today's plan"
+    /// polish-training-today: what unlocks the next habit (the current habit's name, the gate percent, the window in days).
+    case habitUnlockWhen = "Unlocks when %@ holds %lld %% over a %lld-day window"
+    /// polish-training-today: the next habit on the ladder (its name).
+    case habitNextStep = "Next step: %@"
     /// Habit schedule.
     case scheduleEveryDay = "Every day"
     /// Habit schedule: times a day.
@@ -304,6 +314,8 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case raceHero = "Hero race"
     /// A race no training phase prepares for yet.
     case raceUnanchored = "No phase covers this race yet"
+    /// polish-training-today: the season's main race under the next race's countdown (name, countdown).
+    case raceMainLine = "Main race: %@ · %@"
     /// Race priority A (a goal race).
     case racePriorityA = "A race"
     /// Race priority B.

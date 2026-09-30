@@ -353,6 +353,21 @@
 /* The plan has no habit ladder. */
 "No habits in this plan" = "V tomto plánu nejsou žádné návyky";
 
+/* polish-training-today: the highest active habit's place on the ladder. */
+"Step %lld of %lld" = "Krok %lld z %lld";
+
+/* polish-training-today: habits done of those expected on the shown day. */
+"%lld of %lld done today" = "Dnes hotovo %lld z %lld";
+
+/* polish-training-today: an active habit the plan doesn't expect on the shown day. */
+"Not on today's plan" = "Dnes není v plánu";
+
+/* polish-training-today: what unlocks the next habit (the current habit's name, the gate percent, the window in days). */
+"Unlocks when %@ holds %lld %% over a %lld-day window" = "Odemkne se, až návyk %@ udrží %lld %% v okně %lld dnů";
+
+/* polish-training-today: the next habit on the ladder (its name). */
+"Next step: %@" = "Další krok: %@";
+
 /* Habit schedule. */
 "Every day" = "Každý den";
 
@@ -412,6 +427,9 @@
 
 /* A race no training phase prepares for yet. */
 "No phase covers this race yet" = "Závod zatím nepatří do žádné fáze";
+
+/* polish-training-today: the season's main race under the next race's countdown (name, countdown). */
+"Main race: %@ · %@" = "Hlavní závod: %@ · %@";
 
 /* Race priority A (a goal race). */
 "A race" = "Závod A";

@@ -7,6 +7,9 @@
 //     card keeping its position, visibility and variant;
 //   - the `training` preset is the training default order and is offered
 //     only in the training experience;
+//   - polish-training-today: the Habits card joins a stored layout visible,
+//     right after the training card, and the retired "habitsToday" id is
+//     kept in storage but not rendered;
 //   - `success`, `warning` and `danger` (the G, A and R option cards) stay
 //     pairwise apart in every theme x scheme x contrast.
 
@@ -14,7 +17,7 @@ import XCTest
 @testable import AppearanceKit
 
 final class TrainingLayoutTests: XCTestCase {
-    private let trainingIDs = ["raceCountdown", "trainingDay", "habitsToday", "weeklyNote"]
+    private let trainingIDs = ["raceCountdown", "trainingDay", "habits", "weeklyNote"]
 
     func testNothingStoredIsTheTrainingDefault() {
         let rows = LayoutConfig.default.resolved(.today, experience: .training)
@@ -85,6 +88,28 @@ final class TrainingLayoutTests: XCTestCase {
         let rows = config.resolved(.today, experience: .training)
         XCTAssertEqual(Array(rows.map(\.id).prefix(5)), ["daySwitcher"] + trainingIDs)
         XCTAssertEqual(rows.first { $0.id == "fasting" }?.isVisible, false)
+    }
+
+    /// polish-training-today D2: a layout stored with the old "Today's
+    /// habits" card (even hidden, even moved to the bottom) gets the new
+    /// Habits card visible right after the training card; the retired id
+    /// stays in storage, unrendered.
+    func testHabitsCardJoinsAStoredLayoutVisibleAfterTheTrainingCard() {
+        let specs = LayoutCatalog.today(for: .training)
+        var ids = specs.map(\.id).filter { $0 != "habits" }
+        ids.removeAll { $0 == "signature" }
+        ids.append("habitsToday")
+        ids.append("signature")
+        let stored = ScreenLayout(placements: ids.map { CardPlacement(id: $0, isVisible: $0 != "habitsToday") })
+
+        let rows = LayoutResolver.resolve(stored: stored, specs: specs)
+        let order = rows.map(\.id)
+        XCTAssertFalse(order.contains("habitsToday"))
+        let training = order.firstIndex(of: "trainingDay")
+        XCTAssertEqual(order.firstIndex(of: "habits"), training.map { $0 + 1 })
+        XCTAssertEqual(rows.first { $0.id == "habits" }?.isVisible, true)
+        XCTAssertTrue(LayoutResolver.merged(stored: stored, specs: specs).contains { $0.id == "habitsToday" })
+        XCTAssertFalse(TodayCardID.foodCards.contains(.habits))
     }
 
     // MARK: Readiness colours (D9)

@@ -2467,6 +2467,78 @@
         }
       }
     },
+    "Fetching your plan…": {
+      "comment": "polish-training-today: Settings -> Vault status while the first plan fetch after the setup runs.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stahuju tvůj plán…"
+          }
+        }
+      }
+    },
+    "Habits": {
+      "comment": "polish-training-today: Layout editor row and title of the Habits card on Today (the habit ladder).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Návyky"
+          }
+        }
+      }
+    },
+    "Plan fetched. Today and Plan show it.": {
+      "comment": "polish-training-today: Settings -> Vault status after the first plan fetch succeeded.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plán stažen. Ukazují ho Dnes a Plán."
+          }
+        }
+      }
+    },
+    "Shows when a race is ahead": {
+      "comment": "polish-training-today: Layout editor: when the Next race card appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se, když je před tebou závod"
+          }
+        }
+      }
+    },
+    "Shows when the plan has a habit ladder": {
+      "comment": "polish-training-today: Layout editor: when the Habits card appears on Today.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazí se, když má plán žebříček návyků"
+          }
+        }
+      }
+    },
+    "The plan file couldn't be read. Today and Plan say why.": {
+      "comment": "polish-training-today: Settings -> Vault status after the first plan fetch downloaded a file the app refused.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soubor s plánem nejde přečíst. Proč, řeknou Dnes a Plán."
+          }
+        }
+      }
+    },
     "ends in …%@": {
       "comment": "add-vault-connection: Settings -> Vault: the saved token, only its last four characters (%@).",
       "extractionState": "manual",
