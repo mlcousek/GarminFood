@@ -182,6 +182,18 @@ extension MealPreset {
     /// The ingredients that stop this preset from being logged in `mode`:
     /// in Garmin mode those needing a Garmin match, in standalone mode the
     /// catalog ingredients without a calorie value. Empty = loggable.
+    /// Whether every custom-food ingredient, scaled by `servingsMultiplier`,
+    /// sends Garmin an amount `LogQuantity` allows
+    /// (`CustomFoodDraft.backingQuantityIsValid`; fix-review-findings-
+    /// 2026-09-b). Garmin mode only: in standalone mode a custom food is
+    /// logged as itself.
+    public func backingQuantitiesAreValid(servingsMultiplier: Double = 1) -> Bool {
+        ingredients.allSatisfy { ingredient in
+            guard let draft = ingredient.customFoodDraft else { return true }
+            return draft.backingQuantityIsValid(for: ingredient.quantity * servingsMultiplier)
+        }
+    }
+
     public func blockingIngredients(in mode: DataMode) -> [MealPresetIngredient] {
         switch mode {
         case .garminConnected:

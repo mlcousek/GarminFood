@@ -129,24 +129,14 @@ public enum GarminHistoryImport {
     }
 
     /// Garmin's timestamp when it parses, else noon of the day.
+    /// Parsed as Gregorian wall clock in `calendar`'s time zone
+    /// (`GarminWireDate`): the device calendar's system never applies.
     static func loggedAt(_ timestamp: String?, day: String, calendar: Calendar) -> Date {
-        if let timestamp {
-            for format in ["yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ss"] {
-                let formatter = DateFormatter()
-                formatter.locale = Locale(identifier: "en_US_POSIX")
-                formatter.calendar = calendar
-                formatter.timeZone = calendar.timeZone
-                formatter.dateFormat = format
-                if let date = formatter.date(from: timestamp) { return date }
-            }
+        if let timestamp, let date = GarminWireDate.parseLocalTimestamp(timestamp, timeZone: calendar.timeZone) {
+            return date
         }
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "yyyy-MM-dd"
-        let start = formatter.date(from: day) ?? Date(timeIntervalSince1970: 0)
-        return calendar.date(byAdding: .hour, value: 12, to: start) ?? start
+        let start = GarminWireDate.startOfDay(fromDayString: day, timeZone: calendar.timeZone) ?? Date(timeIntervalSince1970: 0)
+        return NutritionDate.keyCalendar(matching: calendar).date(byAdding: .hour, value: 12, to: start) ?? start
     }
 
     /// The `count` days ending with `today`, oldest first.

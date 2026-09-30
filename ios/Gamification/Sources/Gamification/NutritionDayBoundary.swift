@@ -73,14 +73,10 @@ public enum NutritionDayBoundary {
     }
 
     /// Parses `yyyy-MM-dd` into midnight of that day in `calendar`'s zone.
+    /// Gregorian whatever `calendar` is (`NutritionDate`; fix-review-
+    /// findings-2026-09-b).
     public static func date(fromDayString string: String, calendar: Calendar = .current) -> Date? {
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd"
-        guard let parsed = formatter.date(from: string) else { return nil }
-        return calendar.startOfDay(for: parsed)
+        NutritionDate.startOfDay(fromDayString: string, calendar: calendar)
     }
 
     /// The one `dayStartTime` value actually observed on the probed
@@ -134,10 +130,6 @@ public enum NutritionDayBoundary {
     /// hand is already day-normalized; use `dayString(for:)` only for a raw,
     /// unshifted wall-clock timestamp.
     public static func string(forNutritionDay day: Date, calendar: Calendar = .current) -> String {
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: day)
+        NutritionDate.string(from: day, calendar: calendar)
     }
 }

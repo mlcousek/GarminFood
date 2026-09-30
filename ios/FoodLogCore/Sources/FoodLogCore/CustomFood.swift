@@ -187,6 +187,32 @@ public struct CustomFoodDraft: Codable, Sendable, Equatable, Hashable, Identifia
         return (backingFoodId, backingServingId, backingQuantityMultiplier * quantity)
     }
 
+    /// fix-review-findings-2026-09-b (finding 2): whether `quantity` of this
+    /// food sends Garmin a loggable amount of its backing serving -- the
+    /// `servingQty` that goes into the outbox, `backingQuantityMultiplier *
+    /// quantity`, held to the same `LogQuantity` bound as every other logged
+    /// amount (finite, > 0, <= `LogQuantity.maximum`). The editor already
+    /// keeps the multiplier itself in that bound, but a product of two
+    /// in-bound numbers can reach 10^8, and a stored draft (an older or
+    /// restored file) never went through the editor at all. `true` without
+    /// a backing: nothing is sent then, and `hasGarminBacking` /
+    /// `CustomFoodLoggingError.needsGarminMatch` decide that case.
+    public func backingQuantityIsValid(for quantity: Double) -> Bool {
+        guard let target = resolvedLoggingTarget(quantity: quantity) else { return true }
+        return LogQuantity.isValid(target.numberOfUnits)
+    }
+
+    /// Shown when `backingQuantityIsValid` fails (the confirm screens, and
+    /// `LogQuantityError.backingOutOfRange`). Localized from this package's
+    /// `Resources/<lang>.lproj`.
+    public static var backingQuantityInvalidMessage: String {
+        String(
+            localized: "The amount recorded in Garmin must be greater than zero and at most \(NumberDisplay.quantity(LogQuantity.maximum)) servings of the food it's recorded as. Change the amount or the food's quantity multiplier.",
+            bundle: .module,
+            comment: "Validation error on the confirm screen of a custom food logged to Garmin as another food, scaled by its multiplier. %@ is the maximum number of servings, e.g. 10000."
+        )
+    }
+
     /// Shown to the user per the food-catalog spec's "the discrepancy...
     /// is shown to the user" requirement -- never hidden.
     /// Empty when there is no backing food (nothing is recorded in Garmin).
