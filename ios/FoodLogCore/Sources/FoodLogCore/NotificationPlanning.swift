@@ -314,6 +314,65 @@ extension NotificationPlanning.PlannedFastingReminder {
     }
 }
 
+// MARK: - A rolling window of days (fix-review-findings-2026-09 finding 11)
+
+extension NotificationPlanning {
+    /// How many days ahead reminders are kept pending: enough that a phone
+    /// left closed for a few days keeps reminding, well inside iOS's 64
+    /// pending-request limit (4 daily kinds x 7 days here).
+    public static let windowDays = 7
+
+    /// One planned reminder and the day it is for (0 = today).
+    public struct DatedPlannedNotification: Sendable, Equatable {
+        public let dayOffset: Int
+        public let notification: PlannedNotification
+
+        public init(dayOffset: Int, notification: PlannedNotification) {
+            self.dayOffset = dayOffset
+            self.notification = notification
+        }
+    }
+
+    /// Today's plan (exactly `plan(...)`), plus the next `days - 1` days.
+    ///
+    /// Why: each reminder is a one-day request, re-planned whenever the app
+    /// runs. With only TODAY's requests pending, a phone that stayed closed
+    /// past midnight got no reminders at all the next day. Future days are
+    /// planned as "nothing logged yet" -- the truth until the app runs
+    /// again, and the next replan removes whatever becomes unneeded (a meal
+    /// logged, a setting turned off). The streak reminder stays TODAY-only:
+    /// whether tomorrow's streak is at risk depends on what happens today,
+    /// which can't be known ahead, and a wrong "you haven't logged" is
+    /// worse than none.
+    public static func planWindow(
+        preferences: NotificationPreferences,
+        mealsLoggedToday: Set<MealType>,
+        isStreakAtRiskToday: Bool,
+        days: Int = windowDays
+    ) -> [DatedPlannedNotification] {
+        guard days > 0 else { return [] }
+        var result = plan(
+            preferences: preferences,
+            mealsLoggedToday: mealsLoggedToday,
+            isStreakAtRiskToday: isStreakAtRiskToday
+        ).map { DatedPlannedNotification(dayOffset: 0, notification: $0) }
+        for offset in 1..<days {
+            let future = plan(preferences: preferences, mealsLoggedToday: [], isStreakAtRiskToday: false)
+            result += future.map { DatedPlannedNotification(dayOffset: offset, notification: $0) }
+        }
+        return result
+    }
+
+    /// fix-review-findings-2026-09 finding 10: a sync that ran while
+    /// permission was still undecided scheduled nothing, and granting the
+    /// permission prompt never re-ran it -- the reminder just switched on
+    /// stayed unscheduled until the next foreground. Re-sync exactly when
+    /// reminders just became deliverable.
+    public static func needsResyncAfterPermissionChange(wasAllowed: Bool, isAllowed: Bool) -> Bool {
+        !wasAllowed && isAllowed
+    }
+}
+
 extension MealType {
     /// Meal reminder copy, one full sentence per meal type (add-localization
     /// design.md D5): Czech needs the meal name in the accusative

@@ -58,27 +58,21 @@ enum BackgroundRefresh {
     /// scheduled again.
     @MainActor
     private static func deliver(_ services: AppServices) async {
-        let result = await services.outbox.drain(using: services.garminClient)
-        if !result.delivered.isEmpty {
-            _ = await services.reconciliation.reconcile(delivered: result.delivered, using: services.garminClient)
+        // fix-review-findings-2026-09 finding 3: the drains and the
+        // "still waiting?" rule live in FoodLogCore's
+        // `BackgroundOutboxDelivery`, tested with weight-only and
+        // water-only queues.
+        let outcome = await BackgroundOutboxDelivery.run(
+            outbox: services.outbox,
+            reconciliation: services.reconciliation,
+            weightOutbox: services.weightOutbox,
+            hydrationOutbox: services.hydrationOutbox,
+            client: services.garminClient
+        )
+        if outcome.authOutcome != DrainAuthOutcome.none {
+            DiagnosticsLog.log(.warning, category: "BackgroundRefresh", "background drain stopped on auth: \(outcome.authOutcome)")
         }
-        let weightResult = await services.weightOutbox.drain(using: services.garminClient)
-        let hydrationResult = await services.hydrationOutbox.drain(using: services.garminClient)
-
-        let authOutcome = [result.authOutcome, weightResult.authOutcome, hydrationResult.authOutcome]
-            .first { $0 != .none } ?? .none
-        if authOutcome != .none {
-            DiagnosticsLog.log(.warning, category: "BackgroundRefresh", "background drain stopped on auth: \(authOutcome)")
-        }
-
-        // An unparked edit still owing its old entry's delete
-        // (add-log-entry-editing) needs another drain just like a pending create.
-        let foodWaiting = await services.outbox.allEntries().contains {
-            $0.state == .pending || ($0.state == .createdAwaitingDelete && !$0.isParkedReplace)
-        }
-        let weightWaiting = await services.weightOutbox.allEntries().contains { $0.state == .pending }
-        let hydrationWaiting = await services.hydrationOutbox.allEntries().contains { $0.state == .pending }
-        if foodWaiting || weightWaiting || hydrationWaiting {
+        if outcome.needsAnotherRefresh {
             schedule()
         }
     }

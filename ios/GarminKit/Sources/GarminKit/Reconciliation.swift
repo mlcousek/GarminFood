@@ -111,6 +111,10 @@ public actor Reconciliation {
         delivered: [OutboxEntry],
         using client: some FoodLogReconciling
     ) async -> [ReconciliationOutcome] {
+        // fix-review-findings-2026-09 finding 9: only entries the signed-in
+        // account may receive are checked against ITS log -- another
+        // account's delivery would read as "missing" there.
+        let delivered = await outbox.inCurrentAccount(delivered)
         guard !delivered.isEmpty else { return [] }
 
         var outcomes: [ReconciliationOutcome] = []

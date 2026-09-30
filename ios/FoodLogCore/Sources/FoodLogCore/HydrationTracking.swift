@@ -88,8 +88,17 @@ public actor HydrationStore {
     @discardableResult
     public func upsert(_ entry: HydrationEntry) throws -> HydrationEntry {
         loadIfNeeded()
+        let previous = entriesById[entry.id]
         entriesById[entry.id] = entry
-        try persist()
+        do {
+            try persist()
+        } catch {
+            // fix-review-findings-2026-09 finding 4: a failed save leaves
+            // nothing behind in memory either, so the screen never lists a
+            // record that isn't on disk.
+            entriesById[entry.id] = previous
+            throw error
+        }
         return entry
     }
 

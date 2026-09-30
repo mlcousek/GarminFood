@@ -121,6 +121,12 @@ final class AppServices {
 
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
+    /// fix-review-findings-2026-09 finding 1: screenless logs (quick-pick
+    /// Controls, Siri) are reported here after their durable commit; the
+    /// app attaches `GamificationEngine.handleLogConfirmed` at launch and
+    /// each log is awarded exactly once (ConfirmedLogRelay.swift). Held
+    /// until then, so a log made before `AppEnvironment` exists still counts.
+    let logRewards: ConfirmedLogRelay
 
     /// add-standalone-mode 2.5: the effective data mode, read from
     /// `UserDefaults` on every call (never cached), so the hidden testing
@@ -129,13 +135,16 @@ final class AppServices {
 
     private init() {
         let client = GarminClient()
-        let outbox = Outbox(processName: "app")
+        // fix-review-findings-2026-09 finding 9: every outbox stamps and
+        // checks the signed-in Garmin account (GarminKit DeliverySafety.swift).
+        let accountKey: AccountScope.Provider = { await GarminAccountKey.currentKey() }
+        let outbox = Outbox(processName: "app", accountKey: accountKey)
         let usageHistory = UsageHistoryStore()
         let servingDefaults = ServingDefaultStore()
         let weightStore = WeightStore()
-        let weightOutbox = WeightOutbox(processName: "app")
+        let weightOutbox = WeightOutbox(processName: "app", accountKey: accountKey)
         let hydrationStore = HydrationStore()
-        let hydrationOutbox = HydrationOutbox(processName: "app")
+        let hydrationOutbox = HydrationOutbox(processName: "app", accountKey: accountKey)
         let garminHealthCache = GarminHealthCacheStore()
         let foodCache = FoodCacheStore()
         let offlineIndex = OfflineFoodIndexHolder()
@@ -188,6 +197,7 @@ final class AppServices {
         self.supplementPlanStore = SupplementPlanStore()
         self.supplementIntakeStore = SupplementIntakeStore()
         self.supplementLimitsStore = SupplementLimitsStore()
+        self.logRewards = ConfirmedLogRelay()
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`

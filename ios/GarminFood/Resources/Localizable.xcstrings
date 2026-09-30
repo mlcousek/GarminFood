@@ -7663,18 +7663,6 @@
         }
       }
     },
-    "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.": {
-      "comment": "Error: Garmin created the food but the response could not be parsed.",
-      "extractionState": "manual",
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Garmin jídlo přijal, ale vrátil odpověď, které nerozumíme. Zkus ho raději zapsat jako jiné jídlo z Garminu."
-          }
-        }
-      }
-    },
     "Garmin accepted the ticket but sent back a response this app couldn't read.": {
       "comment": "Sign-in error: unreadable token-exchange response.",
       "extractionState": "manual",
@@ -7719,6 +7707,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Garmin jídlo vytvořil, ale nevrátil k němu žádnou porci. Vyber raději jiné jídlo z Garminu."
+          }
+        }
+      }
+    },
+    "Garmin created this food, but its details didn't come back. Search Garmin for it to log it -- creating it again would make a duplicate.": {
+      "comment": "Create in Garmin: Garmin accepted the create (2xx) but its response could not be read; the button stays off so no duplicate is made.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin jídlo vytvořil, ale jeho údaje se nevrátily. Najdi ho ve vyhledávání Garminu a zapiš ho -- další vytvoření by udělalo duplikát."
           }
         }
       }

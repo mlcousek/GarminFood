@@ -23,7 +23,7 @@ struct SupplementReminderTimesView: View {
         }
         .navigationTitle("Reminder times")
         .task {
-            await NotificationScheduler.shared.requestAuthorizationIfNeeded()
+            await environment.requestNotificationPermissionIfNeeded()
         }
     }
 }

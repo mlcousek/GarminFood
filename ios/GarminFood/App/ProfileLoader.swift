@@ -36,6 +36,10 @@ final class ProfileLoader {
         if let loadedProfile {
             profile = loadedProfile
             profileFailed = false
+            // fix-review-findings-2026-09 finding 9: which Garmin account the
+            // current token belongs to -- queued entries are only ever sent
+            // to the account they were logged under.
+            GarminAccountKey.record(profile: loadedProfile, tokenFingerprint: await GarminAccountKey.tokenFingerprint())
         } else {
             profileFailed = true
         }

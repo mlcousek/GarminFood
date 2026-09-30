@@ -225,6 +225,20 @@ final class CheckInBuilderTests: XCTestCase {
         XCTAssertEqual(fire, Date(timeIntervalSince1970: 1_918_951_500)) // 02:05Z
     }
 
+    /// fix-review-findings-2026-09 finding 11: a week ahead from the cached
+    /// projection, so reminders keep firing while the app stays closed --
+    /// the default (today and tomorrow) is its first two days.
+    func testAWiderWindowPlansTheFollowingDaysToo() throws {
+        let data = try withoutTodaysLight()
+        let twoDays = TrainingReminderPlanner.plan(snapshot: try snapshot(data: data), today: D.asOf, now: midnight, timeZone: prague, language: .english)
+        let week = TrainingReminderPlanner.plan(snapshot: try snapshot(data: data), today: D.asOf, now: midnight, timeZone: prague, language: .english, days: 7)
+
+        XCTAssertEqual(Array(week.prefix(twoDays.count)), twoDays, "the first two days are planned exactly as before")
+        let window = Set((0..<7).map { D.asOf.adding(days: $0) })
+        XCTAssertTrue(week.allSatisfy { window.contains($0.date) }, "never past the window")
+        XCTAssertEqual(TrainingReminderPlanner.plan(snapshot: try snapshot(data: data), today: D.asOf, now: midnight, timeZone: prague, language: .english, days: 0), [])
+    }
+
     func testCheckingInRemovesTheMorningReminder() throws {
         let local = TrainingReminderPlanner.plan(snapshot: try snapshot([logged(amber(), seq: 1)], data: try withoutTodaysLight()), today: D.asOf, now: midnight, timeZone: prague, language: .english)
         XCTAssertEqual(local.map(\.id), ["habits.2030-10-24"])

@@ -36,10 +36,14 @@ public struct WeightLogCoordinator: Sendable {
     }
 
     /// Commits a weigh-in locally and enqueues it for delivery, in that
-    /// order -- the outbox entry's id has to exist before `WeightEntry` can
-    /// reference it via `outboxEntryId`. Both are local-only writes, so the
-    /// ordering costs nothing in wait time either way. Returns as soon as
-    /// both local writes succeed; callers may show success immediately.
+    /// order (fix-review-findings-2026-09 finding 4): the outbox entry's id
+    /// is chosen up front, the local record is saved FIRST, and only then
+    /// is the entry enqueued. A failed local save throws before anything is
+    /// queued, so a save the user saw fail can never reach Garmin later.
+    /// If the enqueue itself fails, the just-saved local record is removed
+    /// again (best effort) and the error rethrown. It used to enqueue first,
+    /// so a failed local save left a queued weigh-in behind. Both are
+    /// local-only writes; returns as soon as both succeed.
     @discardableResult
     public func logWeight(
         weightKg: Double,
@@ -51,15 +55,21 @@ public struct WeightLogCoordinator: Sendable {
             // Standalone: the local store IS the record; nothing to send.
             return try await store.upsert(WeightEntry(weightKg: weightKg, loggedAt: loggedAt, note: note, createdAt: now))
         }
-        let outboxEntry = try await outbox.logWeight(weightKg: weightKg, loggedAt: loggedAt)
-        let entry = WeightEntry(
+        let outboxEntryId = UUID()
+        let saved = try await store.upsert(WeightEntry(
             weightKg: weightKg,
             loggedAt: loggedAt,
             note: note,
             createdAt: now,
-            outboxEntryId: outboxEntry.id
-        )
-        return try await store.upsert(entry)
+            outboxEntryId: outboxEntryId
+        ))
+        do {
+            try await outbox.logWeight(weightKg: weightKg, loggedAt: loggedAt, id: outboxEntryId)
+        } catch {
+            try? await store.delete(id: saved.id)
+            throw error
+        }
+        return saved
     }
 
     /// Removes the local record, and -- only if Garmin has not yet accepted

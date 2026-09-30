@@ -297,6 +297,15 @@ final class AppEnvironment {
         )
 
         services.logObserver = donations
+        // fix-review-findings-2026-09 finding 1: a quick-pick Control or Siri
+        // log is awarded by the same `handleLogConfirmed` an in-app confirm
+        // calls, exactly once; logs made before this point are handed over
+        // now (ConfirmedLogRelay.swift).
+        Task { [weak self] in
+            await services.logRewards.attach { log in
+                await self?.gamificationEngine.handleLogConfirmed(now: log.loggedAt, calories: log.calories)
+            }
+        }
         Haptics.isEnabled = preferences.hapticsEnabled
         // A tick or a plan change re-plans the supplement reminders (a done
         // slot's reminder is removed).
@@ -564,6 +573,9 @@ final class AppEnvironment {
     /// called), and delivery starts without the sheet waiting for it.
     func weightLogged() async {
         await weightLoader.refresh()
+        // Same as `logConfirmed`: the sync queue count includes it at once
+        // (fix-review-findings-2026-09 finding 3).
+        await refreshQueueState()
         Task { await self.drainAndReconcile() }
     }
 
@@ -608,6 +620,7 @@ final class AppEnvironment {
     /// action) -- same reasoning as `weightLogged()`.
     func hydrationLogged() async {
         await hydrationLoader.refresh()
+        await refreshQueueState()
         Task { await self.drainAndReconcile() }
     }
 
@@ -875,8 +888,21 @@ final class AppEnvironment {
     // MARK: - Account
 
     /// Removes the stored Garmin credentials. Queued entries stay queued
-    /// and deliver after the next sign-in.
+    /// and deliver after the next sign-in -- of the SAME account only
+    /// (fix-review-findings-2026-09 finding 9): anything not yet tied to an
+    /// account is tied to the one signing out first, and a different
+    /// account never receives it (it stays held in the sync queue).
     func signOut() async {
+        if let key = GarminAccountKey.lastRecorded() {
+            do {
+                try await outbox.assignUnscopedEntries(to: key)
+                try await weightOutbox.assignUnscopedEntries(to: key)
+                try await hydrationOutbox.assignUnscopedEntries(to: key)
+            } catch {
+                DiagnosticsLog.log(.error, category: "Account", "couldn't tie queued entries to the account signing out: \(error)")
+            }
+        }
+        GarminAccountKey.clear()
         await garminClientTokenProvider.signOut()
         authState.markSignedOut()
         profile.clear()
@@ -899,10 +925,18 @@ final class AppEnvironment {
             BackgroundRefresh.cancel()
             return
         }
-        if undeliveredCount > 0 {
-            BackgroundRefresh.schedule()
-        } else {
-            BackgroundRefresh.cancel()
+        // fix-review-findings-2026-09 finding 3: ask the three outboxes
+        // themselves, not `undeliveredCount` -- that cached count is only
+        // refreshed after a drain finishes, so leaving the app right after
+        // a weigh-in or a drink (an offline drain still running) read it
+        // stale and cancelled the refresh.
+        let (outbox, weightOutbox, hydrationOutbox) = (self.outbox, self.weightOutbox, self.hydrationOutbox)
+        Task {
+            if await OutboxBacklog.needsDelivery(outbox: outbox, weightOutbox: weightOutbox, hydrationOutbox: hydrationOutbox) {
+                BackgroundRefresh.schedule()
+            } else {
+                BackgroundRefresh.cancel()
+            }
         }
     }
 
@@ -912,8 +946,17 @@ final class AppEnvironment {
 
     // MARK: - Notifications
 
+    /// Asks for permission if undecided, and -- fix-review-findings-2026-09
+    /// finding 10 -- re-syncs every reminder when that just made them
+    /// deliverable: the sync a toggle fired while permission was still
+    /// undecided scheduled nothing.
     func requestNotificationPermissionIfNeeded() async {
+        let wasAllowed = await NotificationScheduler.shared.isAuthorized()
         await NotificationScheduler.shared.requestAuthorizationIfNeeded()
+        let isAllowed = await NotificationScheduler.shared.isAuthorized()
+        if NotificationPlanning.needsResyncAfterPermissionChange(wasAllowed: wasAllowed, isAllowed: isAllowed) {
+            await syncNotifications()
+        }
     }
 
     func setBreakfastReminder(_ setting: ReminderSetting) {

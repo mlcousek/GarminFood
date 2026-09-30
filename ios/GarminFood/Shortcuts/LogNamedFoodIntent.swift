@@ -98,13 +98,16 @@ struct LogNamedFoodIntent: AppIntent {
         let numberOfUnits = choice.numberOfUnits
 
         let date = NutritionDate.todayString()
-        try await services.logEntryCoordinator.confirm(
+        let entry = try await services.logEntryCoordinator.confirm(
             food: food,
             serving: serving,
             numberOfUnits: numberOfUnits,
             mealType: MealTypeDefaulting.defaultMealType(),
             date: date
         )
+        // fix-review-findings-2026-09 finding 1: awarded exactly once by the
+        // app's gamification engine, like an in-app confirm.
+        await services.logRewards.report(ConfirmedLog(id: entry.id, calories: serving.calories.map { $0 * numberOfUnits }, loggedAt: entry.createdAt))
         // Records the Siri donation (task 20.2) so deleting this entry in the
         // app can remove it again.
         await services.logObserver?.didLog(food: food, date: date)
@@ -159,12 +162,8 @@ struct LogNamedFoodIntent: AppIntent {
         let mealType = MealTypeDefaulting.defaultMealType()
         if let draft = top.customDraft {
             let remembered = await services.servingDefaults.defaultServing(forFoodId: draft.id.uuidString)
-            try await services.logEntryCoordinator.confirmCustomFood(
-                draft,
-                quantity: LogQuantity.initial(remembered: remembered?.numberOfUnits),
-                mealType: mealType,
-                date: date
-            )
+            let target = QuickPickLogTarget.custom(draft, quantity: LogQuantity.initial(remembered: remembered?.numberOfUnits))
+            try await QuickPickCommit.commit(target, using: services.logEntryCoordinator, mealType: mealType, date: date, relay: services.logRewards)
             await services.logObserver?.didLog(food: draft.asFood(), date: date)
             return "Saved \(draft.name)."
         }
@@ -178,13 +177,8 @@ struct LogNamedFoodIntent: AppIntent {
         ) else {
             return "\(food.name) has no calorie value, so it can't be logged. Open Jirka's Arc to add it as a custom food."
         }
-        try await services.logEntryCoordinator.confirm(
-            food: food,
-            serving: choice.serving,
-            numberOfUnits: choice.numberOfUnits,
-            mealType: mealType,
-            date: date
-        )
+        let target = QuickPickLogTarget.catalog(food: food, serving: choice.serving, numberOfUnits: choice.numberOfUnits)
+        try await QuickPickCommit.commit(target, using: services.logEntryCoordinator, mealType: mealType, date: date, relay: services.logRewards)
         await services.logObserver?.didLog(food: food, date: date)
         return "Saved \(food.name)."
     }

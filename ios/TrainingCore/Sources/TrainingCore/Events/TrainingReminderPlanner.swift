@@ -17,6 +17,12 @@
 // reminder whose time has passed is left out. Nothing is planned without a
 // plan, or when the capabilities don't allow recording (no device id).
 //
+// fix-review-findings-2026-09 finding 11: `days` widens the window beyond
+// today and tomorrow (the app passes a week, planned from the cached
+// projection), so reminders keep firing while the app stays closed; the
+// next replan still removes any a check-in or tick makes unneeded. Days the
+// plan doesn't cover plan nothing.
+//
 // Times are defaults (tasks 0.1). Depended on by: the app's
 // NotificationScheduler. Tests: TrainingReminderPlannerTests.
 
@@ -43,20 +49,21 @@ public enum TrainingReminderPlanner {
     public static let morningTime = (hour: 4, minute: 5)
     public static let eveningTime = (hour: 20, minute: 10)
 
-    /// Reminders for `today` and the day after that are still ahead of
-    /// `now` (read in `timeZone`, the device's: reminders fire on the
-    /// phone's clock).
+    /// Reminders for `today` and the following days (`days` in all,
+    /// default today and tomorrow) that are still ahead of `now` (read in
+    /// `timeZone`, the device's: reminders fire on the phone's clock).
     public static func plan(
         snapshot: TrainingSnapshot?,
         today: LocalDate,
         now: Date,
         timeZone: TimeZone,
-        language: TrainingLanguage
+        language: TrainingLanguage,
+        days: Int = 2
     ) -> [TrainingReminder] {
-        guard let snapshot, let plan = snapshot.plan else { return [] }
+        guard let snapshot, let plan = snapshot.plan, days > 0 else { return [] }
         let text = TrainingText(language)
         var result: [TrainingReminder] = []
-        for date in [today, today.adding(days: 1)] {
+        for date in (0..<days).map({ today.adding(days: $0) }) {
             guard let day = plan.day(date) else { continue }
 
             if snapshot.capabilities.canCheckIn,

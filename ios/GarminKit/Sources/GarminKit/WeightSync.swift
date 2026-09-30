@@ -153,6 +153,13 @@ public struct WeightOutboxEntry: Codable, Sendable, Equatable, Identifiable {
     /// accepted it -- queues a delete-by-match for it. Optional so older
     /// outbox files still decode.
     public var removalRequested: Bool?
+    /// fix-review-findings-2026-09 finding 16: saved BEFORE the request
+    /// goes out, cleared with its outcome -- still set after a relaunch =
+    /// possibly already in Garmin (DeliverySafety.swift). Decode-safe.
+    public var sendStartedAt: Date? = nil
+    /// fix-review-findings-2026-09 finding 9: the account it was logged
+    /// under (hashed); only ever delivered there. Decode-safe.
+    public var accountKey: String? = nil
 
     public init(
         id: UUID = UUID(),
@@ -329,14 +336,17 @@ actor WeightOutboxStore {
                 sent.removalRequested = true
                 entries[index] = sent
                 if attempted.kind == .add {
-                    entries.append(WeightOutboxEntry(
+                    var compensation = WeightOutboxEntry(
                         weightKg: attempted.weightKg,
                         loggedAt: attempted.loggedAt,
                         nextAttemptAt: attempted.nextAttemptAt,
                         operation: .delete,
                         samplePk: nil,
                         calendarDate: WeightOutbox.localCalendarDate(of: attempted.loggedAt)
-                    ))
+                    )
+                    // Same account as the add it deletes (finding 9).
+                    compensation.accountKey = attempted.accountKey
+                    entries.append(compensation)
                     settlement = .deleteQueued
                 } else {
                     settlement = .written
@@ -355,6 +365,38 @@ actor WeightOutboxStore {
             DiagnosticsLog.log(.error, category: "WeightOutboxStore", "couldn't persist a delivery result: \(error)")
         }
         return settlement
+    }
+
+    /// Finding 16: saves `sendStartedAt` before the request is sent; the
+    /// in-memory copy changes only once that write succeeded.
+    func markSending(id: UUID, at date: Date) throws -> WeightOutboxEntry {
+        loadIfNeeded()
+        guard let index = entries.firstIndex(where: { $0.id == id }) else { throw OutboxEditError.entryNotFound }
+        var updated = entries
+        updated[index].sendStartedAt = date
+        try write(updated)
+        entries = updated
+        return updated[index]
+    }
+
+    /// Releases a claim without writing anything (an entry skipped this
+    /// drain).
+    func release(id: UUID) {
+        claimedIds.remove(id)
+    }
+
+    /// Finding 9: ties every undelivered, unstamped entry to `key`.
+    func assignUnscoped(to key: String) throws {
+        loadIfNeeded()
+        var updated = entries
+        var changed = false
+        for index in updated.indices where updated[index].accountKey == nil && updated[index].state != .sent {
+            updated[index].accountKey = key
+            changed = true
+        }
+        guard changed else { return }
+        try write(updated)
+        entries = updated
     }
 
     /// Removes a not-yet-delivered entry. If a drain is sending it right
@@ -410,6 +452,8 @@ public actor WeightOutbox {
     private let backoffBase: TimeInterval
     private let backoffCap: TimeInterval
     private var isDraining = false
+    /// The signed-in account's key (finding 9, DeliverySafety.swift).
+    private let accountKey: AccountScope.Provider
 
     /// The initializer every real caller (currently just the app; a widget
     /// extension has no reason to log weight) uses. `processName` becomes
@@ -418,12 +462,14 @@ public actor WeightOutbox {
         processName: String = "default",
         maxAttempts: Int = 5,
         backoffBase: TimeInterval = 0.5,
-        backoffCap: TimeInterval = 8
+        backoffCap: TimeInterval = 8,
+        accountKey: @escaping AccountScope.Provider = { nil }
     ) {
         self.store = WeightOutboxStore(fileURL: WeightOutboxStore.defaultFileURL(processName: processName))
         self.maxAttempts = maxAttempts
         self.backoffBase = backoffBase
         self.backoffCap = backoffCap
+        self.accountKey = accountKey
     }
 
     /// Test-only entry point, mirroring `Outbox`'s internal `(store:)`
@@ -433,21 +479,26 @@ public actor WeightOutbox {
         store: WeightOutboxStore,
         maxAttempts: Int = 5,
         backoffBase: TimeInterval = 0.5,
-        backoffCap: TimeInterval = 8
+        backoffCap: TimeInterval = 8,
+        accountKey: @escaping AccountScope.Provider = { nil }
     ) {
         self.store = store
         self.maxAttempts = maxAttempts
         self.backoffBase = backoffBase
         self.backoffCap = backoffCap
+        self.accountKey = accountKey
     }
 
     /// Enqueues a new entry. Like `Outbox.logFood`, a successful return here
     /// is durable and makes no network call -- callers may treat it as safe
     /// to show in the UI immediately.
+    /// `id`: the caller may choose it, so a local record can reference the
+    /// entry BEFORE it is enqueued (FoodLogCore's `WeightLogCoordinator`
+    /// saves locally first -- fix-review-findings-2026-09 finding 4).
     @discardableResult
-    public func logWeight(weightKg: Double, loggedAt: Date = Date()) async throws -> WeightOutboxEntry {
-        let entry = WeightOutboxEntry(weightKg: weightKg, loggedAt: loggedAt, operation: .add)
-        return try await store.enqueue(entry)
+    public func logWeight(weightKg: Double, loggedAt: Date = Date(), id: UUID = UUID()) async throws -> WeightOutboxEntry {
+        let entry = WeightOutboxEntry(id: id, weightKg: weightKg, loggedAt: loggedAt, operation: .add)
+        return try await store.enqueue(stamped(entry))
     }
 
     /// Enqueues deleting Garmin sample `samplePk` (dated `calendarDate`,
@@ -463,7 +514,7 @@ public actor WeightOutbox {
             samplePk: samplePk,
             calendarDate: calendarDate
         )
-        return try await store.enqueue(entry)
+        return try await store.enqueue(stamped(entry))
     }
 
     /// Enqueues deleting the Garmin copy of a weigh-in whose `samplePk` is
@@ -479,7 +530,7 @@ public actor WeightOutbox {
             samplePk: nil,
             calendarDate: calendarDate
         )
-        return try await store.enqueue(entry)
+        return try await store.enqueue(stamped(entry))
     }
 
     /// Removes an entry Garmin has not accepted yet -- or, for an add a
@@ -512,6 +563,19 @@ public actor WeightOutbox {
         await store.pending(now: now).count
     }
 
+    /// `entry` stamped with the account signed in now (finding 9).
+    private func stamped(_ entry: WeightOutboxEntry) async -> WeightOutboxEntry {
+        var stamped = entry
+        stamped.accountKey = await accountKey()
+        return stamped
+    }
+
+    /// Signing out (finding 9): ties every undelivered, unstamped entry to
+    /// `key`, the account being signed out.
+    public func assignUnscopedEntries(to key: String) async throws {
+        try await store.assignUnscoped(to: key)
+    }
+
     /// User-initiated retry of a `.failed` entry.
     public func retry(id: UUID) async throws {
         guard var entry = await store.all().first(where: { $0.id == id }) else { return }
@@ -519,6 +583,7 @@ public actor WeightOutbox {
         entry.attemptCount = 0
         entry.lastError = nil
         entry.nextAttemptAt = Date()
+        entry.sendStartedAt = nil
         try await store.update(entry)
     }
 
@@ -552,11 +617,49 @@ public actor WeightOutbox {
         // `HydrationOutbox.drain`, so a delete `settle` queues for an add
         // deleted mid-flight goes out in this same drain.
         var attempted = Set<UUID>()
+        let currentAccount = await accountKey()
 
         while true {
-            guard let next = await store.pending(now: now).first(where: { !attempted.contains($0.id) }) else { break }
+            // Finding 9: another account's entry is held, not sent.
+            guard let next = await store.pending(now: now).first(where: {
+                !attempted.contains($0.id) && AccountScope.mayDeliver(entryKey: $0.accountKey, currentKey: currentAccount)
+            }) else { break }
             attempted.insert(next.id)
             guard var entry = await store.claim(id: next.id, now: now) else { continue }
+
+            // Finding 16: an add whose outcome was never recorded (the app
+            // stopped after sending it) is looked up in Garmin's day view
+            // first -- sent again only if Garmin doesn't have it. A delete
+            // is safe to repeat (404 = already gone).
+            if entry.sendStartedAt != nil, entry.kind == .add {
+                guard let samples = try? await deliverer.weighInSamples(on: WeightOutbox.localCalendarDate(of: entry.loggedAt)) else {
+                    // Can't check right now: left untouched for a later drain.
+                    await store.release(id: entry.id)
+                    continue
+                }
+                if WeighInMatching.closest(weightKg: entry.weightKg, at: entry.loggedAt, in: samples) != nil {
+                    entry.sendStartedAt = nil
+                    entry.state = .sent
+                    entry.lastError = nil
+                    entry.deliveredAt = clock()
+                    switch await store.settle(entry, accepted: true) {
+                    case .written, .gone, .deleteQueued:
+                        delivered.append(entry)
+                    case .dropped:
+                        break
+                    }
+                    continue
+                }
+            }
+            // Recorded BEFORE the request goes out; not sent if that can't
+            // be saved.
+            do {
+                entry = try await store.markSending(id: entry.id, at: now)
+            } catch {
+                DiagnosticsLog.log(.warning, category: "WeightOutbox", "couldn't record a send before making it (\(error)); trying on a later drain")
+                await store.release(id: entry.id)
+                continue
+            }
 
             var accepted = false
             var stop = false
@@ -646,6 +749,8 @@ public actor WeightOutbox {
                 }
             }
 
+            // The outcome is being recorded now (finding 16).
+            entry.sendStartedAt = nil
             switch await store.settle(entry, accepted: accepted) {
             case .written, .gone:
                 if accepted {
