@@ -121,6 +121,12 @@ final class AppServices {
 
     /// Set by the app at launch. Stays `nil` in the widget extension.
     weak var logObserver: LogObserving?
+    /// fix-review-findings-2026-09 finding 1: screenless logs (quick-pick
+    /// Controls, Siri) are reported here after their durable commit; the
+    /// app attaches `GamificationEngine.handleLogConfirmed` at launch and
+    /// each log is awarded exactly once (ConfirmedLogRelay.swift). Held
+    /// until then, so a log made before `AppEnvironment` exists still counts.
+    let logRewards: ConfirmedLogRelay
 
     /// add-standalone-mode 2.5: the effective data mode, read from
     /// `UserDefaults` on every call (never cached), so the hidden testing
@@ -188,6 +194,7 @@ final class AppServices {
         self.supplementPlanStore = SupplementPlanStore()
         self.supplementIntakeStore = SupplementIntakeStore()
         self.supplementLimitsStore = SupplementLimitsStore()
+        self.logRewards = ConfirmedLogRelay()
     }
 
     /// Tries to deliver queued entries, but stops WAITING after `seconds`

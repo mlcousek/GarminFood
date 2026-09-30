@@ -251,11 +251,14 @@ struct CreateInGarminConfirmView: View {
     var onPickCreated: ((Food, Serving) -> Void)? = nil
 
     @Environment(AppEnvironment.self) private var environment
-    @State private var isCreating = false
+    /// fix-review-findings-2026-09 finding 2: once Garmin answered 2xx the
+    /// button stays off -- a second tap would create a duplicate food.
+    @State private var gate = CustomFoodCreateGate()
     @State private var errorMessage: String?
     @State private var logTarget: LogTarget?
 
     private var serving: Serving? { offFood.servings.first }
+    private var isCreating: Bool { gate.phase == .creating }
 
     var body: some View {
         Form {
@@ -293,7 +296,7 @@ struct CreateInGarminConfirmView: View {
         .navigationTitle("Create in Garmin")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
-            PrimaryButton(title: "Create in Garmin", isDisabled: isCreating || serving?.calories == nil) {
+            PrimaryButton(title: "Create in Garmin", isDisabled: !gate.canCreate || serving?.calories == nil) {
                 createInGarmin()
             }
             .padding(Theme.Spacing.md)
@@ -315,15 +318,13 @@ struct CreateInGarminConfirmView: View {
     }
 
     private func createInGarmin() {
-        guard let calories = serving?.calories else { return }
-        isCreating = true
+        guard let calories = serving?.calories, gate.begin() else { return }
         errorMessage = nil
         Task {
-            defer { isCreating = false }
             do {
                 // The one explicit, user-triggered call (task 30.4) --
                 // never invoked from anywhere else in this codebase.
-                let result = try await environment.garminClient.createCustomFood(
+                let outcome = try await environment.garminClient.createCustomFood(
                     name: offFood.name,
                     servingUnit: serving?.unit ?? "g",
                     numberOfUnits: serving?.numberOfUnits ?? 100,
@@ -334,8 +335,11 @@ struct CreateInGarminConfirmView: View {
                     regionCode: environment.profile.settings?.regionCode,
                     languageCode: environment.profile.settings?.languageCode
                 )
-                guard let createdFood = Food(searchResult: result) else {
-                    errorMessage = String(localized: "Garmin accepted the food but returned a shape we couldn't read. Try logging against a different Garmin food instead.")
+                // Any 2xx is a create (CustomFoodCreateGate): with no
+                // readable food, say so -- never offer a retry that would
+                // make a second copy in Garmin.
+                guard let createdFood = gate.finish(outcome) else {
+                    errorMessage = String(localized: "Garmin created this food, but its details didn't come back. Search Garmin for it to log it -- creating it again would make a duplicate.")
                     return
                 }
                 recordOFFProvenance(garminFood: createdFood, offFood: offFood, store: environment.foodProvenanceStore)
@@ -354,6 +358,8 @@ struct CreateInGarminConfirmView: View {
                 // normal log-entry confirm flow.
                 logTarget = .catalog(food: createdFood, initialServing: createdFood.servings.first)
             } catch {
+                // No 2xx was seen: nothing was created, so a retry is safe.
+                gate.fail()
                 errorMessage = String(localized: "Couldn't create this food in Garmin. Try again, or log against a different Garmin food instead.")
             }
         }

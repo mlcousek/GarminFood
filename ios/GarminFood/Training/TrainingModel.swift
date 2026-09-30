@@ -184,7 +184,11 @@ final class TrainingModel {
     func syncReminders(now: Date = Date()) async {
         let allowed = remindersEnabled && events.isConnectionOn()
         let reminders = allowed
-            ? TrainingReminderPlanner.plan(snapshot: source.snapshot, today: today(now: now), now: now, timeZone: .current, language: language)
+            // fix-review-findings-2026-09 finding 11: a week ahead, from the
+            // cached projection (the same 7 days as the food reminders,
+            // NotificationPlanning.windowDays), so reminders outlive a
+            // closed app.
+            ? TrainingReminderPlanner.plan(snapshot: source.snapshot, today: today(now: now), now: now, timeZone: .current, language: language, days: 7)
             : []
         await NotificationScheduler.shared.syncTrainingReminders(reminders, now: now)
     }

@@ -147,26 +147,24 @@ enum QuickPickControlAction {
 
         let date = NutritionDate.todayString()
         let mealType = MealTypeDefaulting.defaultMealType()
-        switch loggable[rankIndex] {
-        case .catalog(let food, let serving, let numberOfUnits):
-            try await services.logEntryCoordinator.confirm(
-                food: food,
-                serving: serving,
-                numberOfUnits: numberOfUnits,
-                mealType: mealType,
-                date: date
-            )
+        let target = loggable[rankIndex]
+        // fix-review-findings-2026-09 finding 1: commit, then report the log
+        // to the gamification relay -- the app's `GamificationEngine.
+        // handleLogConfirmed` awards it exactly once, the same path an
+        // in-app confirm takes (ConfirmedLogRelay.swift's header). A custom
+        // food goes through `confirmCustomFood`, as on the confirm screen.
+        try await QuickPickCommit.commit(
+            target,
+            using: services.logEntryCoordinator,
+            mealType: mealType,
+            date: date,
+            relay: services.logRewards
+        )
+        // Siri donation for a catalog food only; none for a custom food,
+        // same as the confirm screen (a custom food's name can't be found
+        // by "log it by name").
+        if case .catalog(let food, _, _) = target {
             await services.logObserver?.didLog(food: food, date: date)
-        case .custom(let draft, let quantity):
-            // Same call the confirm screen makes for a custom food; no Siri
-            // donation, same as there (a custom food's name can't be found
-            // by "log it by name").
-            try await services.logEntryCoordinator.confirmCustomFood(
-                draft,
-                quantity: quantity,
-                mealType: mealType,
-                date: date
-            )
         }
 
         // The durable local commit above is what must never wait on the

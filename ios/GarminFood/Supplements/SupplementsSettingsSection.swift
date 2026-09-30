@@ -119,7 +119,7 @@ struct SupplementsOnboardingView: View {
                         Task {
                             await addPicked()
                             step = 1
-                            await NotificationScheduler.shared.requestAuthorizationIfNeeded()
+                            await environment.requestNotificationPermissionIfNeeded()
                         }
                     }
                 } else {

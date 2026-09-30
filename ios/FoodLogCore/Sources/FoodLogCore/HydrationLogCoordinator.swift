@@ -33,9 +33,11 @@ public struct HydrationLogCoordinator: Sendable {
     }
 
     /// Commits a drink locally and enqueues it for delivery, in that order
-    /// -- same reasoning as `WeightLogCoordinator.logWeight`. Returns as
-    /// soon as both local writes succeed; callers may show success
-    /// immediately.
+    /// -- local record first, then the outbox entry under an id chosen up
+    /// front, so a failed local save never syncs (fix-review-findings-
+    /// 2026-09 finding 4; same as `WeightLogCoordinator.logWeight`).
+    /// Returns as soon as both local writes succeed; callers may show
+    /// success immediately.
     @discardableResult
     public func logHydration(
         valueInML: Double,
@@ -46,14 +48,20 @@ public struct HydrationLogCoordinator: Sendable {
             // Standalone: the local store IS the record; nothing to send.
             return try await store.upsert(HydrationEntry(valueInML: valueInML, loggedAt: loggedAt, createdAt: now))
         }
-        let outboxEntry = try await outbox.logHydration(valueInML: valueInML, loggedAt: loggedAt)
-        let entry = HydrationEntry(
+        let outboxEntryId = UUID()
+        let saved = try await store.upsert(HydrationEntry(
             valueInML: valueInML,
             loggedAt: loggedAt,
             createdAt: now,
-            outboxEntryId: outboxEntry.id
-        )
-        return try await store.upsert(entry)
+            outboxEntryId: outboxEntryId
+        ))
+        do {
+            try await outbox.logHydration(valueInML: valueInML, loggedAt: loggedAt, id: outboxEntryId)
+        } catch {
+            try? await store.delete(id: saved.id)
+            throw error
+        }
+        return saved
     }
 
     /// Removes a drink (design.md D4, sync-weight-hydration-with-garmin).

@@ -444,9 +444,12 @@ public actor WeightOutbox {
     /// Enqueues a new entry. Like `Outbox.logFood`, a successful return here
     /// is durable and makes no network call -- callers may treat it as safe
     /// to show in the UI immediately.
+    /// `id`: the caller may choose it, so a local record can reference the
+    /// entry BEFORE it is enqueued (FoodLogCore's `WeightLogCoordinator`
+    /// saves locally first -- fix-review-findings-2026-09 finding 4).
     @discardableResult
-    public func logWeight(weightKg: Double, loggedAt: Date = Date()) async throws -> WeightOutboxEntry {
-        let entry = WeightOutboxEntry(weightKg: weightKg, loggedAt: loggedAt, operation: .add)
+    public func logWeight(weightKg: Double, loggedAt: Date = Date(), id: UUID = UUID()) async throws -> WeightOutboxEntry {
+        let entry = WeightOutboxEntry(id: id, weightKg: weightKg, loggedAt: loggedAt, operation: .add)
         return try await store.enqueue(entry)
     }
 

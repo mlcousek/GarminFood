@@ -339,9 +339,11 @@ public actor HydrationOutbox {
     /// see this file's header). Durable on return, no network call.
     /// `correctsEntryId`: for a correction, the drink entry it cancels out
     /// (see `HydrationOutboxEntry.correctsEntryId`).
+    /// `id`: see `WeightOutbox.logWeight` -- lets the local record be saved
+    /// first (fix-review-findings-2026-09 finding 4).
     @discardableResult
-    public func logHydration(valueInML: Double, loggedAt: Date = Date(), correctsEntryId: UUID? = nil) async throws -> HydrationOutboxEntry {
-        let entry = HydrationOutboxEntry(valueInML: valueInML, loggedAt: loggedAt, correctsEntryId: correctsEntryId)
+    public func logHydration(valueInML: Double, loggedAt: Date = Date(), correctsEntryId: UUID? = nil, id: UUID = UUID()) async throws -> HydrationOutboxEntry {
+        let entry = HydrationOutboxEntry(id: id, valueInML: valueInML, loggedAt: loggedAt, correctsEntryId: correctsEntryId)
         return try await store.enqueue(entry)
     }
 

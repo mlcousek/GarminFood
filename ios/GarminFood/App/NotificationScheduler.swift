@@ -5,6 +5,13 @@
 // this type is the side-effecting half that actually asks for permission and
 // syncs the system's pending requests to match.
 //
+// fix-review-findings-2026-09 (findings 10, 11): the dated requests below
+// now cover a rolling window of days (`NotificationPlanning.planWindow`,
+// training via `TrainingReminderPlanner.plan(days:)`), not today only, so
+// they keep firing while the app stays closed; and granting the permission
+// prompt re-runs the sync (`AppEnvironment.requestNotificationPermission
+// IfNeeded`).
+//
 // Local notifications can't dynamically ask "has this already happened" at
 // fire time -- there is no Notification Service Extension hook for LOCAL
 // notifications (only remote/push ones), and this project has no push
@@ -60,6 +67,12 @@ final class NotificationScheduler {
     /// failures) -- a reminder the user just turned on that silently never
     /// fires would be exactly the kind of silent failure this app's own
     /// history (the vault's nutrition sync) already learned to avoid.
+    /// Whether reminders can be delivered right now.
+    func isAuthorized() async -> Bool {
+        let status = await center.notificationSettings().authorizationStatus
+        return status == .authorized || status == .provisional
+    }
+
     @discardableResult
     func requestAuthorizationIfNeeded() async -> UNAuthorizationStatus {
         let settings = await center.notificationSettings()
@@ -137,15 +150,23 @@ final class NotificationScheduler {
         let status = await center.notificationSettings().authorizationStatus
         guard status == .authorized || status == .provisional else { return }
 
-        let planned = NotificationPlanning.plan(
+        // fix-review-findings-2026-09 finding 11: today AND the next days
+        // (`NotificationPlanning.planWindow`), each still its own dated
+        // one-shot request -- so reminders keep firing after midnight on a
+        // phone where the app isn't opened, and the diff below still drops
+        // any that a later replan no longer wants.
+        let planned = NotificationPlanning.planWindow(
             preferences: preferences,
             mealsLoggedToday: mealsLoggedToday,
             isStreakAtRiskToday: isStreakAtRiskToday
         )
-        let dateKey = NutritionDate.string(from: now)
         var plannedByIdentifier: [String: NotificationPlanning.PlannedNotification] = [:]
-        for item in planned {
-            plannedByIdentifier[Self.identifierPrefix + item.id + "." + dateKey] = item
+        var dayByIdentifier: [String: Date] = [:]
+        for dated in planned {
+            guard let day = Calendar.current.date(byAdding: .day, value: dated.dayOffset, to: now) else { continue }
+            let identifier = Self.identifierPrefix + dated.notification.id + "." + NutritionDate.string(from: day)
+            plannedByIdentifier[identifier] = dated.notification
+            dayByIdentifier[identifier] = day
         }
 
         let pending = await pendingTexts()
@@ -161,8 +182,8 @@ final class NotificationScheduler {
         // New requests, and pending ones whose text changed (e.g. after a
         // language switch): adding under a pending identifier replaces it.
         for identifier in diff.toAdd {
-            guard let item = plannedByIdentifier[identifier] else { continue }
-            guard let fireDate = Self.fireDate(hour: item.hour, minute: item.minute, on: now), fireDate > now else { continue }
+            guard let item = plannedByIdentifier[identifier], let day = dayByIdentifier[identifier] else { continue }
+            guard let fireDate = Self.fireDate(hour: item.hour, minute: item.minute, on: day), fireDate > now else { continue }
             let content = UNMutableNotificationContent()
             content.title = item.title
             content.body = item.body

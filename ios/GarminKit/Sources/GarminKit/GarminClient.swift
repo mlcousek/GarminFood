@@ -322,8 +322,10 @@ public struct GarminClient: Sendable {
     /// source client's own response type (`FoodItem`) uses, so this is a
     /// stronger bet than the request shape was, but still not
     /// device-confirmed for the response specifically. If the real response
-    /// is shaped differently, this throws `GarminClientError.
-    /// decodingFailed` rather than silently returning something wrong.
+    /// is shaped differently, a 2xx is still a create:
+    /// `.createdDetailsPending`, never an error the user could "retry" into
+    /// a duplicate Garmin food (fix-review-findings-2026-09 finding 2,
+    /// CustomFoodCreation.swift). A non-2xx still throws.
     ///
     /// IMPORTANT, same rule as `createFoodLogEntry`'s task 11.4 above:
     /// nothing in this package invokes this automatically, and per
@@ -341,7 +343,7 @@ public struct GarminClient: Sendable {
         fat: Double? = nil,
         regionCode: String? = nil,
         languageCode: String? = nil
-    ) async throws -> FoodSearchResult {
+    ) async throws -> CustomFoodCreateOutcome {
         let body = CustomFoodWriteBody.make(
             foodName: name,
             servingUnit: servingUnit,
@@ -353,12 +355,8 @@ public struct GarminClient: Sendable {
             regionCode: regionCode,
             languageCode: languageCode
         )
-        let (data, response) = try await put(path: "/nutrition-service/customFood", body: body)
-        try Self.throwIfNotSuccessful(response, data: data)
-        do {
-            return try Self.decoder.decode(FoodSearchResult.self, from: data)
-        } catch {
-            throw GarminClientError.decodingFailed(description: String(describing: error))
+        return try await CustomFoodCreation.create(body) { body in
+            try await self.put(path: "/nutrition-service/customFood", body: body)
         }
     }
 
@@ -661,7 +659,8 @@ public struct GarminClient: Sendable {
         return (data, http)
     }
 
-    private static func throwIfNotSuccessful(_ response: HTTPURLResponse, data: Data) throws {
+    /// Internal, not private: CustomFoodCreation.swift applies the same rule.
+    static func throwIfNotSuccessful(_ response: HTTPURLResponse, data: Data) throws {
         if (200..<300).contains(response.statusCode) { return }
         let body = String(data: data, encoding: .utf8)
         let path = response.url?.path ?? "?"
