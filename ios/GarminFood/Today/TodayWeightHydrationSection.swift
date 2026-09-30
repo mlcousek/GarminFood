@@ -49,13 +49,16 @@ struct TodayWeightCard: View {
     var progress: WeightGoalProgress? = nil
     var refreshFailed: Bool = false
     var isStandalone: Bool = false
+    /// add-winter-arc-nutrition-and-rewards (A4): the training experience's
+    /// monitor line (with `progress == nil`).
+    var monitor: WeightMonitorSummary? = nil
 
     var body: some View {
         NavigationLink {
             WeightView()
         } label: {
             HStack {
-                WeightHeroCard(latest: latest, previous: previous, progress: progress, refreshFailed: refreshFailed, isStandalone: isStandalone)
+                WeightHeroCard(latest: latest, previous: previous, progress: progress, refreshFailed: refreshFailed, isStandalone: isStandalone, monitor: monitor)
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)

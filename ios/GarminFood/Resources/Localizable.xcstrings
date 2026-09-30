@@ -18882,6 +18882,234 @@
           }
         }
       }
+    },
+    "Fuel for today's training": {
+      "comment": "add-winter-arc-nutrition-and-rewards: Today summary title in the training experience: carbs and protein for the plan day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palivo na dnešní trénink"
+          }
+        }
+      }
+    },
+    "Carb-load day": {
+      "comment": "add-winter-arc-nutrition-and-rewards: Today summary title on a carb-load day of the training plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den sacharidové superkompenzace"
+          }
+        }
+      }
+    },
+    "Carbs are well under today's range. A carb-rich dinner helps you recover for tomorrow.": {
+      "comment": "add-winter-arc-nutrition-and-rewards: gentle note late in the day when carbs are clearly below the training day's range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sacharidů je zatím výrazně méně, než dnešní rozmezí. Večeře bohatá na sacharidy ti pomůže zregenerovat na zítřek."
+          }
+        }
+      }
+    },
+    "Carbs: %@ grams, range %@ to %@ grams": {
+      "comment": "add-winter-arc-nutrition-and-rewards: VoiceOver for the training day's carbs: eaten, then the plan's range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sacharidy: %@ gramů, rozmezí %@ až %@ gramů"
+          }
+        }
+      }
+    },
+    "Target %@ g": {
+      "comment": "add-winter-arc-nutrition-and-rewards: carb-load day, the single carbohydrate target in grams.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl %@ g"
+          }
+        }
+      }
+    },
+    "Range %@–%@ g": {
+      "comment": "add-winter-arc-nutrition-and-rewards: the training day's carbohydrate range in grams (from the plan's g/kg band).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozmezí %@–%@ g"
+          }
+        }
+      }
+    },
+    "Below range": {
+      "comment": "add-winter-arc-nutrition-and-rewards: carbs are under the training day's range (never shown as a warning).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pod rozmezím"
+          }
+        }
+      }
+    },
+    "In range": {
+      "comment": "add-winter-arc-nutrition-and-rewards: carbs are inside the training day's range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V rozmezí"
+          }
+        }
+      }
+    },
+    "Above range": {
+      "comment": "add-winter-arc-nutrition-and-rewards: carbs are over the training day's range (fine on a training day, never a warning).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nad rozmezím"
+          }
+        }
+      }
+    },
+    "About %@ g": {
+      "comment": "add-winter-arc-nutrition-and-rewards: the plan's protein target for the day, about 1.6 g per kg.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asi %@ g"
+          }
+        }
+      }
+    },
+    "%@ kcal eaten": {
+      "comment": "add-winter-arc-nutrition-and-rewards: training day summary, calories eaten, secondary line without a target.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snědeno %@ kcal"
+          }
+        }
+      }
+    },
+    "%@ kcal eaten · target %@ kcal": {
+      "comment": "add-winter-arc-nutrition-and-rewards: training day summary, calories eaten and the calorie target, a secondary line only.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snědeno %@ kcal · cíl %@ kcal"
+          }
+        }
+      }
+    },
+    "Fasting paused — build week": {
+      "comment": "add-winter-arc-nutrition-and-rewards: fasting card when the training plan switches fasting off for the day.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Půst pozastaven — budovací týden"
+          }
+        }
+      }
+    },
+    "Your plan switches fasting off on build days. Your schedule stays as it is.": {
+      "comment": "add-winter-arc-nutrition-and-rewards: fasting card detail when the training plan paused fasting.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plán v budovacích dnech půst vypíná. Tvůj rozvrh zůstává, jak je."
+          }
+        }
+      }
+    },
+    "Paused by the plan": {
+      "comment": "add-winter-arc-nutrition-and-rewards: fasting history row, the training plan switched fasting off that day (a build week).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozastaveno plánem"
+          }
+        }
+      }
+    },
+    "7-day morning average: %@ kg": {
+      "comment": "add-winter-arc-nutrition-and-rewards: weight card in the training experience, mean of the last 7 days' morning weigh-ins.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranní průměr za 7 dní: %@ kg"
+          }
+        }
+      }
+    },
+    "7-day average: %@ kg": {
+      "comment": "add-winter-arc-nutrition-and-rewards: weight card in the training experience, mean of the last 7 days' weigh-ins (no morning weigh-in in the window).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Průměr za 7 dní: %@ kg"
+          }
+        }
+      }
+    },
+    "Change: %@ a week": {
+      "comment": "add-winter-arc-nutrition-and-rewards: weight card, the 7-day average's change against the week before; %@ is a signed percentage like +0.3 %.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Změna: %@ za týden"
+          }
+        }
+      }
+    },
+    "Falling faster than the plan allows. Eat for the training.": {
+      "comment": "add-winter-arc-nutrition-and-rewards: weight card in the training experience, the weekly average fell more than 0.7 % in a week (a quiet note, not a warning).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klesá rychleji, než plán dovoluje. Jez podle tréninku."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

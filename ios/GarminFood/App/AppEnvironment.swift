@@ -335,6 +335,10 @@ final class AppEnvironment {
             self.router.selectedTab = .today
             Task { await self.goToToday() }
         }
+        // add-winter-arc-nutrition-and-rewards: the plan's food targets,
+        // reward facts and paused fasting days, in the training experience
+        // only (AppEnvironment+TrainingNutrition.swift).
+        wireTrainingNutrition()
     }
 
     /// Launch and every return to the foreground.
@@ -1016,7 +1020,9 @@ final class AppEnvironment {
             )
         }
         await NotificationScheduler.shared.syncFastingReminders(
-            schedule: preferences.activeFastingSchedule,
+            // add-winter-arc-nutrition-and-rewards: none on a day the
+            // training plan paused fasting.
+            schedule: fastingScheduleForReminders,
             endsSoon: notificationPreferences.preferences.fastingReminder,
             startsSoon: notificationPreferences.preferences.fastingStartReminder
         )

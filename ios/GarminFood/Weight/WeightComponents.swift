@@ -35,6 +35,9 @@ struct WeightHeroCard: View {
     var refreshFailed: Bool = false
     /// add-standalone-mode 5.2: no Garmin scale to mention.
     var isStandalone: Bool = false
+    /// add-winter-arc-nutrition-and-rewards (A4): the training experience's
+    /// monitor line, shown instead of a goal (callers pass `progress: nil`).
+    var monitor: WeightMonitorSummary? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
@@ -69,6 +72,10 @@ struct WeightHeroCard: View {
                     WeightGoalBar(progress: progress)
                         .padding(.top, Theme.Spacing.xs)
                 }
+                if let monitor {
+                    WeightMonitorLine(monitor: monitor)
+                        .padding(.top, Theme.Spacing.xs)
+                }
             } else {
                 Text("No weigh-ins yet")
                     .font(.headline)
@@ -85,6 +92,39 @@ struct WeightHeroCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// add-winter-arc-nutrition-and-rewards (A4): the 7-day morning average and
+/// its weekly change, plus ONE quiet line when it falls faster than the plan
+/// allows (PM-FUEL-4). No target, no ETA, no colour judgement.
+struct WeightMonitorLine: View {
+    let monitor: WeightMonitorSummary
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(monitor.usedMorningOnly
+                 ? String(localized: "7-day morning average: \(monitor.averageKg.formattedKg) kg", comment: "Weight card in the training experience: mean of the last 7 days' morning weigh-ins.")
+                 : String(localized: "7-day average: \(monitor.averageKg.formattedKg) kg", comment: "Weight card in the training experience: mean of the last 7 days' weigh-ins (no morning weigh-in in the window)."))
+                .font(.subheadline)
+            if let change = monitor.weeklyChangePercent {
+                let signed = Self.signedPercent(change)
+                Text(String(localized: "Change: \(signed) a week", comment: "Weight card: the 7-day average's change against the week before; %@ is a signed percentage like +0.3 %."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            if monitor.isFallingTooFast {
+                Text("Falling faster than the plan allows. Eat for the training.", comment: "Weight card in the training experience: the weekly average fell more than 0.7 % in a week (a quiet note, not a warning).")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    /// "+0.3 %" / "−0,8 %" in the app's locale (`change` is in percent).
+    static func signedPercent(_ change: Double) -> String {
+        (change / 100).formatted(.percent.precision(.fractionLength(1)).sign(strategy: .always()))
     }
 }
 

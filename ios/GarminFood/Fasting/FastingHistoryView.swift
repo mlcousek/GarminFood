@@ -17,6 +17,10 @@
 // that data can't vouch for a day (fasting was off, or the usage history
 // has trimmed that far back) the day shows as "Not tracked" rather than a
 // guessed "kept", and the streak stops there.
+//
+// add-winter-arc-nutrition-and-rewards: a day the training plan paused
+// fasting (build weeks) shows as "Paused by the plan" -- neutral, never
+// counted as kept or broken, and the streak runs through it.
 
 import SwiftUI
 import FoodLogCore
@@ -85,6 +89,7 @@ struct FastingHistoryView: View {
             days: Self.dayCount,
             logTimestamps: logMoments,
             trackedSince: trackedSince,
+            pausedDays: environment.fastingPausedDaysByPlan(now: now),
             now: now,
             calendar: .current
         )
@@ -197,6 +202,7 @@ struct FastingDayRow: View {
         case .inProgress: return String(localized: "In progress", comment: "Fasting history row: today's window is still running.")
         case .upcoming: return String(localized: "Upcoming", comment: "Fasting history row / streak dot: a day or window that hasn't started yet.")
         case .notTracked: return String(localized: "Not tracked", comment: "Fasting history row: no data to judge that day (fasting off or history trimmed).")
+        case .paused: return String(localized: "Paused by the plan", comment: "Fasting history row: the training plan switched fasting off that day (a build week).")
         }
     }
 
@@ -207,6 +213,7 @@ struct FastingDayRow: View {
         case .inProgress: return "hourglass"
         case .upcoming: return "clock"
         case .notTracked: return "minus.circle"
+        case .paused: return "pause.circle"
         }
     }
 
@@ -215,7 +222,7 @@ struct FastingDayRow: View {
         case .kept: return Theme.success
         case .broken: return Theme.warning
         case .inProgress, .upcoming: return Theme.accent
-        case .notTracked: return .secondary
+        case .notTracked, .paused: return .secondary
         }
     }
 }
