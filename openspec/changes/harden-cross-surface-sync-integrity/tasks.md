@@ -45,9 +45,19 @@
   midnight without foregrounding.
 - [ ] 6.5 Add authorization-transition and date-rollover scheduler tests.
 
-## 7. Verification
+## 7. Profile, search, and delivered-data consistency
 
-- [ ] 7.1 Run all Swift package suites.
-- [ ] 7.2 Run app-target integration tests on iOS Simulator.
-- [ ] 7.3 Verify background delivery on a device with interrupted
+- [ ] 7.1 Prefer validated user-facing profile names over opaque display IDs.
+- [ ] 7.2 Add remote-aware delivered weigh-in deletion with visible retry
+  recovery.
+- [ ] 7.3 Add a request-generation guard around catalog and Open Food Facts
+  result application.
+- [ ] 7.4 Add regression tests for profile-name selection, delivered
+  weigh-in deletion, and superseded search responses.
+
+## 8. Verification
+
+- [ ] 8.1 Run all Swift package suites.
+- [ ] 8.2 Run app-target integration tests on iOS Simulator.
+- [ ] 8.3 Verify background delivery on a device with interrupted
   connectivity.

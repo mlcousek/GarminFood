@@ -94,6 +94,26 @@ current date. No future horizon is preplanned, and neither the background
 worker nor any recurring scheduling path replaces them after midnight while
 the app remains closed.
 
+### F12 — Profile header prefers an opaque Garmin display identifier
+
+The profile header prefers `displayName` before `fullName`. Garmin can return
+an opaque UUID-like display value alongside the user-facing full name, so the
+screen displays an account-like identifier rather than the actual name.
+
+### F13 — Deleting a delivered weigh-in is local-only
+
+The current delete path removes a local delivered weight record and leaves its
+sent outbox entry unchanged. It performs no corresponding Garmin deletion,
+despite a confirmed remote deletion route and a readable remote sample
+identifier. The app and Garmin histories silently diverge.
+
+### F14 — Superseded food searches can overwrite current results
+
+The catalog cancels old search tasks when the query changes, but requests
+already in flight can still apply their results, errors, and loading-state
+changes after cancellation. A delayed response for an old query can therefore
+be shown under a newer query and can clear the newer query's spinner.
+
 ## Test strategy
 
 - App-intent integration: one quick-pick invocation produces one food entry,
@@ -119,3 +139,9 @@ the app remains closed.
   permission causes its request to be scheduled immediately.
 - Reminder rollover: a user who does not foreground after midnight still has
   a request scheduled for the next configured reminder time.
+- Profile-name selection: a UUID-like display value with a populated full name
+  resolves to the full name.
+- Delivered weigh-in deletion: a successful remote delete and a local delete
+  complete together; remote failure remains visible and retryable.
+- Search request ownership: a delayed cancelled query cannot apply results,
+  error, or loading state after a newer query begins.
