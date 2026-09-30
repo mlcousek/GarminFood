@@ -1,0 +1,32 @@
+## 1. Consistent food post-commit behavior
+
+- [ ] 1.1 Extract a shared app-layer post-commit pipeline for food logging.
+- [ ] 1.2 Route SwiftUI, Siri, and Control quick-pick confirmation through it.
+- [ ] 1.3 Add an exactly-once gamification integration test for Quick Pick.
+
+## 2. Durable background delivery
+
+- [ ] 2.1 Expose pending work across food, weight, and hydration queues.
+- [ ] 2.2 Drain all supported queues in the registered background task.
+- [ ] 2.3 Add background-worker tests for weight-only and hydration-only work.
+
+## 3. Custom-food create recovery
+
+- [ ] 3.1 Classify post-2xx response decoding failure as ambiguous success.
+- [ ] 3.2 Add a reconcile/re-search recovery path before another create.
+- [ ] 3.3 Add transport and UI-state regression tests for an unreadable 2xx body.
+
+## 4. Weight and hydration atomicity
+
+- [ ] 4.1 Add failure injection for local-history persistence.
+- [ ] 4.2 Compensate or retain a durable local pending record when local
+  persistence fails after queueing.
+- [ ] 4.3 Test successful compensation and explicit compensation-failure
+  recovery.
+
+## 5. Verification
+
+- [ ] 5.1 Run all Swift package suites.
+- [ ] 5.2 Run app-target integration tests on iOS Simulator.
+- [ ] 5.3 Verify background delivery on a device with interrupted
+  connectivity.
