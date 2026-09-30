@@ -105,6 +105,24 @@ public actor SupplementPlanStore {
         try save(next)
     }
 
+    /// Saves a custom ingredient (add-custom-ingredients-and-owner-
+    /// supplements), or replaces the one with the same id. When one with
+    /// the same name (case and diacritics ignored) already exists, that one
+    /// is kept -- gaining `ingredient`'s forms -- and returned instead, so
+    /// the list never shows the same name twice. No write when unchanged.
+    @discardableResult
+    public func saveCustomIngredient(_ ingredient: CustomIngredient) throws -> CustomIngredient {
+        var next = try loadedForWrite()
+        var saved = ingredient
+        if next.customIngredient(id: ingredient.id) == nil, let existing = next.customIngredient(named: ingredient.name) {
+            saved = existing
+            for form in ingredient.forms.reversed() { saved.addForm(form) }
+        }
+        guard next.upsertCustomIngredient(saved) else { return saved }
+        try save(next)
+        return saved
+    }
+
     // MARK: Files
 
     private func mutateProduct(_ productId: UUID, _ change: (inout SupplementProduct) -> Void) throws {

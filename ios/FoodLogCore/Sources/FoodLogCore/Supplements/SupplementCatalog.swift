@@ -15,8 +15,14 @@
 // plurals ("1 kapsle / 2 kapsle / 5 kapslí", design D12) live in
 // Resources/*.lproj/Localizable.stringsdict.
 //
+// Branded products with their real labels (add-custom-ingredients-and-
+// owner-supplements) are a separate list, `SupplementCatalog.branded`
+// (SupplementCatalog+Branded.swift): their ingredients need not have a
+// card, so the invariant above holds for `all` only.
+//
 // Depended on by: onboarding and the product editor (wave 3).
-// Tests: EvidenceCatalogTests (every catalog ingredient has a card).
+// Tests: EvidenceCatalogTests (every catalog ingredient has a card),
+// BrandedSupplementCatalogTests.
 
 import Foundation
 
@@ -43,6 +49,11 @@ public struct CatalogProduct: Sendable, Identifiable {
         case units(Int)
         /// A powder scoop of `grams` g.
         case scoop(grams: Int)
+        /// A measure of powder whose weight may have decimals ("4,5 g"),
+        /// as a branded label states it (SupplementCatalog+Branded).
+        case measure(grams: Double)
+        /// One sachet of `grams` g (granules or powder to dissolve).
+        case sachet(grams: Double)
     }
 
     /// Stable id, stored in `ProductSource.catalog(_:)`.
@@ -51,8 +62,13 @@ public struct CatalogProduct: Sendable, Identifiable {
     public let serving: Serving
     public let ingredients: [IngredientAmount]
     public let suggestedSlot: TimeSlot
+    /// A branded product's pack facts and sources; `nil` for the generic
+    /// entries of `SupplementCatalog.all`.
+    public var label: CatalogLabel? = nil
 
-    public var name: String { SupplementCatalog.name(of: id) }
+    /// The generic name, or a branded product's name as printed on the pack
+    /// (never translated).
+    public var name: String { label?.productName ?? SupplementCatalog.name(of: id) }
 
     public var servingDescription: String {
         switch serving {
@@ -60,17 +76,27 @@ public struct CatalogProduct: Sendable, Identifiable {
             return form.servingText(count: count)
         case .scoop(let grams):
             return String(localized: "\(grams) g scoop", bundle: .module, comment: "Supplement serving size: one powder scoop of %lld grams.")
+        case .measure(let grams):
+            let text = NumberDisplay.trimmed(grams, maxFractionDigits: 2)
+            return String(localized: "\(text) g measure", bundle: .module, comment: "Supplement serving size: one measure (scoop) of powder; %@ is the weight in grams, may have decimals.")
+        case .sachet(let grams):
+            let text = NumberDisplay.trimmed(grams, maxFractionDigits: 2)
+            return String(localized: "\(text) g sachet", bundle: .module, comment: "Supplement serving size: one sachet; %@ is its weight in grams, may have decimals.")
         }
     }
 
-    /// The proposed product, ready for the editor.
+    /// The proposed product, ready for the editor. A branded product also
+    /// brings its brand, barcode and servings per pack.
     public func makeProduct(id productId: UUID = UUID()) -> SupplementProduct {
         SupplementProduct(
             id: productId,
             name: name,
+            brand: label?.brand,
+            barcode: label?.barcode,
             form: form,
             servingDescription: servingDescription,
             ingredients: ingredients,
+            packServings: label?.packServings,
             source: .catalog(id)
         )
     }
@@ -122,8 +148,9 @@ public enum SupplementCatalog {
                        ingredients: [row(.betaAlanine, 3.2, .g)], suggestedSlot: .morning)
     ]
 
+    /// A generic entry or a branded one (SupplementCatalog+Branded).
     public static func product(id: String) -> CatalogProduct? {
-        all.first { $0.id == id }
+        all.first { $0.id == id } ?? branded.first { $0.id == id }
     }
 
     static func name(of id: String) -> String {
