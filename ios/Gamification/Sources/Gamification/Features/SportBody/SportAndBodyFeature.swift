@@ -164,9 +164,9 @@ public actor SportAndBodyFeature: GamificationFeature {
         // fasting pauses in build weeks, so neither the weight-goal
         // milestones nor the fasting streak tiers unlock in the training
         // experience (TrainingExperienceAvailability.hiddenBadgeIds).
+        let fastingStreak = BodyRules.keptFastingStreak(in: snapshot)
         if !context.isTrainingExperience {
             request(BodyRules.weightBadgeIds(in: snapshot, calendar: context.calendar))
-            let fastingStreak = BodyRules.keptFastingStreak(in: snapshot)
             request(BodyRules.fastingBadgeIds(streak: fastingStreak))
         }
         update.unlockBadgeIds = requested
