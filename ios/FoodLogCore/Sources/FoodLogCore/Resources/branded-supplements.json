@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "products": [
+    {
+      "id": "brainmaxZincComplex",
+      "brand": "BrainMax",
+      "productName": "BrainMax Zinc Complex®",
+      "form": "capsule",
+      "serving": { "kind": "units", "count": 1 },
+      "suggestedSlot": { "kind": "withBreakfast" },
+      "ingredients": [
+        { "ingredient": "zinc", "amount": 15, "unit": "mg", "form": "bisglycinate" },
+        { "ingredient": "copper", "amount": 1, "unit": "mg", "form": "citrate" },
+        { "ingredient": "selenium", "amount": 100, "unit": "ug", "form": "L-selenomethionine" },
+        { "ingredient": "turmeric", "amount": 420, "unit": "mg" }
+      ],
+      "packServings": 100,
+      "packCount": 100,
+      "barcode": "8594190020471",
+      "sourceURL": "https://www.brainmarket.cz/brainmax-zinc-complex/",
+      "quality": [
+        { "kind": "vegan" },
+        { "kind": "labTested" },
+        { "kind": "szuSafetyCertificate" },
+        { "kind": "dshsCologneTested" }
+      ],
+      "labelDetails": {
+        "en": "Turmeric: organic Curcuma longa root powder. Directions: 1 capsule a day after a meal.",
+        "cs": "Kurkuma: bio prášek z kořene Curcuma longa. Dávkování: 1 kapsle denně po jídle."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "brainmaxLiposomalVitaminC",
+      "brand": "BrainMax",
+      "productName": "BrainMax Liposomal Vitamin C® UPGRADE",
+      "form": "capsule",
+      "serving": { "kind": "units", "count": 1 },
+      "suggestedSlot": { "kind": "morning" },
+      "ingredients": [
+        { "ingredient": "vitaminC", "amount": 500, "unit": "mg", "form": "liposomal" },
+        { "ingredient": "rosehipExtract", "amount": 30, "unit": "mg", "form": "extract 5:1" },
+        { "ingredient": "citrusBioflavonoids", "amount": 30, "unit": "mg" }
+      ],
+      "packServings": 60,
+      "packCount": 60,
+      "barcode": "8594190020891",
+      "sourceURL": "https://www.brainmarket.cz/brainmax-liposomal-vitamin-c--500-mg--60-rostlinnych-kapsli/",
+      "quality": [
+        { "kind": "vegan" },
+        { "kind": "liposomal" },
+        { "kind": "brandedRawMaterial", "detail": "LipoComplex®" },
+        { "kind": "labTested" },
+        { "kind": "dshsCologneTested" }
+      ],
+      "labelDetails": {
+        "en": "Vitamin C as L-ascorbic acid in a liposomal complex (carriers: maltodextrin, glycerol, sunflower lecithin). Bioflavonoids from bitter orange. Directions: 1 capsule a day, best on an empty stomach.",
+        "cs": "Vitamín C jako kyselina L-askorbová v lipozomálním komplexu (nosiče: maltodextrin, glycerol, slunečnicový lecitin). Bioflavonoidy z hořkého pomeranče. Dávkování: 1 kapsle denně, nejlépe nalačno."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "brainmaxVitaminD3K2",
+      "brand": "BrainMax",
+      "productName": "BrainMax Vitamin D3 & K2®",
+      "form": "capsule",
+      "serving": { "kind": "units", "count": 1 },
+      "suggestedSlot": { "kind": "withBreakfast" },
+      "ingredients": [
+        { "ingredient": "vitaminD", "amount": 4000, "unit": "IU", "form": "cholecalciferol" },
+        { "ingredient": "vitaminK2", "amount": 150, "unit": "ug", "form": "MK-7" },
+        { "ingredient": "turmeric", "amount": 435, "unit": "mg" }
+      ],
+      "packServings": 100,
+      "packCount": 100,
+      "barcode": "8594190020761",
+      "sourceURL": "https://www.brainmarket.cz/brainmax-vitamin-d3-k2-mk7-100-rostlinnych-kapsli/",
+      "quality": [
+        { "kind": "brandedRawMaterial", "detail": "K2VITAL®DELTA" },
+        { "kind": "labTested" },
+        { "kind": "dshsCologneTested" }
+      ],
+      "labelDetails": {
+        "en": "D3 100 µg (4000 IU) as cholecalciferol from lanolin; K2 as all-trans menaquinone-7. Directions: 1 capsule a day after a meal.",
+        "cs": "D3 100 µg (4000 IU) jako cholekalciferol z lanolinu; K2 jako all-trans menachinon-7. Dávkování: 1 kapsle denně po jídle."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "brainmaxOmega3HighEPA",
+      "brand": "BrainMax",
+      "productName": "BrainMax® Omega-3 HIGH EPA Fish Oil",
+      "form": "capsule",
+      "serving": { "kind": "units", "count": 2 },
+      "suggestedSlot": { "kind": "withBreakfast" },
+      "ingredients": [
+        { "ingredient": "omega3EPA_DHA", "amount": 1600, "unit": "mg", "form": "re-esterified triglyceride" }
+      ],
+      "packServings": 30,
+      "packCount": 60,
+      "barcode": "8595726818449",
+      "sourceURL": "https://www.brainmarket.cz/brainmax-omega-3-high-epa-fish-oil--60-softgel-kapsli/",
+      "quality": [
+        { "kind": "triglycerideForm" },
+        { "kind": "oxidationSpec", "detail": "TOTOX ≤ 10" },
+        { "kind": "brandedRawMaterial", "detail": "VivoMega®" }
+      ],
+      "labelDetails": {
+        "en": "Per 2 softgels: 2000 mg omega-3 fish oil concentrate with EPA 1200 mg and DHA 400 mg. Softgel from bovine gelatine; contains fish. Fish oil from Norway. Directions: 2 capsules a day with a meal.",
+        "cs": "Ve 2 kapslích: 2000 mg koncentrátu rybího oleje omega-3, z toho EPA 1200 mg a DHA 400 mg. Kapsle z hovězí želatiny; obsahuje ryby. Rybí olej z Norska. Dávkování: 2 kapsle denně s jídlem."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "brainmaxEnergyMagnesium",
+      "brand": "BrainMax",
+      "productName": "BrainMax Energy Magnesium®",
+      "form": "capsule",
+      "serving": { "kind": "units", "count": 1 },
+      "suggestedSlot": { "kind": "morning" },
+      "ingredients": [
+        { "ingredient": "magnesium", "amount": 175.5, "unit": "mg", "form": "malate" },
+        { "ingredient": "vitaminB6", "amount": 1.4, "unit": "mg", "form": "pyridoxal-5-phosphate" }
+      ],
+      "packServings": 200,
+      "packCount": 200,
+      "barcode": "8594190020099",
+      "sourceURL": "https://www.brainmarket.cz/brainmax-energy-magnesium-1000-mg-200-kapsli-magnesium-malat/",
+      "quality": [
+        { "kind": "vegan" },
+        { "kind": "brandedRawMaterial", "detail": "Nutrascience Minerals Mg20+" },
+        { "kind": "labTested" },
+        { "kind": "szuSafetyCertificate" }
+      ],
+      "labelDetails": {
+        "en": "Per capsule: 915 mg Mg20+ (90 % magnesium malate, 10 % magnesium oxide) with 175.5 mg elemental magnesium. Directions: 1–2 capsules in the morning, on an empty stomach.",
+        "cs": "V 1 kapsli: 915 mg Mg20+ (90 % magnesium malát, 10 % magnesium oxid), z toho 175,5 mg elementárního hořčíku. Dávkování: 1–2 kapsle ráno, nalačno."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "brainmaxSleepMagnesium",
+      "brand": "BrainMax",
+      "productName": "BrainMax Sleep Magnesium®",
+      "form": "capsule",
+      "serving": { "kind": "units", "count": 2 },
+      "suggestedSlot": { "kind": "evening" },
+      "ingredients": [
+        { "ingredient": "magnesium", "amount": 250, "unit": "mg", "form": "bisglycinate" },
+        { "ingredient": "tartCherry", "amount": 100, "unit": "mg" },
+        { "ingredient": "valerian", "amount": 100, "unit": "mg", "form": "root, 0.3 % valerenic acid" },
+        { "ingredient": "gaba", "amount": 80, "unit": "mg" },
+        { "ingredient": "greenTeaExtract", "amount": 80, "unit": "mg", "form": "decaffeinated, 50 % polyphenols" },
+        { "ingredient": "lTheanine", "amount": 50, "unit": "mg" },
+        { "ingredient": "vitaminB6", "amount": 2.8, "unit": "mg", "form": "pyridoxal-5-phosphate" }
+      ],
+      "packServings": 50,
+      "packCount": 100,
+      "barcode": "8595726806163",
+      "sourceURL": "https://www.brainmarket.cz/brainmax-sleep-magnesium-250-mg-100-kapsli/",
+      "quality": [
+        { "kind": "vegan" },
+        { "kind": "brandedRawMaterial", "detail": "MagChel®" },
+        { "kind": "labTested" },
+        { "kind": "szuSafetyCertificate" }
+      ],
+      "labelDetails": {
+        "en": "Per 2 capsules: 1250 mg magnesium bisglycinate MagChel® Mg +20 with 250 mg magnesium. Directions: 2 capsules 30 minutes before sleep, or 1 capsule during the day.",
+        "cs": "Ve 2 kapslích: 1250 mg magnesium bisglycinátu MagChel® Mg +20, z toho 250 mg hořčíku. Dávkování: 2 kapsle 30 minut před spaním nebo 1 kapsle během dne."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "brainmaxPerformanceMagnesium",
+      "brand": "BrainMax",
+      "productName": "Performance Magnesium®",
+      "form": "capsule",
+      "serving": { "kind": "units", "count": 1 },
+      "suggestedSlot": { "kind": "evening" },
+      "ingredients": [
+        { "ingredient": "magnesium", "amount": 200, "unit": "mg", "form": "bisglycinate" },
+        { "ingredient": "vitaminB6", "amount": 1.4, "unit": "mg", "form": "pyridoxal-5-phosphate" }
+      ],
+      "packServings": 100,
+      "packCount": 100,
+      "barcode": "8594190020075",
+      "sourceURL": "https://www.brainmarket.cz/performance-magnesium-1000-mg-100-tbl/",
+      "quality": [
+        { "kind": "vegan" },
+        { "kind": "brandedRawMaterial", "detail": "MagChel®" },
+        { "kind": "labTested" },
+        { "kind": "szuSafetyCertificate" },
+        { "kind": "dshsCologneTested" }
+      ],
+      "labelDetails": {
+        "en": "Per capsule: 1000 mg MagChel® Mg 20+ (80 % magnesium bisglycinate, 20 % magnesium oxide) with 200 mg elemental magnesium. Directions: 1–2 capsules after training, under stress or before sleep.",
+        "cs": "V 1 kapsli: 1000 mg MagChel® Mg 20+ (80 % magnesium bisglycinát, 20 % magnesium oxid), z toho 200 mg elementárního hořčíku. Dávkování: 1–2 kapsle po tréninku, při stresu nebo před spaním."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "accelerateCreatineMonohydrate",
+      "brand": "Accelerate",
+      "productName": "Kreatin monohydrát Accelerate",
+      "form": "powder",
+      "serving": { "kind": "measure", "grams": 3 },
+      "suggestedSlot": { "kind": "morning" },
+      "ingredients": [
+        { "ingredient": "creatine", "amount": 3, "unit": "g", "form": "monohydrate" }
+      ],
+      "packServings": 100,
+      "sourceURL": "https://accelerate-nutrition.com/fr-fr/products/creatine-monohydraat",
+      "otherSources": [
+        "https://www.vsecochces.cz/kreatin-monohydrat-accelerate",
+        "https://www.action.com/cs-cz/p/3218530/kreatin-monohydrat-accelerate/"
+      ],
+      "barcode": "8719979204525",
+      "quality": [],
+      "labelDetails": {
+        "en": "300 g tub, 100 % creatine monohydrate, unflavoured. Directions: 3 g in 200 ml of water once a day.",
+        "cs": "Dóza 300 g, 100% kreatin monohydrát, bez příchuti. Dávkování: 3 g ve 200 ml vody jednou denně."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "alavisMaximaTripleBlend",
+      "brand": "Alavis",
+      "productName": "ALAVIS™ MAXIMA Triple Blend Extra Silný",
+      "form": "powder",
+      "serving": { "kind": "measure", "grams": 4.5 },
+      "suggestedSlot": { "kind": "withBreakfast" },
+      "ingredients": [
+        { "ingredient": "msm", "amount": 1958, "unit": "mg" },
+        { "ingredient": "glucosamine", "amount": 1565, "unit": "mg", "form": "sulfate 2KCl" },
+        { "ingredient": "chondroitin", "amount": 652, "unit": "mg", "form": "sulfate" },
+        { "ingredient": "collagenTypeI", "amount": 15, "unit": "mg", "form": "hydrolyzed" },
+        { "ingredient": "collagenTypeII", "amount": 22.5, "unit": "mg" },
+        { "ingredient": "vitaminC", "amount": 19.3, "unit": "mg", "form": "calcium and magnesium ascorbate" }
+      ],
+      "sourceURL": "https://www.grizly.cz/alavis-maxima-triple-blend-extra-silny-700-g",
+      "otherSources": [
+        "https://www.alavis-maxima.cz/domu/20-triple-blend-extra-silny-8594191410288.html"
+      ],
+      "quality": [
+        { "kind": "brandedRawMaterial", "detail": "Lignisul®, COLLYSS™, CARTIDYSS™, NUTRA-C™" }
+      ],
+      "labelDetails": {
+        "en": "700 g tub. Per scoop (4.5 g): MSM Lignisul® 1958 mg, glucosamine sulfate 2KCl 1565 mg (from crustaceans), chondroitin sulfate 652 mg, collagen type I COLLYSS™ 15 mg and type II CARTIDYSS™ 22.5 mg (from fish), vitamin C 19.3 mg. Contains fish and crustaceans. Directions: 1 scoop once a day in at least 200 ml of water.",
+        "cs": "Dóza 700 g. V 1 odměrce (4,5 g): MSM Lignisul® 1958 mg, glukosaminsulfát 2KCl 1565 mg (z korýšů), chondroitinsulfát 652 mg, kolagen typu I COLLYSS™ 15 mg a typu II CARTIDYSS™ 22,5 mg (z ryb), vitamín C 19,3 mg. Obsahuje ryby a korýše. Dávkování: 1 odměrka denně v nejméně 200 ml vody."
+      },
+      "verifiedOn": "2026-09-30"
+    },
+    {
+      "id": "magnosolv365",
+      "brand": "Magnosolv",
+      "productName": "Magnosolv 365 mg granule pro perorální roztok",
+      "form": "powder",
+      "serving": { "kind": "sachet", "grams": 6.1 },
+      "suggestedSlot": { "kind": "morning" },
+      "ingredients": [
+        { "ingredient": "magnesium", "amount": 169, "unit": "mg", "form": "carbonate" },
+        { "ingredient": "magnesium", "amount": 196, "unit": "mg", "form": "oxide" },
+        { "ingredient": "potassium", "amount": 194.8, "unit": "mg" },
+        { "ingredient": "sodium", "amount": 238.93, "unit": "mg" }
+      ],
+      "packServings": 30,
+      "packCount": 30,
+      "sourceURL": "https://www.lekarnaave.cz/pp-detail/5547899/magnosolv-365mg-por-gra-sol-scc-30",
+      "otherSources": [
+        "https://www.lekarna.cz/magnosolv-365mg-por-gra-sol-scc-30/pribalovy-letak/",
+        "https://prehledy.sukl.cz/prehledy/v1/dlp/0286435"
+      ],
+      "quality": [
+        { "kind": "registeredMedicine", "detail": "SÚKL 0286435, Rx" }
+      ],
+      "labelDetails": {
+        "en": "A registered medicine, not a food supplement: dosing follows the doctor or the package leaflet. Per sachet (6.1 g): light magnesium carbonate 670 mg (169 mg Mg) and light magnesium oxide 342 mg (196 mg Mg), 365 mg magnesium in total; magnesium citrate forms in water. Potassium and sodium come from the excipients.",
+        "cs": "Registrovaný léčivý přípravek, ne doplněk stravy: dávkování podle lékaře nebo příbalové informace. V 1 sáčku (6,1 g): lehký zásaditý uhličitan hořečnatý 670 mg (169 mg Mg) a lehký oxid hořečnatý 342 mg (196 mg Mg), celkem 365 mg hořčíku; ve vodě vzniká citronan hořečnatý. Draslík a sodík pocházejí z pomocných látek."
+      },
+      "verifiedOn": "2026-09-30"
+    }
+  ]
+}

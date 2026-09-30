@@ -263,7 +263,9 @@ public enum EvidenceCatalog {
 
     // MARK: Texts
 
-    /// Display name of an ingredient; a custom one falls back to its id.
+    /// Display name of an ingredient; a known one without a card uses
+    /// `IngredientCatalog`, any other falls back to its id (a custom one:
+    /// `SupplementPlan.ingredientName`).
     public static func name(of ingredient: IngredientID) -> String {
         switch ingredient {
         case .creatine: return String(localized: "Creatine", bundle: .module, comment: "Supplement ingredient name.")
@@ -281,7 +283,7 @@ public enum EvidenceCatalog {
         case .sodium: return String(localized: "Sodium", bundle: .module, comment: "Nutrient name.")
         case .potassium: return String(localized: "Potassium", bundle: .module, comment: "Nutrient name.")
         case .vitaminK2: return String(localized: "Vitamin K2", bundle: .module, comment: "Supplement ingredient name.")
-        default: return ingredient.rawValue
+        default: return IngredientCatalog.extraName(of: ingredient) ?? ingredient.rawValue
         }
     }
 

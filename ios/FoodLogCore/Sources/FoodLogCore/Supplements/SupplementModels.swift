@@ -66,13 +66,15 @@ public struct IngredientID: Hashable, Sendable, Codable, Comparable, Expressible
         .selenium, .vitaminB6, .caffeine, .betaAlanine, .sodium, .potassium, .vitaminK2
     ]
 
-    /// The unit daily totals and limits are kept in. An ingredient without
-    /// a card counts in mg.
+    /// The unit daily totals and limits are kept in. A custom ingredient
+    /// (add-custom-ingredients-and-owner-supplements) counts in the unit its
+    /// id carries (`IngredientID.custom(unit:)`), so "10 ml" of a tincture
+    /// adds up in ml; any other ingredient without a card counts in mg.
     public var canonicalUnit: DoseUnit {
         switch self {
         case .creatine, .betaAlanine: return .g
         case .vitaminD, .vitaminB12, .selenium, .vitaminK2: return .ug
-        default: return .mg
+        default: return customUnit ?? .mg
         }
     }
 }
@@ -99,6 +101,13 @@ public struct DoseUnit: Hashable, Sendable, Codable, ExpressibleByStringLiteral 
     /// Stored as "ug" (plain ASCII); shown as "µg".
     public static let ug: DoseUnit = "ug"
     public static let iu: DoseUnit = "IU"
+    /// Millilitres, for liquids (add-custom-ingredients-and-owner-
+    /// supplements). Never converted to a mass: a custom ingredient in ml
+    /// is totalled in ml.
+    public static let ml: DoseUnit = "ml"
+
+    /// The units a user can pick for an ingredient row, in picker order.
+    public static let pickable: [DoseUnit] = [.mg, .ug, .g, .iu, .ml]
 
     /// The symbol shown next to a number. Unit symbols are the same in
     /// English and Czech; VoiceOver spells them out via the app's
@@ -664,20 +673,35 @@ public struct SupplementPlan: Codable, Sendable, Equatable {
     /// `SupplementSlotTimes.defaultReminderMinute(for:)`. Optional so plan
     /// files written before it still decode.
     public var slotReminders: [SlotReminder]?
+    /// Ingredients the user created because the list lacked them
+    /// (add-custom-ingredients-and-owner-supplements, CustomIngredients.swift).
+    /// Optional so plan files written before it still decode, and so a plan
+    /// without any is encoded exactly as before.
+    public var customIngredients: [CustomIngredient]?
 
-    public init(products: [SupplementProduct] = [], items: [PlanItem] = [], slotReminders: [SlotReminder]? = nil) {
+    public init(
+        products: [SupplementProduct] = [],
+        items: [PlanItem] = [],
+        slotReminders: [SlotReminder]? = nil,
+        customIngredients: [CustomIngredient]? = nil
+    ) {
         self.products = products
         self.items = items
         self.slotReminders = slotReminders
+        self.customIngredients = customIngredients
     }
 
-    private enum CodingKeys: String, CodingKey { case products, items, slotReminders }
+    private enum CodingKeys: String, CodingKey { case products, items, slotReminders, customIngredients }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         products = try container.decodeIfPresent([SupplementProduct].self, forKey: .products) ?? []
         items = try container.decodeIfPresent([PlanItem].self, forKey: .items) ?? []
         slotReminders = try container.decodeIfPresent([SlotReminder].self, forKey: .slotReminders)
+        // One bad entry must not cost the whole plan (fix-silent-store-wipe):
+        // entries without an id or a name are dropped.
+        customIngredients = try container.decodeIfPresent([LossyCustomIngredient].self, forKey: .customIngredients)?
+            .compactMap(\.value)
     }
 
     public func product(id: UUID) -> SupplementProduct? {

@@ -240,12 +240,13 @@ struct SupplementStatusBadge: View {
 
 /// One calm, amber row: an ingredient over its limit (design D6).
 struct LimitWarningRow: View {
+    @Environment(AppEnvironment.self) private var environment
     let warning: LimitWarning
 
     var body: some View {
         Label {
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: EvidenceCatalog.name(of: warning.ingredient))
+                Text(verbatim: environment.supplements.ingredientName(warning.ingredient))
                     .font(.subheadline.weight(.semibold))
                 Text(detail)
                     .font(.caption)

@@ -526,3 +526,77 @@
 
 /* Name of an entry copied from Garmin Connect whose food name Garmin didn't send. */
 "Food from Garmin" = "Food from Garmin";
+
+/* ---- Supplements: branded catalog and custom ingredients (Supplements/SupplementCatalog+Branded.swift, IngredientCatalog.swift) ---- */
+
+/* Supplement serving size: one measure (scoop) of powder; %@ is the weight in grams, may have decimals. */
+"%@ g measure" = "%@ g measure";
+
+/* Supplement serving size: one sachet; %@ is its weight in grams, may have decimals. */
+"%@ g sachet" = "%@ g sachet";
+
+/* Supplement ingredient name (Curcuma longa root powder). */
+"Turmeric" = "Turmeric";
+
+/* Supplement ingredient name. */
+"Rosehip extract" = "Rosehip extract";
+
+/* Supplement ingredient name. */
+"Citrus bioflavonoids" = "Citrus bioflavonoids";
+
+/* Supplement ingredient name (Prunus cerasus). */
+"Tart cherry juice" = "Tart cherry juice";
+
+/* Supplement ingredient name (herb). */
+"Valerian root" = "Valerian root";
+
+/* Supplement ingredient name (gamma-aminobutyric acid). */
+"GABA" = "GABA";
+
+/* Supplement ingredient name (amino acid). */
+"L-theanine" = "L-theanine";
+
+/* Supplement ingredient name. */
+"Green tea extract" = "Green tea extract";
+
+/* Supplement ingredient name. */
+"MSM (methylsulfonylmethane)" = "MSM (methylsulfonylmethane)";
+
+/* Supplement ingredient name. */
+"Glucosamine" = "Glucosamine";
+
+/* Supplement ingredient name. */
+"Chondroitin" = "Chondroitin";
+
+/* Supplement ingredient name. */
+"Collagen type I" = "Collagen type I";
+
+/* Supplement ingredient name. */
+"Collagen type II" = "Collagen type II";
+
+/* Supplement quality fact stated by the maker. */
+"Lab-tested, protocols published by the maker" = "Lab-tested, protocols published by the maker";
+
+/* Supplement quality fact stated by the maker: an anti-doping test at the Cologne sports university lab. */
+"Tested at the DSHS Köln lab against the WADA list (maker's statement)" = "Tested at the DSHS Köln lab against the WADA list (maker's statement)";
+
+/* Supplement quality fact stated by the maker. */
+"Safety certificate from SZÚ (Czech public health institute)" = "Safety certificate from SZÚ (Czech public health institute)";
+
+/* Supplement quality fact stated by the maker or seller. */
+"Vegan (as stated)" = "Vegan (as stated)";
+
+/* Supplement quality fact: the active ingredient is enclosed in liposomes. */
+"Liposomal form" = "Liposomal form";
+
+/* Supplement quality fact: omega-3 oil in re-esterified triglyceride form. */
+"Triglyceride form (rTG)" = "Triglyceride form (rTG)";
+
+/* Supplement quality fact: the maker's stated oxidation limit of a fish oil. %@ is e.g. TOTOX ≤ 10. */
+"Oxidation limit: %@" = "Oxidation limit: %@";
+
+/* Supplement quality fact: a trademarked ingredient. %@ is its name(s). */
+"Branded raw material: %@" = "Branded raw material: %@";
+
+/* Supplement quality fact: the product is a registered medicinal product, not a food supplement. %@ is the registry code. */
+"Registered medicine: %@" = "Registered medicine: %@";

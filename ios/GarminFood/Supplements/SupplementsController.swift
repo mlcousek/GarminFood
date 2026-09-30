@@ -130,7 +130,7 @@ final class SupplementsController {
         for product in plan.products {
             for row in product.ingredients { set.insert(row.ingredient) }
         }
-        return set.sorted { EvidenceCatalog.name(of: $0).localizedCompare(EvidenceCatalog.name(of: $1)) == .orderedAscending }
+        return set.sorted { ingredientName($0).localizedCompare(ingredientName($1)) == .orderedAscending }
     }
 
     func adherence(lastDays count: Int, productId: UUID?) -> SupplementAdherence {
@@ -280,6 +280,44 @@ final class SupplementsController {
         let since = records.filter { $0.productId == productId }
         await perform("refill") {
             try await planStore.refill(productId, packs: packs, on: today, records: since)
+        }
+    }
+
+    // MARK: - Custom ingredients
+
+    /// The user's own ingredients (add-custom-ingredients-and-owner-
+    /// supplements), searchable in the ingredient picker.
+    var customIngredients: [CustomIngredient] { plan.customIngredientList }
+
+    /// The display name of any ingredient id, custom ones included.
+    func ingredientName(_ ingredient: IngredientID) -> String {
+        plan.ingredientName(ingredient)
+    }
+
+    /// Creates (or, for a name that exists, reuses) a custom ingredient and
+    /// returns what was saved; `nil` when the name is blank or the write
+    /// failed (the error is shown like every other failed write).
+    func createCustomIngredient(name: String, unit: DoseUnit, form: String?) async -> CustomIngredient? {
+        guard let ingredient = CustomIngredient.make(name: name, unit: unit, form: form) else { return nil }
+        var saved: CustomIngredient?
+        await perform("save custom ingredient") {
+            saved = try await planStore.saveCustomIngredient(ingredient)
+        }
+        return saved
+    }
+
+    /// Remembers a form typed on a row of a custom ingredient, so it is
+    /// offered next time. Quiet on failure: the row itself keeps the form.
+    func rememberForm(_ form: String?, of ingredient: IngredientID) async {
+        guard var custom = plan.customIngredient(id: ingredient) else { return }
+        let before = custom
+        custom.addForm(form)
+        guard custom != before else { return }
+        do {
+            try await planStore.saveCustomIngredient(custom)
+            plan = try await planStore.plan()
+        } catch {
+            DiagnosticsLog.log(.warning, category: "Supplements", "couldn't remember the form: \(error.localizedDescription)")
         }
     }
 
