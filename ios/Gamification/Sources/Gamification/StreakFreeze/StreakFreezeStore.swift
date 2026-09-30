@@ -32,6 +32,7 @@
 // the app's GamificationEngine.
 
 import Foundation
+import FoodLogCore
 
 public actor StreakFreezeStore {
     public struct Consumption: Codable, Sendable, Equatable, Hashable {
@@ -167,24 +168,13 @@ public enum FreezeStreakKind: String, Sendable, Equatable, CaseIterable {
 /// speaks midnight `Date`s).
 public enum FreezeDayKey {
     public static func key(for day: Date, calendar: Calendar) -> String {
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: day)
+        NutritionDate.string(from: day, calendar: calendar)
     }
 
-    /// Midnight of the day, or `nil` for a malformed key.
+    /// Midnight of the day, or `nil` for a malformed key (Gregorian
+    /// whatever `calendar` is, like the key itself).
     public static func date(for key: String, calendar: Calendar) -> Date? {
-        let parts = key.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3 else { return nil }
-        var components = DateComponents()
-        components.year = parts[0]
-        components.month = parts[1]
-        components.day = parts[2]
-        components.hour = 12
-        guard let noon = calendar.date(from: components) else { return nil }
+        guard let noon = NutritionDate.noon(ofDayString: key, calendar: calendar) else { return nil }
         return calendar.startOfDay(for: noon)
     }
 }

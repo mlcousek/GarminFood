@@ -16,6 +16,7 @@
 // feature, RewardLedger keys (by convention).
 
 import Foundation
+import FoodLogCore
 
 public struct WeekKey: Hashable, Comparable, Sendable, Codable, CustomStringConvertible {
     /// The ISO week-numbering year (not always the calendar year).
@@ -38,14 +39,7 @@ public struct WeekKey: Hashable, Comparable, Sendable, Codable, CustomStringConv
     /// The ISO week of a `yyyy-MM-dd` day key (as `NutritionDate` spells
     /// it). Uses the day's noon, so no time-zone edge can move it.
     public init?(dayKey: String, calendar: Calendar) {
-        let parts = dayKey.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3 else { return nil }
-        var components = DateComponents()
-        components.year = parts[0]
-        components.month = parts[1]
-        components.day = parts[2]
-        components.hour = 12
-        guard let noon = calendar.date(from: components) else { return nil }
+        guard let noon = NutritionDate.noon(ofDayString: dayKey, calendar: calendar) else { return nil }
         self.init(date: noon, calendar: calendar)
     }
 
@@ -88,14 +82,10 @@ public struct WeekKey: Hashable, Comparable, Sendable, Codable, CustomStringConv
     public func dayKeys(calendar: Calendar) -> [String] {
         guard let monday = start(calendar: calendar) else { return [] }
         let iso = WeekKey.isoCalendar(timeZone: calendar.timeZone)
-        // Same formatter setup as `NutritionDate.string`, so the keys match
-        // the ones the rest of the app produces.
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "yyyy-MM-dd"
+        // `NutritionDate.string` itself, so the keys match the ones the rest
+        // of the app produces (Gregorian whatever `calendar` is).
         return (0..<7).compactMap { offset in
-            iso.date(byAdding: .day, value: offset, to: monday).map { formatter.string(from: $0) }
+            iso.date(byAdding: .day, value: offset, to: monday).map { NutritionDate.string(from: $0, calendar: calendar) }
         }
     }
 

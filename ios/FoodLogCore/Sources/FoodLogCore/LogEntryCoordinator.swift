@@ -128,8 +128,10 @@ public struct LogEntryCoordinator: Sendable {
         }
         // The backing amount is the quantity times the custom food's own
         // multiplier, which may legitimately be large (a "1 g" backing
-        // serving); it only has to be a real, positive number.
-        guard target.numberOfUnits.isFinite, target.numberOfUnits > 0 else { throw LogQuantityError.outOfRange }
+        // serving) -- and is what Garmin receives as `servingQty`, so it is
+        // held to the same bound as any logged amount (fix-review-findings-
+        // 2026-09-b): nothing out of it ever reaches the outbox.
+        guard LogQuantity.isValid(target.numberOfUnits) else { throw LogQuantityError.backingOutOfRange }
         // No `source`: a custom food only records its backing food's id, so
         // the namespace is inferred from that id's shape at delivery.
         let entry = try await outbox.logFood(
@@ -194,14 +196,13 @@ public struct LogEntryCoordinator: Sendable {
         guard !preset.ingredients.contains(where: { $0.needsGarminMatch }) else {
             throw CustomFoodLoggingError.needsGarminMatch
         }
-        let allValid = preset.ingredients.allSatisfy { ingredient in
-            let quantity = ingredient.quantity * servingsMultiplier
-            guard LogQuantity.isValid(quantity) else { return false }
-            guard let draft = ingredient.customFoodDraft else { return true }
-            guard let backing = draft.resolvedLoggingTarget(quantity: quantity)?.numberOfUnits else { return false }
-            return backing.isFinite && backing > 0
-        }
+        let allValid = preset.ingredients.allSatisfy { LogQuantity.isValid($0.quantity * servingsMultiplier) }
         guard allValid else { throw LogQuantityError.outOfRange }
+        // A custom food's amount in Garmin, too (`confirmCustomFood`'s
+        // bound), before anything is written.
+        guard preset.backingQuantitiesAreValid(servingsMultiplier: servingsMultiplier) else {
+            throw LogQuantityError.backingOutOfRange
+        }
         var entries: [OutboxEntry] = []
         entries.reserveCapacity(preset.ingredients.count)
         for ingredient in preset.ingredients {

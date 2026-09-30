@@ -56,8 +56,16 @@ public enum LogQuantity {
 /// `LogQuantity.isValid`. Nothing is enqueued when it's thrown.
 public enum LogQuantityError: Error, Sendable, Equatable, LocalizedError {
     case outOfRange
+    /// The typed amount is fine, but a custom food's amount in Garmin (it
+    /// times the food's backing multiplier) is not
+    /// (`CustomFoodDraft.backingQuantityIsValid`; fix-review-findings-
+    /// 2026-09-b).
+    case backingOutOfRange
 
     public var errorDescription: String? {
-        LogQuantity.invalidMessage
+        switch self {
+        case .outOfRange: return LogQuantity.invalidMessage
+        case .backingOutOfRange: return CustomFoodDraft.backingQuantityInvalidMessage
+        }
     }
 }

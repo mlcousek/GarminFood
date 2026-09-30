@@ -212,6 +212,13 @@ struct LogEntryConfirmView: View {
                 completenessSection(standaloneCompleteness)
             }
 
+            if !isBackingQuantityValid {
+                Section {
+                    Label(CustomFoodDraft.backingQuantityInvalidMessage, systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(Theme.warning)
+                }
+            }
+
             if needsGarminMatch {
                 Section {
                     Label(String(localized: "Needs a Garmin match before it can be logged to Garmin."), systemImage: "exclamationmark.triangle")
@@ -356,6 +363,16 @@ struct LogEntryConfirmView: View {
         !didConfirm && !isSaving && (isCustom || selectedServing != nil) && isQuantityValid
             && (standaloneCompleteness?.isLoggable ?? true)
             && !needsGarminMatch
+            && isBackingQuantityValid
+    }
+
+    /// A custom food's amount in Garmin (the typed amount times its
+    /// multiplier) has the same bound (fix-review-findings-2026-09-b), so an
+    /// out-of-range product disables the button with a reason too. Garmin
+    /// mode only: standalone logs the custom food as itself.
+    private var isBackingQuantityValid: Bool {
+        guard environment.dataMode == .garminConnected, let customDraft, let quantity else { return true }
+        return customDraft.backingQuantityIsValid(for: quantity)
     }
 
     /// The same bound `LogEntryCoordinator` enforces (finite, > 0,

@@ -169,12 +169,8 @@ public actor ActivityCacheStore {
     public static func parseGMT(_ raw: String) -> Date? {
         let normalized = raw.replacingOccurrences(of: "T", with: " ")
         let trimmed = normalized.split(separator: ".").first.map(String.init) ?? normalized
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.timeZone = TimeZone(identifier: "UTC")
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return formatter.date(from: trimmed)
+        return GarminWireDate.formatter("yyyy-MM-dd HH:mm:ss", timeZone: TimeZone(identifier: "UTC") ?? .gmt)
+            .date(from: trimmed)
     }
 
     /// The `yyyy-MM-dd` date part of `startTimeLocal`, validated.

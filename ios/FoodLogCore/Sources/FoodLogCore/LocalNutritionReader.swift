@@ -204,8 +204,6 @@ public struct LocalNutritionReader: NutritionLogReading {
     /// Garmin's own `logTimestamp` shape (`2026-09-16T13:35:49.324Z`), which
     /// `FastingLogMoments.parseTimestamp` reads.
     static func timestampString(_ date: Date) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter.string(from: date)
+        GarminWireDate.isoTimestampString(date)
     }
 }

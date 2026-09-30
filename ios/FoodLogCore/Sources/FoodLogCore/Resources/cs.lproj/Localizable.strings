@@ -7,6 +7,9 @@
 /* Validation error under a quantity field. %@ is the maximum number of servings, e.g. 10000. */
 "Enter an amount greater than zero and at most %@." = "Zadej množství větší než nula a nejvýše %@.";
 
+/* Validation error on the confirm screen of a custom food logged to Garmin as another food, scaled by its multiplier. %@ is the maximum number of servings, e.g. 10000. */
+"The amount recorded in Garmin must be greater than zero and at most %@ servings of the food it's recorded as. Change the amount or the food's quantity multiplier." = "Množství zapsané do Garminu musí být větší než nula a nejvýše %@ porcí potraviny, jako kterou se zapisuje. Změň množství nebo násobek množství u potraviny.";
+
 /* ---- Nutrients (MealDashboard.swift) ---- */
 
 /* Nutrient name (row label in a nutrition breakdown). */

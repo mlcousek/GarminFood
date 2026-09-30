@@ -547,12 +547,7 @@ public actor WeightOutbox {
     /// `yyyy-MM-dd` of `date` in the device's time zone -- the day a weigh-in
     /// logged here lands on in Garmin (same as FoodLogCore's `NutritionDate`).
     static func localCalendarDate(of date: Date, timeZone: TimeZone = .current) -> String {
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = timeZone
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
+        GarminWireDate.dayString(from: date, timeZone: timeZone)
     }
 
     public func allEntries() async -> [WeightOutboxEntry] {

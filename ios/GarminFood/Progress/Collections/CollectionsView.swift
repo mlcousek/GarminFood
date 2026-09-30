@@ -109,7 +109,7 @@ func collectionDayText(_ dayKey: String?) -> String? {
     guard let dayKey else { return nil }
     let parts = dayKey.split(separator: "-").compactMap { Int($0) }
     guard parts.count == 3,
-          let date = Calendar.current.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
+          let date = Calendar(identifier: .gregorian).date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
     else { return dayKey }
     return date.formatted(.dateTime.day().month(.wide).year())
 }
