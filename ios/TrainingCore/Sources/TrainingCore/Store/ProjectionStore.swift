@@ -27,6 +27,10 @@
 // training day and the last successful sync against a 24-hour threshold
 // (owner decision 0.3, defaulted).
 //
+// add-training-gamification-and-150-levels D6: `cachedRewardExtras()` reads
+// the few fields the training rewards need that `Projection` does not model
+// yet, from the same last good bytes (ProjectionRewardExtras.swift).
+//
 // Depended on by: the app's TrainingModel and VaultServices. Tests:
 // ProjectionStoreTests (in-memory transport, real ConditionalFileSync).
 
@@ -76,6 +80,9 @@ public actor ProjectionStore {
     private var cached: CachedProjection?
     /// (byte count, fetch date) of the bytes `cached` came from.
     private var cachedSignature: String?
+    /// The reward extras of the last good bytes, and their signature.
+    private var cachedExtras: ProjectionRewardExtras?
+    private var cachedExtrasSignature: String?
     public private(set) var rejection: ProjectionRejection?
 
     public init(fetchSync: ConditionalFileSync, path: HubPath = VaultHub.projectionPath) {
@@ -113,6 +120,23 @@ public actor ProjectionStore {
             cached = nil
             return nil
         }
+    }
+
+    /// add-training-gamification-and-150-levels D6: the reward extras of
+    /// the last good copy (`.empty` when there is none), decoded once per
+    /// copy. No network; the same bytes `loadCached()` reads.
+    public func cachedRewardExtras() async -> ProjectionRewardExtras {
+        guard let file = await fetchSync.cachedFile(path) else {
+            cachedExtras = nil
+            cachedExtrasSignature = nil
+            return .empty
+        }
+        let signature = "\(file.bytes.count)|\(file.fetchedAt?.timeIntervalSince1970 ?? 0)"
+        if signature == cachedExtrasSignature, let cachedExtras { return cachedExtras }
+        let extras = ProjectionRewardExtras.decode(file.bytes)
+        cachedExtras = extras
+        cachedExtrasSignature = signature
+        return extras
     }
 
     /// Folds one refresh's report in (design D5, D11).
@@ -155,6 +179,8 @@ public actor ProjectionStore {
     public func clear() {
         cached = nil
         cachedSignature = nil
+        cachedExtras = nil
+        cachedExtrasSignature = nil
         rejection = nil
     }
 }

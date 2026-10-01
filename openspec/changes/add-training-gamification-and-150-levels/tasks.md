@@ -21,9 +21,9 @@ commit after each.
 
 ## 2. Plan facts (TrainingCore)
 
-- [ ] 2.1 `Contract/ProjectionRewardExtras.swift`: tolerant sidecar decode of `athlete.gate.date`, week `actual.unplannedRunKm` / `overPlanKm`, applied plan-edit outcomes and `race.result`; `ProjectionStore.cachedRewardExtras()`.
-- [ ] 2.2 `Plan/TrainingPlanFacts.swift`: days (light from a check-in, pain answered, habits expected and done, sessions with status and option, unplanned runs, carb-load), weeks, active habits, races, phases, season.
-- [ ] 2.3 `TrainingPlanFactsTests` on synthetic inline projections: every fact, the phone's own check-in / tick / RPE overlay, broken and missing extras.
+- [x] 2.1 `Contract/ProjectionRewardExtras.swift`: tolerant sidecar decode of `athlete.gate.date`, week `actual.unplannedRunKm` / `overPlanKm`, applied plan-edit outcomes and `race.result`; `ProjectionStore.cachedRewardExtras()`.
+- [x] 2.2 `Plan/TrainingPlanFacts.swift`: days (light from a check-in, pain answered, habits expected and done, sessions with status and option, unplanned runs, carb-load), weeks, active habits, races, phases, season.
+- [x] 2.3 `TrainingPlanFactsTests` on synthetic inline projections: every fact, the phone's own check-in / tick / RPE overlay, broken and missing extras.
 
 ## 3. Rules and rewards (Gamification)
 
