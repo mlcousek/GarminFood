@@ -41,7 +41,9 @@ public enum BingoTaskCatalog {
         byId[id]
     }
 
-    private static let byId: [String: BingoTask] = Dictionary(all.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+    /// The food tasks and the training experience's squares
+    /// (BingoTaskCatalog+Training.swift): a stored card may hold either.
+    private static let byId: [String: BingoTask] = Dictionary((all + training).map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
 
     static let easy: [BingoTask] = [
         BingoTask(

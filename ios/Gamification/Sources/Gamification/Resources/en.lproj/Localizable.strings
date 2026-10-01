@@ -955,3 +955,66 @@
 
 /* Progress tab, a training ladder with every badge earned: %lld = the count so far. */
 "%lld · complete" = "%lld · complete";
+
+/* Why this boss (training experience): share of recent plan days on which the plan was followed. The value is a percentage. */
+"Plan days kept: %@ of the days the plan judged" = "Plan days kept: %@ of the days the plan judged";
+
+/* Weekly boss name in the training experience (Czech: Nedočkavý skřítek): the urge to do more than the plan. */
+"Impatience Imp" = "Impatience Imp";
+
+/* Weekly boss flavour line (training experience): the urge to do more than the plan. */
+"Keeps whispering that a little more cannot hurt." = "Keeps whispering that a little more cannot hurt.";
+
+/* Weekly boss habit (training experience): follow the plan for the day; a rest day counts. */
+"Keep the day's plan" = "Keep the day's plan";
+
+/* Bingo task title (training experience): every habit of one day done. */
+"All Boxes Ticked" = "All Boxes Ticked";
+
+/* Bingo task rule. */
+"Do every habit of one day." = "Do every habit of one day.";
+
+/* Bingo task title (training experience): one day on which the plan was followed. */
+"Just the Plan" = "Just the Plan";
+
+/* Bingo task rule. */
+"Keep the day's plan once this week. A rest day counts." = "Keep the day's plan once this week. A rest day counts.";
+
+/* Bingo task title (training experience): rate a session's effort after doing it. */
+"How Did It Feel?" = "How Did It Feel?";
+
+/* Bingo task rule. */
+"Rate a session after you do it." = "Rate a session after you do it.";
+
+/* Bingo task title (training experience): five morning check-ins in the week. */
+"Morning Roll Call" = "Morning Roll Call";
+
+/* Bingo task rule. */
+"Check in on 5 mornings this week." = "Check in on 5 mornings this week.";
+
+/* Bingo task title (training experience): every habit done on three days of the week. */
+"Three Tidy Days" = "Three Tidy Days";
+
+/* Bingo task rule. */
+"Do every habit on 3 days this week." = "Do every habit on 3 days this week.";
+
+/* Bingo task title (training experience): both strength sessions of the week done. */
+"Both Gym Days" = "Both Gym Days";
+
+/* Bingo task rule. */
+"Do both strength sessions this week." = "Do both strength sessions this week.";
+
+/* Bingo task title (training experience): a morning check-in on all seven days. */
+"Every Single Morning" = "Every Single Morning";
+
+/* Bingo task rule. */
+"Check in on all 7 mornings this week." = "Check in on all 7 mornings this week.";
+
+/* Bingo task title (training experience): five days of the week on which the plan was followed. */
+"Five by the Plan" = "Five by the Plan";
+
+/* Bingo task rule. */
+"Keep the day's plan on 5 days this week. Rest days count." = "Keep the day's plan on 5 days this week. Rest days count.";
+
+/* Road trip conversion line in the training experience: a fixed distance per day on which the plan was followed. */
+"Every plan day you keep moves you 8 km, rest days included. Extra training adds nothing." = "Every plan day you keep moves you 8 km, rest days included. Extra training adds nothing.";

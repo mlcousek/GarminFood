@@ -14,6 +14,11 @@
 // - A stored id that is no longer in the catalog is treated as FREE
 //   (defensive -- ids are never removed on purpose).
 //
+// add-training-gamification-and-150-levels D9: a `.training` square is
+// judged from the plan's facts (`plan`, passed only in the training
+// experience) by `trainingCompletionDay`; without them it simply stays
+// open. Everything else is unchanged.
+//
 // Depends on: BingoTaskCatalog, SignalEvaluator, WeekKey, FoodLogCore.
 // Depended on by: WeeklyBingoFeature, BingoCardGenerator (lines),
 // WeeklyBingoEvaluatorTests.
@@ -92,7 +97,8 @@ public enum BingoEvaluator {
         snapshot: SignalsSnapshot,
         calendar: Calendar,
         stored: [Int: String],
-        onlyCompletedDayTasks: Bool = false
+        onlyCompletedDayTasks: Bool = false,
+        plan: TrainingPlanSignals? = nil
     ) -> [Int: String] {
         var result = stored
         let keys = week.dayKeys(calendar: calendar).filter { $0 <= today }
@@ -101,6 +107,14 @@ public enum BingoEvaluator {
         for (index, taskId) in taskIds.enumerated() where result[index] == nil {
             guard let task = BingoTaskCatalog.task(id: taskId) else { continue }
             if onlyCompletedDayTasks && !task.judgesCompletedDaysOnly { continue }
+            if case .training(let rule) = task.scope {
+                // From the plan's facts; its own verdicts know which days
+                // are over, so every day of the week up to today is passed.
+                if let plan, let day = trainingCompletionDay(rule, dayKeys: keys, plan: plan) {
+                    result[index] = day
+                }
+                continue
+            }
             let candidates = task.judgesCompletedDaysOnly ? completedDays : days
             guard !candidates.isEmpty else { continue }
             if let day = completionDay(of: task, days: candidates, history: snapshot, calendar: calendar) {
@@ -124,6 +138,9 @@ public enum BingoEvaluator {
             for end in days.indices where SignalEvaluator.holds(predicate, over: Array(days[...end]), history: history, calendar: calendar) {
                 return days[end].day
             }
+            return nil
+        case .training:
+            // Not a food rule: see `trainingCompletionDay`.
             return nil
         }
     }

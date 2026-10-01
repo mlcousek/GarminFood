@@ -20,6 +20,11 @@
 // `progress` turns a state into what the UI shows (position, last and next
 // milestone, remaining distance, Podolí percentage).
 //
+// add-training-gamification-and-150-levels D9: `roadKilometresByDay` (the
+// training experience) replaces the road trip's per-day value: a fixed
+// distance on every kept plan day, nothing on any other day, whatever the
+// active calories were. The ledger still counts each day exactly once.
+//
 // Depends on: DailyLedger, JourneyCatalog, JourneysState, FoodLogCore
 // (SignalsSnapshot/DaySignals).
 // Depended on by: JourneysFeature, JourneysTests.
@@ -119,7 +124,13 @@ public enum JourneysEvaluator {
 
     // MARK: - Evaluation
 
-    public static func evaluate(state: JourneysState, snapshot: SignalsSnapshot) -> Result {
+    /// - Parameter roadKilometresByDay: the training experience's road
+    ///   values (day -> km); `nil` keeps the active-calorie rule.
+    public static func evaluate(
+        state: JourneysState,
+        snapshot: SignalsSnapshot,
+        roadKilometresByDay: [String: Double]? = nil
+    ) -> Result {
         var next = state
         let wasFirstRun = state.isFirstRun
 
@@ -133,7 +144,10 @@ public enum JourneysEvaluator {
         var road = state.road ?? CumulativeJourneyState()
         let weights = weightsByDay(snapshot, stored: road.lastKnownWeightKg)
         road = advance(road, snapshot: snapshot) { day in
-            snapshot.days[day].flatMap { roadKilometres($0, weightKg: weights[day]) }
+            if let roadKilometresByDay {
+                return roadKilometresByDay[day]
+            }
+            return snapshot.days[day].flatMap { roadKilometres($0, weightKg: weights[day]) }
         }
         if let sealedThrough = road.ledger?.sealedThrough,
            let lastSealedWeighIn = snapshot.windowDays
@@ -200,9 +214,10 @@ public enum JourneysEvaluator {
     public static func progress(
         state: JourneysState,
         kind: JourneyKind,
-        isAvailable: Bool = true
+        isAvailable: Bool = true,
+        trainingRoad: Bool = false
     ) -> JourneyProgress {
-        let definition = JourneyCatalog.definition(kind)
+        let definition = JourneyCatalog.definition(kind, trainingRoad: trainingRoad)
         let total = state.total(kind)
         let lastReached = definition.milestones.last { $0.threshold <= total }
         let next = definition.milestones.first { $0.threshold > total }

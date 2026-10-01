@@ -17,6 +17,15 @@
 // design ("Snídaňový skřet"), in English their English twins. All display
 // text is localized here (`bundle: .module`), nothing is persisted.
 //
+// add-training-gamification-and-150-levels D9: an eleventh archetype, the
+// Impatience Imp, exists only in the training experience. Its habit is
+// "keep the day's plan" and its hits are KEPT PLAN DAYS -- a rest day and
+// resting on a red morning included (TrainingXPRules) -- so it is judged
+// from the plan's facts, never from food data: `isConsidered` is false for
+// it and its `goodDay` never holds. `BossCatalog.all` stays the ten food
+// archetypes (the bestiary badge needs exactly those); the imp is in
+// `BossCatalog.training`.
+//
 // Depends on: DayPredicate, SignalEvaluator, FoodLogCore (DaySignals,
 // FoodTag), AchievementDefinition.
 // Depended on by: BossPicker, BossFight, WeeklyBossFeature, the app's boss
@@ -25,7 +34,8 @@
 import Foundation
 import FoodLogCore
 
-/// The ten boss archetypes; the raw value is the persisted id.
+/// The boss archetypes -- ten food ones and the training experience's imp;
+/// the raw value is the persisted id.
 public enum BossKind: String, Sendable, Equatable, Hashable, Codable, CaseIterable {
     case breakfastGoblin = "breakfast-goblin"
     case desertDragon = "desert-dragon"
@@ -37,6 +47,12 @@ public enum BossKind: String, Sendable, Equatable, Hashable, Codable, CaseIterab
     case fibrePhantom = "fibre-phantom"
     case scurvyPirate = "scurvy-pirate"
     case forgetfulGhost = "forgetful-ghost"
+    /// add-training-gamification-and-150-levels D9: beaten by kept plan
+    /// days; only ever chosen in the training experience.
+    case impatienceImp = "impatience-imp"
+
+    /// Judged from the training plan's facts, not from food data.
+    public var isTrainingOnly: Bool { self == .impatienceImp }
 }
 
 /// One archetype's static facts plus its localized text.
@@ -78,6 +94,8 @@ public struct BossArchetype: Sendable, Equatable, Identifiable {
             return String(localized: "Fruit: \(percent) of logged days", bundle: .module, comment: "Why this boss: share of logged days with fruit. The value is a percentage.")
         case .forgetfulGhost:
             return String(localized: "Logged: \(percent) of the last 28 days", bundle: .module, comment: "Why this boss: share of the last 28 days with any entry. The value is a percentage.")
+        case .impatienceImp:
+            return String(localized: "Plan days kept: \(percent) of the days the plan judged", bundle: .module, comment: "Why this boss (training experience): share of recent plan days on which the plan was followed. The value is a percentage.")
         }
     }
 
@@ -98,6 +116,9 @@ public struct BossArchetype: Sendable, Equatable, Identifiable {
             return day.hasEntries && day.totals.fiber != nil
         case .forgetfulGhost:
             return true
+        case .impatienceImp:
+            // Judged from the plan's facts (BossFight.trainingHitDays).
+            return false
         }
     }
 
@@ -114,7 +135,16 @@ public enum BossCatalog {
     /// Fewer logged days than this in the window = a new user: the ghost.
     public static let newUserLoggedDays = 7
 
-    public static var all: [BossArchetype] { BossKind.allCases.map(archetype) }
+    /// add-training-gamification-and-150-levels D9: the imp needs at least
+    /// this many judged plan days in the four weeks before (the plan file
+    /// carries about two weeks back).
+    public static let minimumJudgedPlanDays = 10
+
+    /// The ten food archetypes (the bestiary).
+    public static var all: [BossArchetype] { foodKinds.map(archetype) }
+    /// The archetypes of the training experience.
+    public static var training: [BossArchetype] { BossKind.allCases.filter(\.isTrainingOnly).map(archetype) }
+    public static var foodKinds: [BossKind] { BossKind.allCases.filter { !$0.isTrainingOnly } }
 
     public static func archetype(_ kind: BossKind) -> BossArchetype {
         switch kind {
@@ -207,6 +237,16 @@ public enum BossCatalog {
                 goal: String(localized: "Log any food", bundle: .module, comment: "Weekly boss habit: log at least one entry."),
                 symbol: "eye.slash.fill", requirement: [], judgesCompletedDaysOnly: false,
                 goodDay: .distinctFoodsAtLeast(1)
+            )
+        case .impatienceImp:
+            return BossArchetype(
+                kind: kind,
+                name: String(localized: "Impatience Imp", bundle: .module, comment: "Weekly boss name in the training experience (Czech: Nedočkavý skřítek): the urge to do more than the plan."),
+                flavour: String(localized: "Keeps whispering that a little more cannot hurt.", bundle: .module, comment: "Weekly boss flavour line (training experience): the urge to do more than the plan."),
+                goal: String(localized: "Keep the day's plan", bundle: .module, comment: "Weekly boss habit (training experience): follow the plan for the day; a rest day counts."),
+                symbol: "hare.fill", requirement: [], judgesCompletedDaysOnly: false,
+                // Never met from food data: its hits are kept plan days.
+                goodDay: .any([])
             )
         }
     }

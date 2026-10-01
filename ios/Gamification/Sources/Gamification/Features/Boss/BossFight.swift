@@ -12,7 +12,12 @@
 //     today), so every one of its days is complete: the feature then
 //     settles the week as defeated or escaped (no penalty).
 //
-// Depends on: BossCatalog, WeekKey, FoodLogCore (SignalsSnapshot).
+// add-training-gamification-and-150-levels D9: a training-only boss (the
+// Impatience Imp) is hit by KEPT PLAN DAYS -- `trainingHitDays`, from the
+// plan's facts and TrainingXPRules' verdict. A rest day is a hit.
+//
+// Depends on: BossCatalog, WeekKey, FoodLogCore (SignalsSnapshot),
+// TrainingPlanSignals, TrainingXPRules.
 // Depended on by: WeeklyBossFeature.
 
 import Foundation
@@ -35,6 +40,28 @@ public enum BossFight {
             guard let day = snapshot.days[key] else { return false }
             return archetype.isGood(day, history: snapshot, calendar: calendar)
         }
+    }
+
+    /// The days of `week` the plan's facts call kept, oldest first; empty
+    /// without the plan's facts.
+    public static func trainingHitDays(week: WeekKey, plan: TrainingPlanSignals?, calendar: Calendar) -> [String] {
+        guard let plan else { return [] }
+        let kept = TrainingXPRules.keptDays(plan)
+        return week.dayKeys(calendar: calendar).filter { kept.contains($0) }
+    }
+
+    /// Every hit of `kind` in `week`: from the food snapshot, or -- for a
+    /// training-only boss -- from the plan's facts.
+    public static func hitDays(
+        _ kind: BossKind,
+        week: WeekKey,
+        snapshot: SignalsSnapshot,
+        plan: TrainingPlanSignals?,
+        calendar: Calendar
+    ) -> [String] {
+        kind.isTrainingOnly
+            ? trainingHitDays(week: week, plan: plan, calendar: calendar)
+            : hitDays(kind, week: week, snapshot: snapshot, calendar: calendar)
     }
 
     /// Whether every day of `week` lies before `todayKey`.

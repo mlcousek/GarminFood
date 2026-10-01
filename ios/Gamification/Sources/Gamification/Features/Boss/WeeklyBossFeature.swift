@@ -30,6 +30,12 @@
 //    add-supplements D9: with an active supplement digest the planner also
 //    protects the supplement streak from the SAME pool (`planShared`).
 //
+// add-training-gamification-and-150-levels D9: in the training experience
+// the picker may choose the Impatience Imp, whose hits are kept plan days
+// (`context.trainingPlan`). The bestiary badge still needs the ten food
+// archetypes only, and the bestiary lists the imp only in that experience
+// or once it was defeated.
+//
 // Depends on: BossCatalog, BossPicker, BossFight, BossStore,
 // StreakFreezeStore, StreakFreezePlanner, FreezeBalance, WeekKey.
 // Depended on by: GamificationFeatureRegistry, the app's GamificationEngine
@@ -95,6 +101,9 @@ public actor WeeklyBossFeature: GamificationFeature {
     /// The calendar/today of the latest run, for the display APIs.
     private var lastCalendar: Calendar = .current
     private var lastTodayKey: String?
+    /// Whether the latest run was in the training experience (the bestiary
+    /// then lists its boss too).
+    private var lastIsTraining = false
 
     public init(directory: URL) {
         self.directory = directory
@@ -112,6 +121,9 @@ public actor WeeklyBossFeature: GamificationFeature {
         let todayKey = context.snapshot.today
         lastCalendar = calendar
         lastTodayKey = todayKey
+        lastIsTraining = context.isTrainingExperience
+        // The plan's facts count only in the training experience.
+        let plan = context.isTrainingExperience ? context.trainingPlan : nil
         guard let week = WeekKey(dayKey: todayKey, calendar: calendar) else { return .empty }
 
         let loaded = await store.load()
@@ -128,7 +140,7 @@ public actor WeeklyBossFeature: GamificationFeature {
                 weeks[key] = settled
                 continue
             }
-            let hits = Set(record.hits ?? []).union(BossFight.hitDays(kind, week: pastWeek, snapshot: context.snapshot, calendar: calendar))
+            let hits = Set(record.hits ?? []).union(BossFight.hitDays(kind, week: pastWeek, snapshot: context.snapshot, plan: plan, calendar: calendar))
             settled.hits = hits.sorted()
             if hits.count >= record.resolvedTarget {
                 settled.outcome = BossOutcome.defeated.rawValue
@@ -151,7 +163,8 @@ public actor WeeklyBossFeature: GamificationFeature {
                 previous: previous,
                 snapshot: context.snapshot,
                 calendar: calendar,
-                excluding: context.isTrainingExperience ? [TrainingExperienceAvailability.excludedBoss] : []
+                excluding: context.isTrainingExperience ? [TrainingExperienceAvailability.excludedBoss] : [],
+                training: plan
             )
             weeks[week.rawValue] = BossWeekRecord(
                 bossId: pick.kind.rawValue,
@@ -167,7 +180,7 @@ public actor WeeklyBossFeature: GamificationFeature {
 
         // 3. This week's hits.
         if var current = weeks[week.rawValue], let kind = current.kind, current.resolvedOutcome == .active {
-            let hits = Set(current.hits ?? []).union(BossFight.hitDays(kind, week: week, snapshot: context.snapshot, calendar: calendar))
+            let hits = Set(current.hits ?? []).union(BossFight.hitDays(kind, week: week, snapshot: context.snapshot, plan: plan, calendar: calendar))
             current.hits = hits.sorted()
             if hits.count >= current.resolvedTarget {
                 current.outcome = BossOutcome.defeated.rawValue
@@ -229,7 +242,9 @@ public actor WeeklyBossFeature: GamificationFeature {
         if count >= 25 { ids.append(BossCatalog.twentyFiveDefeatsBadge) }
         if state.perfectDefeat == true { ids.append(BossCatalog.perfectBadge) }
         let defeated = Set(state.defeatedIds ?? [])
-        if BossKind.allCases.allSatisfy({ defeated.contains($0.rawValue) }) { ids.append(BossCatalog.bestiaryBadge) }
+        // The ten food archetypes: a food-first player can never meet the
+        // training experience's boss.
+        if BossCatalog.foodKinds.allSatisfy({ defeated.contains($0.rawValue) }) { ids.append(BossCatalog.bestiaryBadge) }
         if !consumptions.isEmpty { ids.append(BossCatalog.firstFreezeBadge) }
         if consumptions.contains(where: { ($0.protectedLength ?? 0) >= 100 }) { ids.append(BossCatalog.freezeSaved100Badge) }
         return ids
@@ -267,7 +282,8 @@ public actor WeeklyBossFeature: GamificationFeature {
     /// Every archetype, defeated ones lit.
     public func bestiary() async -> [BossBestiaryEntry] {
         let defeated = Set(await store.load().state.defeatedIds ?? [])
-        return BossCatalog.all.map { BossBestiaryEntry(archetype: $0, isDefeated: defeated.contains($0.id)) }
+        let training = BossCatalog.training.filter { lastIsTraining || defeated.contains($0.id) }
+        return (BossCatalog.all + training).map { BossBestiaryEntry(archetype: $0, isDefeated: defeated.contains($0.id)) }
     }
 
     static func status(week: WeekKey, record: BossWeekRecord, todayKey: String, calendar: Calendar) -> BossWeekStatus? {

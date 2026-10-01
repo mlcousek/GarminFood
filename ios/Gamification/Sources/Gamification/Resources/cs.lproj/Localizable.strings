@@ -951,3 +951,66 @@
 
 /* Progress tab, a training ladder with every badge earned: %lld = the count so far. */
 "%lld · complete" = "%lld · hotovo";
+
+/* Why this boss (training experience): share of recent plan days on which the plan was followed. The value is a percentage. */
+"Plan days kept: %@ of the days the plan judged" = "Dodržené dny plánu: %@ z hodnocených dnů";
+
+/* Weekly boss name in the training experience (Czech: Nedočkavý skřítek): the urge to do more than the plan. */
+"Impatience Imp" = "Nedočkavý skřítek";
+
+/* Weekly boss flavour line (training experience): the urge to do more than the plan. */
+"Keeps whispering that a little more cannot hurt." = "Pořád šeptá, že trochu víc přece neuškodí.";
+
+/* Weekly boss habit (training experience): follow the plan for the day; a rest day counts. */
+"Keep the day's plan" = "Dodrž plán dne";
+
+/* Bingo task title (training experience): every habit of one day done. */
+"All Boxes Ticked" = "Všechno odškrtnuto";
+
+/* Bingo task rule. */
+"Do every habit of one day." = "Splň v jednom dni všechny návyky.";
+
+/* Bingo task title (training experience): one day on which the plan was followed. */
+"Just the Plan" = "Jen podle plánu";
+
+/* Bingo task rule. */
+"Keep the day's plan once this week. A rest day counts." = "Dodrž jednou v týdnu plán dne. Den volna se počítá.";
+
+/* Bingo task title (training experience): rate a session's effort after doing it. */
+"How Did It Feel?" = "Jak to šlo?";
+
+/* Bingo task rule. */
+"Rate a session after you do it." = "Ohodnoť trénink po jeho dokončení.";
+
+/* Bingo task title (training experience): five morning check-ins in the week. */
+"Morning Roll Call" = "Ranní hlášení";
+
+/* Bingo task rule. */
+"Check in on 5 mornings this week." = "Udělej tento týden 5 ranních check-inů.";
+
+/* Bingo task title (training experience): every habit done on three days of the week. */
+"Three Tidy Days" = "Tři poctivé dny";
+
+/* Bingo task rule. */
+"Do every habit on 3 days this week." = "Splň všechny návyky ve 3 dnech tohoto týdne.";
+
+/* Bingo task title (training experience): both strength sessions of the week done. */
+"Both Gym Days" = "Obě posilovny";
+
+/* Bingo task rule. */
+"Do both strength sessions this week." = "Odcvič tento týden obě posilovny.";
+
+/* Bingo task title (training experience): a morning check-in on all seven days. */
+"Every Single Morning" = "Každé ráno";
+
+/* Bingo task rule. */
+"Check in on all 7 mornings this week." = "Udělej check-in všech 7 rán v týdnu.";
+
+/* Bingo task title (training experience): five days of the week on which the plan was followed. */
+"Five by the Plan" = "Pět dní podle plánu";
+
+/* Bingo task rule. */
+"Keep the day's plan on 5 days this week. Rest days count." = "Dodrž plán dne v 5 dnech tohoto týdne. Dny volna se počítají.";
+
+/* Road trip conversion line in the training experience: a fixed distance per day on which the plan was followed. */
+"Every plan day you keep moves you 8 km, rest days included. Extra training adds nothing." = "Každý dodržený den plánu tě posune o 8 km, včetně dnů volna. Trénink navíc nepřidá nic.";

@@ -23,7 +23,14 @@
 // A store that exists but can't be read (before first unlock) skips the run
 // entirely -- back-filling over it would re-award and re-announce.
 //
-// Depends on: JourneysEvaluator, JourneysStore, JourneyCatalog, XPAward.
+// add-training-gamification-and-150-levels D9: in the training experience,
+// with the plan's facts, the road trip advances by kept plan days
+// (`JourneyCatalog.kilometresPerKeptPlanDay`, TrainingXPRules' verdict)
+// instead of active calories, is always available there, and shows the
+// matching conversion line.
+//
+// Depends on: JourneysEvaluator, JourneysStore, JourneyCatalog, XPAward,
+// TrainingPlanSignals, TrainingXPRules.
 // Depended on by: GamificationFeatureRegistry, the app's Journeys screens
 // (via `journeys()`).
 
@@ -40,6 +47,8 @@ public actor JourneysFeature: GamificationFeature {
     private let store: JourneysStore
     /// Per journey: whether its data source exists in the latest snapshot.
     private var availability: [JourneyKind: Bool] = [:]
+    /// The latest run drove the road trip by kept plan days.
+    private var isTrainingRoad = false
 
     public init(directory: URL) {
         self.directory = directory
@@ -55,10 +64,24 @@ public actor JourneysFeature: GamificationFeature {
         let loaded = await store.load()
         guard loaded.isReadable else { return .empty }
 
-        let result = JourneysEvaluator.evaluate(state: loaded.state, snapshot: context.snapshot)
+        // The training experience: kept plan days drive the road trip.
+        var roadKilometresByDay: [String: Double]?
+        if context.isTrainingExperience, let plan = context.trainingPlan {
+            var byDay: [String: Double] = [:]
+            for day in TrainingXPRules.keptDays(plan) {
+                byDay[day] = JourneyCatalog.kilometresPerKeptPlanDay
+            }
+            roadKilometresByDay = byDay
+        }
+        isTrainingRoad = roadKilometresByDay != nil
+
+        let result = JourneysEvaluator.evaluate(state: loaded.state, snapshot: context.snapshot, roadKilometresByDay: roadKilometresByDay)
         let days = context.snapshot.orderedDays
         for kind in JourneyKind.allCases {
             availability[kind] = JourneysEvaluator.isAvailable(kind, days: days)
+        }
+        if isTrainingRoad {
+            availability[.road] = true
         }
         do {
             try await store.save(result.state)
@@ -97,7 +120,7 @@ public actor JourneysFeature: GamificationFeature {
     public func journeys() async -> [JourneyProgress] {
         let state = await store.load().state
         return JourneyKind.allCases.map { kind in
-            JourneysEvaluator.progress(state: state, kind: kind, isAvailable: isAvailable(kind, state: state))
+            JourneysEvaluator.progress(state: state, kind: kind, isAvailable: isAvailable(kind, state: state), trainingRoad: isTrainingRoad)
         }
     }
 
@@ -158,7 +181,7 @@ public actor JourneysFeature: GamificationFeature {
 
     private func summary(state: JourneysState) -> FeatureSummary {
         let progress = JourneyKind.allCases.map { kind in
-            JourneysEvaluator.progress(state: state, kind: kind, isAvailable: isAvailable(kind, state: state))
+            JourneysEvaluator.progress(state: state, kind: kind, isAvailable: isAvailable(kind, state: state), trainingRoad: isTrainingRoad)
         }
         let lead = progress.first { $0.isAvailable } ?? progress[0]
         return FeatureSummary(

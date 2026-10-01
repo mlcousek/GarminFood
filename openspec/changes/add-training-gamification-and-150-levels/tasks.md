@@ -36,10 +36,10 @@ commit after each.
 
 ## 4. Training variants (Gamification)
 
-- [ ] 4.1 Boss: `BossKind.impatienceImp`, hits and adherence from kept plan days, never chosen or required outside the training experience.
-- [ ] 4.2 Bingo: `BingoTaskScope.training`, eight training squares, in the pool only in the training experience.
-- [ ] 4.3 Journeys: the road trip advances 8 km per kept plan day in the training experience, with its own conversion line.
-- [ ] 4.4 Tests for each variant; food-first unchanged.
+- [x] 4.1 Boss: `BossKind.impatienceImp`, hits and adherence from kept plan days, never chosen or required outside the training experience.
+- [x] 4.2 Bingo: `BingoTaskScope.training`, eight training squares, in the pool only in the training experience.
+- [x] 4.3 Journeys: the road trip advances 8 km per kept plan day in the training experience, with its own conversion line.
+- [x] 4.4 Tests for each variant; food-first unchanged.
 
 ## 5. Progress model (Gamification)
 

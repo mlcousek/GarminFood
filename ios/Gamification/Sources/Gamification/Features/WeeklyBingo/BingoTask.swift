@@ -12,6 +12,12 @@
 // `requirement` is derived from the rule, never hand-written, so a water
 // square can never be offered to someone with no water data by mistake.
 //
+// add-training-gamification-and-150-levels D9: a third scope, `.training`,
+// for the training experience's squares. Their rule is a count over the
+// plan's facts (`TrainingBingoRule`, BingoTaskCatalog+Training.swift), not
+// a predicate over the food snapshot; they need no food data, and they are
+// offered only in that experience.
+//
 // Depends on: DayPredicate, WeekPredicate, DataRequirement.
 // Depended on by: BingoTaskCatalog, BingoCardGenerator, BingoEvaluator,
 // WeeklyBingoFeature, the app's BingoCardView.
@@ -28,12 +34,21 @@ public enum BingoTaskScope: Sendable, Equatable {
     case day(DayPredicate)
     /// Completes when the predicate holds over the card's week so far.
     case week(WeekPredicate)
+    /// Completes when a count over the plan's facts is reached within the
+    /// card's week so far (training experience only).
+    case training(TrainingBingoRule)
 
     public var requirement: DataRequirement {
         switch self {
         case .day(let predicate): return predicate.requirement
         case .week(let predicate): return predicate.requirement
+        case .training: return []
         }
+    }
+
+    public var isTraining: Bool {
+        if case .training = self { return true }
+        return false
     }
 }
 

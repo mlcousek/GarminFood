@@ -23,8 +23,16 @@
 // last week's boss, the ghost) is used, with its adherence over whatever
 // days it has.
 //
+// add-training-gamification-and-150-levels D9: with the plan's facts
+// (`training`, passed only in the training experience) the Impatience Imp
+// is one more candidate. Its adherence is kept plan days / judged plan days
+// among the analysis days, and it needs `minimumJudgedPlanDays` (10) of
+// them. It then competes like every other archetype: the weakest habit
+// wins, never twice in a row. Without `training` it has no considered day
+// and is never eligible.
+//
 // Depends on: BossCatalog, WeekKey, DeterministicRandom, FoodLogCore
-// (SignalsSnapshot).
+// (SignalsSnapshot), TrainingPlanSignals, TrainingXPRules.
 // Depended on by: WeeklyBossFeature.
 
 import Foundation
@@ -78,6 +86,15 @@ public enum BossPicker {
         return Adherence(good: good, considered: considered)
     }
 
+    /// The imp's adherence: kept plan days over the plan days that have a
+    /// verdict, among `dayKeys`.
+    public static func trainingAdherence(dayKeys: [String], plan: TrainingPlanSignals) -> Adherence {
+        let keys = Set(dayKeys)
+        let judged = TrainingXPRules.judgedDays(plan).intersection(keys)
+        let kept = TrainingXPRules.keptDays(plan).intersection(keys)
+        return Adherence(good: kept.count, considered: judged.count)
+    }
+
     public static func isEligible(
         _ kind: BossKind,
         adherence: Adherence,
@@ -85,6 +102,8 @@ public enum BossPicker {
         snapshot: SignalsSnapshot
     ) -> Bool {
         if kind == .forgetfulGhost { return true }
+        // Judged from the plan's facts: enough of them is all it needs.
+        if kind.isTrainingOnly { return adherence.considered >= BossCatalog.minimumJudgedPlanDays }
         let days = snapshot.days(dayKeys)
         guard BossCatalog.archetype(kind).requirement.isSatisfied(byAnyOf: days) else { return false }
         return adherence.considered >= BossCatalog.minimumConsideredDays
@@ -108,12 +127,16 @@ public enum BossPicker {
     ///   add-winter-arc-nutrition-and-rewards: the Calorie Kraken in the
     ///   training experience (it fights for the fixed calorie target). The
     ///   new-user ghost and the fallbacks are never excluded.
+    /// - Parameter training: the plan's facts, in the training experience
+    ///   only (add-training-gamification-and-150-levels D9); `nil` keeps the
+    ///   Impatience Imp out.
     public static func pick(
         week: WeekKey,
         previous: BossKind?,
         snapshot: SignalsSnapshot,
         calendar: Calendar,
-        excluding: Set<BossKind> = []
+        excluding: Set<BossKind> = [],
+        training: TrainingPlanSignals? = nil
     ) -> BossPick {
         let keys = analysisDayKeys(before: week, calendar: calendar)
         let logged = snapshot.days(keys).filter(\.hasEntries).count
@@ -139,7 +162,13 @@ public enum BossPicker {
 
         var candidates: [(kind: BossKind, value: Adherence)] = []
         for kind in BossKind.allCases where kind != previous && !excluding.contains(kind) {
-            let value = adherence(kind, dayKeys: keys, snapshot: snapshot, calendar: calendar)
+            let value: Adherence
+            if kind.isTrainingOnly {
+                guard let training else { continue }
+                value = trainingAdherence(dayKeys: keys, plan: training)
+            } else {
+                value = adherence(kind, dayKeys: keys, snapshot: snapshot, calendar: calendar)
+            }
             if isEligible(kind, adherence: value, dayKeys: keys, snapshot: snapshot) {
                 candidates.append((kind: kind, value: value))
             }
