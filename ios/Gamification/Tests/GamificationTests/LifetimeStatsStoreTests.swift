@@ -26,6 +26,27 @@ final class LifetimeStatsStoreTests: XCTestCase {
         XCTAssertEqual(snapshot.firstLogDate, TestClock.date(2026, 1, 1))
     }
 
+    func testRecordedLifetimeStatsSurviveStoreRecreation() async throws {
+        let fileURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("gamification-lifetime-\(UUID().uuidString).json")
+        let firstStore = LifetimeStatsStore(fileURL: fileURL)
+        try await firstStore.recordLog(
+            nutritionDay: "2026-01-01",
+            calories: 750,
+            now: TestClock.date(2026, 1, 1)
+        )
+        try await firstStore.recordGoalStatus(goalStatus(day: 1, protein: true))
+
+        let reloadedStore = LifetimeStatsStore(fileURL: fileURL)
+        let snapshot = await reloadedStore.current()
+        let proteinGoalDays = await reloadedStore.goalHitDays(.protein)
+
+        XCTAssertEqual(snapshot.totalLogsEver, 1)
+        XCTAssertEqual(snapshot.totalCaloriesEver, 750)
+        XCTAssertEqual(snapshot.firstLogDate, TestClock.date(2026, 1, 1))
+        XCTAssertEqual(proteinGoalDays, 1)
+    }
+
     func testMaxSingleDayCaloriesTracksTheRunningDayTotalAcrossMultipleLogs() async throws {
         let store = makeStore()
         try await store.recordLog(nutritionDay: "2026-01-05", calories: 2000, now: TestClock.date(2026, 1, 5))
