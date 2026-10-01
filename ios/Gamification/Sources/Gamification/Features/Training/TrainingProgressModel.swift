@@ -63,6 +63,17 @@ public struct TrainingProgressModel: Sendable, Equatable {
     public var tiersReached: Int { ladders.reduce(0) { $0 + $1.tiersReached } }
     public var tierCount: Int { ladders.reduce(0) { $0 + $1.tierCount } }
 
+    /// The ladders closest to their next badge, for the compact card:
+    /// unfinished ones, the furthest along first (ties in display order).
+    public func highlights(limit: Int = 3) -> [LadderRow] {
+        let open = ladders.enumerated().filter { !$0.element.isComplete }
+        let sorted = open.sorted { lhs, rhs in
+            if lhs.element.fraction != rhs.element.fraction { return lhs.element.fraction > rhs.element.fraction }
+            return lhs.offset < rhs.offset
+        }
+        return sorted.prefix(max(0, limit)).map { $0.element }
+    }
+
     public static func build(
         counts: TrainingRewardCounts,
         progress: TrainingProgress,

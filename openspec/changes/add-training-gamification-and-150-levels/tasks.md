@@ -48,12 +48,12 @@ commit after each.
 
 ## 6. App
 
-- [ ] 6.1 `Training/TrainingPlanSignalsBridge.swift`: TrainingCore facts → `TrainingPlanSignals`; the extras cache.
-- [ ] 6.2 `FeatureHost`: the plan-signals provider into `FeatureContext`; training no longer an optional source.
-- [ ] 6.3 `GamificationEngine`: the one-time "150 levels" moment; a feature pass after a training event.
-- [ ] 6.4 `AppEnvironment+TrainingNutrition`: wire the provider and the event hook.
-- [ ] 6.5 `Progress/Slots/TrainingProgressSlotView.swift` and its detail list; the level card's "of 150" line and bar; "How to earn XP" rows for the training experience.
-- [ ] 6.6 App strings (EN + CS) in `Localizable.xcstrings`; `node tools/check-localizations.mjs --scan`; `sh tools/lint-design-tokens.sh`.
+- [x] 6.1 `Training/TrainingPlanSignalsBridge.swift`: TrainingCore facts → `TrainingPlanSignals`; the extras cache.
+- [x] 6.2 `FeatureHost`: the plan-signals provider into `FeatureContext`; training no longer an optional source.
+- [x] 6.3 `GamificationEngine`: the one-time "150 levels" moment; a feature pass after a training event.
+- [x] 6.4 `AppEnvironment+TrainingNutrition`: wire the provider and the event hook.
+- [x] 6.5 `Progress/Slots/TrainingProgressSlotView.swift` and its detail list; the level card's "of 150" line and bar; "How to earn XP" rows for the training experience.
+- [x] 6.6 App strings (EN + CS) in `Localizable.xcstrings`; `node tools/check-localizations.mjs --scan`; `sh tools/lint-design-tokens.sh`.
 
 ## 7. Catalog and docs
 

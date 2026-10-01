@@ -323,6 +323,11 @@ final class TrainingProgressTests: XCTestCase {
         XCTAssertEqual(row("habit-streak")?.count, 8, "the best streak, not the current one")
         XCTAssertEqual(row("day-kept")?.nextThreshold, 100)
 
+        // The compact card shows the unfinished ladders closest to a badge.
+        XCTAssertEqual(model.highlights(limit: 2).map(\.id), ["gym", "session"], "3 of 4 gym weeks, then 31 of 100 sessions")
+        XCTAssertFalse(model.highlights(limit: 30).contains { $0.isComplete })
+        XCTAssertTrue(model.highlights(limit: 0).isEmpty)
+
         XCTAssertEqual(model.streaks.map(\.id), ["checkin-streak", "habit-streak", "week-streak"])
         XCTAssertEqual(model.streaks.map(\.value), ["5", "4", "2"])
         XCTAssertEqual(model.tiersReached, model.ladders.reduce(0) { $0 + $1.tiersReached })

@@ -174,6 +174,13 @@ final class GamificationEngine {
         streakStatus = StreakEngine.status(events: events, frozenDays: frozenDays, now: now, boundaryHour: boundaryHour)
         // add-gamification-signals D10: never below the peak level reached.
         levelProgress = await xpStore.currentProgress()
+        // add-training-gamification-and-150-levels D4: once, for a ledger
+        // written before the levels went to 150 -- XP unchanged, the level
+        // the same or higher. Marked shown as it is queued.
+        if let announcement = await xpStore.pendingCurveAnnouncement() {
+            pendingMoments.append(.feature(announcement.moment))
+            try? await xpStore.markCurveAnnouncementShown()
+        }
         updateHistory(events: events, goalStatuses: goalStatuses, now: now)
         completedChallenges = await challengeHistoryStore.all()
         try? await lifetimeStatsStore.backfillIfEmpty(events: events, goalStatuses: goalStatuses)
@@ -561,6 +568,15 @@ final class GamificationEngine {
     /// calorie-target templates in the training experience.
     private var dailyChallengeCatalog: [DailyChallengeTemplate] {
         TrainingExperienceAvailability.dailyCatalog(DailyChallengeCatalog.all, isTraining: isTrainingExperience)
+    }
+
+    /// add-training-gamification-and-150-levels D10: a feature pass right
+    /// after the phone recorded a check-in, a habit tick or a session
+    /// rating, so its XP shows at once instead of at the next foreground.
+    /// Local work only; does nothing before the first `refresh`.
+    func runFeaturesAfterTrainingEvent(now: Date = Date()) async {
+        guard isTrainingExperience else { return }
+        await runFeatures(now: now, isConfirmPath: false)
     }
 
     /// Runs every registered feature via `FeatureHost` and applies its

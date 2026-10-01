@@ -18,6 +18,12 @@
 //
 // The adapters themselves are TrainingNutritionBridge.swift.
 //
+// add-training-gamification-and-150-levels D6, D10: it also wires the plan's
+// facts for the training XP into FeatureHost (TrainingPlanSignalsBridge,
+// with the plan file's extra fields read from the cached bytes), and runs
+// the gamification features right after a training event is recorded, so a
+// check-in's XP shows at once.
+//
 // Depends on: AppEnvironment, TrainingModel (+TrainingNutritionBridge),
 // WeightLoader. Depended on by: AppEnvironment.init/syncNotifications,
 // TodayView, the fasting views.
@@ -25,6 +31,8 @@
 import Foundation
 import FoodLogCore
 import AppearanceKit
+import Gamification
+import TrainingCore
 
 extension AppEnvironment {
     /// Sets the plan providers; called once at the end of `init`.
@@ -42,6 +50,21 @@ extension AppEnvironment {
         }
         featureHost.fastingPausedDaysProvider = { [weak self] now in
             self?.fastingPausedDaysByPlan(now: now) ?? []
+        }
+        // add-training-gamification-and-150-levels D6: the plan's facts for
+        // the training XP. FeatureHost asks only in the training experience.
+        featureHost.trainingPlanSignalsProvider = { [weak self] now -> TrainingPlanSignals? in
+            guard let self else { return nil }
+            let extras = await VaultServices.shared.projectionStore.cachedRewardExtras()
+            return self.training.planSignals(now: now, extras: extras)
+        }
+        // D10: after the plan reloads for a recorded event (TrainingModel's
+        // own hook, kept), run the features so the XP shows at once.
+        let events = TrainingEventsService.shared
+        let reloadTraining = events.onChange
+        events.onChange = { [weak self] in
+            await reloadTraining?()
+            await self?.gamificationEngine.runFeaturesAfterTrainingEvent()
         }
     }
 

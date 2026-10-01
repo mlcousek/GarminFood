@@ -19404,6 +19404,114 @@
           }
         }
       }
+    },
+    "Level %lld of %lld": {
+      "comment": "add-training-gamification-and-150-levels: Level card on the Progress tab: the current level out of the highest one (150), under a bar over the whole range.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úroveň %lld z %lld"
+          }
+        }
+      }
+    },
+    "Training badges: %lld of %lld": {
+      "comment": "add-training-gamification-and-150-levels: Progress tab, training card: training badges earned, then all of them.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tréninkové odznaky: %lld z %lld"
+          }
+        }
+      }
+    },
+    "Opens training progress": {
+      "comment": "add-training-gamification-and-150-levels: VoiceOver hint of the training card on the Progress tab.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře tréninkový pokrok"
+          }
+        }
+      }
+    },
+    "Ladders": {
+      "comment": "add-training-gamification-and-150-levels: Training progress screen: section listing every training ladder (a counted habit with its badge steps).",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žebříčky"
+          }
+        }
+      }
+    },
+    "Training XP is for following the plan and for honest check-ins. Rest days count. Extra kilometres do not.": {
+      "comment": "add-training-gamification-and-150-levels: Training progress screen: footer under the ladders.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tréninkové XP jsou za dodržení plánu a poctivé check-iny. Dny volna se počítají. Kilometry navíc ne."
+          }
+        }
+      }
+    },
+    "Check in each morning": {
+      "comment": "add-training-gamification-and-150-levels: Level screen, How to earn XP (training experience): the morning check-in.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranní check-in"
+          }
+        }
+      }
+    },
+    "Do a session as planned": {
+      "comment": "add-training-gamification-and-150-levels: Level screen, How to earn XP (training experience): a planned session done within the plan.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odjeď trénink podle plánu"
+          }
+        }
+      }
+    },
+    "Keep the day's plan, rest days too": {
+      "comment": "add-training-gamification-and-150-levels: Level screen, How to earn XP (training experience): a day on which the plan was followed; a rest day counts.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodrž plán dne, i den volna"
+          }
+        }
+      }
+    },
+    "Keep a week within plan": {
+      "comment": "add-training-gamification-and-150-levels: Level screen, How to earn XP (training experience): a closed week with nothing missed and no extra kilometres.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodrž týden podle plánu"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

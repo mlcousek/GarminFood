@@ -15,6 +15,12 @@
 // add-themes-and-layout (design.md D8, wave 4): `ProgressHomeView`'s cards
 // follow the user's layout (LayoutStore, `.progress`), with each
 // gamification slot view as its own card instead of one ProgressSlotHost.
+//
+// add-training-gamification-and-150-levels D10: the Level card says "Level
+// n of 150" with a bar over the whole range, and in the training experience
+// the training section (`TrainingProgressSlotView`) sits right under it --
+// in the Level arm, so no new layout card id is needed. The level screen's
+// "How to earn XP" lists the training rewards there too.
 
 import SwiftUI
 import Gamification
@@ -83,6 +89,9 @@ struct ProgressHomeView: View {
                 LevelSummaryCard(progress: engine.levelProgress)
             }
             .buttonStyle(.plain)
+            // The training section: renders nothing outside the training
+            // experience.
+            TrainingProgressSlotView()
         case .boss:
             BossSlotView()
         case .bingo:
@@ -271,6 +280,13 @@ private struct LevelSummaryCard: View {
             Text(progress.xpNeededForNextLevel > 0
                  ? String(localized: "\(progress.xpNeededForNextLevel - progress.xpIntoCurrentLevel) XP to level \(progress.level + 1)", comment: "Level card: XP still needed, then the next level number.")
                  : String(localized: "Max level reached"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            // add-training-gamification-and-150-levels D10: the whole way.
+            ProgressView(value: Double(progress.level), total: Double(LevelCurve.maxLevel))
+                .tint(Theme.accent.opacity(0.5))
+                .accessibilityHidden(true)
+            Text("Level \(progress.level) of \(LevelCurve.maxLevel)", comment: "Level card: the current level out of the highest one (150), under a bar over the whole range.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -762,6 +778,14 @@ struct LevelDetailView: View {
                 awardRow("Extend your streak", XPAward.streakExtensionBonus, "flame.fill")
                 awardRow("Hit a nutrition goal", XPAward.goalHitBonus, "checkmark.circle.fill")
                 awardRow("Complete a challenge", XPAward.challengeCompletionBonus, "target")
+                // add-training-gamification-and-150-levels: the plan's own
+                // rewards, in the training experience.
+                if environment.gamificationEngine.featureHost?.isTrainingExperience == true {
+                    awardRow("Check in each morning", XPAward.trainingCheckIn, "sunrise.fill")
+                    awardRow("Do a session as planned", XPAward.trainingSession, "figure.run")
+                    awardRow("Keep the day's plan, rest days too", XPAward.trainingDayKept, "calendar")
+                    awardRow("Keep a week within plan", XPAward.trainingWeekKept, "calendar.badge.checkmark")
+                }
             } header: {
                 Text("How to earn XP")
             } footer: {
