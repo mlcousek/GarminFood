@@ -43,21 +43,24 @@ badge its own look from about 60 + 60 drawings.
   scalloped edge), seasonal (wreath), sport and body (gear), supplements
   (capsule), secrets (keyhole).
 - **Frame trim = rarity:** common plain; uncommon a second inner ring; rare
-  two side notches; epic small wings; legendary a crown and a ribbon. The
+  two side gems; epic ribbon tails as well; legendary a crown as well. The
   rarity colours stay as they are, as the frame's fill.
 - **Motif:** a 24 x 24 unit drawing in the frame's centre, in white and a
   light tint with the dark outline.
 
 ### D3. SVG in the asset catalog, composed in SwiftUI
 
-Each frame and motif is one SVG file in an imageset with "Preserve Vector
+The sources are SVG files under `ios/BadgeArt/` (written by
+`tools/docs/write-badge-art.mjs` from hand-written path data; the files are
+committed). Each frame and motif is one SVG file in an imageset with "Preserve Vector
 Data" on and rendering "Original". `BadgeMedallion` stacks
 `Image("badge-frame-<family>-<rarity>")` and `Image("badge-motif-<name>")`
 in a `ZStack`, sized by `size`.
 
 Only a conservative SVG subset is allowed, because Xcode's SVG support is
-partial and a mistake shows up only on device: `path`, `circle`, `rect`,
-`g`, solid `fill`/`stroke`, `stroke-linejoin`, `stroke-linecap`. No
+partial and a mistake shows up only on device: `path` only, absolute `M L C Z`
+commands, solid `fill`/`stroke` with optional opacity, `stroke-linejoin`,
+`stroke-linecap`. No
 `filter`, `mask`, `clipPath`, `text`, `use`, gradients, CSS or transforms on
 groups. A lint (`tools/docs/lint-badge-svg.mjs`) refuses anything else and
 runs in CI.
@@ -71,12 +74,25 @@ device before the rest is drawn (task 3.x), and the fallback in D5.
 
 ### D4. The catalog lives in Gamification
 
-`BadgeArtCatalog` maps a badge id to `(family, motif)`. Family comes from
-the badge's existing category where there is one; motif is named per badge
-or per badge series (all "N-day streak" badges share the flame, with the
-rarity trim telling them apart). Tests: every badge id resolves; every named
-motif and frame has an SVG file; no SVG file is unused. The file list is
-checked by a script in CI, since a Swift test cannot see the asset catalog.
+`BadgeArtCatalog` resolves a badge to `(family, motif)` from what every
+badge already carries, so there is no table with one row per badge:
+
+- **family** from the badge id's namespace (`bingo.`, `journey.`,
+  `secret.`, ...), else from its `AchievementCategory` for the core
+  `achv-*` badges;
+- **motif** from the badge's `badgeSymbol`: 94 SF Symbol names map to 51
+  drawings (`trophy`, `trophy.fill` and `rosette` are all the trophy). A
+  new badge with a known symbol gets art without touching the catalog; an
+  unknown symbol falls back (D5).
+
+Badges of one series (all "N-day streak" badges) share frame shape and
+motif; the rarity trim and colour tell them apart.
+
+Tests: every badge in `BadgeRegistry.all` and every level tier has a motif;
+every category has a family; every family is used. That the named motifs
+and frames exist as SVG files, and that no file is unused, is checked by
+`tools/docs/check-badge-art.mjs` in CI (a Swift test cannot see the files);
+it reads the tables from the Swift source, as does the gallery.
 
 ### D5. Fallback and locked states
 
@@ -113,7 +129,14 @@ approves it in the browser; app code starts only after that.
 None. No stored data changes; an old build and a new build read the same
 stores.
 
-## Open Questions
+## Owner answers (2026-10-01)
+
+1. Sticker (outlined, cel-shaded). The gallery no longer shows the modern
+   variant.
+2. A locked badge shows its family shape in grey.
+3. No one-off pictures in the first release.
+
+## Open Questions (original wording)
 
 1. Sticker (outlined, cel-shaded) or the flatter modern variant? Default:
    sticker.
