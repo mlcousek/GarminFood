@@ -37,7 +37,8 @@
       "sites": [],
       "reason": null,
       "clearsAfter": null
-    }
+    },
+    "gate": null
   },
   "season": null,
   "plan": null,
@@ -1230,5 +1231,13 @@
   },
   "acks": {},
   "outcomes": [],
-  "rejected": []
+  "rejected": [],
+  "notices": [
+    {
+      "kind": "no-activities-since",
+      "date": null,
+      "en": "No synced activity was found between 2030-09-07 and 2030-10-23, so sessions cannot be marked done from the watch. Run the activity sync, or mark a session done by hand.",
+      "cz": "Mezi 2030-09-07 a 2030-10-23 není žádná nasynchronizovaná aktivita, tréninky proto nejde označit jako splněné podle hodinek. Spusť synchronizaci aktivit, nebo trénink označ ručně."
+    }
+  ]
 }

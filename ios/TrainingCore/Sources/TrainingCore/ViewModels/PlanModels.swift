@@ -207,7 +207,8 @@ public struct PlanBuilder: Sendable {
             guard let day = snapshot.day(date) else { continue }
             let hasPain = snapshot.painMode.isActive && !(day.pains ?? []).isEmpty
             if day.light?.known != nil || !day.unplanned.isEmpty || hasPain {
-                rows.append(dayRow(date, snapshot: snapshot, long: false))
+                // Not "Rest day": nothing is known about an unwritten day.
+                rows.append(dayRow(date, snapshot: snapshot, long: false, restWhenEmpty: false))
             }
         }
         model.unwrittenDays = rows
@@ -318,7 +319,9 @@ public struct PlanBuilder: Sendable {
         return dayRow(date, snapshot: snapshot, long: long)
     }
 
-    func dayRow(_ date: LocalDate, snapshot: TrainingSnapshot, long: Bool) -> DayRowModel {
+    /// `restWhenEmpty`: say "Rest day" when the day has nothing at all
+    /// (off for the days listed under a week that is not written).
+    func dayRow(_ date: LocalDate, snapshot: TrainingSnapshot, long: Bool, restWhenEmpty: Bool = true) -> DayRowModel {
         let day = snapshot.day(date)
         let sessions = (day?.sessions ?? []).map { sessionRow($0, date: date, snapshot: snapshot) }
         let unplanned = (day?.unplanned ?? []).enumerated().map { index, activity in
@@ -337,7 +340,7 @@ public struct PlanBuilder: Sendable {
             unplanned: unplanned,
             fuelLine: format.fuel.dayLine(day?.fuel),
             raceLines: races,
-            restText: isEmpty ? text(.stateRestDayTitle) : nil
+            restText: isEmpty && restWhenEmpty ? text(.stateRestDayTitle) : nil
         )
         // Only in pain mode (add-daily-checkin-and-pain-mode).
         if snapshot.painMode.isActive {

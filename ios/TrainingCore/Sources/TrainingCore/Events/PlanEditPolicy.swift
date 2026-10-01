@@ -18,7 +18,9 @@
 //   - skip any planned or missed session, past days included (the vault
 //     allows it), never a done one (tasks 0.2); unskip a skipped one;
 //   - override a rule (decision A17) only where the vault's rule changed
-//     the session (`origin.kind == "rule"` or a rule note naming it), once;
+//     the session (`origin.kind == "rule"` or a rule note naming it), once.
+//     A note that only informs and never edits (`noteOnlyRules`: the
+//     vault's session pain notes of 2026-10-01) has nothing to override;
 //   - while this phone's command on the session waits for the vault, only
 //     Withdraw (tasks 0.1). Withdraw = `event.retracted`, for a pending
 //     command or an applied rule override (tasks 0.3).
@@ -233,15 +235,23 @@ public enum PlanEditPolicy {
         return nil
     }
 
+    /// Rule notes that only inform and never edit the session, so there
+    /// is nothing to override (add-daily-checkin-and-pain-mode: the vault's
+    /// contract of 2026-10-01 puts `session-pain` and `pain-not-settled`
+    /// into a session's `ruleNotes` -- "notes only, never an edit"). They
+    /// are still shown with the session's other notes.
+    public static let noteOnlyRules: Set<String> = ["session-pain", "pain-not-settled"]
+
     /// The rules that edited `session`: its `origin.rule` when
-    /// `origin.kind` is `rule`, then every rule note's `rule`, once each.
+    /// `origin.kind` is `rule`, then every rule note's `rule`, once each
+    /// (never a note-only rule).
     public static func ruleIDs(of session: Session) -> [String] {
         var result: [String] = []
         if session.origin?["kind"]?.stringValue == "rule", let rule = session.origin?["rule"]?.stringValue, !rule.isEmpty {
             result.append(rule)
         }
         for note in session.ruleNotes {
-            if let rule = note["rule"]?.stringValue, !rule.isEmpty, !result.contains(rule) {
+            if let rule = note["rule"]?.stringValue, !rule.isEmpty, !noteOnlyRules.contains(rule), !result.contains(rule) {
                 result.append(rule)
             }
         }

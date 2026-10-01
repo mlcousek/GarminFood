@@ -273,7 +273,8 @@ final class DailyCheckInTests: XCTestCase {
         let snapshot = try Fixtures.exampleSnapshot()
         XCTAssertEqual(snapshot.day(D.asOf)?.sessions.first?.id, "2030-w43-wed-am")
         XCTAssertNil(snapshot.plan?.day(skeleton))
-        XCTAssertEqual(snapshot.day(skeleton)?.habitsExpected, ["holds", "gym"])
+        XCTAssertEqual(snapshot.day(skeleton)?.habitsExpected, ["holds"])
+        XCTAssertEqual(snapshot.day(D.date("2030-11-04"))?.habitsExpected, ["holds", "gym"], "Monday is a gym day")
         XCTAssertNil(snapshot.day(D.date("2031-06-01")))
     }
 
@@ -335,6 +336,8 @@ final class DailyCheckInTests: XCTestCase {
         let week = builder.week(D.week("2030-W45"))
         XCTAssertEqual(week.unwrittenDays.map(\.date), [skeleton])
         XCTAssertEqual(week.unwrittenDays.first?.lightText, "Morning check: Amber")
+        XCTAssertNil(week.unwrittenDays.first?.restText, "an unwritten day is not called a rest day")
+        XCTAssertEqual(week.content, .outlineOnly("Sessions for this week aren't written yet"))
         XCTAssertEqual(builder.dayRow(skeleton).lightText, "Morning check: Amber")
         let cells = builder.month(year: 2030, month: 11).rows.flatMap(\.cells)
         XCTAssertEqual(cells.first { $0.date == skeleton }?.lightName, "Amber")

@@ -491,19 +491,30 @@ extension NotificationScheduler {
     /// two cycles delete each other's requests).
     private static let trainingPrefix = "trainingReminder."
 
-    /// Dated one-shot requests (`trainingReminder.checkin.<day>`,
-    /// `trainingReminder.habits.<day>`) for today and tomorrow, re-planned
+    /// `trainingReminder.<kind>.<day>.<HHmm>`.
+    private static func trainingIdentifier(_ reminder: TrainingReminder) -> String {
+        let hour = reminder.hour < 10 ? "0\(reminder.hour)" : "\(reminder.hour)"
+        let minute = reminder.minute < 10 ? "0\(reminder.minute)" : "\(reminder.minute)"
+        return trainingPrefix + reminder.id + "." + hour + minute
+    }
+
+    /// Dated one-shot requests (`trainingReminder.checkin.<day>.<HHmm>`,
+    /// `trainingReminder.habits.<day>.<HHmm>`) for the next week, re-planned
     /// by TrainingCore's `TrainingReminderPlanner` and diffed like the
     /// supplement slots, so a check-in or the last tick removes its
     /// reminder. An empty plan removes them all (switch off, no vault
     /// connection, food-first). No category or action: a tap opens Today.
-    /// The diff compares identifier and text, not the fire time: after a
-    /// time change TrainingModel syncs an empty plan first, then the new.
+    /// add-daily-checkin-and-pain-mode: the identifier also carries the
+    /// fire time, like the fasting reminders' -- the diff compares
+    /// identifier and text only, so a changed reminder time must yield a
+    /// different identifier for the stale request to be removed and the
+    /// new one added in the same pass. (Requests from a build before this
+    /// change have no time suffix: the first replan replaces them.)
     func syncTrainingReminders(_ reminders: [TrainingReminder], now: Date = Date()) async {
         let pending = await pendingTexts()
         var planned: [String: TrainingReminder] = [:]
         for reminder in reminders {
-            planned[Self.trainingPrefix + reminder.id] = reminder
+            planned[Self.trainingIdentifier(reminder)] = reminder
         }
         let status = await center.notificationSettings().authorizationStatus
         let authorized = status == .authorized || status == .provisional

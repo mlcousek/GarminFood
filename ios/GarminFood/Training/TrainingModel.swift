@@ -72,6 +72,8 @@ final class TrainingModel {
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private var didRestoreRejection = false
     @ObservationIgnored private let events: TrainingEventsService
+    /// The replan in flight; the next one waits for it (`syncReminders`).
+    @ObservationIgnored private var reminderSync: Task<Void, Never>? = nil
 
     /// add-training-checkins D8: the training reminders switch (default on,
     /// tasks 0.2).
@@ -218,10 +220,8 @@ final class TrainingModel {
         defaults.set(times.morningMinute, forKey: Self.checkInMinuteKey)
         defaults.set(times.eveningHour, forKey: Self.habitsHourKey)
         defaults.set(times.eveningMinute, forKey: Self.habitsMinuteKey)
-        // The scheduler diffs pending requests by identifier and text, not
-        // by fire time: a moved time would keep the old request. Clear the
-        // training reminders, then plan them again at the new times.
-        await NotificationScheduler.shared.syncTrainingReminders([])
+        // The scheduler's identifiers carry the fire time, so the replan
+        // removes the requests at the old time and adds the new ones.
         await syncReminders()
     }
 
@@ -231,8 +231,21 @@ final class TrainingModel {
     }
 
     /// Re-plans the training reminders from the current snapshot; none when
-    /// the switch is off or the connection can't record.
+    /// the switch is off or the connection can't record. One replan at a
+    /// time (add-daily-checkin-and-pain-mode): a time picker reports every
+    /// step of its wheel, and two replans interleaving around the
+    /// scheduler's awaits could leave requests at both times pending.
     func syncReminders(now: Date = Date()) async {
+        let previous = reminderSync
+        let task = Task<Void, Never> { [weak self] in
+            _ = await previous?.value
+            await self?.replanReminders(now: now)
+        }
+        reminderSync = task
+        await task.value
+    }
+
+    private func replanReminders(now: Date) async {
         let allowed = remindersEnabled && events.isConnectionOn()
         let reminders = allowed
             // fix-review-findings-2026-09 finding 11: a week ahead, from the

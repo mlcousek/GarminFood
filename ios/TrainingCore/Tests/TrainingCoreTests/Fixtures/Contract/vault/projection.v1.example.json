@@ -40,6 +40,21 @@
       ],
       "reason": "light",
       "clearsAfter": "2030-10-30"
+    },
+    "gate": {
+      "date": "2030-10-23",
+      "walkPain": 1.5,
+      "hopPain": 4,
+      "site": "achilles-left",
+      "runAllowed": true,
+      "speedAllowed": false,
+      "weeksHopAbove2": 1,
+      "stale": false,
+      "note": "20 single-leg hops, sharp on landing",
+      "rules": [
+        "PM-ACH-2",
+        "PM-ACH-8"
+      ]
     }
   },
   "season": {
@@ -359,7 +374,14 @@
         "actual": {
           "runKm": 22.6,
           "sessionsDone": 2,
-          "sessionsMissed": 0
+          "sessionsMissed": 0,
+          "plannedRunKm": 22.6,
+          "unplannedRunKm": 0,
+          "overPlanKm": 0,
+          "longestRunKm": 12.4,
+          "longestRunCapKm": 11.2,
+          "hillM": 85,
+          "highSessions": 0
         },
         "aiNote": null,
         "ruleNotes": [],
@@ -458,7 +480,8 @@
                     "start": "05:20",
                     "km": 10.2,
                     "min": 58
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -539,7 +562,8 @@
                 "group": "strength",
                 "start": "17:00",
                 "km": null,
-                "min": 40
+                "min": 40,
+                "flag": null
               }
             ]
           },
@@ -636,7 +660,8 @@
                     "start": "07:30",
                     "km": 12.4,
                     "min": 75
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -699,7 +724,14 @@
         "actual": {
           "runKm": 60.1,
           "sessionsDone": 8,
-          "sessionsMissed": 0
+          "sessionsMissed": 0,
+          "plannedRunKm": 54.1,
+          "unplannedRunKm": 6,
+          "overPlanKm": 5.1,
+          "longestRunKm": 17.5,
+          "longestRunCapKm": 13.6,
+          "hillM": 460,
+          "highSessions": 0
         },
         "aiNote": {
           "en": "Last week settled well; this week adds one long run.",
@@ -773,7 +805,8 @@
                     "start": "17:30",
                     "km": null,
                     "min": 48
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -906,7 +939,8 @@
                     "start": "05:10",
                     "km": 21.3,
                     "min": 46
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -923,7 +957,8 @@
                 "group": "ride",
                 "start": "17:05",
                 "km": 8.4,
-                "min": 24
+                "min": 24,
+                "flag": null
               }
             ]
           },
@@ -997,7 +1032,8 @@
                     "start": "06:10",
                     "km": 11.6,
                     "min": 66
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -1031,7 +1067,8 @@
                   "option": null,
                   "source": null,
                   "matchedBy": "test-result",
-                  "activity": null
+                  "activity": null,
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -1056,7 +1093,8 @@
                 "group": "run",
                 "start": "05:00",
                 "km": 6,
-                "min": 36
+                "min": 36,
+                "flag": "over-plan"
               }
             ]
           },
@@ -1131,7 +1169,8 @@
                     "start": "05:10",
                     "km": 11.8,
                     "min": 67
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -1172,7 +1211,8 @@
                     "start": "17:30",
                     "km": 5.2,
                     "min": 31
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -1189,7 +1229,8 @@
                 "group": "strength",
                 "start": "18:10",
                 "km": null,
-                "min": 45
+                "min": 45,
+                "flag": null
               }
             ]
           },
@@ -1298,7 +1339,8 @@
                     "start": "05:15",
                     "km": 8,
                     "min": 47
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -1428,7 +1470,8 @@
                     "start": "07:40",
                     "km": 17.5,
                     "min": 118
-                  }
+                  },
+                  "manual": null
                 },
                 "origin": null,
                 "ruleNotes": [],
@@ -1440,7 +1483,8 @@
                 "feedback": {
                   "rpe": 5,
                   "feel": null,
-                  "note": null
+                  "note": null,
+                  "pains": null
                 }
               }
             ],
@@ -1486,7 +1530,8 @@
                 "group": "swim",
                 "start": "10:00",
                 "km": 1.2,
-                "min": 35
+                "min": 35,
+                "flag": null
               }
             ]
           }
@@ -1502,12 +1547,19 @@
         "absorbed": {},
         "targets": {
           "runKm": 55,
-          "sessions": 6
+          "sessions": 7
         },
         "actual": {
           "runKm": 10.1,
-          "sessionsDone": 1,
-          "sessionsMissed": 1
+          "sessionsDone": 2,
+          "sessionsMissed": 1,
+          "plannedRunKm": 10.1,
+          "unplannedRunKm": 0,
+          "overPlanKm": 0,
+          "longestRunKm": 10.1,
+          "longestRunCapKm": 19.3,
+          "hillM": 60,
+          "highSessions": 0
         },
         "aiNote": null,
         "ruleNotes": [
@@ -1538,8 +1590,8 @@
               "gym"
             ],
             "habitsDone": {
-              "holds": 0,
-              "gym": 0
+              "holds": 2,
+              "gym": 1
             },
             "fuel": {
               "kind": "daily",
@@ -1581,10 +1633,23 @@
                   "hrMax": null,
                   "zone": null
                 },
-                "status": "missed",
+                "status": "done",
                 "trafficLight": false,
                 "options": [],
-                "done": null,
+                "done": {
+                  "option": null,
+                  "source": "manual",
+                  "matchedBy": "manual",
+                  "activity": null,
+                  "manual": {
+                    "date": "2030-10-21",
+                    "option": null,
+                    "min": 45,
+                    "km": null,
+                    "note": "Gym A done, watch left at home",
+                    "event": "01beca79-e480-711a-a11a-5eed0000001a"
+                  }
+                },
                 "origin": null,
                 "ruleNotes": [],
                 "raceId": null,
@@ -1622,10 +1687,11 @@
                 "quality"
               ],
               "load": "moderate",
-              "plannedMin": 50,
+              "plannedMin": 70,
               "rules": [
                 "PM-FUEL-1",
-                "PM-FUEL-4"
+                "PM-FUEL-4",
+                "PM-FUEL-6"
               ]
             },
             "sessions": [
@@ -1661,18 +1727,73 @@
                     "start": "05:05",
                     "km": 10.1,
                     "min": 55
+                  },
+                  "manual": {
+                    "date": "2030-10-22",
+                    "option": null,
+                    "min": 55,
+                    "km": 10,
+                    "note": null,
+                    "event": "01beca7a-cee0-711b-a11b-5eed0000001b"
                   }
                 },
                 "origin": null,
-                "ruleNotes": [],
+                "ruleNotes": [
+                  {
+                    "rule": "session-pain",
+                    "en": "Achilles (left) 4/10 during, 6/10 after this session (2030-10-22) — above the 5/10 pain-monitoring limit (PM-ACH-1): the next tendon-heavy session drops one class. Nothing in the plan was changed automatically.",
+                    "cz": "Achilovka (levá): 4/10 během, 6/10 po tréninku (2030-10-22) — nad hranicí 5/10 pro sledování bolesti (PM-ACH-1): další náročný trénink pro šlachu o třídu níž. Plán se automaticky nezměnil."
+                  }
+                ],
                 "raceId": null,
                 "fuel": null,
                 "test": null,
                 "feedback": {
                   "rpe": 7,
                   "feel": 3,
-                  "note": "Calf tight on the last repeat, eased off."
+                  "note": "Calf tight on the last repeat, eased off.",
+                  "pains": [
+                    {
+                      "site": "achilles-left",
+                      "during": 4,
+                      "after": 6
+                    },
+                    {
+                      "site": "knee-right",
+                      "during": null,
+                      "after": 1
+                    }
+                  ]
                 }
+              },
+              {
+                "id": "2030-w43-tue-pm",
+                "slot": "pm",
+                "sport": "mobility",
+                "type": "mobility",
+                "title": {
+                  "en": "Mobility 20 min",
+                  "cz": "Mobilita 20 min"
+                },
+                "why": null,
+                "workout": null,
+                "targets": {
+                  "km": null,
+                  "min": 20,
+                  "hrMin": null,
+                  "hrMax": null,
+                  "zone": null
+                },
+                "status": "missed",
+                "trafficLight": false,
+                "options": [],
+                "done": null,
+                "origin": null,
+                "ruleNotes": [],
+                "raceId": null,
+                "fuel": null,
+                "test": null,
+                "feedback": null
               }
             ],
             "unplanned": []
@@ -3747,13 +3868,197 @@
         "started": "2030-09-20",
         "earliest": "2030-09-20",
         "window14": {
-          "done": 18,
+          "done": 20,
           "expected": 24,
-          "pct": 75,
+          "pct": 83,
           "recordedDays": 12
         },
         "gateMet": null,
-        "gateBlockedBy": null
+        "gateBlockedBy": null,
+        "streak": {
+          "current": 5,
+          "best": 5,
+          "unit": "day",
+          "lastDone": "2030-10-23"
+        },
+        "history": [
+          {
+            "date": "2030-09-20",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-21",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-22",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-23",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-24",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-25",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-26",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-27",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-28",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-29",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-09-30",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-01",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-02",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-03",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-04",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-05",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-06",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-07",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-08",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-09",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-10",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-11",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-12",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-13",
+            "expected": 2,
+            "done": 4
+          },
+          {
+            "date": "2030-10-14",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-15",
+            "expected": 2,
+            "done": 1
+          },
+          {
+            "date": "2030-10-16",
+            "expected": 2,
+            "done": 0
+          },
+          {
+            "date": "2030-10-17",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-18",
+            "expected": 2,
+            "done": 1
+          },
+          {
+            "date": "2030-10-19",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-20",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-21",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-22",
+            "expected": 2,
+            "done": 2
+          },
+          {
+            "date": "2030-10-23",
+            "expected": 2,
+            "done": 2
+          }
+        ],
+        "adherence": {
+          "d7": 78,
+          "d14": 83,
+          "d30": 83,
+          "d84": 83
+        }
       },
       {
         "id": "gym",
@@ -3777,13 +4082,42 @@
         "started": "2030-10-14",
         "earliest": "2030-10-14",
         "window14": {
-          "done": 2,
+          "done": 3,
           "expected": 3,
-          "pct": 66,
+          "pct": 100,
           "recordedDays": 9
         },
         "gateMet": false,
-        "gateBlockedBy": null
+        "gateBlockedBy": null,
+        "streak": {
+          "current": 3,
+          "best": 3,
+          "unit": "occurrence",
+          "lastDone": "2030-10-21"
+        },
+        "history": [
+          {
+            "date": "2030-10-14",
+            "expected": 1,
+            "done": 1
+          },
+          {
+            "date": "2030-10-17",
+            "expected": 1,
+            "done": 1
+          },
+          {
+            "date": "2030-10-21",
+            "expected": 1,
+            "done": 1
+          }
+        ],
+        "adherence": {
+          "d7": 100,
+          "d14": 100,
+          "d30": 100,
+          "d84": 100
+        }
       },
       {
         "id": "stretch",
@@ -3808,7 +4142,10 @@
         "earliest": "2030-10-28",
         "window14": null,
         "gateMet": null,
-        "gateBlockedBy": null
+        "gateBlockedBy": null,
+        "streak": null,
+        "history": [],
+        "adherence": null
       },
       {
         "id": "quality",
@@ -3830,7 +4167,10 @@
         "earliest": "2030-11-11",
         "window14": null,
         "gateMet": null,
-        "gateBlockedBy": null
+        "gateBlockedBy": null,
+        "streak": null,
+        "history": [],
+        "adherence": null
       },
       {
         "id": "pool",
@@ -3854,7 +4194,10 @@
         "earliest": "2030-11-25",
         "window14": null,
         "gateMet": null,
-        "gateBlockedBy": null
+        "gateBlockedBy": null,
+        "streak": null,
+        "history": [],
+        "adherence": null
       },
       {
         "id": "stretch-plus",
@@ -3876,14 +4219,17 @@
         "earliest": "2030-12-09",
         "window14": null,
         "gateMet": null,
-        "gateBlockedBy": null
+        "gateBlockedBy": null,
+        "streak": null,
+        "history": [],
+        "adherence": null
       }
     ]
   },
   "acks": {
     "ios-0a1b2c3d": {
-      "seq": 24,
-      "maxSeq": 24
+      "seq": 31,
+      "maxSeq": 31
     },
     "ios-5e6f7a8b": {
       "seq": 3,
@@ -4000,6 +4346,32 @@
       }
     },
     {
+      "event": "01beca7e-7860-711e-a11e-5eed0000001e",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 30,
+      "type": "habit.tick",
+      "week": null,
+      "sessionId": null,
+      "status": "refused",
+      "reason": {
+        "en": "Habits can be filled in at most 14 days back: 2030-10-01 is older than that (sent on 2030-10-23).",
+        "cz": "Návyky lze doplnit nejvýš 14 dní zpětně: 2030-10-01 je starší (odesláno 2030-10-23)."
+      }
+    },
+    {
+      "event": "01beca7f-62c0-711f-a11f-5eed0000001f",
+      "deviceId": "ios-0a1b2c3d",
+      "seq": 31,
+      "type": "habit.tick",
+      "week": null,
+      "sessionId": null,
+      "status": "refused",
+      "reason": {
+        "en": "A habit cannot be ticked for a future day (2030-10-25; sent on 2030-10-23).",
+        "cz": "Návyk nejde odškrtnout na den v budoucnu (2030-10-25; odesláno 2030-10-23)."
+      }
+    },
+    {
       "event": "01beb4a8-d0e0-7206-b206-5eed00000106",
       "deviceId": "ios-5e6f7a8b",
       "seq": 6,
@@ -4027,7 +4399,7 @@
       "type": "plan.week.approved",
       "path": "Sport/Training/_hub/events/ios-5e6f7a8b/2030/10/20301020T040500Z-1.jsonl",
       "line": 3,
-      "reason": "$.type: unknown type \"plan.week.approved\" (this vault reads the 11 v1 types)"
+      "reason": "$.type: unknown type \"plan.week.approved\" (this vault reads the 13 v1 types)"
     },
     {
       "event": null,
@@ -4038,5 +4410,6 @@
       "line": 4,
       "reason": "not valid JSON (Expected double-quoted property name in JSON at position 140 (line 1 column 141))"
     }
-  ]
+  ],
+  "notices": []
 }

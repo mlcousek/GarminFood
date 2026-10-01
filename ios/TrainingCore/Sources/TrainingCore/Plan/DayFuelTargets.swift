@@ -120,7 +120,8 @@ extension TrainingSnapshot {
     /// add-daily-checkin-and-pain-mode: a day skeleton counts (a day
     /// outside every written week, or with no plan at all).
     public func fuelTargets(on date: LocalDate, fallbackWeightKg: Double? = nil) -> DayFuelTargets? {
-        guard let day = day(date) else { return nil }
+        // `self.`: the local `day` would otherwise shadow the lookup.
+        guard let day = self.day(date) else { return nil }
         return DayFuelTargets.resolve(day: day, athleteWeightKg: athlete.weightKg, fallbackWeightKg: fallbackWeightKg)
     }
 }
