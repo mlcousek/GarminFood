@@ -15,10 +15,11 @@
 // They are judged from `TrainingPlanSignals` (`TrainingBingoRule`,
 // `BingoEvaluator.trainingCompletionDay`), not from the food snapshot: a
 // square is done on the first day of the card's week on which its count is
-// reached. "Kept" is TrainingXPRules' verdict, the one the XP uses. The
-// kept-day squares are `judgesCompletedDaysOnly`, so a Sunday rest day --
-// which is only kept once it is over -- still ticks last week's card on
-// Monday.
+// reached. "Kept" is TrainingXPRules' verdict, the one the XP uses. Every
+// training square is judged once more when its week is over (the
+// evaluator's whole-day pass on Monday), because the plan's facts can
+// arrive late: a session matched after a sync, or a Sunday rest day, which
+// is only kept once it is over.
 //
 // The fuelling squares of this experience are the existing carbohydrate and
 // protein goal squares: their goal status is already judged by the day's
@@ -89,8 +90,7 @@ extension BingoTaskCatalog {
             detail: String(localized: "Keep the day's plan once this week. A rest day counts.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .easy, family: "training-plan",
             scope: .training(.keptDays(1)),
-            symbol: "calendar",
-            judgesCompletedDaysOnly: true
+            symbol: "calendar"
         ),
         BingoTask(
             id: "t-rpe",
@@ -138,8 +138,7 @@ extension BingoTaskCatalog {
             detail: String(localized: "Keep the day's plan on 5 days this week. Rest days count.", bundle: .module, comment: "Bingo task rule."),
             difficulty: .hard, family: "training-plan",
             scope: .training(.keptDays(5)),
-            symbol: "calendar.badge.checkmark",
-            judgesCompletedDaysOnly: true
+            symbol: "calendar.badge.checkmark"
         ),
     ]
 }

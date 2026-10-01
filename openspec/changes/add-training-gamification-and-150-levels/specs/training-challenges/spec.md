@@ -37,9 +37,19 @@ as it is.
 - **WHEN** a card holds "check in on 5 days" and the fifth check-in of its week is recorded
 - **THEN** the square is done on that day
 
+#### Scenario: A Sunday rest day
+
+- **WHEN** last week's card holds "keep the day's plan on 5 days" and its fifth kept day is the Sunday rest day, which is over on Monday
+- **THEN** the square is done when the card is settled on Monday
+
 #### Scenario: Food-first cards
 
 - **WHEN** a card is generated in the food-first experience
+- **THEN** it contains no training square
+
+#### Scenario: A plan without written days
+
+- **WHEN** a card is generated in the training experience and the plan has no written day
 - **THEN** it contains no training square
 
 ### Requirement: The road-trip journey moves by kept days in the training experience
@@ -52,6 +62,11 @@ active calories, and SHALL say so in the journey's conversion line.
 
 - **WHEN** a rest day is kept
 - **THEN** the road trip advances by the same distance as on a training day
+
+#### Scenario: A plan without written days
+
+- **WHEN** the plan has no written day
+- **THEN** the road trip keeps advancing by active calories
 
 #### Scenario: A very active day
 

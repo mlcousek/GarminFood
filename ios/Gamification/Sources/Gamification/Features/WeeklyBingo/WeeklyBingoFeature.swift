@@ -30,9 +30,10 @@
 // its Sunday can only be judged once the week is over).
 //
 // add-training-gamification-and-150-levels D9: in the training experience,
-// with the plan's facts, a NEW card also draws from the eight training
-// squares (`BingoTaskCatalog.training`), and those squares are judged from
-// `context.trainingPlan`.
+// with a plan that has written days, a NEW card also draws from the eight
+// training squares (`BingoTaskCatalog.training`), and those squares are
+// judged from `context.trainingPlan` -- once more on the Monday after,
+// together with the whole-day squares.
 //
 // Depends on: GamificationFeature, BingoTaskCatalog, BingoCardGenerator,
 // BingoEvaluator, BingoStore, XPAward+Features, FoodLogCore.
@@ -136,7 +137,7 @@ public actor WeeklyBingoFeature: GamificationFeature {
             await store.setCard(previous, week: previousWeek)
         }
 
-        var record = await cardForWeek(week, snapshot: context.snapshot, calendar: calendar, isTraining: context.isTrainingExperience, hasPlan: plan != nil)
+        var record = await cardForWeek(week, snapshot: context.snapshot, calendar: calendar, isTraining: context.isTrainingExperience, hasPlan: plan?.hasPlanDays == true)
         let merged = BingoEvaluator.completions(
             taskIds: record.taskIds,
             week: week,

@@ -89,9 +89,11 @@ struct ProgressHomeView: View {
                 LevelSummaryCard(progress: engine.levelProgress)
             }
             .buttonStyle(.plain)
-            // The training section: renders nothing outside the training
-            // experience.
-            TrainingProgressSlotView()
+            // The training section, in the training experience only (an
+            // empty slot would still take a gap in the stack).
+            if engine.featureHost?.isTrainingExperience == true {
+                TrainingProgressSlotView()
+            }
         case .boss:
             BossSlotView()
         case .bingo:

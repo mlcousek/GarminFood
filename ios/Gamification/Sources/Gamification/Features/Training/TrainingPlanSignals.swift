@@ -279,4 +279,11 @@ public struct TrainingPlanSignals: Sendable, Equatable {
     public func day(_ key: String) -> Day? {
         days.first { $0.day == key }
     }
+
+    /// The plan has written days in its window. `false` when the file
+    /// carries no plan (only dates the phone knows): the weekly games then
+    /// keep their food rules, because nothing could be judged as "kept".
+    public var hasPlanDays: Bool {
+        days.contains { $0.isInPlan }
+    }
 }

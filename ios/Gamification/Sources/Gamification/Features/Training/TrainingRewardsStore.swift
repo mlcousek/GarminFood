@@ -17,7 +17,11 @@
 //     sessions, gate-test weeks, tests, approved weeks, ladder steps,
 //     phases, applied plan edits, race preps / carb-load days / finishes /
 //     reports / goals / PRs / wise calls, seasons). Ids are only ever
-//     added: a reward once counted is never taken back;
+//     added: a reward once counted is never taken back. The field is
+//     written by the first recording that carries any fact, even when no
+//     set got an id: a file without it is what "first recording" means
+//     (no moments for the whole window at once), also on a device that
+//     already filled the five original lists;
 //   - `habitDayStates`: per day whether the habits met the ladder's gate
 //     share (`TrainingXPRules.habitDay…`), replaced while the day is in the
 //     window, for the habit streak -- the vault's own streaks stop at its
@@ -166,7 +170,9 @@ public actor TrainingRewardsStore {
     public func record(_ facts: TrainingXPRules.Facts) -> TrainingRecordedFacts {
         loadIfNeeded()
         var recorded = TrainingRecordedFacts()
-        recorded.wasFirstRecording = snapshot == Snapshot()
+        // "First" = the first recording of the plan's facts: a device that
+        // upgrades already has the five original lists, but no `sets`.
+        recorded.wasFirstRecording = snapshot.sets == nil
         for day in facts.checkInDays { insert(day, into: \.checkInDays) }
         for day in facts.honestDays { insert(day, into: \.honestDays) }
         for week in facts.gymWeeks { insert(week, into: \.gymWeeks) }
@@ -211,7 +217,11 @@ public actor TrainingRewardsStore {
             sets[name] = list
             setsChanged = true
         }
-        if setsChanged {
+        // Written by the first recording that carries anything, even when
+        // no set got an id: its presence is what tells the next run that it
+        // is not the first. A run without any fact (no plan in the file
+        // yet) leaves it alone, so the plan's arrival is still "first".
+        if setsChanged || (snapshot.sets == nil && facts != TrainingXPRules.Facts()) {
             snapshot.sets = sets
             dirty = true
         }
@@ -272,8 +282,9 @@ public struct TrainingRecordedFacts: Sendable, Equatable {
     public var newKeptWeeks: [String] = []
     /// `TrainingSetKey.rawValue` -> the ids added.
     public var newSetIds: [String: [String]] = [:]
-    /// Nothing was stored before: the first run records the whole plan
-    /// window at once, which is not a moment to celebrate item by item.
+    /// The plan's facts were never recorded before: the first run takes in
+    /// the whole plan window at once, which is not a moment to celebrate
+    /// item by item.
     public var wasFirstRecording = false
 
     public init() {}

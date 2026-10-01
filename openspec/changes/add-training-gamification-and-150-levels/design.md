@@ -390,11 +390,17 @@ from the new rules (D7), so the two existing ladders and the XP agree.
 
 A kept week, a closed phase, a completed season and a finished race get one
 moment each, the first time the store records them. The very first run
-records the whole plan window at once and shows none.
+with the plan's facts records the whole plan window at once and shows none
+-- "first" is a file without `sets`, so a device that already filled the
+five original lists is treated the same (the field is written by the first
+run that carries any fact, even when no set got an id).
 
 ### D9 — Training variants of boss, bingo and journeys
 
 In the training experience only; a card or boss already running finishes.
+Bingo and journeys also need a plan with written days
+(`TrainingPlanSignals.hasPlanDays`): a file without one keeps their food
+rules, because nothing in it could ever be "kept".
 
 - **Boss: the Impatience Imp** (`BossKind.impatienceImp`). "Whispers 'just a
   little more' every day." Habit: keep the day's plan. A hit is a kept day
@@ -406,7 +412,9 @@ In the training experience only; a card or boss already running finishes.
   days; a full habit day; 3 full habit days; a kept day; 5 kept days; gym
   twice; rate a session; check in on all 7 days. None of them asks for an
   amber morning or for more training. They are judged from
-  `TrainingPlanSignals`.
+  `TrainingPlanSignals`, and once more on the Monday after their week (the
+  whole-day pass that settles last week's card): a session matched after a
+  late sync, or a Sunday rest day, still ticks its square.
 - **Journeys: the road trip moves by kept days.** The road trip turns
   active calories into kilometres, which pays for doing more. In the
   training experience it advances **8 km for every kept plan day** instead

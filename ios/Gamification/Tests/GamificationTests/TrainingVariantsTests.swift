@@ -245,10 +245,12 @@ final class TrainingVariantsTests: XCTestCase {
         let open = BingoEvaluator.completions(taskIds: taskIds, week: week, today: plan.today, snapshot: snapshot, calendar: calendar, stored: [:])
         XCTAssertEqual(open, [:])
 
-        // The whole-day pass (last week's card on Monday) re-judges only the
-        // kept-day squares, so a Sunday rest day still counts.
+        // The whole-day pass (last week's card on Monday) judges every
+        // training square once more: the plan's facts can arrive late, and a
+        // Sunday rest day is only kept once it is over.
         let settled = BingoEvaluator.completions(taskIds: taskIds, week: week, today: plan.today, snapshot: snapshot, calendar: calendar, stored: [:], onlyCompletedDayTasks: true, plan: plan)
-        XCTAssertEqual(settled, [1: TP.key(21)])
+        XCTAssertEqual(settled, done)
+        XCTAssertFalse(BingoTaskCatalog.training.contains(where: \.judgesCompletedDaysOnly), "no training square needs the whole-day flag for that")
 
         // Stored completions are sticky.
         let sticky = BingoEvaluator.completions(taskIds: taskIds, week: week, today: plan.today, snapshot: snapshot, calendar: calendar, stored: [7: TP.key(22)], plan: nil)
@@ -269,23 +271,26 @@ final class TrainingVariantsTests: XCTestCase {
             let snapshot = SignalsSnapshot(days: [:], today: today, windowDays: [today])
 
             let training = WeeklyBingoFeature(directory: BT.tempDirectory("bingo-training"))
-            _ = await training.update(context(snapshot, now: now, isTraining: true, plan: S(today: today)))
+            _ = await training.update(context(snapshot, now: now, isTraining: true, plan: S(today: today, days: [S.Day(day: today)])))
             let trainingCard = await training.currentCard(now: now, calendar: calendar)
             XCTAssertEqual(trainingCard?.squares.count, 9)
             trainingSquares += trainingCard?.squares.filter { $0.task?.scope.isTraining == true }.count ?? 0
 
             let foodFirst = WeeklyBingoFeature(directory: BT.tempDirectory("bingo-food"))
-            _ = await foodFirst.update(context(snapshot, now: now, isTraining: false, plan: S(today: today)))
+            _ = await foodFirst.update(context(snapshot, now: now, isTraining: false, plan: S(today: today, days: [S.Day(day: today)])))
             let foodCard = await foodFirst.currentCard(now: now, calendar: calendar)
             XCTAssertEqual(foodCard?.squares.count, 9)
             XCTAssertEqual(foodCard?.squares.filter { $0.task?.scope.isTraining == true }.count, 0, "week of \(today)")
 
-            // The training experience without the plan's facts: no training
-            // square either (nothing could ever tick it).
-            let noPlan = WeeklyBingoFeature(directory: BT.tempDirectory("bingo-noplan"))
-            _ = await noPlan.update(context(snapshot, now: now, isTraining: true, plan: nil))
-            let noPlanCard = await noPlan.currentCard(now: now, calendar: calendar)
-            XCTAssertEqual(noPlanCard?.squares.filter { $0.task?.scope.isTraining == true }.count, 0, "week of \(today)")
+            // The training experience without the plan's facts, or with a
+            // file that holds no written day: no training square either
+            // (nothing could ever tick a kept-day square).
+            for emptyPlan in [nil, S(today: today), S(today: today, days: [S.Day(day: today, isInPlan: false)])] {
+                let noPlan = WeeklyBingoFeature(directory: BT.tempDirectory("bingo-noplan"))
+                _ = await noPlan.update(context(snapshot, now: now, isTraining: true, plan: emptyPlan))
+                let noPlanCard = await noPlan.currentCard(now: now, calendar: calendar)
+                XCTAssertEqual(noPlanCard?.squares.filter { $0.task?.scope.isTraining == true }.count, 0, "week of \(today)")
+            }
         }
         XCTAssertGreaterThan(trainingSquares, 0, "training cards draw from the training squares")
     }
@@ -341,5 +346,12 @@ final class TrainingVariantsTests: XCTestCase {
         XCTAssertEqual(foodRoad?.definition.conversionLine, JourneyCatalog.road.conversionLine)
         XCTAssertNotEqual(JourneyCatalog.trainingRoadConversionLine, JourneyCatalog.road.conversionLine)
         XCTAssertEqual(JourneyCatalog.definition(.protein, trainingRoad: true), JourneyCatalog.definition(.protein), "only the road trip changes")
+
+        // The training experience with a file that holds no written day:
+        // nothing could be "kept", so the active-calorie rule stays.
+        let noDays = JourneysFeature(directory: JR.tempDirectory())
+        _ = await noDays.update(context(snapshot, now: TestClock.date(2026, 9, 10), isTraining: true, plan: S(today: JR.key(10))))
+        let noDaysJourneys = await noDays.journeys()
+        XCTAssertEqual(noDaysJourneys.first { $0.kind == .road }?.total ?? -1, 50, accuracy: 0.0001)
     }
 }

@@ -249,6 +249,43 @@ final class TrainingProgressTests: XCTestCase {
         XCTAssertTrue(later.moments.isEmpty)
     }
 
+    /// A device that already used the five original ladders has a
+    /// `training.json` without `sets`: its first run with the plan's facts
+    /// still takes in the whole window quietly.
+    func testAnUpgradedStoreIsNotCelebratedItemByItem() async {
+        let directory = TP.tempDirectory()
+        let original = TrainingSignals(
+            today: TP.key(20),
+            currentWeek: "2030-W42",
+            days: [TrainingSignals.Day(day: TP.key(20), checkedIn: true, honestLightFollowed: false, strengthSessionsDone: 0, habitTicks: 2)],
+            weeks: []
+        )
+        let before = TrainingRewardsFeature(directory: directory)
+        _ = await before.update(TP.context(plan: nil, training: original))
+        let stored = await before.counts()
+        XCTAssertEqual(stored.checkInDays, 1)
+
+        let after = TrainingRewardsFeature(directory: directory)
+        let firstPlanRun = await after.update(TP.context(plan: keptWeekSignals(), now: TestClock.date(2030, 10, 28)))
+        XCTAssertNotNil(firstPlanRun.grants.first { $0.key == "training.week-kept.2030-W43" })
+        XCTAssertTrue(firstPlanRun.moments.isEmpty, "the first run with the plan's facts shows no moment")
+        let counts = await after.counts()
+        XCTAssertEqual(counts.checkInDays, 8, "the stored day and the plan's seven")
+    }
+
+    /// A file without a plan yet records nothing, so the plan's arrival is
+    /// still the first recording; from then on a new kept week is shown.
+    func testAnEmptyPlanDoesNotUseUpTheQuietFirstRun() async {
+        let feature = TrainingRewardsFeature(directory: TP.tempDirectory())
+        let empty = await feature.update(TP.context(plan: TP.signals(today: 20), now: TestClock.date(2030, 10, 20)))
+        XCTAssertTrue(empty.grants.isEmpty)
+        XCTAssertTrue(empty.moments.isEmpty)
+
+        let arrival = await feature.update(TP.context(plan: keptWeekSignals(), now: TestClock.date(2030, 10, 28)))
+        XCTAssertNotNil(xp(arrival, "training.week-kept.2030-W43"))
+        XCTAssertTrue(arrival.moments.isEmpty, "the whole window at once: still quiet")
+    }
+
     func testNothingOutsideTheTrainingExperience() async {
         let feature = TrainingRewardsFeature(directory: TP.tempDirectory())
         let foodFirst = await feature.update(TP.context(plan: keptWeekSignals(), isTraining: false))

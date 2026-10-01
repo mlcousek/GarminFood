@@ -64,7 +64,11 @@ extension AppEnvironment {
         let reloadTraining = events.onChange
         events.onChange = { [weak self] in
             await reloadTraining?()
-            await self?.gamificationEngine.runFeaturesAfterTrainingEvent()
+            // Unstructured: the tap that recorded the event never waits for
+            // the feature pass.
+            Task { @MainActor [weak self] in
+                await self?.gamificationEngine.runFeaturesAfterTrainingEvent()
+            }
         }
     }
 

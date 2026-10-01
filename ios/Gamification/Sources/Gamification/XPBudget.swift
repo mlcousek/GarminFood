@@ -206,60 +206,73 @@ public enum XPBudget {
     /// The always-on lines in a poor week (food logged on 4 of 7 days, one
     /// goal day in five, no boss) and in a perfect one (everything, every
     /// day). One entry per always-on line (XPBudgetTests checks it).
-    public static let scenarios: [XPBudgetScenarioLine] = [
+    public static let scenarios: [XPBudgetScenarioLine] = {
+        // One statement per number (cheap to type-check).
+        let perLog = Double(XPAward.flatPerLog)
+        let streak = Double(XPAward.streakExtensionBonus)
+        let goal = Double(XPAward.goalHitBonus)
+        let daily = Double(XPAward.dailyChallengeBonus)
+        let badge = Double(XPAward.achievementBonus)
+        let bingoLine = Double(XPAward.bingoLine)
+        let bingoCard = Double(XPAward.bingoFullCard)
+        let event = Double(XPAward.seasonalEventCompleted)
+        let quest = Double(SeasonalEventCatalog.bonusQuestXP)
+        let discovery = Double(XPAward.collectionDiscovery)
+        let milestone = Double(XPAward.journeyMilestone)
+        let record = Double(XPAward.personalRecord)
+        let secret = Double(XPAward.secretUnlocked + XPAward.achievementBonus)
+        let sport = Double(XPAward.sportBadge + XPAward.achievementBonus)
+        let bossAtSix = Double(BossFight.defeatXP(target: 6))
+
         // 2.5 entries on 4 days of 7 / 4.5 entries every day.
-        XPBudgetScenarioLine(source: "log", poor: Double(XPAward.flatPerLog) * 2.5 * 4 / week, perfect: Double(XPAward.flatPerLog) * 4.5),
-        XPBudgetScenarioLine(source: "streak", poor: Double(XPAward.streakExtensionBonus) * 4 / week, perfect: Double(XPAward.streakExtensionBonus) * 1.0),
-        XPBudgetScenarioLine(source: "goal", poor: Double(XPAward.goalHitBonus) * 0.2, perfect: Double(XPAward.goalHitBonus) * 1.0),
-        XPBudgetScenarioLine(source: "dailyChallenge", poor: Double(XPAward.dailyChallengeBonus) * 2 * 0.15, perfect: Double(XPAward.dailyChallengeBonus) * 2 * 1.0),
+        let logPoor: Double = perLog * 2.5 * 4.0 / week
+        let logPerfect: Double = perLog * 4.5
+        let streakPoor: Double = streak * 4.0 / week
+        let goalPoor: Double = goal * 0.2
+        let dailyPoor: Double = daily * 2.0 * 0.15
+        let dailyPerfect: Double = daily * 2.0
         // A completion every three weeks / every 7.5 days.
-        XPBudgetScenarioLine(source: "challenge", poor: assumedMeanChallengeReward / 21, perfect: assumedMeanChallengeReward / 7.5),
-        XPBudgetScenarioLine(source: "achievement", poor: Double(XPAward.achievementBonus) * 6 / year, perfect: Double(XPAward.achievementBonus) * 20 / year),
+        let challengePoor: Double = assumedMeanChallengeReward / 21.0
+        let challengePerfect: Double = assumedMeanChallengeReward / 7.5
+        let achievementPoor: Double = badge * 6.0 / year
+        let achievementPerfect: Double = badge * 20.0 / year
         // Half a line a week / three lines a week and a full card every
         // third week, all seven badges.
-        XPBudgetScenarioLine(
-            source: WeeklyBingoFeature.id,
-            poor: Double(XPAward.bingoLine) * 0.5 / week,
-            perfect: Double(XPAward.bingoLine) * 3 / week + Double(XPAward.bingoFullCard) / (3 * week) + badgeXP(7)
-        ),
+        let bingoPoor: Double = bingoLine * 0.5 / week
+        let bingoPerfect: Double = bingoLine * 3.0 / week + bingoCard / (3.0 * week) + badgeXP(7)
         // Two events a year / all twelve and all eight bonus quests.
-        XPBudgetScenarioLine(
-            source: SeasonalEventsFeature.id,
-            poor: Double(XPAward.seasonalEventCompleted) * 2 / year,
-            perfect: (Double(XPAward.seasonalEventCompleted) * 12 + Double(SeasonalEventCatalog.bonusQuestXP) * 8) / year + badgeXP(10)
-        ),
-        XPBudgetScenarioLine(
-            source: FoodCollectionsFeature.id,
-            poor: Double(XPAward.collectionDiscovery) * 0.2 / week,
-            perfect: Double(XPAward.collectionDiscovery) * 1.0 / week + badgeXP(6)
-        ),
-        XPBudgetScenarioLine(
-            source: JourneysFeature.id,
-            poor: Double(XPAward.journeyMilestone) * 20 / threeYears,
-            perfect: Double(XPAward.journeyMilestone) * 44 / threeYears + badgeXP(8)
-        ),
-        XPBudgetScenarioLine(
-            source: PersonalRecordsFeature.id,
-            poor: Double(XPAward.personalRecord) * 1 / month,
-            perfect: Double(XPAward.personalRecord) * 4 / month + badgeXP(3)
-        ),
-        XPBudgetScenarioLine(
-            source: SecretAchievementsFeature.id,
-            poor: Double(XPAward.secretUnlocked + XPAward.achievementBonus) * 4 / threeYears,
-            perfect: Double(XPAward.secretUnlocked + XPAward.achievementBonus) * 16 / threeYears
-        ),
-        XPBudgetScenarioLine(
-            source: SportAndBodyFeature.id,
-            poor: Double(XPAward.sportBadge + XPAward.achievementBonus) * 3 / threeYears,
-            perfect: Double(XPAward.sportBadge + XPAward.achievementBonus) * 14 / threeYears
-        ),
+        let seasonalPoor: Double = event * 2.0 / year
+        let seasonalPerfect: Double = (event * 12.0 + quest * 8.0) / year + badgeXP(10)
+        let collectionsPoor: Double = discovery * 0.2 / week
+        let collectionsPerfect: Double = discovery * 1.0 / week + badgeXP(6)
+        let journeysPoor: Double = milestone * 20.0 / threeYears
+        let journeysPerfect: Double = milestone * 44.0 / threeYears + badgeXP(8)
+        let recordsPoor: Double = record * 1.0 / month
+        let recordsPerfect: Double = record * 4.0 / month + badgeXP(3)
+        let secretsPoor: Double = secret * 4.0 / threeYears
+        let secretsPerfect: Double = secret * 16.0 / threeYears
+        let sportPoor: Double = sport * 3.0 / threeYears
+        let sportPerfect: Double = sport * 14.0 / threeYears
         // No boss beaten / one every week at a target of 6, seven badges.
-        XPBudgetScenarioLine(
-            source: WeeklyBossFeature.id,
-            poor: 0,
-            perfect: Double(BossFight.defeatXP(target: 6)) * 1.0 / week + badgeXP(7)
-        ),
-    ]
+        let bossPerfect: Double = bossAtSix / week + badgeXP(7)
+
+        return [
+            XPBudgetScenarioLine(source: "log", poor: logPoor, perfect: logPerfect),
+            XPBudgetScenarioLine(source: "streak", poor: streakPoor, perfect: streak),
+            XPBudgetScenarioLine(source: "goal", poor: goalPoor, perfect: goal),
+            XPBudgetScenarioLine(source: "dailyChallenge", poor: dailyPoor, perfect: dailyPerfect),
+            XPBudgetScenarioLine(source: "challenge", poor: challengePoor, perfect: challengePerfect),
+            XPBudgetScenarioLine(source: "achievement", poor: achievementPoor, perfect: achievementPerfect),
+            XPBudgetScenarioLine(source: WeeklyBingoFeature.id, poor: bingoPoor, perfect: bingoPerfect),
+            XPBudgetScenarioLine(source: SeasonalEventsFeature.id, poor: seasonalPoor, perfect: seasonalPerfect),
+            XPBudgetScenarioLine(source: FoodCollectionsFeature.id, poor: collectionsPoor, perfect: collectionsPerfect),
+            XPBudgetScenarioLine(source: JourneysFeature.id, poor: journeysPoor, perfect: journeysPerfect),
+            XPBudgetScenarioLine(source: PersonalRecordsFeature.id, poor: recordsPoor, perfect: recordsPerfect),
+            XPBudgetScenarioLine(source: SecretAchievementsFeature.id, poor: secretsPoor, perfect: secretsPerfect),
+            XPBudgetScenarioLine(source: SportAndBodyFeature.id, poor: sportPoor, perfect: sportPerfect),
+            XPBudgetScenarioLine(source: WeeklyBossFeature.id, poor: 0, perfect: bossPerfect),
+        ]
+    }()
 
     /// Whether `source` is an optional source (design D4): its grants --
     /// and the host's badge bonus for its badges -- go through

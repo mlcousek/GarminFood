@@ -66,7 +66,7 @@ public actor JourneysFeature: GamificationFeature {
 
         // The training experience: kept plan days drive the road trip.
         var roadKilometresByDay: [String: Double]?
-        if context.isTrainingExperience, let plan = context.trainingPlan {
+        if context.isTrainingExperience, let plan = context.trainingPlan, plan.hasPlanDays {
             var byDay: [String: Double] = [:]
             for day in TrainingXPRules.keptDays(plan) {
                 byDay[day] = JourneyCatalog.kilometresPerKeptPlanDay
