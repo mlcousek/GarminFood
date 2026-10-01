@@ -36,11 +36,13 @@ final class TrainingXPRulesTests: XCTestCase {
     func testSessionVerdicts() {
         let run = TP.session("s")
         // Done, not a traffic-light session: as planned on any morning.
-        for light in [nil, S.Light.greenLight, .amberLight, .redLight] {
+        let lights: [S.Light?] = [nil, .greenLight, .amberLight, .redLight]
+        for light in lights {
             XCTAssertEqual(R.judge(TP.session("gym", trafficLight: false, strength: true), light: light), TrainingSessionJudgement(.asPlanned))
         }
         // Done, traffic-light: no check-in or a green morning -> any option.
-        for option in [nil, S.Option.g, .a, .r] {
+        let options: [S.Option?] = [nil, .g, .a, .r]
+        for option in options {
             XCTAssertEqual(R.judge(TP.session("s", option: option), light: nil), TrainingSessionJudgement(.asPlanned))
             XCTAssertEqual(R.judge(TP.session("s", option: option), light: .greenLight), TrainingSessionJudgement(.asPlanned), "an easier option on a green morning is fine")
         }
@@ -278,7 +280,7 @@ final class TrainingXPRulesTests: XCTestCase {
             return R.habitStreak(states: byKey, today: TP.key(today))
         }
 
-        XCTAssertEqual(streak([:]), .none)
+        XCTAssertEqual(streak([:]), TrainingHabitStreak.none)
         XCTAssertEqual(streak([21: met, 22: met, 23: met]), TrainingHabitStreak(current: 3, best: 3))
         XCTAssertEqual(streak([21: met, 22: met, 23: notMet]), TrainingHabitStreak(current: 2, best: 2), "today is not over: it does not break the streak")
         XCTAssertEqual(streak([20: met, 21: notMet, 22: met, 23: met]), TrainingHabitStreak(current: 2, best: 2), "a missed day breaks it")
