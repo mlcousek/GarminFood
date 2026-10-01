@@ -94,7 +94,7 @@ private struct MomentCard: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.md) {
-            BadgeMedallion(symbol: medallionSymbol, rarity: medallionRarity, isLocked: false, size: medallionSize)
+            BadgeMedallion(symbol: medallionSymbol, rarity: medallionRarity, isLocked: false, size: medallionSize, family: medallionFamily)
                 .symbolEffect(.bounce, options: .nonRepeating, value: animated ? moment : nil)
 
             VStack(spacing: 2) {
@@ -139,6 +139,18 @@ private struct MomentCard: View {
         case .dailyChallengeCompleted: return "checkmark.circle.fill"
         case .achievementUnlocked(_, let badgeSymbol, _): return badgeSymbol
         case .feature(let feature): return feature.symbol
+        }
+    }
+
+    /// The drawn frame's shape (redesign-badge-art). An achievement or
+    /// feature moment carries no badge id to resolve a family from, so
+    /// those keep the disc for now (tasks 3.3).
+    private var medallionFamily: BadgeFamily? {
+        switch moment {
+        case .levelUp: return .levels
+        case .streakMilestone: return .streak
+        case .challengeCompleted, .dailyChallengeCompleted: return .bingo
+        case .achievementUnlocked, .feature: return nil
         }
     }
 
