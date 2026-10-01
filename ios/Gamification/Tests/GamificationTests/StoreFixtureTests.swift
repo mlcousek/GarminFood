@@ -55,6 +55,7 @@ final class StoreFixtureTests: XCTestCase {
     /// `testEveryPersistedFileHasAFixture`.
     private static let allFixtures: [String] = [
         "xp-ledger.json",
+        "xp-ledger.v4.json",
         "achievements.json",
         "challenge-state.json",
         "challenge-history.json",
@@ -122,12 +123,14 @@ final class StoreFixtureTests: XCTestCase {
 
     // MARK: - xp-ledger.json (XPStore.Snapshot, default JSONEncoder)
 
-    // Written by today's code: `curveVersion` == `LevelCurve.curveVersion`
-    // (3, rebalance-xp-economy), so the load-time peak seeding does not run
-    // and `peakLevel` is read back as stored. (Pre-v3 files -- no
-    // `curveVersion` -- are covered by XPCurveMigrationTests.) 4210 XP is
-    // level 25 on the 1.045 curve that first seeded this peak and level 23
-    // on the live curve, so the displayed level is the held peak.
+    // Written by the curve-version-3 build (rebalance-xp-economy, factor
+    // 1.05358): 4210 XP, a peak of 25 seeded from the 1.045 curve and held
+    // above level 23 of 1.05358. Frozen as it was. Loaded by today's build
+    // (version 4, add-training-gamification-and-150-levels) it MIGRATES: the
+    // XP is untouched, the 150-level curve maps it to level 28 -- above the
+    // old peak, so nothing is held any more -- and the one-time "150 levels"
+    // announcement is pending with the level it showed before (25).
+    // (Pre-v3 files are covered by XPCurveMigrationTests.)
     func testXPLedgerFixtureDecodesThroughTheRealStore() async throws {
         let url = try copyFixture("xp-ledger.json")
         let store = XPStore(fileURL: url)
@@ -135,13 +138,15 @@ final class StoreFixtureTests: XCTestCase {
         let total = await store.currentTotal()
         let peak = await store.peakLevel()
         let progress = await store.currentProgress()
+        let announcement = await store.pendingCurveAnnouncement()
 
         assertNotQuarantined(url)
-        XCTAssertEqual(LevelCurve.curveVersion, 3, "a curve change needs a new xp-ledger fixture (see the header's rule)")
+        XCTAssertEqual(LevelCurve.curveVersion, 4, "a curve change needs a new xp-ledger fixture (see the header's rule)")
         XCTAssertEqual(total, 4210)
-        XCTAssertEqual(peak, 25)
-        XCTAssertEqual(progress.level, 25, "the displayed level never drops below the stored peak")
+        XCTAssertEqual(peak, 28)
+        XCTAssertEqual(progress.level, 28, "the displayed level never drops below the stored peak (25)")
         XCTAssertEqual(progress.totalXP, 4210)
+        XCTAssertEqual(announcement, CurveAnnouncement(levelBefore: 25, levelAfter: 28, maxLevel: 150))
 
         // `lastStreakBonusDay` decoded ("2026-09-20" -> no second streak
         // bonus that day); `lastGoalBonusDay` is absent -> the goal bonus pays.
@@ -150,7 +155,37 @@ final class StoreFixtureTests: XCTestCase {
         XCTAssertTrue(award.goalBonusAwarded)
         XCTAssertEqual(award.totalXPBefore, 4210)
         XCTAssertEqual(award.totalXPAfter, 4210 + XPAward.flatPerLog + XPAward.goalHitBonus)
-        XCTAssertEqual(award.peakLevelBefore, 25)
+        XCTAssertEqual(award.peakLevelBefore, 28)
+        assertNotQuarantined(url)
+    }
+
+    // MARK: - xp-ledger.v4.json (XPStore.Snapshot, curve version 4)
+
+    // Written by today's code: `curveVersion` == `LevelCurve.curveVersion`,
+    // so the load-time peak seeding does not run and `peakLevel` is read
+    // back as stored; the two announcement fields say the "150 levels"
+    // moment was already shown.
+    func testXPLedgerV4FixtureDecodesThroughTheRealStore() async throws {
+        let url = try copyFixture("xp-ledger.v4.json")
+        let store = XPStore(fileURL: url)
+
+        let total = await store.currentTotal()
+        let peak = await store.peakLevel()
+        let progress = await store.currentProgress()
+        let announcement = await store.pendingCurveAnnouncement()
+
+        assertNotQuarantined(url)
+        XCTAssertEqual(total, 5210)
+        XCTAssertEqual(peak, 32)
+        XCTAssertEqual(progress.level, 32)
+        XCTAssertNil(announcement, "already shown")
+
+        // Both bonus days decoded: neither bonus pays twice on its own day.
+        let streakDay = try await store.recordLog(nutritionDay: "2030-10-21", streakExtendedToday: true, goalMetToday: false)
+        XCTAssertFalse(streakDay.streakBonusAwarded)
+        let goalDay = try await store.recordLog(nutritionDay: "2030-10-20", streakExtendedToday: false, goalMetToday: true)
+        XCTAssertFalse(goalDay.goalBonusAwarded)
+        XCTAssertEqual(goalDay.totalXPAfter, 5210 + 2 * XPAward.flatPerLog)
         assertNotQuarantined(url)
     }
 

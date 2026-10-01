@@ -103,6 +103,49 @@ public struct XPAwardResult: Equatable, Sendable {
     public var didLevelUp: Bool { levelAfter.level > levelBefore.level }
 }
 
+/// add-training-gamification-and-150-levels D4: what to say, once, to a
+/// ledger written before the levels went to 150 -- the level it displayed
+/// before the change and the one it displays now (the same or higher; XP is
+/// untouched).
+public struct CurveAnnouncement: Equatable, Sendable {
+    public let levelBefore: Int
+    public let levelAfter: Int
+    public let maxLevel: Int
+
+    public init(levelBefore: Int, levelAfter: Int, maxLevel: Int) {
+        self.levelBefore = levelBefore
+        self.levelAfter = levelAfter
+        self.maxLevel = maxLevel
+    }
+
+    /// The moment the app queues (rendered by the generic feature overlay).
+    public var moment: FeatureMoment {
+        let title = String(
+            format: String(localized: "Levels now go to %lld", bundle: .module, comment: "One-time moment title after the update that changed the level range. %lld = the highest level (150)."),
+            maxLevel
+        )
+        let message: String
+        if levelAfter > levelBefore {
+            message = String(
+                format: String(localized: "Your XP is unchanged. On the new scale you moved from level %lld to level %lld.", bundle: .module, comment: "One-time moment message after the level range changed. First %lld = the level shown before, second = the level shown now (higher)."),
+                levelBefore, levelAfter
+            )
+        } else {
+            message = String(
+                format: String(localized: "Your XP and your level %lld are unchanged.", bundle: .module, comment: "One-time moment message after the level range changed, when the level number stayed the same. %lld = the level."),
+                levelAfter
+            )
+        }
+        return FeatureMoment(
+            featureId: "levels",
+            title: title,
+            message: message,
+            symbol: "chart.line.uptrend.xyaxis",
+            style: .celebration
+        )
+    }
+}
+
 public actor XPStore {
     private struct Snapshot: Codable {
         var totalXP: Int
@@ -118,6 +161,13 @@ public actor XPStore {
         /// version 1 (1.045) when `peakLevel` is also `nil`, else version 2
         /// (1.0505, which introduced `peakLevel`).
         var curveVersion: Int?
+        /// add-training-gamification-and-150-levels D4: the level this
+        /// ledger displayed before the curve went to 150 levels. Set when a
+        /// file written under an older curve is loaded; `nil` on a ledger
+        /// that started on the 150-level curve (no announcement).
+        var levelBefore150Levels: Int?
+        /// `true` once the one-time "150 levels" moment was shown.
+        var announced150Levels: Bool?
     }
 
     private let fileURL: URL
@@ -139,6 +189,17 @@ public actor XPStore {
         let result = GamificationStorage.loadPersistedJSON(Snapshot.self, from: fileURL, decoder: JSONDecoder(), category: "XPStore")
         loaded = !result.isUnreadable
         snapshot = result.value ?? snapshot
+        // A ledger that EXISTED before the 150-level curve gets the one-time
+        // announcement; a new install (no file) never does.
+        if result.value != nil,
+           snapshot.levelBefore150Levels == nil,
+           Self.fileCurveVersion(storedPeak: snapshot.peakLevel, storedCurveVersion: snapshot.curveVersion) < LevelCurve.curveVersionWith150Levels {
+            snapshot.levelBefore150Levels = Self.levelDisplayedBeforeCurveChange(
+                totalXP: snapshot.totalXP,
+                storedPeak: snapshot.peakLevel,
+                storedCurveVersion: snapshot.curveVersion
+            )
+        }
         if (snapshot.curveVersion ?? 0) < LevelCurve.curveVersion {
             snapshot.peakLevel = Self.seededPeakLevel(
                 totalXP: snapshot.totalXP,
@@ -156,7 +217,7 @@ public actor XPStore {
     /// idempotent: seeding the same file twice gives the same peak, and the
     /// result is never below the stored peak.
     static func seededPeakLevel(totalXP: Int, storedPeak: Int?, storedCurveVersion: Int?) -> Int {
-        let fileVersion = storedCurveVersion ?? (storedPeak == nil ? 1 : 2)
+        let fileVersion = fileCurveVersion(storedPeak: storedPeak, storedCurveVersion: storedCurveVersion)
         let past = LevelCurve.pastGrowthFactors
         let firstIndex = min(max(fileVersion - 1, 0), past.count)
         var peak = max(storedPeak ?? 1, LevelCurve.level(forTotalXP: totalXP).level)
@@ -164,6 +225,44 @@ public actor XPStore {
             peak = max(peak, LevelCurve.level(forTotalXP: totalXP, growthFactor: factor).level)
         }
         return min(peak, LevelCurve.maxLevel)
+    }
+
+    /// The curve version a file was written under: its stored one, else 1
+    /// (no peak yet) or 2 (the build that introduced `peakLevel`).
+    static func fileCurveVersion(storedPeak: Int?, storedCurveVersion: Int?) -> Int {
+        storedCurveVersion ?? (storedPeak == nil ? 1 : 2)
+    }
+
+    /// The level a ledger displayed on the build that wrote it: its stored
+    /// peak, or the level under the curve(s) it lived through, whichever is
+    /// higher -- without the live curve. For the one-time announcement.
+    static func levelDisplayedBeforeCurveChange(totalXP: Int, storedPeak: Int?, storedCurveVersion: Int?) -> Int {
+        let fileVersion = fileCurveVersion(storedPeak: storedPeak, storedCurveVersion: storedCurveVersion)
+        let past = LevelCurve.pastGrowthFactors
+        let firstIndex = min(max(fileVersion - 1, 0), past.count)
+        var level = storedPeak ?? 1
+        for factor in past[firstIndex...] {
+            level = max(level, LevelCurve.level(forTotalXP: totalXP, growthFactor: factor).level)
+        }
+        return min(level, LevelCurve.maxLevel)
+    }
+
+    /// add-training-gamification-and-150-levels D4: the one-time "150
+    /// levels" announcement for a ledger written before that curve, until
+    /// `markCurveAnnouncementShown()`. `nil` on a new install.
+    public func pendingCurveAnnouncement() -> CurveAnnouncement? {
+        loadIfNeeded()
+        guard loaded, let before = snapshot.levelBefore150Levels, snapshot.announced150Levels != true else { return nil }
+        let now = LevelCurve.level(forTotalXP: snapshot.totalXP, peakLevel: snapshot.peakLevel).level
+        return CurveAnnouncement(levelBefore: before, levelAfter: max(now, before), maxLevel: LevelCurve.maxLevel)
+    }
+
+    /// Records that the announcement was shown, so it never shows again.
+    public func markCurveAnnouncementShown() throws {
+        loadIfNeeded()
+        guard snapshot.levelBefore150Levels != nil, snapshot.announced150Levels != true else { return }
+        snapshot.announced150Levels = true
+        try persist()
     }
 
     /// Adds `xp` and raises the peak if the curve level passed it.

@@ -4,11 +4,19 @@
 // budget instead of a hand-tuned guess. Every XP source has ONE line with
 // its expected long-run XP per day for a typical active user (the reward
 // constant times an assumed frequency, commented per line). The sum of the
-// always-on lines (`coreDailyXP`) is what `LevelCurve.growthFactor` is
-// solved against: level 84 after 1,095 days (design D1). XPBudgetTests
-// pins the literal in LevelCurve to `solveGrowthFactor(...)`, so changing a
-// reward constant here, or adding a feature, without re-solving fails CI
-// with the value to paste.
+// always-on lines is `coreDailyXP` (the food economy, ~128).
+//
+// add-training-gamification-and-150-levels D2: the training experience has
+// XP sources of its own. They are the `training` line (`trainingOnly`), the
+// sum of `TrainingXPBudget.lines` (~65), and `LevelCurve.growthFactor` is
+// now solved against `typicalDailyXP` = core + training (~193): level 150
+// after 1,540 days. XPBudgetTests pins the literal in LevelCurve to
+// `solveGrowthFactor(...)`, so changing a reward constant here, or adding a
+// feature, without re-solving fails CI with the value to paste. The
+// food-first experience uses the same curve with the core alone, so it
+// reaches level 150 later (~6.4 years). `scenarios` holds the same lines
+// for a poor week and a perfect week; they only describe the 3-5 year
+// range. `tools/level-curve-model.mjs` mirrors both tables.
 //
 // Optional sources (design D4, e.g. supplements) are NOT part of the curve.
 // While enabled, their grants are scaled by `optionalMultiplier`,
@@ -24,7 +32,8 @@
 // Pure: no I/O, no state.
 //
 // Depends on: XPAward (+Features), BossFight, SeasonalEventCatalog,
-// LevelCurve (base XP), the feature ids in GamificationFeatureRegistry.
+// LevelCurve (base XP), the feature ids in GamificationFeatureRegistry,
+// TrainingXPBudget (the training line).
 // Depended on by: XPBudgetTests (pins LevelCurve.growthFactor); optional
 // features such as supplements (multiplier).
 
@@ -39,21 +48,42 @@ public struct XPBudgetLine: Sendable, Equatable {
     /// Off by default and user-enabled (design D4): excluded from
     /// `coreDailyXP`, scaled by `optionalMultiplier` while enabled.
     public let optional: Bool
+    /// Paid only in the training experience
+    /// (add-training-gamification-and-150-levels D2): excluded from
+    /// `coreDailyXP`, part of `typicalDailyXP`, never scaled.
+    public let trainingOnly: Bool
 
-    public init(source: String, expectedDailyXP: Double, optional: Bool = false) {
+    public init(source: String, expectedDailyXP: Double, optional: Bool = false, trainingOnly: Bool = false) {
         self.source = source
         self.expectedDailyXP = expectedDailyXP
         self.optional = optional
+        self.trainingOnly = trainingOnly
+    }
+}
+
+/// One always-on source's expected XP per day in a poor week and in a
+/// perfect week (the typical value is its `XPBudgetLine`).
+public struct XPBudgetScenarioLine: Sendable, Equatable {
+    public let source: String
+    public let poorDailyXP: Double
+    public let perfectDailyXP: Double
+
+    public init(source: String, poor: Double, perfect: Double) {
+        self.source = source
+        self.poorDailyXP = poor
+        self.perfectDailyXP = perfect
     }
 }
 
 public enum XPBudget {
     // MARK: - Pace target (design D1)
 
-    /// Level 84 after three years of a typical active day: the 2026-09-18
-    /// promise.
-    public static let targetLevel = 84
-    public static let targetDays = 1_095
+    /// add-training-gamification-and-150-levels D1: level 150 -- the last
+    /// one -- after 1,540 days (4.2 years) of a typical consistent day in
+    /// the training experience. Until 2026-10-01 the target was level 84
+    /// after 1,095 days of the food economy alone.
+    public static let targetLevel = 150
+    public static let targetDays = 1_540
 
     // MARK: - Frequency units
 
@@ -156,16 +186,78 @@ public enum XPBudget {
                 + badgeXP(10),
             optional: true
         ),
-        // add-winter-arc-nutrition-and-rewards D1: the training experience's
-        // rewards -- badges only (no grants of its own): 14 ladder badges
-        // over three winters, each the generic badge bonus. Optional: on
-        // only in the training experience, and the host scales its badge
-        // bonus by `optionalMultiplier` like every optional source, so it
-        // never moves the curve (~0.38 XP/day, under the 0.5 % allowance).
+
+        // --- the training experience (trainingOnly) ---
+        // add-training-gamification-and-150-levels D2: check-ins, habits,
+        // sessions within the light, kept days and weeks, phases, races and
+        // the training badges -- the sum of TrainingXPBudget.lines (one
+        // sub-line per source, ~65 XP/day). Paid only in the training
+        // experience, in full: it was an optional, scaled badge line until
+        // 2026-10-01; now it is part of what the curve is solved against.
         XPBudgetLine(
             source: TrainingRewardsFeature.id,
-            expectedDailyXP: badgeXP(14),
-            optional: true
+            expectedDailyXP: TrainingXPBudget.typicalDailyXP,
+            trainingOnly: true
+        ),
+    ]
+
+    // MARK: - Scenarios (add-training-gamification-and-150-levels D3)
+
+    /// The always-on lines in a poor week (food logged on 4 of 7 days, one
+    /// goal day in five, no boss) and in a perfect one (everything, every
+    /// day). One entry per always-on line (XPBudgetTests checks it).
+    public static let scenarios: [XPBudgetScenarioLine] = [
+        // 2.5 entries on 4 days of 7 / 4.5 entries every day.
+        XPBudgetScenarioLine(source: "log", poor: Double(XPAward.flatPerLog) * 2.5 * 4 / week, perfect: Double(XPAward.flatPerLog) * 4.5),
+        XPBudgetScenarioLine(source: "streak", poor: Double(XPAward.streakExtensionBonus) * 4 / week, perfect: Double(XPAward.streakExtensionBonus) * 1.0),
+        XPBudgetScenarioLine(source: "goal", poor: Double(XPAward.goalHitBonus) * 0.2, perfect: Double(XPAward.goalHitBonus) * 1.0),
+        XPBudgetScenarioLine(source: "dailyChallenge", poor: Double(XPAward.dailyChallengeBonus) * 2 * 0.15, perfect: Double(XPAward.dailyChallengeBonus) * 2 * 1.0),
+        // A completion every three weeks / every 7.5 days.
+        XPBudgetScenarioLine(source: "challenge", poor: assumedMeanChallengeReward / 21, perfect: assumedMeanChallengeReward / 7.5),
+        XPBudgetScenarioLine(source: "achievement", poor: Double(XPAward.achievementBonus) * 6 / year, perfect: Double(XPAward.achievementBonus) * 20 / year),
+        // Half a line a week / three lines a week and a full card every
+        // third week, all seven badges.
+        XPBudgetScenarioLine(
+            source: WeeklyBingoFeature.id,
+            poor: Double(XPAward.bingoLine) * 0.5 / week,
+            perfect: Double(XPAward.bingoLine) * 3 / week + Double(XPAward.bingoFullCard) / (3 * week) + badgeXP(7)
+        ),
+        // Two events a year / all twelve and all eight bonus quests.
+        XPBudgetScenarioLine(
+            source: SeasonalEventsFeature.id,
+            poor: Double(XPAward.seasonalEventCompleted) * 2 / year,
+            perfect: (Double(XPAward.seasonalEventCompleted) * 12 + Double(SeasonalEventCatalog.bonusQuestXP) * 8) / year + badgeXP(10)
+        ),
+        XPBudgetScenarioLine(
+            source: FoodCollectionsFeature.id,
+            poor: Double(XPAward.collectionDiscovery) * 0.2 / week,
+            perfect: Double(XPAward.collectionDiscovery) * 1.0 / week + badgeXP(6)
+        ),
+        XPBudgetScenarioLine(
+            source: JourneysFeature.id,
+            poor: Double(XPAward.journeyMilestone) * 20 / threeYears,
+            perfect: Double(XPAward.journeyMilestone) * 44 / threeYears + badgeXP(8)
+        ),
+        XPBudgetScenarioLine(
+            source: PersonalRecordsFeature.id,
+            poor: Double(XPAward.personalRecord) * 1 / month,
+            perfect: Double(XPAward.personalRecord) * 4 / month + badgeXP(3)
+        ),
+        XPBudgetScenarioLine(
+            source: SecretAchievementsFeature.id,
+            poor: Double(XPAward.secretUnlocked + XPAward.achievementBonus) * 4 / threeYears,
+            perfect: Double(XPAward.secretUnlocked + XPAward.achievementBonus) * 16 / threeYears
+        ),
+        XPBudgetScenarioLine(
+            source: SportAndBodyFeature.id,
+            poor: Double(XPAward.sportBadge + XPAward.achievementBonus) * 3 / threeYears,
+            perfect: Double(XPAward.sportBadge + XPAward.achievementBonus) * 14 / threeYears
+        ),
+        // No boss beaten / one every week at a target of 6, seven badges.
+        XPBudgetScenarioLine(
+            source: WeeklyBossFeature.id,
+            poor: 0,
+            perfect: Double(BossFight.defeatXP(target: 6)) * 1.0 / week + badgeXP(7)
         ),
     ]
 
@@ -178,16 +270,40 @@ public enum XPBudget {
 
     // MARK: - Sums
 
-    /// Expected XP/day of a typical active day from the always-on sources:
-    /// what the level curve is solved against.
+    /// Expected XP/day of a typical active day from the always-on FOOD
+    /// sources (~128). The optional-source allowance refers to it, and it
+    /// is the whole budget of the food-first experience.
     public static var coreDailyXP: Double {
         dailyXP(of: lines)
     }
 
-    /// Sum of `lines`' non-optional lines, plus the optional lines whose
-    /// source is in `enabledOptionalSources` (unscaled).
+    /// Expected XP/day of the training experience's own sources (~65).
+    public static var trainingDailyXP: Double {
+        lines.reduce(0.0) { $0 + ($1.trainingOnly ? $1.expectedDailyXP : 0) }
+    }
+
+    /// A typical consistent day in the training experience (~193): what the
+    /// level curve is solved against.
+    public static var typicalDailyXP: Double {
+        coreDailyXP + trainingDailyXP
+    }
+
+    /// A poor week's XP/day in the training experience (~74).
+    public static var poorDailyXP: Double {
+        scenarios.reduce(0.0) { $0 + $1.poorDailyXP } + TrainingXPBudget.poorDailyXP
+    }
+
+    /// A perfect week's XP/day in the training experience (~278).
+    public static var perfectDailyXP: Double {
+        scenarios.reduce(0.0) { $0 + $1.perfectDailyXP } + TrainingXPBudget.perfectDailyXP
+    }
+
+    /// Sum of `lines`' always-on lines, plus the optional lines whose
+    /// source is in `enabledOptionalSources` (unscaled). Training-only
+    /// lines are never part of it.
     public static func dailyXP(of lines: [XPBudgetLine], enabledOptionalSources: Set<String> = []) -> Double {
         lines.reduce(0.0) { sum, line in
+            guard !line.trainingOnly else { return sum }
             guard !line.optional || enabledOptionalSources.contains(line.source) else { return sum }
             return sum + line.expectedDailyXP
         }
@@ -233,11 +349,13 @@ public enum XPBudget {
     /// The factor the table asks for: what `LevelCurve.growthFactor` must
     /// equal (to 1e-4).
     public static var solvedGrowthFactor: Double {
-        solveGrowthFactor(targetLevel: targetLevel, days: targetDays, dailyXP: coreDailyXP)
+        solveGrowthFactor(targetLevel: targetLevel, days: targetDays, dailyXP: typicalDailyXP)
     }
 
-    /// Days a typical active day needs to reach `level` on the live curve
-    /// (`LevelCurve.threshold`, rounded bands).
+    /// Days of `dailyXP` needed to reach `level` on the live curve
+    /// (`LevelCurve.threshold`, rounded bands). The default is the food
+    /// core alone (the food-first experience); pass `typicalDailyXP` for
+    /// the training experience.
     public static func daysToReach(level: Int, dailyXP: Double = coreDailyXP) -> Double {
         guard dailyXP > 0 else { return .infinity }
         return Double(LevelCurve.threshold(forLevel: level)) / dailyXP
@@ -246,7 +364,7 @@ public enum XPBudget {
     // MARK: - Optional sources (design D4)
 
     /// How much optional sources may add together, as a share of the core
-    /// budget: 0.5%, so the days to level 84 stay within ±1%.
+    /// budget: 0.5%, so the days to any level stay within ±1%.
     public static let optionalPaceAllowance = 0.005
 
     /// The multiplier for XP granted by any enabled optional source: 1 when

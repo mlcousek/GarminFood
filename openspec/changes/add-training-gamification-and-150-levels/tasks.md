@@ -11,13 +11,13 @@ commit after each.
 ## 1. The model and the curve (Gamification)
 
 - [x] 1.1 `tools/level-curve-model.mjs`: the three scenarios, the solved factor, the level table, the pace and migration checks (`--check` exits 1 on a failed rule).
-- [ ] 1.2 `XPAward+Training.swift`: every training reward constant (design D3, D7).
-- [ ] 1.3 `TrainingXPBudget.swift`: one sub-line per training source with its reward and its poor / typical / perfect frequency.
-- [ ] 1.4 `XPBudget`: `trainingOnly` lines, `trainingDailyXP`, `typicalDailyXP`, poor and perfect totals, target level 150 after 1,540 days; the `training` line is no longer optional.
-- [ ] 1.5 `LevelCurve`: `growthFactor` 1.03087, `maxLevel` 150, `pastGrowthFactors` + 1.05358 (curve version 4).
-- [ ] 1.6 `LevelTiers` re-banded to 150 (ranges up to 90 unchanged); Czech keys for the moved tiers; level badges 175 and 200 retired, 150 = "Max Level".
-- [ ] 1.7 `XPStore`: the one-time curve announcement (Optional field, shown once, never on a new install).
-- [ ] 1.8 Tests: `LevelCurveTests` (threshold table, every threshold at or below each past curve's, no XP total mapped lower), `XPBudgetTests` (pin, pace, slowest level, scenarios, shares), `XPCurveMigrationTests` and `LevelPeakTests` rewritten for a flatter curve, `LevelTierTests`, `XPStoreTests` (announcement), `StoreFixtureTests` (`xp-ledger.json` now migrates; new `xp-ledger.v4.json`).
+- [x] 1.2 `XPAward+Training.swift`: every training reward constant (design D3, D7).
+- [x] 1.3 `TrainingXPBudget.swift`: one sub-line per training source with its reward and its poor / typical / perfect frequency.
+- [x] 1.4 `XPBudget`: `trainingOnly` lines, `trainingDailyXP`, `typicalDailyXP`, poor and perfect totals, target level 150 after 1,540 days; the `training` line is no longer optional.
+- [x] 1.5 `LevelCurve`: `growthFactor` 1.03087, `maxLevel` 150, `pastGrowthFactors` + 1.05358 (curve version 4).
+- [x] 1.6 `LevelTiers` re-banded to 150 (ranges up to 90 unchanged); Czech keys for the moved tiers; level badges 175 and 200 retired, 150 = "Max Level".
+- [x] 1.7 `XPStore`: the one-time curve announcement (Optional field, shown once, never on a new install).
+- [x] 1.8 Tests: `LevelCurveTests` (threshold table, every threshold at or below each past curve's, no XP total mapped lower), `XPBudgetTests` (pin, pace, slowest level, scenarios, shares), `XPCurveMigrationTests` and `LevelPeakTests` rewritten for a flatter curve, `LevelTierTests`, `XPStoreTests` (announcement), `StoreFixtureTests` (`xp-ledger.json` now migrates; new `xp-ledger.v4.json`).
 
 ## 2. Plan facts (TrainingCore)
 

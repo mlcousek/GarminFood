@@ -652,3 +652,12 @@
 
 /* Training badge description; %lld = weeks the plan closed with no missed session and no volume overshoot (1, 4 or 12). */
 "Weeks closed within the plan: %lld" = "Weeks closed within the plan: %lld";
+
+/* One-time moment title after the update that changed the level range. %lld = the highest level (150). */
+"Levels now go to %lld" = "Levels now go to %lld";
+
+/* One-time moment message after the level range changed. First %lld = the level shown before, second = the level shown now (higher). */
+"Your XP is unchanged. On the new scale you moved from level %lld to level %lld." = "Your XP is unchanged. On the new scale you moved from level %lld to level %lld.";
+
+/* One-time moment message after the level range changed, when the level number stayed the same. %lld = the level. */
+"Your XP and your level %lld are unchanged." = "Your XP and your level %lld are unchanged.";

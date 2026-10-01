@@ -648,3 +648,12 @@
 
 /* Training badge description; %lld = weeks the plan closed with no missed session and no volume overshoot (1, 4 or 12). */
 "Weeks closed within the plan: %lld" = "Týdny uzavřené podle plánu: %lld";
+
+/* One-time moment title after the update that changed the level range. %lld = the highest level (150). */
+"Levels now go to %lld" = "Úrovně teď vedou až do %lld";
+
+/* One-time moment message after the level range changed. First %lld = the level shown before, second = the level shown now (higher). */
+"Your XP is unchanged. On the new scale you moved from level %lld to level %lld." = "Tvoje XP zůstávají. Na nové stupnici jsi místo úrovně %lld na úrovni %lld.";
+
+/* One-time moment message after the level range changed, when the level number stayed the same. %lld = the level. */
+"Your XP and your level %lld are unchanged." = "Tvoje XP i úroveň %lld zůstávají beze změny.";
