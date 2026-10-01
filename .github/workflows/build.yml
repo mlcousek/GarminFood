@@ -64,6 +64,9 @@ jobs:
       - name: Lint badge art
         run: node tools/docs/lint-badge-svg.mjs
 
+      - name: Check badge art against the catalog
+        run: node tools/docs/check-badge-art.mjs
+
   build:
     runs-on: macos-latest
     defaults:

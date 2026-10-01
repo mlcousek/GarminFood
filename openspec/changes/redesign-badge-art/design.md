@@ -74,12 +74,25 @@ device before the rest is drawn (task 3.x), and the fallback in D5.
 
 ### D4. The catalog lives in Gamification
 
-`BadgeArtCatalog` maps a badge id to `(family, motif)`. Family comes from
-the badge's existing category where there is one; motif is named per badge
-or per badge series (all "N-day streak" badges share the flame, with the
-rarity trim telling them apart). Tests: every badge id resolves; every named
-motif and frame has an SVG file; no SVG file is unused. The file list is
-checked by a script in CI, since a Swift test cannot see the asset catalog.
+`BadgeArtCatalog` resolves a badge to `(family, motif)` from what every
+badge already carries, so there is no table with one row per badge:
+
+- **family** from the badge id's namespace (`bingo.`, `journey.`,
+  `secret.`, ...), else from its `AchievementCategory` for the core
+  `achv-*` badges;
+- **motif** from the badge's `badgeSymbol`: 94 SF Symbol names map to 51
+  drawings (`trophy`, `trophy.fill` and `rosette` are all the trophy). A
+  new badge with a known symbol gets art without touching the catalog; an
+  unknown symbol falls back (D5).
+
+Badges of one series (all "N-day streak" badges) share frame shape and
+motif; the rarity trim and colour tell them apart.
+
+Tests: every badge in `BadgeRegistry.all` and every level tier has a motif;
+every category has a family; every family is used. That the named motifs
+and frames exist as SVG files, and that no file is unused, is checked by
+`tools/docs/check-badge-art.mjs` in CI (a Swift test cannot see the files);
+it reads the tables from the Swift source, as does the gallery.
 
 ### D5. Fallback and locked states
 
@@ -116,7 +129,14 @@ approves it in the browser; app code starts only after that.
 None. No stored data changes; an old build and a new build read the same
 stores.
 
-## Open Questions
+## Owner answers (2026-10-01)
+
+1. Sticker (outlined, cel-shaded). The gallery no longer shows the modern
+   variant.
+2. A locked badge shows its family shape in grey.
+3. No one-off pictures in the first release.
+
+## Open Questions (original wording)
 
 1. Sticker (outlined, cel-shaded) or the flatter modern variant? Default:
    sticker.
