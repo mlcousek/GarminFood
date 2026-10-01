@@ -74,6 +74,7 @@ final class StoreFixtureTests: XCTestCase {
         "streak-freezes.v2.json",
         "supplements.json",
         "training.json",
+        "training.v2.json",
     ]
 
     /// Literal `"<name>.json"` strings in Sources/Gamification that are NOT a
@@ -651,6 +652,41 @@ final class StoreFixtureTests: XCTestCase {
         assertNotQuarantined(url)
         XCTAssertTrue(isReadable)
         XCTAssertEqual(counts, TrainingRewardCounts(checkInDays: 3, honestCalls: 1, habitTicks: 3, gymWeeks: 1, keptWeeks: 1))
+    }
+
+    // MARK: - training.v2.json (add-training-gamification-and-150-levels D8)
+
+    // Today's shape: the five original lists plus `sets` (the counted ids
+    // behind the new ladders, by TrainingSetKey), `habitDayStates` (for the
+    // habit streak) and `seasonEnds`. A set this build does not know
+    // ("futureLadder", from a newer app) is kept and counted by nobody.
+    func testTrainingV2FixtureDecodesThroughTheRealStore() async throws {
+        let url = try copyFixture("training.v2.json")
+        let store = TrainingRewardsStore(fileURL: url)
+
+        let isReadable = await store.isReadable()
+        let counts = await store.counts()
+        let progress = await store.progress(today: "2030-10-23", currentWeek: "2030-W43")
+        let seasonEnds = await store.seasonEnds()
+        let sessions = await store.ids(.session)
+
+        assertNotQuarantined(url)
+        XCTAssertTrue(isReadable)
+        XCTAssertEqual(counts, TrainingRewardCounts(checkInDays: 3, honestCalls: 1, habitTicks: 3, gymWeeks: 1, keptWeeks: 2))
+        XCTAssertEqual(progress.count(.session), 3)
+        XCTAssertEqual(progress.count(.dayKept), 2)
+        XCTAssertEqual(progress.count(.approvedWeek), 2)
+        XCTAssertEqual(progress.count(.ladderStep), 1)
+        XCTAssertEqual(progress.count(.raceFinish), 1)
+        XCTAssertEqual(progress.count(.wiseCall), 1)
+        XCTAssertEqual(progress.count(.phase), 0, "a set the file does not have")
+        XCTAssertEqual(progress.setCounts["futureLadder"], 1)
+        XCTAssertEqual(progress.habitStreak, TrainingHabitStreak(current: 2, best: 2), "21 and 22 met; the 20th had nothing expected; today is not over")
+        XCTAssertEqual(progress.checkInStreak, 3)
+        XCTAssertEqual(progress.keptWeekStreak, 2)
+        XCTAssertEqual(seasonEnds, ["season-2030": "2031-09-30"])
+        XCTAssertEqual(sessions, ["2030-w43-mon-am", "2030-w43-tue-am", "2030-w43-tue-pm"])
+        assertNotQuarantined(url)
     }
 
     // MARK: - supplements.json (SupplementsState, FeatureStateFile)

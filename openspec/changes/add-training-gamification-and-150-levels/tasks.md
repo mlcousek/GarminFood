@@ -27,12 +27,12 @@ commit after each.
 
 ## 3. Rules and rewards (Gamification)
 
-- [ ] 3.1 `TrainingPlanSignals.swift` (plain values) and `FeatureContext.trainingPlan`.
-- [ ] 3.2 `TrainingXPRules.swift`: session, day and week verdicts; grants with their keys; the grace window; the facts to record (design D7).
-- [ ] 3.3 `TrainingRewardsStore`: `sets`, `habitExpectedByDay`, `seasonEnds` (additive); the habit streak; progress counts.
-- [ ] 3.4 `TrainingProgressCatalog.swift`: the 41 new badges and their ladders (design D8), EN + CS.
-- [ ] 3.5 `TrainingRewardsFeature`: grants, badges, the secret reveal, the summary; honest calls and kept weeks from the new rules.
-- [ ] 3.6 Tests: `TrainingXPRulesTests` (every row of the verdict tables, the eight guards, idempotency, the grace window), `TrainingProgressTests` (ladders, streak across the window, store round trip), `StoreFixtureTests` (`training.v2.json`), the budget's training line.
+- [x] 3.1 `TrainingPlanSignals.swift` (plain values) and `FeatureContext.trainingPlan`.
+- [x] 3.2 `TrainingXPRules.swift`: session, day and week verdicts; grants with their keys; the grace window; the facts to record (design D7).
+- [x] 3.3 `TrainingRewardsStore`: `sets`, `habitExpectedByDay`, `seasonEnds` (additive); the habit streak; progress counts.
+- [x] 3.4 `TrainingProgressCatalog.swift`: the 41 new badges and their ladders (design D8), EN + CS.
+- [x] 3.5 `TrainingRewardsFeature`: grants, badges, the secret reveal, the summary; honest calls and kept weeks from the new rules.
+- [x] 3.6 Tests: `TrainingXPRulesTests` (every row of the verdict tables, the eight guards, idempotency, the grace window), `TrainingProgressTests` (ladders, streak across the window, store round trip), `StoreFixtureTests` (`training.v2.json`), the budget's training line.
 
 ## 4. Training variants (Gamification)
 
@@ -43,8 +43,8 @@ commit after each.
 
 ## 5. Progress model (Gamification)
 
-- [ ] 5.1 `TrainingProgressModel.swift`: this week, streaks, ladder rows with count and next step, localized.
-- [ ] 5.2 Tests: rows, completed ladders, an empty store.
+- [x] 5.1 `TrainingProgressModel.swift`: this week, streaks, ladder rows with count and next step, localized.
+- [x] 5.2 Tests: rows, completed ladders, an empty store.
 
 ## 6. App
 

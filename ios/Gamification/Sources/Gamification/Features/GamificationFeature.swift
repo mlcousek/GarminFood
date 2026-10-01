@@ -59,6 +59,12 @@ public struct FeatureContext: Sendable {
     /// adapter over TrainingCore); `nil` outside the training experience
     /// or without a loaded plan. Only the `training` feature reads it.
     public let training: TrainingSignals?
+    /// add-training-gamification-and-150-levels D6: the plan's facts for the
+    /// training XP (the app's adapter over TrainingCore's
+    /// `TrainingPlanFacts`); `nil` outside the training experience or
+    /// without a loaded plan. Read by the `training` feature and by the
+    /// training variants of boss, bingo and journeys.
+    public let trainingPlan: TrainingPlanSignals?
 
     public init(
         snapshot: SignalsSnapshot,
@@ -70,7 +76,8 @@ public struct FeatureContext: Sendable {
         isConfirmPath: Bool,
         supplements: SupplementSignals? = nil,
         isTrainingExperience: Bool = false,
-        training: TrainingSignals? = nil
+        training: TrainingSignals? = nil,
+        trainingPlan: TrainingPlanSignals? = nil
     ) {
         self.snapshot = snapshot
         self.now = now
@@ -82,6 +89,7 @@ public struct FeatureContext: Sendable {
         self.supplements = supplements
         self.isTrainingExperience = isTrainingExperience
         self.training = training
+        self.trainingPlan = trainingPlan
     }
 }
 

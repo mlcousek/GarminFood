@@ -657,3 +657,297 @@
 
 /* One-time moment message after the level range changed, when the level number stayed the same. %lld = the level. */
 "Your XP and your level %lld are unchanged." = "Tvoje XP i úroveň %lld zůstávají beze změny.";
+
+/* Training ladder name on the Progress tab: days with a morning check-in. */
+"Morning check-ins" = "Ranní check-iny";
+
+/* Training ladder name: amber or red mornings followed by their easier option. */
+"Honest calls" = "Poctivá rozhodnutí";
+
+/* Training ladder name: sessions with an effort rating (RPE). */
+"Sessions rated" = "Ohodnocené tréninky";
+
+/* Training ladder name: weekly gate tests done. */
+"Gate tests" = "Testy brány";
+
+/* Training ladder name: test sessions with a recorded result. */
+"Tests recorded" = "Zaznamenané testy";
+
+/* Training ladder name: habit ticks in total. */
+"Habits done" = "Splněné návyky";
+
+/* Training ladder name: the longest run of days with the habits done. */
+"Best habit streak" = "Nejdelší série návyků";
+
+/* Training ladder name: steps of the habit ladder unlocked. */
+"Ladder steps" = "Stupně žebříčku";
+
+/* Training ladder name: planned sessions done within the plan and the morning light. */
+"Sessions as planned" = "Tréninky podle plánu";
+
+/* Training ladder name: days on which the plan was followed, rest days included. */
+"Plan days kept" = "Dodržené dny plánu";
+
+/* Training ladder name: weeks with both strength sessions done. */
+"Gym weeks" = "Týdny s posilovnou";
+
+/* Training ladder name: weeks closed within the plan. */
+"Weeks kept" = "Dodržené týdny";
+
+/* Training ladder name: deload, taper and recovery weeks kept at or under their target. */
+"Easy weeks respected" = "Dodržené odlehčené týdny";
+
+/* Training ladder name: weeks of the plan that were approved. */
+"Weeks approved" = "Schválené týdny";
+
+/* Training ladder name: plan phases closed with a recap. */
+"Phases closed" = "Uzavřené fáze";
+
+/* Training ladder name. */
+"Seasons completed" = "Dokončené sezóny";
+
+/* Training ladder name: race preparations completed before race day. */
+"Race preps" = "Přípravy na závod";
+
+/* Training ladder name: carbohydrate-loading days whose carb goal was met. */
+"Carb-load days" = "Dny nasycení sacharidy";
+
+/* Training ladder name. */
+"Races finished" = "Dokončené závody";
+
+/* Training ladder name: race reports written. */
+"Race reports" = "Reporty ze závodů";
+
+/* Training badge title: a 7-day habit streak. */
+"Habit Week" = "Týden návyků";
+
+/* Training badge title: a 30-day habit streak. */
+"Habit Month" = "Měsíc návyků";
+
+/* Training badge title: a 100-day habit streak. */
+"Hundred Days of Habits" = "Sto dní návyků";
+
+/* Training badge title: a 365-day habit streak. */
+"A Year of Habits" = "Rok návyků";
+
+/* Training badge title: three steps of the habit ladder unlocked. */
+"Three Rungs Up" = "O tři příčky výš";
+
+/* Training badge title: six steps of the habit ladder unlocked. */
+"Top of the Ladder" = "Na vrcholu žebříčku";
+
+/* Training badge title: 25 sessions done as planned. */
+"As Written" = "Jak je psáno";
+
+/* Training badge title: 100 sessions done as planned. */
+"Hundred by the Book" = "Stovka podle knihy";
+
+/* Training badge title: 300 sessions done as planned. */
+"Reliable Engine" = "Spolehlivý motor";
+
+/* Training badge title: 1,000 sessions done as planned. */
+"A Thousand as Planned" = "Tisíc podle plánu";
+
+/* Training badge title: 30 plan days kept. */
+"Month of Discipline" = "Měsíc disciplíny";
+
+/* Training badge title: 100 plan days kept. */
+"Hundred Good Days" = "Sto dobrých dní";
+
+/* Training badge title: 365 plan days kept. */
+"A Year on Plan" = "Rok podle plánu";
+
+/* Training badge title: one easy (deload) week respected. */
+"Less Is More" = "Méně je více";
+
+/* Training badge title: four easy weeks respected. */
+"Master of Rest" = "Mistr odpočinku";
+
+/* Training badge title: twelve easy weeks respected. */
+"Rested and Ready" = "Odpočinek je trénink";
+
+/* Training badge title: 25 sessions rated. */
+"Honest Effort" = "Poctivé hodnocení";
+
+/* Training badge title: 100 sessions rated. */
+"Knows the Body" = "Znalec vlastního těla";
+
+/* Training badge title: the first weekly gate test. */
+"Tested, Not Guessed" = "Změřeno, ne odhadnuto";
+
+/* Training badge title: eight weekly gate tests. */
+"Gatekeeper" = "Strážce brány";
+
+/* Training badge title: the first recorded test session. */
+"Baseline" = "Výchozí bod";
+
+/* Training badge title: five recorded test sessions. */
+"Data, Not Feelings" = "Data, ne dojmy";
+
+/* Training badge title: twelve weeks of the plan approved. */
+"Planner" = "Plánovač";
+
+/* Training badge title: 52 weeks of the plan approved. */
+"A Year of Plans" = "Rok plánů";
+
+/* Training badge title: a plan phase closed with its recap. */
+"Chapter Closed" = "Kapitola uzavřena";
+
+/* Training badge title: four plan phases closed with their recaps. */
+"Full Cycle" = "Celý cyklus";
+
+/* Training badge title: the first plan change made on the phone and applied. */
+"Plans Change" = "Plány se mění";
+
+/* Training badge description. */
+"Change the plan from the phone and have it applied." = "Uprav plán z telefonu tak, aby se změna použila.";
+
+/* Training badge title: one race preparation completed before race day. */
+"Homework Done" = "Domácí úkol hotov";
+
+/* Training badge title: five race preparations completed before race day. */
+"Always Prepared" = "Vždy s přípravou";
+
+/* Training badge title: two carb-load days hit. */
+"Tank Full" = "Plná nádrž";
+
+/* Training badge title: ten carb-load days hit. */
+"Pasta Party Pro" = "Mistr těstovin";
+
+/* Training badge title: the first race finished. */
+"Finisher" = "Finišer";
+
+/* Training badge title: five races finished. */
+"Five Finish Lines" = "Pět cílových pásek";
+
+/* Training badge title: fifteen races finished. */
+"Seasoned Racer" = "Zkušenosti ze závodů";
+
+/* Training badge title: the first race report written. */
+"Lessons Learned" = "Poučení ze závodu";
+
+/* Training badge title: five race reports written. */
+"Chronicler" = "Kronika závodů";
+
+/* Training badge title: a race goal reached (a rare one-off). */
+"On Target" = "Do černého";
+
+/* Training badge description. */
+"Reach the goal you set for a race." = "Splň svůj cíl pro závod.";
+
+/* Training badge title: a personal record in a race (a rare one-off). */
+"Personal Best" = "Osobní rekord";
+
+/* Training badge description. */
+"Set a personal record in a race." = "Zaběhni v závodě osobní rekord.";
+
+/* Secret training badge title: a race stopped, or not started, because a stop rule said so. */
+"Lived to Run Another Day" = "Rozum zvítězil";
+
+/* Secret training badge description. */
+"Stop a race, or stay home, when the rules say so." = "Ukonči závod, nebo zůstaň doma, když to pravidla říkají.";
+
+/* Training badge title: one season completed. */
+"Full Season" = "Celá sezóna";
+
+/* Training badge title: three seasons completed. */
+"Three Seasons Strong" = "Tři sezóny v síle";
+
+/* Training badge description; %lld = the habit streak needed in days (7, 30, 100 or 365). */
+"Days in a row with your habits done: %lld" = "Dny v řadě se splněnými návyky: %lld";
+
+/* Training badge description; %lld = steps of the habit ladder needed (3 or 6). */
+"Habit ladder steps unlocked: %lld" = "Odemčené stupně žebříčku návyků: %lld";
+
+/* Training badge description; %lld = planned sessions done within the plan and the morning light (25, 100, 300 or 1000). */
+"Sessions done within the plan: %lld" = "Tréninky odjeté podle plánu: %lld";
+
+/* Training badge description; %lld = days on which the plan was followed (30, 100 or 365). */
+"Plan days kept, rest days included: %lld" = "Dodržené dny plánu včetně volna: %lld";
+
+/* Training badge description; %lld = deload, taper or recovery weeks respected (1, 4 or 12). */
+"Easy weeks kept at or under their target: %lld" = "Odlehčené týdny dodržené nejvýš na cíl: %lld";
+
+/* Training badge description; %lld = sessions with an effort rating (25 or 100). */
+"Sessions rated after they were done: %lld" = "Tréninky ohodnocené po dokončení: %lld";
+
+/* Training badge description; %lld = weeks with a gate test (1 or 8). */
+"Weekly gate tests done: %lld" = "Provedené týdenní testy brány: %lld";
+
+/* Training badge description; %lld = test sessions recorded (1 or 5). */
+"Test sessions with a recorded result: %lld" = "Testy se zapsaným výsledkem: %lld";
+
+/* Training badge description; %lld = approved weeks (12 or 52). */
+"Weeks of the plan approved: %lld" = "Schválené týdny plánu: %lld";
+
+/* Training badge description; %lld = plan phases closed with their recap (1 or 4). */
+"Phases closed with a recap: %lld" = "Fáze uzavřené se shrnutím: %lld";
+
+/* Training badge description; %lld = race preparations completed in time (1 or 5). */
+"Race preps completed before race day: %lld" = "Přípravy na závod hotové před startem: %lld";
+
+/* Training badge description; %lld = carbohydrate-loading days hit (2 or 10). */
+"Carb-load days with the carb goal met: %lld" = "Dny nasycení sacharidy se splněným cílem: %lld";
+
+/* Training badge description; %lld = races finished (1, 5 or 15). */
+"Races finished: %lld" = "Dokončené závody: %lld";
+
+/* Training badge description; %lld = race reports written (1 or 5). */
+"Race reports written: %lld" = "Napsané reporty ze závodů: %lld";
+
+/* Training badge description; %lld = seasons completed (1 or 3). */
+"Seasons completed: %lld" = "Dokončené sezóny: %lld";
+
+/* Moment title: a deload, taper or recovery week was kept at or under its target. */
+"Easy week respected" = "Odlehčený týden dodržen";
+
+/* Moment message for a respected easy week. */
+"You held back when the plan said so. That is the hard part." = "Ubrat, když to plán říká, je to nejtěžší. Povedlo se.";
+
+/* Moment title: a closed week with no missed session and no extra kilometres. */
+"Week kept within plan" = "Týden podle plánu";
+
+/* Moment message for a week kept within plan. */
+"Nothing missed, nothing extra." = "Nic nevynecháno, nic navíc.";
+
+/* Moment title: a phase of the training plan was closed with its recap. */
+"Phase closed" = "Fáze uzavřena";
+
+/* Moment message for a closed plan phase. */
+"The recap is written. On to the next one." = "Shrnutí je napsané. Jde se na další.";
+
+/* Moment title: the training season's period has ended. */
+"Season completed" = "Sezóna dokončena";
+
+/* Moment message for a completed season. */
+"A whole season of showing up." = "Celá sezóna poctivé práce.";
+
+/* Moment title: a planned race was finished. */
+"Race finished" = "Závod dokončen";
+
+/* Moment message for a finished race. */
+"Prepared, raced, done. Write the report while it is fresh." = "Příprava, závod, cíl. Napiš report, dokud je to čerstvé.";
+
+/* Progress tab, training section: label of the number of morning check-ins this week (shown as n/7). */
+"Check-ins this week" = "Check-iny tento týden";
+
+/* Progress tab, training section: label of the number of days this week on which the plan was followed, rest days included (shown as n/7). */
+"Plan days kept this week" = "Dodržené dny tento týden";
+
+/* Progress tab, training section: label of the strength sessions done this week (shown as n/2). */
+"Strength sessions this week" = "Posilovna tento týden";
+
+/* Progress tab, training section: label of the number of days in a row with a morning check-in. The value is a bare number. */
+"Check-in streak (days)" = "Série check-inů (dny)";
+
+/* Progress tab, training section: label of the number of days in a row with the habits done. The value is a bare number. */
+"Habit streak (days)" = "Série návyků (dny)";
+
+/* Progress tab, training section: label of the number of consecutive weeks closed within the plan. The value is a bare number. */
+"Weeks kept in a row" = "Dodržené týdny v řadě";
+
+/* Progress tab, a training ladder: first %lld = the count so far, second = the count the next badge needs. */
+"%lld · next: %lld" = "%lld · další: %lld";
+
+/* Progress tab, a training ladder with every badge earned: %lld = the count so far. */
+"%lld · complete" = "%lld · hotovo";
