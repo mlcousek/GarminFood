@@ -19326,6 +19326,84 @@
           }
         }
       }
+    },
+    "Not uploaded": {
+      "comment": "Settings → Vault: header of the list of training events that could not be uploaded to the vault.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenahráno"
+          }
+        }
+      }
+    },
+    "These couldn't be uploaded after several tries. They are still on this iPhone; Retry sends them again.": {
+      "comment": "Settings → Vault: footer under the list of failed uploads. \"Retry\" is the button's label.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle se ani po několika pokusech nepodařilo nahrát. Zůstává to v tomhle iPhonu; tlačítkem Zkusit znovu to odešleš ještě jednou."
+          }
+        }
+      }
+    },
+    "%lld events": {
+      "comment": "Settings → Vault: how many training events (check-ins, habit ticks, ratings) one failed upload holds. Plural.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld událost"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld události"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld události"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld událostí"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld event"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld events"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "version": "1.0"
