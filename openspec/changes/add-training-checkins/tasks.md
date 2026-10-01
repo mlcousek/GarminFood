@@ -52,7 +52,7 @@ marked *defaulted, owner may override*.
 - [x] 4.5 `Shared/MorningCheckInIntents.swift` (intent + hook, both catalogs) and `GarminFoodWidget/Controls/MorningCheckInControls.swift` (three Controls, iOS 18+), registered in the widget bundle; the hook installed in `GarminFoodApp.init()`.
 - [x] 4.6 `NotificationScheduler.syncTrainingReminders` (`training.` prefix) and the "Training reminders" switch in Settings → Notifications (training experience only).
 - [x] 4.7 Settings → Vault: the existing "Pending writes" row counts the events not yet uploaded (`VaultStatus.pendingWrites`, updated after every record and drain).
-- [ ] 4.9 Follow-up: list failed segments in Settings → Vault with Retry (`DurableQueue.retry`); until then a failed segment waits in the queue (design D4).
+- [x] 4.9 Follow-up: list failed segments in Settings → Vault with Retry (`DurableQueue.retry`); until then a failed segment waits in the queue (design D4). *Done 2026-10-01: `TrainingRecorder.failedWrites`/`retryFailedWrite`, the "Not uploaded" section; device check: only reachable when a segment fails five times.*
 - [x] 4.8 Czech for every new key; `node tools/check-localizations.mjs --scan` and `sh tools/lint-design-tokens.sh` pass.
 
 ## 5. Close-out

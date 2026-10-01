@@ -17,7 +17,7 @@ import VaultKit
 
 /// A transport that stores what it is asked to create.
 final class RecordingTransport: VaultTransport, @unchecked Sendable {
-    enum Mode { case accept, offline, alreadyExists }
+    enum Mode { case accept, offline, alreadyExists, differentFile }
 
     private let lock = NSLock()
     private var files: [String: Data] = [:]
@@ -68,6 +68,9 @@ final class RecordingTransport: VaultTransport, @unchecked Sendable {
             return VaultWriteResult(.failed(.offline))
         case .alreadyExists:
             files[file.path.rawValue] = file.bytes
+            return VaultWriteResult(.alreadyExists)
+        case .differentFile:
+            files[file.path.rawValue] = Data("someone else's file\n".utf8)
             return VaultWriteResult(.alreadyExists)
         case .accept:
             if files[file.path.rawValue] != nil { return VaultWriteResult(.alreadyExists) }
@@ -216,6 +219,44 @@ final class TrainingRecorderTests: XCTestCase {
         let result = await setup.recorder.drain(transport: transport, now: t0.addingTimeInterval(10))
         XCTAssertEqual(result.delivered.count, 1)
         XCTAssertEqual(result.failed.count, 0)
+    }
+
+    func testAFailedSegmentIsListedAndRetriedByHand() async throws {
+        let setup = try await makeSetup()
+        try await setup.recorder.record(checkIn(.amberLight), now: t0, timeZone: prague)
+        try await setup.recorder.record(checkIn(.greenLight), now: t0.addingTimeInterval(5), timeZone: prague)
+        let noneYet = await setup.recorder.failedWrites()
+        XCTAssertTrue(noneYet.isEmpty)
+
+        // A different file already at the path: a permanent failure.
+        let transport = RecordingTransport(mode: .differentFile)
+        let result = await setup.recorder.drain(transport: transport, now: t0.addingTimeInterval(10))
+        XCTAssertEqual(result.failed.count, 1)
+
+        let failed = await setup.recorder.failedWrites()
+        XCTAssertEqual(failed.count, 1)
+        XCTAssertEqual(failed.first?.eventCount, 2)
+        XCTAssertEqual(failed.first?.lastError, CreateOnlyFileUploader.differentFileReason)
+        let waiting = await setup.recorder.waitingCount()
+        XCTAssertEqual(waiting, 2, "a failed segment's events still count as not uploaded")
+
+        // Not retried on its own.
+        transport.setMode(.alreadyExists)
+        let untouched = await setup.recorder.drain(transport: transport, now: t0.addingTimeInterval(20))
+        XCTAssertEqual(untouched.delivered.count, 0)
+
+        let id = try XCTUnwrap(failed.first?.id)
+        let reset = try await setup.recorder.retryFailedWrite(id: id, now: t0.addingTimeInterval(30))
+        XCTAssertTrue(reset)
+        let unknown = try await setup.recorder.retryFailedWrite(id: UUID(), now: t0.addingTimeInterval(30))
+        XCTAssertFalse(unknown)
+
+        let retried = await setup.recorder.drain(transport: transport, now: t0.addingTimeInterval(40))
+        XCTAssertEqual(retried.delivered.count, 1)
+        let after = await setup.recorder.failedWrites()
+        XCTAssertTrue(after.isEmpty)
+        let waitingAfter = await setup.recorder.waitingCount()
+        XCTAssertEqual(waitingAfter, 0)
     }
 
     // MARK: Log

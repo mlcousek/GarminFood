@@ -191,6 +191,25 @@ final class TrainingEventsService {
         await onChange?()
     }
 
+    // MARK: Failed writes (Settings -> Vault, add-training-checkins 4.9)
+
+    /// Segments the queue gave up on; they wait until retried by hand.
+    func failedWrites() async -> [FailedWrite] {
+        await recorder.failedWrites()
+    }
+
+    /// The user's Retry: makes the segment pending again and delivers now
+    /// (if the connection's gate is open; otherwise on the next drain).
+    func retryFailedWrite(_ id: UUID) async {
+        do {
+            try await recorder.retryFailedWrite(id: id)
+        } catch {
+            VaultLog.log(.warning, "training events: retry not saved (\(type(of: error)))")
+        }
+        await drainNow()
+        await updatePendingCount()
+    }
+
     private func updatePendingCount() async {
         let waiting = await recorder.waitingCount()
         do {

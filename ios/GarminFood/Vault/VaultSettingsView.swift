@@ -17,6 +17,10 @@
 // polish-training-today D1: the status shows the first fetch that
 // finishing the setup starts ("Fetching your plan…", then its answer).
 //
+// add-training-checkins 4.9: "Not uploaded" lists the event segments the
+// write queue gave up on (from TrainingEventsService), each with Retry;
+// the section is absent while there are none.
+//
 // No repository or token is ever built in: this repository is public
 // (proposal "Why"). The help text says how to make a token limited to one
 // repository with Contents read/write; docs/vault-connection.md has the
@@ -25,6 +29,7 @@
 
 import SwiftUI
 import VaultKit
+import TrainingCore
 
 @MainActor
 struct VaultSettingsView: View {
@@ -41,6 +46,8 @@ struct VaultSettingsView: View {
     @State private var isConfirmingDisconnect = false
     @State private var showsAdvanced = false
     @State private var showsDetails = false
+    @State private var failedWrites: [FailedWrite] = []
+    @State private var retryingWrite: UUID?
 
     /// GitHub's page for creating a fine-grained token.
     private static let newTokenURL = URL(string: "https://github.com/settings/personal-access-tokens/new")!
@@ -63,6 +70,9 @@ struct VaultSettingsView: View {
                 tokenSection(vault)
                 testSection(vault)
                 statusSection(vault)
+                if !failedWrites.isEmpty {
+                    failedWritesSection
+                }
                 detailsSection(vault)
                 Section {
                     Button("Disconnect", role: .destructive) {
@@ -80,6 +90,7 @@ struct VaultSettingsView: View {
             owner = vault.settings.owner
             name = vault.settings.name
             branch = vault.settings.branch
+            failedWrites = await TrainingEventsService.shared.failedWrites()
         }
         .confirmationDialog(
             "Disconnect from the vault?",
@@ -278,6 +289,50 @@ struct VaultSettingsView: View {
                     Task { await vault.tryAgain() }
                 }
             }
+        }
+    }
+
+    // MARK: - Failed writes (add-training-checkins 4.9)
+
+    /// Segments the write queue gave up on. They stay on the phone; Retry
+    /// makes one pending again and sends it now.
+    private var failedWritesSection: some View {
+        Section {
+            ForEach(failedWrites) { write in
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.sm) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("\(write.eventCount) events")
+                        Text(write.createdAt, format: .dateTime.day().month().hour().minute())
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        if let reason = write.lastError {
+                            Text(verbatim: reason)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    Spacer()
+                    if retryingWrite == write.id {
+                        ProgressView()
+                    } else {
+                        Button("Retry") {
+                            retryingWrite = write.id
+                            Task {
+                                await TrainingEventsService.shared.retryFailedWrite(write.id)
+                                failedWrites = await TrainingEventsService.shared.failedWrites()
+                                await environment.vault.reload()
+                                retryingWrite = nil
+                            }
+                        }
+                        .buttonStyle(.borderless)
+                        .disabled(retryingWrite != nil)
+                    }
+                }
+            }
+        } header: {
+            Text("Not uploaded")
+        } footer: {
+            Text("These couldn't be uploaded after several tries. They are still on this iPhone; Retry sends them again.")
         }
     }
 
