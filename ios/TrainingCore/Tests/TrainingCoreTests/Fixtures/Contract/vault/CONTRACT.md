@@ -27,16 +27,38 @@
   is `seq` 24. The minimal projection is unchanged. All four files were
   copied again and checked for anything non-synthetic first (no names,
   repositories, tokens or real dates: season 2030/31 only).
+  Re-mirrored 2026-10-01 from the vault's main branch after its daily
+  check-in context (2026-09-30, `schemaVersion` still 1), for this app's
+  `add-daily-checkin-and-pain-mode`. Both projection files changed, the
+  two event files did not (compared by blob hash, left as they were):
+  - top-level `days` -- **day skeletons** for every window date no written
+    week holds, the same `Day` shape with `sessions: []`. The example has
+    14 (2030-11-04 ... 2030-11-17, the unwritten W45-W46); the minimal
+    file has all 42 window dates (2030-10-07 ... 2030-11-17), because it
+    has no plan. A date is looked up in `plan.weeks[].days`, else in
+    `days`;
+  - `athlete.painMode` `{ active, since, sites, reason, clearsAfter }`:
+    active in the example (since 2030-10-14, `reason: "light"`, sites
+    `achilles-left` and `knee-right`), inactive in the minimal file;
+  - `day.fuel` on EVERY day (it was `null` outside carb-load days -- the
+    one change that is not purely additive): `kind: "daily"` with
+    `carbsGPerKg: { min, max }`, or `kind: "carb-load"` with the number,
+    `carbsG` and `raceId` as before; plus `proteinGPerKg`, `fasting`
+    (`allowed` | `off`) with `fastingReasons`, `load` (all five values
+    appear), `plannedMin` and `rules`. A carb-load day is
+    `kind == "carb-load"`, never "fuel is not null".
+  Checked again for anything non-synthetic before committing (no names,
+  repositories, tokens, addresses or real dates).
 
 | File | What it is |
 |---|---|
-| `projection.v1.example.json` | Every field of v1, with the reserved fields present and empty. |
-| `projection.v1.minimal.json` | No season and no plan (`season: null`, `plan: null`). |
+| `projection.v1.example.json` | Every field of v1: a season, four written weeks, 14 day skeletons, pain mode on, a `fuel` on every day. |
+| `projection.v1.minimal.json` | No season and no plan (`season: null`, `plan: null`); 42 day skeletons, pain mode off. |
 
 Do not edit these files. When the vault changes its fixtures (additive
 changes only within v1), copy them again verbatim, update the date above and
 re-run `swift test` (ProjectionDecodingTests, TodayBuilderTests,
-PlanBuilderTests). App-authored edge cases are mutations of the example made
+PlanBuilderTests, DailyCheckInTests). App-authored edge cases are mutations of the example made
 in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
 
 # Event contract fixtures (mirrored)

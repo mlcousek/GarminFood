@@ -18799,14 +18799,38 @@
         }
       }
     },
-    "A check-in reminder at 4:05 on run days until you check in, and a habits reminder at 20:10 while habits are still open.": {
-      "comment": "add-training-checkins: Settings > Reminders, footer of the training reminders switch.",
+    "A check-in reminder every morning until you check in, and a habits reminder in the evening while habits are still open.": {
+      "comment": "add-daily-checkin-and-pain-mode: Settings > Reminders, footer of the training reminders switch and its two time pickers.",
       "extractionState": "manual",
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Připomenutí ranní kontroly ve 4:05 v běžecké dny, dokud ji nezadáš, a připomenutí návyků ve 20:10, dokud nejsou splněné."
+            "value": "Připomenutí ranní kontroly každé ráno, dokud ji nezadáš, a večerní připomenutí návyků, dokud nejsou splněné."
+          }
+        }
+      }
+    },
+    "Check-in reminder": {
+      "comment": "add-daily-checkin-and-pain-mode: Settings > Reminders, time picker of the morning check-in reminder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomenutí ranní kontroly"
+          }
+        }
+      }
+    },
+    "Habits reminder": {
+      "comment": "add-daily-checkin-and-pain-mode: Settings > Reminders, time picker of the evening habits reminder.",
+      "extractionState": "manual",
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připomenutí návyků"
           }
         }
       }

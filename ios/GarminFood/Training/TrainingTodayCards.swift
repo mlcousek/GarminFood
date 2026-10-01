@@ -30,6 +30,9 @@
 // carries the pain step -- open while the day's pain is not asked (the
 // default sites at 0, so Save alone confirms "0"), else folded to "Edit
 // pain" -- and the card shows the day's recorded pain as a line.
+// add-daily-checkin-and-pain-mode: that is pain mode. Outside it the row is
+// the three lights and one small "Something hurts?" link that opens the
+// same step; the pain line is not built at all (TrainingCore decides).
 // Both only call back; TodayView turns the callbacks into TrainingModel
 // actions (local events, never a network wait). Option cards follow D9: a token tint
 // only as a light wash, the letter AND a shape, larger shapes with
@@ -336,15 +339,18 @@ private struct PainStepView: View {
 
     /// The owner's edits; `nil` = the model's draft untouched.
     @State private var editing: PainDraft?
-    /// "Edit pain" was tapped on a recorded answer.
+    /// The step was opened by hand: "Edit pain" on a recorded answer, or
+    /// (outside pain mode) the "Something hurts?" link.
     @State private var isEditingRecorded = false
     /// "Not now" (or Save) folded the step for this day, on this screen.
     @State private var foldedDate: LocalDate?
 
     private var current: PainDraft { editing ?? step.draft }
 
+    /// Open by hand, or by itself in pain mode while the day's pain is not
+    /// asked yet (`opensExpanded`); never by itself outside pain mode.
     private var showsEditor: Bool {
-        isEditingRecorded || (!step.isRecorded && foldedDate != step.date)
+        isEditingRecorded || (step.opensExpanded && foldedDate != step.date)
     }
 
     var body: some View {
@@ -361,28 +367,36 @@ private struct PainStepView: View {
         }
     }
 
-    /// A recorded answer: "Edit pain". Not asked but folded: the title, to
-    /// open it again.
+    /// In pain mode -- a recorded answer: "Edit pain"; not asked but
+    /// folded: the title, to open it again. Outside pain mode: one small
+    /// "Something hurts?" link, nothing else.
     private var folded: some View {
         HStack(alignment: .firstTextBaseline) {
             Button {
                 editing = nil
-                if step.isRecorded {
+                if step.isRecorded || !step.isPainMode {
                     isEditingRecorded = true
                 } else {
                     foldedDate = nil
                 }
             } label: {
-                Label {
-                    Text(verbatim: step.isRecorded ? step.editTitle : step.title)
-                } icon: {
-                    Image(systemName: "bandage")
+                if step.isPainMode {
+                    Label {
+                        Text(verbatim: step.isRecorded ? step.editTitle : step.title)
+                    } icon: {
+                        Image(systemName: "bandage")
+                    }
+                    .font(.subheadline.weight(.medium))
+                } else {
+                    Text(verbatim: step.somethingHurtsTitle)
+                        .underline()
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                .font(.subheadline.weight(.medium))
             }
             .buttonStyle(.borderless)
             Spacer(minLength: Theme.Spacing.xs)
-            if let delivery = step.deliveryLine {
+            if step.isPainMode, let delivery = step.deliveryLine {
                 Text(verbatim: delivery)
                     .font(.caption)
                     .foregroundStyle(.secondary)

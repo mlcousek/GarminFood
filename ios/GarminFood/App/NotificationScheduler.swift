@@ -497,6 +497,8 @@ extension NotificationScheduler {
     /// supplement slots, so a check-in or the last tick removes its
     /// reminder. An empty plan removes them all (switch off, no vault
     /// connection, food-first). No category or action: a tap opens Today.
+    /// The diff compares identifier and text, not the fire time: after a
+    /// time change TrainingModel syncs an empty plan first, then the new.
     func syncTrainingReminders(_ reminders: [TrainingReminder], now: Date = Date()) async {
         let pending = await pendingTexts()
         var planned: [String: TrainingReminder] = [:]

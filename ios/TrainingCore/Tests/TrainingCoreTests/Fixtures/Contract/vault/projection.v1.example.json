@@ -30,6 +30,16 @@
         169,
         185
       ]
+    },
+    "painMode": {
+      "active": true,
+      "since": "2030-10-14",
+      "sites": [
+        "achilles-left",
+        "knee-right"
+      ],
+      "reason": "light",
+      "clearsAfter": "2030-10-30"
     }
   },
   "season": {
@@ -363,7 +373,24 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "allowed",
+              "fastingReasons": [],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [],
             "unplanned": []
           },
@@ -376,7 +403,25 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "long-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 60,
+              "rules": [
+                "PM-FUEL-1"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w41-tue-am",
@@ -436,7 +481,24 @@
             "habitsDone": {
               "holds": 2
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "allowed",
+              "fastingReasons": [],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [],
             "unplanned": []
           },
@@ -451,7 +513,24 @@
             "habitsDone": {
               "holds": 2
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "allowed",
+              "fastingReasons": [],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [],
             "unplanned": [
               {
@@ -473,7 +552,26 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "before-key-session"
+              ],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [],
             "unplanned": []
           },
@@ -486,7 +584,25 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "long-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 72,
+              "rules": [
+                "PM-FUEL-1"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w41-sat-am",
@@ -543,7 +659,24 @@
             "habitsDone": {
               "holds": 4
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "allowed",
+              "fastingReasons": [],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [],
             "unplanned": []
           }
@@ -587,7 +720,26 @@
               "holds": 2,
               "gym": 1
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week"
+              ],
+              "load": "moderate",
+              "plannedMin": 45,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w42-mon-pm",
@@ -645,7 +797,27 @@
               "holds": 1,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 60,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w42-tue-am",
@@ -767,7 +939,28 @@
               "holds": 0,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 72,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4",
+                "PM-FUEL-6"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w42-wed-am",
@@ -880,7 +1073,28 @@
               "holds": 2,
               "gym": 1
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 6,
+                "max": 10
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session"
+              ],
+              "load": "high",
+              "plannedMin": 102,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4",
+                "PM-FUEL-6"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w42-thu-am",
@@ -991,7 +1205,28 @@
               "holds": 1,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session",
+                "before-key-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 60,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w42-fri-am",
@@ -1087,7 +1322,27 @@
               "holds": 2,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 6,
+                "max": 10
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session"
+              ],
+              "load": "high",
+              "plannedMin": 108,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w42-sat-am",
@@ -1203,7 +1458,26 @@
               "holds": 2,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week"
+              ],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [],
             "unplanned": [
               {
@@ -1267,7 +1541,27 @@
               "holds": 0,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "before-key-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 45,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w43-mon-pm",
@@ -1313,7 +1607,27 @@
               "holds": 2,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "quality"
+              ],
+              "load": "moderate",
+              "plannedMin": 50,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w43-tue-am",
@@ -1386,7 +1700,27 @@
               "holds": 2,
               "gym": 0
             },
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 60,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w43-wed-am",
@@ -1503,7 +1837,26 @@
               "gym"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week"
+              ],
+              "load": "light",
+              "plannedMin": 18,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w43-thu-pm",
@@ -1551,7 +1904,28 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session",
+                "before-key-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 60,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w43-sun-pm",
@@ -1599,7 +1973,27 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 6,
+                "max": 10
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week",
+                "long-session"
+              ],
+              "load": "high",
+              "plannedMin": 120,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w43-sat-am",
@@ -1644,7 +2038,26 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "build-week"
+              ],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [],
             "unplanned": []
           }
@@ -1679,7 +2092,24 @@
               "gym"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "allowed",
+              "fastingReasons": [],
+              "load": "rest",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w44-mon-pm",
@@ -1722,7 +2152,26 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 3,
+                "max": 5
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "before-key-session"
+              ],
+              "load": "light",
+              "plannedMin": 36,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-4"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w44-fri-am",
@@ -1770,7 +2219,25 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "quality"
+              ],
+              "load": "moderate",
+              "plannedMin": 50,
+              "rules": [
+                "PM-FUEL-1"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w44-wed-am",
@@ -1843,7 +2310,25 @@
               "gym"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 5,
+                "max": 7
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "long-session"
+              ],
+              "load": "moderate",
+              "plannedMin": 60,
+              "rules": [
+                "PM-FUEL-1"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w44-tue-am",
@@ -1950,7 +2435,18 @@
               "kind": "carb-load",
               "raceId": "valley-30k-2030",
               "carbsGPerKg": 8,
-              "carbsG": 560
+              "carbsG": 560,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "carb-load"
+              ],
+              "load": "carb-load",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-5"
+              ]
             },
             "sessions": [],
             "unplanned": []
@@ -1968,7 +2464,19 @@
               "kind": "carb-load",
               "raceId": "valley-30k-2030",
               "carbsGPerKg": 10,
-              "carbsG": 700
+              "carbsG": 700,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "before-key-session",
+                "carb-load"
+              ],
+              "load": "carb-load",
+              "plannedMin": 0,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-5"
+              ]
             },
             "sessions": [],
             "unplanned": []
@@ -1982,7 +2490,27 @@
               "holds"
             ],
             "habitsDone": null,
-            "fuel": null,
+            "fuel": {
+              "kind": "daily",
+              "raceId": null,
+              "carbsGPerKg": {
+                "min": 6,
+                "max": 10
+              },
+              "carbsG": null,
+              "proteinGPerKg": 1.6,
+              "fasting": "off",
+              "fastingReasons": [
+                "long-session",
+                "race"
+              ],
+              "load": "high",
+              "plannedMin": 180,
+              "rules": [
+                "PM-FUEL-1",
+                "PM-FUEL-5"
+              ]
+            },
             "sessions": [
               {
                 "id": "2030-w44-sun-am",
@@ -2022,6 +2550,446 @@
       }
     ]
   },
+  "days": [
+    {
+      "date": "2030-11-04",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds",
+        "gym"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-05",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-06",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-07",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds",
+        "gym"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-08",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-09",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-10",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-11",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds",
+        "gym"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "off",
+        "fastingReasons": [
+          "build-week"
+        ],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-12",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "off",
+        "fastingReasons": [
+          "build-week"
+        ],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-13",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "off",
+        "fastingReasons": [
+          "build-week"
+        ],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-14",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds",
+        "gym"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "off",
+        "fastingReasons": [
+          "build-week"
+        ],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-15",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "off",
+        "fastingReasons": [
+          "build-week"
+        ],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-16",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "off",
+        "fastingReasons": [
+          "build-week"
+        ],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-17",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [
+        "holds"
+      ],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "off",
+        "fastingReasons": [
+          "build-week"
+        ],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    }
+  ],
   "workouts": {
     "bike-45-z1": {
       "id": "bike-45-z1",

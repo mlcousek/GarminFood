@@ -395,11 +395,14 @@
 /* A check-in, tick, RPE or note has been uploaded to the vault. */
 "Sent" = "Odesláno";
 
-/* Reminder title before a run day's check-in. */
+/* Reminder title of the morning check-in (every day). */
 "How do you feel today?" = "Jak se dnes cítíš?";
 
-/* Reminder body before a run day's check-in. */
-"Check in green, amber or red before you run." = "Než vyběhneš, dej zelenou, oranžovou, nebo červenou.";
+/* Reminder body of the morning check-in outside pain mode: short. */
+"Green, amber or red?" = "Zelená, oranžová, nebo červená?";
+
+/* Reminder body of the morning check-in in pain mode: the light and the pain score. */
+"Green, amber or red? Add your pain score too." = "Zelená, oranžová, nebo červená? Přidej i skóre bolesti.";
 
 /* Reminder title for the evening habits. */
 "Evening habits" = "Večerní návyky";
@@ -703,6 +706,9 @@
 
 /* Button: change the morning pain recorded today. */
 "Edit pain" = "Upravit bolest";
+
+/* Small link under the morning check-in outside pain mode: opens the pain step. */
+"Something hurts?" = "Něco bolí?";
 
 /* Menu: add another painful site to the morning pain. */
 "Add another site" = "Přidat další místo";

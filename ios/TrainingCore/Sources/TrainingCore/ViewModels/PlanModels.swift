@@ -24,6 +24,13 @@
 // add-checkin-pain-score D6: a day row carries its recorded morning pain as
 // tags ("Achilles (left) 5.5/10"), the vault's or the phone's answer.
 //
+// add-daily-checkin-and-pain-mode: a day is looked up with
+// `TrainingSnapshot.day` (a written week's day, else its skeleton), so the
+// month cells and the day sheet show a check-in light and unplanned
+// activities outside the written weeks, with no plan too; a week that is
+// not written lists such days under its message (`unwrittenDays`). Pain
+// tags are built only in pain mode.
+//
 // Nothing is summed here: `actual`, statuses and matching come from the
 // file. Glyph styles carry a shape as well as a colour in the app, so they
 // are distinguishable without colour (spec "Missed and done sessions").
@@ -106,6 +113,10 @@ public struct WeekAgendaModel: Equatable, Sendable {
     /// add-plan-editing: this phone's plan changes for the week, with the
     /// vault's answers.
     public var planChanges: [PlanChangeLineModel] = []
+    /// add-daily-checkin-and-pain-mode: in a week that is not written (or
+    /// with no plan), the days that still have something to show -- a
+    /// check-in light, an unplanned activity, pain tags in pain mode.
+    public var unwrittenDays: [DayRowModel] = []
 }
 
 public enum GlyphStyle: String, Equatable, Sendable {
@@ -188,6 +199,22 @@ public struct PlanBuilder: Sendable {
     // MARK: Week
 
     public func week(_ isoWeek: ISOWeek) -> WeekAgendaModel {
+        var model = baseWeek(isoWeek)
+        if case .days = model.content { return model }
+        guard let snapshot = source.snapshot else { return model }
+        var rows: [DayRowModel] = []
+        for date in isoWeek.days {
+            guard let day = snapshot.day(date) else { continue }
+            let hasPain = snapshot.painMode.isActive && !(day.pains ?? []).isEmpty
+            if day.light?.known != nil || !day.unplanned.isEmpty || hasPain {
+                rows.append(dayRow(date, snapshot: snapshot, long: false))
+            }
+        }
+        model.unwrittenDays = rows
+        return model
+    }
+
+    private func baseWeek(_ isoWeek: ISOWeek) -> WeekAgendaModel {
         let title = format.weekTitle(isoWeek)
         guard let snapshot = source.snapshot else {
             let state = format.emptyState(for: source) ?? format.emptyState(.fetching)
@@ -292,7 +319,7 @@ public struct PlanBuilder: Sendable {
     }
 
     func dayRow(_ date: LocalDate, snapshot: TrainingSnapshot, long: Bool) -> DayRowModel {
-        let day = snapshot.plan?.day(date)
+        let day = snapshot.day(date)
         let sessions = (day?.sessions ?? []).map { sessionRow($0, date: date, snapshot: snapshot) }
         let unplanned = (day?.unplanned ?? []).enumerated().map { index, activity in
             UnplannedRowModel(id: "\(date)-unplanned-\(index)", sportSymbol: SportSymbol.name(activity.group), text: format.unplannedLine(activity))
@@ -312,7 +339,10 @@ public struct PlanBuilder: Sendable {
             raceLines: races,
             restText: isEmpty ? text(.stateRestDayTitle) : nil
         )
-        row.painTags = format.painTags(day?.pains)
+        // Only in pain mode (add-daily-checkin-and-pain-mode).
+        if snapshot.painMode.isActive {
+            row.painTags = format.painTags(day?.pains)
+        }
         return row
     }
 
@@ -388,7 +418,7 @@ public struct PlanBuilder: Sendable {
     }
 
     func cell(_ date: LocalDate, month: Int, snapshot: TrainingSnapshot?) -> DayCellModel {
-        let day = snapshot?.plan?.day(date)
+        let day = snapshot?.day(date)
         var glyphs: [DayGlyph] = []
         for session in day?.sessions ?? [] {
             glyphs.append(DayGlyph(id: session.id, sportSymbol: SportSymbol.name(session.sport), style: glyphStyle(session.status)))

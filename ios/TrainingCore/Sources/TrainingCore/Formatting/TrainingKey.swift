@@ -289,10 +289,12 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case deliverySent = "Sent"
     /// The vault has read the event (its projection acknowledged it).
     case deliveryReceived = "Received by the vault"
-    /// Reminder title before a run day's check-in.
+    /// Reminder title of the morning check-in (every day).
     case reminderCheckInTitle = "How do you feel today?"
-    /// Reminder body before a run day's check-in.
-    case reminderCheckInBody = "Check in green, amber or red before you run."
+    /// Reminder body of the morning check-in outside pain mode: short.
+    case reminderCheckInBody = "Green, amber or red?"
+    /// Reminder body of the morning check-in in pain mode: the light and the pain score.
+    case reminderCheckInBodyPain = "Green, amber or red? Add your pain score too."
     /// Reminder title for the evening habits.
     case reminderHabitsTitle = "Evening habits"
     /// Reminder body for the evening habits.
@@ -510,6 +512,8 @@ public enum TrainingKey: String, CaseIterable, Sendable {
     case painNotNow = "Not now"
     /// Button: change the morning pain recorded today.
     case painEdit = "Edit pain"
+    /// Small link under the morning check-in outside pain mode: opens the pain step.
+    case painSomethingHurts = "Something hurts?"
     /// Menu: add another painful site to the morning pain.
     case painAddSite = "Add another site"
     /// VoiceOver for the button that removes a site from the morning pain (the site).

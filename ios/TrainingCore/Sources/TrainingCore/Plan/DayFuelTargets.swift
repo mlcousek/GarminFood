@@ -77,7 +77,9 @@ public struct DayFuelTargets: Equatable, Sendable {
         var carbsMin: Double?
         var carbsMax: Double?
         var protein: Double?
-        let isCarbLoad = fuel?.kind?.known == .carbLoad
+        // add-daily-checkin-and-pain-mode: every day has a `fuel` now, so
+        // a carb-load day is its `kind`, never "the fuel is there".
+        let isCarbLoad = fuel?.isCarbLoad ?? false
 
         if let fuel {
             if isCarbLoad {
@@ -114,9 +116,11 @@ public struct DayFuelTargets: Equatable, Sendable {
 extension TrainingSnapshot {
     /// add-winter-arc-nutrition-and-rewards: the fuel targets of the plan
     /// day `date` (with the phone's pending plan edits applied), `nil`
-    /// when the plan has no such day or it says nothing about food.
+    /// when the file has no such day or it says nothing about food.
+    /// add-daily-checkin-and-pain-mode: a day skeleton counts (a day
+    /// outside every written week, or with no plan at all).
     public func fuelTargets(on date: LocalDate, fallbackWeightKg: Double? = nil) -> DayFuelTargets? {
-        guard let day = plan?.day(date) else { return nil }
+        guard let day = day(date) else { return nil }
         return DayFuelTargets.resolve(day: day, athleteWeightKg: athlete.weightKg, fallbackWeightKg: fallbackWeightKg)
     }
 }

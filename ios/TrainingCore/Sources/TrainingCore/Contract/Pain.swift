@@ -16,6 +16,9 @@
 // app's own `checkin.morning` (HubEvent.swift writes it, the only file that
 // knows the event wire format).
 //
+// add-daily-checkin-and-pain-mode: `PainMode` is `athlete.painMode`, the
+// vault's switch for every pain feature (below).
+//
 // Depended on by: HubEvent (MorningCheckInPayload.pains), Projection (Day),
 // CheckInOverlay, PainModels. Tests: PainTests, HubEventTests,
 // ProjectionDecodingTests.
@@ -107,5 +110,50 @@ extension PainEntry: Encodable {
             try c.encode(score, forKey: .score)
         }
         try c.encode(note, forKey: .note)
+    }
+}
+
+// MARK: - Pain mode (add-daily-checkin-and-pain-mode)
+
+/// `athlete.painMode` (the vault's semantics 14, 2026-09-30): pain
+/// features appear when pain starts and stay until it is gone. The vault
+/// turns it on at a check-in with a score above 0 or an amber/red check-in
+/// light, and off after a run of scored mornings at 0; the phone never
+/// runs those rules, it only reads the answer (and bridges the time until
+/// the vault has read a new answer: `PainModeState`).
+///
+/// Tolerant like every field: a missing or non-boolean `active` is
+/// `false`, an unknown site reads as `other`, an unknown reason is kept as
+/// `.unknown`.
+public struct PainMode: Equatable, Sendable, Decodable {
+    public var active: Bool
+    /// The first morning of the episode.
+    public var since: LocalDate?
+    /// The sites that scored above 0 in it.
+    public var sites: [PainSite]
+    public var reason: OpenEnum<PainModeReason>?
+    /// The earliest morning whose check-in can end it.
+    public var clearsAfter: LocalDate?
+
+    public static let inactive = PainMode()
+
+    public init(active: Bool = false, since: LocalDate? = nil, sites: [PainSite] = [], reason: OpenEnum<PainModeReason>? = nil, clearsAfter: LocalDate? = nil) {
+        self.active = active
+        self.since = since
+        self.sites = sites
+        self.reason = reason
+        self.clearsAfter = clearsAfter
+    }
+
+    enum CodingKeys: String, CodingKey { case active, since, sites, reason, clearsAfter }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        active = c.lenientBool(.active) ?? false
+        since = c.lenient(LocalDate.self, .since)
+        var seen = Set<PainSite>()
+        sites = c.stringList(.sites).map(PainSite.init(wire:)).filter { seen.insert($0).inserted }
+        reason = c.lenient(OpenEnum<PainModeReason>.self, .reason)
+        clearsAfter = c.lenient(LocalDate.self, .clearsAfter)
     }
 }

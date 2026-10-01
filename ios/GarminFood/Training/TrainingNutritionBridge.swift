@@ -12,9 +12,15 @@
 //     judged by (FastingDayEvaluator's `pausedDays`);
 //   - `rewardSignals(...)`: TrainingCore's `TrainingRewardFacts` ->
 //     Gamification's `TrainingSignals`.
-// All return nothing without a loaded plan. The CALLERS decide whether the
-// training experience is on (`AppEnvironment.experience`); food-first never
-// asks, so it never changes.
+// All return nothing without a loaded projection. The CALLERS decide whether
+// the training experience is on (`AppEnvironment.experience`); food-first
+// never asks, so it never changes.
+//
+// add-daily-checkin-and-pain-mode: the projection carries `fuel` on EVERY
+// day now, and a day outside the written weeks (or with no plan at all) is
+// a day skeleton -- so each accessor looks the day up with
+// `TrainingSnapshot.day` / `fuelTargets(on:)` and none of them asks for a
+// plan any more.
 //
 // Nutrition days are the phone's local `yyyy-MM-dd` (NutritionDate), the
 // same calendar day the plan names in its own time zone for every day the
@@ -59,13 +65,13 @@ extension TrainingModel {
     /// The last `days` local days (today first) the plan paused fasting
     /// on, as start-of-day dates.
     func fastingPausedDays(days: Int = 42, now: Date = Date(), calendar: Calendar = .current) -> Set<Date> {
-        guard let snapshot = source.snapshot, snapshot.plan != nil else { return [] }
+        guard let snapshot = source.snapshot else { return [] }
         let today = calendar.startOfDay(for: now)
         var paused = Set<Date>()
         for offset in 0..<max(0, days) {
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today),
                   let date = LocalDate(NutritionDate.string(from: day, calendar: calendar)),
-                  snapshot.plan?.day(date)?.fuel?.isFastingOff == true
+                  snapshot.day(date)?.fuel?.isFastingOff == true
             else { continue }
             paused.insert(calendar.startOfDay(for: day))
         }
@@ -74,7 +80,7 @@ extension TrainingModel {
 
     /// The plan's reward facts in Gamification's shape.
     func rewardSignals(now: Date = Date()) -> TrainingSignals? {
-        guard let snapshot = source.snapshot, snapshot.plan != nil else { return nil }
+        guard let snapshot = source.snapshot else { return nil }
         let today = self.today(now: now)
         let facts = TrainingRewardFacts.build(snapshot: snapshot, today: today)
         return TrainingSignals(

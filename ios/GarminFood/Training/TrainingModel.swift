@@ -40,6 +40,12 @@
 // again with `pains` (`recordPain`), which replaces the day's answer; a
 // light alone keeps it (TrainingCore's CheckInOverlay).
 //
+// add-daily-checkin-and-pain-mode: the two reminder times are the owner's
+// (UserDefaults, like the food reminders' times; 04:05 and 20:10 until
+// changed), and `isPainMode` tells the app whether the pain features show
+// (TrainingCore's `PainModeState`: the vault's word, or this phone's own
+// unread pain answer).
+//
 // Owned by AppEnvironment (`environment.training`); read by the Today
 // training cards and the Plan tab.
 
@@ -70,6 +76,11 @@ final class TrainingModel {
     /// add-training-checkins D8: the training reminders switch (default on,
     /// tasks 0.2).
     static let remindersKey = "training.reminders.enabled.v1"
+    /// add-daily-checkin-and-pain-mode: when the two reminders fire.
+    static let checkInHourKey = "training.reminders.checkin.hour.v1"
+    static let checkInMinuteKey = "training.reminders.checkin.minute.v1"
+    static let habitsHourKey = "training.reminders.habits.hour.v1"
+    static let habitsMinuteKey = "training.reminders.habits.minute.v1"
 
     init(store: ProjectionStore, vault: VaultController, events: TrainingEventsService, defaults: UserDefaults = .standard) {
         self.store = store
@@ -190,6 +201,35 @@ final class TrainingModel {
         await syncReminders()
     }
 
+    /// add-daily-checkin-and-pain-mode: when the check-in and the habits
+    /// reminders fire (04:05 and 20:10 until the owner changes them).
+    var reminderTimes: TrainingReminderTimes {
+        let standard = TrainingReminderTimes.standard
+        return TrainingReminderTimes(
+            morningHour: defaults.object(forKey: Self.checkInHourKey) as? Int ?? standard.morningHour,
+            morningMinute: defaults.object(forKey: Self.checkInMinuteKey) as? Int ?? standard.morningMinute,
+            eveningHour: defaults.object(forKey: Self.habitsHourKey) as? Int ?? standard.eveningHour,
+            eveningMinute: defaults.object(forKey: Self.habitsMinuteKey) as? Int ?? standard.eveningMinute
+        )
+    }
+
+    func setReminderTimes(_ times: TrainingReminderTimes) async {
+        defaults.set(times.morningHour, forKey: Self.checkInHourKey)
+        defaults.set(times.morningMinute, forKey: Self.checkInMinuteKey)
+        defaults.set(times.eveningHour, forKey: Self.habitsHourKey)
+        defaults.set(times.eveningMinute, forKey: Self.habitsMinuteKey)
+        // The scheduler diffs pending requests by identifier and text, not
+        // by fire time: a moved time would keep the old request. Clear the
+        // training reminders, then plan them again at the new times.
+        await NotificationScheduler.shared.syncTrainingReminders([])
+        await syncReminders()
+    }
+
+    /// add-daily-checkin-and-pain-mode: whether the pain features show.
+    var isPainMode: Bool {
+        source.snapshot?.painMode.isActive ?? false
+    }
+
     /// Re-plans the training reminders from the current snapshot; none when
     /// the switch is off or the connection can't record.
     func syncReminders(now: Date = Date()) async {
@@ -199,7 +239,7 @@ final class TrainingModel {
             // cached projection (the same 7 days as the food reminders,
             // NotificationPlanning.windowDays), so reminders outlive a
             // closed app.
-            ? TrainingReminderPlanner.plan(snapshot: source.snapshot, today: today(now: now), now: now, timeZone: .current, language: language, days: 7)
+            ? TrainingReminderPlanner.plan(snapshot: source.snapshot, today: today(now: now), now: now, timeZone: .current, language: language, days: 7, times: reminderTimes)
             : []
         await NotificationScheduler.shared.syncTrainingReminders(reminders, now: now)
     }

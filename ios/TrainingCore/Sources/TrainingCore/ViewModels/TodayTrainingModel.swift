@@ -121,7 +121,8 @@ public struct TodayTrainingModel: Equatable, Sendable {
     /// add-training-checkins: the morning check-in row, when allowed.
     public var checkIn: CheckInRowModel? = nil
     /// add-checkin-pain-score: the day's recorded morning pain ("Pain:
-    /// Achilles (left) 4.5/10", "Pain: none"); `nil` when not asked.
+    /// Achilles (left) 4.5/10", "Pain: none"); `nil` when not asked, and
+    /// (add-daily-checkin-and-pain-mode) whenever pain mode is off.
     public var painLine: String? = nil
 }
 
@@ -209,7 +210,11 @@ public struct TodayTrainingBuilder: Sendable {
     public func trainingDay(on date: LocalDate) -> TodayTrainingModel {
         var model = baseTrainingDay(on: date)
         model.checkIn = checkInRow(on: date)
-        model.painLine = format.painLine(source.snapshot?.plan?.day(date)?.pains)
+        // add-daily-checkin-and-pain-mode: only in pain mode -- no stale
+        // "Pain: none" while healthy.
+        if let snapshot = source.snapshot, snapshot.painMode.isActive {
+            model.painLine = format.painLine(snapshot.day(date)?.pains)
+        }
         return model
     }
 
@@ -219,8 +224,20 @@ public struct TodayTrainingBuilder: Sendable {
             return TodayTrainingModel(date: date, dateText: dateText, sessions: [], emptyState: format.emptyState(for: source), carbLoadLine: nil, lightLine: nil, notices: [])
         }
         let notices = format.notices(snapshot.freshness)
-        func empty(_ state: TrainingEmptyState, day: Day? = nil) -> TodayTrainingModel {
-            TodayTrainingModel(date: date, dateText: dateText, sessions: [], emptyState: state, carbLoadLine: format.fuel.dayLine(day?.fuel), lightLine: nil, notices: notices)
+        // add-daily-checkin-and-pain-mode: a day outside the written weeks
+        // has a skeleton, whose carb load and morning light still show
+        // under the empty state.
+        let skeleton = snapshot.day(date)
+        func empty(_ state: TrainingEmptyState) -> TodayTrainingModel {
+            TodayTrainingModel(
+                date: date,
+                dateText: dateText,
+                sessions: [],
+                emptyState: state,
+                carbLoadLine: format.fuel.dayLine(skeleton?.fuel),
+                lightLine: format.text.lightName(skeleton?.light).map { text.format(.lightLine, $0) },
+                notices: notices
+            )
         }
         guard let plan = snapshot.plan else {
             return empty(format.emptyState(.noActivePlan))
@@ -361,7 +378,7 @@ public struct TodayTrainingBuilder: Sendable {
 
     /// The habits the plan expects on `date`; empty hides the card.
     public func habits(on date: LocalDate) -> [HabitRowModel] {
-        guard let snapshot = source.snapshot, let day = snapshot.plan?.day(date) else { return [] }
+        guard let snapshot = source.snapshot, let day = snapshot.day(date) else { return [] }
         return day.habitsExpected.compactMap { id in
             guard let habit = snapshot.habits.habit(id) else { return nil }
             return habitRow(habit, day: day, gate: snapshot.habits.gate, snapshot: snapshot)

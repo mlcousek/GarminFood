@@ -16,7 +16,11 @@
 //     Shared/ is compiled into the widget too and can't import TrainingCore.
 //     A Control records the light only; afterwards `onControlCheckIn`
 //     brings Today's today forward, where the pain step asks the rest
-//     (add-checkin-pain-score D7).
+//     (add-checkin-pain-score D7) -- in pain mode only
+//     (add-daily-checkin-and-pain-mode: AppEnvironment's handler checks
+//     `TrainingModel.isPainMode`; a healthy morning's Control is done with
+//     the light). The check-in is for today's training day whether or not
+//     a written week holds it: Today shows it on a day skeleton too.
 //
 // Rules:
 //   - Recording is local and durable; nothing awaits the network. It
