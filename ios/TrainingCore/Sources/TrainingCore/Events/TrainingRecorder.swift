@@ -151,6 +151,52 @@ public actor TrainingRecorder {
             return unsent.contains(segment)
         }.count
     }
+
+    /// Segments the queue gave up on (five failed tries, or a permanent
+    /// refusal), oldest first, for Settings -> Vault's list (tasks 4.9).
+    /// They stay on the phone until retried by hand.
+    public func failedWrites() async -> [FailedWrite] {
+        await queue.all()
+            .filter { $0.state == .failed }
+            .sorted { $0.createdAt < $1.createdAt }
+            .map { entry in
+                FailedWrite(
+                    id: entry.id,
+                    createdAt: entry.createdAt,
+                    // One JSONL line per event; counted from the sealed bytes
+                    // because the log prunes old sealed events.
+                    eventCount: entry.record.bytes.split(separator: UInt8(ascii: "\n")).count,
+                    lastError: entry.lastError
+                )
+            }
+    }
+
+    /// The user's Retry: a failed segment becomes pending again with its
+    /// attempts reset; the next drain sends the same bytes. Anything that
+    /// isn't failed is left alone. Returns whether an entry was reset.
+    @discardableResult
+    public func retryFailedWrite(id: UUID, now: Date = Date()) async throws -> Bool {
+        guard await queue.all().contains(where: { $0.id == id && $0.state == .failed }) else { return false }
+        try await queue.retry(id: id, now: now)
+        return true
+    }
+}
+
+/// One failed segment as Settings -> Vault lists it.
+public struct FailedWrite: Equatable, Sendable, Identifiable {
+    /// The queue entry's id.
+    public let id: UUID
+    public let createdAt: Date
+    public let eventCount: Int
+    /// The queue's last reason, in English (a diagnostic, shown verbatim).
+    public let lastError: String?
+
+    public init(id: UUID, createdAt: Date, eventCount: Int, lastError: String?) {
+        self.id = id
+        self.createdAt = createdAt
+        self.eventCount = eventCount
+        self.lastError = lastError
+    }
 }
 
 // MARK: - Which day and session a check-in is for
