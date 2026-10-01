@@ -12,9 +12,9 @@ Each has a default; unanswered ones are built as the default.
 
 ## 1. Wave 1 - style sample (M)
 
-- [ ] 1.1 `ios/GarminFood/BadgeArt/` sources: the 13 frame shapes at one rarity (common), the five rarity trims on one shape (streak), and 10 motifs (flame, fork and knife, plate, scale, water drop, moon, star, crown, capsule, question mark).
-- [ ] 1.2 `tools/docs/lint-badge-svg.mjs`: the allowed subset, a 24 x 24 motif view box and 64 x 64 frame view box, total size; wired into `.github/workflows/build.yml`'s localization job (no macOS needed).
-- [ ] 1.3 `tools/docs/build-badge-gallery.mjs` -> `docs/guide/badges.html`: the sample at 44, 60 and 120 pt, locked and unlocked, light and dark, both style variants side by side.
+- [x] 1.1 `ios/BadgeArt/` sources: the 13 frame shapes, the five rarity trims, and 10 motifs (flame, fork and knife, plate, scale, water drop, moon, star, crown, capsule, question mark). *Done 2026-10-01: shapes are hand-written path data in `tools/docs/write-badge-art.mjs`, which writes the committed SVG files (all 13 x 5 frames already, 92 KB). Epic's trim became ribbon tails: the wings read as noise at 44 pt.*
+- [x] 1.2 `tools/docs/lint-badge-svg.mjs`: the allowed subset, a 24 x 24 motif view box and 64 x 64 frame view box, total size; wired into `.github/workflows/build.yml`'s localization job (no macOS needed).
+- [x] 1.3 `tools/docs/build-badge-gallery.mjs` -> `docs/guide/badges.html`: the sample at 44, 60 and 120 pt, locked and unlocked, light and dark, both style variants side by side. *The modern variant is the same files with the outline removed.*
 - [ ] 1.4 Owner looks at the gallery and answers 0.1 to 0.3; record the answers in design.md.
 
 ## 2. Wave 2 - the full set and the catalog (L)

@@ -24,7 +24,8 @@ before it is ever built.
   **motif** (what the badge is about: flame, fork, scale, drop, moon, boss
   face, ...). About 12 frame shapes x 5 rarities and about 60 motifs cover
   every badge; no badge gets a one-off picture in the first release.
-- The art lives as SVG under `ios/GarminFood/BadgeArt/` sources and is
+- The art lives as SVG under `ios/BadgeArt/` (outside the app target's
+  folder, which XcodeGen globs into the bundle) and is
   compiled into `Assets.xcassets` as vector imagesets. A catalog in
   Gamification names each badge's motif and family; `BadgeMedallion` draws
   frame + motif, and falls back to today's disc + SF Symbol for any badge
