@@ -57,8 +57,9 @@ commit after each.
 
 ## 7. Catalog and docs
 
-- [ ] 7.1 `StoreCatalog`: no new file name (the new fields live in `training.json` and `xp-ledger.json`); `docs/data-compatibility.md` note if the rules ask for one.
-- [ ] 7.2 `CLAUDE.md`: the Gamification paragraph mentions training XP and the model script.
+- [x] 7.1 `StoreCatalog`: no new file name (the new fields live in `training.json` and `xp-ledger.json`); `gamification.features` goes to schema version 3, because an older build would drop the new `training.json` fields on its next write (docs/data-compatibility.md, rule 6).
+- [x] 7.2 `CLAUDE.md`: the Gamification paragraph mentions training XP and the model script.
+- [x] 7.3 Guide: `tools/docs/extract-guide-data.mjs` reads the training budget lines and solves the factor against the training-experience day; `docs/guide` regenerated (150 levels, the eleventh boss); the review note on unreachable level badges is closed.
 
 ## 8. Verify
 

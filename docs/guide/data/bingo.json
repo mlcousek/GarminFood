@@ -122,7 +122,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 47
+   "line": 49
   },
   {
    "id": "e-fruit",
@@ -141,7 +141,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 55
+   "line": 57
   },
   {
    "id": "e-veg-lunch",
@@ -160,7 +160,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 63
+   "line": 65
   },
   {
    "id": "e-three-meals",
@@ -179,7 +179,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 71
+   "line": 73
   },
   {
    "id": "e-new-food",
@@ -198,7 +198,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 79
+   "line": 81
   },
   {
    "id": "e-soup",
@@ -217,7 +217,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 87
+   "line": 89
   },
   {
    "id": "e-tea",
@@ -236,7 +236,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 95
+   "line": 97
   },
   {
    "id": "e-fermented",
@@ -255,7 +255,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 103
+   "line": 105
   },
   {
    "id": "e-nuts",
@@ -274,7 +274,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 111
+   "line": 113
   },
   {
    "id": "e-egg",
@@ -293,7 +293,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 119
+   "line": 121
   },
   {
    "id": "m-fish",
@@ -312,7 +312,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 130
+   "line": 132
   },
   {
    "id": "m-three-fruits",
@@ -331,7 +331,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 138
+   "line": 140
   },
   {
    "id": "m-water-goal",
@@ -352,7 +352,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 146
+   "line": 148
   },
   {
    "id": "m-czech-brand",
@@ -371,7 +371,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 154
+   "line": 156
   },
   {
    "id": "m-no-soda",
@@ -390,7 +390,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": true,
-   "line": 162
+   "line": 164
   },
   {
    "id": "m-protein-2",
@@ -411,7 +411,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 171
+   "line": 173
   },
   {
    "id": "m-veg-breakfast",
@@ -430,7 +430,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 179
+   "line": 181
   },
   {
    "id": "m-legume",
@@ -449,7 +449,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 187
+   "line": 189
   },
   {
    "id": "m-colours-4",
@@ -468,7 +468,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 195
+   "line": 197
   },
   {
    "id": "m-cuisine",
@@ -487,7 +487,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 203
+   "line": 205
   },
   {
    "id": "m-early-dinner",
@@ -506,7 +506,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": true,
-   "line": 211
+   "line": 213
   },
   {
    "id": "m-whole-grain",
@@ -525,7 +525,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 220
+   "line": 222
   },
   {
    "id": "m-refuel",
@@ -547,7 +547,7 @@
    ],
    "standalone": false,
    "judgesCompletedDaysOnly": false,
-   "line": 228
+   "line": 230
   },
   {
    "id": "m-calories-2",
@@ -568,7 +568,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": true,
-   "line": 236
+   "line": 238
   },
   {
    "id": "h-fish-2",
@@ -587,7 +587,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 248
+   "line": 250
   },
   {
    "id": "h-protein-3",
@@ -608,7 +608,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 256
+   "line": 258
   },
   {
    "id": "h-water-4",
@@ -629,7 +629,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 264
+   "line": 266
   },
   {
    "id": "h-ten-foods",
@@ -648,7 +648,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 272
+   "line": 274
   },
   {
    "id": "h-meatless",
@@ -667,7 +667,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": true,
-   "line": 280
+   "line": 282
   },
   {
    "id": "h-fibre-30",
@@ -688,7 +688,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 295
+   "line": 297
   },
   {
    "id": "h-sugar-low",
@@ -709,7 +709,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": true,
-   "line": 303
+   "line": 305
   },
   {
    "id": "h-five-a-day",
@@ -728,7 +728,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 312
+   "line": 314
   },
   {
    "id": "h-rainbow",
@@ -747,7 +747,7 @@
    "requirement": [],
    "standalone": true,
    "judgesCompletedDaysOnly": false,
-   "line": 320
+   "line": 322
   },
   {
    "id": "h-earned-it",
@@ -769,7 +769,7 @@
    ],
    "standalone": false,
    "judgesCompletedDaysOnly": true,
-   "line": 328
+   "line": 330
   },
   {
    "id": "h-clean-sweep",
@@ -790,7 +790,7 @@
    ],
    "standalone": true,
    "judgesCompletedDaysOnly": true,
-   "line": 337
+   "line": 339
   }
  ],
  "badges": [
@@ -799,7 +799,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 350,
+   "line": 352,
    "id": "bingo.first-line",
    "title": {
     "en": "Bingo!",
@@ -819,7 +819,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 351,
+   "line": 353,
    "id": "bingo.four-corners",
    "title": {
     "en": "Four Corners",
@@ -839,7 +839,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 352,
+   "line": 354,
    "id": "bingo.x-marks",
    "title": {
     "en": "X Marks the Spot",
@@ -859,7 +859,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 353,
+   "line": 355,
    "id": "bingo.lines-50",
    "title": {
     "en": "Line Dancer",
@@ -879,7 +879,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 354,
+   "line": 356,
    "id": "bingo.blackout-1",
    "title": {
     "en": "Blackout",
@@ -899,7 +899,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 355,
+   "line": 357,
    "id": "bingo.blackout-4",
    "title": {
     "en": "Card Shark",
@@ -919,7 +919,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 356,
+   "line": 358,
    "id": "bingo.blackout-12",
    "title": {
     "en": "Bingo Hall Legend",

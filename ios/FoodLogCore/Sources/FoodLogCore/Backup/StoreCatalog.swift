@@ -142,10 +142,16 @@ public enum StoreCatalog {
                 "supplements.json",
                 // add-winter-arc-nutrition-and-rewards: the training rewards
                 // feature (features/training/training.json); additive, so the
-                // schema version stays.
+                // schema version stayed.
                 "training.json"
             ]),
-            schemaVersion: 2,
+            // add-training-gamification-and-150-levels D8: v3 -- training.json
+            // gained `sets`, `habitDayStates` and `seasonEnds`. This build
+            // reads a v2 file unchanged, but an older build that restored a
+            // v3 backup would drop those fields on its next write (the
+            // counts behind the training ladders and the habit streak), so
+            // such a restore is refused instead.
+            schemaVersion: 3,
             area: .progress
         ),
 

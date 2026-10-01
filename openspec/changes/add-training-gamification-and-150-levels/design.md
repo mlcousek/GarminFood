@@ -247,21 +247,28 @@ executed option is not a self-report, so it reads as "no light".
 | done with G | amber | **over the light** |
 | done with G or A, or option unknown | red | **over the light** |
 | skipped | any | excused |
-| not done, day over | amber or red | excused |
-| not done, day over | none or green | missed |
-| not done, today or later | any | open |
+| the plan marked it missed | amber or red | excused |
+| the plan marked it missed | none or green | missed |
+| not done, not judged by the plan yet | any | open |
 
-**A day's verdict**
+"Missed" is the plan's own word (`status: missed`, written once the day is
+over). The phone does not guess it from the date: a session still
+"planned" in a plan file that is a day behind stays open until the file
+catches up.
 
-1. A later day, or today with an open session, or today as a rest day →
-   *open* (a rest day is judged when it is over).
-2. Any session over the light, or an unplanned run on a red morning →
+**A day's verdict**, in this order:
+
+1. A date only the phone knows (no written week holds it) → *neutral*.
+2. A later day → *open*.
+3. Any session over the light, or an unplanned run on a red morning →
    *broken*.
-3. Any session missed → *broken*.
-4. At least one session as planned → **kept**.
-5. Every session excused: red morning → **kept** (resting on red is the
+4. Any session missed → *broken*.
+5. Any session open → *open*.
+6. A rest day: today → *open* (it is judged when it is over); otherwise no
+   unplanned run → **kept**, an unplanned run → *neutral*.
+7. At least one session as planned → **kept**.
+8. Every session excused: red morning → **kept** (resting on red is the
    plan); otherwise *neutral*.
-6. A rest day: no unplanned run → **kept**; an unplanned run → *neutral*.
 
 **A week's verdict** (closed weeks only): **kept** when no day is broken, at
 least one day is kept, and the volume guard holds:
@@ -372,13 +379,18 @@ the schema version stays and the old fixture still decodes:
 
 - `sets: { name: [id] }` — the counted ids behind each ladder (session ids,
   kept days, easy weeks, …), newest 2,000 each;
-- `habitExpectedByDay: { day: n }` — beside the existing
-  `habitTicksByDay`, for the streak;
+- `habitDayStates: { day: 0 | 1 | 2 }` — beside the existing
+  `habitTicksByDay`, for the streak: nothing expected, expected and not
+  met, met (at least the gate share of the expected habits done);
 - `seasonEnds: { seasonId: day }` — so a season that ends while the next
   one is already selected is still seen.
 
 When plan signals are present, "honest calls" and "kept weeks" are recorded
 from the new rules (D7), so the two existing ladders and the XP agree.
+
+A kept week, a closed phase, a completed season and a finished race get one
+moment each, the first time the store records them. The very first run
+records the whole plan window at once and shows none.
 
 ### D9 — Training variants of boss, bingo and journeys
 
@@ -453,8 +465,14 @@ runs it after a check-in, a tick or a rating, so the XP shows at once.
 
 - **Not compiled locally.** CI is the signal. The risky files are listed in
   tasks 9.
-- **A first run pays several one-offs at once** (active ladder steps, weeks
-  already approved, closed phases): a few hundred XP, once.
+- **A first run pays the whole plan window at once** (two to three weeks of
+  sessions and kept days, active ladder steps, approved weeks, closed
+  phases): up to about a thousand XP, once, a few levels at the start. No
+  moment is shown for each of them.
+- **The reward ledger grows by about ten keys a day** in the training
+  experience (it keeps keys forever). That is the "few thousand a year" it
+  was designed for; a pruning rule for old day keys is a later change if
+  the file ever gets large.
 - **Late facts.** A session matched more than three days late still pays its
   own XP, but the road trip has sealed that day (journeys' existing rule).
 - **Estimates.** Frequencies are assumptions. A change is one table line and

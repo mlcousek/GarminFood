@@ -5,17 +5,20 @@
   "ios/Gamification/Sources/Gamification/LevelTier.swift",
   "ios/Gamification/Sources/Gamification/XPBudget.swift",
   "ios/Gamification/Sources/Gamification/XPStore.swift",
-  "ios/Gamification/Sources/Gamification/Features/XPAward+Features.swift"
+  "ios/Gamification/Sources/Gamification/Features/XPAward+Features.swift",
+  "ios/Gamification/Sources/Gamification/Features/Training/TrainingXPBudget.swift",
+  "ios/Gamification/Sources/Gamification/Features/Training/XPAward+Training.swift"
  ],
  "curve": {
   "baseXPForFirstLevelUp": 100,
-  "growthFactor": 1.05358,
+  "growthFactor": 1.03087,
   "pastGrowthFactors": [
    1.045,
-   1.0505
+   1.0505,
+   1.05358
   ],
-  "curveVersion": 3,
-  "maxLevel": 200,
+  "curveVersion": 4,
+  "maxLevel": 150,
   "formula": "xpRequired(afterLevel L) = max(1, round(100 × growthFactor^(L−1))); level = the highest L whose cumulative threshold ≤ total XP; the displayed level is never below the highest level ever reached (peakLevel).",
   "table": [
    {
@@ -26,996 +29,746 @@
    {
     "level": 2,
     "threshold": 100,
-    "band": 105
+    "band": 103
    },
    {
     "level": 3,
-    "threshold": 205,
-    "band": 111
+    "threshold": 203,
+    "band": 106
    },
    {
     "level": 4,
-    "threshold": 316,
-    "band": 117
+    "threshold": 309,
+    "band": 110
    },
    {
     "level": 5,
-    "threshold": 433,
-    "band": 123
+    "threshold": 419,
+    "band": 113
    },
    {
     "level": 6,
-    "threshold": 556,
-    "band": 130
+    "threshold": 532,
+    "band": 116
    },
    {
     "level": 7,
-    "threshold": 686,
-    "band": 137
+    "threshold": 648,
+    "band": 120
    },
    {
     "level": 8,
-    "threshold": 823,
-    "band": 144
+    "threshold": 768,
+    "band": 124
    },
    {
     "level": 9,
-    "threshold": 967,
-    "band": 152
+    "threshold": 892,
+    "band": 128
    },
    {
     "level": 10,
-    "threshold": 1119,
-    "band": 160
+    "threshold": 1020,
+    "band": 131
    },
    {
     "level": 11,
-    "threshold": 1279,
-    "band": 169
+    "threshold": 1151,
+    "band": 136
    },
    {
     "level": 12,
-    "threshold": 1448,
-    "band": 178
+    "threshold": 1287,
+    "band": 140
    },
    {
     "level": 13,
-    "threshold": 1626,
-    "band": 187
+    "threshold": 1427,
+    "band": 144
    },
    {
     "level": 14,
-    "threshold": 1813,
-    "band": 197
+    "threshold": 1571,
+    "band": 148
    },
    {
     "level": 15,
-    "threshold": 2010,
-    "band": 208
+    "threshold": 1719,
+    "band": 153
    },
    {
     "level": 16,
-    "threshold": 2218,
-    "band": 219
+    "threshold": 1872,
+    "band": 158
    },
    {
     "level": 17,
-    "threshold": 2437,
-    "band": 231
+    "threshold": 2030,
+    "band": 163
    },
    {
     "level": 18,
-    "threshold": 2668,
-    "band": 243
+    "threshold": 2193,
+    "band": 168
    },
    {
     "level": 19,
-    "threshold": 2911,
-    "band": 256
+    "threshold": 2361,
+    "band": 173
    },
    {
     "level": 20,
-    "threshold": 3167,
-    "band": 270
+    "threshold": 2534,
+    "band": 178
    },
    {
     "level": 21,
-    "threshold": 3437,
-    "band": 284
+    "threshold": 2712,
+    "band": 184
    },
    {
     "level": 22,
-    "threshold": 3721,
-    "band": 299
+    "threshold": 2896,
+    "band": 189
    },
    {
     "level": 23,
-    "threshold": 4020,
-    "band": 315
+    "threshold": 3085,
+    "band": 195
    },
    {
     "level": 24,
-    "threshold": 4335,
-    "band": 332
+    "threshold": 3280,
+    "band": 201
    },
    {
     "level": 25,
-    "threshold": 4667,
-    "band": 350
+    "threshold": 3481,
+    "band": 207
    },
    {
     "level": 26,
-    "threshold": 5017,
-    "band": 369
+    "threshold": 3688,
+    "band": 214
    },
    {
     "level": 27,
-    "threshold": 5386,
-    "band": 388
+    "threshold": 3902,
+    "band": 220
    },
    {
     "level": 28,
-    "threshold": 5774,
-    "band": 409
+    "threshold": 4122,
+    "band": 227
    },
    {
     "level": 29,
-    "threshold": 6183,
-    "band": 431
+    "threshold": 4349,
+    "band": 234
    },
    {
     "level": 30,
-    "threshold": 6614,
-    "band": 454
+    "threshold": 4583,
+    "band": 241
    },
    {
     "level": 31,
-    "threshold": 7068,
-    "band": 479
+    "threshold": 4824,
+    "band": 249
    },
    {
     "level": 32,
-    "threshold": 7547,
-    "band": 504
+    "threshold": 5073,
+    "band": 257
    },
    {
     "level": 33,
-    "threshold": 8051,
-    "band": 531
+    "threshold": 5330,
+    "band": 265
    },
    {
     "level": 34,
-    "threshold": 8582,
-    "band": 560
+    "threshold": 5595,
+    "band": 273
    },
    {
     "level": 35,
-    "threshold": 9142,
-    "band": 590
+    "threshold": 5868,
+    "band": 281
    },
    {
     "level": 36,
-    "threshold": 9732,
-    "band": 621
+    "threshold": 6149,
+    "band": 290
    },
    {
     "level": 37,
-    "threshold": 10353,
-    "band": 655
+    "threshold": 6439,
+    "band": 299
    },
    {
     "level": 38,
-    "threshold": 11008,
-    "band": 690
+    "threshold": 6738,
+    "band": 308
    },
    {
     "level": 39,
-    "threshold": 11698,
-    "band": 727
+    "threshold": 7046,
+    "band": 318
    },
    {
     "level": 40,
-    "threshold": 12425,
-    "band": 766
+    "threshold": 7364,
+    "band": 327
    },
    {
     "level": 41,
-    "threshold": 13191,
-    "band": 807
+    "threshold": 7691,
+    "band": 337
    },
    {
     "level": 42,
-    "threshold": 13998,
-    "band": 850
+    "threshold": 8028,
+    "band": 348
    },
    {
     "level": 43,
-    "threshold": 14848,
-    "band": 895
+    "threshold": 8376,
+    "band": 359
    },
    {
     "level": 44,
-    "threshold": 15743,
-    "band": 943
+    "threshold": 8735,
+    "band": 370
    },
    {
     "level": 45,
-    "threshold": 16686,
-    "band": 994
+    "threshold": 9105,
+    "band": 381
    },
    {
     "level": 46,
-    "threshold": 17680,
-    "band": 1047
+    "threshold": 9486,
+    "band": 393
    },
    {
     "level": 47,
-    "threshold": 18727,
-    "band": 1103
+    "threshold": 9879,
+    "band": 405
    },
    {
     "level": 48,
-    "threshold": 19830,
-    "band": 1162
+    "threshold": 10284,
+    "band": 417
    },
    {
     "level": 49,
-    "threshold": 20992,
-    "band": 1225
+    "threshold": 10701,
+    "band": 430
    },
    {
     "level": 50,
-    "threshold": 22217,
-    "band": 1290
+    "threshold": 11131,
+    "band": 444
    },
    {
     "level": 51,
-    "threshold": 23507,
-    "band": 1359
+    "threshold": 11575,
+    "band": 457
    },
    {
     "level": 52,
-    "threshold": 24866,
-    "band": 1432
+    "threshold": 12032,
+    "band": 471
    },
    {
     "level": 53,
-    "threshold": 26298,
-    "band": 1509
+    "threshold": 12503,
+    "band": 486
    },
    {
     "level": 54,
-    "threshold": 27807,
-    "band": 1590
+    "threshold": 12989,
+    "band": 501
    },
    {
     "level": 55,
-    "threshold": 29397,
-    "band": 1675
+    "threshold": 13490,
+    "band": 516
    },
    {
     "level": 56,
-    "threshold": 31072,
-    "band": 1765
+    "threshold": 14006,
+    "band": 532
    },
    {
     "level": 57,
-    "threshold": 32837,
-    "band": 1859
+    "threshold": 14538,
+    "band": 549
    },
    {
     "level": 58,
-    "threshold": 34696,
-    "band": 1959
+    "threshold": 15087,
+    "band": 566
    },
    {
     "level": 59,
-    "threshold": 36655,
-    "band": 2064
+    "threshold": 15653,
+    "band": 583
    },
    {
     "level": 60,
-    "threshold": 38719,
-    "band": 2175
+    "threshold": 16236,
+    "band": 601
    },
    {
     "level": 61,
-    "threshold": 40894,
-    "band": 2291
+    "threshold": 16837,
+    "band": 620
    },
    {
     "level": 62,
-    "threshold": 43185,
-    "band": 2414
+    "threshold": 17457,
+    "band": 639
    },
    {
     "level": 63,
-    "threshold": 45599,
-    "band": 2543
+    "threshold": 18096,
+    "band": 659
    },
    {
     "level": 64,
-    "threshold": 48142,
-    "band": 2679
+    "threshold": 18755,
+    "band": 679
    },
    {
     "level": 65,
-    "threshold": 50821,
-    "band": 2823
+    "threshold": 19434,
+    "band": 700
    },
    {
     "level": 66,
-    "threshold": 53644,
-    "band": 2974
+    "threshold": 20134,
+    "band": 722
    },
    {
     "level": 67,
-    "threshold": 56618,
-    "band": 3134
+    "threshold": 20856,
+    "band": 744
    },
    {
     "level": 68,
-    "threshold": 59752,
-    "band": 3302
+    "threshold": 21600,
+    "band": 767
    },
    {
     "level": 69,
-    "threshold": 63054,
-    "band": 3478
+    "threshold": 22367,
+    "band": 790
    },
    {
     "level": 70,
-    "threshold": 66532,
-    "band": 3665
+    "threshold": 23157,
+    "band": 815
    },
    {
     "level": 71,
-    "threshold": 70197,
-    "band": 3861
+    "threshold": 23972,
+    "band": 840
    },
    {
     "level": 72,
-    "threshold": 74058,
-    "band": 4068
+    "threshold": 24812,
+    "band": 866
    },
    {
     "level": 73,
-    "threshold": 78126,
-    "band": 4286
+    "threshold": 25678,
+    "band": 893
    },
    {
     "level": 74,
-    "threshold": 82412,
-    "band": 4516
+    "threshold": 26571,
+    "band": 920
    },
    {
     "level": 75,
-    "threshold": 86928,
-    "band": 4758
+    "threshold": 27491,
+    "band": 949
    },
    {
     "level": 76,
-    "threshold": 91686,
-    "band": 5013
+    "threshold": 28440,
+    "band": 978
    },
    {
     "level": 77,
-    "threshold": 96699,
-    "band": 5281
+    "threshold": 29418,
+    "band": 1008
    },
    {
     "level": 78,
-    "threshold": 101980,
-    "band": 5564
+    "threshold": 30426,
+    "band": 1039
    },
    {
     "level": 79,
-    "threshold": 107544,
-    "band": 5862
+    "threshold": 31465,
+    "band": 1071
    },
    {
     "level": 80,
-    "threshold": 113406,
-    "band": 6176
+    "threshold": 32536,
+    "band": 1104
    },
    {
     "level": 81,
-    "threshold": 119582,
-    "band": 6507
+    "threshold": 33640,
+    "band": 1138
    },
    {
     "level": 82,
-    "threshold": 126089,
-    "band": 6856
+    "threshold": 34778,
+    "band": 1174
    },
    {
     "level": 83,
-    "threshold": 132945,
-    "band": 7223
+    "threshold": 35952,
+    "band": 1210
    },
    {
     "level": 84,
-    "threshold": 140168,
-    "band": 7610
+    "threshold": 37162,
+    "band": 1247
    },
    {
     "level": 85,
-    "threshold": 147778,
-    "band": 8018
+    "threshold": 38409,
+    "band": 1286
    },
    {
     "level": 86,
-    "threshold": 155796,
-    "band": 8448
+    "threshold": 39695,
+    "band": 1325
    },
    {
     "level": 87,
-    "threshold": 164244,
-    "band": 8900
+    "threshold": 41020,
+    "band": 1366
    },
    {
     "level": 88,
-    "threshold": 173144,
-    "band": 9377
+    "threshold": 42386,
+    "band": 1408
    },
    {
     "level": 89,
-    "threshold": 182521,
-    "band": 9880
+    "threshold": 43794,
+    "band": 1452
    },
    {
     "level": 90,
-    "threshold": 192401,
-    "band": 10409
+    "threshold": 45246,
+    "band": 1497
    },
    {
     "level": 91,
-    "threshold": 202810,
-    "band": 10967
+    "threshold": 46743,
+    "band": 1543
    },
    {
     "level": 92,
-    "threshold": 213777,
-    "band": 11554
+    "threshold": 48286,
+    "band": 1591
    },
    {
     "level": 93,
-    "threshold": 225331,
-    "band": 12173
+    "threshold": 49877,
+    "band": 1640
    },
    {
     "level": 94,
-    "threshold": 237504,
-    "band": 12826
+    "threshold": 51517,
+    "band": 1690
    },
    {
     "level": 95,
-    "threshold": 250330,
-    "band": 13513
+    "threshold": 53207,
+    "band": 1742
    },
    {
     "level": 96,
-    "threshold": 263843,
-    "band": 14237
+    "threshold": 54949,
+    "band": 1796
    },
    {
     "level": 97,
-    "threshold": 278080,
-    "band": 15000
+    "threshold": 56745,
+    "band": 1852
    },
    {
     "level": 98,
-    "threshold": 293080,
-    "band": 15803
+    "threshold": 58597,
+    "band": 1909
    },
    {
     "level": 99,
-    "threshold": 308883,
-    "band": 16650
+    "threshold": 60506,
+    "band": 1968
    },
    {
     "level": 100,
-    "threshold": 325533,
-    "band": 17542
+    "threshold": 62474,
+    "band": 2029
    },
    {
     "level": 101,
-    "threshold": 343075,
-    "band": 18482
+    "threshold": 64503,
+    "band": 2091
    },
    {
     "level": 102,
-    "threshold": 361557,
-    "band": 19472
+    "threshold": 66594,
+    "band": 2156
    },
    {
     "level": 103,
-    "threshold": 381029,
-    "band": 20516
+    "threshold": 68750,
+    "band": 2222
    },
    {
     "level": 104,
-    "threshold": 401545,
-    "band": 21615
+    "threshold": 70972,
+    "band": 2291
    },
    {
     "level": 105,
-    "threshold": 423160,
-    "band": 22773
+    "threshold": 73263,
+    "band": 2362
    },
    {
     "level": 106,
-    "threshold": 445933,
-    "band": 23993
+    "threshold": 75625,
+    "band": 2434
    },
    {
     "level": 107,
-    "threshold": 469926,
-    "band": 25279
+    "threshold": 78059,
+    "band": 2510
    },
    {
     "level": 108,
-    "threshold": 495205,
-    "band": 26633
+    "threshold": 80569,
+    "band": 2587
    },
    {
     "level": 109,
-    "threshold": 521838,
-    "band": 28060
+    "threshold": 83156,
+    "band": 2667
    },
    {
     "level": 110,
-    "threshold": 549898,
-    "band": 29564
+    "threshold": 85823,
+    "band": 2749
    },
    {
     "level": 111,
-    "threshold": 579462,
-    "band": 31148
+    "threshold": 88572,
+    "band": 2834
    },
    {
     "level": 112,
-    "threshold": 610610,
-    "band": 32817
+    "threshold": 91406,
+    "band": 2922
    },
    {
     "level": 113,
-    "threshold": 643427,
-    "band": 34575
+    "threshold": 94328,
+    "band": 3012
    },
    {
     "level": 114,
-    "threshold": 678002,
-    "band": 36428
+    "threshold": 97340,
+    "band": 3105
    },
    {
     "level": 115,
-    "threshold": 714430,
-    "band": 38379
+    "threshold": 100445,
+    "band": 3201
    },
    {
     "level": 116,
-    "threshold": 752809,
-    "band": 40436
+    "threshold": 103646,
+    "band": 3300
    },
    {
     "level": 117,
-    "threshold": 793245,
-    "band": 42602
+    "threshold": 106946,
+    "band": 3401
    },
    {
     "level": 118,
-    "threshold": 835847,
-    "band": 44885
+    "threshold": 110347,
+    "band": 3506
    },
    {
     "level": 119,
-    "threshold": 880732,
-    "band": 47290
+    "threshold": 113853,
+    "band": 3615
    },
    {
     "level": 120,
-    "threshold": 928022,
-    "band": 49824
+    "threshold": 117468,
+    "band": 3726
    },
    {
     "level": 121,
-    "threshold": 977846,
-    "band": 52493
+    "threshold": 121194,
+    "band": 3841
    },
    {
     "level": 122,
-    "threshold": 1030339,
-    "band": 55306
+    "threshold": 125035,
+    "band": 3960
    },
    {
     "level": 123,
-    "threshold": 1085645,
-    "band": 58269
+    "threshold": 128995,
+    "band": 4082
    },
    {
     "level": 124,
-    "threshold": 1143914,
-    "band": 61391
+    "threshold": 133077,
+    "band": 4208
    },
    {
     "level": 125,
-    "threshold": 1205305,
-    "band": 64680
+    "threshold": 137285,
+    "band": 4338
    },
    {
     "level": 126,
-    "threshold": 1269985,
-    "band": 68146
+    "threshold": 141623,
+    "band": 4472
    },
    {
     "level": 127,
-    "threshold": 1338131,
-    "band": 71797
+    "threshold": 146095,
+    "band": 4610
    },
    {
     "level": 128,
-    "threshold": 1409928,
-    "band": 75644
+    "threshold": 150705,
+    "band": 4752
    },
    {
     "level": 129,
-    "threshold": 1485572,
-    "band": 79697
+    "threshold": 155457,
+    "band": 4899
    },
    {
     "level": 130,
-    "threshold": 1565269,
-    "band": 83967
+    "threshold": 160356,
+    "band": 5050
    },
    {
     "level": 131,
-    "threshold": 1649236,
-    "band": 88466
+    "threshold": 165406,
+    "band": 5206
    },
    {
     "level": 132,
-    "threshold": 1737702,
-    "band": 93206
+    "threshold": 170612,
+    "band": 5367
    },
    {
     "level": 133,
-    "threshold": 1830908,
-    "band": 98200
+    "threshold": 175979,
+    "band": 5532
    },
    {
     "level": 134,
-    "threshold": 1929108,
-    "band": 103462
+    "threshold": 181511,
+    "band": 5703
    },
    {
     "level": 135,
-    "threshold": 2032570,
-    "band": 109005
+    "threshold": 187214,
+    "band": 5879
    },
    {
     "level": 136,
-    "threshold": 2141575,
-    "band": 114846
+    "threshold": 193093,
+    "band": 6061
    },
    {
     "level": 137,
-    "threshold": 2256421,
-    "band": 120999
+    "threshold": 199154,
+    "band": 6248
    },
    {
     "level": 138,
-    "threshold": 2377420,
-    "band": 127482
+    "threshold": 205402,
+    "band": 6441
    },
    {
     "level": 139,
-    "threshold": 2504902,
-    "band": 134313
+    "threshold": 211843,
+    "band": 6640
    },
    {
     "level": 140,
-    "threshold": 2639215,
-    "band": 141509
+    "threshold": 218483,
+    "band": 6845
    },
    {
     "level": 141,
-    "threshold": 2780724,
-    "band": 149091
+    "threshold": 225328,
+    "band": 7056
    },
    {
     "level": 142,
-    "threshold": 2929815,
-    "band": 157080
+    "threshold": 232384,
+    "band": 7274
    },
    {
     "level": 143,
-    "threshold": 3086895,
-    "band": 165496
+    "threshold": 239658,
+    "band": 7498
    },
    {
     "level": 144,
-    "threshold": 3252391,
-    "band": 174363
+    "threshold": 247156,
+    "band": 7730
    },
    {
     "level": 145,
-    "threshold": 3426754,
-    "band": 183706
+    "threshold": 254886,
+    "band": 7968
    },
    {
     "level": 146,
-    "threshold": 3610460,
-    "band": 193549
+    "threshold": 262854,
+    "band": 8214
    },
    {
     "level": 147,
-    "threshold": 3804009,
-    "band": 203919
+    "threshold": 271068,
+    "band": 8468
    },
    {
     "level": 148,
-    "threshold": 4007928,
-    "band": 214845
+    "threshold": 279536,
+    "band": 8729
    },
    {
     "level": 149,
-    "threshold": 4222773,
-    "band": 226356
+    "threshold": 288265,
+    "band": 8999
    },
    {
     "level": 150,
-    "threshold": 4449129,
-    "band": 238485
-   },
-   {
-    "level": 151,
-    "threshold": 4687614,
-    "band": 251263
-   },
-   {
-    "level": 152,
-    "threshold": 4938877,
-    "band": 264725
-   },
-   {
-    "level": 153,
-    "threshold": 5203602,
-    "band": 278909
-   },
-   {
-    "level": 154,
-    "threshold": 5482511,
-    "band": 293853
-   },
-   {
-    "level": 155,
-    "threshold": 5776364,
-    "band": 309598
-   },
-   {
-    "level": 156,
-    "threshold": 6085962,
-    "band": 326186
-   },
-   {
-    "level": 157,
-    "threshold": 6412148,
-    "band": 343663
-   },
-   {
-    "level": 158,
-    "threshold": 6755811,
-    "band": 362076
-   },
-   {
-    "level": 159,
-    "threshold": 7117887,
-    "band": 381477
-   },
-   {
-    "level": 160,
-    "threshold": 7499364,
-    "band": 401916
-   },
-   {
-    "level": 161,
-    "threshold": 7901280,
-    "band": 423451
-   },
-   {
-    "level": 162,
-    "threshold": 8324731,
-    "band": 446139
-   },
-   {
-    "level": 163,
-    "threshold": 8770870,
-    "band": 470043
-   },
-   {
-    "level": 164,
-    "threshold": 9240913,
-    "band": 495228
-   },
-   {
-    "level": 165,
-    "threshold": 9736141,
-    "band": 521763
-   },
-   {
-    "level": 166,
-    "threshold": 10257904,
-    "band": 549719
-   },
-   {
-    "level": 167,
-    "threshold": 10807623,
-    "band": 579173
-   },
-   {
-    "level": 168,
-    "threshold": 11386796,
-    "band": 610205
-   },
-   {
-    "level": 169,
-    "threshold": 11997001,
-    "band": 642899
-   },
-   {
-    "level": 170,
-    "threshold": 12639900,
-    "band": 677346
-   },
-   {
-    "level": 171,
-    "threshold": 13317246,
-    "band": 713638
-   },
-   {
-    "level": 172,
-    "threshold": 14030884,
-    "band": 751875
-   },
-   {
-    "level": 173,
-    "threshold": 14782759,
-    "band": 792160
-   },
-   {
-    "level": 174,
-    "threshold": 15574919,
-    "band": 834604
-   },
-   {
-    "level": 175,
-    "threshold": 16409523,
-    "band": 879322
-   },
-   {
-    "level": 176,
-    "threshold": 17288845,
-    "band": 926436
-   },
-   {
-    "level": 177,
-    "threshold": 18215281,
-    "band": 976075
-   },
-   {
-    "level": 178,
-    "threshold": 19191356,
-    "band": 1028373
-   },
-   {
-    "level": 179,
-    "threshold": 20219729,
-    "band": 1083473
-   },
-   {
-    "level": 180,
-    "threshold": 21303202,
-    "band": 1141526
-   },
-   {
-    "level": 181,
-    "threshold": 22444728,
-    "band": 1202689
-   },
-   {
-    "level": 182,
-    "threshold": 23647417,
-    "band": 1267129
-   },
-   {
-    "level": 183,
-    "threshold": 24914546,
-    "band": 1335021
-   },
-   {
-    "level": 184,
-    "threshold": 26249567,
-    "band": 1406552
-   },
-   {
-    "level": 185,
-    "threshold": 27656119,
-    "band": 1481915
-   },
-   {
-    "level": 186,
-    "threshold": 29138034,
-    "band": 1561316
-   },
-   {
-    "level": 187,
-    "threshold": 30699350,
-    "band": 1644971
-   },
-   {
-    "level": 188,
-    "threshold": 32344321,
-    "band": 1733109
-   },
-   {
-    "level": 189,
-    "threshold": 34077430,
-    "band": 1825969
-   },
-   {
-    "level": 190,
-    "threshold": 35903399,
-    "band": 1923804
-   },
-   {
-    "level": 191,
-    "threshold": 37827203,
-    "band": 2026882
-   },
-   {
-    "level": 192,
-    "threshold": 39854085,
-    "band": 2135482
-   },
-   {
-    "level": 193,
-    "threshold": 41989567,
-    "band": 2249901
-   },
-   {
-    "level": 194,
-    "threshold": 44239468,
-    "band": 2370451
-   },
-   {
-    "level": 195,
-    "threshold": 46609919,
-    "band": 2497460
-   },
-   {
-    "level": 196,
-    "threshold": 49107379,
-    "band": 2631273
-   },
-   {
-    "level": 197,
-    "threshold": 51738652,
-    "band": 2772257
-   },
-   {
-    "level": 198,
-    "threshold": 54510909,
-    "band": 2920795
-   },
-   {
-    "level": 199,
-    "threshold": 57431704,
-    "band": 3077291
-   },
-   {
-    "level": 200,
-    "threshold": 60508995,
+    "threshold": 297264,
     "band": 0
    }
   ]
@@ -1049,7 +802,7 @@
     "en": "The habit is forming.",
     "cs": "Zvyk se rodí."
    },
-   "xpAtStart": 556
+   "xpAtStart": 532
   },
   {
    "from": 11,
@@ -1064,7 +817,7 @@
     "en": "You know your way around now.",
     "cs": "Už se tu vyznáš."
    },
-   "xpAtStart": 1279
+   "xpAtStart": 1151
   },
   {
    "from": 16,
@@ -1079,7 +832,7 @@
     "en": "This is just what you do now.",
     "cs": "Teď už to prostě děláš."
    },
-   "xpAtStart": 2218
+   "xpAtStart": 1872
   },
   {
    "from": 21,
@@ -1094,7 +847,7 @@
     "en": "Consistency is becoming your thing.",
     "cs": "Pravidelnost se stává tvou silnou stránkou."
    },
-   "xpAtStart": 3437
+   "xpAtStart": 2712
   },
   {
    "from": 28,
@@ -1109,7 +862,7 @@
     "en": "Missing a day feels wrong now.",
     "cs": "Vynechat den ti už připadá divné."
    },
-   "xpAtStart": 5774
+   "xpAtStart": 4122
   },
   {
    "from": 36,
@@ -1124,7 +877,7 @@
     "en": "Months in, still showing up.",
     "cs": "Měsíce za tebou a pořád tu jsi."
    },
-   "xpAtStart": 9732
+   "xpAtStart": 6149
   },
   {
    "from": 45,
@@ -1139,7 +892,7 @@
     "en": "You've seen every kind of day.",
     "cs": "Už znáš všechny druhy dnů."
    },
-   "xpAtStart": 16686
+   "xpAtStart": 9105
   },
   {
    "from": 55,
@@ -1154,7 +907,7 @@
     "en": "A full year, easy.",
     "cs": "Celý rok, v pohodě."
    },
-   "xpAtStart": 29397
+   "xpAtStart": 13490
   },
   {
    "from": 66,
@@ -1169,7 +922,7 @@
     "en": "You could teach this.",
     "cs": "Tohle už zvládáš učit i ostatní."
    },
-   "xpAtStart": 53644
+   "xpAtStart": 20134
   },
   {
    "from": 78,
@@ -1184,11 +937,11 @@
     "en": "Top of the leaderboard, if there were one.",
     "cs": "Vrchol žebříčku, kdyby nějaký byl."
    },
-   "xpAtStart": 101980
+   "xpAtStart": 30426
   },
   {
    "from": 91,
-   "to": 104,
+   "to": 100,
    "rarity": "epic",
    "symbol": "flame.fill",
    "title": {
@@ -1199,11 +952,11 @@
     "en": "Multi-year discipline.",
     "cs": "Disciplína na roky."
    },
-   "xpAtStart": 202810
+   "xpAtStart": 46743
   },
   {
-   "from": 105,
-   "to": 119,
+   "from": 101,
+   "to": 110,
    "rarity": "epic",
    "symbol": "flame.fill",
    "title": {
@@ -1214,11 +967,11 @@
     "en": "Genuinely rare territory.",
     "cs": "Opravdu vzácné území."
    },
-   "xpAtStart": 423160
+   "xpAtStart": 64503
   },
   {
-   "from": 120,
-   "to": 135,
+   "from": 111,
+   "to": 120,
    "rarity": "epic",
    "symbol": "flame.fill",
    "title": {
@@ -1229,11 +982,11 @@
     "en": "Years of unbroken effort.",
     "cs": "Roky nepřerušeného úsilí."
    },
-   "xpAtStart": 928022
+   "xpAtStart": 88572
   },
   {
-   "from": 136,
-   "to": 152,
+   "from": 121,
+   "to": 130,
    "rarity": "epic",
    "symbol": "flame.fill",
    "title": {
@@ -1244,13 +997,13 @@
     "en": "An inspiration, if anyone was watching.",
     "cs": "Inspirace pro ostatní, kdyby se někdo díval."
    },
-   "xpAtStart": 2141575
+   "xpAtStart": 121194
   },
   {
-   "from": 153,
-   "to": 170,
-   "rarity": "legendary",
-   "symbol": "crown.fill",
+   "from": 131,
+   "to": 139,
+   "rarity": "epic",
+   "symbol": "flame.fill",
    "title": {
     "en": "Mythic",
     "cs": "Mýtický"
@@ -1259,13 +1012,13 @@
     "en": "The stuff of legend.",
     "cs": "Látka pro legendy."
    },
-   "xpAtStart": 5203602
+   "xpAtStart": 165406
   },
   {
-   "from": 171,
-   "to": 185,
-   "rarity": "legendary",
-   "symbol": "crown.fill",
+   "from": 140,
+   "to": 145,
+   "rarity": "epic",
+   "symbol": "flame.fill",
    "title": {
     "en": "Immortal",
     "cs": "Nesmrtelný"
@@ -1274,13 +1027,13 @@
     "en": "Time itself is starting to notice.",
     "cs": "Všímá si tě už i samotný čas."
    },
-   "xpAtStart": 13317246
+   "xpAtStart": 218483
   },
   {
-   "from": 186,
-   "to": 195,
-   "rarity": "legendary",
-   "symbol": "crown.fill",
+   "from": 146,
+   "to": 148,
+   "rarity": "epic",
+   "symbol": "flame.fill",
    "title": {
     "en": "Transcendent",
     "cs": "Transcendentní"
@@ -1289,13 +1042,13 @@
     "en": "Beyond the curve's original design.",
     "cs": "Za hranicí původně navržené křivky."
    },
-   "xpAtStart": 29138034
+   "xpAtStart": 262854
   },
   {
-   "from": 196,
-   "to": 199,
-   "rarity": "legendary",
-   "symbol": "crown.fill",
+   "from": 149,
+   "to": 149,
+   "rarity": "epic",
+   "symbol": "flame.fill",
    "title": {
     "en": "Ascendant",
     "cs": "Na vzestupu"
@@ -1304,11 +1057,11 @@
     "en": "One step from the summit.",
     "cs": "Krok od vrcholu."
    },
-   "xpAtStart": 49107379
+   "xpAtStart": 288265
   },
   {
-   "from": 200,
-   "to": 200,
+   "from": 150,
+   "to": 150,
    "rarity": "legendary",
    "symbol": "crown.fill",
    "title": {
@@ -1319,7 +1072,7 @@
     "en": "You reached the ceiling. Actually reached it.",
     "cs": "Strop je dosažen. Opravdu."
    },
-   "xpAtStart": 60508995
+   "xpAtStart": 297264
   }
  ],
  "xpAwards": {
@@ -1343,11 +1096,54 @@
   "creativeChallengeRange": [
    60,
    160
+  ],
+  "trainingCheckIn": 10,
+  "trainingPainLogged": 2,
+  "trainingSessionRPE": 2,
+  "trainingSessionNote": 1,
+  "trainingGateTest": 15,
+  "trainingTestRecorded": 20,
+  "trainingHabitTick": 2,
+  "trainingHabitTickCapPerDay": 8,
+  "trainingHabitFullDay": 6,
+  "trainingLadderStep": 40,
+  "trainingSession": 20,
+  "trainingHonestCall": 8,
+  "trainingDayKept": 8,
+  "trainingWeekApproved": 10,
+  "trainingWeekKept": 80,
+  "trainingEasyWeek": 30,
+  "trainingGymWeek": 20,
+  "trainingPhaseCompleted": 150,
+  "trainingSeasonCompleted": 300,
+  "trainingRacePrep": 40,
+  "trainingCarbLoadDay": 15,
+  "trainingRaceFuelPlan": 30,
+  "trainingRaceFinished": 100,
+  "trainingRaceReport": 60,
+  "trainingWiseCall": 100,
+  "trainingHabitStreakMilestones": [
+   {
+    "days": 7,
+    "xp": 20
+   },
+   {
+    "days": 30,
+    "xp": 40
+   },
+   {
+    "days": 100,
+    "xp": 80
+   },
+   {
+    "days": 365,
+    "xp": 200
+   }
   ]
  },
  "budget": {
-  "targetLevel": 84,
-  "targetDays": 1095,
+  "targetLevel": 150,
+  "targetDays": 1540,
   "assumedMeanChallengeReward": 85,
   "lines": [
    {
@@ -1425,10 +1221,295 @@
     "optional": true,
     "what": "stack complete (6) on 85% of days + 5 creatine milestones (40) + 10 badges — before the optional multiplier",
     "xp": 5.557
+   },
+   {
+    "source": "training",
+    "trainingOnly": true,
+    "what": "training experience only: 25 sources (check-ins, habits, sessions within the light, kept days and weeks, phases, races, badges)",
+    "xp": 64.907
    }
   ],
   "coreDailyXP": 128.036,
-  "solvedGrowthFactor": 1.053583,
+  "trainingDailyXP": 64.907,
+  "typicalDailyXP": 192.944,
+  "trainingLines": [
+   {
+    "source": "checkIn",
+    "reward": 10,
+    "per": "week",
+    "typical": 6,
+    "poor": 3,
+    "perfect": 7,
+    "xp": 8.571,
+    "poorXp": 4.286,
+    "perfectXp": 10
+   },
+   {
+    "source": "painLogged",
+    "reward": 2,
+    "per": "week",
+    "typical": 2.4000000000000004,
+    "poor": 1.2000000000000002,
+    "perfect": 2.8000000000000003,
+    "xp": 0.686,
+    "poorXp": 0.343,
+    "perfectXp": 0.8
+   },
+   {
+    "source": "sessionRPE",
+    "reward": 2,
+    "per": "week",
+    "typical": 4,
+    "poor": 1,
+    "perfect": 7,
+    "xp": 1.143,
+    "poorXp": 0.286,
+    "perfectXp": 2
+   },
+   {
+    "source": "sessionNote",
+    "reward": 1,
+    "per": "week",
+    "typical": 2,
+    "poor": 0,
+    "perfect": 7,
+    "xp": 0.286,
+    "poorXp": 0,
+    "perfectXp": 1
+   },
+   {
+    "source": "gateTest",
+    "reward": 15,
+    "per": "week",
+    "typical": 0.4,
+    "poor": 0.2,
+    "perfect": 0.4,
+    "xp": 0.857,
+    "poorXp": 0.429,
+    "perfectXp": 0.857
+   },
+   {
+    "source": "testRecorded",
+    "reward": 20,
+    "per": "week",
+    "typical": 0.5,
+    "poor": 0.25,
+    "perfect": 0.5,
+    "xp": 1.429,
+    "poorXp": 0.714,
+    "perfectXp": 1.429
+   },
+   {
+    "source": "habitTick",
+    "reward": 2,
+    "per": "week",
+    "typical": 22,
+    "poor": 10,
+    "perfect": 28,
+    "xp": 6.286,
+    "poorXp": 2.857,
+    "perfectXp": 8
+   },
+   {
+    "source": "habitFullDay",
+    "reward": 6,
+    "per": "week",
+    "typical": 3.5,
+    "poor": 0.5,
+    "perfect": 7,
+    "xp": 3,
+    "poorXp": 0.429,
+    "perfectXp": 6
+   },
+   {
+    "source": "habitStreak",
+    "reward": 340,
+    "per": "span",
+    "typical": 1,
+    "poor": 0.2,
+    "perfect": 1,
+    "xp": 0.221,
+    "poorXp": 0.044,
+    "perfectXp": 0.221
+   },
+   {
+    "source": "ladderStep",
+    "reward": 40,
+    "per": "span",
+    "typical": 8,
+    "poor": 4,
+    "perfect": 8,
+    "xp": 0.208,
+    "poorXp": 0.104,
+    "perfectXp": 0.208
+   },
+   {
+    "source": "session",
+    "reward": 20,
+    "per": "week",
+    "typical": 5.95,
+    "poor": 4,
+    "perfect": 7,
+    "xp": 17,
+    "poorXp": 11.429,
+    "perfectXp": 20
+   },
+   {
+    "source": "honestCall",
+    "reward": 8,
+    "per": "week",
+    "typical": 0.7,
+    "poor": 0.3,
+    "perfect": 0.7,
+    "xp": 0.8,
+    "poorXp": 0.343,
+    "perfectXp": 0.8
+   },
+   {
+    "source": "dayKept",
+    "reward": 8,
+    "per": "week",
+    "typical": 5.5,
+    "poor": 3,
+    "perfect": 7,
+    "xp": 6.286,
+    "poorXp": 3.429,
+    "perfectXp": 8
+   },
+   {
+    "source": "weekApproved",
+    "reward": 10,
+    "per": "week",
+    "typical": 0.95,
+    "poor": 0.8,
+    "perfect": 1,
+    "xp": 1.357,
+    "poorXp": 1.143,
+    "perfectXp": 1.429
+   },
+   {
+    "source": "weekKept",
+    "reward": 80,
+    "per": "week",
+    "typical": 0.6,
+    "poor": 0,
+    "perfect": 1,
+    "xp": 6.857,
+    "poorXp": 0,
+    "perfectXp": 11.429
+   },
+   {
+    "source": "easyWeek",
+    "reward": 30,
+    "per": "week",
+    "typical": 0.1875,
+    "poor": 0,
+    "perfect": 0.25,
+    "xp": 0.804,
+    "poorXp": 0,
+    "perfectXp": 1.071
+   },
+   {
+    "source": "gymWeek",
+    "reward": 20,
+    "per": "week",
+    "typical": 0.7,
+    "poor": 0.25,
+    "perfect": 1,
+    "xp": 2,
+    "poorXp": 0.714,
+    "perfectXp": 2.857
+   },
+   {
+    "source": "phaseCompleted",
+    "reward": 150,
+    "per": "year",
+    "typical": 4,
+    "poor": 3,
+    "perfect": 4,
+    "xp": 1.644,
+    "poorXp": 1.233,
+    "perfectXp": 1.644
+   },
+   {
+    "source": "seasonCompleted",
+    "reward": 300,
+    "per": "year",
+    "typical": 1,
+    "poor": 1,
+    "perfect": 1,
+    "xp": 0.822,
+    "poorXp": 0.822,
+    "perfectXp": 0.822
+   },
+   {
+    "source": "racePrep",
+    "reward": 40,
+    "per": "year",
+    "typical": 6,
+    "poor": 1,
+    "perfect": 8,
+    "xp": 0.658,
+    "poorXp": 0.11,
+    "perfectXp": 0.877
+   },
+   {
+    "source": "carbLoadDay",
+    "reward": 15,
+    "per": "year",
+    "typical": 6,
+    "poor": 0,
+    "perfect": 16,
+    "xp": 0.247,
+    "poorXp": 0,
+    "perfectXp": 0.658
+   },
+   {
+    "source": "raceFinished",
+    "reward": 100,
+    "per": "year",
+    "typical": 7,
+    "poor": 3,
+    "perfect": 8,
+    "xp": 1.918,
+    "poorXp": 0.822,
+    "perfectXp": 2.192
+   },
+   {
+    "source": "raceReport",
+    "reward": 60,
+    "per": "year",
+    "typical": 6,
+    "poor": 1,
+    "perfect": 8,
+    "xp": 0.986,
+    "poorXp": 0.164,
+    "perfectXp": 1.315
+   },
+   {
+    "source": "wiseCall",
+    "reward": 100,
+    "per": "span",
+    "typical": 1,
+    "poor": 1,
+    "perfect": 1,
+    "xp": 0.065,
+    "poorXp": 0.065,
+    "perfectXp": 0.065
+   },
+   {
+    "source": "badges",
+    "reward": 30,
+    "per": "span",
+    "typical": 40,
+    "poor": 15,
+    "perfect": 55,
+    "xp": 0.779,
+    "poorXp": 0.292,
+    "perfectXp": 1.071
+   }
+  ],
+  "solvedGrowthFactor": 1.030866,
   "optionalPaceAllowance": 0.005,
   "optionalMultiplierWithSupplements": 0.1152,
   "supplementStackGrantAfterMultiplier": 1,
@@ -1437,39 +1518,48 @@
   "daysToReach": [
    {
     "level": 5,
-    "days": 3
+    "days": 2,
+    "daysFoodFirst": 3
    },
    {
     "level": 10,
-    "days": 9
+    "days": 5,
+    "daysFoodFirst": 8
    },
    {
     "level": 20,
-    "days": 25
+    "days": 13,
+    "daysFoodFirst": 20
    },
    {
     "level": 30,
-    "days": 52
+    "days": 24,
+    "daysFoodFirst": 36
    },
    {
     "level": 50,
-    "days": 174
+    "days": 58,
+    "daysFoodFirst": 87
    },
    {
-    "level": 84,
-    "days": 1095
+    "level": 75,
+    "days": 142,
+    "daysFoodFirst": 215
    },
    {
     "level": 100,
-    "days": 2543
+    "days": 324,
+    "daysFoodFirst": 488
+   },
+   {
+    "level": 125,
+    "days": 712,
+    "daysFoodFirst": 1072
    },
    {
     "level": 150,
-    "days": 34749
-   },
-   {
-    "level": 200,
-    "days": 472593
+    "days": 1541,
+    "daysFoodFirst": 2322
    }
   ]
  },
