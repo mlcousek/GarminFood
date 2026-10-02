@@ -40,17 +40,18 @@ final class TrainingStatsTests: XCTestCase {
         // (the stats design's rule), even before the week starts.
         XCTAssertEqual(adherence.weeks.map(\.countsText), [
             "8 done · 0 missed · 0 planned",
-            "1 done · 1 missed · 4 planned",
+            "2 done · 1 missed · 4 planned",
             "0 done · 0 missed · 4 planned · 1 skipped"
         ])
-        XCTAssertEqual(adherence.weeks.map(\.adherenceText), ["100 %", "50 %", "0 %"])
+        // W43: the tempo and the gym session done by hand, of three due.
+        XCTAssertEqual(adherence.weeks.map(\.adherenceText), ["100 %", "67 %", "0 %"])
         XCTAssertEqual(adherence.weeks.map(\.isCurrent), [false, true, false])
-        XCTAssertEqual(adherence.totals.done, 9)
+        XCTAssertEqual(adherence.totals.done, 10)
         XCTAssertEqual(adherence.totals.missed, 1)
         XCTAssertEqual(adherence.totals.skipped, 1)
         XCTAssertEqual(adherence.totals.planned, 8)
-        // 9 of 11 due.
-        XCTAssertEqual(adherence.summary, "Done 82 % of the sessions due so far")
+        // 10 of 12 due.
+        XCTAssertEqual(adherence.summary, "Done 83 % of the sessions due so far")
         XCTAssertNil(adherence.outsideText)
         XCTAssertEqual(adherence.phases.map(\.title), ["Test Base 2030"])
         XCTAssertEqual(adherence.legend.missed, "Missed")
@@ -62,14 +63,14 @@ final class TrainingStatsTests: XCTestCase {
         let adherence = try XCTUnwrap(stats.adherence)
         XCTAssertEqual(adherence.weeks.map(\.title), ["W41", "W42", "W43", "W44"])
         XCTAssertEqual(adherence.phases.map(\.title), ["Test Prelude 2030", "Test Base 2030"])
-        XCTAssertEqual(adherence.phases.map(\.countsText), ["2 done · 0 missed · 0 planned", "9 done · 1 missed · 8 planned · 1 skipped"])
-        // 11 of 13 due.
-        XCTAssertEqual(adherence.summary, "Done 85 % of the sessions due so far")
+        XCTAssertEqual(adherence.phases.map(\.countsText), ["2 done · 0 missed · 0 planned", "10 done · 1 missed · 8 planned · 1 skipped"])
+        // 12 of 14 due.
+        XCTAssertEqual(adherence.summary, "Done 86 % of the sessions due so far")
         // The season started in W36; W36-W40 are not in the file: listed, not zero.
         XCTAssertEqual(adherence.outsideText, "Not in the app's window: W36, W37, W38, W39, W40")
 
         let czech = try XCTUnwrap(try builder(.czech).stats(scope: .season).adherence)
-        XCTAssertEqual(czech.summary, "Hotovo 85 % tréninků, které už byly na řadě")
+        XCTAssertEqual(czech.summary, "Hotovo 86 % tréninků, které už byly na řadě")
         XCTAssertEqual(czech.weeks[0].countsText, "2 hotovo · 0 vynecháno · 0 naplánováno")
         XCTAssertEqual(czech.outsideText, "Mimo okno aplikace: T36, T37, T38, T39, T40")
     }
@@ -88,14 +89,15 @@ final class TrainingStatsTests: XCTestCase {
     }
 
     func testSkippedSessionsAreDueButNotDone() throws {
-        // `skipped` is reserved in v1; if the vault ever writes it, it counts as due.
+        // A skipped session counts as due: W43's missed one (Tuesday's
+        // mobility), skipped instead.
         let data = try Fixtures.mutatedExample { object in
-            try Fixtures.mutateSession(&object, week: 2, day: 0, session: 0) { session in session["status"] = "skipped" }
+            try Fixtures.mutateSession(&object, week: 2, day: 1, session: 1) { session in session["status"] = "skipped" }
         }
         let week = try XCTUnwrap(try builder(data: data).stats(scope: .phase("test-base-2030")).adherence?.weeks[1])
         XCTAssertEqual(week.counts.skipped, 1)
-        XCTAssertEqual(week.countsText, "1 done · 0 missed · 4 planned · 1 skipped")
-        XCTAssertEqual(week.adherenceText, "50 %")
+        XCTAssertEqual(week.countsText, "2 done · 0 missed · 4 planned · 1 skipped")
+        XCTAssertEqual(week.adherenceText, "67 %")
         XCTAssertNil(StatusCounts().adherence)
     }
 
