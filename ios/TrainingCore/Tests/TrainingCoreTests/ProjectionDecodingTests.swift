@@ -61,8 +61,10 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(zones.zones.map(\.number), [1, 2, 3, 4, 5])
         XCTAssertEqual(zones.zone(number: 2), HRZone(number: 2, low: 129, high: 145))
         // Filled from the event log since the vault's add-hub-ingest.
-        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: projection.acks), ["ios-0a1b2c3d": 24, "ios-5e6f7a8b": 3])
-        XCTAssertEqual(projection.outcomes.count, 10)
+        XCTAssertEqual(CheckInOverlay.ackedSeqs(from: projection.acks), ["ios-0a1b2c3d": 31, "ios-5e6f7a8b": 3])
+        // Ten plan-command outcomes and two refused habit ticks (the
+        // vault's 2026-10-01 contract: a tick too far back, one in the future).
+        XCTAssertEqual(projection.outcomes.count, 12)
         // Race sessions can't be moved from the app: the vault refuses it.
         let refused = projection.outcomes.first { $0["seq"] == .number(16) && $0["deviceId"]?.stringValue == "ios-0a1b2c3d" }
         XCTAssertEqual(refused?["status"]?.stringValue, "refused")
@@ -123,9 +125,10 @@ final class ProjectionDecodingTests: XCTestCase {
         // add-checkin-pain-score: the vault's pain flag for the week of asOf.
         XCTAssertEqual(w43.ruleNotes.last?["rule"]?.stringValue, "pain-high")
         XCTAssertTrue(plan.weeks[3].ruleNotes.isEmpty)
-        XCTAssertEqual(w43.targets.sessions, 6)
+        XCTAssertEqual(w43.targets.sessions, 7)
         XCTAssertEqual(w43.actual?.runKm, 10.1)
-        XCTAssertEqual(w43.actual?.sessionsDone, 1)
+        // The tempo, and Monday's gym session done without a watch.
+        XCTAssertEqual(w43.actual?.sessionsDone, 2)
         XCTAssertEqual(w43.actual?.sessionsMissed, 1)
         XCTAssertNil(w43.aiNote)
         XCTAssertTrue(w43.absorbed.isEmpty)
@@ -236,6 +239,30 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(ruled.ruleNotes.count, 1)
         XCTAssertEqual(ruled.origin?["kind"]?.stringValue, "rule")
 
+        // The vault's 2026-10-01 contract (add-daily-checkin-and-pain-mode
+        // mirrors it; the app shows none of it yet). Done without a watch:
+        // `source` and `matchedBy` are values this build doesn't know, and
+        // there is no activity -- the session is still done.
+        let gym = try XCTUnwrap(plan.weeks[2].day(D.date("2030-10-21"))?.sessions.first)
+        XCTAssertEqual(gym.id, "2030-w43-mon-pm")
+        XCTAssertEqual(gym.status, .known(.done))
+        XCTAssertEqual(gym.done?.source, .unknown("manual"))
+        XCTAssertEqual(gym.done?.matchedBy, .unknown("manual"))
+        XCTAssertNil(gym.done?.activity)
+        XCTAssertNil(gym.done?.option)
+        // An activity that wins over a manual record reads as before.
+        XCTAssertNil(tempo.done?.source)
+        XCTAssertEqual(tempo.done?.matchedBy, .known(.dateSportGroup))
+        XCTAssertEqual(tempo.done?.activity?.km, 10.1)
+        // A session pain note is a rule note like any other.
+        XCTAssertEqual(tempo.ruleNotes.count, 1)
+        XCTAssertEqual(tempo.ruleNotes.first?["rule"]?.stringValue, "session-pain")
+        // The session the vault added so the example keeps a missed one.
+        let mobility = try XCTUnwrap(plan.weeks[2].day(D.date("2030-10-22"))?.sessions.last)
+        XCTAssertEqual(mobility.id, "2030-w43-tue-pm")
+        XCTAssertEqual(mobility.sport, .known(.mobility))
+        XCTAssertEqual(mobility.status, .known(.missed))
+
         // Zone spelling in the contract is upper case.
         XCTAssertEqual(tue.targets.zone, "Z1")
     }
@@ -272,7 +299,7 @@ final class ProjectionDecodingTests: XCTestCase {
         XCTAssertEqual(ladder[0].schedule?.kind, .known(.daily))
         XCTAssertEqual(ladder[0].schedule?.perDay, 2)
         XCTAssertEqual(ladder[0].dose?.resolved(.czech), "5 × 45 s, twice a day")
-        XCTAssertEqual(ladder[0].window14?.pct, 75)
+        XCTAssertEqual(ladder[0].window14?.pct, 83)
         XCTAssertEqual(ladder[0].window14?.recordedDays, 12)
         XCTAssertEqual(ladder[1].schedule?.days, ["MO", "TH"])
         XCTAssertEqual(ladder[1].gateMet, false)
