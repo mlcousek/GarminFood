@@ -61,6 +61,14 @@ context" of 2026-09-30) now carries what the app needs:
   longer ask for a plan.
 - `add-winter-arc-nutrition-and-rewards` task 5.3 (the golden check of the
   example's fuel, deferred until the vault published it) is done here.
+- **The vault's 2026-10-01 contract is mirrored too** (training load and
+  gates, still v1: the gate test, pain during a session, "the plan is the
+  ceiling", done without a watch, the data-gap notice, habit streaks, and
+  the events `test.gate` and `session.done`). The app shows none of it
+  yet; this change only makes sure the richer files read cleanly: unknown
+  keys ignored, new values unknown, new event types `.other`, no empty
+  "Done activity" card for a session done by hand, and no rule override
+  offered for a session pain note (design D8).
 
 Nothing is persisted in a new file: no `StoreCatalog` entry.
 
@@ -69,11 +77,14 @@ Nothing is persisted in a new file: no `StoreCatalog` entry.
 - TrainingCore: `Contract/` (Projection, Pain, OpenEnum),
   `Plan/TrainingSnapshot`, new `Plan/PainModeState`, `Plan/DayFuelTargets`,
   `Plan/TrainingRewardFacts`, `Events/CheckInOverlay`,
-  `Events/TrainingReminderPlanner`, the Today / Plan / pain / habits /
-  race builders, three new strings (one replaced) in both `.lproj`.
-- App: `TrainingModel` (reminder times, `isPainMode`),
-  `TrainingNutritionBridge`, `TrainingTodayCards` (the link),
+  `Events/TrainingReminderPlanner`, `Events/PlanEditPolicy` (note-only
+  rules), the Today / Plan / pain / habits / race builders,
+  `ViewModels/SessionDetailModel` (no empty done card), three new strings
+  (one replaced) in both `.lproj`.
+- App: `TrainingModel` (reminder times, `isPainMode`, one replan at a
+  time), `TrainingNutritionBridge`, `TrainingTodayCards` (the link),
   `WeekAgendaView`, `NotificationSettingsView` (time pickers),
+  `NotificationScheduler` (the fire time in the request identifier),
   `AppEnvironment` (the Control's hand-off), `Localizable.xcstrings`.
 - Behaviour that changes for an existing install: a check-in reminder on
   rest days and unwritten weeks; no pain step, line or tags while pain

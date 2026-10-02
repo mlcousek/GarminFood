@@ -97,9 +97,39 @@ light. Its body is "Green, amber or red?", and in pain mode "... Add your
 pain score too." (the old "before you run" is wrong on a rest day).
 `TrainingReminderTimes` (clamped into a day) replaces the two constants;
 `TrainingModel` keeps them in UserDefaults under four keys, like the food
-reminders. The scheduler diffs pending requests by identifier and text, so
-a changed time first clears the training reminders and then plans them
-again.
+reminders. The scheduler diffs pending requests by identifier and text, and
+a changed time changes neither -- so the request identifier carries the
+fire time (`trainingReminder.<kind>.<day>.<HHmm>`, like the fasting
+reminders'): the request at the old time is no longer planned and is
+removed, the one at the new time is added, in the same pass. A request
+from a build before this change has no time suffix and is replaced by the
+first replan. A time picker reports every step of its wheel, so
+`TrainingModel.syncReminders` runs one replan at a time (the next waits
+for the one in flight): two replans interleaving around the scheduler's
+awaits could leave requests at both times pending.
+
+### D8. The vault's 2026-10-01 additions are read, not used
+
+The same re-mirror brought the vault's training load and gates (still v1):
+`athlete.gate`, the load fields of `week.actual`, `unplanned[].flag`,
+`session.feedback.pains`, `done.manual` with `source` / `matchedBy`
+`manual`, top-level `notices`, the habits' `streak` / `history` /
+`adherence`, and the events `test.gate` and `session.done`. None of it is
+this change's feature (the gate card, "done without a watch" and the habit
+history each get their own change), so nothing new is decoded: unknown
+keys are ignored, the new enumeration values read as `.unknown`, the new
+event types as `.other`. Three places needed care so the richer file reads
+well today:
+
+- a session done by hand has a `done` with nothing this build can say
+  about it (no option, no activity, an unknown `matchedBy`): its detail
+  shows no "Done activity" card instead of an empty one -- the status
+  already says "Done";
+- `session-pain` and `pain-not-settled` are session rule notes that "only
+  inform, never edit": `PlanEditPolicy.noteOnlyRules` keeps them out of
+  the rules the owner may override (the note is still shown);
+- the two refused `habit.tick` outcomes name no week and no session and
+  match no plan command, so the plan-change lists ignore them.
 
 ### D7. Rewards and food on skeleton days
 
