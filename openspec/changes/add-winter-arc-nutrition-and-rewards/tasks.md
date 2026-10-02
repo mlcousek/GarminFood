@@ -42,5 +42,5 @@ on `main` `4cea263`. Only the training experience changes.
 
 - [x] 5.1 `openspec validate add-winter-arc-nutrition-and-rewards --strict`.
 - [ ] 5.2 CI green (package tests, app and widget build, localization).
-- [ ] 5.3 Mirror the vault's contract fixtures once `fuel` is published; add a golden check on the example's fuel days.
+- [x] 5.3 Mirror the vault's contract fixtures once `fuel` is published; add a golden check on the example's fuel days. (Done in `add-daily-checkin-and-pain-mode`: the fixtures were re-mirrored on 2026-10-01 with `fuel` on every day, and `DailyCheckInTests` checks the example's fuel on all 42 days -- the band, the carb-load days, every `load`, both `fasting` values with their reasons -- and the gram targets on a written day, a carb-load day, a day skeleton and with no plan.)
 - [ ] 5.4 On device, in the training experience: a band day shows carbs first; eating past the calorie target stays neutral; a build-week day shows "Fasting paused"; the weight card shows the morning average; a training badge unlocks once. In food-first: nothing changed.
