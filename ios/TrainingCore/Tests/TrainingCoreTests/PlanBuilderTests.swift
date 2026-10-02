@@ -47,13 +47,19 @@ final class PlanBuilderTests: XCTestCase {
         // other rule note of the week.
         XCTAssertEqual(week.ruleNoteLines.count, 3)
         XCTAssertTrue(week.ruleNoteLines[2].hasPrefix("Achilles (left) 5.5/10 on 2030-10-23"))
-        XCTAssertEqual(week.sessionsLine, "1 done · 1 missed of 6")
+        XCTAssertEqual(week.sessionsLine, "2 done · 1 missed of 7")
         let rows = try days(week)
         XCTAssertEqual(rows.count, 7)
         XCTAssertEqual(rows.map(\.title).first, "Mon 21")
         XCTAssertEqual(rows.filter(\.isToday).map(\.date), [D.asOf])
-        XCTAssertEqual(rows[0].sessions.first?.status, .missed)
-        XCTAssertEqual(rows[0].sessions.first?.statusText, "Missed")
+        // Monday's gym session was done without a watch (the vault's
+        // 2026-10-01 contract); Tuesday's mobility is the missed one.
+        XCTAssertEqual(rows[0].sessions.first?.status, .done)
+        XCTAssertEqual(rows[0].sessions.first?.doneText, "Done")
+        XCTAssertEqual(rows[1].sessions.map(\.id), ["2030-w43-tue-am", "2030-w43-tue-pm"])
+        XCTAssertEqual(rows[1].sessions.last?.status, .missed)
+        XCTAssertEqual(rows[1].sessions.last?.statusText, "Missed")
+        XCTAssertEqual(week.unwrittenDays, [], "a written week lists its days once")
         // Sunday's walk was moved to Friday by a plan command.
         XCTAssertNil(rows[4].restText)
         XCTAssertEqual(rows[4].sessions.map(\.id), ["2030-w43-sun-pm"])
@@ -136,15 +142,16 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertNil(month.emptyState)
 
         let cells = Dictionary(uniqueKeysWithValues: month.rows.flatMap(\.cells).map { ($0.date, $0) })
-        XCTAssertEqual(cells[D.date("2030-10-21")]?.glyphs.map(\.style), [.missed])
-        XCTAssertEqual(cells[D.date("2030-10-22")]?.glyphs.map(\.style), [.done])
+        XCTAssertEqual(cells[D.date("2030-10-21")]?.glyphs.map(\.style), [.done])
+        XCTAssertEqual(cells[D.date("2030-10-22")]?.glyphs.map(\.style), [.done, .missed])
         XCTAssertEqual(cells[D.date("2030-10-15")]?.glyphs.map(\.style), [.done, .unplanned])
         XCTAssertEqual(cells[D.date("2030-10-17")]?.glyphs.map(\.style), [.done, .done, .unplanned])
         XCTAssertEqual(cells[D.date("2030-10-24")]?.glyphs.map(\.style), [.planned])
         XCTAssertEqual(cells[D.date("2030-10-23")]?.isToday, true)
         XCTAssertEqual(cells[D.date("2030-11-03")]?.raceNames, ["Test Valley 30K"])
         XCTAssertEqual(cells[D.date("2030-11-03")]?.isInMonth, false)
-        XCTAssertEqual(cells[D.date("2030-10-21")]?.accessibilityLabel, "Mon 21 Oct. Gym A, Missed. Morning check: Green")
+        XCTAssertEqual(cells[D.date("2030-10-21")]?.accessibilityLabel, "Mon 21 Oct. Gym A, Done. Morning check: Green")
+        XCTAssertEqual(cells[D.date("2030-10-22")]?.accessibilityLabel, "Tue 22 Oct. Tempo 3 × 8 min, Done. Mobility 20 min, Missed. Morning check: Amber")
         XCTAssertEqual(cells[D.date("2030-10-21")]?.lightName, "Green")
         XCTAssertEqual(cells[D.date("2030-10-28")]?.glyphs.map(\.style), [.skipped])
         XCTAssertEqual(month.previous.month, 9)
@@ -220,6 +227,30 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(detail.done?.optionText, "Option not identified")
         XCTAssertEqual(detail.done?.recognisedText, "Matched by date and sport")
         XCTAssertEqual(detail.initialOptionIndex, 0)
+    }
+
+    /// add-daily-checkin-and-pain-mode: the vault's "done without a watch"
+    /// (2026-10-01; `source` and `matchedBy` are `manual`, no activity) is
+    /// done, with no empty "Done activity" card; an activity that won over
+    /// a manual record reads as any matched activity; the session pain note
+    /// is shown with the other notes and is not a rule to override.
+    func testDoneWithoutAWatchAndTheSessionPainNote() throws {
+        let byHand = try XCTUnwrap(try builder().sessionDetail(id: "2030-w43-mon-pm"))
+        XCTAssertEqual(byHand.status, .done)
+        XCTAssertEqual(byHand.statusText, "Done")
+        XCTAssertNil(byHand.done)
+
+        let tempo = try XCTUnwrap(try builder().sessionDetail(id: "2030-w43-tue-am"))
+        XCTAssertEqual(tempo.done?.activityLine, "Run · 05:05 · 10.1 km · 55 min")
+        XCTAssertEqual(tempo.done?.recognisedText, "Matched by date and sport")
+        XCTAssertNil(tempo.done?.optionText)
+        XCTAssertTrue(tempo.whyLines.last?.hasPrefix("Achilles (left) 4/10 during, 6/10 after this session (2030-10-22)") ?? false)
+        XCTAssertNil(tempo.originText)
+
+        let missed = try XCTUnwrap(try builder().sessionDetail(id: "2030-w43-tue-pm"))
+        XCTAssertEqual(missed.status, .missed)
+        XCTAssertEqual(missed.single?.targetLines, ["20 min"])
+        XCTAssertNil(missed.done)
     }
 
     func testStepsNotPublished() throws {
@@ -324,7 +355,7 @@ final class PlanBuilderTests: XCTestCase {
         XCTAssertEqual(ladder.rows.map(\.stateText), ["Active", "Active", "Next", "Later", "Later", "Later"])
         XCTAssertEqual(ladder.rows[0].why, "Tendon load")
         XCTAssertEqual(ladder.rows[1].dateText, "Started 14 Oct")
-        XCTAssertEqual(ladder.rows[1].adherence, "2 of 3 · 66 % · over 9 recorded days")
+        XCTAssertEqual(ladder.rows[1].adherence, "3 of 3 · 100 % · over 9 recorded days")
         XCTAssertNil(ladder.rows[1].gateMetText)
         XCTAssertEqual(ladder.rows[2].adherence, "not recorded yet")
         XCTAssertEqual(ladder.rows[2].dateText, "Earliest start 28 Oct")
