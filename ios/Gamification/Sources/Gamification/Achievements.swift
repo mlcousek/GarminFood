@@ -240,8 +240,12 @@ public enum AchievementCatalog {
     }()
 
     private static let levelFamily: [AchievementDefinition] = {
-        let thresholds = [5, 10, 20, 30, 50, 75, 100, 125, 150, 175, 200]
-        let titles = ["Off the Ground", "Double Digits", "Twenty Strong", "Level Thirty", "Half-Century", "Level Seventy-Five", "Century Club", "Level 125", "Level 150", "Level 175", "Max Level"]
+        // add-training-gamification-and-150-levels D4: the levels end at 150
+        // (`LevelCurve.maxLevel`), so the 175 and 200 badges are retired --
+        // their thresholds were millions of XP away and nobody holds them --
+        // and "Max Level" moves to 150.
+        let thresholds = [5, 10, 20, 30, 50, 75, 100, 125, 150]
+        let titles = ["Off the Ground", "Double Digits", "Twenty Strong", "Level Thirty", "Half-Century", "Level Seventy-Five", "Century Club", "Level 125", "Max Level"]
         return thresholds.indices.map { i in
             let n = thresholds[i]
             return AchievementDefinition(

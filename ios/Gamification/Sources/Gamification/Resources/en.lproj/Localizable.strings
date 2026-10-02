@@ -652,3 +652,369 @@
 
 /* Training badge description; %lld = weeks the plan closed with no missed session and no volume overshoot (1, 4 or 12). */
 "Weeks closed within the plan: %lld" = "Weeks closed within the plan: %lld";
+
+/* One-time moment title after the update that changed the level range. %lld = the highest level (150). */
+"Levels now go to %lld" = "Levels now go to %lld";
+
+/* One-time moment message after the level range changed. First %lld = the level shown before, second = the level shown now (higher). */
+"Your XP is unchanged. On the new scale you moved from level %lld to level %lld." = "Your XP is unchanged. On the new scale you moved from level %lld to level %lld.";
+
+/* One-time moment message after the level range changed, when the level number stayed the same. %lld = the level. */
+"Your XP and your level %lld are unchanged." = "Your XP and your level %lld are unchanged.";
+
+/* Training ladder name on the Progress tab: days with a morning check-in. */
+"Morning check-ins" = "Morning check-ins";
+
+/* Training ladder name: amber or red mornings followed by their easier option. */
+"Honest calls" = "Honest calls";
+
+/* Training ladder name: sessions with an effort rating (RPE). */
+"Sessions rated" = "Sessions rated";
+
+/* Training ladder name: weekly gate tests done. */
+"Gate tests" = "Gate tests";
+
+/* Training ladder name: test sessions with a recorded result. */
+"Tests recorded" = "Tests recorded";
+
+/* Training ladder name: habit ticks in total. */
+"Habits done" = "Habits done";
+
+/* Training ladder name: the longest run of days with the habits done. */
+"Best habit streak" = "Best habit streak";
+
+/* Training ladder name: steps of the habit ladder unlocked. */
+"Ladder steps" = "Ladder steps";
+
+/* Training ladder name: planned sessions done within the plan and the morning light. */
+"Sessions as planned" = "Sessions as planned";
+
+/* Training ladder name: days on which the plan was followed, rest days included. */
+"Plan days kept" = "Plan days kept";
+
+/* Training ladder name: weeks with both strength sessions done. */
+"Gym weeks" = "Gym weeks";
+
+/* Training ladder name: weeks closed within the plan. */
+"Weeks kept" = "Weeks kept";
+
+/* Training ladder name: deload, taper and recovery weeks kept at or under their target. */
+"Easy weeks respected" = "Easy weeks respected";
+
+/* Training ladder name: weeks of the plan that were approved. */
+"Weeks approved" = "Weeks approved";
+
+/* Training ladder name: plan phases closed with a recap. */
+"Phases closed" = "Phases closed";
+
+/* Training ladder name. */
+"Seasons completed" = "Seasons completed";
+
+/* Training ladder name: race preparations completed before race day. */
+"Race preps" = "Race preps";
+
+/* Training ladder name: carbohydrate-loading days whose carb goal was met. */
+"Carb-load days" = "Carb-load days";
+
+/* Training ladder name. */
+"Races finished" = "Races finished";
+
+/* Training ladder name: race reports written. */
+"Race reports" = "Race reports";
+
+/* Training badge title: a 7-day habit streak. */
+"Habit Week" = "Habit Week";
+
+/* Training badge title: a 30-day habit streak. */
+"Habit Month" = "Habit Month";
+
+/* Training badge title: a 100-day habit streak. */
+"Hundred Days of Habits" = "Hundred Days of Habits";
+
+/* Training badge title: a 365-day habit streak. */
+"A Year of Habits" = "A Year of Habits";
+
+/* Training badge title: three steps of the habit ladder unlocked. */
+"Three Rungs Up" = "Three Rungs Up";
+
+/* Training badge title: six steps of the habit ladder unlocked. */
+"Top of the Ladder" = "Top of the Ladder";
+
+/* Training badge title: 25 sessions done as planned. */
+"As Written" = "As Written";
+
+/* Training badge title: 100 sessions done as planned. */
+"Hundred by the Book" = "Hundred by the Book";
+
+/* Training badge title: 300 sessions done as planned. */
+"Reliable Engine" = "Reliable Engine";
+
+/* Training badge title: 1,000 sessions done as planned. */
+"A Thousand as Planned" = "A Thousand as Planned";
+
+/* Training badge title: 30 plan days kept. */
+"Month of Discipline" = "Month of Discipline";
+
+/* Training badge title: 100 plan days kept. */
+"Hundred Good Days" = "Hundred Good Days";
+
+/* Training badge title: 365 plan days kept. */
+"A Year on Plan" = "A Year on Plan";
+
+/* Training badge title: one easy (deload) week respected. */
+"Less Is More" = "Less Is More";
+
+/* Training badge title: four easy weeks respected. */
+"Master of Rest" = "Master of Rest";
+
+/* Training badge title: twelve easy weeks respected. */
+"Rested and Ready" = "Rested and Ready";
+
+/* Training badge title: 25 sessions rated. */
+"Honest Effort" = "Honest Effort";
+
+/* Training badge title: 100 sessions rated. */
+"Knows the Body" = "Knows the Body";
+
+/* Training badge title: the first weekly gate test. */
+"Tested, Not Guessed" = "Tested, Not Guessed";
+
+/* Training badge title: eight weekly gate tests. */
+"Gatekeeper" = "Gatekeeper";
+
+/* Training badge title: the first recorded test session. */
+"Baseline" = "Baseline";
+
+/* Training badge title: five recorded test sessions. */
+"Data, Not Feelings" = "Data, Not Feelings";
+
+/* Training badge title: twelve weeks of the plan approved. */
+"Planner" = "Planner";
+
+/* Training badge title: 52 weeks of the plan approved. */
+"A Year of Plans" = "A Year of Plans";
+
+/* Training badge title: a plan phase closed with its recap. */
+"Chapter Closed" = "Chapter Closed";
+
+/* Training badge title: four plan phases closed with their recaps. */
+"Full Cycle" = "Full Cycle";
+
+/* Training badge title: the first plan change made on the phone and applied. */
+"Plans Change" = "Plans Change";
+
+/* Training badge description. */
+"Change the plan from the phone and have it applied." = "Change the plan from the phone and have it applied.";
+
+/* Training badge title: one race preparation completed before race day. */
+"Homework Done" = "Homework Done";
+
+/* Training badge title: five race preparations completed before race day. */
+"Always Prepared" = "Always Prepared";
+
+/* Training badge title: two carb-load days hit. */
+"Tank Full" = "Tank Full";
+
+/* Training badge title: ten carb-load days hit. */
+"Pasta Party Pro" = "Pasta Party Pro";
+
+/* Training badge title: the first race finished. */
+"Finisher" = "Finisher";
+
+/* Training badge title: five races finished. */
+"Five Finish Lines" = "Five Finish Lines";
+
+/* Training badge title: fifteen races finished. */
+"Seasoned Racer" = "Seasoned Racer";
+
+/* Training badge title: the first race report written. */
+"Lessons Learned" = "Lessons Learned";
+
+/* Training badge title: five race reports written. */
+"Chronicler" = "Chronicler";
+
+/* Training badge title: a race goal reached (a rare one-off). */
+"On Target" = "On Target";
+
+/* Training badge description. */
+"Reach the goal you set for a race." = "Reach the goal you set for a race.";
+
+/* Training badge title: a personal record in a race (a rare one-off). */
+"Personal Best" = "Personal Best";
+
+/* Training badge description. */
+"Set a personal record in a race." = "Set a personal record in a race.";
+
+/* Secret training badge title: a race stopped, or not started, because a stop rule said so. */
+"Lived to Run Another Day" = "Lived to Run Another Day";
+
+/* Secret training badge description. */
+"Stop a race, or stay home, when the rules say so." = "Stop a race, or stay home, when the rules say so.";
+
+/* Training badge title: one season completed. */
+"Full Season" = "Full Season";
+
+/* Training badge title: three seasons completed. */
+"Three Seasons Strong" = "Three Seasons Strong";
+
+/* Training badge description; %lld = the habit streak needed in days (7, 30, 100 or 365). */
+"Days in a row with your habits done: %lld" = "Days in a row with your habits done: %lld";
+
+/* Training badge description; %lld = steps of the habit ladder needed (3 or 6). */
+"Habit ladder steps unlocked: %lld" = "Habit ladder steps unlocked: %lld";
+
+/* Training badge description; %lld = planned sessions done within the plan and the morning light (25, 100, 300 or 1000). */
+"Sessions done within the plan: %lld" = "Sessions done within the plan: %lld";
+
+/* Training badge description; %lld = days on which the plan was followed (30, 100 or 365). */
+"Plan days kept, rest days included: %lld" = "Plan days kept, rest days included: %lld";
+
+/* Training badge description; %lld = deload, taper or recovery weeks respected (1, 4 or 12). */
+"Easy weeks kept at or under their target: %lld" = "Easy weeks kept at or under their target: %lld";
+
+/* Training badge description; %lld = sessions with an effort rating (25 or 100). */
+"Sessions rated after they were done: %lld" = "Sessions rated after they were done: %lld";
+
+/* Training badge description; %lld = weeks with a gate test (1 or 8). */
+"Weekly gate tests done: %lld" = "Weekly gate tests done: %lld";
+
+/* Training badge description; %lld = test sessions recorded (1 or 5). */
+"Test sessions with a recorded result: %lld" = "Test sessions with a recorded result: %lld";
+
+/* Training badge description; %lld = approved weeks (12 or 52). */
+"Weeks of the plan approved: %lld" = "Weeks of the plan approved: %lld";
+
+/* Training badge description; %lld = plan phases closed with their recap (1 or 4). */
+"Phases closed with a recap: %lld" = "Phases closed with a recap: %lld";
+
+/* Training badge description; %lld = race preparations completed in time (1 or 5). */
+"Race preps completed before race day: %lld" = "Race preps completed before race day: %lld";
+
+/* Training badge description; %lld = carbohydrate-loading days hit (2 or 10). */
+"Carb-load days with the carb goal met: %lld" = "Carb-load days with the carb goal met: %lld";
+
+/* Training badge description; %lld = races finished (1, 5 or 15). */
+"Races finished: %lld" = "Races finished: %lld";
+
+/* Training badge description; %lld = race reports written (1 or 5). */
+"Race reports written: %lld" = "Race reports written: %lld";
+
+/* Training badge description; %lld = seasons completed (1 or 3). */
+"Seasons completed: %lld" = "Seasons completed: %lld";
+
+/* Moment title: a deload, taper or recovery week was kept at or under its target. */
+"Easy week respected" = "Easy week respected";
+
+/* Moment message for a respected easy week. */
+"You held back when the plan said so. That is the hard part." = "You held back when the plan said so. That is the hard part.";
+
+/* Moment title: a closed week with no missed session and no extra kilometres. */
+"Week kept within plan" = "Week kept within plan";
+
+/* Moment message for a week kept within plan. */
+"Nothing missed, nothing extra." = "Nothing missed, nothing extra.";
+
+/* Moment title: a phase of the training plan was closed with its recap. */
+"Phase closed" = "Phase closed";
+
+/* Moment message for a closed plan phase. */
+"The recap is written. On to the next one." = "The recap is written. On to the next one.";
+
+/* Moment title: the training season's period has ended. */
+"Season completed" = "Season completed";
+
+/* Moment message for a completed season. */
+"A whole season of showing up." = "A whole season of showing up.";
+
+/* Moment title: a planned race was finished. */
+"Race finished" = "Race finished";
+
+/* Moment message for a finished race. */
+"Prepared, raced, done. Write the report while it is fresh." = "Prepared, raced, done. Write the report while it is fresh.";
+
+/* Progress tab, training section: label of the number of morning check-ins this week (shown as n/7). */
+"Check-ins this week" = "Check-ins this week";
+
+/* Progress tab, training section: label of the number of days this week on which the plan was followed, rest days included (shown as n/7). */
+"Plan days kept this week" = "Plan days kept this week";
+
+/* Progress tab, training section: label of the strength sessions done this week (shown as n/2). */
+"Strength sessions this week" = "Strength sessions this week";
+
+/* Progress tab, training section: label of the number of days in a row with a morning check-in. The value is a bare number. */
+"Check-in streak (days)" = "Check-in streak (days)";
+
+/* Progress tab, training section: label of the number of days in a row with the habits done. The value is a bare number. */
+"Habit streak (days)" = "Habit streak (days)";
+
+/* Progress tab, training section: label of the number of consecutive weeks closed within the plan. The value is a bare number. */
+"Weeks kept in a row" = "Weeks kept in a row";
+
+/* Progress tab, a training ladder: first %lld = the count so far, second = the count the next badge needs. */
+"%lld · next: %lld" = "%lld · next: %lld";
+
+/* Progress tab, a training ladder with every badge earned: %lld = the count so far. */
+"%lld · complete" = "%lld · complete";
+
+/* Why this boss (training experience): share of recent plan days on which the plan was followed. The value is a percentage. */
+"Plan days kept: %@ of the days the plan judged" = "Plan days kept: %@ of the days the plan judged";
+
+/* Weekly boss name in the training experience (Czech: Nedočkavý skřítek): the urge to do more than the plan. */
+"Impatience Imp" = "Impatience Imp";
+
+/* Weekly boss flavour line (training experience): the urge to do more than the plan. */
+"Keeps whispering that a little more cannot hurt." = "Keeps whispering that a little more cannot hurt.";
+
+/* Weekly boss habit (training experience): follow the plan for the day; a rest day counts. */
+"Keep the day's plan" = "Keep the day's plan";
+
+/* Bingo task title (training experience): every habit of one day done. */
+"All Boxes Ticked" = "All Boxes Ticked";
+
+/* Bingo task rule. */
+"Do every habit of one day." = "Do every habit of one day.";
+
+/* Bingo task title (training experience): one day on which the plan was followed. */
+"Just the Plan" = "Just the Plan";
+
+/* Bingo task rule. */
+"Keep the day's plan once this week. A rest day counts." = "Keep the day's plan once this week. A rest day counts.";
+
+/* Bingo task title (training experience): rate a session's effort after doing it. */
+"How Did It Feel?" = "How Did It Feel?";
+
+/* Bingo task rule. */
+"Rate a session after you do it." = "Rate a session after you do it.";
+
+/* Bingo task title (training experience): five morning check-ins in the week. */
+"Morning Roll Call" = "Morning Roll Call";
+
+/* Bingo task rule. */
+"Check in on 5 mornings this week." = "Check in on 5 mornings this week.";
+
+/* Bingo task title (training experience): every habit done on three days of the week. */
+"Three Tidy Days" = "Three Tidy Days";
+
+/* Bingo task rule. */
+"Do every habit on 3 days this week." = "Do every habit on 3 days this week.";
+
+/* Bingo task title (training experience): both strength sessions of the week done. */
+"Both Gym Days" = "Both Gym Days";
+
+/* Bingo task rule. */
+"Do both strength sessions this week." = "Do both strength sessions this week.";
+
+/* Bingo task title (training experience): a morning check-in on all seven days. */
+"Every Single Morning" = "Every Single Morning";
+
+/* Bingo task rule. */
+"Check in on all 7 mornings this week." = "Check in on all 7 mornings this week.";
+
+/* Bingo task title (training experience): five days of the week on which the plan was followed. */
+"Five by the Plan" = "Five by the Plan";
+
+/* Bingo task rule. */
+"Keep the day's plan on 5 days this week. Rest days count." = "Keep the day's plan on 5 days this week. Rest days count.";
+
+/* Road trip conversion line in the training experience: a fixed distance per day on which the plan was followed. */
+"Every plan day you keep moves you 8 km, rest days included. Extra training adds nothing." = "Every plan day you keep moves you 8 km, rest days included. Extra training adds nothing.";

@@ -309,6 +309,32 @@
    "consideredDays": "every day (unlogged days count as misses)",
    "consideredSource": "hand-read",
    "standalone": true
+  },
+  {
+   "id": "impatience-imp",
+   "kind": "impatienceImp",
+   "name": {
+    "en": "Impatience Imp",
+    "cs": "Nedočkavý skřítek"
+   },
+   "flavour": {
+    "en": "Keeps whispering that a little more cannot hurt.",
+    "cs": "Pořád šeptá, že trochu víc přece neuškodí."
+   },
+   "goal": {
+    "en": "Keep the day's plan",
+    "cs": "Dodrž plán dne"
+   },
+   "symbol": "hare.fill",
+   "requirement": [],
+   "judgesCompletedDaysOnly": false,
+   "goodDay": ".any([])",
+   "adherenceLine": {
+    "en": "Plan days kept: {percent} of the days the plan judged",
+    "cs": "Dodržené dny plánu: {percent} z hodnocených dnů"
+   },
+   "consideredSource": "hand-read",
+   "standalone": true
   }
  ],
  "badges": [
@@ -317,7 +343,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 216,
+   "line": 256,
    "id": "boss.first",
    "title": {
     "en": "Boss Slayer",
@@ -336,7 +362,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 217,
+   "line": 257,
    "id": "boss.10",
    "title": {
     "en": "Monster Hunter",
@@ -355,7 +381,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 218,
+   "line": 258,
    "id": "boss.25",
    "title": {
     "en": "Legend of the Realm",
@@ -374,7 +400,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 219,
+   "line": 259,
    "id": "boss.perfect",
    "title": {
     "en": "Flawless Victory",
@@ -393,7 +419,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 220,
+   "line": 260,
    "id": "boss.bestiary",
    "title": {
     "en": "Bestiary Complete",
@@ -412,7 +438,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 221,
+   "line": 261,
    "id": "freeze.first",
    "title": {
     "en": "Cool Head",
@@ -431,7 +457,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 222,
+   "line": 262,
    "id": "freeze.saved-100",
    "title": {
     "en": "Ice Age",

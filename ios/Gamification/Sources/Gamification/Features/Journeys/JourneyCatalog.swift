@@ -29,6 +29,13 @@
 // Names are localized (Gamification .lproj) and computed on access, never
 // persisted: the stores keep only ids.
 //
+// add-training-gamification-and-150-levels D9: in the training experience
+// the road trip does NOT turn active calories into kilometres -- that pays
+// for doing more, which the plan exists to prevent. It advances by a fixed
+// `kilometresPerKeptPlanDay` for every plan day that was kept, a rest day
+// included, and says so (`trainingRoadConversionLine`). Milestones, badges
+// and the total are the same journey.
+//
 // Depends on: DataRequirement, AchievementDefinition/Rarity.
 // Depended on by: JourneysEvaluator, JourneysFeature, the app's Journeys UI.
 
@@ -92,6 +99,33 @@ public enum JourneyCatalog {
     public static let fallbackWeightKg = 70.0
     /// Design D3: 50 m x 21 m x 2 m, an estimate.
     public static let podoliPoolLitres = 2_100_000.0
+    /// add-training-gamification-and-150-levels D9: what a kept plan day
+    /// moves the road trip in the training experience -- about what an
+    /// active day's calories gave before, and the same on a rest day.
+    public static let kilometresPerKeptPlanDay = 8.0
+
+    /// The road trip's conversion line in the training experience.
+    public static var trainingRoadConversionLine: String {
+        String(localized: "Every plan day you keep moves you 8 km, rest days included. Extra training adds nothing.", bundle: .module, comment: "Road trip conversion line in the training experience: a fixed distance per day on which the plan was followed.")
+    }
+
+    /// `definition(kind)`, with the training experience's conversion line
+    /// for the road trip when `trainingRoad` is true.
+    public static func definition(_ kind: JourneyKind, trainingRoad: Bool) -> JourneyDefinition {
+        let base = definition(kind)
+        guard trainingRoad, kind == .road else { return base }
+        return JourneyDefinition(
+            kind: base.kind,
+            name: base.name,
+            symbol: base.symbol,
+            unit: base.unit,
+            stages: base.stages,
+            milestones: base.milestones,
+            endless: base.endless,
+            requirement: [],
+            conversionLine: trainingRoadConversionLine
+        )
+    }
 
     // MARK: - Conversions (design D2-D4)
 

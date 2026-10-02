@@ -164,6 +164,26 @@ public enum BadgeArtCatalog {
         "pills.fill": "capsule",
         "dumbbell.fill": "dumbbell",
         "questionmark": "question",
+        // Training badges (add-training-gamification-and-150-levels): existing motifs.
+        "stairs": "bars",
+        "arrow.up.to.line": "arrows",
+        "gearshape.fill": "gauge",
+        "tortoise.fill": "timer",
+        "hand.raised.fill": "shield",
+        "backpack.fill": "box",
+        "bed.double.fill": "moon",
+        "moon.zzz.fill": "moon",
+        "calendar.badge.plus": "calendar",
+        "calendar.circle.fill": "calendar",
+        "chart.line.uptrend.xyaxis": "bars",
+        "checkmark.shield.fill": "shield",
+        "lock.shield.fill": "shield",
+        "doc.text.fill": "book",
+        "square.and.pencil": "book",
+        "flag.checkered.2.crossed": "trophy",
+        "gauge.medium": "gauge",
+        "ruler.fill": "bars",
+        "waveform.path.ecg": "bolt",
         // badge-art:motifs:end
     ]
 

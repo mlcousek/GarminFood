@@ -1,0 +1,57 @@
+{
+  "checkInDays" : [
+    "2030-10-21",
+    "2030-10-22",
+    "2030-10-23"
+  ],
+  "gymWeeks" : [
+    "2030-W42"
+  ],
+  "habitDayStates" : {
+    "2030-10-20" : 0,
+    "2030-10-21" : 2,
+    "2030-10-22" : 2,
+    "2030-10-23" : 1
+  },
+  "habitTicksByDay" : {
+    "2030-10-21" : 2,
+    "2030-10-22" : 1
+  },
+  "honestDays" : [
+    "2030-10-23"
+  ],
+  "keptWeeks" : [
+    "2030-W41",
+    "2030-W42"
+  ],
+  "seasonEnds" : {
+    "season-2030" : "2031-09-30"
+  },
+  "sets" : {
+    "approvedWeek" : [
+      "2030-W42",
+      "2030-W43"
+    ],
+    "dayKept" : [
+      "2030-10-21",
+      "2030-10-22"
+    ],
+    "futureLadder" : [
+      "x"
+    ],
+    "ladderStep" : [
+      "h1"
+    ],
+    "raceFinish" : [
+      "race-a"
+    ],
+    "session" : [
+      "2030-w43-mon-am",
+      "2030-w43-tue-am",
+      "2030-w43-tue-pm"
+    ],
+    "wiseCall" : [
+      "race-b"
+    ]
+  }
+}

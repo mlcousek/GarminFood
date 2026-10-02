@@ -17,6 +17,11 @@ closer look before acting on them.
    day, `Achievements.swift:259`), `achv-funny-whale-10` and `-30` (15 M and
    45 M kcal). `LevelCurve.swift` calls high levels "honestly aspirational",
    but a meta badge that depends on them is permanently locked.
+   *2026-10-01, add-training-gamification-and-150-levels:* the levels now
+   end at 150. `achv-level-175` and `achv-level-200` are retired, and level
+   150 takes about 4.2 years of typical play in the training experience
+   (6.4 food-first), so the level part of this item is resolved. The
+   logging and calorie badges above are unchanged.
 2. **"Midnight Snack Club" says "exactly midnight" but checks the whole
    00:00–00:59 hour.** Subtitle at `Achievements.swift:413`; rule at
    `AchievementSignals.swift:31-32` (`hour == 0`).

@@ -47,9 +47,15 @@
 // experience is on, the plan's reward facts and the days the plan paused
 // fasting. They go into `FeatureContext` (features keep quiet what pushes
 // against the plan, the training feature rewards what supports it), the
-// fasting days of the snapshot (a paused day is neutral), the visible
-// badges (TrainingExperienceAvailability) and the optional sources (the
-// training rewards count as one while that experience is on).
+// fasting days of the snapshot (a paused day is neutral) and the visible
+// badges (TrainingExperienceAvailability).
+//
+// add-training-gamification-and-150-levels D6: a fourth provider, the
+// plan's facts for the training XP (`trainingPlanSignalsProvider`, async
+// because it reads the cached plan file's extra fields), goes into
+// `FeatureContext.trainingPlan`. The training rewards are a budgeted XP
+// line now, no longer an optional source: their grants and badge bonuses
+// are paid in full.
 // Depended on by: GamificationEngine; Progress/Today slot views (via
 // `feature(_:)` and `summaries`).
 
@@ -108,6 +114,9 @@ final class FeatureHost {
     @ObservationIgnored var isTrainingExperienceProvider: @MainActor () -> Bool = { false }
     @ObservationIgnored var trainingSignalsProvider: @MainActor (Date) -> TrainingSignals? = { _ in nil }
     @ObservationIgnored var fastingPausedDaysProvider: @MainActor (Date) -> Set<Date> = { _ in [] }
+    // add-training-gamification-and-150-levels D6: the plan's facts for the
+    // training XP (TrainingPlanSignalsBridge); `nil` without a plan.
+    @ObservationIgnored var trainingPlanSignalsProvider: @MainActor (Date) async -> TrainingPlanSignals? = { _ in nil }
 
     /// add-winter-arc-nutrition-and-rewards: the training experience is on.
     var isTrainingExperience: Bool { isTrainingExperienceProvider() }
@@ -238,11 +247,10 @@ final class FeatureHost {
     /// of rebalance-xp-economy): their grants and badge bonuses are scaled
     /// by `XPBudget.optionalMultiplier`.
     var enabledOptionalSources: Set<String> {
-        var enabled: Set<String> = sources.preferences.supplementsEnabled ? [SupplementsFeature.id] : []
-        // add-winter-arc-nutrition-and-rewards: the training rewards are an
-        // optional source while the training experience is on.
-        if isTrainingExperience { enabled.insert(TrainingRewardsFeature.id) }
-        return enabled
+        // add-training-gamification-and-150-levels D2: the training rewards
+        // were an optional source here until they became a budgeted line of
+        // XPBudget; supplements are the only optional source left.
+        sources.preferences.supplementsEnabled ? [SupplementsFeature.id] : []
     }
 
     /// The supplement digest from the local supplement stores (never the
@@ -309,6 +317,11 @@ final class FeatureHost {
         let levelBefore = await xpStore.currentProgress().level
         var xpChanged = false
         let isTraining = isTrainingExperience
+        // Local reads only (the cached plan file), like everything else here.
+        var trainingPlan: TrainingPlanSignals?
+        if isTraining {
+            trainingPlan = await trainingPlanSignalsProvider(now)
+        }
         let context = FeatureContext(
             snapshot: snapshot,
             now: now,
@@ -319,7 +332,8 @@ final class FeatureHost {
             isConfirmPath: isConfirmPath,
             supplements: supplements,
             isTrainingExperience: isTraining,
-            training: isTraining ? trainingSignalsProvider(now) : nil
+            training: isTraining ? trainingSignalsProvider(now) : nil,
+            trainingPlan: trainingPlan
         )
 
         for feature in features {

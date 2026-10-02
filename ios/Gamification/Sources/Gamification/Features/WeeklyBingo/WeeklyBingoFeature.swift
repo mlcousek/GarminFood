@@ -29,6 +29,12 @@
 // squares (`BingoTask.judgesCompletedDaysOnly`: today never ticks them, so
 // its Sunday can only be judged once the week is over).
 //
+// add-training-gamification-and-150-levels D9: in the training experience,
+// with a plan that has written days, a NEW card also draws from the eight
+// training squares (`BingoTaskCatalog.training`), and those squares are
+// judged from `context.trainingPlan` -- once more on the Monday after,
+// together with the whole-day squares.
+//
 // Depends on: GamificationFeature, BingoTaskCatalog, BingoCardGenerator,
 // BingoEvaluator, BingoStore, XPAward+Features, FoodLogCore.
 // Depended on by: GamificationFeatureRegistry, the app's BingoSlotView /
@@ -103,6 +109,8 @@ public actor WeeklyBingoFeature: GamificationFeature {
         guard let week = WeekKey(dayKey: today, calendar: calendar) else { return .empty }
 
         var update = FeatureUpdate()
+        // The plan's facts count only in the training experience.
+        let plan = context.isTrainingExperience ? context.trainingPlan : nil
 
         // Last week's card: only its whole-day squares ("no soda", "early
         // dinner"...) are judged once more, now that its Sunday is over --
@@ -119,7 +127,8 @@ public actor WeeklyBingoFeature: GamificationFeature {
                 snapshot: context.snapshot,
                 calendar: calendar,
                 stored: previous.completedByIndex,
-                onlyCompletedDayTasks: true
+                onlyCompletedDayTasks: true,
+                plan: plan
             )
             if settled != previous.completedByIndex {
                 previous.setCompleted(settled)
@@ -128,14 +137,15 @@ public actor WeeklyBingoFeature: GamificationFeature {
             await store.setCard(previous, week: previousWeek)
         }
 
-        var record = await cardForWeek(week, snapshot: context.snapshot, calendar: calendar, isTraining: context.isTrainingExperience)
+        var record = await cardForWeek(week, snapshot: context.snapshot, calendar: calendar, isTraining: context.isTrainingExperience, hasPlan: plan?.hasPlanDays == true)
         let merged = BingoEvaluator.completions(
             taskIds: record.taskIds,
             week: week,
             today: today,
             snapshot: context.snapshot,
             calendar: calendar,
-            stored: record.completedByIndex
+            stored: record.completedByIndex,
+            plan: plan
         )
         record.setCompleted(merged)
         await applyLinesAndFullCard(&record, week: week, completed: merged, into: &update)
@@ -265,12 +275,17 @@ public actor WeeklyBingoFeature: GamificationFeature {
     /// add-winter-arc-nutrition-and-rewards: a NEW card in the training
     /// experience has no fixed-calorie-target squares (an existing card is
     /// kept as generated).
-    private func cardForWeek(_ week: WeekKey, snapshot: SignalsSnapshot, calendar: Calendar, isTraining: Bool = false) async -> BingoCardRecord {
+    /// add-training-gamification-and-150-levels D9: with the plan's facts
+    /// (`hasPlan`) the training squares join the pool.
+    private func cardForWeek(_ week: WeekKey, snapshot: SignalsSnapshot, calendar: Calendar, isTraining: Bool = false, hasPlan: Bool = false) async -> BingoCardRecord {
         if let existing = await store.card(week: week), existing.taskIds.count == BingoCardGenerator.cardSize {
             return existing
         }
         let recent = snapshot.days(snapshot.recentDayKeys(BingoCardGenerator.eligibilityWindowDays))
-        let eligible = TrainingExperienceAvailability.bingoTasks(BingoCardGenerator.eligibleTasks(recentDays: recent), isTraining: isTraining)
+        var eligible = TrainingExperienceAvailability.bingoTasks(BingoCardGenerator.eligibleTasks(recentDays: recent), isTraining: isTraining)
+        if isTraining && hasPlan {
+            eligible.append(contentsOf: BingoTaskCatalog.training)
+        }
         var previousIds: [String]?
         if let previousWeek = week.adding(weeks: -1, calendar: calendar) {
             previousIds = await store.card(week: previousWeek)?.taskIds

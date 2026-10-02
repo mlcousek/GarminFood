@@ -85,7 +85,19 @@ ios/
                     tools/build-czech-food-index + food-index.yml).
   Gamification/     SPM package (depends on FoodLogCore) — streaks, XP/levels,
                     daily/rotating challenges, achievements. App-only, not
-                    linked into the widget extension.
+                    linked into the widget extension. 150 levels
+                    (add-training-gamification-and-150-levels): the curve's
+                    factor is SOLVED from the XP budget (XPBudget + Features/
+                    Training/TrainingXPBudget) and pinned by XPBudgetTests;
+                    tools/level-curve-model.mjs mirrors both tables and
+                    prints the numbers -- change a reward in both places.
+                    Training XP (Features/Training/): the app copies
+                    TrainingCore's TrainingPlanFacts into TrainingPlanSignals,
+                    TrainingXPRules judges them. One rule above all: reward
+                    following the plan and honest self-monitoring, never
+                    doing more (no XP per km, per extra session, for hard
+                    days in a row or for training through a red morning;
+                    rest days and wise stops pay like training days).
   VaultKit/         SPM package (depends on GarminKit) — the GitHub wire layer
                     to the owner's Obsidian vault (add-vault-connection):
                     fine-grained token in the Keychain, VaultPathPolicy

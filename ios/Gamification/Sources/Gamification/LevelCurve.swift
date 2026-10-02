@@ -50,24 +50,42 @@ public enum LevelCurve {
     /// reward changes. On this curve a typical day reaches level 10 in about
     /// 9 days and level 50 in about 6 months. The base stays 100, so
     /// existing users lose at most a few days of progress-bar movement.
-    public static let growthFactor: Double = 1.05358
+    ///
+    /// 2026-10-01 (`add-training-gamification-and-150-levels` D1): 1.05358
+    /// -> 1.03087, and the levels now END at 150. The owner asked for 150
+    /// levels over about 3-5 years, and the training experience gained XP
+    /// sources of its own (~65 XP/day). `XPBudget` solves the factor that
+    /// puts level 150 at 1,540 days of a typical training-experience day
+    /// (~193 XP): `XP(n -> n+1) = round(100 x 1.03087^(n-1))`, 297,264 XP
+    /// in all. Level 10 comes in about 5 days and the last level takes
+    /// about 47. This factor is SMALLER than every earlier one and the base
+    /// is the same, so every threshold is at or below the same level's on
+    /// every earlier curve: no XP total maps to a lower level than before
+    /// (LevelCurveTests sweeps it). `tools/level-curve-model.mjs` prints
+    /// the table.
+    public static let growthFactor: Double = 1.03087
 
     /// Every factor that shipped before `growthFactor`, oldest first
-    /// (1.045 from 2026-09-18, 1.0505 from 2026-09-24). Used only to seed
-    /// `XPStore.peakLevel` for a ledger written under an older curve, so a
-    /// retune never lowers anyone's level. Append the outgoing factor here
-    /// whenever `growthFactor` changes; `curveVersion` follows.
-    public static let pastGrowthFactors: [Double] = [1.045, 1.0505]
+    /// (1.045 from 2026-09-18, 1.0505 from 2026-09-24, 1.05358 from
+    /// 2026-09-25). Used only to seed `XPStore.peakLevel` for a ledger
+    /// written under an older curve, so a retune never lowers anyone's
+    /// level. Append the outgoing factor here whenever `growthFactor`
+    /// changes; `curveVersion` follows.
+    public static let pastGrowthFactors: [Double] = [1.045, 1.0505, 1.05358]
 
-    /// The version of the live curve: 1 = 1.045, 2 = 1.0505, 3 = today.
-    /// `XPStore` records it next to `peakLevel`.
+    /// The version of the live curve: 1 = 1.045, 2 = 1.0505, 3 = 1.05358,
+    /// 4 = today. `XPStore` records it next to `peakLevel`.
     public static var curveVersion: Int { pastGrowthFactors.count + 1 }
 
-    /// A safety ceiling, not a design statement -- purely so
-    /// `level(forTotalXP:)` always terminates. At `growthFactor` 1.3 this
-    /// is already an astronomically large cumulative total; no realistic
-    /// amount of logging reaches it.
-    public static let maxLevel = 200
+    /// The first curve version with 150 levels (`XPStore`'s one-time
+    /// announcement is for ledgers written before it).
+    public static let curveVersionWith150Levels = 4
+
+    /// The highest level. Until 2026-10-01 this was a safety ceiling of
+    /// 200 that nobody could reach; since
+    /// `add-training-gamification-and-150-levels` it is the END of the
+    /// game: level 150, with no prestige and no reset.
+    public static let maxLevel = 150
 
     /// XP required to advance from `level` to `level + 1`.
     public static func xpRequired(afterLevel level: Int) -> Int {

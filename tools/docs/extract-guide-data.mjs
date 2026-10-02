@@ -457,6 +457,40 @@ const budgetLines = [
   { source: 'supplements', optional: true, what: `stack complete (${XP.supplementStackComplete}) on 85% of days + 5 creatine milestones (${XP.journeyMilestone}) + 10 badges — before the optional multiplier`, xp: XP.supplementStackComplete * 0.85 + XP.journeyMilestone * 5 / threeYears + badgeXP(10) },
 ];
 const coreDaily = budgetLines.filter((l) => !l.optional).reduce((s, l) => s + l.xp, 0);
+
+// Training lines (parsed from TrainingXPBudget.lines; add-training-gamification-and-150-levels D2):
+// the curve is solved against the food core PLUS these.
+const trainBudgetFile = join(FEAT, 'Training/TrainingXPBudget.swift');
+const trainBudgetSrc = src(trainBudgetFile);
+const xpTrainFile = join(FEAT, 'Training/XPAward+Training.swift');
+const xpTrainSrc = src(xpTrainFile);
+for (const m of xpTrainSrc.matchAll(/public static let (\w+)(?::[^=]+)? = ([\d_]+)\s*$/gm)) XP[m[1]] = Number(m[2].replace(/_/g, ''));
+const streakDecl = xpTrainSrc.slice(xpTrainSrc.indexOf('static let trainingHabitStreakMilestones'));
+const streakBlock = streakDecl.slice(streakDecl.indexOf('= [') + 3);
+XP.trainingHabitStreakMilestones = [...streakBlock.slice(0, streakBlock.indexOf(']')).matchAll(/\((\d+), (\d+)\)/g)].map((m) => ({ days: Number(m[1]), xp: Number(m[2]) }));
+if (XP.trainingHabitStreakMilestones.length === 0) throw new Error('mirror out of date: trainingHabitStreakMilestones');
+const trainingBadgeCount = staticLets(trainBudgetSrc).badgeCount;
+expectIn(trainBudgetSrc, 'case .span: return Double(XPBudget.targetDays)', rel(trainBudgetFile));
+const trainingPeriodDays = { week, year, span: bLets.targetDays };
+const trainingNumber = (expr) => {
+  const e = expr.replace(/Double\(badgeCount\)/g, String(trainingBadgeCount)).trim();
+  if (!/^[\d.\s*]+$/.test(e)) throw new Error(`mirror out of date: training frequency "${expr}"`);
+  return e.split('*').reduce((p, f) => p * Number(f), 1);
+};
+const trainingLines = [...trainBudgetSrc.matchAll(/TrainingXPBudgetLine\("(\w+)", reward: (.+?), per: \.(\w+), typical: (.+?), poor: (.+?), perfect: (.+)\),\s*$/gm)].map((m) => {
+  const reward = m[2] === 'habitStreakTotalXP'
+    ? XP.trainingHabitStreakMilestones.reduce((s, x) => s + x.xp, 0)
+    : XP[m[2].replace('XPAward.', '')];
+  if (!Number.isFinite(reward) || !trainingPeriodDays[m[3]]) throw new Error(`mirror out of date: training line ${m[1]}`);
+  const perDay = (count) => reward * count / trainingPeriodDays[m[3]];
+  const [typical, poor, perfect] = [m[4], m[5], m[6]].map(trainingNumber);
+  return { source: m[1], reward, per: m[3], typical, poor, perfect, xp: perDay(typical), poorXp: perDay(poor), perfectXp: perDay(perfect) };
+});
+if (trainingLines.length < 20) throw new Error('mirror out of date: TrainingXPBudget.lines');
+const trainingDaily = trainingLines.reduce((s, l) => s + l.xp, 0);
+const typicalDaily = coreDaily + trainingDaily;
+expectIn(budgetSrc, 'solveGrowthFactor(targetLevel: targetLevel, days: targetDays, dailyXP: typicalDailyXP)', rel(budgetFile));
+budgetLines.push({ source: 'training', trainingOnly: true, what: `training experience only: ${trainingLines.length} sources (check-ins, habits, sessions within the light, kept days and weeks, phases, races, badges)`, xp: trainingDaily });
 function cumulative(target, f) { let t = 0, b = base; for (let i = 1; i < target; i++) { t += b; b *= f; } return t; }
 function solve(target, days, daily) {
   const wanted = days * daily; let lo = 1, hi = 1.2;
@@ -468,7 +502,7 @@ const optionalMultiplier = Math.min(1, bLets.optionalPaceAllowance * coreDaily /
 const scaledGrant = (xp, m) => (xp > 0 ? Math.max(1, Math.round(xp * Math.max(0, Math.min(1, m)))) : 0);
 
 const levels = {
-  source: 'mirrored', files: [rel(lcFile), rel(tierFile), rel(budgetFile), 'ios/Gamification/Sources/Gamification/XPStore.swift', rel(join(FEAT, 'XPAward+Features.swift'))],
+  source: 'mirrored', files: [rel(lcFile), rel(tierFile), rel(budgetFile), 'ios/Gamification/Sources/Gamification/XPStore.swift', rel(join(FEAT, 'XPAward+Features.swift')), rel(trainBudgetFile), rel(xpTrainFile)],
   curve: {
     baseXPForFirstLevelUp: base, growthFactor: growth, pastGrowthFactors: lc.pastGrowthFactors, curveVersion: lc.pastGrowthFactors.length + 1, maxLevel,
     formula: 'xpRequired(afterLevel L) = max(1, round(100 × growthFactor^(L−1))); level = the highest L whose cumulative threshold ≤ total XP; the displayed level is never below the highest level ever reached (peakLevel).',
@@ -480,13 +514,17 @@ const levels = {
     targetLevel: bLets.targetLevel, targetDays: bLets.targetDays, assumedMeanChallengeReward: bLets.assumedMeanChallengeReward,
     lines: budgetLines.map((l) => ({ ...l, xp: Math.round(l.xp * 1000) / 1000 })),
     coreDailyXP: Math.round(coreDaily * 1000) / 1000,
-    solvedGrowthFactor: Math.round(solve(bLets.targetLevel, bLets.targetDays, coreDaily) * 1e6) / 1e6,
+    trainingDailyXP: Math.round(trainingDaily * 1000) / 1000,
+    typicalDailyXP: Math.round(typicalDaily * 1000) / 1000,
+    trainingLines: trainingLines.map((l) => ({ ...l, xp: Math.round(l.xp * 1000) / 1000, poorXp: Math.round(l.poorXp * 1000) / 1000, perfectXp: Math.round(l.perfectXp * 1000) / 1000 })),
+    solvedGrowthFactor: Math.round(solve(bLets.targetLevel, bLets.targetDays, typicalDaily) * 1e6) / 1e6,
     optionalPaceAllowance: bLets.optionalPaceAllowance,
     optionalMultiplierWithSupplements: Math.round(optionalMultiplier * 10000) / 10000,
     supplementStackGrantAfterMultiplier: scaledGrant(XP.supplementStackComplete, optionalMultiplier),
     supplementBadgeBonusAfterMultiplier: scaledGrant(XP.achievementBonus, optionalMultiplier),
     supplementMilestoneAfterMultiplier: scaledGrant(XP.journeyMilestone, optionalMultiplier),
-    daysToReach: [5, 10, 20, 30, 50, 84, 100, 150, 200].map((L) => ({ level: L, days: Math.round(threshold(L) / coreDaily) })),
+    // `days` = the training experience's typical day; `daysFoodFirst` = the food core alone.
+    daysToReach: [5, 10, 20, 30, 50, 75, 100, 125, 150].filter((L) => L <= maxLevel).map((L) => ({ level: L, days: Math.round(threshold(L) / typicalDaily), daysFoodFirst: Math.round(threshold(L) / coreDaily) })),
   },
   bossDefeatXP: [3, 4, 5, 6, 7].map((t) => ({ target: t, xp: defeatXP(t) })),
 };

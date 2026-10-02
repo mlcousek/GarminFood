@@ -3,10 +3,15 @@ import Foundation
 // LevelTier.swift
 //
 // expand-gamification-depth design.md D1's "levels also gain a tier/title"
-// decision: a small, hand-written table of ~20 named bands spanning the
-// full 1-200 level range, so level progress reads as more than a bare
-// number without inventing 200 individually distinct names (D1's own
-// framing: a tier name + "Level 47" beats a thin per-level reskin).
+// decision: a small, hand-written table of 20 named bands spanning the
+// full level range, so level progress reads as more than a bare number
+// without inventing one name per level (D1's own framing: a tier name +
+// "Level 47" beats a thin per-level reskin).
+//
+// add-training-gamification-and-150-levels D5: the range is 1-150 now. The
+// eleven tiers up to level 90 keep their names AND ranges, so nobody's
+// title moves down when the curve changes; the nine above are re-banded to
+// end at 150 (nobody was in them). No prestige: "Legend" is the end.
 public struct LevelTier: Sendable, Equatable {
     public let title: String
     public let flavor: String
@@ -44,7 +49,7 @@ public struct LevelTier: Sendable, Equatable {
 }
 
 public enum LevelTiers {
-    /// Contiguous, gap-free, covering exactly 1...200 (`LevelCurve.maxLevel`)
+    /// Contiguous, gap-free, covering exactly 1...150 (`LevelCurve.maxLevel`)
     /// -- verified by `LevelTierTests`.
     public static let all: [LevelTier] = [
         localized("Newcomer", "Everyone starts somewhere.", 1...5),
@@ -58,15 +63,15 @@ public enum LevelTiers {
         localized("Veteran", "A full year, easy.", 55...65),
         localized("Expert", "You could teach this.", 66...77),
         localized("Elite", "Top of the leaderboard, if there were one.", 78...90),
-        localized("Master", "Multi-year discipline.", 91...104),
-        localized("Grandmaster", "Genuinely rare territory.", 105...119),
-        localized("Champion", "Years of unbroken effort.", 120...135),
-        localized("Luminary", "An inspiration, if anyone was watching.", 136...152),
-        localized("Mythic", "The stuff of legend.", 153...170),
-        localized("Immortal", "Time itself is starting to notice.", 171...185),
-        localized("Transcendent", "Beyond the curve's original design.", 186...195),
-        localized("Ascendant", "One step from the summit.", 196...199),
-        localized("Legend", "You reached the ceiling. Actually reached it.", 200...200)
+        localized("Master", "Multi-year discipline.", 91...100),
+        localized("Grandmaster", "Genuinely rare territory.", 101...110),
+        localized("Champion", "Years of unbroken effort.", 111...120),
+        localized("Luminary", "An inspiration, if anyone was watching.", 121...130),
+        localized("Mythic", "The stuff of legend.", 131...139),
+        localized("Immortal", "Time itself is starting to notice.", 140...145),
+        localized("Transcendent", "Beyond the curve's original design.", 146...148),
+        localized("Ascendant", "One step from the summit.", 149...149),
+        localized("Legend", "You reached the ceiling. Actually reached it.", 150...150)
     ]
 
     /// add-localization 4.1: a tier's Czech title/flavor live in

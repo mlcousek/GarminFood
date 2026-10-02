@@ -14,6 +14,11 @@
 // - A stored id that is no longer in the catalog is treated as FREE
 //   (defensive -- ids are never removed on purpose).
 //
+// add-training-gamification-and-150-levels D9: a `.training` square is
+// judged from the plan's facts (`plan`, passed only in the training
+// experience) by `trainingCompletionDay`; without them it simply stays
+// open. Everything else is unchanged.
+//
 // Depends on: BingoTaskCatalog, SignalEvaluator, WeekKey, FoodLogCore.
 // Depended on by: WeeklyBingoFeature, BingoCardGenerator (lines),
 // WeeklyBingoEvaluatorTests.
@@ -83,8 +88,9 @@ public enum BingoEvaluator {
     ///
     /// A task that `judgesCompletedDaysOnly` sees only days BEFORE `today`
     /// (a later entry today could still break it). `onlyCompletedDayTasks`
-    /// restricts the pass to those squares -- `WeeklyBingoFeature` uses it to
-    /// settle last week's Sunday, leaving every other square as it was.
+    /// restricts the pass to those squares and the training squares --
+    /// `WeeklyBingoFeature` uses it to settle last week's Sunday, leaving
+    /// every other square as it was.
     public static func completions(
         taskIds: [String],
         week: WeekKey,
@@ -92,7 +98,8 @@ public enum BingoEvaluator {
         snapshot: SignalsSnapshot,
         calendar: Calendar,
         stored: [Int: String],
-        onlyCompletedDayTasks: Bool = false
+        onlyCompletedDayTasks: Bool = false,
+        plan: TrainingPlanSignals? = nil
     ) -> [Int: String] {
         var result = stored
         let keys = week.dayKeys(calendar: calendar).filter { $0 <= today }
@@ -100,7 +107,19 @@ public enum BingoEvaluator {
         let completedDays = days.filter { $0.day < today }
         for (index, taskId) in taskIds.enumerated() where result[index] == nil {
             guard let task = BingoTaskCatalog.task(id: taskId) else { continue }
-            if onlyCompletedDayTasks && !task.judgesCompletedDaysOnly { continue }
+            // The whole-day pass (last week's card, on Monday) also takes
+            // every training square: the plan's facts can arrive late (a
+            // session matched after a sync, a Sunday rest day that is only
+            // kept once it is over).
+            if onlyCompletedDayTasks && !(task.judgesCompletedDaysOnly || task.scope.isTraining) { continue }
+            if case .training(let rule) = task.scope {
+                // From the plan's facts; its own verdicts know which days
+                // are over, so every day of the week up to today is passed.
+                if let plan, let day = trainingCompletionDay(rule, dayKeys: keys, plan: plan) {
+                    result[index] = day
+                }
+                continue
+            }
             let candidates = task.judgesCompletedDaysOnly ? completedDays : days
             guard !candidates.isEmpty else { continue }
             if let day = completionDay(of: task, days: candidates, history: snapshot, calendar: calendar) {
@@ -124,6 +143,9 @@ public enum BingoEvaluator {
             for end in days.indices where SignalEvaluator.holds(predicate, over: Array(days[...end]), history: history, calendar: calendar) {
                 return days[end].day
             }
+            return nil
+        case .training:
+            // Not a food rule: see `trainingCompletionDay`.
             return nil
         }
     }

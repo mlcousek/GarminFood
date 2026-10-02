@@ -3,30 +3,47 @@
 // add-winter-arc-nutrition-and-rewards (D1): the "training" gamification
 // feature -- rewards that SUPPORT the plan, in place of the ones that push
 // against it in the training experience (TrainingExperienceAvailability).
-// Five badge ladders over the plan's own facts (TrainingSignals, filled by
-// the app's adapter from TrainingCore):
-//   - morning check-ins: 7 / 30 / 100 days checked in;
-//   - honest calls: an amber or red morning followed by its option -- 1 / 10;
-//   - gym: weeks with at least `gymSessionsPerWeek` (2) strength sessions
-//     done -- 1 / 4 / 12;
-//   - habits: habit ticks -- 25 / 100 / 300;
-//   - the week kept within plan (only when the projection closes it that
-//     way) -- 1 / 4 / 12.
+// It started as five badge ladders over the plan's own facts
+// (TrainingSignals): morning check-ins 7 / 30 / 100, honest calls 1 / 10,
+// gym weeks 1 / 4 / 12, habit ticks 25 / 100 / 300, weeks kept within plan
+// 1 / 4 / 12 (TrainingRewardsCatalog, below).
 //
-// Each run: record the window's facts in `TrainingRewardsStore` (so counts
-// outlive the few weeks the projection carries), then request every badge
-// a count reaches. The host unlocks each badge ONCE (AchievementStore) and
-// pays the generic badge bonus scaled as an optional source
-// (`XPBudget.isOptional`), with the standard achievement moment -- this
-// feature emits no RewardLedger grants, so nothing can be paid twice.
+// add-training-gamification-and-150-levels (D7, D8): it now also pays XP.
+// Each run with the plan's facts (`context.trainingPlan`,
+// TrainingPlanSignals):
+//   1. `TrainingXPRules.evaluate` judges sessions, days and weeks and
+//      returns every reward as a `RewardGrant` with a stable key
+//      (`training.checkin.<day>`, `training.session.<id>`,
+//      `training.week-kept.<week>`, ...). They are re-emitted on every run;
+//      `RewardLedger` pays each key once, so re-reading the plan adds
+//      nothing and a failed ledger write heals itself;
+//   2. the ids behind the ladders go into `TrainingRewardsStore`, so counts
+//      and streaks outlive the few weeks the plan file carries;
+//   3. the habit-streak milestones (7 / 30 / 100 / 365) are granted from the
+//      store's own streak;
+//   4. every badge a count reaches is requested (the 14 original ones and
+//      the 41 of TrainingProgressCatalog); the host unlocks each ONCE and
+//      pays the generic badge bonus in full -- the training rewards are a
+//      budgeted line of XPBudget now, not a scaled optional source;
+//   5. a kept week, a closed phase, a completed season and a finished race
+//      get one moment each, the first time they are recorded (never on the
+//      first run, which records the whole plan window at once); the secret
+//      "wise call" badge gets its own reveal.
+// With honest calls and kept weeks decided by TrainingXPRules, the two
+// original ladders and the XP agree.
 //
-// Only in the training experience with a plan (`context.training`):
-// otherwise it does nothing and shows nothing, and its badges are hidden
-// unless already earned (TrainingExperienceAvailability.visibleBadges).
+// An app that passes only `context.training` (the original signals) still
+// gets the original five ladders and no XP.
 //
-// Depends on: GamificationFeature, TrainingSignals, TrainingRewardsStore.
-// Depended on by: GamificationFeatureRegistry, XPBudget (its line).
-// Tests: TrainingRewardsTests.
+// Only in the training experience with a plan: otherwise it does nothing
+// and shows nothing, and its badges are hidden unless already earned
+// (TrainingExperienceAvailability.visibleBadges).
+//
+// Depends on: GamificationFeature, TrainingSignals, TrainingPlanSignals,
+// TrainingXPRules, TrainingRewardsStore, TrainingProgressCatalog.
+// Depended on by: GamificationFeatureRegistry, XPBudget (its line), the
+// app's training section on the Progress tab (`progressModel`).
+// Tests: TrainingRewardsTests, TrainingProgressTests.
 
 import Foundation
 import FoodLogCore
@@ -37,10 +54,16 @@ public actor TrainingRewardsFeature: GamificationFeature {
     public static let gymSessionsPerWeek = 2
 
     public nonisolated var featureId: String { Self.id }
-    public nonisolated var badges: [AchievementDefinition] { TrainingRewardsCatalog.badges }
+    public nonisolated var badges: [AchievementDefinition] {
+        TrainingRewardsCatalog.badges + TrainingProgressCatalog.badges
+    }
 
     let directory: URL
     let store: TrainingRewardsStore
+    /// The plan's today and week of the latest run, for the display APIs.
+    private var lastToday: String?
+    private var lastWeek: String?
+    private var lastPlan: TrainingPlanSignals?
 
     public init(directory: URL) {
         self.directory = directory
@@ -48,18 +71,53 @@ public actor TrainingRewardsFeature: GamificationFeature {
     }
 
     public func update(_ context: FeatureContext) async -> FeatureUpdate {
-        guard context.isTrainingExperience, let signals = context.training else { return .empty }
+        guard context.isTrainingExperience else { return .empty }
+        let plan = context.trainingPlan
+        let signals = context.training
+        guard plan != nil || signals != nil else { return .empty }
         guard await store.isReadable() else { return .empty }
-        await store.record(signals, gymSessionsPerWeek: Self.gymSessionsPerWeek)
-        try? await store.save()
-        let counts = await store.counts()
 
-        let reached = TrainingRewardsCatalog.reachedBadgeIds(counts)
+        var grants: [RewardGrant] = []
+        var moments: [FeatureMoment] = []
+        var today = signals?.today
+        var currentWeek = signals?.currentWeek
+        if let plan {
+            let seasonEnds = await store.seasonEnds()
+            let evaluation = TrainingXPRules.evaluate(plan, snapshot: context.snapshot, knownSeasonEnds: seasonEnds)
+            let recorded = await store.record(evaluation.facts)
+            grants = evaluation.grants
+            moments = Self.moments(for: recorded)
+            today = plan.today
+            currentWeek = TrainingRewardsCatalog.isoWeek(ofDay: plan.today)
+        } else if let signals {
+            await store.record(signals, gymSessionsPerWeek: Self.gymSessionsPerWeek)
+        }
+        try? await store.save()
+        lastToday = today
+        lastWeek = currentWeek
+        lastPlan = plan
+
+        let counts = await store.counts()
+        let progress = await store.progress(today: today ?? "", currentWeek: currentWeek)
+        if plan != nil {
+            grants.append(contentsOf: TrainingXPRules.habitStreakGrants(best: progress.habitStreak.best))
+        }
+
+        let reached = (TrainingRewardsCatalog.reachedBadgeIds(counts)
+            + TrainingProgressCatalog.reachedBadgeIds(counts: counts, progress: progress))
             .filter { !context.unlockedBadgeIds.contains($0) }
-        return FeatureUpdate(
-            unlockBadgeIds: reached,
-            summary: Self.summary(signals)
-        )
+        if reached.contains(TrainingProgressCatalog.wiseCallBadgeId) {
+            // Secret badges get no generic moment from the host: this is it.
+            moments.append(Self.wiseCallMoment())
+        }
+
+        var summary: FeatureSummary?
+        if let plan {
+            summary = Self.summary(plan)
+        } else if let signals {
+            summary = Self.summary(signals)
+        }
+        return FeatureUpdate(grants: grants, unlockBadgeIds: reached, moments: moments, summary: summary)
     }
 
     /// The lifetime counts (for a detail screen).
@@ -67,15 +125,44 @@ public actor TrainingRewardsFeature: GamificationFeature {
         await store.counts()
     }
 
+    /// The counts and streaks behind every ladder, as of the latest run.
+    public func progress() async -> TrainingProgress {
+        await store.progress(today: lastToday ?? "", currentWeek: lastWeek)
+    }
+
+    /// The Progress tab's training section, as of the latest run.
+    public func progressModel() async -> TrainingProgressModel {
+        TrainingProgressModel.build(
+            counts: await store.counts(),
+            progress: await store.progress(today: lastToday ?? "", currentWeek: lastWeek),
+            plan: lastPlan
+        )
+    }
+
+    // MARK: - Summary
+
     /// "This week: 4 check-ins · gym 1/2".
     static func summary(_ signals: TrainingSignals) -> FeatureSummary {
         let week = signals.currentWeek.flatMap { current in signals.weeks.first { $0.week == current } }
-        let gym = min(week?.strengthSessionsDone ?? 0, gymSessionsPerWeek)
         let weekDays = signals.days.filter { day in
             guard let current = signals.currentWeek else { return false }
             return TrainingRewardsCatalog.isoWeek(ofDay: day.day) == current
         }
-        let checkIns = weekDays.filter(\.checkedIn).count
+        return summary(checkIns: weekDays.filter(\.checkedIn).count, strengthSessions: week?.strengthSessionsDone ?? 0)
+    }
+
+    /// The same card from the plan's facts.
+    static func summary(_ plan: TrainingPlanSignals) -> FeatureSummary {
+        let current = TrainingRewardsCatalog.isoWeek(ofDay: plan.today)
+        let weekDays = plan.days.filter { current != nil && TrainingRewardsCatalog.isoWeek(ofDay: $0.day) == current }
+        let strength = weekDays.reduce(0) { sum, day in
+            sum + day.sessions.filter { $0.isDone && $0.isStrength }.count
+        }
+        return summary(checkIns: weekDays.filter(\.isCheckedIn).count, strengthSessions: strength)
+    }
+
+    private static func summary(checkIns: Int, strengthSessions: Int) -> FeatureSummary {
+        let gym = min(strengthSessions, gymSessionsPerWeek)
         return FeatureSummary(
             title: String(localized: "Training rewards", bundle: .module, comment: "Hub card title of the training rewards (check-ins, gym, habits, weeks kept within plan)."),
             subtitle: String(
@@ -84,6 +171,82 @@ public actor TrainingRewardsFeature: GamificationFeature {
             ),
             fraction: Double(gym) / Double(gymSessionsPerWeek),
             symbol: "figure.run"
+        )
+    }
+
+    // MARK: - Moments
+
+    /// One moment per kept week, closed phase, completed season and
+    /// finished race that was recorded for the first time in this run.
+    /// Nothing on the first recording: it takes in the whole plan window.
+    static func moments(for recorded: TrainingRecordedFacts) -> [FeatureMoment] {
+        guard !recorded.wasFirstRecording else { return [] }
+        var moments: [FeatureMoment] = []
+        let easyWeeks = Set(recorded.new(.easyWeek))
+        for week in recorded.newKeptWeeks {
+            if easyWeeks.contains(week) {
+                moments.append(FeatureMoment(
+                    featureId: id,
+                    title: String(localized: "Easy week respected", bundle: .module, comment: "Moment title: a deload, taper or recovery week was kept at or under its target."),
+                    message: String(localized: "You held back when the plan said so. That is the hard part.", bundle: .module, comment: "Moment message for a respected easy week."),
+                    symbol: "tortoise.fill",
+                    style: .celebration,
+                    xpAwarded: XPAward.trainingWeekKept + XPAward.trainingEasyWeek
+                ))
+            } else {
+                moments.append(FeatureMoment(
+                    featureId: id,
+                    title: String(localized: "Week kept within plan", bundle: .module, comment: "Moment title: a closed week with no missed session and no extra kilometres."),
+                    message: String(localized: "Nothing missed, nothing extra.", bundle: .module, comment: "Moment message for a week kept within plan."),
+                    symbol: "calendar.badge.checkmark",
+                    style: .celebration,
+                    xpAwarded: XPAward.trainingWeekKept
+                ))
+            }
+        }
+        for _ in recorded.new(.phase) {
+            moments.append(FeatureMoment(
+                featureId: id,
+                title: String(localized: "Phase closed", bundle: .module, comment: "Moment title: a phase of the training plan was closed with its recap."),
+                message: String(localized: "The recap is written. On to the next one.", bundle: .module, comment: "Moment message for a closed plan phase."),
+                symbol: "book.closed.fill",
+                style: .celebration,
+                xpAwarded: XPAward.trainingPhaseCompleted
+            ))
+        }
+        for _ in recorded.new(.season) {
+            moments.append(FeatureMoment(
+                featureId: id,
+                title: String(localized: "Season completed", bundle: .module, comment: "Moment title: the training season's period has ended."),
+                message: String(localized: "A whole season of showing up.", bundle: .module, comment: "Moment message for a completed season."),
+                symbol: "trophy.fill",
+                style: .celebration,
+                xpAwarded: XPAward.trainingSeasonCompleted
+            ))
+        }
+        for _ in recorded.new(.raceFinish) {
+            moments.append(FeatureMoment(
+                featureId: id,
+                title: String(localized: "Race finished", bundle: .module, comment: "Moment title: a planned race was finished."),
+                message: String(localized: "Prepared, raced, done. Write the report while it is fresh.", bundle: .module, comment: "Moment message for a finished race."),
+                symbol: "flag.checkered",
+                style: .celebration,
+                xpAwarded: XPAward.trainingRaceFinished
+            ))
+        }
+        return moments
+    }
+
+    /// The reveal of the secret badge for a race stopped, or not started,
+    /// for a good reason.
+    static func wiseCallMoment() -> FeatureMoment {
+        FeatureMoment(
+            featureId: id,
+            title: String(localized: "Secret revealed!", bundle: .module, comment: "Reveal moment title when one secret achievement unlocks."),
+            message: String(localized: "Lived to Run Another Day", bundle: .module, comment: "Secret training badge title: a race stopped, or not started, because a stop rule said so."),
+            symbol: "hand.raised.fill",
+            style: .secret,
+            xpAwarded: XPAward.trainingWiseCall + XPAward.achievementBonus
         )
     }
 }

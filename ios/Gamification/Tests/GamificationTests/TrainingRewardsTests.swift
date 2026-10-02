@@ -10,7 +10,8 @@
 //     weight-goal badges are hidden unless earned (and training badges
 //     outside the experience); the active-kcal and fasting records stay
 //     quiet; the food-first experience is unchanged.
-//   - XPBudget: one optional line, inside the 0.5 % allowance.
+//   - XPBudget: one training-only line (budgeted, not optional, since
+//     add-training-gamification-and-150-levels).
 // Everything is synthetic.
 
 import XCTest
@@ -211,11 +212,22 @@ final class TrainingRewardsTests: XCTestCase {
 
     // MARK: - XP budget
 
-    func testTheTrainingLineIsOptionalAndInsideTheAllowance() throws {
+    /// add-training-gamification-and-150-levels D2: the training rewards are
+    /// a budgeted, training-only line now -- no longer an optional source
+    /// scaled down to the 0.5 % allowance (their shares are checked in
+    /// XPBudgetTests).
+    func testTheTrainingLineIsBudgetedNotOptional() throws {
         let line = try XCTUnwrap(XPBudget.lines.first { $0.source == TrainingRewardsFeature.id })
-        XCTAssertTrue(line.optional)
-        XCTAssertTrue(XPBudget.isOptional(source: TrainingRewardsFeature.id))
-        XCTAssertEqual(XPBudget.optionalMultiplier(enabledOptionalSources: [TrainingRewardsFeature.id]), 1, "alone it fits the 0.5 % allowance")
-        XCTAssertLessThanOrEqual(line.expectedDailyXP, XPBudget.optionalPaceAllowance * XPBudget.coreDailyXP)
+        XCTAssertTrue(line.trainingOnly)
+        XCTAssertFalse(line.optional)
+        XCTAssertFalse(XPBudget.isOptional(source: TrainingRewardsFeature.id))
+        XCTAssertEqual(XPBudget.optionalMultiplier(enabledOptionalSources: [TrainingRewardsFeature.id]), 1, "not an optional source: nothing to scale")
+        XCTAssertEqual(line.expectedDailyXP, TrainingXPBudget.typicalDailyXP, accuracy: 1e-9)
+        // Supplements are scaled exactly as before, with or without it.
+        XCTAssertEqual(
+            XPBudget.optionalMultiplier(enabledOptionalSources: [SupplementsFeature.id, TrainingRewardsFeature.id]),
+            XPBudget.optionalMultiplier(enabledOptionalSources: [SupplementsFeature.id]),
+            accuracy: 1e-12
+        )
     }
 }

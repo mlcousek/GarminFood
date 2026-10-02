@@ -119,6 +119,7 @@ public enum TrainingExperienceAvailability {
         switch task.scope {
         case .day(let predicate): return judgesFixedCalorieTarget(predicate)
         case .week(let predicate): return judgesFixedCalorieTarget(predicate)
+        case .training: return false
         }
     }
 

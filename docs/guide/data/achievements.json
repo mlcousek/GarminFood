@@ -1,7 +1,7 @@
 {
  "source": "mirrored (core families) + parsed (feature catalogs)",
  "counts": {
-  "core": 122,
+  "core": 120,
   "bingo": 7,
   "boss": 7,
   "journeys": 12,
@@ -12,7 +12,7 @@
   "sportBody": 23,
   "supplements": 10
  },
- "total": 237,
+ "total": 235,
  "rarities": [
   {
    "id": "common",
@@ -752,8 +752,8 @@
    "symbol": "star.fill",
    "rarity": "legendary",
    "title": {
-    "en": "Level 150",
-    "cs": "Úroveň 150"
+    "en": "Max Level",
+    "cs": "Maximální úroveň"
    },
    "subtitle": {
     "en": "Reach level 150.",
@@ -764,58 +764,6 @@
     "value": 150
    },
    "rule": "Level ≥ 150",
-   "secret": false,
-   "source": "mirrored",
-   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
-   "featureLabel": "Core",
-   "garminOnly": false,
-   "optional": false
-  },
-  {
-   "id": "achv-level-175",
-   "feature": "core",
-   "category": "level",
-   "symbol": "star.fill",
-   "rarity": "legendary",
-   "title": {
-    "en": "Level 175",
-    "cs": "Úroveň 175"
-   },
-   "subtitle": {
-    "en": "Reach level 175.",
-    "cs": "Dosáhni úrovně 175."
-   },
-   "condition": {
-    "kind": "levelAtLeast",
-    "value": 175
-   },
-   "rule": "Level ≥ 175",
-   "secret": false,
-   "source": "mirrored",
-   "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
-   "featureLabel": "Core",
-   "garminOnly": false,
-   "optional": false
-  },
-  {
-   "id": "achv-level-200",
-   "feature": "core",
-   "category": "level",
-   "symbol": "star.fill",
-   "rarity": "legendary",
-   "title": {
-    "en": "Max Level",
-    "cs": "Maximální úroveň"
-   },
-   "subtitle": {
-    "en": "Reach level 200.",
-    "cs": "Dosáhni úrovně 200."
-   },
-   "condition": {
-    "kind": "levelAtLeast",
-    "value": 200
-   },
-   "rule": "Level ≥ 200",
    "secret": false,
    "source": "mirrored",
    "file": "ios/Gamification/Sources/Gamification/Achievements.swift",
@@ -3341,7 +3289,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 350,
+   "line": 352,
    "id": "bingo.first-line",
    "title": {
     "en": "Bingo!",
@@ -3364,7 +3312,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 351,
+   "line": 353,
    "id": "bingo.four-corners",
    "title": {
     "en": "Four Corners",
@@ -3387,7 +3335,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 352,
+   "line": 354,
    "id": "bingo.x-marks",
    "title": {
     "en": "X Marks the Spot",
@@ -3410,7 +3358,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 353,
+   "line": 355,
    "id": "bingo.lines-50",
    "title": {
     "en": "Line Dancer",
@@ -3433,7 +3381,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 354,
+   "line": 356,
    "id": "bingo.blackout-1",
    "title": {
     "en": "Blackout",
@@ -3456,7 +3404,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 355,
+   "line": 357,
    "id": "bingo.blackout-4",
    "title": {
     "en": "Card Shark",
@@ -3479,7 +3427,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/WeeklyBingo/BingoTaskCatalog.swift",
-   "line": 356,
+   "line": 358,
    "id": "bingo.blackout-12",
    "title": {
     "en": "Bingo Hall Legend",
@@ -3502,7 +3450,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 216,
+   "line": 256,
    "id": "boss.first",
    "title": {
     "en": "Boss Slayer",
@@ -3524,7 +3472,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 217,
+   "line": 257,
    "id": "boss.10",
    "title": {
     "en": "Monster Hunter",
@@ -3546,7 +3494,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 218,
+   "line": 258,
    "id": "boss.25",
    "title": {
     "en": "Legend of the Realm",
@@ -3568,7 +3516,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 219,
+   "line": 259,
    "id": "boss.perfect",
    "title": {
     "en": "Flawless Victory",
@@ -3590,7 +3538,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 220,
+   "line": 260,
    "id": "boss.bestiary",
    "title": {
     "en": "Bestiary Complete",
@@ -3612,7 +3560,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 221,
+   "line": 261,
    "id": "freeze.first",
    "title": {
     "en": "Cool Head",
@@ -3634,7 +3582,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Boss/BossCatalog.swift",
-   "line": 222,
+   "line": 262,
    "id": "freeze.saved-100",
    "title": {
     "en": "Ice Age",
@@ -3656,7 +3604,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 199,
+   "line": 233,
    "id": "journey.everest",
    "title": {
     "en": "Top of the World",
@@ -3678,7 +3626,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 211,
+   "line": 245,
    "id": "journey.seven-summits",
    "title": {
     "en": "Seven Summits",
@@ -3700,7 +3648,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 217,
+   "line": 251,
    "id": "journey.karman",
    "title": {
     "en": "Protein Astronaut",
@@ -3722,7 +3670,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 238,
+   "line": 272,
    "id": "journey.bathtub",
    "title": {
     "en": "Bath Time",
@@ -3744,7 +3692,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 240,
+   "line": 274,
    "id": "journey.hot-tub",
    "title": {
     "en": "Hot Tub Party",
@@ -3766,7 +3714,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 241,
+   "line": 275,
    "id": "journey.fire-engine",
    "title": {
     "en": "Fire Brigade",
@@ -3788,7 +3736,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 265,
+   "line": 299,
    "id": "journey.vienna",
    "title": {
     "en": "Off to Vienna",
@@ -3810,7 +3758,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 272,
+   "line": 306,
    "id": "journey.rome",
    "title": {
     "en": "All Roads Lead to Rome",
@@ -3832,7 +3780,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 276,
+   "line": 310,
    "id": "journey.lisbon",
    "title": {
     "en": "Atlantic Coast",
@@ -3854,7 +3802,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 283,
+   "line": 317,
    "id": "journey.home-again",
    "title": {
     "en": "Home Again",
@@ -3876,7 +3824,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 311,
+   "line": 345,
    "id": "journey.passport-100",
    "title": {
     "en": "Seasoned Traveller",
@@ -3898,7 +3846,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 313,
+   "line": 347,
    "id": "journey.passport-500",
    "title": {
     "en": "Citizen of the World",

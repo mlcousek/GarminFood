@@ -612,7 +612,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 199,
+   "line": 233,
    "id": "journey.everest",
    "title": {
     "en": "Top of the World",
@@ -631,7 +631,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 211,
+   "line": 245,
    "id": "journey.seven-summits",
    "title": {
     "en": "Seven Summits",
@@ -650,7 +650,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 217,
+   "line": 251,
    "id": "journey.karman",
    "title": {
     "en": "Protein Astronaut",
@@ -669,7 +669,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 238,
+   "line": 272,
    "id": "journey.bathtub",
    "title": {
     "en": "Bath Time",
@@ -688,7 +688,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 240,
+   "line": 274,
    "id": "journey.hot-tub",
    "title": {
     "en": "Hot Tub Party",
@@ -707,7 +707,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 241,
+   "line": 275,
    "id": "journey.fire-engine",
    "title": {
     "en": "Fire Brigade",
@@ -726,7 +726,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 265,
+   "line": 299,
    "id": "journey.vienna",
    "title": {
     "en": "Off to Vienna",
@@ -745,7 +745,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 272,
+   "line": 306,
    "id": "journey.rome",
    "title": {
     "en": "All Roads Lead to Rome",
@@ -764,7 +764,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 276,
+   "line": 310,
    "id": "journey.lisbon",
    "title": {
     "en": "Atlantic Coast",
@@ -783,7 +783,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 283,
+   "line": 317,
    "id": "journey.home-again",
    "title": {
     "en": "Home Again",
@@ -802,7 +802,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 311,
+   "line": 345,
    "id": "journey.passport-100",
    "title": {
     "en": "Seasoned Traveller",
@@ -821,7 +821,7 @@
    "secret": false,
    "source": "parsed",
    "file": "ios/Gamification/Sources/Gamification/Features/Journeys/JourneyCatalog.swift",
-   "line": 313,
+   "line": 347,
    "id": "journey.passport-500",
    "title": {
     "en": "Citizen of the World",
