@@ -79,7 +79,7 @@ struct SupplementProgressSection: View {
                 ForEach(SupplementsCatalog.badges) { badge in
                     let isEarned = unlocked[badge.id] != nil
                     VStack(spacing: Theme.Spacing.xs) {
-                        BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isEarned, size: 44)
+                        BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isEarned, size: 44, family: BadgeArtCatalog.family(for: badge))
                         Text(verbatim: badge.title)
                             .font(.caption2)
                             .multilineTextAlignment(.center)

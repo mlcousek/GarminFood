@@ -59,6 +59,17 @@ jobs:
       - name: Check translations
         run: node tools/check-localizations.mjs --scan
 
+      # redesign-badge-art D3: badge art stays inside a small SVG subset,
+      # because how Xcode draws it is only seen after a sideload.
+      - name: Lint badge art
+        run: node tools/docs/lint-badge-svg.mjs
+
+      - name: Check badge art against the catalog
+        run: node tools/docs/check-badge-art.mjs
+
+      - name: Check the badge imagesets are up to date
+        run: node tools/docs/build-badge-assets.mjs --check
+
   build:
     runs-on: macos-latest
     defaults:

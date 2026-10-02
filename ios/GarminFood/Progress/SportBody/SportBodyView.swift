@@ -343,7 +343,7 @@ private struct BadgeLine: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.sm) {
-            BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isUnlocked, size: 40)
+            BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isUnlocked, size: 40, family: BadgeArtCatalog.family(for: badge))
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: badge.title)
                     .font(.subheadline.weight(.semibold))
@@ -367,7 +367,7 @@ private struct SportBadgeCell: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
-            BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isUnlocked, size: 52)
+            BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isUnlocked, size: 52, family: BadgeArtCatalog.family(for: badge))
             Text(verbatim: badge.title)
                 .font(.caption.weight(.semibold))
                 .multilineTextAlignment(.center)
