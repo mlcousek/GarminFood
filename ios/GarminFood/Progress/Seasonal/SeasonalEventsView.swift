@@ -94,7 +94,7 @@ private struct SeasonalBadgeCell: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
-            BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isUnlocked, size: 52)
+            BadgeMedallion(symbol: badge.badgeSymbol, rarity: badge.rarity, isLocked: !isUnlocked, size: 52, family: BadgeArtCatalog.family(for: badge))
             Text(verbatim: badge.title)
                 .font(.caption.weight(.semibold))
                 .multilineTextAlignment(.center)

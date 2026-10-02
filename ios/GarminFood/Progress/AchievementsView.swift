@@ -213,7 +213,7 @@ private struct AchievementBadgeView: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
-            BadgeMedallion(symbol: isHiddenSecret ? "questionmark" : definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 60)
+            BadgeMedallion(symbol: isHiddenSecret ? "questionmark" : definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 60, family: BadgeArtCatalog.family(for: definition))
             Text(isHiddenSecret ? "???" : definition.title)
                 .font(.caption.weight(.semibold))
                 .multilineTextAlignment(.center)
@@ -263,7 +263,7 @@ private struct AchievementDetailSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Theme.Spacing.lg) {
-                    BadgeMedallion(symbol: isHiddenSecret ? "questionmark" : definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 120)
+                    BadgeMedallion(symbol: isHiddenSecret ? "questionmark" : definition.badgeSymbol, rarity: definition.rarity, isLocked: !isUnlocked, size: 120, family: BadgeArtCatalog.family(for: definition))
                         .padding(.top, Theme.Spacing.md)
 
                     VStack(spacing: Theme.Spacing.xs) {

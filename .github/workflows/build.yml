@@ -67,6 +67,9 @@ jobs:
       - name: Check badge art against the catalog
         run: node tools/docs/check-badge-art.mjs
 
+      - name: Check the badge imagesets are up to date
+        run: node tools/docs/build-badge-assets.mjs --check
+
   build:
     runs-on: macos-latest
     defaults:
