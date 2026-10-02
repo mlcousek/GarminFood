@@ -234,6 +234,11 @@ public extension PlanBuilder {
             case nil: recognised = nil
             }
         }
+        // add-daily-checkin-and-pain-mode: a `done` this build can say
+        // nothing about -- the vault's "done without a watch" of 2026-10-01
+        // (`source` and `matchedBy` are `manual`, no activity) on a session
+        // without options -- gets no card; the status already says "Done".
+        guard optionText != nil || activityLine != nil || recognised != nil else { return nil }
         return DoneDetailModel(optionText: optionText, activityLine: activityLine, recognisedText: recognised)
     }
 

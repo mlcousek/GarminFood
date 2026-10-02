@@ -21,6 +21,14 @@
 //     add-checkin-pain-score also each day's morning `pains` (kept or
 //     replaced like the vault does, CheckInOverlay).
 //
+// add-daily-checkin-and-pain-mode: `skeletonDays` are the projection's
+// top-level `days` (the window's dates outside every written week, with
+// the phone's check-ins applied like a plan day), and `day(_:)` is THE
+// lookup of a date -- the plan's week first, else a skeleton -- so the
+// check-in, habit ticks, fuel and reminders work on every day, also when
+// there is no plan. `painMode` is the vault's `athlete.painMode` or the
+// phone's own unread pain answer (PainModeState).
+//
 // Lookups across the season live here too (a week's own phase by
 // `phaseId`, outline rows of every phase, races), so the builders never
 // walk the file themselves.
@@ -103,6 +111,11 @@ public struct TrainingSnapshot: Equatable, Sendable {
     public let capabilities: TrainingCapabilities
     /// The phone's own recent events (add-training-checkins D5).
     public let checkIns: CheckInOverlay
+    /// add-daily-checkin-and-pain-mode: the day skeletons (dates outside
+    /// every written week), oldest first, the phone's check-ins applied.
+    public let skeletonDays: [Day]
+    /// add-daily-checkin-and-pain-mode: whether the pain features show.
+    public let painMode: PainModeState
 
     public init(
         asOf: LocalDate?,
@@ -114,7 +127,9 @@ public struct TrainingSnapshot: Equatable, Sendable {
         habits: Habits,
         freshness: TrainingFreshness = TrainingFreshness(),
         capabilities: TrainingCapabilities = .readOnly,
-        checkIns: CheckInOverlay = .empty
+        checkIns: CheckInOverlay = .empty,
+        skeletonDays: [Day] = [],
+        painMode: PainModeState? = nil
     ) {
         self.asOf = asOf
         self.athlete = athlete
@@ -126,6 +141,8 @@ public struct TrainingSnapshot: Equatable, Sendable {
         self.freshness = freshness
         self.capabilities = capabilities
         self.checkIns = checkIns
+        self.skeletonDays = skeletonDays
+        self.painMode = painMode ?? PainModeState.resolve(vault: athlete.painMode, checkIns: checkIns, vaultPains: [:])
     }
 
     /// From a decoded projection, with an empty pending overlay and the
@@ -137,6 +154,13 @@ public struct TrainingSnapshot: Equatable, Sendable {
         checkIns: CheckInOverlay = .empty,
         capabilities: TrainingCapabilities = .readOnly
     ) {
+        // The file's own pain answers, before the phone's are laid over
+        // them: what the vault has read (PainModeState).
+        var vaultPains: [LocalDate: [PainEntry]] = [:]
+        let fileDays = (projection.plan?.weeks ?? []).flatMap(\.days) + projection.days
+        for day in fileDays {
+            if let pains = day.pains { vaultPains[day.date] = pains }
+        }
         self.init(
             asOf: projection.asOf,
             athlete: projection.athlete,
@@ -147,8 +171,27 @@ public struct TrainingSnapshot: Equatable, Sendable {
             habits: projection.habits,
             freshness: freshness,
             capabilities: capabilities,
-            checkIns: checkIns
+            checkIns: checkIns,
+            skeletonDays: checkIns.applying(to: projection.days),
+            painMode: PainModeState.resolve(vault: projection.athlete.painMode, checkIns: checkIns, vaultPains: vaultPains)
         )
+    }
+
+    // MARK: Days
+
+    /// THE lookup of a date (add-daily-checkin-and-pain-mode): the day of
+    /// a written week (with the phone's pending plan edits and check-ins
+    /// applied), else its skeleton; `nil` outside the file's window.
+    public func day(_ date: LocalDate) -> Day? {
+        if let planned = plan?.day(date) { return planned }
+        return skeletonDays.first { $0.date == date }
+    }
+
+    /// Every day the file knows -- the written weeks' and the skeletons --
+    /// oldest first.
+    public var allDays: [Day] {
+        let planned = (plan?.weeks ?? []).flatMap(\.days)
+        return (planned + skeletonDays).sorted { $0.date < $1.date }
     }
 
     // MARK: Check-ins
@@ -160,7 +203,7 @@ public struct TrainingSnapshot: Equatable, Sendable {
         if let local = checkIns.habitTick(on: date, habitId: id) {
             return (local.value, local)
         }
-        let count = plan?.day(date)?.habitsDone?[id] ?? 0
+        let count = day(date)?.habitsDone?[id] ?? 0
         return (count >= 1, nil)
     }
 

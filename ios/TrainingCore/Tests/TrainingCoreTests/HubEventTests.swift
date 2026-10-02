@@ -147,14 +147,14 @@ final class HubEventTests: XCTestCase {
     func testTheVaultsExampleDecodes() throws {
         let decoded = HubEventCodec.decode(try EventFixtures.vault("events.v1.example.jsonl"))
         XCTAssertEqual(decoded.invalidLines, [])
-        XCTAssertEqual(decoded.events.count, 24)
-        XCTAssertEqual(decoded.events.map(\.seq), Array(1...24))
+        XCTAssertEqual(decoded.events.count, 31)
+        XCTAssertEqual(decoded.events.map(\.seq), Array(1...31))
         XCTAssertTrue(decoded.events.allSatisfy { $0.deviceId == "ios-0a1b2c3d" && $0.v == 1 })
 
         let byType = Dictionary(grouping: decoded.events, by: { $0.type.rawValue }).mapValues(\.count)
         XCTAssertEqual(byType["checkin.morning"], 8)
-        XCTAssertEqual(byType["habit.tick"], 3)
-        XCTAssertEqual(byType["session.rpe"], 1)
+        XCTAssertEqual(byType["habit.tick"], 6)
+        XCTAssertEqual(byType["session.rpe"], 2)
         XCTAssertEqual(byType["session.note"], 1)
         XCTAssertEqual(byType["plan.session.moved"], 4)
         XCTAssertEqual(byType["plan.session.swapped"], 1)
@@ -163,7 +163,13 @@ final class HubEventTests: XCTestCase {
         XCTAssertEqual(byType["plan.rule.overridden"], 1)
         XCTAssertEqual(byType["event.retracted"], 1)
         let others = decoded.events.filter { if case .other = $0.type { return true } else { return false } }
-        XCTAssertEqual(Set(others.map(\.type.rawValue)), ["device.hello"], "add-plan-editing reads every type but device.hello")
+        // The vault's 2026-10-01 contract added `test.gate` (seq 25) and
+        // `session.done` (seq 26, 27): this build doesn't write them, so
+        // they read as `.other` -- never an invalid line.
+        XCTAssertEqual(Set(others.map(\.type.rawValue)), ["device.hello", "test.gate", "session.done"])
+        XCTAssertEqual(others.map(\.seq), [1, 25, 26, 27])
+        XCTAssertEqual(decoded.events[24].payload, .other(type: "test.gate", date: D.date("2030-10-23")))
+        XCTAssertEqual(decoded.events[25].payload, .other(type: "session.done", date: D.date("2030-10-21")))
 
         XCTAssertEqual(decoded.events[1].payload, .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-14"), light: .redLight, sessionId: nil, option: nil)))
         XCTAssertEqual(decoded.events[2].payload, .morningCheckIn(MorningCheckInPayload(date: D.date("2030-10-16"), light: .greenLight, sessionId: "2030-w42-wed-am", option: .g)))
@@ -184,6 +190,13 @@ final class HubEventTests: XCTestCase {
             return nil
         }
         XCTAssertEqual(otherPains, [], "no other check-in carries pains")
+        // seq 28 (2026-10-01): an RPE with `pains` during/after the session.
+        // The key is not read yet (unknown keys are ignored): the RPE is.
+        XCTAssertEqual(decoded.events[27].payload, .sessionRPE(SessionRPEPayload(date: D.date("2030-10-22"), sessionId: "2030-w43-tue-am", rpe: 7, feel: 3)))
+        // seq 29-31: a back-filled tick, and two the vault refuses (too old,
+        // in the future) -- all three are ordinary ticks on the wire.
+        XCTAssertEqual(decoded.events[28...30].map(\.payload.date), [D.date("2030-10-21"), D.date("2030-10-01"), D.date("2030-10-25")])
+        XCTAssertEqual(decoded.events[28].payload, .habitTick(HabitTickPayload(date: D.date("2030-10-21"), habitId: "holds", done: true)))
 
         // Every event this app could write re-encodes and reads back the same.
         for event in decoded.events {

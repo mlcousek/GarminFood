@@ -30,10 +30,1196 @@
         169,
         185
       ]
-    }
+    },
+    "painMode": {
+      "active": false,
+      "since": null,
+      "sites": [],
+      "reason": null,
+      "clearsAfter": null
+    },
+    "gate": null
   },
   "season": null,
   "plan": null,
+  "days": [
+    {
+      "date": "2030-10-07",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-08",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-09",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-10",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-11",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-12",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-13",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-14",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-15",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-16",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-17",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-18",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-19",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-20",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-21",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-22",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-23",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-24",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-25",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-26",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-27",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-28",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-29",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-30",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-10-31",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-01",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-02",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-03",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-04",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-05",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-06",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-07",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-08",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-09",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-10",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-11",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-12",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-13",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-14",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-15",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-16",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    },
+    {
+      "date": "2030-11-17",
+      "light": null,
+      "lightSource": null,
+      "pains": null,
+      "habitsExpected": [],
+      "habitsDone": null,
+      "fuel": {
+        "kind": "daily",
+        "raceId": null,
+        "carbsGPerKg": {
+          "min": 3,
+          "max": 5
+        },
+        "carbsG": null,
+        "proteinGPerKg": 1.6,
+        "fasting": "allowed",
+        "fastingReasons": [],
+        "load": "rest",
+        "plannedMin": 0,
+        "rules": [
+          "PM-FUEL-1",
+          "PM-FUEL-4"
+        ]
+      },
+      "sessions": [],
+      "unplanned": []
+    }
+  ],
   "workouts": {},
   "tests": [],
   "habits": {
@@ -45,5 +1231,13 @@
   },
   "acks": {},
   "outcomes": [],
-  "rejected": []
+  "rejected": [],
+  "notices": [
+    {
+      "kind": "no-activities-since",
+      "date": null,
+      "en": "No synced activity was found between 2030-09-07 and 2030-10-23, so sessions cannot be marked done from the watch. Run the activity sync, or mark a session done by hand.",
+      "cz": "Mezi 2030-09-07 a 2030-10-23 není žádná nasynchronizovaná aktivita, tréninky proto nejde označit jako splněné podle hodinek. Spusť synchronizaci aktivit, nebo trénink označ ručně."
+    }
+  ]
 }

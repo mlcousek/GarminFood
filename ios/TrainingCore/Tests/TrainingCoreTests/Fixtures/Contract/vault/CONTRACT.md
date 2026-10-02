@@ -27,16 +27,65 @@
   is `seq` 24. The minimal projection is unchanged. All four files were
   copied again and checked for anything non-synthetic first (no names,
   repositories, tokens or real dates: season 2030/31 only).
+  Re-mirrored 2026-10-01 from the vault's main branch after its daily
+  check-in context (2026-09-30, `schemaVersion` still 1), for this app's
+  `add-daily-checkin-and-pain-mode`. Both projection files changed, the
+  two event files did not (compared by blob hash, left as they were):
+  - top-level `days` -- **day skeletons** for every window date no written
+    week holds, the same `Day` shape with `sessions: []`. The example has
+    14 (2030-11-04 ... 2030-11-17, the unwritten W45-W46); the minimal
+    file has all 42 window dates (2030-10-07 ... 2030-11-17), because it
+    has no plan. A date is looked up in `plan.weeks[].days`, else in
+    `days`;
+  - `athlete.painMode` `{ active, since, sites, reason, clearsAfter }`:
+    active in the example (since 2030-10-14, `reason: "light"`, sites
+    `achilles-left` and `knee-right`), inactive in the minimal file;
+  - `day.fuel` on EVERY day (it was `null` outside carb-load days -- the
+    one change that is not purely additive): `kind: "daily"` with
+    `carbsGPerKg: { min, max }`, or `kind: "carb-load"` with the number,
+    `carbsG` and `raceId` as before; plus `proteinGPerKg`, `fasting`
+    (`allowed` | `off`) with `fastingReasons`, `load` (all five values
+    appear), `plannedMin` and `rules`. A carb-load day is
+    `kind == "carb-load"`, never "fuel is not null".
+  Checked again for anything non-synthetic before committing (no names,
+  repositories, tokens, addresses or real dates).
+  Re-mirrored again 2026-10-01, later the same day, from the vault's main
+  branch after its training load and gates (2026-10-01, all additive,
+  `schemaVersion` still 1). Both projection files and the event example
+  changed; the minimal event file did not (all four compared by blob hash
+  with the vault's). What is new in the projection -- this app decodes
+  none of it yet (unknown keys are ignored, new enumeration values read as
+  unknown), it only has to keep reading the files:
+  - `athlete.gate` (the weekly gate test; `null` in the minimal file);
+  - seven load fields on every non-null `week.actual` (`plannedRunKm`,
+    `unplannedRunKm`, `overPlanKm`, `longestRunKm`, `longestRunCapKm`,
+    `hillM`, `highSessions`) and `flag` on every `unplanned` entry;
+  - `done.manual` on every `done`, and `done.source: "manual"` /
+    `matchedBy: "manual"` for a session ticked done without a watch: the
+    W43 gym session `2030-w43-mon-pm` is now `done` with no activity;
+  - `feedback.pains` on every `feedback`, and a `session-pain` rule note on
+    the W43 tempo -- a note only, never an edit (`PlanEditPolicy`
+    `noteOnlyRules`);
+  - top-level `notices` (`[]` in the example, one `no-activities-since` in
+    the minimal file);
+  - `streak`, `history` and `adherence` on every habit.
+  What moved in the values the goldens read: W43 has one more session
+  (`2030-w43-tue-pm`, mobility, missed) so its `targets.sessions` is 7 and
+  `actual.sessionsDone` 2; Monday 21 Oct has `habitsDone` `holds: 2`,
+  `gym: 1`; the habits' `window14` is 20 of 24 (83 %) and 3 of 3 (100 %);
+  the phone's ack is `seq` 31; `outcomes` has 12 entries (two refused
+  `habit.tick`, with `week` and `sessionId` `null`).
+  Checked once more for anything non-synthetic (season 2030/31 only).
 
 | File | What it is |
 |---|---|
-| `projection.v1.example.json` | Every field of v1, with the reserved fields present and empty. |
-| `projection.v1.minimal.json` | No season and no plan (`season: null`, `plan: null`). |
+| `projection.v1.example.json` | Every field of v1: a season, four written weeks, 14 day skeletons, pain mode on, a `fuel` on every day, the gate test, a session done by hand. |
+| `projection.v1.minimal.json` | No season and no plan (`season: null`, `plan: null`); 42 day skeletons, pain mode off, no gate test, one data-gap notice. |
 
 Do not edit these files. When the vault changes its fixtures (additive
 changes only within v1), copy them again verbatim, update the date above and
 re-run `swift test` (ProjectionDecodingTests, TodayBuilderTests,
-PlanBuilderTests). App-authored edge cases are mutations of the example made
+PlanBuilderTests, DailyCheckInTests). App-authored edge cases are mutations of the example made
 in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
 
 # Event contract fixtures (mirrored)
@@ -53,15 +102,21 @@ in the tests (`Fixtures.mutatedExample`), never hand-copied vault data.
   identical). Re-mirror whenever the vault records a change in its fixture
   changelog. Re-mirrored 2026-09-30 for the morning pain score
   (add-checkin-pain-score): the example gained seq 24; the minimal file is
-  unchanged.
+  unchanged. Re-mirrored 2026-10-01 for the vault's training load and
+  gates (add-daily-checkin-and-pain-mode): the example grew from 24 to 31
+  lines, no existing line changed -- seq 25 `test.gate`, 26 and 27
+  `session.done`, 28 a `session.rpe` with `pains` (during / after), 29 a
+  back-filled `habit.tick`, 30 and 31 two `habit.tick` the vault refuses
+  (22 days back, a future day). The minimal file is unchanged.
 
 | File | What it is |
 |---|---|
-| `events.v1.example.jsonl` | 24 events of every v1 type, including the plan commands (seq 16 a refused race move, seq 23 a superseded move) and `event.retracted`, which this app writes since add-plan-editing, `device.hello`, which it doesn't write yet, and (seq 24, 2026-09-30) a second check-in of 2030-10-23 with `pains`. |
+| `events.v1.example.jsonl` | 31 events of every v1 type, including the plan commands (seq 16 a refused race move, seq 23 a superseded move) and `event.retracted`, which this app writes since add-plan-editing, `device.hello`, which it doesn't write yet, (seq 24, 2026-09-30) a second check-in of 2030-10-23 with `pains`, and (seq 25-31, 2026-10-01) `test.gate` and `session.done`, which this app doesn't write yet, an RPE with `pains` and three more habit ticks. |
 | `events.v1.minimal.jsonl` | 3 events with every optional key omitted. |
 
 `HubEventTests` decodes both: every type this app writes decodes to its
-payload (`device.hello` to `.other`), no line is invalid, and each
+payload (`device.hello`, `test.gate` and `session.done` to `.other`; the
+`pains` of an RPE is an ignored key), no line is invalid, and each
 command and retraction line re-encodes to the same JSON object
 (add-plan-editing). `PlanEditingTests` folds the example's commands with
 the example projection's `acks` and `outcomes`. The app's

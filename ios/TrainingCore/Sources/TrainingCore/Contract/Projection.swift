@@ -24,6 +24,15 @@
 // (add-checkin-pain-score, additive in v1). Vault paths (`folder`, `note`, `ref`) are decoded
 // but never shown: the phone has no vault checkout.
 //
+// add-daily-checkin-and-pain-mode (the vault's daily check-in context,
+// 2026-09-30, still v1): top-level `days` -- day skeletons for every date
+// of the window no written week holds, the same `Day` shape with
+// `sessions: []`, present even when `plan` is null (a date is looked up in
+// `plan.weeks[].days`, else here: `TrainingSnapshot.day`);
+// `athlete.painMode` (Pain.swift); and `day.fuel` on EVERY day -- a
+// carb-load day is `DayFuel.isCarbLoad` (`kind == "carb-load"`), never
+// "fuel is not nil".
+//
 // Depended on by: ProjectionDecoder, TrainingSnapshot and every builder.
 // Tests: ProjectionDecodingTests (both vault fixtures, the edge fixtures).
 
@@ -44,6 +53,10 @@ public struct Projection: Equatable, Sendable, Decodable {
     public var season: Season?
     /// The SELECTED phase (deviation 1), not "the" plan.
     public var plan: Plan?
+    /// Day skeletons: the window's dates outside every written week,
+    /// oldest first, never a date a plan week already has (a repeated
+    /// date is dropped here). Empty in a file from before 2026-09-30.
+    public var days: [Day]
     public var workouts: [String: Workout]
     public var tests: [TestHistory]
     public var habits: Habits
@@ -54,7 +67,7 @@ public struct Projection: Equatable, Sendable, Decodable {
     public var supersededBy: SupersededBy?
 
     enum CodingKeys: String, CodingKey {
-        case schema, schemaVersion, generatedAt, generator, asOf, athlete, season, plan
+        case schema, schemaVersion, generatedAt, generator, asOf, athlete, season, plan, days
         case workouts, tests, habits, acks, outcomes, rejected, supersededBy
     }
 
@@ -70,6 +83,10 @@ public struct Projection: Equatable, Sendable, Decodable {
         // (design D2), so these two are strict about their shape.
         season = try c.decodeIfPresent(Season.self, forKey: .season)
         plan = try c.decodeIfPresent(Plan.self, forKey: .plan)
+        var seenDates = Set((plan?.weeks ?? []).flatMap(\.days).map(\.date))
+        days = c.lossyList(Day.self, .days)
+            .sorted { $0.date < $1.date }
+            .filter { seenDates.insert($0.date).inserted }
         workouts = [:]
         if let map = try c.decodeIfPresent(LossyMap<Workout>.self, forKey: .workouts) {
             // The map key is the workout's identity.
@@ -110,16 +127,20 @@ public struct Athlete: Equatable, Sendable, Decodable {
     public var hrMax: Int?
     public var weightKg: Double?
     public var hrZones: HRZones?
+    /// The vault's pain mode (add-daily-checkin-and-pain-mode); `nil` in a
+    /// file without the key, which reads as "not in pain mode".
+    public var painMode: PainMode?
 
-    public init(tz: String? = nil, dayBoundaryHour: Int = 0, hrMax: Int? = nil, weightKg: Double? = nil, hrZones: HRZones? = nil) {
+    public init(tz: String? = nil, dayBoundaryHour: Int = 0, hrMax: Int? = nil, weightKg: Double? = nil, hrZones: HRZones? = nil, painMode: PainMode? = nil) {
         self.tz = tz
         self.dayBoundaryHour = dayBoundaryHour
         self.hrMax = hrMax
         self.weightKg = weightKg
         self.hrZones = hrZones
+        self.painMode = painMode
     }
 
-    enum CodingKeys: String, CodingKey { case tz, dayBoundaryHour, hrMax, weightKg, hrZones }
+    enum CodingKeys: String, CodingKey { case tz, dayBoundaryHour, hrMax, weightKg, hrZones, painMode }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -128,6 +149,7 @@ public struct Athlete: Equatable, Sendable, Decodable {
         hrMax = c.lenientInt(.hrMax)
         weightKg = c.lenientDouble(.weightKg)
         hrZones = c.lenient(HRZones.self, .hrZones)
+        painMode = c.lenient(PainMode.self, .painMode)
     }
 
     /// `tz` if the system knows it, else `fallback` (design D6).
@@ -558,14 +580,18 @@ public struct Week: Equatable, Sendable, Decodable, ProjectionElement {
     }
 }
 
-/// A day's `fuel`. Two shapes share the object (both additive in v1):
-///   - a carb-load day (`kind: "carb-load"`): `carbsGPerKg` is ONE number
-///     and `carbsG` the grams it means;
-///   - every other day since add-winter-arc-nutrition-and-rewards (the
-///     vault's PM-FUEL-1 band): `carbsGPerKg` is `{ min, max }`, plus
-///     `proteinGPerKg` and `fasting: "allowed" | "off"`.
-/// So `carbsGPerKg` reads as a number into `carbsGPerKg` or as an object
-/// into `carbsBand`, never both; anything else in it reads as `nil`.
+/// A day's `fuel`. On EVERY day since the vault's 2026-09-30 change (it
+/// was `null` outside carb-load days before). Two shapes share the object:
+///   - a carb-load day (`kind: "carb-load"`): `carbsGPerKg` is ONE number,
+///     `carbsG` the grams it means and `raceId` the race;
+///   - every other day (`kind: "daily"`): `carbsGPerKg` is `{ min, max }`
+///     (the vault's PM-FUEL-1 band for the day's `load`), `carbsG` and
+///     `raceId` are `null`.
+/// Both carry `proteinGPerKg`, `fasting: "allowed" | "off"` with its
+/// `fastingReasons`, `load`, `plannedMin` and the `rules` behind the
+/// numbers. `carbsGPerKg` reads as a number into `carbsGPerKg` or as an
+/// object into `carbsBand`, never both; anything else in it reads as `nil`.
+/// Every field is lenient, every enumeration open.
 public struct DayFuel: Equatable, Sendable, Decodable {
     public var kind: OpenEnum<DayFuelKind>?
     public var raceId: String?
@@ -578,6 +604,15 @@ public struct DayFuel: Equatable, Sendable, Decodable {
     public var proteinGPerKg: Double?
     /// Whether the fasting window applies on this day (`nil` = not said).
     public var fasting: OpenEnum<DayFastingPolicy>?
+    /// Why fasting is off (`[]` when it is allowed); a reason this build
+    /// doesn't know is kept as `.unknown`.
+    public var fastingReasons: [OpenEnum<FastingOffReason>]
+    /// How heavy the day is, which picked the band.
+    public var load: OpenEnum<DayFuelLoad>?
+    /// The day's planned training minutes (skipped sessions don't count).
+    public var plannedMin: Int?
+    /// The planning-method rule ids behind the numbers ("PM-FUEL-1").
+    public var rules: [String]
 
     public init(
         kind: OpenEnum<DayFuelKind>? = nil,
@@ -586,7 +621,11 @@ public struct DayFuel: Equatable, Sendable, Decodable {
         carbsG: Int? = nil,
         carbsBand: GramsPerKgRange? = nil,
         proteinGPerKg: Double? = nil,
-        fasting: OpenEnum<DayFastingPolicy>? = nil
+        fasting: OpenEnum<DayFastingPolicy>? = nil,
+        fastingReasons: [OpenEnum<FastingOffReason>] = [],
+        load: OpenEnum<DayFuelLoad>? = nil,
+        plannedMin: Int? = nil,
+        rules: [String] = []
     ) {
         self.kind = kind
         self.raceId = raceId
@@ -595,9 +634,15 @@ public struct DayFuel: Equatable, Sendable, Decodable {
         self.carbsBand = carbsBand
         self.proteinGPerKg = proteinGPerKg
         self.fasting = fasting
+        self.fastingReasons = fastingReasons
+        self.load = load
+        self.plannedMin = plannedMin
+        self.rules = rules
     }
 
-    enum CodingKeys: String, CodingKey { case kind, raceId, carbsGPerKg, carbsG, proteinGPerKg, fasting }
+    enum CodingKeys: String, CodingKey {
+        case kind, raceId, carbsGPerKg, carbsG, proteinGPerKg, fasting, fastingReasons, load, plannedMin, rules
+    }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -608,6 +653,19 @@ public struct DayFuel: Equatable, Sendable, Decodable {
         carbsBand = carbsGPerKg == nil ? c.lenient(GramsPerKgRange.self, .carbsGPerKg) : nil
         proteinGPerKg = c.lenientDouble(.proteinGPerKg).flatMap { $0 > 0 ? $0 : nil }
         fasting = c.lenient(OpenEnum<DayFastingPolicy>.self, .fasting)
+        fastingReasons = c.stringList(.fastingReasons).map { OpenEnum<FastingOffReason>(rawValue: $0) }
+        load = c.lenient(OpenEnum<DayFuelLoad>.self, .load)
+        plannedMin = c.lenientInt(.plannedMin).flatMap { $0 >= 0 ? $0 : nil }
+        rules = c.stringList(.rules)
+    }
+
+    /// A carb-load day: `kind == "carb-load"`. A fuel without a `kind` (a
+    /// file from before `fuel` was on every day, where the only fuel was a
+    /// carb load) counts when it has the single number or the grams and no
+    /// band. NEVER "the day has a fuel": every day has one now.
+    public var isCarbLoad: Bool {
+        if let kind { return kind.known == .carbLoad }
+        return carbsBand == nil && (carbsGPerKg != nil || carbsG != nil)
     }
 
     /// The vault said fasting is off for the day (a build week).

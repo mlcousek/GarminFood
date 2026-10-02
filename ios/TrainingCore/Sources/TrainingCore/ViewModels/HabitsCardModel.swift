@@ -62,7 +62,9 @@ public extension TodayTrainingBuilder {
         let habits = snapshot.habits
         guard !habits.ladder.isEmpty else { return nil }
         let text = format.text
-        let day = snapshot.plan?.day(date)
+        // add-daily-checkin-and-pain-mode: a day skeleton carries the
+        // day's expected habits too, so they are tickable on every day.
+        let day = snapshot.day(date)
         let expected = Set(day?.habitsExpected ?? [])
 
         let shown = habits.ladder.filter { $0.state?.known == .active || expected.contains($0.id) }

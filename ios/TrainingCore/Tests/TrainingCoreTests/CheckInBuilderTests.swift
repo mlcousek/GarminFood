@@ -97,8 +97,13 @@ final class CheckInBuilderTests: XCTestCase {
         XCTAssertEqual(builder.habits(on: D.asOf).map(\.tick), [.displayOnly])
     }
 
-    func testNoCheckInOutsideThePlan() throws {
-        XCTAssertNil(today(try snapshot()).trainingDay(on: D.date("2031-06-01")).checkIn)
+    /// add-daily-checkin-and-pain-mode: every day takes a check-in, a date
+    /// the file doesn't cover too (it used to need a plan day).
+    func testACheckInRowOutsideThePlan() throws {
+        let row = try XCTUnwrap(today(try snapshot()).trainingDay(on: D.date("2031-06-01")).checkIn)
+        XCTAssertNil(row.selected)
+        XCTAssertNil(row.sessionID)
+        XCTAssertNil(row.pain)
     }
 
     func testThePhonesLightReachesTheCards() throws {
@@ -214,13 +219,17 @@ final class CheckInBuilderTests: XCTestCase {
 
     func testRemindersForTodayAndTomorrow() throws {
         let reminders = TrainingReminderPlanner.plan(snapshot: try snapshot(data: try withoutTodaysLight()), today: D.asOf, now: midnight, timeZone: prague, language: .english)
-        // The 23rd: a G/A/R day without a light; its one habit already done.
-        // The 24th: no options; two habits unknown.
-        XCTAssertEqual(reminders.map(\.id), ["checkin.2030-10-23", "habits.2030-10-24"])
+        // The 23rd: no light yet; its one habit already done.
+        // The 24th: no light either (add-daily-checkin-and-pain-mode: the
+        // check-in reminder is planned every day, not only on a G/A/R
+        // day); two habits unknown.
+        XCTAssertEqual(reminders.map(\.id), ["checkin.2030-10-23", "checkin.2030-10-24", "habits.2030-10-24"])
         XCTAssertEqual(reminders[0].title, "How do you feel today?")
         XCTAssertEqual(reminders[0].hour, 4)
         XCTAssertEqual(reminders[0].minute, 5)
-        XCTAssertEqual(reminders[1].title, "Evening habits")
+        XCTAssertEqual(reminders[2].title, "Evening habits")
+        XCTAssertEqual(reminders[2].hour, 20)
+        XCTAssertEqual(reminders[2].minute, 10)
         let fire = try XCTUnwrap(TrainingReminderPlanner.fireDate(reminders[0], timeZone: prague))
         XCTAssertEqual(fire, Date(timeIntervalSince1970: 1_918_951_500)) // 02:05Z
     }
@@ -241,18 +250,19 @@ final class CheckInBuilderTests: XCTestCase {
 
     func testCheckingInRemovesTheMorningReminder() throws {
         let local = TrainingReminderPlanner.plan(snapshot: try snapshot([logged(amber(), seq: 1)], data: try withoutTodaysLight()), today: D.asOf, now: midnight, timeZone: prague, language: .english)
-        XCTAssertEqual(local.map(\.id), ["habits.2030-10-24"])
+        XCTAssertEqual(local.map(\.id), ["checkin.2030-10-24", "habits.2030-10-24"], "the 23rd's is gone, tomorrow's stays")
         // The vault's own check-in counts too (the example's amber).
         let vault = TrainingReminderPlanner.plan(snapshot: try snapshot(), today: D.asOf, now: midnight, timeZone: prague, language: .english)
-        XCTAssertEqual(vault.map(\.id), ["habits.2030-10-24"])
+        XCTAssertEqual(vault.map(\.id), ["checkin.2030-10-24", "habits.2030-10-24"])
     }
 
     func testPastRemindersAndReadOnlyPlanNothing() throws {
         // 05:00 in Prague: the 04:05 reminder has passed.
         let late = Date(timeIntervalSince1970: 1_918_954_800)
         let reminders = TrainingReminderPlanner.plan(snapshot: try snapshot(), today: D.asOf, now: late, timeZone: prague, language: .czech)
-        XCTAssertEqual(reminders.map(\.id), ["habits.2030-10-24"])
-        XCTAssertEqual(reminders[0].title, "Večerní návyky")
+        XCTAssertEqual(reminders.map(\.id), ["checkin.2030-10-24", "habits.2030-10-24"])
+        XCTAssertEqual(reminders[0].title, "Jak se dnes cítíš?")
+        XCTAssertEqual(reminders[1].title, "Večerní návyky")
         XCTAssertEqual(TrainingReminderPlanner.plan(snapshot: try snapshot(enabled: false), today: D.asOf, now: midnight, timeZone: prague, language: .english), [])
         XCTAssertEqual(TrainingReminderPlanner.plan(snapshot: nil, today: D.asOf, now: midnight, timeZone: prague, language: .english), [])
     }

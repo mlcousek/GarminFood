@@ -12,19 +12,25 @@
 // fire).
 //
 // add-training-checkins D8: in the training experience, one "Training
-// reminders" switch (on by default) for the 04:05 check-in reminder on run
-// days and the 20:10 evening habits reminder; TrainingModel plans them.
+// reminders" switch (on by default) for the morning check-in reminder and
+// the evening habits reminder; TrainingModel plans them.
+// add-daily-checkin-and-pain-mode: the check-in reminder fires every day
+// (not only on run days), and both have a time picker next to the switch
+// (04:05 and 20:10 until changed), kept by TrainingModel like the food
+// reminders' times.
 
 import SwiftUI
 import UIKit
 import UserNotifications
 import FoodLogCore
+import TrainingCore
 
 @MainActor
 struct NotificationSettingsView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var authorizationStatus: UNAuthorizationStatus = .notDetermined
     @State private var trainingRemindersOn = true
+    @State private var trainingTimes = TrainingReminderTimes.standard
 
     var body: some View {
         Form {
@@ -98,10 +104,14 @@ struct NotificationSettingsView: View {
                             }
                         }
                     ))
+                    if trainingRemindersOn {
+                        DatePicker("Check-in reminder", selection: trainingTimeBinding(morning: true), displayedComponents: .hourAndMinute)
+                        DatePicker("Habits reminder", selection: trainingTimeBinding(morning: false), displayedComponents: .hourAndMinute)
+                    }
                 } header: {
                     Text("Training")
                 } footer: {
-                    Text("A check-in reminder at 4:05 on run days until you check in, and a habits reminder at 20:10 while habits are still open.")
+                    Text("A check-in reminder every morning until you check in, and a habits reminder in the evening while habits are still open.")
                 }
             }
 
@@ -126,8 +136,43 @@ struct NotificationSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             trainingRemindersOn = environment.training.remindersEnabled
+            trainingTimes = environment.training.reminderTimes
             await refreshStatus()
         }
+    }
+
+    /// add-daily-checkin-and-pain-mode: the check-in (`morning`) or the
+    /// habits reminder time; a change is saved and the reminders re-planned.
+    private func trainingTimeBinding(morning: Bool) -> Binding<Date> {
+        Binding<Date>(
+            get: {
+                morning
+                    ? Self.date(hour: trainingTimes.morningHour, minute: trainingTimes.morningMinute)
+                    : Self.date(hour: trainingTimes.eveningHour, minute: trainingTimes.eveningMinute)
+            },
+            set: { newDate in
+                let comps = Calendar.current.dateComponents([.hour, .minute], from: newDate)
+                let old = trainingTimes
+                // Through the initialiser, which clamps into a day; a `let`,
+                // so the task below captures a value, not a variable.
+                let times = morning
+                    ? TrainingReminderTimes(
+                        morningHour: comps.hour ?? old.morningHour,
+                        morningMinute: comps.minute ?? old.morningMinute,
+                        eveningHour: old.eveningHour,
+                        eveningMinute: old.eveningMinute
+                    )
+                    : TrainingReminderTimes(
+                        morningHour: old.morningHour,
+                        morningMinute: old.morningMinute,
+                        eveningHour: comps.hour ?? old.eveningHour,
+                        eveningMinute: comps.minute ?? old.eveningMinute
+                    )
+                guard times != old else { return }
+                trainingTimes = times
+                Task { await environment.training.setReminderTimes(times) }
+            }
+        )
     }
 
     @ViewBuilder

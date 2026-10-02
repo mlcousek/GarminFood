@@ -128,7 +128,21 @@ ios/
                     check-in and on each projection day (Contract/
                     Pain.swift), kept or replaced like the vault does
                     (CheckInOverlay), the pain step and tags
-                    (ViewModels/PainModels.swift).
+                    (ViewModels/PainModels.swift). Every day
+                    (add-daily-checkin-and-pain-mode): the projection's
+                    top-level `days` are day skeletons for the dates no
+                    written week holds (also with `plan: null`);
+                    `TrainingSnapshot.day(_:)` is THE lookup of a date (a
+                    week's day, else its skeleton) -- never
+                    `plan?.day(date)` in a consumer. `day.fuel` is on every
+                    day: a carb-load day is `DayFuel.isCarbLoad`, never
+                    "fuel is not nil". Pain features show only in pain mode
+                    (Plan/PainModeState.swift: the vault's
+                    `athlete.painMode`, or this phone's unread pain answer
+                    above 0); outside it the check-in is the light plus a
+                    "Something hurts?" link. The check-in reminder is
+                    planned every day, at the owner's times
+                    (`TrainingReminderTimes`).
   GarminFood/       The app target (SwiftUI views), organized by screen:
                     Today/, Plan/, Training/, Catalog/, CustomFood/,
                     LogEntry/, Profile/, Progress/, App/ (composition root:

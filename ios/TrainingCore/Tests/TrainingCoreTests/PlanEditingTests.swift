@@ -109,7 +109,9 @@ final class PlanEditingTests: XCTestCase {
 
     func testPastDaysAndDoneSessions() throws {
         let snap = try snapshot()
-        let missed = try self.options("2030-w43-mon-pm", snap)
+        // Tuesday's mobility session is the example's missed one (Monday's
+        // gym session is done by hand since the vault's 2026-10-01 fixture).
+        let missed = try self.options("2030-w43-tue-pm", snap)
         XCTAssertEqual(missed.moveTargets, [])
         XCTAssertEqual(missed.swapPartners, [])
         XCTAssertTrue(missed.canSkip, "the vault skips past days")
@@ -120,8 +122,17 @@ final class PlanEditingTests: XCTestCase {
         XCTAssertFalse(done.canSkip, "tasks 0.2: a done session is not skipped")
         XCTAssertEqual(done.block, .done)
 
-        XCTAssertThrowsError(try PlanEditPolicy.move(sessionID: "2030-w43-mon-pm", to: D.date("2030-10-24"), snapshot: snap, today: D.asOf))
+        XCTAssertThrowsError(try PlanEditPolicy.move(sessionID: "2030-w43-tue-pm", to: D.date("2030-10-24"), snapshot: snap, today: D.asOf))
         XCTAssertThrowsError(try PlanEditPolicy.skip(sessionID: "2030-w43-tue-am", reason: nil, snapshot: snap, today: D.asOf))
+        // The vault's session-pain note on the done tempo only informs:
+        // there is no rule to override (add-daily-checkin-and-pain-mode).
+        XCTAssertEqual(done.overridableRules, [])
+
+        // Done without a watch (`done.source: "manual"`, no activity) is
+        // done like any other.
+        let byHand = try self.options("2030-w43-mon-pm", snap)
+        XCTAssertEqual(byHand.block, .done)
+        XCTAssertFalse(byHand.canSkip)
     }
 
     func testTheRaceSessionIsFixed() throws {
@@ -237,7 +248,11 @@ final class PlanEditingTests: XCTestCase {
         let events = HubEventCodec.decode(try EventFixtures.vault("events.v1.example.jsonl")).events
         let logged = events.map { LoggedEvent(event: $0, recordedAt: t0.addingTimeInterval(Double($0.seq)), segmentID: nil) }
         let outcomes = PlanOutcome.parse(projection.outcomes)
-        XCTAssertEqual(outcomes.count, 10)
+        // Ten command outcomes and (since 2026-10-01) two refused habit
+        // ticks, which name no week and no session and match no command.
+        XCTAssertEqual(outcomes.count, 12)
+        XCTAssertEqual(outcomes.filter { $0.type == "habit.tick" }.map(\.seq), [30, 31])
+        XCTAssertTrue(outcomes.filter { $0.type == "habit.tick" }.allSatisfy { $0.week == nil && $0.sessionId == nil && $0.status.known == .refused })
         let overlay = PendingOverlay.fold(logged, unsentSegments: [], ackedSeqs: CheckInOverlay.ackedSeqs(from: projection.acks), outcomes: outcomes)
         XCTAssertEqual(overlay.commands.map(\.seq), [4, 13, 14, 15, 16, 17, 19, 22, 23])
 
