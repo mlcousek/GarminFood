@@ -19,6 +19,11 @@
 // and the words, never colour alone. The vault's pain-* notes arrive as
 // week rule notes.
 //
+// add-daily-checkin-and-pain-mode: a week that is not written still lists,
+// under its message, the days that have something to show (a check-in
+// light, an unplanned activity, pain tags in pain mode) --
+// `WeekAgendaModel.unwrittenDays`, from the projection's day skeletons.
+//
 // Everything shown is `WeekAgendaModel` from TrainingCore's PlanBuilder;
 // nothing is summed here. Depended on by: PlanTabView (and `DayRowView` by
 // its day sheet).
@@ -45,6 +50,10 @@ struct WeekAgendaView: View {
                     .card()
             case .empty(let state):
                 TrainingEmptyStateView(state: state)
+                    .card()
+            }
+            ForEach(model.unwrittenDays) { day in
+                DayRowView(row: day, onOpen: onOpen)
                     .card()
             }
         }

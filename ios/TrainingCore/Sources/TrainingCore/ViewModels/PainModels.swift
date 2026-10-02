@@ -19,6 +19,15 @@
 //     Knee (right) 1/10", or "Pain: none") for Today's card, and
 //     `painTags` for the Plan day rows.
 //
+// add-daily-checkin-and-pain-mode: the step opens by itself only in pain
+// mode (`PainStepModel.isPainMode`, from `TrainingSnapshot.painMode`).
+// Otherwise it is one small "Something hurts?" link under the lights
+// (`somethingHurtsTitle`) that opens the same editor; saving a score above
+// 0 there turns the phone's half of pain mode on (PainModeState). The
+// pain line and the pain tags are built only in pain mode by their
+// builders. The step no longer needs a plan: a day skeleton has `pains`
+// too.
+//
 // The phone never computes the pain flags: `pain-rising` / `pain-high`
 // come from the vault as week rule notes. Nothing here is about anyone in
 // particular: the defaults come from what was recorded.
@@ -82,8 +91,14 @@ public struct PainDraft: Equatable, Sendable {
     /// The Achilles sites of the latest day before `date` whose pain had an
     /// Achilles entry, in the offered order; else the left Achilles.
     public static func defaultSites(before date: LocalDate, plan: EffectivePlan?) -> [PainSite] {
-        let days = (plan?.weeks ?? []).flatMap(\.days).filter { $0.date < date }.sorted { $0.date > $1.date }
-        for day in days {
+        defaultSites(before: date, days: (plan?.weeks ?? []).flatMap(\.days))
+    }
+
+    /// The same over any days (add-daily-checkin-and-pain-mode: the
+    /// written weeks' days and the day skeletons, `TrainingSnapshot.allDays`).
+    public static func defaultSites(before date: LocalDate, days: [Day]) -> [PainSite] {
+        let earlier = days.filter { $0.date < date }.sorted { $0.date > $1.date }
+        for day in earlier {
             let achilles = Set((day.pains ?? []).map(\.site).filter(\.isAchilles))
             if !achilles.isEmpty {
                 return siteOrder.filter { achilles.contains($0) }
@@ -151,8 +166,13 @@ public struct PainStepModel: Equatable, Sendable {
     public let sessionID: String?
     /// The day's pain is recorded (the phone's or the vault's answer).
     public let isRecorded: Bool
-    /// Open under the lights (not asked yet); else folded to `editTitle`.
-    public var opensExpanded: Bool { !isRecorded }
+    /// add-daily-checkin-and-pain-mode: pain mode is on (the vault's, or
+    /// this phone's unread answer). Off: the step is only the
+    /// `somethingHurtsTitle` link, and nothing opens by itself.
+    public let isPainMode: Bool
+    /// In pain mode: open under the lights while not asked yet, else
+    /// folded to `editTitle`. Outside pain mode: never open by itself.
+    public var opensExpanded: Bool { isPainMode && !isRecorded }
     /// "Saved on phone" / "Sent" / "Received by the vault" for the phone's
     /// own answer.
     public let deliveryLine: String?
@@ -164,6 +184,8 @@ public struct PainStepModel: Equatable, Sendable {
     public let saveTitle: String
     public let notNowTitle: String
     public let editTitle: String
+    /// "Something hurts?": the link that opens the step outside pain mode.
+    public let somethingHurtsTitle: String
     public let addSiteTitle: String
     public let notePlaceholder: String
     public let nothingHurtsText: String
@@ -245,10 +267,17 @@ public extension TrainingFormatting {
 extension TodayTrainingBuilder {
     /// The pain step for the row's day: `nil` without a chosen light.
     func painStep(on date: LocalDate, light: MorningLight?, sessionID: String?, snapshot: TrainingSnapshot) -> PainStepModel? {
-        guard let light, let plan = snapshot.plan else { return nil }
-        let recorded = plan.day(date)?.pains
+        guard let light else { return nil }
+        // The day's answer (the phone's laid over the vault's); on a date
+        // the file doesn't have, the phone's own.
+        let recorded: [PainEntry]?
+        if let day = snapshot.day(date) {
+            recorded = day.pains
+        } else {
+            recorded = snapshot.checkIns.pains(on: date)?.value
+        }
         let draft = recorded.map { PainDraft(entries: $0) }
-            ?? PainDraft.zeros(PainDraft.defaultSites(before: date, plan: plan))
+            ?? PainDraft.zeros(PainDraft.defaultSites(before: date, days: snapshot.allDays))
         let text = format.text
         var names: [PainSite: String] = [:]
         var removes: [PainSite: String] = [:]
@@ -263,6 +292,7 @@ extension TodayTrainingBuilder {
             light: light,
             sessionID: sessionID,
             isRecorded: recorded != nil,
+            isPainMode: snapshot.painMode.isActive,
             deliveryLine: format.deliveryLine(snapshot.checkIns.pains(on: date)?.delivery),
             draft: draft,
             title: text(.painTitle),
@@ -270,6 +300,7 @@ extension TodayTrainingBuilder {
             saveTitle: text(.painSave),
             notNowTitle: text(.painNotNow),
             editTitle: text(.painEdit),
+            somethingHurtsTitle: text(.painSomethingHurts),
             addSiteTitle: text(.painAddSite),
             notePlaceholder: text(.painNotePlaceholder),
             nothingHurtsText: text(.painNothingHurts),

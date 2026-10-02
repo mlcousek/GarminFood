@@ -210,9 +210,11 @@ public struct FuelFormatter: Sendable {
         self.text = text
     }
 
-    /// "Carb load: 680 g carbs (8 g/kg)"; `nil` for another fuel kind.
+    /// "Carb load: 680 g carbs (8 g/kg)"; `nil` for another fuel kind --
+    /// every day has a `fuel` since add-daily-checkin-and-pain-mode, and
+    /// only a carb-load day (`DayFuel.isCarbLoad`) gets this line.
     public func dayLine(_ fuel: DayFuel?) -> String? {
-        guard let fuel, fuel.kind?.known == .carbLoad || fuel.kind == nil else { return nil }
+        guard let fuel, fuel.isCarbLoad else { return nil }
         let perKg = fuel.carbsGPerKg.map { NumberText.decimal($0, text.language) }
         switch (fuel.carbsG, perKg) {
         case let (grams?, perKg?): return text.format(.fuelCarbLoad, String(grams), perKg)

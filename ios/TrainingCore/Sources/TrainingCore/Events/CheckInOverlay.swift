@@ -34,6 +34,11 @@
 // with `pains`, `[]` included, replaces it. `applyingLights` also sets the
 // day's `pains` from it.
 //
+// add-daily-checkin-and-pain-mode: the same replacement runs over the day
+// skeletons (`applying(to:)` on a list of days), so a check-in on a day
+// outside every written week -- or with no plan at all -- shows too.
+// `unconfirmedPainDates` is the phone's half of pain mode (PainModeState).
+//
 // Plan commands and retractions (add-plan-editing) are not folded here:
 // they are PendingOverlay's (PlanCommandOverlay.swift).
 //
@@ -169,17 +174,41 @@ public struct CheckInOverlay: Equatable, Sendable {
         guard !lights.isEmpty || !painAnswers.isEmpty else { return plan }
         var result = plan
         for weekIndex in result.weeks.indices {
-            for dayIndex in result.weeks[weekIndex].days.indices {
-                let date = result.weeks[weekIndex].days[dayIndex].date
-                if let local = lights[date] {
-                    result.weeks[weekIndex].days[dayIndex].light = OpenEnum(local.value)
-                    result.weeks[weekIndex].days[dayIndex].lightSource = OpenEnum(LightSource.checkin)
-                }
-                if let local = painAnswers[date] {
-                    result.weeks[weekIndex].days[dayIndex].pains = local.value
-                }
+            result.weeks[weekIndex].days = applying(to: result.weeks[weekIndex].days)
+        }
+        return result
+    }
+
+    /// `days` with the phone's check-in light and pain answer on each
+    /// (plan-week days and day skeletons alike).
+    public func applying(to days: [Day]) -> [Day] {
+        guard !lights.isEmpty || !painAnswers.isEmpty else { return days }
+        var result = days
+        for index in result.indices {
+            let date = result[index].date
+            if let local = lights[date] {
+                result[index].light = OpenEnum(local.value)
+                result[index].lightSource = OpenEnum(LightSource.checkin)
+            }
+            if let local = painAnswers[date] {
+                result[index].pains = local.value
             }
         }
         return result
+    }
+
+    /// The days whose pain answer on this phone has a score above 0 and
+    /// that the vault has not read yet: not acknowledged (`received`), and
+    /// not the answer the projection itself shows for the day
+    /// (`vaultPains`, the file's own `day.pains`). Oldest first.
+    public func unconfirmedPainDates(vaultPains: [LocalDate: [PainEntry]]) -> [LocalDate] {
+        var dates: [LocalDate] = []
+        for (date, answer) in painAnswers {
+            guard answer.value.contains(where: { $0.score > 0 }) else { continue }
+            if answer.delivery == .received { continue }
+            if let vault = vaultPains[date], vault == answer.value { continue }
+            dates.append(date)
+        }
+        return dates.sorted { $0 < $1 }
     }
 }

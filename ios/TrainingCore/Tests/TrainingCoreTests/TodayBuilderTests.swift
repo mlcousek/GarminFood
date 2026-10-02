@@ -176,8 +176,8 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertEqual(holds.label, "Holds")
         XCTAssertEqual(holds.dose, "5 × 45 s, twice a day")
         XCTAssertEqual(holds.schedule, "2× a day")
-        XCTAssertEqual(holds.adherence, "18 of 24 · 75 % · over 12 recorded days")
-        XCTAssertEqual(holds.fraction, 0.75)
+        XCTAssertEqual(holds.adherence, "20 of 24 · 83 % · over 12 recorded days")
+        XCTAssertEqual(holds.fraction, 0.83)
         XCTAssertEqual(holds.gateFraction, 0.8)
         XCTAssertEqual(holds.doneToday, "Today: 2 of 2")
         XCTAssertEqual(holds.tick, .displayOnly)
@@ -185,7 +185,8 @@ final class TodayBuilderTests: XCTestCase {
         let monday = try builder().habits(on: D.date("2030-10-21"))
         XCTAssertEqual(monday.map(\.id), ["holds", "gym"])
         XCTAssertEqual(monday[1].schedule, "Mon and Thu")
-        XCTAssertEqual(monday[1].doneToday, "Today: 0 of 1")
+        // The gym session of that Monday was done without a watch.
+        XCTAssertEqual(monday[1].doneToday, "Today: 1 of 1")
 
         // A future day: the vault knows nothing yet, so no count.
         XCTAssertNil(try builder().habits(on: D.date("2030-10-24")).first?.doneToday)
@@ -203,7 +204,7 @@ final class TodayBuilderTests: XCTestCase {
         XCTAssertNil(card.rows[0].notTodayText)
         XCTAssertEqual(card.rows[1].notTodayText, "Not on today's plan")
         XCTAssertNil(card.rows[1].doneToday)
-        XCTAssertEqual(card.rows[1].adherence, "2 of 3 · 66 % · over 9 recorded days")
+        XCTAssertEqual(card.rows[1].adherence, "3 of 3 · 100 % · over 9 recorded days")
         XCTAssertEqual(card.rows[1].tick, .displayOnly)
         XCTAssertEqual(card.expectedCount, 1)
         XCTAssertEqual(card.doneCount, 1)

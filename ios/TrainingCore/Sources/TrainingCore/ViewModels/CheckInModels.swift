@@ -7,14 +7,17 @@
 //     three buttons G/A/R (green, amber, red) with the letter, the option's
 //     meaning and one VoiceOver phrase each, the chosen light (the phone's
 //     latest check-in, else the vault's `day.light`) and whether it is only
-//     saved on the phone or already sent. Shown when check-ins are allowed
-//     and the plan has the day, rest days included: the check is about the
-//     morning, not the run.
+//     saved on the phone or already sent. Shown when check-ins are allowed,
+//     on EVERY day (add-daily-checkin-and-pain-mode): a day of a written
+//     week, a day skeleton, and a date the file doesn't cover at all (a
+//     stale copy) -- with no plan too. The check is about the morning, not
+//     the run.
 //   - `SessionRatingModel`: the session detail's RPE (1-10) and note, the
 //     phone's latest values with their delivery lines.
 //   - add-checkin-pain-score: once the row has a chosen light, its `pain`
 //     step (PainModels.swift) -- open while the day's pain is not asked,
-//     else "Edit pain".
+//     else "Edit pain". add-daily-checkin-and-pain-mode: that only in pain
+//     mode; otherwise the step is one small "Something hurts?" link.
 //
 // The option cards are untouched: they keep opening the detail, and a
 // check-in reaches them as the morning-light highlight that already exists
@@ -75,18 +78,21 @@ public extension TrainingFormatting {
 }
 
 public extension TodayTrainingBuilder {
-    /// The check-in row for `date`; `nil` when check-ins aren't allowed or
-    /// the plan has no such day.
+    /// The check-in row for `date`; `nil` only when check-ins aren't
+    /// allowed. add-daily-checkin-and-pain-mode: every day has one -- a
+    /// written week's day, a day skeleton, or a date outside the file.
     func checkInRow(on date: LocalDate) -> CheckInRowModel? {
-        guard let snapshot = source.snapshot,
-              snapshot.capabilities.canCheckIn,
-              let plan = snapshot.plan,
-              let day = plan.day(date)
-        else { return nil }
+        guard let snapshot = source.snapshot, snapshot.capabilities.canCheckIn else { return nil }
         let text = format.text
         // A light the vault inferred from the executed option is not a
-        // check-in: the row shows only a real check-in as chosen.
-        let selected = day.lightSource?.known == .option ? nil : day.light?.known
+        // check-in: the row shows only a real check-in as chosen. A date
+        // the file doesn't have shows the phone's own check-in.
+        let selected: MorningLight?
+        if let day = snapshot.day(date) {
+            selected = day.lightSource?.known == .option ? nil : day.light?.known
+        } else {
+            selected = snapshot.checkIns.light(on: date)?.value
+        }
         let buttons = MorningLight.checkInOrder.map { light -> CheckInButtonModel in
             let code = light.option
             let name = text.lightName(OpenEnum(light)) ?? light.rawValue
@@ -101,7 +107,7 @@ public extension TodayTrainingBuilder {
                 accessibilityLabel: text.format(.a11yCheckInButton, name, meaning)
             )
         }
-        let sessionID = CheckInPlanning.checkInSessionID(on: date, plan: plan.plan)
+        let sessionID = CheckInPlanning.checkInSessionID(on: date, plan: snapshot.plan?.plan)
         var row = CheckInRowModel(
             date: date,
             sessionID: sessionID,

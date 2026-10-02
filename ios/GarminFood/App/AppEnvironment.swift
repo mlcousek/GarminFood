@@ -330,8 +330,11 @@ final class AppEnvironment {
         }
         // add-checkin-pain-score D7: a lock-screen Control recorded the
         // light; show Today at today, where the pain step is waiting.
+        // add-daily-checkin-and-pain-mode: only in pain mode -- otherwise
+        // the light was the whole check-in and the app stays where it was
+        // (the service reloaded the training model before calling this).
         TrainingEventsService.shared.onControlCheckIn = { [weak self] in
-            guard let self else { return }
+            guard let self, self.training.isPainMode else { return }
             self.router.selectedTab = .today
             Task { await self.goToToday() }
         }

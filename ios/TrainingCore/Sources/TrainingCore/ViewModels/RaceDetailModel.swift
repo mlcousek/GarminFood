@@ -408,7 +408,7 @@ public enum RacePrepMath {
         let weight = snapshot.athlete.weightKg
         return (race.prep?.carbLoad ?? []).map { entry -> CarbLoadMath in
             let date = race.date.adding(days: entry.dayOffset)
-            if let fuel = snapshot.plan?.day(date)?.fuel, fuel.raceId == race.id, let grams = fuel.carbsG {
+            if let fuel = snapshot.day(date)?.fuel, fuel.isCarbLoad, fuel.raceId == race.id, let grams = fuel.carbsG {
                 return CarbLoadMath(date: date, dayOffset: entry.dayOffset, carbsGPerKg: entry.carbsGPerKg ?? fuel.carbsGPerKg, grams: grams, source: .plan)
             }
             if let perKg = entry.carbsGPerKg, let weight, weight > 0 {

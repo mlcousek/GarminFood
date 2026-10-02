@@ -41,7 +41,10 @@
 // asked -- the vault then keeps the day's earlier answer -- and a list,
 // possibly empty, when it was (Pain.swift has the entry's shape). The
 // vault's `device.hello` decodes as `.other` here: this app doesn't write
-// it yet.
+// it yet. So do `test.gate` and `session.done` (the vault's contract of
+// 2026-10-01, mirrored by add-daily-checkin-and-pain-mode), and the
+// `pains` that contract added to `session.rpe` is an ignored key until
+// the change that records them.
 //
 // Encoding is deterministic (sorted keys, unescaped slashes, `\n` after
 // every line) because a sealed segment's bytes and git blob SHA must be the

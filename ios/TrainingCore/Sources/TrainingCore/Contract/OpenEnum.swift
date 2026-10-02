@@ -212,6 +212,32 @@ public enum ScheduleKind: String, OpenEnumValue {
 
 public enum DayFuelKind: String, OpenEnumValue {
     case carbLoad = "carb-load"
+    /// Every other day (add-daily-checkin-and-pain-mode: `fuel` is on
+    /// every day since the vault's 2026-09-30 change).
+    case daily
+}
+
+/// A day's `fuel.load`: how heavy the day is, which picks the band.
+public enum DayFuelLoad: String, OpenEnumValue {
+    case rest, light, moderate, high
+    case carbLoad = "carb-load"
+}
+
+/// Why a day's `fuel.fasting` is `off`.
+public enum FastingOffReason: String, OpenEnumValue {
+    case buildWeek = "build-week"
+    case longSession = "long-session"
+    case quality
+    case beforeKeySession = "before-key-session"
+    case carbLoad = "carb-load"
+    case race
+}
+
+/// Why `athlete.painMode` is on.
+public enum PainModeReason: String, OpenEnumValue {
+    case painScore = "pain-score"
+    case light
+    case manual
 }
 
 /// A day's `fuel.fasting` (add-winter-arc-nutrition-and-rewards, the

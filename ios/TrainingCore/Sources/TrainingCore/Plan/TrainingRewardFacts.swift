@@ -83,10 +83,15 @@ public struct TrainingRewardFacts: Equatable, Sendable {
     }
 
     public static func build(snapshot: TrainingSnapshot, today: LocalDate) -> TrainingRewardFacts {
-        guard let plan = snapshot.plan else { return TrainingRewardFacts(today: today, days: [], weeks: []) }
         var days: [TrainingDayFact] = []
         var weeks: [TrainingWeekFact] = []
-        for week in plan.weeks.sorted(by: { $0.week < $1.week }) {
+        // add-daily-checkin-and-pain-mode: a check-in or a habit tick on a
+        // day outside every written week (a day skeleton) counts too, also
+        // without a plan; weeks are still only the written ones.
+        for day in snapshot.skeletonDays where day.date <= today {
+            days.append(dayFact(day, snapshot: snapshot))
+        }
+        for week in (snapshot.plan?.weeks ?? []).sorted(by: { $0.week < $1.week }) {
             var weekStrength = 0
             for day in week.days where day.date <= today {
                 let fact = dayFact(day, snapshot: snapshot)
