@@ -152,14 +152,23 @@ struct NotificationSettingsView: View {
             },
             set: { newDate in
                 let comps = Calendar.current.dateComponents([.hour, .minute], from: newDate)
-                var times = trainingTimes
-                if morning {
-                    times.morningHour = comps.hour ?? times.morningHour
-                    times.morningMinute = comps.minute ?? times.morningMinute
-                } else {
-                    times.eveningHour = comps.hour ?? times.eveningHour
-                    times.eveningMinute = comps.minute ?? times.eveningMinute
-                }
+                let old = trainingTimes
+                // Through the initialiser, which clamps into a day; a `let`,
+                // so the task below captures a value, not a variable.
+                let times = morning
+                    ? TrainingReminderTimes(
+                        morningHour: comps.hour ?? old.morningHour,
+                        morningMinute: comps.minute ?? old.morningMinute,
+                        eveningHour: old.eveningHour,
+                        eveningMinute: old.eveningMinute
+                    )
+                    : TrainingReminderTimes(
+                        morningHour: old.morningHour,
+                        morningMinute: old.morningMinute,
+                        eveningHour: comps.hour ?? old.eveningHour,
+                        eveningMinute: comps.minute ?? old.eveningMinute
+                    )
+                guard times != old else { return }
                 trainingTimes = times
                 Task { await environment.training.setReminderTimes(times) }
             }
