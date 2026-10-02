@@ -22,12 +22,12 @@ Each has a default; unanswered ones are built as the default.
 - [x] 2.1 `ios/Gamification/Sources/Gamification/BadgeArtCatalog.swift`: badge -> (family, motif); header comment per house style. *Family from the id's namespace, else the category; motif from the badge's existing `badgeSymbol` (94 symbols -> 51 motifs), so there is no per-badge table (design D4, updated).*
 - [x] 2.2 Tests (`BadgeArtCatalogTests`; first compiled in CI): every badge id from every badge source (core, secrets, bingo, boss, journeys, records, collections, seasonal, sport and body, supplements, training, level tiers) resolves; no unknown family or motif name.
 - [x] 2.3 The remaining frames (13 shapes x 5 rarities) and motifs; `tools/docs/check-badge-art.mjs` fails when the catalog and the files disagree, in CI. *65 frames + 51 motifs, 120 KB.*
-- [ ] 2.4 The gallery shows all badges with a family filter; **owner approves it** (the gate for wave 3). *Gallery built 2026-10-01 (257 badges incl. level tiers; the training badges are missing from the guide's data and are covered by the Swift test only). Waiting for the owner.*
+- [x] 2.4 The gallery shows all badges with a family filter; **owner approves it** (the gate for wave 3). *Approved by the owner 2026-10-01.* *Gallery built 2026-10-01 (257 badges incl. level tiers; the training badges are missing from the guide's data and are covered by the Swift test only). Waiting for the owner.*
 
 ## 3. Wave 3 - the app (M)
 
-- [ ] 3.1 Imagesets in `Assets.xcassets` generated from the sources by a script (vector preserved, original rendering); the script is re-runnable and its output is committed.
-- [ ] 3.2 One family only (streak) in `BadgeMedallion`: frame + motif, the locked silhouette, the fallback to the disc; the other families still use the disc. Sideload and compare with the gallery at 40, 60 and 120 pt. Record what differed.
+- [x] 3.1 Imagesets in `Assets.xcassets` generated from the sources by a script (vector preserved, original rendering); the script is re-runnable and its output is committed. *`tools/docs/build-badge-assets.mjs`, 116 imagesets under `Assets.xcassets/BadgeArt`; `--check` runs in CI.*
+- [ ] 3.2 One family only (streak) in `BadgeMedallion`: frame + motif, the locked silhouette, the fallback to the disc; the other families still use the disc. Sideload and compare with the gallery at 40, 60 and 120 pt. Record what differed. *Code done 2026-10-01 (`BadgeArt.enabledFamilies = [.streak]`; every call site already passes its family; the streak-milestone celebration uses it too). Waiting for the owner's sideload.*
 - [ ] 3.3 All families; the 11 call sites pass the badge (or its family and motif); the secret question-mark frame; the existing shine kept for epic and legendary.
 - [ ] 3.4 Accessibility: labels name the rarity; Differentiate Without Colour and the largest Dynamic Type checked on the Achievements grid.
 - [ ] 3.5 `BadgeMedallion.swift`'s header rewritten (the "no image assets" reasoning no longer holds); `docs/guide/` links the gallery.

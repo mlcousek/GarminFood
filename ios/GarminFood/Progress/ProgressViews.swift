@@ -253,7 +253,7 @@ private struct LevelSummaryCard: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
             CardHeader(title: "Level", systemImage: "sparkles")
             HStack(alignment: .center, spacing: Theme.Spacing.sm) {
-                BadgeMedallion(symbol: tier.badgeSymbol, rarity: tier.rarity, isLocked: false, size: 40)
+                BadgeMedallion(symbol: tier.badgeSymbol, rarity: tier.rarity, isLocked: false, size: 40, family: .levels)
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Level \(progress.level)")
                         .font(.system(.title, design: .rounded).weight(.bold))
@@ -707,7 +707,7 @@ struct LevelDetailView: View {
         List {
             Section {
                 VStack(spacing: Theme.Spacing.md) {
-                    BadgeMedallion(symbol: tier.badgeSymbol, rarity: tier.rarity, isLocked: false, size: 64)
+                    BadgeMedallion(symbol: tier.badgeSymbol, rarity: tier.rarity, isLocked: false, size: 64, family: .levels)
                         .accessibilityHidden(true)
 
                     ProgressRing(fraction: progress.fractionToNextLevel, lineWidth: 14) {
